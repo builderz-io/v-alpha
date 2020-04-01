@@ -1,0 +1,61 @@
+:root {
+  /* Layout */
+
+  --max-width: 1200px;
+  --corners: 5px;
+
+  --card-height: 172px;
+
+  --app-nav-top: 4rem;
+  --app-nav-left: 7px;
+  --entities-nav-top: 7px;
+  --entities-nav-left: 61px;
+
+  --page-position-top: 7rem;
+  --page-position-top-selected: 4rem;
+  /* --page-position-feature: now being calculated */
+  --page-position-peek: 108px;
+  --page-position-closed: 35px;
+
+  /* Typography */
+  /* --font-family: 'IBM Plex Sans', sans-serif; */
+  --min-font-size: 0.875rem;
+  --max-font-size: 1rem;
+
+  /*
+  * Fluid Typography Settings
+  * When not using preprocessors:
+  * - breakpoints also have to be set manually in media queries on: Typography -> html element
+  *
+  * @var --fluid-calc: pixel values of font-size and breakpoints without their units
+  * used in calculation for fluid typography on: Typography -> html element
+  */
+
+  --lowest-breakpoint: 30rem;
+  --highest-breakpoint: 50rem;
+  --fluid-calc: calc((16 - 14) / (800 - 480));
+
+  /* Line Height */
+  --lh-none: 1;
+  --lh-tight: 1.25;
+  --lh-snug: 1.375;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.625;
+  --lh-loose: 2;
+
+  /* Color */
+  /* https://coolors.co/f08700-f49f0a-efca08-00a6a6-bbdef0 */
+  --white: 255, 255, 255;      /* rgba(255, 255, 255, 1) */
+  --black: 0, 0, 0;            /* rgba(0, 0, 0, 1) */
+  --offblack: 45, 55, 72;      /* rgba(45, 55, 72, 1) or #2D3748 */
+  --green: 65, 183, 135;       /* rgba(65, 183, 135, 1) */
+  --orange: 255, 164, 27;      /* rgb(255, 164, 27) */
+  --brand: 27, 26, 255;        /* rgba(27, 26, 255, 1) or #1b1aff */
+
+  /* Spacing */
+  --global-padding: 5px;
+
+  /* Helper Calculations */
+  /* --listings-ul-height: calc(var(--card-height) + 2 * var(--global-padding)); */
+
+}

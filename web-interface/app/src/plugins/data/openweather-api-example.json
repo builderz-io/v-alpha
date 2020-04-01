@@ -1,0 +1,78 @@
+{
+  "coord": {
+    "lon": 13.38,
+    "lat": 52.52
+  },
+  "weather": [
+    {
+      "id": 803,
+      "main": "Clouds",
+      "description": "broken clouds",
+      "icon": "04d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 283.91,
+    "feels_like": 275.02,
+    "temp_min": 283.15,
+    "temp_max": 284.82,
+    "pressure": 1004,
+    "humidity": 71
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 11.3,
+    "deg": 280,
+    "gust": 18
+  },
+  "clouds": {
+    "all": 75
+  },
+  "dt": 1580468409,
+  "sys": {
+    "type": 1,
+    "id": 1275,
+    "country": "DE",
+    "sunrise": 1580453453,
+    "sunset": 1580485717
+  },
+  "timezone": 3600,
+  "id": 2822234,
+  "name": "Tiergarten",
+  "cod": 200
+}
+
+{
+  "status": "success",
+  "data": {
+    "city": "St. John's",
+    "state": "Newfoundland and Labrador",
+    "country": "Canada",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        -52.8167,
+        47.6528
+      ]
+    },
+    "current": {
+      "weather": {
+        "ts": "2020-01-29T21:00:00.000Z",
+        "tp": -1,
+        "pr": 997,
+        "hu": 86,
+        "ws": 4.6,
+        "wd": 30,
+        "ic": "13n"
+      },
+      "pollution": {
+        "ts": "2020-02-01T07:00:00.000Z",
+        "aqius": 14,
+        "mainus": "p2",
+        "aqicn": 8,
+        "maincn": "p1"
+      }
+    }
+  }
+}

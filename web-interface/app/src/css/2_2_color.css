@@ -1,0 +1,52 @@
+body {
+  color: rgba(var(--offblack), 1);
+}
+
+.filter-green {
+  /* https://stackoverflow.com/questions/22252472/how-to-change-the-color-of-an-svg-element */
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(61%) sepia(19%) saturate(1231%) hue-rotate(104deg) brightness(99%) contrast(85%);
+}
+
+.txt-white {
+  color: rgba(var(--white), 1);
+}
+.bkg-white {
+  background-color: rgba(var(--white), 1);
+}
+.bkg-black {
+  background-color: rgba(var(--black), 1);
+}
+.txt-offblack {
+  color: rgba(var(--offblack), 1);
+}
+.bkg-offblack {
+  background-color: rgba(var(--offblack), 1);
+}
+.txt-green {
+  color: rgba(var(--green), 1);
+  fill: rgba(var(--green), 1);
+}
+.txt-brand {
+  color: rgba(var(--brand), 1);
+}
+.bkg-brand {
+  background-color: rgba(var(--brand), 1);
+}
+.bkg-orange {
+  background-color: rgba(var(--orange), 1);
+}
+
+.border-blackalpha {
+  border: 1px solid rgba(var(--black),.15);
+}
+.border-error {
+  border: 1px solid red;
+}
+
+.pill-shadow {
+  box-shadow: 0px -1px 1px 0px rgba(var(--black),.11), 0px 2px 1px 0px rgba(var(--black),.15);
+}
+.card-shadow {
+  box-shadow: 0 1px 1px 0 rgba(var(--black),.11),0 1px 3px 1px rgba(var(--black),.15);
+}

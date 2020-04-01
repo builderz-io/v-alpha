@@ -1,0 +1,94 @@
+
+html {
+  font-size: var(--min-font-size);
+}
+
+@media (min-width: 30rem) {
+  html {
+    /**
+    * Fluid Font Size
+    * https://websemantics.uk/tools/responsive-font-calculator/
+    * e.g. 0.875rem(14px) @ 30rem(480px) increasing to 1rem(16px) @ 50rem(800px)
+    */
+    font-size: calc(var(--min-font-size) + ( (1vw - var(--lowest-breakpoint) / 100) * (100 * var(--fluid-calc)) ) );
+  }
+}
+
+@media (min-width: 50rem) {
+  html {
+    font-size: var(--max-font-size);
+  }
+}
+
+body {
+  font-family: 'IBM Plex Regular';
+  /* font-weight: 400; */
+}
+
+.font-medium {
+  font-family: 'IBM Plex Medium';
+  /* font-weight: 500; */
+}
+
+.font-bold {
+  font-family: 'IBM Plex Bold';
+  /* font-weight: 700; */
+}
+
+p {
+  line-height: var(--lh-tight);
+}
+
+.leading-none {
+  line-height: var(--lh-none);
+}
+.leading-tight {
+  line-height: var(--lh-tight);
+}
+.leading-snug {
+  line-height: var(--lh-snug);
+}
+.leading-normal {
+  line-height: var(--lh-normal);
+}
+.leading-relaxed {
+   line-height: var(--lh-relaxed);
+}
+.leading-loose {
+  line-height: var(--lh-loose);
+}
+
+
+.fs-tiny {
+  font-size: 0.482rem;
+}
+.fs-xxs {
+  font-size: 0.579rem;
+}
+.fs-xs {
+  font-size: 0.694rem;
+}
+.fs-s {
+  font-size: 0.833rem;
+}
+.fs-rr {
+  font-size: 90%;
+}
+.fs-r {
+  font-size: 1rem;
+}
+.fs-re {
+  font-size: 1.143rem;
+}
+.fs-l {
+  font-size: 1.2rem;
+}
+.fs-xl {
+  font-size: 1.44rem;
+}
+.fs-xxl {
+  font-size: 1.728rem;
+}
+.fs-huge {
+  font-size: 2.074rem;
+}

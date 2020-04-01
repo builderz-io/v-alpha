@@ -1,0 +1,53 @@
+.modal {
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+}
+
+.modal__content {
+  background: white;
+	width: 70vw;
+  height: 60vh;
+	position: relative;
+	margin: 18vh auto;
+	padding: 0.5rem;
+}
+
+.modal__new {
+  background: #ffa41b;
+	position: relative;
+  top: 5vh;
+	margin: 0 auto;
+	padding: 1rem;
+  text-align: center;
+  cursor: pointer
+}
+
+.modal__return {
+  position: relative;
+  top: 8vh;
+  margin: 0 auto;
+  text-align: center;
+  cursor: pointer
+}
+
+.modal__new-name {
+  position: relative;
+  top: 15vh;
+  margin: 0 auto;
+  text-align: center;
+  cursor: pointer
+}
+
+.modal__close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  text-decoration: none;
+  color: white
+}
