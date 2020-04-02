@@ -1,3 +1,4 @@
+/* PAV Linting rules April 2020 */
 module.exports = {
     "env": {
         "browser": true,

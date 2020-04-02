@@ -1,5 +1,5 @@
 {
-  "name": "V Alpha 2 Entity Store",
+  "name": "v-alpha-2-entity-store",
   "version": "2.0.0",
   "description": "The Value Instrument Alpha Version 2 MongoDB Entity Store",
   "main": "index.js",

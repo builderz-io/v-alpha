@@ -1,5 +1,5 @@
 {
-  "name": "V Alpha 2 Interface",
+  "name": "v-alpha-2-interface",
   "version": "2.0.0",
   "description": "The Value Instrument Alpha Version 2 User Interface",
   "main": "",
@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/valueinstrument/v-alpha-2#readme",
   "dependencies": {
-    "eslint": "^6.7.2",
     "express": "^4.17.1"
   },
   "devDependencies": {

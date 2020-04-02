@@ -1,5 +1,5 @@
 {
-  "name": "V Alpha 2 Smart Contract",
+  "name": "v-alpha-2-smart-contract",
   "version": "2.0.0",
   "description": "The Value Instrument Alpha Version 2 Smart Contract",
   "main": "truffle-config.js",
