@@ -7,9 +7,9 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
     // socketHost: 'https://mongodb.valueinstrument.org',
     // socketPort: 443,
 
-    entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box'
+    entityLedger: '3Box', // choices are: 'MongoDB' or '3Box'
     chatLedger: 'MongoDB',
-    transactionLedger: 'evm', // choices are: 'MongoDB' or 'evm'
+    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM'
 
     web3Use: true,
 

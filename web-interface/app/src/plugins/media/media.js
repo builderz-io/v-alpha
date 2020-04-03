@@ -16,7 +16,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         button: 'plus search',
         form: 'new entity'
       },
-      draw: function() { Media.draw( { role: 'media', feature: 'https://youtu.be/XQEDw6IKTK8' } ) }
+      draw: function() { Media.draw( 'media', { feature: 'https://youtu.be/XQEDw6IKTK8' } ) }
     },
     {
       title: 'Moocs',
@@ -25,17 +25,17 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         button: 'plus search',
         form: 'new entity'
       },
-      draw: function() { Media.draw( { role: 'mooc', feature: 'https://youtu.be/ygJ4uu4XNM8' } ) }
+      draw: function() { Media.draw( 'mooc', { feature: 'https://youtu.be/ygJ4uu4XNM8' } ) }
     }
   ] );
 
   /* ================== private methods ================= */
 
-  async function presenter( options ) {
+  async function presenter( which ) {
 
     const $listingsUl = MediaComponents.listingsUl();
 
-    const entities = await V.getEntity( options, 'by role' );
+    const entities = await V.getEntity( which );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
@@ -60,7 +60,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     return pageData;
   }
 
-  function previewPresenter( options ) {
+  function featurePresenter( options ) {
     const $featureUl = MediaComponents.featureUl();
     const $videoFeature = MediaComponents.videoFeature( options.feature );
     V.setNode( $featureUl, $videoFeature );
@@ -71,7 +71,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       position: 'feature'
     };
 
-    return pageData;
+    return Promise.resolve( pageData );
   }
 
   function view( pageData ) {
@@ -81,19 +81,17 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function delayContentLoad( which ) {
+    presenter( which ).then( viewData => { view( viewData ) } );
+  }
+
   /* ============ public methods and exports ============ */
 
-  function draw( options ) {
-    V.setPipe(
-      previewPresenter,
-      view
-    )( options );
+  function draw( which, options ) {
+    featurePresenter( options ).then( viewData => { view( viewData ) } );
 
-    setTimeout( lazyLoadContent, 2000 );
+    setTimeout( delayContentLoad, 2000, which );
 
-    function lazyLoadContent() {
-      presenter( options ).then( viewData => { view( viewData ) } );
-    }
   }
 
   return {

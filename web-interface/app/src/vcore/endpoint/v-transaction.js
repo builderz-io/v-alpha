@@ -56,7 +56,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
     const initiator = V.getState( 'activeEntity' );
 
-    const recipientData = await V.getEntity( recipient, 'by fullId' );
+    const recipientData = await V.getEntity( recipient );
 
     return initiator ? {
       status: 'success',

@@ -1577,9 +1577,9 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     box.public.set( which, data );
   }
 
-  async function get3Box( activeAddress ) {
+  async function get3Box( which ) {
     if ( Web3Obj && Web3Obj._provider ) {
-      box = await Box.openBox( activeAddress, Web3Obj._provider ).then( res => {
+      box = await Box.openBox( which, Web3Obj._provider ).then( res => {
         return res;
       } );
 
@@ -1589,7 +1589,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
       return {
         status: 'set 3Box',
-        message: 'set a 3Box for ' + activeAddress,
+        message: 'set a 3Box for ' + which,
         data: [ profile ]
       };
     }
@@ -1651,118 +1651,43 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   async function getContractState() {
 
-    const blockNumber = new Promise( resolve => {
-      contract.methods.getBlockNumber().call()
-        .then( res => {
-          resolve( res );
-        } );
-    } );
+    const blockNumber = contract.methods.getBlockNumber().call();
 
-    const accountList = new Promise( resolve => {
-      // contract.methods.getAccountList().call()
-      //   .then( res => {
-      //     resolve( res );
-      //   } );
+    const allEvents = contract.getPastEvents( 'allEvents', {
+      // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
+      fromBlock: 0,
+      toBlock: 'latest'
+    }, ( error ) => {return error ? console.error( error ) : null} )
+      .then( res => {
+        return res.map( item => {
+          return {
+            b: item.blockNumber,
+            e: item.event,
+            val: item.returnValues.value/( 10**6 ),
+            to: item.returnValues.to,
+            from: item.returnValues.from,
+            all: item
+          };
+        } ).reverse();
+      } );
 
-      // contract.methods.accountApproved( '0xe438d672987b63591d2dc49482734e0389f0b110' ).call()
-      //   .then( res => {
-      //     resolve( res );
-      //   } );
-
-      resolve( 'getAccountList not a function' );
-    } );
-
-    const gameParticipants = new Promise( resolve => {
-      // contract.methods.getGameParticipants().call()
-      //   .then( res => {
-      //     resolve( res );
-      //   } );
-      resolve( 'getGameParticipants not a function' );
-    } );
-
-    const totalAmount = new Promise( resolve => {
-      // contract.methods.getTotalAmount().call()
-      //   .then( res => {
-      //     resolve( res );
-      //   } );
-      resolve( 'getTotalAmount not a function' );
-
-    } );
-
-    const lastUsedRandomSeeds = new Promise( resolve => {
-      // contract.methods.getLastUsedRandomSeeds().call()
-      //   .then( res => {
-      //     resolve( res );
-      //   } );
-
-      resolve( 'getLastUsedRandomSeeds not a function' );
-    } );
-
-    const allEvents = new Promise( resolve => {
-      contract.getPastEvents( 'allEvents', {
-        // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
-        fromBlock: 0,
-        toBlock: 'latest'
-      }, ( error ) => {return error ? console.error( error ) : null} )
-        .then( res => {
-          resolve( res.map( item => {
-            return {
-              b: item.blockNumber,
-              e: item.event,
-              val: item.returnValues.value/( 10**6 ),
-              to: item.returnValues.to,
-              from: item.returnValues.from,
-              all: item
-            };
-          } ).reverse() );
-        } );
-    } );
-
-    const all = await Promise.all( [ blockNumber, accountList, gameParticipants, totalAmount, lastUsedRandomSeeds, allEvents ] );
+    const all = await Promise.all( [ blockNumber, allEvents ] );
 
     console.log( '*** CONTRACT STATUS ***' );
     console.log( 'Current Block: ', all[0] );
     console.log( 'Contract: ', contract._address );
-    console.log( 'Approved Accounts: ', all[1] );
-    // console.log( 'Twister Participants: ', all[2] );
-    // console.log( 'Twister Balance: ', all[3]/( 10**6 ) );
-    // console.log( 'Twister Last Seeds: ', all[4] );
-    console.log( 'All Events:', all[5] );
+    console.log( 'All Events:', all[1] );
     console.log( '*** CONTRACT STATUS END ***' );
 
   }
 
   async function getAddressState( which ) {
 
-    const ethBalance = new Promise( resolve => {
-      Web3Obj.eth.getBalance( which )
-        .then( res => {
-          resolve( res );
-        } );
-    } );
-
-    // const tokenBalance = new Promise( resolve => {
-    //   contract.methods.balanceOf( which ).call()
-    //     .then( res => {
-    //       resolve( res );
-    //     } );
-    // } );
-
-    const liveBalance = new Promise( resolve => {
-      contract.methods.liveBalanceOf( which ).call()
-        .then( res => {
-          resolve( res );
-        } );
-    } );
-
-    const details = new Promise( resolve => {
+    const all = await Promise.all( [
+      Web3Obj.eth.getBalance( which ),
+      contract.methods.liveBalanceOf( which ).call(),
       contract.methods.getDetails( which ).call()
-        .then( res => {
-          resolve( res );
-        } );
-    } );
-
-    const all = await Promise.all( [ ethBalance, liveBalance, details ] );
+    ] );
 
     if ( all[0] && all[1] ) {
       return {

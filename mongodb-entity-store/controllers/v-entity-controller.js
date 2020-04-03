@@ -8,7 +8,7 @@ const TxDB = require( '../models/v-transaction-model' );
 
 exports.findByRole = function( req, res ) {
 
-  const find = req ? req.role ? { 'credentials.role': req.role } : {} : {};
+  const find = req != 'all' ? { 'credentials.role': req } : {};
 
   EntityDB.find( find, function( err, entities ) {
     if ( err ) {
@@ -46,6 +46,7 @@ exports.findByEthAddress = function( req, res ) {
 };
 
 exports.findByFullId = function( req, res ) {
+
   EntityDB.find( { fullId: req }, function( err, entities ) {
     if ( err ) {
       res( {

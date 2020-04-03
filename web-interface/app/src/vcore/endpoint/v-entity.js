@@ -104,7 +104,25 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function getEntity( which, data ) {
+  function getEntity( which ) {
+
+    let data;
+
+    if ( !which ) {
+      // defaults to searching all entities (by 'role')
+      which = 'all';
+    }
+
+    if ( which.substr( 0, 2 ) == '0x' ) {
+      data = { key: 'ethAddress' };
+    }
+    else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
+      data = { key: 'fullId' };
+    }
+    else {
+      data = { key: 'role' };
+    }
+
     return V.getData( which, data, V.getSetting( 'entityLedger' ) );
   }
 
@@ -128,11 +146,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAllEntityData() {
-    const activeAddress = V.getState( 'activeAddress' );
-    const entityData = V.getEntity( activeAddress, 'by ethAddress' ).then( entity => { return entity} );
-    const chainData = V.getAddressState( activeAddress ).then( accState => { return accState} );
+    const aA = V.getState( 'activeAddress' );
 
-    const all = await Promise.all( [entityData, chainData] );
+    const all = await Promise.all( [
+      V.getEntity( aA ),
+      V.getAddressState( aA )
+    ] );
 
     return  {
       name: all[0].data[0].fullId,

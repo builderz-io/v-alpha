@@ -24,11 +24,11 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       for ( const txData of transactions ) {
 
         if ( txData.type == 'in' ) {
-          const from = await V.getEntity( txData.from, 'by ethAddress' );
+          const from = await V.getEntity( txData.from );
           txData.title = from.data[0].fullId;
         }
         else if ( txData.type == 'out' ) {
-          const to = await V.getEntity( txData.to, 'by ethAddress' );
+          const to = await V.getEntity( txData.to );
           txData.title = to.data[0].fullId;
         }
         else if ( txData.type == 'burned' ) {

@@ -23,7 +23,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         button: 'plus search',
         form: 'new entity'
       },
-      draw: function() {  Marketplace.draw( { role: 'job' } ) }
+      draw: function() {  Marketplace.draw( 'job' ) }
     },
     {
       title: 'Skills',
@@ -32,7 +32,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         button: 'plus search',
         form: 'new entity'
       },
-      draw: function() {  Marketplace.draw( { role: 'skill' } ) }
+      draw: function() {  Marketplace.draw( 'skill' ) }
     },
     {
       title: 'Events',
@@ -41,20 +41,20 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         button: 'plus search',
         form: 'new entity'
       },
-      draw: function() {  Marketplace.draw( { role: 'event' } ) }
+      draw: function() {  Marketplace.draw( 'event' ) }
     }
   ] );
 
   /* ================== private methods ================= */
 
-  async function presenter( options ) {
+  async function presenter( which ) {
 
     const mapData = [];
 
     const $topsliderUl = MarketplaceComponents.topSliderUl();
     const $listingsUl = MarketplaceComponents.listingsUl();
 
-    const entities = await V.getEntity( options, 'by role' );
+    const entities = await V.getEntity( which );
 
     if ( entities.data ) {
       entities.data.reverse().forEach( cardData => {
@@ -90,8 +90,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( options ) {
-    presenter( options ).then( viewData => { view( viewData ) } );
+  function draw( which ) {
+    presenter( which ).then( viewData => { view( viewData ) } );
   }
 
   function drawHelloWorld() {

@@ -43,11 +43,11 @@ sio.on( 'connection', client => {
 
   client.on( 'tags', handleEntity.getTags );
 
-  client.on( 'by role', handleEntity.findByRole );
+  client.on( 'role', handleEntity.findByRole );
 
-  client.on( 'by ethAddress', handleEntity.findByEthAddress );
+  client.on( 'ethAddress', handleEntity.findByEthAddress );
 
-  client.on( 'by fullId', handleEntity.findByFullId );
+  client.on( 'fullId', handleEntity.findByFullId );
 
   client.on( 'new message', handleMessage.set );
 

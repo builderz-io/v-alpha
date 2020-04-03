@@ -94,7 +94,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     if ( ledger == '3Box' ) {
       return V.set3Box( 'fullId', data.fullId );
     }
-    if ( ledger == 'evm' ) {
+    if ( ledger == 'EVM' ) {
       if ( which == 'new transaction' ) {
         if ( data.currency == 'ETH' ) {
           return V.setEtherTransaction( data );
@@ -123,8 +123,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       // TODO: error handling
       return new Promise( resolve => {
         // V.debug( socket.connected );
-
-        socket.emit( data, which, function( res ) {
+        socket.emit( data.key, which, function( res ) {
           // V.debug( res.message );
           resolve( res );
         } );
