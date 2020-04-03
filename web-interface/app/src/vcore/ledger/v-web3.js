@@ -9,6 +9,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   let Web3Obj;
   let contract;
+  let box;
 
   /* ================== private methods ================= */
 
@@ -1572,6 +1573,35 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
+  function set3Box( which, data ) {
+    box.public.set( which, data );
+  }
+
+  async function get3Box( activeAddress ) {
+    if ( Web3Obj && Web3Obj._provider ) {
+      box = await Box.openBox( activeAddress, Web3Obj._provider ).then( res => {
+        return res;
+      } );
+
+      await box.syncDone;
+
+      const profile = await box.public.all();
+
+      return {
+        status: 'set 3Box',
+        message: 'set a 3Box for ' + activeAddress,
+        data: [ profile ]
+      };
+    }
+    else {
+      return {
+        status: 'no 3Box set',
+        message: '3Box not set, no provider',
+        data: []
+      };
+    }
+  }
+
   async function setActiveAddress() {
 
     return getWeb3Provider().then( res => {
@@ -1885,6 +1915,8 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    set3Box: set3Box,
+    get3Box: get3Box,
     setActiveAddress: setActiveAddress,
     getContractState: getContractState,
     getAddressState: getAddressState,

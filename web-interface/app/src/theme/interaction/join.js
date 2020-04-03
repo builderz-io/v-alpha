@@ -9,11 +9,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function ckeckEntityExists() {
+  async function ckeckEntityStore() {
     const activeAddress = V.getState( 'activeAddress' );
     return activeAddress ? V.getEntity( 'by ethAddress', activeAddress ).then( entity => {
 
-      if ( entity.data.length ) {
+      if ( entity.data[0].fullId ) {
         V.setState( 'activeEntity', entity.data[0] );
         return 'entity found';
       }
@@ -26,11 +26,14 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   async function presenter( which ) {
 
     if ( which == 'launch' && V.getSetting( 'web3Use' ) ) {
+
+      Modal.draw('please wait');
+
       await V.setActiveAddress().then( async res => {
 
         if ( res.status == 'set address' ) {
           V.getContractState();
-          which = await ckeckEntityExists();
+          which = await ckeckEntityStore();
         }
         else {
           which = res.status;
@@ -39,7 +42,10 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else if ( which == 'set new address' ) {
-      which = await ckeckEntityExists();
+      
+      Modal.draw('please wait');
+
+      which = await ckeckEntityStore();
     }
 
     return which;
@@ -58,6 +64,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Modal.draw( which );
     }
     else {
+      Marketplace.draw();
       Modal.draw( which );
     }
   }
@@ -66,14 +73,14 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     // sets the view on launch (the header "Join" button)
-    if ( !V.gN( 'join' ) ) {
-      V.sN( 'balance > svg', 'clear' );
+    if ( !V.getNode( 'join' ) ) {
+      V.setNode( 'balance > svg', 'clear' );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
         Join.draw( 'launch' );
       } );
 
-      V.sN( 'header', $join );
+      V.setNode( 'header', $join );
     }
   }
 

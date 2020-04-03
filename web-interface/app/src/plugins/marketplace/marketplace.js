@@ -85,7 +85,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   function view( data ) {
     Page.draw( data.pageData );
-    Map.draw( data.mapData );
+    VMap.draw( data.mapData );
   }
 
   /* ============ public methods and exports ============ */

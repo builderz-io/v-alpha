@@ -1,7 +1,7 @@
 const VKey = ( function() { // eslint-disable-line no-unused-vars
 
   const apiKeys = {
-    googlePlaces: 'KEY_HERE',
+    googlePlaces: 'AIzaSyD2MU7foORS25ayBrpV28DoZiHfXoCQvts',
     mapBox: 'KEY_HERE',
   };
 

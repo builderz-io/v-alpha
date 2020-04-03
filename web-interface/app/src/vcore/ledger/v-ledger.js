@@ -35,7 +35,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  async function launch() {
+  function launch() {
     if ( V.getSetting( 'socketUse' ) ) {
       V.sN( 'head', {
         t: 'script',
@@ -81,8 +81,11 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   function setData( which, data, ledger ) {
     const ledgerChoice = ledger.split( ' ' );
-    if ( ledgerChoice[0] == 'mongodb' && ledgerChoice[1] == 'socket' ) {
+    if ( ledgerChoice[0] == 'MongoDB' ) {
       return getData( which, data, ledger ); // setData == getData in this case
+    }
+    if ( ledgerChoice[0] == '3Box' ) {
+      return V.set3Box( 'fullId', data.fullId );
     }
     if ( ledgerChoice[0] == 'evm' ) {
       if ( which == 'new transaction' ) {
@@ -105,7 +108,12 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     if ( ledgerChoice[0] == 'http' ) {
       return http( which );
     }
-    if ( ledgerChoice[0] == 'mongodb' && ledgerChoice[1] == 'socket' ) {
+    if ( ledgerChoice[0] == '3Box' ) {
+      return V.get3Box( data ).then( res => {
+        return res;
+      } );
+    }
+    if ( ledgerChoice[0] == 'MongoDB' ) {
       // TODO: error handling
       return new Promise( resolve => {
         // V.debug( socket.connected );

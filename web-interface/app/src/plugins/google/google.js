@@ -46,7 +46,12 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function launch() {
-    addPlacesLibraryScript();
+    if ( V.getApiKey( 'googlePlaces' ).length > 10 ) {
+      addPlacesLibraryScript();
+    }
+    else {
+      console.warn( 'Missing Google Places API key' );
+    }
   }
 
   function draw( options ) {

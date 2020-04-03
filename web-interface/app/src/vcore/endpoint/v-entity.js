@@ -116,6 +116,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       return createTag( data.title ).then( tag => {
         data.tag = tag;
+        data.fullId = data.title + ' ' + data.tag;
         return V.setData( which, data, whichLedger );
       } );
 

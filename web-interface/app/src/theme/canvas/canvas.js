@@ -152,7 +152,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     Join.launch();
     Navigation.launch();
     Page.launch();
-    Map.launch();
+    VMap.launch();
     Google.launch();
 
   }

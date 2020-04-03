@@ -1,4 +1,4 @@
-const Map = ( function() { // eslint-disable-line no-unused-vars
+const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /**
   * Module to launch and draw the map
@@ -53,7 +53,7 @@ const Map = ( function() { // eslint-disable-line no-unused-vars
         t: 'script',
         a: {
           src: 'dist/leaflet.js',
-          onload: 'Map.setMap()'
+          onload: 'VMap.setMap()'
         }
       } );
     }

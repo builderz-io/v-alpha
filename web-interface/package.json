@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/valueinstrument/v-alpha-2#readme",
   "dependencies": {
+    "3box": "^1.17.1",
     "express": "^4.17.1"
   },
   "devDependencies": {

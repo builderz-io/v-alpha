@@ -48,6 +48,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'logged out' ) {
       inner = `<p class="modal__p">${ V.i18n( 'You are logged out' ) }</p>`;
     }
+    else if ( which == 'please wait' ) {
+      inner = `<p class="modal__p">${ V.i18n( 'Please wait... requesting data' ) }</p>`;
+    }
     else if ( which == 'web3 provider not found' ) {
       inner = `<div class="modal__new font-medium">${ V.i18n( 'Create new wallet' ) }</div><p class="modal__return">${ V.i18n( 'Recover from mnemonic phrase' ) } (${ V.i18n( 'A Web3 provider was not found' ) })</p>`;
     }
