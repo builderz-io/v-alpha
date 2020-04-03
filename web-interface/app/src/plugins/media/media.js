@@ -35,7 +35,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const $listingsUl = MediaComponents.listingsUl();
 
-    const entities = await V.getEntity( 'by role', options );
+    const entities = await V.getEntity( options, 'by role' );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {

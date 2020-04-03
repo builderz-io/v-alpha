@@ -80,14 +80,21 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setData( which, data, ledger ) {
-    const ledgerChoice = ledger.split( ' ' );
-    if ( ledgerChoice[0] == 'MongoDB' ) {
-      return getData( which, data, ledger ); // setData == getData in this case
+
+    if ( ledger == 'MongoDB' ) {
+
+      /**
+       * @notice setData == getData in this case
+       * @notice MongoDB requires data and 'data' and 'which' switched
+       *
+       */
+
+      return getData( data, which, ledger );
     }
-    if ( ledgerChoice[0] == '3Box' ) {
+    if ( ledger == '3Box' ) {
       return V.set3Box( 'fullId', data.fullId );
     }
-    if ( ledgerChoice[0] == 'evm' ) {
+    if ( ledger == 'evm' ) {
       if ( which == 'new transaction' ) {
         if ( data.currency == 'ETH' ) {
           return V.setEtherTransaction( data );
@@ -104,21 +111,20 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   function getData( which, data, ledger ) {
 
-    const ledgerChoice = ledger.split( ' ' );
-    if ( ledgerChoice[0] == 'http' ) {
+    if ( ledger == 'http' ) {
       return http( which );
     }
-    if ( ledgerChoice[0] == '3Box' ) {
-      return V.get3Box( data ).then( res => {
+    if ( ledger == '3Box' ) {
+      return V.get3Box( which ).then( res => {
         return res;
       } );
     }
-    if ( ledgerChoice[0] == 'MongoDB' ) {
+    if ( ledger == 'MongoDB' ) {
       // TODO: error handling
       return new Promise( resolve => {
         // V.debug( socket.connected );
 
-        socket.emit( which, data, function( res ) {
+        socket.emit( data, which, function( res ) {
           // V.debug( res.message );
           resolve( res );
         } );

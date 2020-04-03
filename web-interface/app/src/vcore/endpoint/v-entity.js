@@ -51,7 +51,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // for testing and demo content creation
     return '#2121';
 
-    const existingTagsForName = await V.getData( 'tags', { for: title }, V.getSetting( 'entityLedger' ) );
+    const existingTagsForName = await V.getData( { for: title }, 'tags', V.getSetting( 'entityLedger' ) );
 
     var continueDice = true;
 
@@ -129,7 +129,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function getAllEntityData() {
     const activeAddress = V.getState( 'activeAddress' );
-    const entityData = V.getEntity( 'by ethAddress', activeAddress ).then( entity => { return entity} );
+    const entityData = V.getEntity( activeAddress, 'by ethAddress' ).then( entity => { return entity} );
     const chainData = V.getAddressState( activeAddress ).then( accState => { return accState} );
 
     const all = await Promise.all( [entityData, chainData] );

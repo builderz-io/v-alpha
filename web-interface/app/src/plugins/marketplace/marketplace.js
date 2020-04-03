@@ -54,7 +54,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     const $topsliderUl = MarketplaceComponents.topSliderUl();
     const $listingsUl = MarketplaceComponents.listingsUl();
 
-    const entities = await V.getEntity( 'by role', options );
+    const entities = await V.getEntity( options, 'by role' );
 
     if ( entities.data ) {
       entities.data.reverse().forEach( cardData => {

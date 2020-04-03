@@ -11,7 +11,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStore() {
     const activeAddress = V.getState( 'activeAddress' );
-    return activeAddress ? V.getEntity( 'by ethAddress', activeAddress ).then( entity => {
+    return activeAddress ? V.getEntity( activeAddress, 'by ethAddress' ).then( entity => {
 
       if ( entity.data[0].fullId ) {
         V.setState( 'activeEntity', entity.data[0] );
@@ -42,7 +42,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else if ( which == 'set new address' ) {
-      
+
       Modal.draw('please wait');
 
       which = await ckeckEntityStore();
