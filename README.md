@@ -14,7 +14,7 @@ This repository contains three distinct code bases:
 A client side responsive web app, build with the VCore library and including a Theme and Plugins. All written in plain Javascript.
 
 **VCore**
-A bunc of modules and helper functions to aid the development of user interfaces
+A bunch of modules and helper functions to aid the development of user interfaces
 
 **VTheme**
 A first theme build with VCore.
@@ -23,9 +23,9 @@ A first theme build with VCore.
 A bunch of functionality to create and display content. Plugins control the Theme.
 
 
-### Entity Store
+### MongoDB Entity Store
 
-The Entity Store resolves user names to Web3 addresses, when a distributed ledger is used, and also stores transactions in VToken format, if no distributed ledger is used (as a simulation of such).
+The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used, and also enables token accounts and transactions in VToken format, if no distributed ledger is used (as a simulation of such).
 
 ### Smart Contract
 
