@@ -110,7 +110,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       const message = DOM.$box.value;
 
-      V.setEndpoint( 'new message', message ).then( res => {
+      V.setBot( message ).then( res => {
         console.log( 'res: ', res );
         if ( res.success ) {
           Account.drawHeaderBalance();

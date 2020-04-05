@@ -89,9 +89,6 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
       return getData( data, options, whichLedger );
     }
-    if ( whichLedger == '3Box' ) {
-      return V.set3Box( 'fullId', data.fullId );
-    }
     if ( whichLedger == 'EVM' ) {
       if ( options.key == 'new transaction' ) {
         if ( data.currency == 'ETH' ) {
@@ -105,32 +102,35 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         return V.setAddressVerification( data );
       }
     }
+    if ( whichLedger == '3Box' ) {
+      return V.set3Box( 'fullId', data.fullId );
+    }
   }
 
   function getData( data, options, whichLedger ) {
+    if ( whichLedger == 'MongoDB' ) {
 
-    if ( whichLedger == 'http' ) {
-      return http( data );
+      /**
+      * @notice MongoDB requires 'data' and 'options' switched
+      */
+
+      // TODO: error handling
+      return new Promise( resolve => {
+        socket.emit( options.key, data, function( res ) {
+          resolve( res );
+        } );
+      } );
+    }
+    if ( whichLedger == 'EVM' ) {
+      return V.getAddressHistory();
     }
     if ( whichLedger == '3Box' ) {
       return V.get3Box( data ).then( res => {
         return res;
       } );
     }
-    if ( whichLedger == 'MongoDB' ) {
-
-      /**
-       * @notice MongoDB requires 'data' and 'which' switched
-       */
-
-      // TODO: error handling
-      return new Promise( resolve => {
-        console.log( data );
-        console.log( options );
-        socket.emit( options.key, data, function( res ) {
-          resolve( res );
-        } );
-      } );
+    if ( whichLedger == 'http' ) {
+      return http( data );
     }
   }
 

@@ -120,8 +120,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
               '<div class="pxy">' +
                 '<h2 class="font-bold fs-l leading-snug">' + txData.title + '</h2>' +
-                 '<p>' + 'To ' + txData.to.substr( 0, 4 ) + ' ... ' + txData.to.substr( txData.to.length - 4 ) + '</p>' +
-                 '<p>' + 'From ' + txData.from.substr( 0, 4 ) + ' ... ' + txData.from.substr( txData.from.length - 4 ) + '</p>' +
+                 '<p>' + 'To ' + V.castShortAddress( txData.to, 6 ) + '</p>' +
+                 '<p>' + 'From ' + V.castShortAddress( txData.from, 6 ) + '</p>' +
                  '<p>' + 'Block ' + txData.block + '</p>' +
       // '<p>' + 'Log Index ' + txData.logIndex + '</p>' +
       //  '<p>' + 'Price was ' + ( txData.price == 0 ? 'free' : txData.price + ' ' + txData.unit ) + '</p>' +

@@ -123,7 +123,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       options = { key: 'role' };
     }
 
-    return V.getData( { entity: which }, options, V.getSetting( 'entityLedger' ) );
+    return V.getData( which, options, V.getSetting( 'entityLedger' ) );
   }
 
   function setEntity( entityData, options ) {

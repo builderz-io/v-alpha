@@ -17,14 +17,13 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     kicksAss: kicksAss,
 
     /* Action */
-    setEndpoint: VAction.setEndpoint,
-
     getEntity: VEntity.getEntity,
     setEntity: VEntity.setEntity,
     getAllEntityData: VEntity.getAllEntityData,
 
     getMessage: VMessage.getMessage,
     setMessage: VMessage.setMessage,
+    setBot: VMessage.setBot,
 
     getTransaction: VTransaction.getTransaction,
     setTransaction: VTransaction.setTransaction,
@@ -48,6 +47,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     castCamelCase: VHelper.castCamelCase,
     castLinks: VHelper.castLinks,
     castTime: VHelper.castTime,
+    castShortAddress: VHelper.castShortAddress,
     setPipe: VHelper.setPipe,
     getTranslation: VHelper.getTranslation,
     i18n: VHelper.i18n,

@@ -87,8 +87,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function getTransaction( data ) {
-    // TODO
+  async function getTransaction( which, options ) {
+    if ( !options ) {
+      options = { key: 'transaction' };
+    }
+    return V.getData( which, options, V.getSetting( 'transactionLedger' ) );
   }
 
   async function setTransaction( which, options ) {

@@ -8,8 +8,6 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
 
   async function presenter() {
@@ -17,19 +15,19 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     if ( pageState.height != pageState.topCalc ) {
 
-      const transactions = await V.getAddressHistory();
-
+      const transactions = await V.getTransaction( V.getState( 'activeEntity' ).fullId );
+      console.log( 'tx', transactions );
       const $listingsUl = AccountComponents.listingsUl();
 
       for ( const txData of transactions.data[0] ) {
 
         if ( txData.type == 'in' ) {
           const from = await V.getEntity( txData.from );
-          txData.title = from.data[0].fullId;
+          txData.title = from.data[0] ? from.data[0].fullId : V.castShortAddress( txData.from );
         }
         else if ( txData.type == 'out' ) {
           const to = await V.getEntity( txData.to );
-          txData.title = to.data[0].fullId;
+          txData.title = to.data[0] ? to.data[0].fullId :  V.castShortAddress( txData.to );
         }
         else if ( txData.type == 'burned' ) {
           txData.title = 'Burn Account';

@@ -62,6 +62,8 @@ sio.on( 'connection', client => {
   } );
 
   client.on( 'new transaction', handleTransaction.updateEntities );
+
+  client.on( 'transaction', handleTransaction.findTransaction );
   //
   // client.on( 'transaction', function( req, res ) {
   //   // TODO

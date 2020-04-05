@@ -17,6 +17,8 @@ const addRolesSimplified = ( array ) => {
   return [a, b, c, d];
 };
 
+const TxDB = require( '../models/v-transaction-model' );
+
 exports.updateEntities = function( req, res ) {
 
   /*
@@ -68,4 +70,26 @@ exports.updateEntities = function( req, res ) {
       res( { status: 'error', message: 'Issue in transaction - ' + err } );
     } );
 
+};
+
+exports.findTransaction = function( req, res ) {
+  console.log( req );
+  TxDB.find( { fullId: req }, function( err, entities ) {
+    if ( err ) {
+      res( {
+        success: false,
+        status: 'error',
+        message: err,
+      } );
+    }
+    else {
+      console.log( entities );
+      res( {
+        success: true,
+        status: 'success',
+        message: 'Transaction history retrieved successfully',
+        data: [entities[0].txHistory]
+      } );
+    }
+  } );
 };

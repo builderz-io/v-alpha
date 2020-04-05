@@ -66,6 +66,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return which.toLowerCase().replace( /[^a-zA-Z0-9]+(.)/g, ( m, chr ) => {return chr.toUpperCase()} );
   }
 
+  function castShortAddress( address, chars ) {
+    return address.substr( 0, chars || 4 ) + ' ... ' + address.substr( address.length - ( chars || 4 ) );
+  }
+
   function getIcon( which ) {
     return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="assets/icon/' + which + '-24px.svg" height="16px">';
   }
@@ -94,6 +98,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castTime: castTime,
     castInitials: castInitials,
     castCamelCase: castCamelCase,
+    castShortAddress: castShortAddress,
     getIcon: getIcon,
     setPipe: setPipe,
     getTranslation: getTranslation,
