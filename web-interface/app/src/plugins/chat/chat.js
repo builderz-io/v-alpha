@@ -112,16 +112,16 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       V.setEndpoint( 'new message', message ).then( res => {
         console.log( 'res: ', res );
-        if ( res.status == 'success' ) {
+        if ( res.success ) {
           Account.drawHeaderBalance();
           DOM.$box.value = '';
-          DOM.$box.setAttribute( 'placeholder', V.i18n( res.message ) );
-          console.log( res.message );
+          DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
+          console.log( res.status );
         }
         else {
           DOM.$box.value = '';
-          DOM.$box.setAttribute( 'placeholder', V.i18n( res.message ) );
-          console.error( 'try again, because: ', res.message );
+          DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
+          console.error( 'try again, because: ', res.status );
         }
       } );
     } );

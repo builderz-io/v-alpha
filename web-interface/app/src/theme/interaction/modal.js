@@ -19,13 +19,14 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
     if ( which == 'entity found' ) {
       const entityData = await V.getAllEntityData();
+      const x = entityData.data[0];
       inner = `<p class="modal__welcome-back">
-      ${ V.i18n( 'Welcome back' ) }, ${ entityData.name }<br>
-      ${ V.i18n( 'ETH' ) }: ${ entityData.ethBalance }<br>
-      ${ V.i18n( 'V' ) }: ${ entityData.tokenBalance }<br>
-      ${ V.i18n( 'V Live' ) }: ${ entityData.liveBalance }<br>
-      ${ V.i18n( 'Last Block' ) }: ${ entityData.lastBlock }<br>
-      ${ V.i18n( 'Zero Block' ) }: ${ entityData.zeroBlock }<br>
+      ${ V.i18n( 'Welcome back' ) }, ${ x.name }<br>
+      ${ V.i18n( 'ETH' ) }: ${ x.ethBalance }<br>
+      ${ V.i18n( 'V' ) }: ${ x.tokenBalance }<br>
+      ${ V.i18n( 'V Live' ) }: ${ x.liveBalance }<br>
+      ${ V.i18n( 'Last Block' ) }: ${ x.lastBlock }<br>
+      ${ V.i18n( 'Zero Block' ) }: ${ x.zeroBlock }<br>
 
       </p>`;
     }
@@ -39,7 +40,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
       inner = `<div class="modal__new font-medium" onclick="event.stopPropagation(); V.sN('.modal__new', 'clear'); Modal.drawNameForm()">${ V.i18n( 'Name your account' ) }</div><p class="modal__new-name">${ V.i18n( 'Naming your account creates a new entity for your address. An entity can be anything you want to make visible in the network.' ) }</p>`;
     }
-    else if ( which == 'auth denied' ) {
+    else if ( which == 'user denied auth' ) {
       inner = `<p class="modal__p">${ V.i18n( 'Authorization denied' ) }</p>`;
     }
     else if ( which == 'wallet locked' ) {
@@ -132,17 +133,14 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
         ethAddress: V.getState( 'activeAddress' )
       };
 
-      V.setEndpoint( 'new entity', entityData ).then( res => {
-        if ( res.status == 'success' ) {
-          console.log( res.message );
-
+      V.setEntity( entityData ).then( res => {
+        if ( res.success ) {
           Modal.draw( 'entity new' );
           Account.drawHeaderBalance();
         }
         else {
           DOM.$box.value = '';
-          DOM.$box.setAttribute( 'placeholder', V.i18n( res.message ) );
-          console.error( 'try again, because: ', res.message );
+          DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
         }
       } );
     } );

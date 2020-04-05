@@ -58,21 +58,21 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         target: form.getNode( '.plusform__target' ).value
       };
 
-      V.setEndpoint( 'new entity', entityData ).then( res => {
-        if ( res.status == 'success' ) {
+      V.setEntity( entityData ).then( res => {
+        if ( res.success ) {
           Page.draw( { active: true } );
           Form.draw( { fade: 'out' } );
           Button.draw( 'all', { fade: 'out' } );
           Button.draw( 'plus search', { delay: 1 } );
-          console.log( res.message );
+          console.log( res.status );
         }
         else if ( res.status == 'invalid title' ) {
           Form.draw( { error: 'invalid title' } );
-          console.error( res.message );
+          console.error( res.status );
         }
         else {
           Form.draw( { error: 'check console' } );
-          console.error( 'try again, because: ', res.message );
+          console.error( 'try again, because: ', res.status );
         }
       } );
 

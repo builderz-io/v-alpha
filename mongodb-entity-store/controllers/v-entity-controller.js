@@ -13,12 +13,14 @@ exports.findByRole = function( req, res ) {
   EntityDB.find( find, function( err, entities ) {
     if ( err ) {
       res( {
+        success: false,
         status: 'error',
         message: err,
       } );
     }
     else {
       res( {
+        success: true,
         status: 'success',
         message: 'Entities retrieved successfully',
         data: entities
@@ -31,12 +33,14 @@ exports.findByEthAddress = function( req, res ) {
   EntityDB.find( { 'ethCredentials.address': req }, function( err, entities ) {
     if ( err ) {
       res( {
+        success: false,
         status: 'error',
         message: err,
       } );
     }
     else {
       res( {
+        success: true,
         status: 'success',
         message: 'Entities retrieved successfully',
         data: entities
@@ -50,12 +54,14 @@ exports.findByFullId = function( req, res ) {
   EntityDB.find( { fullId: req }, function( err, entities ) {
     if ( err ) {
       res( {
+        success: false,
         status: 'error',
         message: err,
       } );
     }
     else {
       res( {
+        success: true,
         status: 'success',
         message: 'Entities retrieved successfully',
         data: entities
@@ -157,6 +163,7 @@ exports.register = function( req, res ) {
   newEntity.save( ( err ) => {
     if ( err ) {
       res( {
+        success: false,
         status: 'error',
         message: err,
       } );
@@ -194,12 +201,14 @@ exports.register = function( req, res ) {
       newEntityInitialTx.save( ( err ) => {
         if ( err ) {
           res( {
+            success: false,
             status: 'error',
             message: err,
           } );
         }
         else {
           res( {
+            success: true,
             status: 'success',
             message: 'New entity registered successfully'
           } );
@@ -218,6 +227,7 @@ exports.getTags = function( req, res ) {
   EntityDB.find( { 'credentials.name': name }, { credentials: true } ).exec( ( err, entities ) => {
     if ( err ) {
       res( {
+        success: false,
         status: 'error',
         message: err
       } );
@@ -226,6 +236,7 @@ exports.getTags = function( req, res ) {
       const tags = [];
       entities.forEach( item => {tags.push( item.credentials.tag )} );
       res( {
+        success: true,
         status: 'success',
         message: 'Tags retrieved successfully',
         data: tags

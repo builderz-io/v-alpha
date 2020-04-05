@@ -56,10 +56,8 @@ const VAction = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function setEndpoint( which, data ) {
-    if ( which == 'new entity' ) {
-      return V.setEntity( 'new entity', data, V.getSetting( 'entityLedger' ) );
-    }
-    else if ( which == 'new message' ) {
+
+    if ( which == 'new message' ) {
       const caseTxt = sanitize( data );
 
       if ( caseTxt.indexOf( 'vx' ) > -1 ) {
@@ -89,7 +87,7 @@ const VAction = ( function() { // eslint-disable-line no-unused-vars
         *
         */
 
-          return V.setMessage( 'new message', { msg: caseTxt }, V.getSetting( 'chatLedger' ) );
+          return V.setMessage( caseTxt );
         }
         else {
 
@@ -118,7 +116,8 @@ const VAction = ( function() { // eslint-disable-line no-unused-vars
           // }
           else if ( caseArray[0] === 'verify' ) {
 
-            V.setData( 'new verification', caseArray[1], V.getSetting( 'transactionLedger' ) );
+            // V.setData( 'new verification', caseArray[1], V.getSetting( 'transactionLedger' ) );
+            V.setEntity( { fullId: caseArray[1] }, { key: 'new verification' } );
           }
           // else if ( caseArray[0] === 'makeadmin' ) {
           //   socket.emit( 'makeadmin', [caseArray, Cookies.get( 'uPhrase' )] );
@@ -141,7 +140,7 @@ const VAction = ( function() { // eslint-disable-line no-unused-vars
           //
           // }
           else { // command can only be "send" or "request" at this point
-            return V.setTransaction( 'new transaction', caseArray, V.getSetting( 'transactionLedger' ) );
+            return V.setTransaction( caseArray );
 
           }
         }

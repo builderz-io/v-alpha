@@ -31,7 +31,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       await V.setActiveAddress().then( async res => {
 
-        if ( res.status == 'set address' ) {
+        if ( res.success ) {
           V.getContractState();
           which = await ckeckEntityStore();
         }
@@ -41,7 +41,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       } );
     }
-    else if ( which == 'set new address' ) {
+    else if ( which == 'new address set' ) {
 
       Modal.draw('please wait');
 

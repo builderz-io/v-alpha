@@ -21,7 +21,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       const $listingsUl = AccountComponents.listingsUl();
 
-      for ( const txData of transactions ) {
+      for ( const txData of transactions.data[0] ) {
 
         if ( txData.type == 'in' ) {
           const from = await V.getEntity( txData.from );
@@ -86,7 +86,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function drawHeaderBalance( which ) {
     V.getAllEntityData().then( accState => {
-      const $navBal = AccountComponents.headerBalance( accState, which );
+      const $navBal = AccountComponents.headerBalance( accState.data[0], which );
       V.setNode( 'join', 'clear' );
       V.setNode( 'balance > svg', 'clear' );
       setTimeout( () => {return V.setNode( 'balance', $navBal )}, 700 );

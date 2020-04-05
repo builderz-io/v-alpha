@@ -1536,9 +1536,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     if ( window.ethereum ) {
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
-      if ( !window.ethereum.selectedAddress ) {
-        Join.draw( 'wallet locked' );
-      }
+
       try {
       // Request account access
         await window.ethereum.enable();
@@ -1546,8 +1544,8 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       catch ( error ) {
       // User denied account access...
         return {
-          status: 'auth denied',
-          message: 'user denied authorization'
+          success: false,
+          status: 'user denied auth',
         };
       }
     }
@@ -1562,7 +1560,11 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       //  provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
     }
 
-    return new Web3( provider );
+    return {
+      success: true,
+      status: 'provider set',
+      data: [ provider ]
+    };
 
   }
 
@@ -1579,36 +1581,51 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   async function get3Box( which ) {
     if ( Web3Obj && Web3Obj._provider ) {
-      box = await Box.openBox( which, Web3Obj._provider ).then( res => {
-        return res;
+      return Box.openBox( which, Web3Obj._provider ).then( async res => {
+        box = res;
+
+        await box.syncDone;
+
+        const profile = await box.public.all();
+
+        if ( profile.fullId ) {
+          console.log( 'requested 3Box of: ', profile.fullId );
+          return {
+            success: true,
+            status: '3Box retrieved or set',
+            data: [ profile ]
+          };
+        }
+        else {
+          return {
+            success: false,
+            status: '3Box not retrieved',
+            data: []
+          };
+        }
       } );
 
-      await box.syncDone;
-
-      const profile = await box.public.all();
-
-      return {
-        status: 'set 3Box',
-        message: 'set a 3Box for ' + which,
-        data: [ profile ]
-      };
     }
     else {
       return {
-        status: 'no 3Box set',
-        message: '3Box not set, no provider',
+        success: false,
+        status: '3Box not retrieved/no provider',
         data: []
       };
     }
   }
 
-  async function setActiveAddress() {
+  function setActiveAddress() {
+
+    if ( window.ethereum && !window.ethereum.selectedAddress ) {
+      Join.draw( 'wallet locked' );
+    }
 
     return getWeb3Provider().then( res => {
 
-      if ( res.currentProvider && res.currentProvider.publicConfigStore ) {
+      if ( res.success ) {
 
-        Web3Obj = res;
+        Web3Obj = new Web3( res.data[0] );
         contract = new Web3Obj.eth.Contract( viAbi(), V.getNetwork( V.getNetwork( 'choice' ) )['contractAddress'] );
 
         const activeAddress = Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
@@ -1625,24 +1642,24 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
           }
           else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
             V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
-            Join.draw( 'set new address' );
+            Join.draw( 'new address set' );
           }
 
         } );
 
         return {
-          status: 'set address',
-          message: 'set address from Web3 provider'
+          success: true,
+          status: 'address set',
         };
       }
       else {
-        if ( res.status == 'auth denied' ) {
+        if ( !res.success ) {
           return res;
         }
         else {
           return {
+            success: false,
             status: 'web3 provider not found',
-            message: 'Could not find a Web3 provider and connect to a wallet address'
           };
         }
       }
@@ -1689,23 +1706,23 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       contract.methods.getDetails( which ).call()
     ] );
 
-    if ( all[0] && all[1] ) {
+    if ( all[0] && all[1] && all[2] ) {
       return {
-        status: 'success',
-        message: 'Account state successfully retrieved',
-        data: {
+        success: true,
+        status: 'address state retrieved',
+        data: [{
           ethBalance: castEthBalance( all[0] ),
           liveBalance: castTokenBalance( all[1] ),
           tokenBalance: castTokenBalance( all[2]._balance ),
           lastBlock: all[2]._lastBlock,
           zeroBlock: all[2]._zeroBlock,
-        }
+        }]
       };
     }
     else {
       return {
-        status: 'error',
-        message: 'Could not retrieve find account state'
+        success: false,
+        status: 'address state not retrieved',
       };
     }
 
@@ -1729,22 +1746,13 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
         return events;
       } );
 
-    // const payouts = await contract.getPastEvents( 'IncomeReceived', {
-    //   // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
-    //   fromBlock: data.fromBlock,
-    //   toBlock: data.toBlock
-    // }, ( error ) => {
-    //   error ? console.error( error ) : null;
-    // } )
-    //   .then( ( events ) => {
-    //     return events;
-    //   } );
-    //
-    // console.log( 'payouts: ', payouts );
-    //
-    // const filteredPayouts = payouts.reverse().filter( tx => {
-    //   console.log( tx );
-    // } );
+    if ( !transfers.length ) {
+      return {
+        success: false,
+        status: 'no transfers retrieved',
+        data: [ ]
+      };
+    }
 
     const filteredTransfers = transfers.reverse().filter( tx => {
       const data = tx.returnValues;
@@ -1771,13 +1779,17 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
     } );
 
-    return filteredTransfers;
+    return {
+      success: true,
+      status: 'transfer history retrieved',
+      data: [ filteredTransfers ]
+    };
 
   }
 
   function setAddressVerification( which ) {
     console.log( 'verify:', which );
-    contract.methods.newAccount( which ).send( { from: V.getState( 'activeAddress' ), gas: 6001000 } )
+    return contract.methods.newAccount( which ).send( { from: V.getState( 'activeAddress' ), gas: 6001000 } )
       .on( 'transactionHash', ( hash ) => {
         console.log( 'Hash: ', hash );
         // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {
@@ -1787,7 +1799,12 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       .on( 'error', function( error ) { console.log( 'Error: ' + error ) } )
       .then( function( receipt ) {
         console.log( 'Success: ' + JSON.stringify( receipt ) );
-        return { status: 'success', message: V.i18n( 'Set account verification' ) };
+
+        return {
+          success: true,
+          status: 'account verified',
+        };
+
       } );
   }
 
@@ -1814,7 +1831,12 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       .then( function( receipt ) {
         console.log( 'Success: ' + JSON.stringify( receipt ) );
         Account.drawHeaderBalance();
-        return { status: 'success', message: V.i18n( 'Last transaction was processed' ) };
+
+        return {
+          success: true,
+          status: 'last eth transaction successful',
+        };
+
       } );
 
   }
@@ -1835,7 +1857,12 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       } )
       .then( function( receipt ) {
         console.log( 'Success: ' + JSON.stringify( receipt ) );
-        return { status: 'success', message: V.i18n( 'Last transaction was processed' ) };
+
+        return {
+          success: true,
+          status: 'last token transaction successful',
+        };
+
       } );
   }
 

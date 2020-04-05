@@ -16,8 +16,16 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     // TODO
   }
 
-  function setMessage( which, data, whichLedger ) {
-    return V.setData( which, data, whichLedger );
+  function setMessage( which, options ) {
+
+    if ( !options ) {
+      options = { key: 'new message' };
+    }
+
+    const msgData = {};
+    msgData.message = which;
+    msgData.sender = V.getState( 'activeEntity' ).fullId;
+    return V.setData( msgData, options, V.getSetting( 'chatLedger' ) );
   }
 
   return {

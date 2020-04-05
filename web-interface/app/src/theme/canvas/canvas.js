@@ -177,7 +177,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       function write() {
         delay += 100;
-        V.setEntity( 'new entity', entityData, V.getSetting( 'entityLedger' ) );
+        V.setEntity( entityData );
       }
     } );
   }

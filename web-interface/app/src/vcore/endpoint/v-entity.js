@@ -106,7 +106,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   function getEntity( which ) {
 
-    let data;
+    let options;
 
     if ( !which ) {
       // defaults to searching all entities (by 'role')
@@ -114,28 +114,37 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( which.substr( 0, 2 ) == '0x' ) {
-      data = { key: 'ethAddress' };
+      options = { key: 'ethAddress' };
     }
     else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
-      data = { key: 'fullId' };
+      options = { key: 'fullId' };
     }
     else {
-      data = { key: 'role' };
+      options = { key: 'role' };
     }
 
-    return V.getData( which, data, V.getSetting( 'entityLedger' ) );
+    return V.getData( { entity: which }, options, V.getSetting( 'entityLedger' ) );
   }
 
-  function setEntity( which, data, whichLedger ) {
+  function setEntity( entityData, options ) {
 
-    if ( validateTitle( data.title, data.role ) ) {
+    if ( !options ) {
+      options = { key: 'new entity' };
+    }
 
-      data.title = createEntityTitle( data.title );
+    if ( options.key == 'new verification' ) {
+      V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
+      return;
+    }
 
-      return createTag( data.title ).then( tag => {
-        data.tag = tag;
-        data.fullId = data.title + ' ' + data.tag;
-        return V.setData( which, data, whichLedger );
+    if ( validateTitle( entityData.title, entityData.role ) ) {
+
+      entityData.title = createEntityTitle( entityData.title );
+
+      return createTag( entityData.title ).then( tag => {
+        entityData.tag = tag;
+        entityData.fullId = entityData.title + ' ' + entityData.tag;
+        return V.setData( entityData, options, V.getSetting( 'entityLedger' ) );
       } );
 
     }
@@ -149,18 +158,34 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const aA = V.getState( 'activeAddress' );
 
     const all = await Promise.all( [
-      V.getEntity( aA ),
+      getEntity( aA ),
       V.getAddressState( aA )
     ] );
 
-    return  {
-      name: all[0].data[0].fullId,
-      ethBalance: all[1].data.ethBalance,
-      tokenBalance: all[1].data.tokenBalance,
-      liveBalance: all[1].data.liveBalance,
-      lastBlock: all[1].data.lastBlock,
-      zeroBlock: all[1].data.zeroBlock
-    };
+    if ( all[0].success && all[1].success ) {
+      return  {
+        success: true,
+        status: 'all entity data retrieved',
+        data: [
+          {
+            name: all[0].data[0].fullId,
+            ethBalance: all[1].data[0].ethBalance,
+            tokenBalance: all[1].data[0].tokenBalance,
+            liveBalance: all[1].data[0].liveBalance,
+            lastBlock: all[1].data[0].lastBlock,
+            zeroBlock: all[1].data[0].zeroBlock
+          }
+        ]
+      };
+    }
+    else {
+      return  {
+        success: false,
+        status: 'all entity data not retrieved',
+        data: []
+      };
+    }
+
   }
 
   return {

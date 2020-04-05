@@ -91,8 +91,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     // TODO
   }
 
-  async function setTransaction( which, data, whichLedger ) {
-    const txData = await constructTx( data );
+  async function setTransaction( which, options ) {
+    const txData = await constructTx( which );
+    if ( !options ) {
+      options = { key: 'new transaction' };
+    }
     if ( txData.amount == 0 ) {
       return Promise.resolve( { status: 'error', message: 'invalid or no amount' } );
     }
@@ -100,7 +103,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return Promise.resolve( { status: 'error', message: 'no active entity' } );
     }
     else {
-      return V.setData( which, txData, whichLedger );
+      return V.setData( txData, options, V.getSetting( 'transactionLedger' ) );
     }
   }
 

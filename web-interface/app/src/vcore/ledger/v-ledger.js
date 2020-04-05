@@ -1,7 +1,7 @@
 const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module for the app ledger / database connections
+  * Module for the app whichLedger / database connections
   *
   */
 
@@ -79,23 +79,21 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function setData( which, data, ledger ) {
+  function setData( data, options, whichLedger ) {
 
-    if ( ledger == 'MongoDB' ) {
+    if ( whichLedger == 'MongoDB' ) {
 
       /**
        * @notice setData == getData in this case
-       * @notice MongoDB requires data and 'data' and 'which' switched
-       *
        */
 
-      return getData( data, which, ledger );
+      return getData( data, options, whichLedger );
     }
-    if ( ledger == '3Box' ) {
+    if ( whichLedger == '3Box' ) {
       return V.set3Box( 'fullId', data.fullId );
     }
-    if ( ledger == 'EVM' ) {
-      if ( which == 'new transaction' ) {
+    if ( whichLedger == 'EVM' ) {
+      if ( options.key == 'new transaction' ) {
         if ( data.currency == 'ETH' ) {
           return V.setEtherTransaction( data );
         }
@@ -103,66 +101,35 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           return V.setTokenTransaction( data );
         }
       }
-      if ( which == 'new verification' ) {
+      if ( options.key == 'new verification' ) {
         return V.setAddressVerification( data );
       }
     }
   }
 
-  function getData( which, data, ledger ) {
+  function getData( data, options, whichLedger ) {
 
-    if ( ledger == 'http' ) {
-      return http( which );
+    if ( whichLedger == 'http' ) {
+      return http( data );
     }
-    if ( ledger == '3Box' ) {
-      return V.get3Box( which ).then( res => {
+    if ( whichLedger == '3Box' ) {
+      return V.get3Box( data ).then( res => {
         return res;
       } );
     }
-    if ( ledger == 'MongoDB' ) {
+    if ( whichLedger == 'MongoDB' ) {
+
+      /**
+       * @notice MongoDB requires 'data' and 'which' switched
+       */
+
       // TODO: error handling
       return new Promise( resolve => {
-        // V.debug( socket.connected );
-        socket.emit( data.key, which, function( res ) {
-          // V.debug( res.message );
+        console.log( data );
+        console.log( options );
+        socket.emit( options.key, data, function( res ) {
           resolve( res );
         } );
-
-        /*
-        resolve( {
-          status: 'success',
-          message: 'Entities retrieved successfully',
-          data: [
-            {
-              credentials: {
-                name: 'Accountant',
-                tag: '#9232',
-                role: 'job'
-              },
-              properties: {
-                location: 'Berlin, Germany',
-                description: 'We need an accountant for our monthly reporting',
-                creator: 'test',
-                creatorTag: 'test',
-                created: '2020-02-18T13:59:02.648Z',
-                fillUntil: '2020-02-25T13:59:02.648Z',
-                expires: '2020-08-18T13:59:02.648Z',
-                target: '400',
-                unit: 'day'
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: [
-                  13.405,
-                  52.52
-                ]
-              },
-              fullId: 'Accountant #9232'
-            }
-          ]
-        } );
-        */
-
       } );
     }
   }
