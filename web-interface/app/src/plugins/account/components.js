@@ -7,13 +7,13 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  function headerBalance( data, which ) {
+  function headerBalance( balance ) {
 
     return V.castNode( {
       tag: 'svg',
       html: `<svg width="54px" viewBox="0 0 36 36">
               <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="#1b1aff" stroke-width="2.7"></circle>
-              <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ data[ which || 'liveBalance' ] }</text>
+              <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ balance }</text>
             </svg>`,
       click: function() {
         Account.draw();
@@ -86,7 +86,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     let background = '';
 
-    switch ( txData.type ) {
+    switch ( txData.txType ) {
     case 'in':
       background = '#B4ECB4';
       break;
@@ -115,13 +115,13 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       html: '<card class="flex card-shadow rounded bkg-white pxy">' +
 
                 '<div class="circle-3 pxy rounded-full flex justify-center items-center" style="background: ' + background + ';">' + // ' + background + '
-                  '<div class="card__initials font-medium fs-xl txt-white">' + ( txData.amount / 10**6 ).toFixed( 1 ) + '</div>' +
+                  '<div class="card__initials font-medium fs-xl txt-white">' + txData.amount + '</div>' +
                 '</div>' +
 
               '<div class="pxy">' +
                 '<h2 class="font-bold fs-l leading-snug">' + txData.title + '</h2>' +
-                 '<p>' + 'To ' + V.castShortAddress( txData.to, 6 ) + '</p>' +
-                 '<p>' + 'From ' + V.castShortAddress( txData.from, 6 ) + '</p>' +
+                '<p>' + 'From ' + V.castShortAddress( txData.fromAddress ) + '</p>' +
+                 '<p>' + 'To ' + V.castShortAddress( txData.toAddress ) + '</p>' +
                  '<p>' + 'Block ' + txData.block + '</p>' +
       // '<p>' + 'Log Index ' + txData.logIndex + '</p>' +
       //  '<p>' + 'Price was ' + ( txData.price == 0 ? 'free' : txData.price + ' ' + txData.unit ) + '</p>' +

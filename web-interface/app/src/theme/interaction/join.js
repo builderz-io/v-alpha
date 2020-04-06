@@ -12,7 +12,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   async function ckeckEntityStore() {
     const activeAddress = V.getState( 'activeAddress' );
     return activeAddress ? V.getEntity( activeAddress ).then( entity => {
-
       if ( entity.data[0] && entity.data[0].fullId ) {
         V.setState( 'activeEntity', entity.data[0] );
         return 'entity found';

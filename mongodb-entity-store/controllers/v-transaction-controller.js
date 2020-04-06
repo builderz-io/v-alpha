@@ -54,26 +54,26 @@ exports.updateEntities = function( req, res ) {
       const checkValidity = checkValid.checkTxValidity( txRoleEntities, txData.amount, txData.timeSecondsUNIX, txData.reference, txData.command );
 
       if ( checkValidity != true ) {
-        res( { status: 'error', message: 'could not validate transaction: ' + checkValidity } );
+        res( { success: false, status: 'MongoDB transaction not successful', message: 'Could not validate MongoDB transaction: ' + checkValidity } );
       }
       else {
         // Updating MongoDB Accounts
         updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command );
 
         // TODO: callback only after updating finished
-        res( { status: 'success', message: 'Transaction successfully processed' } );
+        res( { success: true, status: 'MongoDB transaction successful' } );
       } // close else (valid transaction)
 
     } )
     .catch( ( err ) => {
       console.log( 'Issue in transaction - ' + err );
-      res( { status: 'error', message: 'Issue in transaction - ' + err } );
+      res( { success: false, status: 'error', message: 'Issue in transaction - ' + err } );
     } );
 
 };
 
 exports.findTransaction = function( req, res ) {
-  console.log( req );
+
   TxDB.find( { fullId: req }, function( err, entities ) {
     if ( err ) {
       res( {
@@ -83,11 +83,10 @@ exports.findTransaction = function( req, res ) {
       } );
     }
     else {
-      console.log( entities );
       res( {
         success: true,
         status: 'success',
-        message: 'Transaction history retrieved successfully',
+        message: 'Transaction history retrieved from MongoDB',
         data: [entities[0].txHistory]
       } );
     }

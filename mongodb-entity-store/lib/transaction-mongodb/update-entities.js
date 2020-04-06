@@ -143,9 +143,14 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 credit: amount,
                 debit: 0,
                 chainBalance: newRecipientBalance,
+                amount: amount,
+                txType: 'in',
+                title: sender.credentials.name + ' ' + sender.credentials.tag,
+                fromAddress: 'address unaval',
+                toAddress: 'address unaval'
               } } },
               ( err ) => {
-                if ( err ) { return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }
+                if ( err ) { console.log( err ); return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }
                 resolve( 'c resolved' );
               } // close callback
             ); // close findOneAndUpdate
@@ -169,6 +174,11 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 credit: 0,
                 debit: amount,
                 chainBalance: burnS.burnedBalance - ( processedRecipients * ( amount + txFee ) ), // reduces with each processed recipient
+                amount: amount,
+                txType: 'out',
+                title: entity.credentials.name + ' ' + entity.credentials.tag,
+                fromAddress: 'address unaval',
+                toAddress: 'address unaval'
               } } },
               ( err ) => {
                 if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
@@ -268,6 +278,11 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 credit: taxAmount,
                 debit: 0,
                 chainBalance: newTaxBalance,
+                amount: taxAmount,
+                txType: 'in',
+                title: sender.credentials.name + ' ' + sender.credentials.tag,
+                fromAddress: 'address unaval',
+                toAddress: 'address unaval'
               } } },
               ( err ) => {
                 if ( err ) { return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }

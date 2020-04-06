@@ -53,7 +53,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const existingTagsForName = await V.getData( { for: title }, 'tags', V.getSetting( 'entityLedger' ) );
 
-    var continueDice = true;
+    let continueDice = true;
 
     while ( continueDice ) { // 334 combinations in the format of #5626
       const number1 = String( Math.floor( Math.random() * ( 9 - 2 + 1 ) ) + 2 );
@@ -154,44 +154,75 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function getAllEntityData() {
+  async function getActiveEntityData() {
     const aA = V.getState( 'activeAddress' );
+    const txLedger = V.getSetting( 'transactionLedger' );
 
-    const all = await Promise.all( [
-      getEntity( aA ),
-      V.getAddressState( aA )
-    ] );
+    let all;
 
-    if ( all[0].success && all[1].success ) {
-      return  {
-        success: true,
-        status: 'all entity data retrieved',
-        data: [
-          {
-            name: all[0].data[0].fullId,
-            ethBalance: all[1].data[0].ethBalance,
-            tokenBalance: all[1].data[0].tokenBalance,
-            liveBalance: all[1].data[0].liveBalance,
-            lastBlock: all[1].data[0].lastBlock,
-            zeroBlock: all[1].data[0].zeroBlock
-          }
-        ]
-      };
+    if( txLedger == 'EVM' ) {
+      all = await Promise.all( [
+        getEntity( aA ),
+        V.getAddressState( aA )
+      ] );
+      if ( all[0].success && all[1].success ) {
+        return  {
+          success: true,
+          status: 'EVM all entity data retrieved',
+          data: [
+            {
+              name: all[0].data[0].fullId,
+              ethBalance: all[1].data[0].ethBalance,
+              tokenBalance: all[1].data[0].tokenBalance,
+              liveBalance: all[1].data[0].liveBalance,
+              lastBlock: all[1].data[0].lastBlock,
+              zeroBlock: all[1].data[0].zeroBlock
+            }
+          ]
+        };
+      }
+      else {
+        return  {
+          success: false,
+          status: 'EVM all entity data not retrieved',
+          data: []
+        };
+      }
     }
-    else {
-      return  {
-        success: false,
-        status: 'all entity data not retrieved',
-        data: []
-      };
+    else if ( txLedger == 'MongoDB' ) {
+      all = await Promise.all( [
+        getEntity( aA )
+      ] );
+      if ( all[0].success && all[0].data[0].length ) {
+        return  {
+          success: true,
+          status: 'MongoDB all entity data retrieved',
+          data: [
+            {
+              name: all[0].data[0].fullId,
+              ethBalance: 'not available',
+              tokenBalance: all[0].data[0].onChain.balance,
+              liveBalance: all[0].data[0].onChain.balance, // TODO: this is the wrong balance
+              lastBlock: all[0].data[0].onChain.lastMove,
+              zeroBlock: 'not available'
+            }
+          ]
+        };
+      }
+      else {
+        return  {
+          success: false,
+          status: 'MongoDB all entity data not retrieved',
+          data: []
+        };
+      }
     }
-
   }
 
   return {
     getEntity: getEntity,
     setEntity: setEntity,
-    getAllEntityData: getAllEntityData
+    getActiveEntityData: getActiveEntityData
   };
 
 } )();

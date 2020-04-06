@@ -19,6 +19,12 @@ var txSchema = mongoose.Schema( {
     credit: Number,
     debit: Number,
     chainBalance: Number,
+    // added for EVM compatibility:
+    amount: Number,
+    txType: String,
+    title: String,
+    fromAddress: String,
+    toAddress: String
   }]
 } );
 

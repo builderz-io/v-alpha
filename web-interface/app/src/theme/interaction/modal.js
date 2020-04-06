@@ -17,22 +17,26 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
     let inner = 'An unknown error occured';
 
-    if ( which == 'entity found' ) {
-      const entityData = await V.getAllEntityData();
+    if ( which == 'entity found' || which == 'entity new') {
+      const activeEntity = V.getState('activeEntity');
+      inner = `<p class="modal__welcome-back">${ which == 'entity new' ? V.i18n( 'Welcome' ) : V.i18n( 'Welcome back' ) }, ${ activeEntity.fullId }</p>`;
+
+      const entityData = await V.getActiveEntityData();
       const x = entityData.data[0];
-      inner = `<p class="modal__welcome-back">
-      ${ V.i18n( 'Welcome back' ) }, ${ x.name }<br>
+      if (x) {
+        inner += `<p class="modal__details">
       ${ V.i18n( 'ETH' ) }: ${ x.ethBalance }<br>
       ${ V.i18n( 'V' ) }: ${ x.tokenBalance }<br>
       ${ V.i18n( 'V Live' ) }: ${ x.liveBalance }<br>
       ${ V.i18n( 'Last Block' ) }: ${ x.lastBlock }<br>
       ${ V.i18n( 'Zero Block' ) }: ${ x.zeroBlock }<br>
-
       </p>`;
     }
-    if ( which == 'entity new' ) {
-      const entityData = await V.getAllEntityData();
-      inner = `<p class="modal__welcome-back">${ V.i18n( 'Welcome' ) }, ${ entityData.name }<br>${ V.i18n( 'ETH' ) }: ${ entityData.ethBalance }<br>${ V.i18n( 'V' ) }: ${ entityData.tokenBalance }</p>`;
+    else {
+      inner += `<p class="modal__welcome-back">
+      ${ V.i18n( 'Sorry, token details could not be found' ) }<br>
+      </p>`;
+    }
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );

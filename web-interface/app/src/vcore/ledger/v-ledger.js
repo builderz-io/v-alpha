@@ -122,7 +122,9 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     if ( whichLedger == 'EVM' ) {
-      return V.getAddressHistory();
+      if ( options.key == 'transaction' ) {
+        return V.getAddressHistory();
+      }
     }
     if ( whichLedger == '3Box' ) {
       return V.get3Box( data ).then( res => {

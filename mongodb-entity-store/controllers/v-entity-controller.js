@@ -195,6 +195,11 @@ exports.register = function( req, res ) {
           credit: initialBalance,
           debit: 0,
           chainBalance: initialBalance,
+          amount: initialBalance,
+          txType: 'generated',
+          title: commName + ' ' + commTag,
+          fromAddress: 'address unaval',
+          toAddress: 'address unaval'
         }
       } );
 

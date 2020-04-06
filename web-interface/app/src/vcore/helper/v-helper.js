@@ -67,7 +67,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castShortAddress( address, chars ) {
-    return address.substr( 0, chars || 4 ) + ' ... ' + address.substr( address.length - ( chars || 4 ) );
+    return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
 
   function getIcon( which ) {

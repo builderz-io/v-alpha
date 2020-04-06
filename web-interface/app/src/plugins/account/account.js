@@ -10,33 +10,33 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  async function castEntityName( address ) {
+    const entity = await V.getEntity( address );
+    return entity.data[0] ? entity.data[0].fullId : V.castShortAddress( address );
+  }
+
   async function presenter() {
     const pageState = V.getState( 'page' );
 
     if ( pageState.height != pageState.topCalc ) {
 
       const transactions = await V.getTransaction( V.getState( 'activeEntity' ).fullId );
-      console.log( 'tx', transactions );
       const $listingsUl = AccountComponents.listingsUl();
 
-      for ( const txData of transactions.data[0] ) {
-
-        if ( txData.type == 'in' ) {
-          const from = await V.getEntity( txData.from );
-          txData.title = from.data[0] ? from.data[0].fullId : V.castShortAddress( txData.from );
+      for ( const txData of transactions.data[0].reverse() ) {
+        if ( V.getSetting( 'transactionLedger' ) != 'MongoDB' ) {
+          if ( txData.txType == 'in' ) {
+            txData.title = await castEntityName( txData.fromAddress );
+          }
+          else if ( txData.txType == 'out' ) {
+            txData.title = await castEntityName( txData.toAddress );
+          }
         }
-        else if ( txData.type == 'out' ) {
-          const to = await V.getEntity( txData.to );
-          txData.title = to.data[0] ? to.data[0].fullId :  V.castShortAddress( txData.to );
-        }
-        else if ( txData.type == 'burned' ) {
+        if ( txData.txType == 'burned' ) {
           txData.title = 'Burn Account';
         }
-        else if ( txData.type == 'generated' ) {
+        else if ( txData.txType == 'generated' ) {
           txData.title = 'Community Payout';
-        }
-        else {
-          txData.title = 'Unknown';
         }
 
         const $card = AccountComponents.accountCard( txData );
@@ -83,8 +83,9 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function drawHeaderBalance( which ) {
-    V.getAllEntityData().then( accState => {
-      const $navBal = AccountComponents.headerBalance( accState.data[0], which );
+    V.getActiveEntityData().then( accState => {
+      const balance = accState.data[0] ? accState.data[0][ which || 'liveBalance' ] : 'n/a';
+      const $navBal = AccountComponents.headerBalance( balance );
       V.setNode( 'join', 'clear' );
       V.setNode( 'balance > svg', 'clear' );
       setTimeout( () => {return V.setNode( 'balance', $navBal )}, 700 );

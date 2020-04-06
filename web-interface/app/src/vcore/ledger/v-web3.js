@@ -1754,7 +1754,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const filteredTransfers = transfers.reverse().filter( tx => {
+    const filteredTransfers = transfers.filter( tx => {
       const data = tx.returnValues;
       return data.from.toLowerCase() == which ||
                 data.to.toLowerCase() == which;
@@ -1762,14 +1762,14 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     } ).map( tx => {
       const txData = {};
 
-      txData.from = tx.returnValues.from.toLowerCase();
-      txData.to = tx.returnValues.to.toLowerCase();
-      txData.amount = tx.returnValues.value;
+      txData.fromAddress = tx.returnValues.from.toLowerCase();
+      txData.toAddress = tx.returnValues.to.toLowerCase();
+      txData.amount = ( tx.returnValues.value / 10**6 ).toFixed( 0 );
 
-      txData.from == which ? txData.type = 'out' : null;
-      txData.to == which ? txData.type = 'in' : null;
-      txData.to == burnA ? txData.type = 'burned' : null;
-      txData.from == burnA ? txData.type = 'generated' : null;
+      txData.fromAddress == which ? txData.txType = 'out' : null;
+      txData.toAddress == which ? txData.txType = 'in' : null;
+      txData.toAddress == burnA ? txData.txType = 'burned' : null;
+      txData.fromAddress == burnA ? txData.txType = 'generated' : null;
 
       txData.block = tx.blockNumber;
       txData.logIndex = tx.logIndex;
@@ -1782,6 +1782,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     return {
       success: true,
       status: 'transfer history retrieved',
+      message: 'Transfer history retrieved from EVM',
       data: [ filteredTransfers ]
     };
 
