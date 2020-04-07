@@ -117,8 +117,8 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
         // }
         else if ( caseArray[0] === 'verify' ) {
 
-          // V.setData( 'new verification', caseArray[1], V.getSetting( 'transactionLedger' ) );
-          V.setEntity( { fullId: caseArray[1] }, { key: 'new verification' } );
+          // V.setData( 'verification', caseArray[1], V.getSetting( 'transactionLedger' ) );
+          V.setEntity( { fullId: caseArray[1] }, { key: 'verification' } );
         }
         // else if ( caseArray[0] === 'makeadmin' ) {
         //   socket.emit( 'makeadmin', [caseArray, Cookies.get( 'uPhrase' )] );

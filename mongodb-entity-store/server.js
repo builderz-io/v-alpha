@@ -39,7 +39,7 @@ const sio = require( 'socket.io' )( server, {
 sio.on( 'connection', client => {
   console.log( client.id, 'connected' );
 
-  client.on( 'new entity', handleEntity.register );
+  client.on( 'entity', handleEntity.register );
 
   client.on( 'tags', handleEntity.getTags );
 

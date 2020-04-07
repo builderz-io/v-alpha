@@ -16,6 +16,7 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
     mapUse: true,
 
     demoContent: false,
+    update3BoxEntityStore: false,
 
   };
 

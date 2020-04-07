@@ -133,8 +133,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
       const entityData = {
         title: DOM.$box.value,
-        role: 'member',
-        ethAddress: V.getState( 'activeAddress' )
+        role: 'network',
       };
 
       V.setEntity( entityData ).then( res => {

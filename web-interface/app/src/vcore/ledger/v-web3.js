@@ -1576,6 +1576,8 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function set3Box( which, data ) {
+    console.log( which );
+    console.log( data );
     box.public.set( which, data );
   }
 
@@ -1586,14 +1588,17 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
         await box.syncDone;
 
+        // for testing only
+        // box.public.remove( 'entity' );
+
         const profile = await box.public.all();
 
-        if ( profile.fullId ) {
-          console.log( 'requested 3Box of: ', profile.fullId );
+        if ( profile.entity ) {
+          console.log( 'requested 3Box of: ', profile );
           return {
             success: true,
             status: '3Box retrieved or set',
-            data: [ profile ]
+            data: [ profile.entity ]
           };
         }
         else {
@@ -1690,11 +1695,35 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
     const all = await Promise.all( [ blockNumber, allEvents ] );
 
-    console.log( '*** CONTRACT STATUS ***' );
-    console.log( 'Current Block: ', all[0] );
-    console.log( 'Contract: ', contract._address );
-    console.log( 'All Events:', all[1] );
-    console.log( '*** CONTRACT STATUS END ***' );
+    if ( all[0] && all[1] ) {
+
+      console.log( '*** CONTRACT STATUS ***' );
+      console.log( 'Current Block: ', all[0] );
+      console.log( 'Contract: ', contract._address );
+      console.log( 'All Events:', all[1] );
+      console.log( '*** CONTRACT STATUS END ***' );
+
+      return {
+        success: true,
+        status: 'contract state retrieved',
+        data: [{
+          currentBlock: Number( all[0] ),
+          contract: contract._address,
+          allEvents: all[1],
+        }]
+      };
+    }
+    else {
+
+      console.log( '*** CONTRACT STATUS ***' );
+      console.log( 'Could not get contract status' );
+      console.log( '*** CONTRACT STATUS END ***' );
+
+      return {
+        success: false,
+        status: 'contract state not retrieved',
+      };
+    }
 
   }
 

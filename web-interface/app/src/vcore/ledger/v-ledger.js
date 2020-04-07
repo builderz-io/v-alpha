@@ -98,12 +98,12 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           return V.setTokenTransaction( data );
         }
       }
-      if ( options.key == 'new verification' ) {
+      if ( options.key == 'verification' ) {
         return V.setAddressVerification( data );
       }
     }
     if ( whichLedger == '3Box' ) {
-      return V.set3Box( 'fullId', data.fullId );
+      return V.set3Box( options.key, data );
     }
   }
 
