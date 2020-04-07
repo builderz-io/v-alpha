@@ -28,6 +28,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const title = castEntityTitle( entityData.title );
     const address = entityData.ethAddress ? entityData.ethAddress : V.getState( 'activeAddress' );
 
+    const d = new Date();
+    const date = d.toString();
+    const unix = Date.now();
+
     const entityModel = {
       fullId: title + ' ' + all[0],
       evmAddress: address,
@@ -37,8 +41,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         tag: all[0],
         role: entityData.role ? entityData.role : 'network',
         joined: {
-          date: new Date(),
-          unix: Date.now(),
+          date: date,
+          unix: unix,
           block: all[1].success ? all[1].data[0].currentBlock : 0,
         }
       },

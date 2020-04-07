@@ -72,8 +72,8 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     getApiKey: VKey.getApiKey,
 
     /* Web3 */
-    set3Box: VWeb3.set3Box,
-    get3Box: VWeb3.get3Box,
+    set3BoxSpace: VWeb3.set3BoxSpace,
+    get3BoxSpace: VWeb3.get3BoxSpace,
     setActiveAddress: VWeb3.setActiveAddress,
     getContractState: VWeb3.getContractState,
     getAddressState: VWeb3.getAddressState,

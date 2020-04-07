@@ -19,7 +19,6 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const pageState = V.getState( 'page' );
 
     if ( pageState.height != pageState.topCalc ) {
-
       const transactions = await V.getTransaction( V.getState( 'activeEntity' ).fullId );
       const $listingsUl = AccountComponents.listingsUl();
 
@@ -68,6 +67,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       return pageData;
     }
+    else {
+      return null;
+    }
+
   }
 
   function view( pageData ) {

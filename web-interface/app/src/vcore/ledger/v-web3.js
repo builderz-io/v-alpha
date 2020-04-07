@@ -9,7 +9,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   let Web3Obj;
   let contract;
-  let box;
+  let box, space;
 
   /* ================== private methods ================= */
 
@@ -1568,47 +1568,52 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  // function setContract() {
-  //   // const Web3Obj = VState.getState( 'web3Obj' );
-  //   contract = new Web3Obj.eth.Contract( VAbi.getAbi(), VInit.getNetwork( VInit.getNetwork( 'choice' ) )['contractAddress'] );
-  // }
-
   /* ============ public methods and exports ============ */
 
-  function set3Box( which, data ) {
-    console.log( which );
-    console.log( data );
-    box.public.set( which, data );
+  async function set3BoxSpace( which, data ) {
+    await space.public.set( which, data );
+
+    // for testing only
+    // const entityData = await space.public.get( 'entity' );
+    // console.log( 'saved:', entityData );
   }
 
-  async function get3Box( which ) {
+  async function get3BoxSpace( which ) {
     if ( Web3Obj && Web3Obj._provider ) {
-      return Box.openBox( which, Web3Obj._provider ).then( async res => {
-        box = res;
+      box = await Box.openBox( which, Web3Obj._provider );
+      await box.syncDone;
+      space = await box.openSpace( 'v-alpha-2' );
 
-        await box.syncDone;
+      if ( space && V.getSetting( 'update3BoxEntityStore' ) ) {
+        return {
+          success: false,
+          reset: true,
+        };
+      }
 
-        // for testing only
-        // box.public.remove( 'entity' );
+      const entityData = await space.public.get( 'entity' );
 
-        const profile = await box.public.all();
+      // for testing only
+      // box.public.remove( 'fullId' );
+      // const profile = await box.public.all();
+      // console.log( profile );
+      // console.log( space );
 
-        if ( profile.entity ) {
-          console.log( 'requested 3Box of: ', profile );
-          return {
-            success: true,
-            status: '3Box retrieved or set',
-            data: [ profile.entity ]
-          };
-        }
-        else {
-          return {
-            success: false,
-            status: '3Box not retrieved',
-            data: []
-          };
-        }
-      } );
+      if ( entityData && entityData.fullId ) {
+        console.log( 'retrieved 3Box V Alpha 2 entity: ', entityData );
+        return {
+          success: true,
+          status: 'retrieved 3Box V Alpha 2 entity data',
+          data: [ entityData ]
+        };
+      }
+      else {
+        return {
+          success: false,
+          status: 'could not retrieve 3Box V Alpha 2 entity data',
+          data: []
+        };
+      }
 
     }
     else {
@@ -1897,8 +1902,8 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    set3Box: set3Box,
-    get3Box: get3Box,
+    set3BoxSpace: set3BoxSpace,
+    get3BoxSpace: get3BoxSpace,
     setActiveAddress: setActiveAddress,
     getContractState: getContractState,
     getAddressState: getAddressState,

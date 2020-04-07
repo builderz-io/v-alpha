@@ -103,7 +103,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     if ( whichLedger == '3Box' ) {
-      return V.set3Box( options.key, data );
+      return V.set3BoxSpace( options.key, data );
     }
   }
 
@@ -127,7 +127,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     if ( whichLedger == '3Box' ) {
-      return V.get3Box( data ).then( res => {
+      return V.get3BoxSpace( data ).then( res => {
         return res;
       } );
     }
