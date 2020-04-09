@@ -4,6 +4,7 @@ jobs:
     image: node
     script:
       - "cd smart-contract"
+      - "npm install"
       - npm install truffle
       - npx truffle compile
   test:
