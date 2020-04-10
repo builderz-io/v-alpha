@@ -8,13 +8,77 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  V.setNavItem( 'entityNav', [
+    // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
+    {
+      cid: '2001',
+      c: 0,
+      l: -1,
+      f: 'Community',
+      title: 'Community',
+      role: 'community',
+      // draw: function() { Chat.draw() },
+      o: true,
+    },
+    {
+      cid: '2002',
+      c: 0,
+      l: -1,
+      f: 'Vivi Bot',
+      title: 'Vivi Bot',
+      role: 'bot',
+      // draw: function() { Chat.draw() },
+      o: true,
+    },
+    {
+      cid: '1001',
+      c: 0,
+      l: -1,
+      f: 'Sheela Anand',
+      title: 'SA',
+      role: 'user',
+      // draw: function() { Chat.draw() },
+      o: true,
+    },
+    {
+      cid: '1002',
+      c: 0,
+      l: -1,
+      f: 'Bertrand Arnaud',
+      title: 'BJ',
+      // draw: function() { Chat.draw() },
+      o: true,
+    },
+    {
+      cid: '1003',
+      c: 0,
+      l: -1,
+      f: 'Marc Woods',
+      title: 'MG',
+      role: 'user',
+      // draw: function() { Chat.draw() },
+      o: false,
+    },
+    {
+      cid: '1004',
+      c: 0,
+      l: -1,
+      f: 'Missy Z',
+      title: 'MZ',
+      role: 'user',
+      // draw: function() { Chat.draw() },
+      o: true,
+    }
+  ]
+  );
+
   const DOM = {};
 
   const placeholder = V.i18n( 'Send message or funds' );
 
   /* ================== private methods ================= */
 
-  function presenter() {
+  async function presenter( which ) {
 
     const $topsliderUl = ChatComponents.topSliderUl();
     const $listingsUl = ChatComponents.listingsUl();
@@ -23,20 +87,24 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       const $accountData = ChatComponents.chatSmallCard( variable, DemoContent.chatData );
       V.setNode( $topsliderUl, $accountData );
     }
-    DemoContent.chatsArr.forEach( cardData => {
-      const $card = ChatComponents.message( cardData );
 
+    const activeEntity = V.getState( 'activeEntity' );
+    const messages = await V.getMessage();
+
+    messages.data[0].forEach( cardData => {
+      activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+      const $card = ChatComponents.message( cardData );
       V.setNode( $listingsUl, $card );
     } );
 
-    const $lastCard = ChatComponents.message( { sender: 'Me', msg: 'You\'ve sent 560 V to Sheela Anand #3565' } );
-    V.setNode( $listingsUl, $lastCard );
+    // const $lastCard = ChatComponents.message( { sender: 'Me', msg: 'You\'ve sent 560 V to Sheela Anand #3565' } );
+    // V.setNode( $listingsUl, $lastCard );
 
     const pageData = {
-      topslider: V.sN( {
+      topcontent: V.sN( {
         t: 'h2',
         c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
-        h: 'Conversation with Sheela Anand #3565'
+        h: 'Conversation with Community #2121'
       } ),
       listings: $listingsUl,
       position: 'top'
@@ -110,7 +178,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       const message = DOM.$box.value;
 
-      V.setBot( message ).then( res => {
+      V.setMessageBot( message ).then( res => {
         console.log( 'res: ', res );
         if ( res.success ) {
           Account.drawHeaderBalance();
@@ -131,11 +199,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function draw( options ) {
-    V.setPipe(
-      presenter,
-      view
-    )( options );
+  function draw( which ) {
+    presenter( which ).then( viewData => { view( viewData ) } );
   }
 
   return {

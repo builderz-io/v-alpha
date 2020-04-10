@@ -28,23 +28,23 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function getNavItem( which ) {
-    if ( which == 'active' ) {
+  function getNavItem( whichItem, whichNav ) {
+    if ( whichItem == 'active' ) {
       const converted = V.castCamelCase( getState( 'menu' ).activeTitle );
-      return getState( 'navItems' )[ converted ];
+      return getState( whichNav )[ converted ];
     }
     else {
-      return getState( 'navItems' )[ which ];
+      return getState( whichNav )[ whichItem ];
     }
   }
 
-  function setNavItem( data ) {
+  function setNavItem( whichNav, data ) {
     Array.isArray( data ) ? null : data = [ data ];
     data.forEach( item => {
       try {
         const maxLength = 20;
         if ( item.title.length <= maxLength ) {
-          const state = getState( 'navItems' );
+          const state = getState( whichNav );
           const titleKey = V.castCamelCase( item.title );
           if ( state && state[titleKey] ) {
             throw new Error( item.title + ' already set' );
@@ -52,7 +52,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
           const obj = {};
 
           obj[titleKey] = item;
-          setState( 'navItems', obj );
+          setState( whichNav, obj );
         }
         else {
           throw new Error( 'Title too long (max ' + maxLength + ', has ' + item.title.length + '): ' + item.title );

@@ -8,7 +8,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setNavItem( [
+  V.setNavItem( 'serviceNav', [
     {
       title: 'Media',
       role: 'media',

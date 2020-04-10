@@ -65,11 +65,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       currency: 'V', // TODO
       command: command,
       initiator: initiator.fullId,
-      initiatorAddress: initiator.ethCredentials.address,
+      initiatorAddress: initiator.evmCredentials.address,
       sender: initiator.fullId, // currently the same as initiator
-      senderAddress: initiator.ethCredentials.address, // currently the same as initiator
+      senderAddress: initiator.evmCredentials.address, // currently the same as initiator
       recipient: recipient,
-      recipientAddress: recipientData.data[0].ethCredentials.address,
+      recipientAddress: recipientData.data[0].evmCredentials.address,
       reference: reference,
       timeSecondsUNIX: timeSecondsUNIX,
       origMessage: data
@@ -97,7 +97,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   async function setTransaction( which, options ) {
     const txData = await constructTx( which );
     if ( !options ) {
-      options = { key: 'new transaction' };
+      options = { key: 'set transaction' };
     }
     if ( txData.amount == 0 ) {
       return Promise.resolve( { status: 'error', message: 'invalid or no amount' } );

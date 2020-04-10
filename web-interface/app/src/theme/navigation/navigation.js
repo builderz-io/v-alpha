@@ -19,13 +19,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function checkCookies() {
     const navState = V.getCookie( 'nav-state' );
-    const navItems = Object.values( V.getState( 'navItems' ) );
+    const navItems = Object.values( V.getState( 'serviceNav' ) );
     if ( !navState || JSON.parse( navState ).length != navItems.length ) {
       V.setCookie( 'nav-state', navItems );
     }
 
     const entitiesState = V.getCookie( 'entities-state' );
-    const entitiesItems = DemoContent.entitiesNavArr;
+    const entitiesItems = Object.values( V.getState( 'entityNav' ) ); // DemoContent.entitiesNavArr;
 
     if ( !entitiesState || JSON.parse( entitiesState ).length != entitiesItems.length ) {
       V.setCookie( 'entities-state', entitiesItems );
@@ -122,21 +122,14 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       } // end if $itemClicked
 
       function drawContentForItemClicked( $itemClicked ) {
-        const itemId = $itemClicked.getAttribute( 'idfy' );
-        if ( itemId > 1000 ) {
-
-          Chat.draw();
+        const chatId = $itemClicked.getAttribute( 'cid' );
+        if ( chatId > 1000 ) {
+          Chat.draw( chatId );
           Button.draw( 'search' );
-
         }
         else {
-
           Page.draw( { active: true } );
-
-          // const converted = V.castCamelCase( V.getState( 'menu' ).activeTitle );
-          // const buttons = V.getState( 'navItems' )[converted].use.button;
-
-          Button.draw( V.getNavItem( 'active' ).use.button, { delay: 2 } );
+          Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
         }
       }
 

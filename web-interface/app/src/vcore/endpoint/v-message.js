@@ -57,7 +57,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function setBot( message ) {
+  function setMessageBot( message ) {
 
     const text = sanitize( message );
 
@@ -148,16 +148,17 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function getMessage( data ) {
-    // TODO
+  function getMessage(
+    which = 'all',
+    options = { key: 'get message' }
+  ) {
+    return V.getData( which, options, V.getSetting( 'chatLedger' ) );
   }
 
-  function setMessage( whichMessage, options ) {
-
-    if ( !options ) {
-      options = { key: 'new message' };
-    }
-
+  function setMessage(
+    whichMessage,
+    options = { key: 'set message' }
+  ) {
     const msgData = {};
     msgData.message = whichMessage;
     msgData.sender = V.getState( 'activeEntity' ).fullId;
@@ -167,7 +168,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   return {
     getMessage: getMessage,
     setMessage: setMessage,
-    setBot: setBot,
+    setMessageBot: setMessageBot,
   };
 
 } )();

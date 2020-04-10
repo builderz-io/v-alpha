@@ -8,7 +8,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const ethAddresses = {
+  const evmAddresses = {
     one: '0xe438d672987b63591d2dc49482734e0389f0b110',
     two: '0x3107b077b7745994cd93d85092db034ca1984d46',
     three: 'none', //'0xaa95dbb75e08d3dff45b1471efcff68a2d24f86b',
@@ -34,7 +34,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'The community account',
         unit: 'day',
         target: 400,
-        ethAddress: ethAddresses.one
+        evmAddress: evmAddresses.one
       },
       {
         title: 'Community Contribution',
@@ -45,7 +45,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'The community contribution account',
         unit: 'day',
         target: 400,
-        ethAddress: ethAddresses.two
+        evmAddress: evmAddresses.two
       },
       {
         title: 'Accountant',
@@ -56,7 +56,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'We need an accountant for our monthly reporting',
         unit: 'day',
         target: 400,
-        ethAddress: ethAddresses.three
+        evmAddress: evmAddresses.three
       },
       {
         title: 'Frontend Developer',
@@ -67,7 +67,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Must know Vue JS and related frameworks. Knowledge of Kotlin also of advantage.',
         unit: 'day',
         target: 395,
-        ethAddress: ethAddresses.four
+        evmAddress: evmAddresses.four
       },
       {
         title: 'Expert in NodeJS',
@@ -78,7 +78,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'My skill is in developing NodeJS driven backends',
         unit: 'day',
         target: 420,
-        ethAddress: ethAddresses.five
+        evmAddress: evmAddresses.five
       },
       {
         title: 'Solidity EVM Developer',
@@ -89,7 +89,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Contact me for smart contract development',
         unit: 'day',
         target: 415,
-        ethAddress: ethAddresses.six
+        evmAddress: evmAddresses.six
       },
       {
         title: 'Gardening and Tree Trimming',
@@ -100,7 +100,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Your Gardening needs are covered with our full service offer',
         unit: 'day',
         target: 375,
-        ethAddress: ethAddresses.seven
+        evmAddress: evmAddresses.seven
       },
       {
         title: 'Tailored Suits',
@@ -111,7 +111,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Bespoke Tailored Suites, 24/7 Service with appointment',
         unit: 'piece',
         target: 2490,
-        ethAddress: ethAddresses.eight
+        evmAddress: evmAddresses.eight
       },
       {
         title: 'CO2 Capture Plant',
@@ -122,7 +122,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/63S0t4k_Glw',
         unit: 'view',
         target: 10,
-        ethAddress: ethAddresses.nine
+        evmAddress: evmAddresses.nine
       },
       {
         title: 'Robot delivery',
@@ -133,7 +133,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/P_zRwq9c8LY',
         unit: 'delivery',
         target: 5,
-        ethAddress: ethAddresses.ten
+        evmAddress: evmAddresses.ten
       },
       {
         title: 'Solar Energy Marocco',
@@ -144,7 +144,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/1lJVi3DRGYI',
         unit: '',
         target: 0,
-        ethAddress: 'none'
+        evmAddress: 'none'
       },
       {
         title: 'The Ocean Cleanup',
@@ -155,7 +155,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/du5d5PUrH0I',
         unit: 'view',
         target: 10,
-        ethAddress: 'none'
+        evmAddress: 'none'
       },
       {
         title: 'Web Developing',
@@ -166,7 +166,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/u-FWvnweTQ8',
         unit: 'view',
         target: 10,
-        ethAddress: 'none'
+        evmAddress: 'none'
       },
       {
         title: 'Learning Strategies',
@@ -177,7 +177,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/O6WtKeQrJmY',
         unit: 'view',
         target: 10,
-        ethAddress: 'none'
+        evmAddress: 'none'
       },
     ],
     accountData: {
@@ -500,7 +500,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         p: 'top'
       }
     ],
-    entitiesNavArr: [
+    /*entitiesNavArr: [
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
       {
         id: '1001',
@@ -621,7 +621,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         // draw: function() { Chat.draw() },
         o: false,
       },
-    ],
+    ], */
     entitySubset: [
       'personal stream',
       'public chat',

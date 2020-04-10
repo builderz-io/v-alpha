@@ -1524,8 +1524,8 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     return Number( balance / 10**18 ).toFixed( 1 );
   }
 
-  function castTokenBalance( balance ) {
-    return Number( balance / 10**6 ).toFixed( 0 ); // TODO: get decimals from contract
+  function castTokenBalance( balance, decimals ) {
+    return Number( balance / 10**( decimals || 6 ) ).toFixed( 0 ); // TODO: get decimals from contract
   }
 
   async function getWeb3Provider() {
@@ -1677,59 +1677,66 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getContractState() {
+    if ( contract ) {
 
-    const blockNumber = contract.methods.getBlockNumber().call();
+      const blockNumber = contract.methods.getBlockNumber().call();
 
-    const allEvents = contract.getPastEvents( 'allEvents', {
+      const allEvents = contract.getPastEvents( 'allEvents', {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
-      fromBlock: 0,
-      toBlock: 'latest'
-    }, ( error ) => {return error ? console.error( error ) : null} )
-      .then( res => {
-        return res.map( item => {
-          return {
-            b: item.blockNumber,
-            e: item.event,
-            val: item.returnValues.value/( 10**6 ),
-            to: item.returnValues.to,
-            from: item.returnValues.from,
-            all: item
-          };
-        } ).reverse();
-      } );
+        fromBlock: 0,
+        toBlock: 'latest'
+      }, ( error ) => {return error ? console.error( error ) : null} )
+        .then( res => {
+          return res.map( item => {
+            return {
+              b: item.blockNumber,
+              e: item.event,
+              val: item.returnValues.value/( 10**6 ),
+              to: item.returnValues.to,
+              from: item.returnValues.from,
+              all: item
+            };
+          } ).reverse();
+        } );
 
-    const all = await Promise.all( [ blockNumber, allEvents ] );
+      const all = await Promise.all( [ blockNumber, allEvents ] );
 
-    if ( all[0] && all[1] ) {
+      if ( all[0] && all[1] ) {
 
-      console.log( '*** CONTRACT STATUS ***' );
-      console.log( 'Current Block: ', all[0] );
-      console.log( 'Contract: ', contract._address );
-      console.log( 'All Events:', all[1] );
-      console.log( '*** CONTRACT STATUS END ***' );
+        console.log( '*** CONTRACT STATUS ***' );
+        console.log( 'Current Block: ', all[0] );
+        console.log( 'Contract: ', contract._address );
+        console.log( 'All Events:', all[1] );
+        console.log( '*** CONTRACT STATUS END ***' );
 
-      return {
-        success: true,
-        status: 'contract state retrieved',
-        data: [{
-          currentBlock: Number( all[0] ),
-          contract: contract._address,
-          allEvents: all[1],
-        }]
-      };
+        return {
+          success: true,
+          status: 'contract state retrieved',
+          data: [{
+            currentBlock: Number( all[0] ),
+            contract: contract._address,
+            allEvents: all[1],
+          }]
+        };
+      }
+      else {
+
+        console.log( '*** CONTRACT STATUS ***' );
+        console.log( 'Could not get contract status' );
+        console.log( '*** CONTRACT STATUS END ***' );
+
+        return {
+          success: false,
+          status: 'contract state not retrieved',
+        };
+      }
     }
     else {
-
-      console.log( '*** CONTRACT STATUS ***' );
-      console.log( 'Could not get contract status' );
-      console.log( '*** CONTRACT STATUS END ***' );
-
       return {
         success: false,
         status: 'contract state not retrieved',
       };
     }
-
   }
 
   async function getAddressState( which ) {
@@ -1762,10 +1769,10 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function getAddressHistory( which, data ) {
-
-    !which ? which = V.getState( 'activeAddress' ) : null;
-    !data ? data = { fromBlock: 0, toBlock: 'latest' } : null;
+  async function getAddressHistory(
+    which = V.getState( 'activeAddress' ),
+    data = { fromBlock: 0, toBlock: 'latest' }
+  ) {
 
     const burnA = '0x0000000000000000000000000000000000000000';
 

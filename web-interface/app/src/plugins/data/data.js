@@ -7,7 +7,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setNavItem( [
+  V.setNavItem( 'serviceNav', [
     {
       title: 'Data',
       role: 'data',

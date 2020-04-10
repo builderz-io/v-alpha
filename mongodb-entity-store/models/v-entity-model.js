@@ -2,25 +2,35 @@ var mongoose = require( 'mongoose' );
 
 var entitySchema = mongoose.Schema( {
   fullId: String, // name + tag
-  uPhrase: String,
-  credentials: {
-    name: String,
+  evmAddress: String,
+  // uPhrase: String,
+  profile: {
+    fullId: String,
+    title: String,
     tag: String,
     role: String,
-    status: String,
-    socketID: String,
+    // status: String,
+    // socketID: String,
+    joined: {
+      date: String,
+      unix: Number,
+      block: Number,
+    }
   },
-  ethCredentials: {
+  evmCredentials: {
     address: String,
     privKey: String,
-    pass: String,
   },
-  profile: {
-    joined: Date,
-    lastLogin: Date,
-    loginExpires: Date,
-    timeZone: String,
+  geometry: {
+    type: { type: String },
+    coordinates: [Number],
   },
+  // profile: {
+  //   joined: Date,
+  //   lastLogin: Date,
+  //   loginExpires: Date,
+  //   timeZone: String,
+  // },
   // owners: [{
   //   ownerName: String,
   //   ownerTag: String,
@@ -30,15 +40,15 @@ var entitySchema = mongoose.Schema( {
   //   adminTag: String,
   // }],
   properties: {
+    location: String,
     description: String,
+    target: String,
+    unit: String,
     creator: String,
     creatorTag: String,
     created: Date,
     fillUntil: Date,
     expires: Date,
-    target: String,
-    unit: String,
-    location: String,
     languages: String,
   },
   social: {
@@ -62,27 +72,6 @@ var entitySchema = mongoose.Schema( {
     sendVolume: Number,
     receiveVolume: Number,
     allTimeVolume: Number,
-  },
-  requestStats: {
-    lastDate: Date,
-    lastPool: String,
-    lastAmount: Number,
-    totalRequested: Number,
-  },
-  geometry: {
-    type: { type: String },
-    coordinates: {
-      type: [Number],
-      index: '2dsphere',
-    }
-  },
-  cache: {
-    txHistoryTable: String,
-    description: {
-      short: String,
-      medium: String,
-      long: String,
-    }
   },
 
 } );

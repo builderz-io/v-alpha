@@ -32,7 +32,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     // } );
     $plus.addEventListener( 'click', function() {
       Page.draw( { position: 'close', reset: false } );
-      Form.draw( V.getNavItem( 'active' ).use.form );
+      Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
     } );
     $search.addEventListener( 'click', function() {
       Form.draw( 'search' );
@@ -40,11 +40,11 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     $close.addEventListener( 'click', function() {
       Form.draw( 'all', { fade: 'out' } );
       Button.draw( 'all', { fade: 'out' } );
-      Button.draw( V.getNavItem( 'active' ).use.button, { delay: 1.5 } );
+      Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
       Page.draw( { position: 'peek', reset: false } );
     } );
     $send.addEventListener( 'click', function() {
-      const role = V.getNavItem( 'active' ).role;
+      const role = V.getNavItem( 'active', 'serviceNav' ).role;
       const form = V.getNode( 'form' );
       const title = form.getNode( '.plusform__title' ).value;
       const entityData = {
@@ -61,7 +61,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
           Page.draw( { active: true } );
-          Form.draw( { fade: 'out' } );
+          Form.draw( 'all', { fade: 'out' } );
           Button.draw( 'all', { fade: 'out' } );
           Button.draw( 'plus search', { delay: 1 } );
           console.log( res.status );

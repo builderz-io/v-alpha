@@ -33,7 +33,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.castNode( {
       tag: 'li',
       classes: 'w-screen pxy',
-      s: style,
+      y: style,
       html: '<message style="background:' + background + '" class="message__container flex card-shadow rounded bkg-white pxy">' +
                   '<div class="font-medium pxy">' +
                     ( msg.sender == 'Me' ? '' : '<p>' + msg.sender + '</p>' ) +

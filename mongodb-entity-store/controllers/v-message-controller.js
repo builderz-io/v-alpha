@@ -29,3 +29,23 @@ exports.set = function( req, res ) {
   } );
 
 };
+
+exports.get = function( req, res ) {
+  ChatDB.find( {}, function( err, messages ) {
+    if ( err ) {
+      res( {
+        success: false,
+        status: 'error',
+        message: err,
+      } );
+    }
+    else {
+      res( {
+        success: true,
+        status: 'success',
+        message: 'Messages retrieved successfully',
+        data: [messages]
+      } );
+    }
+  } );
+};

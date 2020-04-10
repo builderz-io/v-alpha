@@ -36,6 +36,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
         if ( res.success ) {
           V.getContractState();
+          console.log(V.getState('all'));
           which = await ckeckEntityStore();
         }
         else {

@@ -49,7 +49,9 @@ sio.on( 'connection', client => {
 
   client.on( 'fullId', handleEntity.findByFullId );
 
-  client.on( 'new message', handleMessage.set );
+  client.on( 'set message', handleMessage.set );
+
+  client.on( 'get message', handleMessage.get );
 
   client.on( 'nukeme', function( req, res ) {
     // TODO
@@ -61,7 +63,7 @@ sio.on( 'connection', client => {
     res( { status: 'error', message: 'App in production, cannot be crashed' } );
   } );
 
-  client.on( 'new transaction', handleTransaction.updateEntities );
+  client.on( 'set transaction', handleTransaction.updateEntities );
 
   client.on( 'transaction', handleTransaction.findTransaction );
   //

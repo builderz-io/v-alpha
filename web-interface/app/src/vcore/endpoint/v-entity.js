@@ -26,13 +26,28 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       V.getContractState()
     ] );
     const title = castEntityTitle( entityData.title );
-    const address = entityData.ethAddress ? entityData.ethAddress : V.getState( 'activeAddress' );
+    const address = entityData.evmAddress ? entityData.evmAddress : V.getState( 'activeAddress' );
 
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    const entityModel = {
+    let geometry;
+
+    if ( entityData.location && entityData.lat ) {
+      geometry = {
+        type: 'Point',
+        coordinates: [entityData.lng, entityData.lat],
+      };
+    }
+    else {
+      geometry = {
+        type: 'Point',
+        coordinates: [( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1, ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 )],
+      };
+    }
+
+    const newEntity = {
       fullId: title + ' ' + all[0],
       evmAddress: address,
       profile: {
@@ -48,10 +63,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       },
       evmCredentials: {
         address: address
-      }
+      },
+      properties: {
+        location: entityData.location || 'no location given',
+        description: entityData.description || 'no description given',
+        target: entityData.target || 'none',
+        unit: entityData.unit || 'none',
+      },
+      geometry: geometry,
     };
 
-    return entityModel;
+    return newEntity;
   }
 
   function castEntityTitle( input ) {
@@ -138,23 +160,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function getEntity( which ) {
-
-    let options;
-
-    if ( !which ) {
-      // defaults to searching all entities (by 'role')
-      which = 'all';
-    }
+  function getEntity(
+    which = 'all', // defaults to searching all entities (by 'role')
+    options = { key: 'role' }
+  ) {
 
     if ( which.substr( 0, 2 ) == '0x' ) {
       options = { key: 'ethAddress' };
     }
     else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
       options = { key: 'fullId' };
-    }
-    else {
-      options = { key: 'role' };
     }
 
     return V.getData( which, options, V.getSetting( 'entityLedger' ) );

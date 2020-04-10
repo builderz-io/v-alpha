@@ -84,13 +84,13 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     if ( whichLedger == 'MongoDB' ) {
 
       /**
-       * @notice setData == getData in this case
+       * @notice setData == getData in case of MongoDB
        */
 
       return getData( data, options, whichLedger );
     }
     if ( whichLedger == 'EVM' ) {
-      if ( options.key == 'new transaction' ) {
+      if ( options.key == 'set transaction' ) {
         if ( data.currency == 'ETH' ) {
           return V.setEtherTransaction( data );
         }

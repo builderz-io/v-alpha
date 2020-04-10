@@ -30,7 +30,7 @@ exports.findByRole = function( req, res ) {
 };
 
 exports.findByEthAddress = function( req, res ) {
-  EntityDB.find( { 'ethCredentials.address': req }, function( err, entities ) {
+  EntityDB.find( { 'evmCredentials.address': req }, function( err, entities ) {
     if ( err ) {
       res( {
         success: false,
@@ -81,8 +81,10 @@ exports.register = function( req, res ) {
 
   const date = new Date();
 
+  /*
   const newEntity = new EntityDB( {
     fullId: entityData.title + ' ' + entityData.tag,
+    evmAddress: entityData.evmAddress,
     uPhrase: entityData.uPhrase,
     credentials: {
       name: entityData.title, // !! key is named 'name' to retain compatibility with VI Alpha One
@@ -91,8 +93,8 @@ exports.register = function( req, res ) {
       status: 'active', // entityData.status,
       socketID: 'offline' // entityData.socketID,
     },
-    ethCredentials: {
-      address: entityData.ethAddress,
+    evmCredentials: {
+      address: entityData.evmAddress,
     },
     properties: {
       location: entityData.location,
@@ -129,6 +131,9 @@ exports.register = function( req, res ) {
       timeToZero: baseTimeToZero
     }
   } );
+*/
+
+  const newEntity = new EntityDB( req );
 
   // if ( entityData.properties ) {
   //   newEntity.properties = entityData.properties;
@@ -142,22 +147,22 @@ exports.register = function( req, res ) {
   //                          };
   // }
 
-  if ( entityData.location && entityData.lat ) {
-    newEntity.geometry = {
-      type: 'Point',
-      coordinates: [entityData.lng, entityData.lat],
-    };
-  }
-  else {
-    newEntity.geometry = {
-      type: 'Point',
-      coordinates: [( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1, ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 )],
-    };
-  }
+  // if ( entityData.location && entityData.lat ) {
+  //   newEntity.geometry = {
+  //     type: 'Point',
+  //     coordinates: [entityData.lng, entityData.lat],
+  //   };
+  // }
+  // else {
+  //   newEntity.geometry = {
+  //     type: 'Point',
+  //     coordinates: [( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1, ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 )],
+  //   };
+  // }
 
   // TODO:
-  // if ( entityData.ethCredentials.address ) {
-  //   newEntity.ethCredentials = entityData.ethCredentials;
+  // if ( entityData.evmCredentials.address ) {
+  //   newEntity.evmCredentials = entityData.evmCredentials;
   // }
 
   newEntity.save( ( err ) => {

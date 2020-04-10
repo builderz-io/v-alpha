@@ -15,7 +15,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       return 'url(\'' + cardData.image + '\')';
     }
 
-    switch ( cardData.credentials.tag.charAt( 1 ) ) {
+    switch ( cardData.profile.tag.charAt( 1 ) ) {
     // case '1': return palette[0];
     case '2': return palette[0];
     case '3': return palette[0];
@@ -31,7 +31,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     if ( cardData.image != undefined ) {
       return '';
     }
-    return V.castInitials( cardData.credentials.name );
+    return V.castInitials( cardData.profile.title );
   };
 
   function entitiesSmallCard( cardData ) {

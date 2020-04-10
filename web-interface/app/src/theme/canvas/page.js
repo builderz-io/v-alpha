@@ -110,7 +110,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     pageData.reset == false ? null : reset();
 
     if ( pageData.active == true ) {
-      V.getNavItem( 'active' ).draw();
+      V.getNavItem( 'active', 'serviceNav' ).draw();
       return;
     }
 

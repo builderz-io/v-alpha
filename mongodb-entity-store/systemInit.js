@@ -130,7 +130,7 @@ exports.admins = [  // add objects for each admin
                   //   name: 'Anna Blume',  // the community admin name // MUST be in one word // Type String // choose your preferred admin name
                   //   uPhrase: 'vxABTestLogin',  // corresponding admin uPhrase // MUST start with "vx" // Type String // choose your preferred phrase
                   //   tag: exports.initTag,
-                  //   ethCredentials: {
+                  //   evmCredentials: {
                   //     address: exports.ledger.accounts.five,
                   //   }
                   // },
@@ -138,7 +138,7 @@ exports.admins = [  // add objects for each admin
                   //   name: 'Grifma',
                   //   uPhrase: 'vxMGTestLogin',
                   //   tag: exports.initTag,
-                  //   ethCredentials: {
+                  //   evmCredentials: {
                   //     address: exports.ledger.accounts.six,
                   //   }
                   // },
@@ -146,7 +146,7 @@ exports.admins = [  // add objects for each admin
                   //   name: 'Philipeachille',
                   //   uPhrase: 'vxPAVPrivateLogin',
                   //   tag: exports.initTag,
-                  //   ethCredentials: {
+                  //   evmCredentials: {
                   //     address: exports.ledger.accounts.seven,
                   //   }
                   // },
@@ -154,7 +154,7 @@ exports.admins = [  // add objects for each admin
                   //   name: 'Bertrand Juglas',
                   //   uPhrase: 'vxBJPrivateLogin',
                   //   tag: exports.initTag,
-                  //   ethCredentials: {
+                  //   evmCredentials: {
                   //     address: exports.ledger.accounts.eight,
                   //   }
                   // },
@@ -162,7 +162,7 @@ exports.admins = [  // add objects for each admin
                   //   name: 'Le Zhang',
                   //   uPhrase: 'vxLZPrivateLogin',
                   //   tag: exports.initTag,
-                  //   ethCredentials: {
+                  //   evmCredentials: {
                   //     address: exports.ledger.accounts.nine,
                   //   }
                   // },
@@ -170,7 +170,7 @@ exports.admins = [  // add objects for each admin
                     name: 'Vivi',
                     uPhrase: 'vxViviBotLogin3001',
                     tag: exports.initTag,
-                    ethCredentials: {
+                    evmCredentials: {
                       address: exports.ledger.accounts.three,
                     }
                   },
@@ -230,7 +230,7 @@ exports.communityGovernance = {
                                 maxHumanWords: 3,  // max allowed words in human entity names // MUST be less or equal to capWordLength
                                 maxWordLength: 12,  // max allowed length of each word in name
 
-                                ethCredentials: {
+                                evmCredentials: {
                                   address: exports.ledger.accounts.one,
                                   privKey: exports.ledger.privKeys.one,
                                 }
@@ -304,7 +304,7 @@ exports.taxPool = {  // refer to language files also
                      displayInPools: false,  // display tax pool in pools list // 'true' to display // Type Boolean
                      displayInStats: false,  // display tax pool balance in community stats // 'true' to display // Type Boolean
 
-                     ethCredentials: {
+                     evmCredentials: {
                        address: exports.ledger.accounts.two,
                      }
 

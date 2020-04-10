@@ -32,7 +32,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       attributes: {
-        idfy: item.id,
+        cid: item.cid,
         // role: item.role,
         // pagepos: item.p,
         // feature: item.f || 'none'

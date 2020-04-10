@@ -23,7 +23,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
 
     getMessage: VMessage.getMessage,
     setMessage: VMessage.setMessage,
-    setBot: VMessage.setBot,
+    setMessageBot: VMessage.setMessageBot,
 
     getTransaction: VTransaction.getTransaction,
     setTransaction: VTransaction.setTransaction,
