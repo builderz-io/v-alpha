@@ -1,4 +1,4 @@
-[![Superblocks](https://superblocks.com/d/intrinsic-global/projects/intrinsic-global.svg?branch=master)](https://superblocks.com/d/intrinsic-global/workspaces/intrinsic-global)
+[![Superblocks](https://superblocks.com/d/intrinsic-global/projects/intrinsic-global.svg?branch=ci-cd)](https://superblocks.com/d/intrinsic-global/workspaces/intrinsic-global)
 
 # V Alpha 2 Smart Contract
 Value Instrument Prototype - Version 2 - Smart Contract
