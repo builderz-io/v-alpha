@@ -2,12 +2,12 @@ var HDWalletProvider = require( 'truffle-hdwallet-provider' );
 var mnemonic = 'park image awkward badge lift scheme leave useless opera prefer soon bag';
 module.exports = {
   networks: {
-    // development: {
-    //   host: "127.0.0.1",
-    //   port: 8545,
-    //   network_id: "*",
-    //   websockets: true
-    // },
+    development: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "*",
+      websockets: true
+    },
     valueprivatechain: {
       host: '209.250.246.195',
       port: 8450,
@@ -19,7 +19,7 @@ module.exports = {
       },
       network_id: 3
     },
-    development: {
+    development9545: {
       provider: function() {
         return new HDWalletProvider( mnemonic, 'http://127.0.0.1:9545/' );
       },
