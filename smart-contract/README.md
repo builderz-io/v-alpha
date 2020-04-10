@@ -1,9 +1,13 @@
+[![Superblocks](https://superblocks.com/d/intrinsic-global/projects/intrinsic-global.svg?branch=master)](https://superblocks.com/d/intrinsic-global/workspaces/intrinsic-global)
+
 # V Alpha 2 Smart Contract
 Value Instrument Prototype - Version 2 - Smart Contract
 
 ## Documentation
 
 Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here on GitHub to find the documentation
+
+For a walkthrough of the smart contract code, check the doc directory
 
 ## Contribute
 
@@ -17,10 +21,15 @@ You can do this by following instructions at https://github.com/nvm-sh/nvm#insta
 
 Alternatively, configure your environment to use NodeJS v10
 
-`nvm install v10.20.0`
-`nvm use v10.20.0`
-`npm install -g truffle`
-cd to the smart-contract directory
-`npm install`
-`truffle develop`
-`test`
+```nvm install v10.20.0
+
+nvm use v10.20.0
+
+npm install -g truffle
+
+npm install
+
+truffle develop
+
+test
+```
