@@ -20,8 +20,9 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
     nine: 'none', // '0x10dee3399b9c819c2465fd61bc59ecd61b63567e',
     ten: 'none', // '0xd601fa8bab4df5bcb1b72f031f8643263917b81b',
   };
-  // use mnemonic:
-  // bachelor subway public potato crunch domain carbon scissors scene gauge what congress
+  /* use mnemonic:
+   bachelor subway public potato crunch domain carbon scissors scene gauge what congress
+  */
 
   return {
     mongoArr: [

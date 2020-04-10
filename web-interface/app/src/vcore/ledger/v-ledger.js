@@ -79,7 +79,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function setData( data, options, whichLedger ) {
+  function setData( data, whichEndpoint, whichLedger ) {
 
     if ( whichLedger == 'MongoDB' ) {
 
@@ -87,10 +87,10 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
        * @notice setData == getData in case of MongoDB
        */
 
-      return getData( data, options, whichLedger );
+      return getData( data, whichEndpoint, whichLedger );
     }
     if ( whichLedger == 'EVM' ) {
-      if ( options.key == 'set transaction' ) {
+      if ( whichEndpoint == 'set transaction' ) {
         if ( data.currency == 'ETH' ) {
           return V.setEtherTransaction( data );
         }
@@ -98,16 +98,16 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           return V.setTokenTransaction( data );
         }
       }
-      if ( options.key == 'verification' ) {
+      if ( whichEndpoint == 'verification' ) {
         return V.setAddressVerification( data );
       }
     }
     if ( whichLedger == '3Box' ) {
-      return V.set3BoxSpace( options.key, data );
+      return V.set3BoxSpace( whichEndpoint, data );
     }
   }
 
-  function getData( data, options, whichLedger ) {
+  function getData( data, whichEndpoint, whichLedger ) {
     if ( whichLedger == 'MongoDB' ) {
 
       /**
@@ -115,14 +115,19 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       */
 
       // TODO: error handling
+
+      if ( whichEndpoint == 'get transaction' ) {
+        data = V.getState( 'activeEntity' ).fullId;
+      }
+
       return new Promise( resolve => {
-        socket.emit( options.key, data, function( res ) {
+        socket.emit( whichEndpoint, data, function( res ) {
           resolve( res );
         } );
       } );
     }
     if ( whichLedger == 'EVM' ) {
-      if ( options.key == 'transaction' ) {
+      if ( whichEndpoint == 'get transaction' ) {
         return V.getAddressHistory();
       }
     }

@@ -3,4 +3,3 @@ ShareTokenGame creates a standalone token:
 - withdraw(): receiver will get one random number and calcul the proposition amoung the other random numbers. as amount contributed: y, random number x1, the amount withdrew will be: y * x1 / (x1+x2+x3+x4+x5).
 
 The game is over when the tokens contributed are totally withdrown.
-

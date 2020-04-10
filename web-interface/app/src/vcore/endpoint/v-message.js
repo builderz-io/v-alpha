@@ -57,7 +57,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function setMessageBot( message ) {
+  async function setMessageBot( message ) {
 
     const text = sanitize( message );
 
@@ -119,15 +119,23 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
           let entityToVerify;
 
+          caseArray.shift();
+
           if ( V.getSetting( 'transactionLedger' ) == 'MongoDB' ) {
-            entityToVerify = { fullId: caseArray[1] + ' ' + caseArray[2], pass: caseArray[3] };
+            const adminPass = caseArray.pop();
+            entityToVerify = { fullId: caseArray.join( ' ' ), adminPass: adminPass };
           }
           else if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-            entityToVerify = caseArray[1];
+            if ( caseArray[0].substr( 0, 2 ) == '0x' ) {
+              entityToVerify = caseArray[0];
+            }
+            else {
+              const entity = await V.getEntity( caseArray.join( ' ' ) );
+              entityToVerify = entity.data[0].evmAddress;
+            }
           }
 
-          // V.setData( 'verification', caseArray[1], V.getSetting( 'transactionLedger' ) );
-          return V.setEntity( entityToVerify, { key: 'verification' } );
+          return V.setEntity( entityToVerify, 'verification' );
         }
         // else if ( caseArray[0] === 'makeadmin' ) {
         //   socket.emit( 'makeadmin', [caseArray, Cookies.get( 'uPhrase' )] );
@@ -158,20 +166,18 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getMessage(
-    which = 'all',
-    options = { key: 'get message' }
+    which = 'all'
   ) {
-    return V.getData( which, options, V.getSetting( 'chatLedger' ) );
+    return V.getData( which, 'get message', V.getSetting( 'chatLedger' ) );
   }
 
   function setMessage(
     whichMessage,
-    options = { key: 'set message' }
   ) {
     const msgData = {};
     msgData.message = whichMessage;
     msgData.sender = V.getState( 'activeEntity' ).fullId;
-    return V.setData( msgData, options, V.getSetting( 'chatLedger' ) );
+    return V.setData( msgData, 'set message', V.getSetting( 'chatLedger' ) );
   }
 
   return {

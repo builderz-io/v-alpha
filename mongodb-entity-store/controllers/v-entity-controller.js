@@ -262,8 +262,8 @@ exports.register = function( req, res ) {
 };
 
 exports.verify = function( req, cb ) {
-
-  if ( req.pass != systemInit.communityGovernance.commuPhrase ) {
+  console.log( req );
+  if ( req.adminPass != systemInit.communityGovernance.commuPhrase ) {
     return cb( {
       success: false,
       status: 'verification password invalid',
@@ -271,7 +271,7 @@ exports.verify = function( req, cb ) {
     } );
   }
 
-  EntityDB.findOne( req, { profile: true } ).exec( ( err, res ) => {
+  EntityDB.findOne( { fullId: req.fullId }, { profile: true } ).exec( ( err, res ) => {
     if ( err || res === null ) {
       return cb( {
         success: false,
@@ -295,7 +295,7 @@ exports.verify = function( req, cb ) {
       else {
         return cb( {
           success: true,
-          status: 'success',
+          status: 'verified successfully',
           message: 'Entity verified successfully'
         } );
       }

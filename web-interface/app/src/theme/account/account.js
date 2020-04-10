@@ -19,7 +19,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const pageState = V.getState( 'page' );
 
     if ( pageState.height != pageState.topCalc ) {
-      const transactions = await V.getTransaction( V.getState( 'activeEntity' ).fullId );
+      const transactions = await V.getTransaction();
       const $listingsUl = AccountComponents.listingsUl();
 
       for ( const txData of transactions.data[0].reverse() ) {

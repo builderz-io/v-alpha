@@ -163,40 +163,41 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function getEntity(
-    which = 'all', // defaults to searching all entities (by 'role')
-    options = { key: 'role' }
+    // defaults to searching all entities (by 'role')
+    which = 'all',
+    filter = 'role'
   ) {
 
     if ( which.substr( 0, 2 ) == '0x' ) {
-      options = { key: 'evmAddress' };
+      filter = 'evmAddress';
     }
     else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
-      options = { key: 'fullId' };
+      filter = 'fullId';
     }
 
-    return V.getData( which, options, V.getSetting( 'entityLedger' ) );
+    return V.getData( which, filter, V.getSetting( 'entityLedger' ) );
   }
 
-  async function setEntity( entityData, options = { key: 'set entity' } ) {
+  async function setEntity( entityData, options = 'set entity' ) {
 
-    if ( options.key == 'verification' ) {
+    if ( options == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
     }
-
-    const validTitle = validateTitle( entityData.title, entityData.role );
-
-    if ( validTitle ) {
-      const entityCast = await castEntity( entityData );
-      return V.setData( entityCast, options, V.getSetting( 'entityLedger' ) );
-    }
     else {
-      return Promise.resolve( {
-        success: false,
-        status: 'invalid title',
-        message: 'invalid title'
-      } );
-    }
+      const validTitle = validateTitle( entityData.title, entityData.role );
 
+      if ( validTitle ) {
+        const entityCast = await castEntity( entityData );
+        return V.setData( entityCast, options, V.getSetting( 'entityLedger' ) );
+      }
+      else {
+        return Promise.resolve( {
+          success: false,
+          status: 'invalid title',
+          message: 'invalid title'
+        } );
+      }
+    }
   }
 
   async function getActiveEntityData() {
