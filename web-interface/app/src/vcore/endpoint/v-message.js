@@ -117,8 +117,17 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
         // }
         else if ( caseArray[0] === 'verify' ) {
 
+          let entityToVerify;
+
+          if ( V.getSetting( 'transactionLedger' ) == 'MongoDB' ) {
+            entityToVerify = { fullId: caseArray[1] + ' ' + caseArray[2], pass: caseArray[3] };
+          }
+          else if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+            entityToVerify = caseArray[1];
+          }
+
           // V.setData( 'verification', caseArray[1], V.getSetting( 'transactionLedger' ) );
-          V.setEntity( { fullId: caseArray[1] }, { key: 'verification' } );
+          return V.setEntity( entityToVerify, { key: 'verification' } );
         }
         // else if ( caseArray[0] === 'makeadmin' ) {
         //   socket.emit( 'makeadmin', [caseArray, Cookies.get( 'uPhrase' )] );

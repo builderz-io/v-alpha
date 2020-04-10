@@ -12,7 +12,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
     one: '0xe438d672987b63591d2dc49482734e0389f0b110',
     two: '0x3107b077b7745994cd93d85092db034ca1984d46',
     three: 'none', //'0xaa95dbb75e08d3dff45b1471efcff68a2d24f86b',
-    four: 'none', // '0x623fed039bb4b321eadd1d94aee9778d365bb48f',
+    four: '0x623fed039bb4b321eadd1d94aee9778d365bb48f',
     five: 'none', // '0xd7b9425876ccdfaac0999c645803e4bfd4b593df',
     six: 'none', // '0xed86eb7a300119fee3ace44cdf0da2383789b628',
     seven: 'none', // '0x3250c42056ac611876522dab5e6c05f69f36efca',

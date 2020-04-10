@@ -182,7 +182,7 @@ exports.admins = [  // add objects for each admin
 exports.communityGovernance = {
                                 // PChain network
                                 commName: 'Community',
-                                commuPhrase: 'vxPChainClubLogin3001',
+                                commuPhrase: 'yo3001',
                                 excludeNames: ['Vivi'],
                                 indexSuffix: 'pc',
                                 commPort: 3051,

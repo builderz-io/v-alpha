@@ -55,11 +55,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         title: title,
         tag: all[0],
         role: entityData.role ? entityData.role : 'network',
+        verified: false,
         joined: {
           date: date,
           unix: unix,
           block: all[1].success ? all[1].data[0].currentBlock : 0,
-        }
+        },
+        status: 'active'
       },
       evmCredentials: {
         address: address
@@ -166,7 +168,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   ) {
 
     if ( which.substr( 0, 2 ) == '0x' ) {
-      options = { key: 'ethAddress' };
+      options = { key: 'evmAddress' };
     }
     else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
       options = { key: 'fullId' };
@@ -175,11 +177,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     return V.getData( which, options, V.getSetting( 'entityLedger' ) );
   }
 
-  async function setEntity( entityData, options ) {
-
-    if ( !options ) {
-      options = { key: 'entity' };
-    }
+  async function setEntity( entityData, options = { key: 'set entity' } ) {
 
     if ( options.key == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
@@ -192,7 +190,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return V.setData( entityCast, options, V.getSetting( 'entityLedger' ) );
     }
     else {
-      return Promise.resolve( { success: false, status: 'invalid title', message: 'invalid title' } );
+      return Promise.resolve( {
+        success: false,
+        status: 'invalid title',
+        message: 'invalid title'
+      } );
     }
 
   }

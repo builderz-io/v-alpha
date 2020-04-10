@@ -87,18 +87,13 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  async function getTransaction( which, options ) {
-    if ( !options ) {
-      options = { key: 'transaction' };
-    }
+  async function getTransaction( which, options = { key: 'get transaction' } ) {
     return V.getData( which, options, V.getSetting( 'transactionLedger' ) );
   }
 
-  async function setTransaction( which, options ) {
+  async function setTransaction( which, options = { key: 'set transaction' } ) {
     const txData = await constructTx( which );
-    if ( !options ) {
-      options = { key: 'set transaction' };
-    }
+
     if ( txData.amount == 0 ) {
       return Promise.resolve( { status: 'error', message: 'invalid or no amount' } );
     }

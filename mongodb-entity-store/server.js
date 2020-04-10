@@ -39,13 +39,15 @@ const sio = require( 'socket.io' )( server, {
 sio.on( 'connection', client => {
   console.log( client.id, 'connected' );
 
-  client.on( 'entity', handleEntity.register );
+  client.on( 'set entity', handleEntity.register );
+
+  client.on( 'verification', handleEntity.verify );
 
   client.on( 'tags', handleEntity.getTags );
 
   client.on( 'role', handleEntity.findByRole );
 
-  client.on( 'ethAddress', handleEntity.findByEthAddress );
+  client.on( 'evmAddress', handleEntity.findByEvmAddress );
 
   client.on( 'fullId', handleEntity.findByFullId );
 
@@ -65,7 +67,7 @@ sio.on( 'connection', client => {
 
   client.on( 'set transaction', handleTransaction.updateEntities );
 
-  client.on( 'transaction', handleTransaction.findTransaction );
+  client.on( 'get transaction', handleTransaction.findTransaction );
   //
   // client.on( 'transaction', function( req, res ) {
   //   // TODO

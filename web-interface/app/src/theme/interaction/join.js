@@ -18,6 +18,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( res.success ) {
         V.setState( 'activeEntity', res.data[0] );
+
+        // debug info
+        V.getContractState();
+        console.log(V.getState('all'));
+
         return 'entity found';
       }
       else {
@@ -33,10 +38,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Modal.draw('please wait');
 
       await V.setActiveAddress().then( async res => {
-
         if ( res.success ) {
-          V.getContractState();
-          console.log(V.getState('all'));
           which = await ckeckEntityStore();
         }
         else {

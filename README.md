@@ -6,8 +6,8 @@ Value Instrument Prototype - Version 2
 This repository contains three distinct code bases:
 
 - Web Interface
-- Entity Store
 - Smart Contract
+- MongoDB Entity Store
 
 ### Web Interface
 
@@ -22,14 +22,13 @@ A first theme build with VCore.
 **VPlugins**
 A bunch of functionality to create and display content. Plugins control the Theme.
 
+### Smart Contract
+
+The VToken smart contract can be setup optionally. This is a special kind of token, that has several properties which can be set to the initiators liking.
 
 ### MongoDB Entity Store
 
 The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used, and also enables token accounts and transactions in VToken format, if no distributed ledger is used (as a simulation of such).
-
-### Smart Contract
-
-The VToken smart contract can be setup optionally. This is a special kind of token, that has several properties which can be set to the initiators liking.
 
 ## Documentation
 

@@ -8,7 +8,7 @@ const TxDB = require( '../models/v-transaction-model' );
 
 exports.findByRole = function( req, res ) {
 
-  const find = req != 'all' ? { 'credentials.role': req } : {};
+  const find = req != 'all' ? { 'profile.role': req } : {};
 
   EntityDB.find( find, function( err, entities ) {
     if ( err ) {
@@ -16,6 +16,13 @@ exports.findByRole = function( req, res ) {
         success: false,
         status: 'error',
         message: err,
+      } );
+    }
+    else if ( !entities.length ) {
+      res( {
+        success: false,
+        status: 'entities not found',
+        message: 'Could not find entities',
       } );
     }
     else {
@@ -29,13 +36,20 @@ exports.findByRole = function( req, res ) {
   } );
 };
 
-exports.findByEthAddress = function( req, res ) {
+exports.findByEvmAddress = function( req, res ) {
   EntityDB.find( { 'evmCredentials.address': req }, function( err, entities ) {
     if ( err ) {
       res( {
         success: false,
         status: 'error',
         message: err,
+      } );
+    }
+    else if ( !entities.length ) {
+      res( {
+        success: false,
+        status: 'entities not found',
+        message: 'Could not find entities',
       } );
     }
     else {
@@ -59,6 +73,13 @@ exports.findByFullId = function( req, res ) {
         message: err,
       } );
     }
+    else if ( !entities.length ) {
+      res( {
+        success: false,
+        status: 'entities not found',
+        message: 'Could not find entities',
+      } );
+    }
     else {
       res( {
         success: true,
@@ -77,16 +98,16 @@ exports.register = function( req, res ) {
    *
    */
 
-  const entityData = req;
-
   const date = new Date();
+
+  // const entityData = req;
 
   /*
   const newEntity = new EntityDB( {
     fullId: entityData.title + ' ' + entityData.tag,
     evmAddress: entityData.evmAddress,
     uPhrase: entityData.uPhrase,
-    credentials: {
+    credentials: { // replaced with "profile"
       name: entityData.title, // !! key is named 'name' to retain compatibility with VI Alpha One
       tag: entityData.tag,
       role: entityData.role,
@@ -99,8 +120,8 @@ exports.register = function( req, res ) {
     properties: {
       location: entityData.location,
       description: entityData.description,
-      creator: 'test', // TODO: creator[0].credentials.name,
-      creatorTag: 'test', // TODO: creator[0].credentials.tag,
+      creator: 'test', // TODO: creator[0].profile.title,
+      creatorTag: 'test', // TODO: creator[0].profile.tag,
       created: date,
       fillUntil: new Date( date ).setDate( new Date( date ).getDate() + 7 ), // TODO: systemInit.poolGovernance.fillPeriod
       expires: new Date( date ).setMonth( new Date( date ).getMonth() + 6 ), // TODO: systemInit.poolGovernance.expires
@@ -133,8 +154,6 @@ exports.register = function( req, res ) {
   } );
 */
 
-  const newEntity = new EntityDB( req );
-
   // if ( entityData.properties ) {
   //   newEntity.properties = entityData.properties;
   // }
@@ -160,10 +179,22 @@ exports.register = function( req, res ) {
   //   };
   // }
 
-  // TODO:
   // if ( entityData.evmCredentials.address ) {
   //   newEntity.evmCredentials = entityData.evmCredentials;
   // }
+
+  // feed in onChain into entityData when using MongoDB
+  // for compatibility with functionality introduced in V Alpha 1
+
+  req.onChain = {
+    balance: initialBalance, // TODO: depends on entity role, was "entityData.initialBalance"
+    lastMove: Number( Math.floor( date / 1000 ) ),
+    timeToZero: baseTimeToZero
+  };
+
+  req.profile.verified = false;
+
+  const newEntity = new EntityDB( req );
 
   newEntity.save( ( err ) => {
     if ( err ) {
@@ -182,17 +213,17 @@ exports.register = function( req, res ) {
       const baseTimeToZero = systemInit.tokenDyn.baseTimeToZero * daysToZero;
 
       const newEntityInitialTx = new TxDB( {
-        fullId: entityData.title + ' ' + entityData.tag,
-        name: entityData.title,
-        tag: entityData.tag,
+        fullId: req.fullId,
+        name: req.profile.title,
+        tag: req.profile.tag,
         txHistory: {
           date: date,
           initiator: commName,
           initiatorTag: commTag,
           from: commName,
           fromTag: commTag,
-          to: entityData.title,
-          toTag: entityData.tag,
+          to: req.profile.title,
+          toTag: req.profile.tag,
           for: 'Initial Balance', // TODO: i18n.strInit110,
           senderFee: 0,
           burned: 0,
@@ -230,11 +261,54 @@ exports.register = function( req, res ) {
 
 };
 
+exports.verify = function( req, cb ) {
+
+  if ( req.pass != systemInit.communityGovernance.commuPhrase ) {
+    return cb( {
+      success: false,
+      status: 'verification password invalid',
+      message: 'Could not verify entity, invalid password'
+    } );
+  }
+
+  EntityDB.findOne( req, { profile: true } ).exec( ( err, res ) => {
+    if ( err || res === null ) {
+      return cb( {
+        success: false,
+        status: 'entity not found',
+        message: 'Could not find entity to verify',
+      } );
+    }
+    res.profile.role = 'member';
+    res.profile.status = 'active';
+    res.profile.verified = true;
+    // res.profile.loginExpires = new Date().setMonth( new Date().getMonth() + 12 );
+
+    res.save( ( err ) => {
+      if ( err ) {
+        return cb( {
+          success: false,
+          status: 'error in verification',
+          message: 'Could not verify entity'
+        } );
+      }
+      else {
+        return cb( {
+          success: true,
+          status: 'success',
+          message: 'Entity verified successfully'
+        } );
+      }
+    } );
+  } );
+
+};
+
 exports.getTags = function( req, res ) {
 
   const name = req.for;
 
-  EntityDB.find( { 'credentials.name': name }, { credentials: true } ).exec( ( err, entities ) => {
+  EntityDB.find( { 'profile.title': name }, { profile: true } ).exec( ( err, entities ) => {
     if ( err ) {
       res( {
         success: false,
@@ -244,7 +318,7 @@ exports.getTags = function( req, res ) {
     }
     else {
       const tags = [];
-      entities.forEach( item => {tags.push( item.credentials.tag )} );
+      entities.forEach( item => {tags.push( item.profile.tag )} );
       res( {
         success: true,
         status: 'success',

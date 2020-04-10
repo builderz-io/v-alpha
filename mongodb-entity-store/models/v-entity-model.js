@@ -9,8 +9,9 @@ var entitySchema = mongoose.Schema( {
     title: String,
     tag: String,
     role: String,
-    // status: String,
+    status: String,
     // socketID: String,
+    verified: Boolean,
     joined: {
       date: String,
       unix: Number,

@@ -60,7 +60,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
 
     await updateSender().then( () => {
       // tools.updateEntityVisualizations( {
-      //   socketID: sender.credentials.socketID,
+      //   socketID: sender.profile.socketID,
       //   balance: newSenderBalance,
       //   timeToZero: burnS.remainingTimeToZero,
       // }, io );
@@ -108,7 +108,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 { fullId: entity.fullId },
                 {
                   $set: { 'requestStats.lastDate': date,
-                    'requestStats.lastPool': sender.credentials.name,
+                    'requestStats.lastPool': sender.profile.title,
                     'requestStats.lastAmount': amount,
                   },
                   $inc: { 'requestStats.totalRequested': amount,
@@ -130,12 +130,12 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
               { fullId: entity.fullId },
               { $push: { txHistory: {
                 date: date,
-                initiator: txRoleEntities[2].credentials.name,
-                initiatorTag: txRoleEntities[2].credentials.tag,
-                from: sender.credentials.name,
-                fromTag: sender.credentials.tag,
-                to: entity.credentials.name,
-                toTag: entity.credentials.tag,
+                initiator: txRoleEntities[2].profile.title,
+                initiatorTag: txRoleEntities[2].profile.tag,
+                from: sender.profile.title,
+                fromTag: sender.profile.tag,
+                to: entity.profile.title,
+                toTag: entity.profile.tag,
                 for: reference.trim().charAt( 0 ).toUpperCase() + reference.trim().slice( 1 ),
                 senderFee: 0,
                 burned: burnR.burnedDelta,
@@ -145,7 +145,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 chainBalance: newRecipientBalance,
                 amount: amount,
                 txType: 'in',
-                title: sender.credentials.name + ' ' + sender.credentials.tag,
+                title: sender.profile.title + ' ' + sender.profile.tag,
                 fromAddress: 'address unaval',
                 toAddress: 'address unaval'
               } } },
@@ -161,12 +161,12 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
               { fullId: sender.fullId },
               { $push: { txHistory: {
                 date: date,
-                initiator: txRoleEntities[2].credentials.name,
-                initiatorTag: txRoleEntities[2].credentials.tag,
-                from: sender.credentials.name,
-                fromTag: sender.credentials.tag,
-                to: entity.credentials.name,
-                toTag: entity.credentials.tag,
+                initiator: txRoleEntities[2].profile.title,
+                initiatorTag: txRoleEntities[2].profile.tag,
+                from: sender.profile.title,
+                fromTag: sender.profile.tag,
+                to: entity.profile.title,
+                toTag: entity.profile.tag,
                 for: reference.trim().charAt( 0 ).toUpperCase() + reference.trim().slice( 1 ),
                 senderFee: txFee,
                 burned: processedRecipients === 1 ? burnS.burnedDelta : 0, // only first time
@@ -176,7 +176,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 chainBalance: burnS.burnedBalance - ( processedRecipients * ( amount + txFee ) ), // reduces with each processed recipient
                 amount: amount,
                 txType: 'out',
-                title: entity.credentials.name + ' ' + entity.credentials.tag,
+                title: entity.profile.title + ' ' + entity.profile.tag,
                 fromAddress: 'address unaval',
                 toAddress: 'address unaval'
               } } },
@@ -193,7 +193,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
 
         await updateRecipient().then( () => {
           // tools.updateEntityVisualizations( {
-          //   socketID: entity.credentials.socketID,
+          //   socketID: entity.profile.socketID,
           //   balance: newRecipientBalance,
           //   timeToZero: newTimeToZeroRecipient,
           // }, io );
@@ -202,7 +202,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
       }
       else if ( entity.roleInTx === 'community' ) {
 
-        if ( sender.credentials.name != systemInit.communityGovernance.commName ) { // exclude funds sent from community account
+        if ( sender.profile.title != systemInit.communityGovernance.commName ) { // exclude funds sent from community account
           const updateCommunity = function() {
             return new Promise( resolve => {  // update community stats
               EntityDB.findOneAndUpdate(
@@ -265,12 +265,12 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
               { fullId: entity.fullId },
               { $push: { txHistory: {
                 date: date,
-                initiator: txRoleEntities[2].credentials.name,
-                initiatorTag: txRoleEntities[2].credentials.tag,
-                from: sender.credentials.name,
-                fromTag: sender.credentials.tag,
-                to: entity.credentials.name, // will always just be tax pool name here
-                toTag: entity.credentials.tag, // will always just be tax pool tag here
+                initiator: txRoleEntities[2].profile.title,
+                initiatorTag: txRoleEntities[2].profile.tag,
+                from: sender.profile.title,
+                fromTag: sender.profile.tag,
+                to: entity.profile.title, // will always just be tax pool name here
+                toTag: entity.profile.tag, // will always just be tax pool tag here
                 for: numberOfTx, // actual reference omitted here and replaced with numberOfRecipients
                 senderFee: 0,
                 burned: burnedTaxDelta,
@@ -280,7 +280,7 @@ module.exports.updateAllEntities = ( txRoleEntities, amount, date, timeSecondsUN
                 chainBalance: newTaxBalance,
                 amount: taxAmount,
                 txType: 'in',
-                title: sender.credentials.name + ' ' + sender.credentials.tag,
+                title: sender.profile.title + ' ' + sender.profile.tag,
                 fromAddress: 'address unaval',
                 toAddress: 'address unaval'
               } } },

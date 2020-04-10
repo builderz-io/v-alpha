@@ -138,8 +138,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
-          Modal.draw( 'entity new' );
-          Account.drawHeaderBalance();
+          Join.draw( 'new address set' );
         }
         else {
           DOM.$box.value = '';
