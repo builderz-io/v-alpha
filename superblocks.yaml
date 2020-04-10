@@ -3,14 +3,20 @@ jobs:
   compile:
     image: node
     script:
-      - "cd smart-contract"
-      - "npm install"
+      - cd smart-contracts
       - npm install truffle
+      - npm install truffle-assertions
+      - npm install truffle-hdwallet-provider
+      - npm install chalk
       - npx truffle compile
   test:
     image: node
     script:
+      - npx ganache-cli &
       - npm install truffle
+      - npm install truffle-assertions
+      - npm install truffle-hdwallet-provider
+      - npm install chalk
       - npx truffle test
 stages:
   - pipeline:
