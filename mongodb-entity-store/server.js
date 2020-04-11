@@ -6,10 +6,6 @@ const http = require( 'http' );
 const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 
-const handleEntity = require( './controllers/v-entity-controller' );
-const handleMessage = require( './controllers/v-message-controller' );
-const handleTransaction = require( './controllers/v-transaction-controller' );
-
 mongoose.connect( 'mongodb://localhost/ui2020', { useNewUrlParser: true, useUnifiedTopology: true } );
 
 const app = express();
@@ -24,7 +20,7 @@ app.get( '/', function( req, res ) {
   res.send( 'MongoDB connector is live' );
 } );
 
-const sio = require( 'socket.io' )( server, {
+exports.sio = require( 'socket.io' )( server, {
   handlePreflightRequest: ( req, res ) => {
     const headers = {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -36,7 +32,11 @@ const sio = require( 'socket.io' )( server, {
   }
 } );
 
-sio.on( 'connection', client => {
+const handleEntity = require( './controllers/v-entity-controller' );
+const handleMessage = require( './controllers/v-message-controller' );
+const handleTransaction = require( './controllers/v-transaction-controller' );
+
+exports.sio.on( 'connection', client => {
   console.log( client.id, 'connected' );
 
   client.on( 'set entity', handleEntity.register );

@@ -25,24 +25,24 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       const x = entityData.data[0];
       if (x) {
         inner += `<p class="modal__details">
-      ${ V.i18n( 'ETH' ) }: ${ x.ethBalance }<br>
-      ${ V.i18n( 'V' ) }: ${ x.tokenBalance }<br>
-      ${ V.i18n( 'V Live' ) }: ${ x.liveBalance }<br>
-      ${ V.i18n( 'Last Block' ) }: ${ x.lastBlock }<br>
-      ${ V.i18n( 'Zero Block' ) }: ${ x.zeroBlock }<br>
-      </p>`;
-    }
-    else {
-      inner += `<p class="modal__welcome-back">
-      ${ V.i18n( 'Sorry, token details could not be found' ) }<br>
-      </p>`;
-    }
+        ${ V.i18n( 'ETH' ) }: ${ x.ethBalance }<br>
+        ${ V.i18n( 'V' ) }: ${ x.tokenBalance }<br>
+        ${ V.i18n( 'V Live' ) }: ${ x.liveBalance }<br>
+        ${ V.i18n( 'Last Block' ) }: ${ x.lastBlock }<br>
+        ${ V.i18n( 'Zero Block' ) }: ${ x.zeroBlock }<br>
+        </p>`;
+      }
+      else {
+        inner += `<p class="modal__welcome-back">
+        ${ V.i18n( 'Sorry, token details could not be found' ) }<br>
+        </p>`;
+      }
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
       Join.launch();
 
-      inner = `<div class="modal__new font-medium" onclick="event.stopPropagation(); V.sN('.modal__new', 'clear'); Modal.drawNameForm()">${ V.i18n( 'Name your account' ) }</div><p class="modal__new-name">${ V.i18n( 'Naming your account creates a new entity for your address. An entity can be anything you want to make visible in the network.' ) }</p>`;
+      inner = `<div class="modal__new font-medium" onclick="event.stopPropagation(); V.sN('.modal__new', 'clear'); Modal.drawNameForm('new address set')">${ V.i18n( 'Name your account' ) }</div><p class="modal__new-name">${ V.i18n( 'Naming your account creates a new entity for your address. An entity can be anything you want to make visible in the network.' ) }</p>`;
     }
     else if ( which == 'user denied auth' ) {
       inner = `<p class="modal__p">${ V.i18n( 'Authorization denied' ) }</p>`;
@@ -57,8 +57,11 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       inner = `<p class="modal__p">${ V.i18n( 'Please wait... requesting data' ) }</p>`;
     }
     else if ( which == 'web3 provider not found' ) {
-      inner = `<div class="modal__new font-medium">${ V.i18n( 'Create new wallet' ) }</div><p class="modal__return">${ V.i18n( 'Recover from mnemonic phrase' ) } (${ V.i18n( 'A Web3 provider was not found' ) })</p>`;
+      inner = `<div class="modal__new font-medium" onclick="event.stopPropagation(); V.sN('.modal__new', 'clear'); Modal.drawNameForm('temp user')">${ V.i18n( 'Use temporary name' ) }</div><p class="modal__new-name">${ V.i18n( '' ) }</p>`;
     }
+    // else if ( which == 'web3 provider not found' ) {
+    //   inner = `<div class="modal__new font-medium">${ V.i18n( 'Create new wallet' ) }</div><p class="modal__return">${ V.i18n( 'Recover from mnemonic phrase' ) } (${ V.i18n( 'A Web3 provider was not found' ) })</p>`;
+    // }
 
     V.setNode( $modal, {
       t: 'div',
@@ -84,12 +87,12 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     const $box = V.sN( {
       t: 'div',
       s: {
-        messagebox: {
+        namebox: {
           position: 'absolute',
           top: '7vh'
         }
       },
-      c: 'messagebox flex w-100',
+      c: 'namebox flex w-100',
     } );
     const $input = V.sN( {
       t: 'input',
@@ -97,7 +100,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
         placeholder: V.i18n( 'Choose preferred name' ),
       },
       s: {
-        messagebox__input: {
+        namebox__input: {
           'height': '36px',
           'padding': '8px 15px',
           'min-width': '100px',
@@ -106,17 +109,11 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
           'border-radius': '30px'
         }
       },
-      c: 'messagebox__input mr-2'
+      c: 'namebox__input mr-2'
     } );
 
     const $send = V.sN( {
       t: 'button',
-      s: {
-        'circle-1': {
-          width: '2.5rem',
-          height: '2.5rem'
-        }
-      },
       c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
       h: V.getIcon( 'send' )
     } );
@@ -129,22 +126,35 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
       e.stopPropagation();
 
-      DOM.$box = V.getNode( '.messagebox__input' );
+      DOM.$box = V.getNode( '.namebox__input' );
 
-      const entityData = {
-        title: DOM.$box.value,
-        role: 'network',
-      };
+      if ( options == 'new address set' ) {
 
-      V.setEntity( entityData ).then( res => {
-        if ( res.success ) {
-          Join.draw( 'new address set' );
-        }
-        else {
-          DOM.$box.value = '';
-          DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
-        }
-      } );
+        const entityData = {
+          title: DOM.$box.value,
+          role: 'network',
+        };
+
+        V.setEntity( entityData ).then( res => {
+          if ( res.success ) {
+            Join.draw( 'new address set' );
+          }
+          else {
+            DOM.$box.value = '';
+            DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
+          }
+        } );
+      }
+      else if (options == 'temp user') {
+        V.setState( 'activeEntity', {
+          fullId: V.castEntityTitle( DOM.$box.value ) + ' ' + '#0000'
+        } )
+        V.setNode( '.modal', 'clear' );
+        const $temp = InteractionComponents.tempBtn();
+        V.setNode( 'join', 'clear' );
+        V.setNode( 'header', $temp );
+
+      }
     } );
 
     V.setNode( $box, [ $input, $send ] );
@@ -158,7 +168,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     draw: draw,
-    drawNameForm: drawNameForm
+    drawNameForm: drawNameForm,
   };
 
 } )();

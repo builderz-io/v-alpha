@@ -181,6 +181,25 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function tempBtn() {
+    return V.sN( {
+      t: 'temp',
+      c: 'balance fixed cursor-pointer txt-anchor-mid',
+      h: V.setNode( {
+        tag: 'a',
+        href: '#modal',
+        html: `<svg width="54px" viewBox="0 0 36 36">
+                <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
+                       stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white"
+                       stroke="#1b1aff" stroke-width="2.7">
+                </circle>
+                <text class="font-medium fs-xs txt-green" x="50%" y="59%">Temp</text>
+              </svg>`
+
+      } )
+    } );
+  }
+
   function modal() {
     return V.cN( {
       t: 'modal',
@@ -213,6 +232,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     target: target,
     unit: unit,
     joinBtn: joinBtn,
+    tempBtn: tempBtn,
     modal: modal,
   };
 

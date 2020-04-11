@@ -52,6 +52,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function listingsUl() {
     return V.castNode( {
       tag: 'ul',
+      id: 'chat',
       classes: 'listings__ul flex flex-wrap content-start overflow-y-scroll',
       setStyle: {
         listings__ul: {

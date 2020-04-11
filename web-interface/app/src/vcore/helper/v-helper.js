@@ -60,6 +60,28 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return first + second;
   }
 
+  function castEntityTitle( input ) {
+
+    let titleArray = input;
+
+    if ( typeof input === 'string' ) {
+      titleArray = input.trim().toLowerCase().split( ' ' );
+    }
+
+    return titleArray.map( function( string ) {
+      if ( string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+        return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
+      }
+      if ( string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+        return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
+      }
+      else {
+        return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
+      }
+    } ).join( ' ' );
+
+  }
+
   function castCamelCase( which ) {
 
     /* by @smilyface on stackoverflow */
@@ -97,6 +119,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castLinks: castLinks,
     castTime: castTime,
     castInitials: castInitials,
+    castEntityTitle: castEntityTitle,
     castCamelCase: castCamelCase,
     castShortAddress: castShortAddress,
     getIcon: getIcon,

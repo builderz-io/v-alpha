@@ -7,8 +7,6 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
 
   async function constructTx( data ) {

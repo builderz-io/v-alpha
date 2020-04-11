@@ -44,6 +44,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
 
     /* Helper */
     castInitials: VHelper.castInitials,
+    castEntityTitle: VHelper.castEntityTitle,
     castCamelCase: VHelper.castCamelCase,
     castLinks: VHelper.castLinks,
     castTime: VHelper.castTime,
