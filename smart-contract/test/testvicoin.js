@@ -133,23 +133,23 @@ contract( 'VICoin', async ( accounts ) => {
   it( 'calculates fees correctly', async () => {
     const vicoin = await VICoin.deployed();
     assert.equal(
-      Number( await vicoin.calcFeesIncTax
+      Number( await vicoin.calcFeesIncContribution
         .call( 1000000, 3300 ).valueOf() ),
       330000, 'Calculation not correct' );
     assert.equal(
-      Number( await vicoin.calcFeesIncTax
+      Number( await vicoin.calcFeesIncContribution
         .call( 10, 3300 ).valueOf() ),
       3, 'Calculation not correct' );
   } );
 
-  it( 'calculates tax correctly', async () => {
+  it( 'calculates contribution correctly', async () => {
     const vicoin = await VICoin.deployed();
     assert.equal(
-      Number( await vicoin.calcTax
+      Number( await vicoin.calcContribution
         .call( 1000000, 3300, 1000 ).valueOf() ),
       33000, 'Calculation not correct' );
     assert.equal(
-      Number( await vicoin.calcTax
+      Number( await vicoin.calcContribution
         .call( 10, 3300, 1000 ).valueOf() ),
       0, 'Calculation not correct' );
   } );
@@ -179,11 +179,11 @@ contract( 'VICoin', async ( accounts ) => {
   it( 'add accounts', async () => {
     const vicoin = await VICoin.deployed();
     const maxPoolRequest = 100**6;
-    const addAccount0 = await vicoin.newAccount( accounts[0] );
-    const addAccount1 = await vicoin.newAccount( accounts[1] );
-    const addAccount2 = await vicoin.newAccount( accounts[2] );
-    const addAccount3 = await vicoin.newAccount( accounts[3] );
-    const addAccount4 = await vicoin.newAccount( accounts[4] );
+    const addAccount0 = await vicoin.verifyAccount( accounts[0] );
+    const addAccount1 = await vicoin.verifyAccount( accounts[1] );
+    const addAccount2 = await vicoin.verifyAccount( accounts[2] );
+    const addAccount3 = await vicoin.verifyAccount( accounts[3] );
+    const addAccount4 = await vicoin.verifyAccount( accounts[4] );
     const isApproved0 = await vicoin.accountApproved.call( accounts[0] );
     assert.equal( isApproved0, true );
     const isApproved1 = await vicoin.accountApproved.call( accounts[0] );
@@ -204,12 +204,27 @@ contract( 'VICoin', async ( accounts ) => {
     assert.equal( Number( balance0 ), Number( expectedBalance ), 'Starting balance not correct' );
   } );
 
+  // VICoin.Log(
+  //       _name: 'Recipient balance before update' (type: string),
+  //       _value: 99999000 (type: uint256)
+  //     )
+
   it( 'can transfer', async () => {
     const vicoin = await VICoin.deployed();
+    // console.log("############transfer################");
+    // console.log(accounts[0]);
+    // console.log(accounts[1]);
+    // console.log(accounts[2]);
+    // console.log(accounts[6]);
     const blockNumberBefore = await vicoin.getBlockNumber.call();
+    // console.log("balance 0: "+ await vicoin.balanceOf( accounts[0] ));
+    // console.log("balance 6: "+ await vicoin.balanceOf( accounts[6] ));
     const transferred = await vicoin.transfer( accounts[6], 1000, {from: accounts[0]} );
     const balance6 = await vicoin.balanceOf( accounts[6] );
+    // console.log("balance 0: "+ await vicoin.balanceOf( accounts[0] ));
+    // console.log("balance 6: "+ await vicoin.balanceOf( accounts[6] ));
     assert.equal( Number( balance6.valueOf() ), 1000, 'Balance not correct' );
+    // console.log("############################");
   } );
 
 
@@ -221,6 +236,8 @@ contract( 'VICoin', async ( accounts ) => {
 
   it( 'balance after 6 blocks is 40%', async () => {
     const vicoin = await VICoin.deployed();
+    //Mine one block:
+    vicoin.mine();
     const burnedBalance = await vicoin.getDecayedBalance.call( accounts[6] );
     // console.log("Balance at block " + await vicoin.getBlockNumber.call() + " is " + burnedBalance);
     // console.log("Zero block at block " + await vicoin.getBlockNumber.call() + " is " + await vicoin.zeroBlock.call(accounts[6]));
@@ -228,6 +245,7 @@ contract( 'VICoin', async ( accounts ) => {
 
     assert.equal( Number( burnedBalance.valueOf() ), 900, 'Balance not correct after one block' );
     const blockNumberBefore = await vicoin.getBlockNumber.call();
+    // console.log(chalk.green("HEY!"));
     const blocksPassed = 5;
     for( var i = 0; i < blocksPassed; i++ ) {
       const mined = await vicoin.mine();
@@ -277,25 +295,25 @@ contract( 'VICoin', async ( accounts ) => {
     assert.equal( Number( burnedBalanceAfterMining.valueOf() ), 0, 'Balance not correct after 15 blocks' );
   } );
 
-  it( 'can adjust tax', async () => {
+  it( 'can adjust contribution', async () => {
     const vicoin = await VICoin.deployed();
-    const originalTax = await vicoin.communityTax.call();
-    assert.equal( Number( originalTax.valueOf() ), 0, 'Tax not 0' );
-    const tx = await vicoin.updateCommunityTax( 1000 );
-    const newTax = await vicoin.communityTax.call();
-    assert.equal( Number( newTax.valueOf() ), 1000, 'Tax not 1000' );
-    await vicoin.updateCommunityTax( 0 );
+    const originalContribution = await vicoin.communityContribution.call();
+    assert.equal( Number( originalContribution.valueOf() ), 0, 'Contribution not 0' );
+    const tx = await vicoin.updateCommunityContribution( 1000 );
+    const newContribution = await vicoin.communityContribution.call();
+    assert.equal( Number( newContribution.valueOf() ), 1000, 'Contribution not 1000' );
+    await vicoin.updateCommunityContribution( 0 );
   } );
 
   it( 'large incoming transfer renews lifetime', async () => {
     const vicoin = await VICoin.deployed();
-    await vicoin.newAccount( accounts[5] );
+    await vicoin.verifyAccount( accounts[5] );
     const zeroBlockBefore = await vicoin.zeroBlock.call( accounts[0] ).valueOf();
     await vicoin.transfer( accounts[0], 1000, {from: accounts[5]} );
     const zeroBlockAfter = await vicoin.zeroBlock.call( accounts[0] ).valueOf();
     const lifetime = await vicoin.lifetime.call();
     const thisBlock = await vicoin.getBlockNumber.call().valueOf();
-    assert.equal( Number( zeroBlockAfter ), Number( thisBlock ) + 9, 'Lifetime not extended correctly' );
+    assert.equal( Number( zeroBlockAfter ), Number( thisBlock ) + 10, 'Lifetime not extended correctly' );
   } );
 
   it( 'Medium incoming transfer renews partial lifetime', async () => {
@@ -303,7 +321,7 @@ contract( 'VICoin', async ( accounts ) => {
     for( var i = 0; i < 5; i++ ) {
       const mined = await vicoin.mine();
     }
-    await vicoin.newAccount( accounts[8] );
+    await vicoin.verifyAccount( accounts[8] );
 
     const acc = accounts[0];
     // console.log("Balance at block " + await vicoin.getBlockNumber.call() + " is " + await vicoin.balanceOf.call(acc));
@@ -334,7 +352,7 @@ contract( 'VICoin', async ( accounts ) => {
 
   it( 'Small incoming transfer renews a little lifetime', async () => {
     const vicoin = await VICoin.deployed();
-    await vicoin.newAccount( accounts[7] );
+    await vicoin.verifyAccount( accounts[7] );
     const zeroBlockBefore = await vicoin.zeroBlock.call( accounts[0] ).valueOf();
     const liveBalanceBefore = await vicoin.liveBalanceOf.call( accounts[0] ).valueOf();
 
@@ -348,10 +366,10 @@ contract( 'VICoin', async ( accounts ) => {
     assert.isAtMost( differenceToExpected, 2, 'Difference was more than expected' );
   } );
 
-  it( 'can disable tax change function', async () => {
+  it( 'can disable contribution change function', async () => {
     const vicoin = await VICoin.deployed();
     const txDisableFunction = await vicoin.blowFuse( 1, true );
-    await truffleAssert.reverts( vicoin.updateCommunityTax( 2000 ), 'Function fuse has been triggered' );
+    await truffleAssert.reverts( vicoin.updateCommunityContribution( 2000 ), 'Function fuse has been triggered' );
   } );
 
   it( 'can still adjust fees', async () => {

@@ -8,7 +8,7 @@ interface IVICoin {
 
     function unapproveAccount(address _account) external;
 
-    function newAccount(address _account, uint8 _role, uint _maxRequest) external;
+    function verifyAccount(address _account, uint8 _role, uint _maxRequest) external;
 
     function updatelifetime(uint _lifetime) external;
 
@@ -24,9 +24,9 @@ interface IVICoin {
 
     function makeSettingsImmutable(bool _confirm) external;
 
-    function changeCommunityTaxAccount(address _newCommunityTaxAccount) external;
+    function changeCommunityContributionAccount(address _newCommunityContributionAccount) external;
 
-    function updateCommunityTax(uint _communityTax) external;
+    function updateCommunityContribution(uint _communityContribution) external;
 
     function updateTransactionFee(uint _transactionFee) external;
 

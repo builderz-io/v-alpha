@@ -58,19 +58,19 @@ contract VICoin is
     uint public initialBalance;
     // starting balance for a new account
 
-    // 3. Fees and tax
-    uint public communityTax;
-    // tax % taken from the transaction fee on every transfer
+    // 3. Fees and contribution
+    uint public communityContribution;
+    // contribution % taken from the transaction fee on every transfer
     uint public transactionFee;
     // transaction fee % taken from every transfer
-    address public communityTaxAccount;
-    // account that receives the tax payments
+    address public communityContributionAccount;
+    // account that receives the contribution payments
 
     // Constants
     uint constant public multiplier = 10 ** 6;
     // accuracy for floating point multiplication
-    uint constant public taxFeeDecimals = 2;
-    // number of decimal places for tax and fee %
+    uint constant public contributionFeeDecimals = 2;
+    // number of decimal places for contribution and fee %
 
     // Testing
     uint public blocksMined;
@@ -80,9 +80,9 @@ contract VICoin is
     event IncomeReceived(address indexed _account, uint _income);
     event Decay(address indexed _account, uint _decay);
     event Mint(address indexed to, uint value);
-    event NewAccount(address indexed _account);
+    event VerifyAccount(address indexed _account);
     event Burn(address indexed to, uint value);
-    event PaidTax(address indexed to, uint value);
+    event PaidContribution(address indexed to, uint value);
     event BurnedFees(address indexed to, uint value);
     event ApproveAccount(address indexed _account);
     event UnapproveAccount(address _account);
@@ -90,9 +90,9 @@ contract VICoin is
     event UpdateInitialBalance(uint _initialBalance);
     event UpdateGenerationAmount(uint _generationAmount);
     event UpdateGenerationPeriod(uint _generationPeriod);
-    event UpdateCommunityTaxAccount(address _newCommunityTaxAccount);
+    event UpdateCommunityContributionAccount(address _newCommunityContributionAccount);
     event UpdateTransactionFee(uint _transactionFee);
-    event UpdateCommunityTax(uint _communityTax);
+    event UpdateCommunityContribution(uint _communityContribution);
     event Mined(uint _block);
     event Log(string _name, uint _value);
 
@@ -103,10 +103,10 @@ contract VICoin is
         uint _lifetime,
         uint _generationAmount,
         uint _generationPeriod,
-        uint _communityTax,
+        uint _communityContribution,
         uint _transactionFee,
         uint _initialBalance,
-        address _communityTaxAccount,
+        address _communityContributionAccount,
         address _controller
     )
         ERC20Detailed(_name, _symbol, _decimals)
@@ -116,11 +116,11 @@ contract VICoin is
         lifetime = _lifetime;
         generationAmount = _generationAmount;
         generationPeriod = _generationPeriod;
-        communityTax = _communityTax;
+        communityContribution = _communityContribution;
         transactionFee = _transactionFee;
         initialBalance = _initialBalance;
-        communityTaxAccount = _communityTaxAccount;
-        if (communityTaxAccount == address(0)) communityTaxAccount = msg.sender;
+        communityContributionAccount = _communityContributionAccount;
+        if (communityContributionAccount == address(0)) communityContributionAccount = msg.sender;
     }
 
     function () external payable {
@@ -286,23 +286,27 @@ contract VICoin is
     function transfer(address _to, uint _value) public returns (bool) {
 
         // Process generation and decay for sender
+        emit Log("Sender balance before update", balanceOf(msg.sender));
         triggerOnchainBalanceUpdate(msg.sender);
+        emit Log("Sender balance after update", balanceOf(msg.sender));
 
         // Process generation and decay for recipient
+        emit Log("Recipient balance before update", balanceOf(_to));
         triggerOnchainBalanceUpdate(_to);
+        emit Log("Recipient balance after update", balanceOf(_to));
 
         require(
             _balances[msg.sender] >= _value,
             "Not enough balance to make transfer"
         );
 
-        // Process fees and tax
-        uint feesAndTax = processFeesAndTax(
+        // Process fees and contribution
+        uint feesAndContribution = processFeesAndContribution(
             _value,
             transactionFee,
-            communityTax
+            communityContribution
         );
-        uint valueAfterFees = _value.sub(feesAndTax);
+        uint valueAfterFees = _value.sub(feesAndContribution);
 
         //Extend zero block based on transfer
         zeroBlock[_to] = calcZeroBlock(
@@ -336,83 +340,83 @@ contract VICoin is
     }
 
     /////////////////
-    // Taxes and fees
+    // Contributiones and fees
     /////////////////
 
-    /** @notice Calculate the tax due. Tax is a percentage taken from the fee
-        @dev Percentage to x dp as defined by taxFeeDecimals e.g.
-            when taxFeeDecimals is 2, 1200 is 12.00%
-        @return Tokens to pay as tax */
-    function calcTax(uint _value, uint _feeRate, uint _taxRate)
+    /** @notice Calculate the contribution due. Contribution is a percentage taken from the fee
+        @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
+            when contributionFeeDecimals is 2, 1200 is 12.00%
+        @return Tokens to pay as contribution */
+    function calcContribution(uint _value, uint _feeRate, uint _contributionRate)
         public
         pure
         returns (uint)
     {
-        uint taxFeeMultiplier = (100 * 10**taxFeeDecimals) ** 2;
-        return _value.mul(_feeRate).mul(_taxRate).div(taxFeeMultiplier);
+        uint contributionFeeMultiplier = (100 * 10**contributionFeeDecimals) ** 2;
+        return _value.mul(_feeRate).mul(_contributionRate).div(contributionFeeMultiplier);
     }
 
-    /** @notice Calculate fees to burn. This is the fee % minus the tax due
-        @dev Percentage to x dp as defined by taxFeeDecimals e.g.
-            when taxFeeDecimals is 2, 1200 is 12.00%
+    /** @notice Calculate fees to burn. This is the fee % minus the contribution due
+        @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
+            when contributionFeeDecimals is 2, 1200 is 12.00%
         @return Tokens to burn as fees */
-    function calcFeesToBurn(uint _value, uint _feeRate, uint _taxRate)
+    function calcFeesToBurn(uint _value, uint _feeRate, uint _contributionRate)
         public
         pure
         returns (uint)
     {
-        uint taxFeeMultiplier = 100 * 10**taxFeeDecimals;
-        return _value.mul(_feeRate).div(taxFeeMultiplier).sub(
-            calcTax(
+        uint contributionFeeMultiplier = 100 * 10**contributionFeeDecimals;
+        return _value.mul(_feeRate).div(contributionFeeMultiplier).sub(
+            calcContribution(
                 _value,
                 _feeRate,
-                _taxRate
+                _contributionRate
             )
         );
     }
 
-    /** @notice Calculate the total amount allocated for both fees and tax
-            Tax % is not relavent as taxes are taken from the fee
-        @dev Percentage to x dp as defined by taxFeeDecimals e.g.
-            when taxFeeDecimals is 2, 1200 is 12.00%
-        @return Tokens to cover fees, inclusive of tax */
-    function calcFeesIncTax(uint _value, uint _feeRate)
+    /** @notice Calculate the total amount allocated for both fees and contribution
+            Contribution % is not relavent as contributiones are taken from the fee
+        @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
+            when contributionFeeDecimals is 2, 1200 is 12.00%
+        @return Tokens to cover fees, inclusive of contribution */
+    function calcFeesIncContribution(uint _value, uint _feeRate)
         public
         pure
         returns (uint)
     {
-        uint taxFeeMultiplier = 100 * 10**taxFeeDecimals;
-        return _value.mul(_feeRate).div(taxFeeMultiplier);
+        uint contributionFeeMultiplier = 100 * 10**contributionFeeDecimals;
+        return _value.mul(_feeRate).div(contributionFeeMultiplier);
     }
 
-    /** @notice Calculate the fees and tax, send tax to the communtiy account,
+    /** @notice Calculate the fees and contribution, send contribution to the communtiy account,
             and burn the fees
-        @dev Percentage to x dp as defined by taxFeeDecimals e.g.
-            when taxFeeDecimals is 2, 1200 is 12.00%
-        @return The total amount used for fees and tax */
-    function processFeesAndTax(
+        @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
+            when contributionFeeDecimals is 2, 1200 is 12.00%
+        @return The total amount used for fees and contribution */
+    function processFeesAndContribution(
         uint _value,
         uint _transactionFee,
-        uint _communityTax)
+        uint _communityContribution)
         internal
         returns (uint)
     {
-        uint feesIncTax = calcFeesIncTax(
+        uint feesIncContribution = calcFeesIncContribution(
             _value,
             _transactionFee
         );
-        uint tax = calcTax(
+        uint contribution = calcContribution(
             _value,
             _transactionFee,
-            _communityTax
+            _communityContribution
         );
         uint feesToBurn = calcFeesToBurn(
             _value,
             _transactionFee,
-            _communityTax
+            _communityContribution
         );
-        require(feesIncTax == tax.add(feesToBurn),
-            "feesIncTax should equal tax + feesToBurn"
+        require(feesIncContribution == contribution.add(feesToBurn),
+            "feesIncContribution should equal contribution + feesToBurn"
         );
 
         if (feesToBurn > 0) {
@@ -420,12 +424,12 @@ contract VICoin is
             emit BurnedFees(msg.sender, feesToBurn);
         }
 
-        if (tax > 0) {
-            super.transfer(communityTaxAccount, tax);
-            emit PaidTax(msg.sender, tax);
+        if (contribution > 0) {
+            super.transfer(communityContributionAccount, contribution);
+            emit PaidContribution(msg.sender, contribution);
         }
 
-        return feesIncTax;
+        return feesIncContribution;
     }
 
     ///////////////////////
@@ -583,7 +587,7 @@ contract VICoin is
     /** @notice Create a new account with the specified role
         @dev New accounts can always be created.
             This function can't be disabled. */
-    function newAccount(
+    function verifyAccount(
         address _account
     )
         external
@@ -597,7 +601,7 @@ contract VICoin is
         }
         lastGenerationBlock[_account] = block.number;
         lastTransactionBlock[_account] = block.number;
-        emit NewAccount(_account);
+        emit VerifyAccount(_account);
     }
 
     /////////////////
@@ -669,27 +673,27 @@ contract VICoin is
     }
 
     /////////////////
-    // Adjust taxes
+    // Adjust contributiones
     /////////////////
 
-    /// @notice Set the address that the tax will be sent to
-    function updateCommunityTaxAccount(address _newCommunityTaxAccount)
+    /// @notice Set the address that the contribution will be sent to
+    function updateCommunityContributionAccount(address _newCommunityContributionAccount)
         external
         onlyController
         fused(0)
     {
-      	communityTaxAccount = _newCommunityTaxAccount;
-        emit UpdateCommunityTaxAccount(_newCommunityTaxAccount);
+      	communityContributionAccount = _newCommunityContributionAccount;
+        emit UpdateCommunityContributionAccount(_newCommunityContributionAccount);
     }
 
-    /// @notice Set the tax percentage, to be taken from the fee %
-    function updateCommunityTax(uint _communityTax)
+    /// @notice Set the contribution percentage, to be taken from the fee %
+    function updateCommunityContribution(uint _communityContribution)
         external
         onlyController
         fused(1)
     {
-        communityTax = _communityTax;
-        emit UpdateCommunityTax(_communityTax);
+        communityContribution = _communityContribution;
+        emit UpdateCommunityContribution(_communityContribution);
     }
 
     /// @notice Set the fee %, to be take from every transaction
