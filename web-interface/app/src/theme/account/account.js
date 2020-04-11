@@ -19,8 +19,9 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const pageState = V.getState( 'page' );
 
     if ( pageState.height != pageState.topCalc ) {
-      const transactions = await V.getTransaction();
+      const $topcontent = AccountComponents.topcontent( V.getState( 'activeEntity' ).fullId );
       const $list = CanvasComponents.list();
+      const transactions = await V.getTransaction();
 
       for ( const txData of transactions.data[0].reverse() ) {
         if ( V.getSetting( 'transactionLedger' ) != 'MongoDB' ) {
@@ -56,11 +57,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       const pageData = {
       // topslider: $topsliderUl,
-        topcontent: V.cN( {
-          tag: 'p',
-          class: 'pxy fs-xl font-bold txt-center',
-          html: 'Account of ' + V.getState( 'activeEntity' ).fullId,
-        } ),
+        topcontent: $topcontent,
         listings: $list,
         position: 'top'
       };

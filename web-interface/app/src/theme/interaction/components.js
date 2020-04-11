@@ -29,6 +29,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     V.setNode( '.modal', 'clear' );
   }
 
+  function stopProp( e ) {
+    e.stopPropagation();
+  }
+
   /* ============ public methods and exports ============ */
 
   // btns
@@ -111,6 +115,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { placeholder: V.i18n( 'Your preferred name' ) }
     } );
   }
+
   function title() {
     return V.sN( {
       t: 'input',
@@ -118,6 +123,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { placeholder: V.i18n( 'Title' ) }
     } );
   }
+
   function loc() {
     return V.sN( {
       t: 'input',
@@ -126,6 +132,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { placeholder: V.i18n( 'Location' ) }
     } );
   }
+
   function locLat() {
     return V.sN( {
       t: 'input',
@@ -133,6 +140,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { type: 'hidden', step: '0.00001' }
     } );
   }
+
   function locLng() {
     return V.sN( {
       t: 'input',
@@ -140,6 +148,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { type: 'hidden', step: '0.00001' }
     } );
   }
+
   function desc() {
     return V.sN( {
       t: 'textarea',
@@ -147,6 +156,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { placeholder: V.i18n( 'Description' ) }
     } );
   }
+
   function target() {
     return V.sN( {
       t: 'input',
@@ -154,6 +164,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { placeholder: V.i18n( 'Price' ) }
     } );
   }
+
   function unit() {
     return V.sN( {
       t: 'input',
@@ -161,6 +172,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { placeholder: V.i18n( 'Unit' ) }
     } );
   }
+
+  // join and temp
 
   function joinBtn() {
     return V.sN( {
@@ -200,6 +213,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  // modal
+
   function modal() {
     return V.cN( {
       t: 'modal',
@@ -211,6 +226,48 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         click: modalClose
       } ),
       click: modalClose
+    } );
+  }
+
+  function nameForm() {
+    return V.sN( {
+      t: 'div',
+      s: {
+        namebox: {
+          position: 'absolute',
+          top: '7vh'
+        }
+      },
+      c: 'namebox flex w-100',
+    } );
+  }
+
+  function nameInput() {
+    return V.sN( {
+      t: 'input',
+      c: 'namebox__input mr-2',
+      s: {
+        namebox__input: {
+          'height': '36px',
+          'padding': '8px 15px',
+          'min-width': '100px',
+          'border': '1px solid #e8e8ec',
+          'resize': 'none',
+          'border-radius': '30px'
+        }
+      },
+      a: {
+        placeholder: V.i18n( 'Choose preferred name' ),
+      },
+      click: stopProp
+    } );
+  }
+
+  function nameSend() {
+    return V.sN( {
+      t: 'button',
+      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+      h: V.getIcon( 'send' )
     } );
   }
 
@@ -234,6 +291,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     joinBtn: joinBtn,
     tempBtn: tempBtn,
     modal: modal,
+    nameForm: nameForm,
+    nameInput: nameInput,
+    nameSend: nameSend
   };
 
 } )();

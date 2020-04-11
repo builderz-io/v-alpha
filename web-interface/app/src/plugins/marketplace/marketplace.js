@@ -94,21 +94,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
-  function drawHelloWorld() {
-    Page.draw( {
-      topcontent: V.cN( {
-        tag: 'p',
-        html: 'I am feeling happy!'
-      } ),
-      position: 'top'
-    } );
-
-    V.setMessage( 'Peter', 'Hi server 5?' );
-  }
-
   return {
     draw: draw,
-    drawHelloWorld: drawHelloWorld
   };
 
 } )();

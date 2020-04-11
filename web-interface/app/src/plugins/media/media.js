@@ -52,9 +52,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const pageData = {
-      // feature: $featureUl,
       listings: $list,
-      // position: 'feature'
     };
 
     return pageData;
@@ -67,7 +65,6 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const pageData = {
       feature: $featureUl,
-      // listings: $listingsUl,
       position: 'feature'
     };
 

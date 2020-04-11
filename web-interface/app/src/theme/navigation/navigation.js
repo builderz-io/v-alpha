@@ -242,7 +242,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     Haze.draw( { fade: 'out' } );
     Form.draw( 'all', { fade: 'out' } );
     Button.draw( 'all', { fade: 'out' } );
-    Chat.drawMessageBox( 'clear' );
+    Chat.drawMessageForm( 'clear' );
 
   }
 

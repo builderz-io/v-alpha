@@ -7,6 +7,14 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  function topcontent( fullId ) {
+    return V.cN( {
+      tag: 'p',
+      class: 'pxy fs-xl font-bold txt-center',
+      html: V.i18n( 'Account of ' ) + fullId,
+    } );
+  }
+
   function headerBalance( balance ) {
 
     return V.castNode( {
@@ -132,6 +140,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    topcontent: topcontent,
     headerBalance: headerBalance,
     accountBalance: accountBalance,
     accountSmallCard: accountSmallCard,

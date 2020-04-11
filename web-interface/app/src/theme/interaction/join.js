@@ -21,7 +21,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
         // debug info
         V.getContractState();
-        console.log(V.getState('all'));
+        console.log( V.getState( 'all' ) );
 
         return 'entity found';
       }
@@ -35,7 +35,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
     if ( which == 'launch' && V.getSetting( 'web3Use' ) ) {
 
-      Modal.draw('please wait');
+      Modal.draw( 'please wait' );
 
       await V.setActiveAddress().then( async res => {
         if ( res.success ) {
@@ -49,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'new address set' ) {
 
-      Modal.draw('please wait');
+      Modal.draw( 'please wait' );
 
       which = await ckeckEntityStore();
     }
@@ -62,7 +62,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
       Marketplace.draw();
-      Navigation.draw( 'all' , { reset: 'true' } )
+      Navigation.draw( 'all', { reset: 'true' } );
       Modal.draw( which );
     }
     else if ( which == 'logged out' ) {
