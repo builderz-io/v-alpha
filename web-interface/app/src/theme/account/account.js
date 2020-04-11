@@ -20,7 +20,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     if ( pageState.height != pageState.topCalc ) {
       const transactions = await V.getTransaction();
-      const $listingsUl = AccountComponents.listingsUl();
+      const $list = CanvasComponents.list();
 
       for ( const txData of transactions.data[0].reverse() ) {
         if ( V.getSetting( 'transactionLedger' ) != 'MongoDB' ) {
@@ -39,12 +39,12 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
         }
 
         const $card = AccountComponents.accountCard( txData );
-        V.setNode( $listingsUl, $card );
+        V.setNode( $list, $card );
       }
 
       // DemoContent.transactionsArr.forEach( cardData => {
       //   const $card = AccountComponents.accountCard( cardData );
-      //   V.setNode( $listingsUl, $card );
+      //   V.setNode( $list, $card );
       // } );
 
       // const $topsliderUl = AccountComponents.topSliderUl();
@@ -61,7 +61,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
           class: 'pxy fs-xl font-bold txt-center',
           html: 'Account of ' + V.getState( 'activeEntity' ).fullId,
         } ),
-        listings: $listingsUl,
+        listings: $list,
         position: 'top'
       };
 

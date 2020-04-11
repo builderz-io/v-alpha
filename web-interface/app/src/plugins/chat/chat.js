@@ -84,13 +84,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const $topsliderUl = ChatComponents.topSliderUl();
-    const $listingsUl = ChatComponents.listingsUl();
-
-    for ( const variable in DemoContent.chatData ) {
-      const $accountData = ChatComponents.chatSmallCard( variable, DemoContent.chatData );
-      V.setNode( $topsliderUl, $accountData );
-    }
+    const $list = CanvasComponents.list();
 
     const activeEntity = V.getState( 'activeEntity' );
     const messages = await V.getMessage();
@@ -98,20 +92,21 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     messages.data[0].forEach( cardData => {
       activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
       const $card = ChatComponents.message( cardData );
-      V.setNode( $listingsUl, $card );
+      V.setNode( $list, $card );
     } );
 
     // const $lastCard = ChatComponents.message( { sender: 'Me', msg: 'You\'ve sent 560 V to Sheela Anand #3565' } );
-    // V.setNode( $listingsUl, $lastCard );
+    // V.setNode( $list, $lastCard );
 
     const pageData = {
       topcontent: V.sN( {
         t: 'h2',
         c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
-        h: 'Conversation with Community #2121'
+        h: 'Chat with Everyone'
       } ),
-      listings: $listingsUl,
-      position: 'top'
+      listings: $list,
+      position: 'top',
+      scroll: 'bottom'
     };
 
     return pageData;
@@ -124,12 +119,17 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function setChatMessage( cardData ) {
-    console.log( 'socket', cardData );
+  function launch() {
+    // socket.on( 'community message', Chat.drawMessage );
+  }
+
+  function drawMessage( cardData ) {
+    const $list = V.getNode( 'list' );
     const activeEntity = V.getState( 'activeEntity' );
     activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
     const $card = ChatComponents.message( cardData );
-    V.setNode( '#chat', $card );
+    V.setNode( $list, $card );
+    $list.scrollTop = $list.scrollHeight + 75;
   }
 
   function drawMessageBox( options ) {
@@ -191,7 +191,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       const message = DOM.$box.value;
 
       V.setMessageBot( message ).then( res => {
-        console.log( 'res: ', res );
         if ( res.success ) {
           Account.drawHeaderBalance();
           DOM.$box.value = '';
@@ -216,9 +215,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    setChatMessage: setChatMessage,
+    drawMessage: drawMessage,
+    drawMessageBox: drawMessageBox,
     draw: draw,
-    drawMessageBox: drawMessageBox
+    launch: launch
   };
 
 } )();

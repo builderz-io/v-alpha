@@ -51,18 +51,6 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
     return $li;
   }
 
-  function listingsUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'listings__ul flex flex-wrap content-start justify-evenly overflow-y-scroll',
-      setStyle: {
-        listings__ul: {
-          height: '530px'
-        }
-      },
-    } );
-  }
-
   function featureUl() {
     return V.cN( {
       tag: 'ul'
@@ -72,7 +60,6 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   return {
     videoFeature: videoFeature,
     mediaCard: mediaCard,
-    listingsUl: listingsUl,
     featureUl: featureUl
   };
 

@@ -85,15 +85,15 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
       }
     };
 
-    const $listingsUl = DataComponents.listingsUl();
+    const $list = CanvasComponents.list();
     const $weatherCard = DataComponents.weatherCard( formattedWeatherDataNow, formattedWeatherDataForecast );
     // const $airCard = DataComponents.airCard( formattedAirQualityData );
 
-    V.setNode( $listingsUl, $weatherCard );
-    // V.setNode( $listingsUl, $airCard );
+    V.setNode( $list, $weatherCard );
+    // V.setNode( $list, $airCard );
 
     const pageData = {
-      listings: $listingsUl,
+      listings: $list,
       position: 'top'
     };
 

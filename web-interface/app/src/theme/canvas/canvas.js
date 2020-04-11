@@ -151,6 +151,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     Form.launch();
     Join.launch();
     Navigation.launch();
+    Chat.launch();
     Page.launch();
     VMap.launch();
     Google.launch();

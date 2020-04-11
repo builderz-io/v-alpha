@@ -51,8 +51,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     const mapData = [];
 
-    const $topsliderUl = MarketplaceComponents.topSliderUl();
-    const $listingsUl = MarketplaceComponents.listingsUl();
+    const $slider = CanvasComponents.slider();
+    const $list = CanvasComponents.list();
 
     const entities = await V.getEntity( which );
 
@@ -61,12 +61,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         mapData.push( { type: 'Feature', geometry: cardData.geometry } );
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
         const $card = MarketplaceComponents.entitiesCard( cardData );
-        V.setNode( $topsliderUl, $smallcard );
-        V.setNode( $listingsUl, $card );
+        V.setNode( $slider, $smallcard );
+        V.setNode( $list, $card );
       } );
     }
     else {
-      V.setNode( $topsliderUl, {
+      V.setNode( $slider, {
         t: 'p',
         h: 'No entities found'
       } );
@@ -76,8 +76,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     return {
       mapData: mapData,
       pageData: {
-        topslider: $topsliderUl,
-        listings: $listingsUl,
+        topslider: $slider,
+        listings: $list,
         position: 'peek',
       }
     };

@@ -1853,7 +1853,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       } );
   }
 
-  function setEtherTransaction( data ) {
+  function setCoinTransaction( data ) {
 
     const txObject = {
       from: data.initiatorAddress,
@@ -1919,7 +1919,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     getAddressState: getAddressState,
     getAddressHistory: getAddressHistory,
     setAddressVerification: setAddressVerification,
-    setEtherTransaction: setEtherTransaction,
+    setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
   };
 

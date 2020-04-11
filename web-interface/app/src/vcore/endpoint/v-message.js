@@ -3,12 +3,9 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   /**
   * Module to add messaging to the app
   *
-  *
   */
 
   'use strict';
-
-  const DOM = {};
 
   const triggers = {
     // NOTE: Adding request and transfer commands requires updating the backend language files also
@@ -168,16 +165,16 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   function getMessage(
     which = 'all'
   ) {
-    return V.getData( which, 'get message', V.getSetting( 'chatLedger' ) );
+    return V.getData( which, 'message', V.getSetting( 'chatLedger' ) );
   }
 
   function setMessage(
-    whichMessage,
+    whichMessage
   ) {
     const msgData = {};
     msgData.message = whichMessage;
     msgData.sender = V.getState( 'activeEntity' ).fullId;
-    return V.setData( msgData, 'set message', V.getSetting( 'chatLedger' ) );
+    return V.setData( msgData, 'message', V.getSetting( 'chatLedger' ) );
   }
 
   return {

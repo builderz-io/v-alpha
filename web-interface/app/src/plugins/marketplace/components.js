@@ -27,6 +27,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     case '9': return palette[0];
     }
   };
+
   const initials = ( cardData ) => {
     if ( cardData.image != undefined ) {
       return '';
@@ -115,29 +116,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function topSliderUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'flex overflow-x-scroll'
-    } );
-  }
-  function listingsUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'listings__ul flex flex-wrap content-start justify-evenly overflow-y-scroll',
-      setStyle: {
-        listings__ul: {
-          height: '530px'
-        }
-      },
-    } );
-  }
-
   return {
     entitiesSmallCard: entitiesSmallCard,
     entitiesCard: entitiesCard,
-    topSliderUl: topSliderUl,
-    listingsUl: listingsUl
   };
 
 } )();

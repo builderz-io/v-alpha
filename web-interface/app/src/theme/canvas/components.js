@@ -1,8 +1,7 @@
 const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Frame Components
-   *
+   * V Canvas Components
    *
    */
 
@@ -145,12 +144,27 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
   function topSlider() {
     return V.setNode( {
-      tag: 'topslider',
+      tag: 'topslider'
     } );
   }
+
+  function slider() {
+    return V.castNode( {
+      tag: 'slider',
+      classes: 'flex overflow-x-scroll list-none'
+    } );
+  }
+
   function listings() {
     return V.setNode( {
-      tag: 'listings',
+      tag: 'listings'
+    } );
+  }
+
+  function list() {
+    return V.setNode( {
+      tag: 'list',
+      classes: 'flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
     } );
   }
 
@@ -192,7 +206,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     interactions: interactions,
     handle: handle,
     topSlider: topSlider,
+    slider: slider,
     listings: listings,
+    list: list,
     header: header,
     page: page,
     content: content

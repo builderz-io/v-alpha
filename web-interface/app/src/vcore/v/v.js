@@ -80,7 +80,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     getAddressState: VWeb3.getAddressState,
     getAddressHistory: VWeb3.getAddressHistory,
     setAddressVerification: VWeb3.setAddressVerification,
-    setEtherTransaction: VWeb3.setEtherTransaction,
+    setCoinTransaction: VWeb3.setCoinTransaction,
     setTokenTransaction: VWeb3.setTokenTransaction,
 
   };

@@ -78,23 +78,23 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       V.debug( error );
     } );
 
-    socket.on( 'community message', Chat.setChatMessage );
+    socket.on( 'community message', Chat.drawMessage );
   }
 
   function setData( data, whichEndpoint, whichLedger ) {
 
     if ( whichLedger == 'MongoDB' ) {
-
-      /**
-       * @notice setData == getData in case of MongoDB
-       */
-
-      return getData( data, whichEndpoint, whichLedger );
+      return new Promise( resolve => {
+        // MongoDB requires 'data' and 'whichEndpoint' switched
+        socket.emit( 'set ' + whichEndpoint, data, function( res ) {
+          resolve( res );
+        } );
+      } );
     }
-    if ( whichLedger == 'EVM' ) {
-      if ( whichEndpoint == 'set transaction' ) {
+    else if ( whichLedger == 'EVM' ) {
+      if ( whichEndpoint == 'transaction' ) {
         if ( data.currency == 'ETH' ) {
-          return V.setEtherTransaction( data );
+          return V.setCoinTransaction( data );
         }
         else if ( data.currency == 'V' ) {
           return V.setTokenTransaction( data );
@@ -104,41 +104,31 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         return V.setAddressVerification( data );
       }
     }
-    if ( whichLedger == '3Box' ) {
+    else if ( whichLedger == '3Box' ) {
       return V.set3BoxSpace( whichEndpoint, data );
     }
   }
 
   function getData( data, whichEndpoint, whichLedger ) {
     if ( whichLedger == 'MongoDB' ) {
-
-      /**
-      * @notice MongoDB requires 'data' and 'options' switched
-      */
-
-      // TODO: error handling
-
-      if ( whichEndpoint == 'get transaction' ) {
-        data = V.getState( 'activeEntity' ).fullId;
-      }
-
       return new Promise( resolve => {
-        socket.emit( whichEndpoint, data, function( res ) {
+        // MongoDB requires 'data' and 'whichEndpoint' switched
+        socket.emit( 'get ' + whichEndpoint, data, function( res ) {
           resolve( res );
         } );
       } );
     }
-    if ( whichLedger == 'EVM' ) {
-      if ( whichEndpoint == 'get transaction' ) {
+    else if ( whichLedger == 'EVM' ) {
+      if ( whichEndpoint == 'transaction' ) {
         return V.getAddressHistory();
       }
     }
-    if ( whichLedger == '3Box' ) {
+    else if ( whichLedger == '3Box' ) {
       return V.get3BoxSpace( data ).then( res => {
         return res;
       } );
     }
-    if ( whichLedger == 'http' ) {
+    else if ( whichLedger == 'http' ) {
       return http( data );
     }
   }

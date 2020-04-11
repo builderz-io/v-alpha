@@ -85,8 +85,10 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  async function getTransaction( which ) {
-    return V.getData( which, 'get transaction', V.getSetting( 'transactionLedger' ) );
+  async function getTransaction(
+    which = V.getState( 'activeEntity' ).fullId
+  ) {
+    return V.getData( which, 'transaction', V.getSetting( 'transactionLedger' ) );
   }
 
   async function setTransaction( which ) {
@@ -99,7 +101,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return Promise.resolve( { status: 'error', message: 'no active entity' } );
     }
     else {
-      return V.setData( txData, 'set transaction', V.getSetting( 'transactionLedger' ) );
+      return V.setData( txData, 'transaction', V.getSetting( 'transactionLedger' ) );
     }
   }
 

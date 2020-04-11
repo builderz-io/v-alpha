@@ -216,22 +216,9 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function listingsUl() {
-    return V.setNode( {
-      tag: 'ul',
-      classes: 'listings__ul flex flex-wrap content-start justify-evenly overflow-y-scroll',
-      setStyle: {
-        listings__ul: {
-          height: '530px'
-        }
-      },
-    } );
-  }
-
   return {
     weatherCard: weatherCard,
-    airCard: airCard,
-    listingsUl: listingsUl
+    airCard: airCard
   };
 
 } )();

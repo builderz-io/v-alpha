@@ -131,31 +131,11 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function topSliderUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'flex overflow-x-scroll'
-    } );
-  }
-  function listingsUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'listings__ul flex flex-wrap justify-evenly overflow-y-scroll content-start',
-      setStyle: {
-        listings__ul: {
-          height: '530px'
-        }
-      },
-    } );
-  }
-
   return {
     headerBalance: headerBalance,
     accountBalance: accountBalance,
     accountSmallCard: accountSmallCard,
     accountCard: accountCard,
-    topSliderUl: topSliderUl,
-    listingsUl: listingsUl
   };
 
 } )();

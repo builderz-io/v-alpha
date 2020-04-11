@@ -41,38 +41,22 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'set entity', handleEntity.register );
 
-  client.on( 'verification', handleEntity.verify );
+  client.on( 'get entity by role', handleEntity.findByRole );
+
+  client.on( 'get entity by evmAddress', handleEntity.findByEvmAddress );
+
+  client.on( 'get entity by fullId', handleEntity.findByFullId );
+
+  client.on( 'set verification', handleEntity.verify );
 
   client.on( 'tags', handleEntity.getTags );
-
-  client.on( 'role', handleEntity.findByRole );
-
-  client.on( 'evmAddress', handleEntity.findByEvmAddress );
-
-  client.on( 'fullId', handleEntity.findByFullId );
 
   client.on( 'set message', handleMessage.set );
 
   client.on( 'get message', handleMessage.get );
 
-  client.on( 'nukeme', function( req, res ) {
-    // TODO
-    res( { status: 'error', message: 'Cannot currently nuke entities' } );
-  } );
-
-  client.on( 'crashapp', function( req, res ) {
-    // TODO
-    res( { status: 'error', message: 'App in production, cannot be crashed' } );
-  } );
-
   client.on( 'set transaction', handleTransaction.updateEntities );
 
   client.on( 'get transaction', handleTransaction.findTransaction );
-  //
-  // client.on( 'transaction', function( req, res ) {
-  //   // TODO
-  //   console.log( req );
-  //   res( { status: 'error', message: 'need to code tx still' } );
-  // } );
 
 } );

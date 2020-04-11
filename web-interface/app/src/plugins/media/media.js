@@ -33,18 +33,18 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const $listingsUl = MediaComponents.listingsUl();
+    const $list = CanvasComponents.list();
 
     const entities = await V.getEntity( which );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
         const $card = MediaComponents.mediaCard( cardData );
-        V.setNode( $listingsUl, $card );
+        V.setNode( $list, $card );
       } );
     }
     else {
-      V.setNode( $listingsUl, V.sN( {
+      V.setNode( $list, V.sN( {
         t: 'p',
         h: 'No entities found'
       } ) );
@@ -53,7 +53,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const pageData = {
       // feature: $featureUl,
-      listings: $listingsUl,
+      listings: $list,
       // position: 'feature'
     };
 

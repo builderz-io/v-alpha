@@ -160,7 +160,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         // adjusted from LukePH https://stackoverflow.com/questions/907279/jquery-animate-moving-dom-element-to-new-parent
 
         let classes = ' absolute font-medium';
-        if ( $itemClicked.getAttribute( 'idfy' ) > 1000 ) {
+        if ( $itemClicked.getAttribute( 'cid' ) > 1000 ) {
           classes += ' fs-rr';
         }
 

@@ -153,10 +153,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       filter = 'fullId';
     }
 
-    return V.getData( which, filter, V.getSetting( 'entityLedger' ) );
+    return V.getData( which, 'entity by ' + filter, V.getSetting( 'entityLedger' ) );
   }
 
-  async function setEntity( entityData, options = 'set entity' ) {
+  async function setEntity( entityData, options = 'entity' ) {
 
     if ( options == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
