@@ -77,6 +77,8 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     socket.on( 'connect_error', ( error ) => {
       V.debug( error );
     } );
+
+    socket.on( 'community message', Chat.setChatMessage );
   }
 
   function setData( data, whichEndpoint, whichLedger ) {

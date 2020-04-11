@@ -76,6 +76,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   const placeholder = V.i18n( 'Send message or funds' );
 
+  // socket.on( 'community message', function setChatMessage( data ) {
+  //   console.log( 'socket', data );
+  // } );
+
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -119,6 +123,14 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ============ public methods and exports ============ */
+
+  function setChatMessage( cardData ) {
+    console.log( 'socket', cardData );
+    const activeEntity = V.getState( 'activeEntity' );
+    activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+    const $card = ChatComponents.message( cardData );
+    V.setNode( '#chat', $card );
+  }
 
   function drawMessageBox( options ) {
     if ( options == 'clear' ) {
@@ -204,6 +216,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    setChatMessage: setChatMessage,
     draw: draw,
     drawMessageBox: drawMessageBox
   };

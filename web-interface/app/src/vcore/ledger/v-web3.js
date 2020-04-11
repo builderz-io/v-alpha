@@ -1540,6 +1540,13 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       try {
       // Request account access
         await window.ethereum.enable();
+
+        return {
+          success: true,
+          status: 'provider set',
+          data: [ provider ]
+        };
+
       }
       catch ( error ) {
       // User denied account access...
@@ -1553,18 +1560,22 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     else if ( window.web3 ) {
       // console.log( 'web3 is there' );
       provider = window.web3.currentProvider;
+
+      return {
+        success: true,
+        status: 'legacy provider set',
+        data: [ provider ]
+      };
     }
     // If no injected web3 instance is detected, fall back to Ganache
     else {
       //  console.log( 'local network is there' );
       //  provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
+      return {
+        success: false,
+        status: 'web3 provider not found',
+      };
     }
-
-    return {
-      success: true,
-      status: 'provider set',
-      data: [ provider ]
-    };
 
   }
 
@@ -1663,15 +1674,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
         };
       }
       else {
-        if ( !res.success ) {
-          return res;
-        }
-        else {
-          return {
-            success: false,
-            status: 'web3 provider not found',
-          };
-        }
+        return res;
       }
     } );
   }

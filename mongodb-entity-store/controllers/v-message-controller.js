@@ -1,4 +1,5 @@
 const ChatDB = require( '../models/v-message-model' );
+const sio = require( '../server' ).sio;
 
 exports.set = function( req, res ) {
 
@@ -21,6 +22,9 @@ exports.set = function( req, res ) {
       } );
     }
     else {
+
+      sio.emit( 'community message', newMessage );
+
       res( {
         success: true,
         status: 'new message saved'
