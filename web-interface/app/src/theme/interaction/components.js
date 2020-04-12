@@ -98,7 +98,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: formClasses,
-      a: { placeholder: V.i18n( 'Search' ) }
+      a: { placeholder: V.i18n( 'Search', 'placeholder' ) }
     } );
   }
 
@@ -106,7 +106,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: formClasses,
-      a: { placeholder: V.i18n( 'Your preferred name' ) }
+      a: { placeholder: V.i18n( 'Your preferred name', 'placeholder' ) }
     } );
   }
 
@@ -114,7 +114,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: 'plusform__title ' + formClasses,
-      a: { placeholder: V.i18n( 'Title' ) }
+      a: { placeholder: V.i18n( 'Title', 'placeholder' ) }
     } );
   }
 
@@ -123,7 +123,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'input',
       i: 'plusform__loc',
       c: 'plusform__loc ' + formClasses,
-      a: { placeholder: V.i18n( 'Location' ) }
+      a: { placeholder: V.i18n( 'Location', 'placeholder' ) }
     } );
   }
 
@@ -147,7 +147,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'textarea',
       c: 'plusform__desc ' + formClasses,
-      a: { placeholder: V.i18n( 'Description' ) }
+      a: { placeholder: V.i18n( 'Description', 'placeholder' ) }
     } );
   }
 
@@ -155,7 +155,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: 'plusform__target w-1/3 m-2 mr-2 pxy rounded border-blackalpha',
-      a: { placeholder: V.i18n( 'Price' ) }
+      a: { placeholder: V.i18n( 'Price', 'placeholder' ) }
     } );
   }
 
@@ -163,7 +163,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: 'plusform__unit w-1/3 m-2 pxy rounded border-blackalpha',
-      a: { placeholder: V.i18n( 'Unit' ) }
+      a: { placeholder: V.i18n( 'Unit', 'placeholder' ) }
     } );
   }
 
@@ -215,7 +215,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       h: V.cN( {
         t: 'div',
         c: 'modal__close',
-        h: V.i18n( 'Close' ),
+        h: V.i18n( 'Close', 'modal' ),
         click: modalClose
       } ),
       click: modalClose
@@ -250,7 +250,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       a: {
-        placeholder: V.i18n( 'Choose preferred name' ),
+        placeholder: V.i18n( 'Choose preferred name', 'placeholder' ),
       },
       click: stopProp
     } );

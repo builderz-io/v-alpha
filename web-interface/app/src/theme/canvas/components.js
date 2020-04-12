@@ -10,7 +10,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function notFound() {
     return V.setNode( {
       t: 'p',
-      h: V.i18n( 'No entries found' )
+      h: V.i18n( 'No entries found', 'theme' )
     } );
   }
 

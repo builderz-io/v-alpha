@@ -41,14 +41,6 @@ exports.findByRole = async function( req, res ) {
 
 };
 
-exports.findByTag = async function( req, res ) {
-
-  const find = { 'profile.tag': req };
-
-  res( await findEntity( find ) );
-
-};
-
 exports.findByEvmAddress = async function( req, res ) {
 
   const find = { 'evmCredentials.address': req };
@@ -271,29 +263,4 @@ exports.verify = function( req, cb ) {
     } );
   } );
 
-};
-
-exports.getTags = function( req, res ) {
-
-  const name = req.for;
-
-  EntityDB.find( { 'profile.title': name }, { profile: true } ).exec( ( err, entities ) => {
-    if ( err ) {
-      res( {
-        success: false,
-        status: 'error',
-        message: err
-      } );
-    }
-    else {
-      const tags = [];
-      entities.forEach( item => {tags.push( item.profile.tag )} );
-      res( {
-        success: true,
-        status: 'success',
-        message: 'Tags retrieved successfully',
-        data: tags
-      } );
-    }
-  } );
 };

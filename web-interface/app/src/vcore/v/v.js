@@ -43,8 +43,8 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     castRemToPixel: VDom.castRemToPixel,
 
     /* Helper */
+    castEntityTitle: VEntity.castEntityTitle,
     castInitials: VHelper.castInitials,
-    castEntityTitle: VHelper.castEntityTitle,
     castCamelCase: VHelper.castCamelCase,
     castLinks: VHelper.castLinks,
     castTime: VHelper.castTime,

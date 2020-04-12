@@ -144,12 +144,12 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           Account.drawHeaderBalance();
           DOM.$form.value = '';
-          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status ) );
+          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           console.log( res.status );
         }
         else {
           DOM.$form.value = '';
-          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status ) );
+          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           console.error( 'try again, because: ', res.status );
         }
       } );

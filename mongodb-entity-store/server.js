@@ -49,7 +49,7 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'set verification', handleEntity.verify );
 
-  client.on( 'tags', handleEntity.getTags );
+  // client.on( 'tags', handleEntity.getTags );
 
   client.on( 'set message', handleMessage.set );
 

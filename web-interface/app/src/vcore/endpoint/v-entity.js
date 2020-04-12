@@ -21,11 +21,32 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function castEntity( entityData ) {
-    const all = await Promise.all( [
-      castTag( entityData.title ),
-      V.getContractState()
-    ] );
-    const title = V.castEntityTitle( entityData.title );
+
+    // check whether we have a valid title
+    const title = castEntityTitle( entityData.title, entityData.role );
+
+    if ( !title.success ) {
+      return {
+        success: false,
+        status: 'invalid title'
+      };
+    }
+
+    const tag = castTag();
+    const fullId = title.data[0] + ' ' + tag;
+
+    // check whether this title and tag combination exists, otherwise start again
+    const exists = await getEntity( fullId );
+
+    if ( exists.success ) { // success is not a good thing here ;)
+      console.log( 'entity already exists:', exists.data[0].fullId );
+      castEntity( entityData );
+      return {
+        success: false,
+        status: 'entity exists'
+      };
+    }
+
     const address = entityData.evmAddress ? entityData.evmAddress : V.getState( 'activeAddress' );
 
     const d = new Date();
@@ -48,18 +69,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const newEntity = {
-      fullId: title + ' ' + all[0],
+      fullId: fullId,
       evmAddress: address,
       profile: {
-        fullId: title + ' ' + all[0],
-        title: title,
-        tag: all[0],
+        fullId: fullId,
+        title: title.data[0],
+        tag: tag,
         role: entityData.role ? entityData.role : 'network',
         verified: false,
         joined: {
           date: date,
           unix: unix,
-          block: all[1].success ? all[1].data[0].currentBlock : 0,
+          // block: all[1].success ? all[1].data[0].currentBlock : 0,
         },
         status: 'active'
       },
@@ -75,15 +96,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       geometry: geometry,
     };
 
-    return newEntity;
+    return {
+      success: true,
+      status: 'cast entity',
+      data: [ newEntity ]
+    };
   }
 
-  async function castTag( title ) {
+  function castTag() {
 
     // for testing and demo content creation
-    return '#2121';
-
-    const existingTagsForName = await V.getData( { for: title }, 'tags', V.getSetting( 'entityLedger' ) );
+    // return '#2121';
 
     let continueDice = true;
 
@@ -103,8 +126,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         number1 + number2 != '13' && // bad luck in Germany
         number3 + number2 != '13' &&
         number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21' &&
-        existingTagsForName.data.indexOf( '#' + number1 + number2 + number3 + number2 ) == -1
+        number3 + number2 != '21'
       ) {
         continueDice = false;
         return '#' + number1 + number2 + number3 + number2;
@@ -112,7 +134,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function validateTitle( title, role ) {
+  /* ============ public methods and exports ============ */
+
+  function castEntityTitle( title, role ) {
 
     var checkLength = title.split( ' ' ).length;
     var wordLengthExeeded = title.split( ' ' ).map( item => { return item.length > entitySetup.maxWordLength } );
@@ -130,15 +154,34 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
          ( ['member', 'network'].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
          wordLengthExeeded.includes( true )
     ) {
-      return false;
+      return {
+        success: false,
+        status: 'invalid title'
+      };
     }
     else {
-      return true;
+
+      const titleArray = title.trim().toLowerCase().split( ' ' );
+
+      const formattedTitle = titleArray.map( function( string ) {
+        if ( string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+          return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
+        }
+        if ( string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+          return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
+        }
+        else {
+          return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
+        }
+      } ).join( ' ' );
+
+      return {
+        success: true,
+        status: 'cast entity title',
+        data: [ formattedTitle ]
+      };
     }
-
   }
-
-  /* ============ public methods and exports ============ */
 
   function getEntity(
     // defaults to searching all entities (by 'role')
@@ -162,11 +205,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
     }
     else {
-      const validTitle = validateTitle( entityData.title, entityData.role );
 
-      if ( validTitle ) {
-        const entityCast = await castEntity( entityData );
-        return V.setData( entityCast, options, V.getSetting( 'entityLedger' ) );
+      const entityCast = await castEntity( entityData );
+
+      if ( entityCast.success ) {
+        return V.setData( entityCast.data[0], options, V.getSetting( 'entityLedger' ) );
       }
       else {
         return Promise.resolve( {
@@ -245,6 +288,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    castEntityTitle: castEntityTitle,
     getEntity: getEntity,
     setEntity: setEntity,
     getActiveEntityData: getActiveEntityData

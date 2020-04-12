@@ -18,8 +18,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     const messageParts = data.slice(),
       date = Date.now(),
       timeSecondsUNIX = Number( Math.floor( date / 1000 ) ),
-      forIndex = messageParts.indexOf( V.i18n( 'for' ) ),
-      toIndex = messageParts.indexOf( V.i18n( 'to' ) );
+      forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger' ) ),
+      toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger' ) );
 
     // extract reference
     let reference = '', recipient = '', amount = 0;

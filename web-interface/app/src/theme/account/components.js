@@ -11,7 +11,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       tag: 'p',
       class: 'pxy fs-xl font-bold txt-center',
-      html: V.i18n( 'Account of ' ) + fullId,
+      html: V.i18n( 'Account of', 'account' ) + ' ' + fullId,
     } );
   }
 
