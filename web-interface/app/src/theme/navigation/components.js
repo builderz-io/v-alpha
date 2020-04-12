@@ -42,7 +42,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function entitiesUl() {
+  function entityNavUl() {
     return V.setNode( {
       tag: 'ul',
       classes: 'entities-nav__ul flex items-center font-medium fs-rr',
@@ -61,7 +61,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function navUl() {
+  function serviceNavUl() {
     return V.setNode( {
       tag: 'ul',
       classes: 'app-nav__ul flex items-center font-medium',
@@ -82,8 +82,8 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     pill: pill,
-    entitiesUl: entitiesUl,
-    navUl: navUl
+    entityNavUl: entityNavUl,
+    serviceNavUl: serviceNavUl
   };
 
 } )();

@@ -160,8 +160,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function drawFirstViews() {
 
-    Navigation.draw( 'nav', { keep: 3 } );
-    Navigation.draw( 'entities', { keep: 5 } );
+    Navigation.draw( 'service-nav', { keep: 3 } );
+    Navigation.draw( 'entity-nav', { keep: 5 } );
 
     setTimeout( Marketplace.draw, 300 );
 

@@ -82,13 +82,13 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
   function entities() {
     return V.setNode( {
-      tag: 'entities',
+      tag: 'entity-nav',
       classes: 'entities-nav fixed w-screen overflow-x-scroll',
     } );
   }
   function nav() {
     return V.setNode( {
-      tag: 'nav',
+      tag: 'service-nav',
       classes: 'app-nav fixed w-screen overflow-x-scroll',
     } );
   }
