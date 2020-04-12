@@ -27,6 +27,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     case '9': return palette[0];
     }
   };
+
   const initials = ( cardData ) => {
     if ( cardData.image != undefined ) {
       return '';
@@ -37,11 +38,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   function entitiesSmallCard( cardData ) {
     return V.castNode( {
       tag: 'li',
-      setStyle:
-        `.circle-3 {
-          width: 4.5rem;
-          height: 4.5rem
-        }`,
       classes: 'pxy',
       html: `<smallcard class="smallcard__container flex rounded bkg-white pxy">
               <a href="#" target="_blank">
@@ -53,48 +49,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function entitiesCard( cardData ) {
-
-    const cardLeftWidth = 25;
-
+  function cardContent( cardData ) {
     return V.castNode( {
-      tag: 'li',
-      classes: 'pxy',
-      setStyle: {
-        'circle-2': {
-          width: '3.5rem',
-          height: '3.5rem'
-        },
-        'circle-3': {
-          width: '4.5rem',
-          height: '4.5rem'
-        },
-        'card__container': {
-          'height': 'var(--card-height)',
-          'max-width': '360px',
-          'flex-wrap': 'wrap'
-        },
-        'card__top-left': {
-          width: cardLeftWidth + '%',
-        },
-        'card__bottom-left': {
-          'display': 'grid',
-          'justify-items': 'center',
-          'text-align': 'center',
-          'width': cardLeftWidth + '%',
-        },
-        'card__top-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__bottom-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__unit': {
-          width: '100%'
-        }
-      },
-      html: `<card class="card__container flex card-shadow rounded bkg-white pxy">
-              <div class="card__top-left flex justify-center items-center">
+      tag: 'div',
+      c: 'contents',
+      html: `<div class="card__top-left flex justify-center items-center">
                 <div class="circle-3 flex justify-center items-center rounded-full"
                      style="background: ${background( cardData )}; background-position: center center; background-size: cover;">
                   <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData )}</div>
@@ -110,34 +69,13 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
               <div class="card__bottom-right pxy">
                 <p>${cardData.properties.description}</p>
                 <p>in ${cardData.properties.location}</p>
-              </div>
-            </card>`
-    } );
-  }
-
-  function topSliderUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'flex overflow-x-scroll'
-    } );
-  }
-  function listingsUl() {
-    return V.castNode( {
-      tag: 'ul',
-      classes: 'listings__ul flex flex-wrap content-start justify-evenly overflow-y-scroll',
-      setStyle: {
-        listings__ul: {
-          height: '530px'
-        }
-      },
+              </div>`
     } );
   }
 
   return {
     entitiesSmallCard: entitiesSmallCard,
-    entitiesCard: entitiesCard,
-    topSliderUl: topSliderUl,
-    listingsUl: listingsUl
+    cardContent: cardContent,
   };
 
 } )();

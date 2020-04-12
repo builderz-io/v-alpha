@@ -12,53 +12,21 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
     const cardLeftWidth = 25;
 
     return V.setNode( {
-      tag: 'li',
-      classes: 'pxy',
+      tag: 'div',
+      classes: 'contents',
       setStyle: {
-        'icon': {
+        icon: {
           height: '80px',
           position: 'relative',
           bottom: '3px',
           left: '2px',
         },
-        'forecast': {
+        forecast: {
           'width': '57px',
           'text-align': '-moz-center'
-        },
-        'circle-2': {
-          width: '3.5rem',
-          height: '3.5rem'
-        },
-        'circle-3': {
-          width: '4.5rem',
-          height: '4.5rem'
-        },
-        'card__container': {
-          'height': 'var(--card-height)',
-          'max-width': '360px',
-          'flex-wrap': 'wrap'
-        },
-        'card__top-left': {
-          width: cardLeftWidth + '%',
-        },
-        'card__bottom-left': {
-          'display': 'grid',
-          'justify-items': 'center',
-          'text-align': 'center',
-          'width': cardLeftWidth + '%',
-        },
-        'card__top-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__bottom-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__unit': {
-          width: '100%'
         }
       },
-      html: '<card class="card__container flex card-shadow rounded bkg-white pxy">' +
-              '<div class="card__top-left flex justify-center items-center">' +
+      html: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-3 flex justify-center items-center rounded-full" style="background: antiquewhite; background-position: center center; background-size: cover;">' +
                   '<div class="card__initials font-bold fs-xxl txt-white"><img src="' + cardData.iconUrl + '"></div>' +
                 '</div>' +
@@ -102,8 +70,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
                   '</div>' +
                 '</div>' +
       // '<p>' + cardData.sunrise + '<br/>' + cardData.sunset + '</p>' +
-              '</div>' +
-            '</card>'
+              '</div>'
     } );
   }
 
@@ -151,53 +118,21 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
     const cardLeftWidth = 25;
 
     return V.setNode( {
-      tag: 'li',
-      classes: 'pxy',
+      tag: 'div',
+      classes: 'contents',
       setStyle: {
-        'icon': {
+        icon: {
           height: '80px',
           position: 'relative',
           bottom: '3px',
           left: '2px',
         },
-        'forecast': {
+        forecast: {
           'width': '57px',
           'text-align': '-moz-center'
         },
-        'circle-2': {
-          width: '3.5rem',
-          height: '3.5rem'
-        },
-        'circle-3': {
-          width: '4.5rem',
-          height: '4.5rem'
-        },
-        'card__container': {
-          'height': 'var(--card-height)',
-          'max-width': '360px',
-          'flex-wrap': 'wrap'
-        },
-        'card__top-left': {
-          width: cardLeftWidth + '%',
-        },
-        'card__bottom-left': {
-          'display': 'grid',
-          'justify-items': 'center',
-          'text-align': 'center',
-          'width': cardLeftWidth + '%',
-        },
-        'card__top-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__bottom-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__unit': {
-          width: '100%'
-        }
       },
-      html: '<card class="card__container flex card-shadow rounded bkg-white pxy">' +
-              '<div class="card__top-left flex justify-center items-center">' +
+      html: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-2 flex justify-center items-center rounded-full" style="background-color: ' + level( cardData.pollution.aqius ).c + ';background-position: center center; background-size: cover;">' +
                 '</div>' +
               '</div>' +
@@ -210,28 +145,13 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
               '</div>' +
               '<div class="card__bottom-right pxy">' +
                 '<p>' + level( cardData.pollution.aqius ).h + '</p>' +
-
-              '</div>' +
-            '</card>'
-    } );
-  }
-
-  function listingsUl() {
-    return V.setNode( {
-      tag: 'ul',
-      classes: 'listings__ul flex flex-wrap content-start justify-evenly overflow-y-scroll',
-      setStyle: {
-        listings__ul: {
-          height: '530px'
-        }
-      },
+              '</div>'
     } );
   }
 
   return {
     weatherCard: weatherCard,
-    airCard: airCard,
-    listingsUl: listingsUl
+    airCard: airCard
   };
 
 } )();

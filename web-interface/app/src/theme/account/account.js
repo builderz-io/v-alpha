@@ -19,8 +19,16 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const pageState = V.getState( 'page' );
 
     if ( pageState.height != pageState.topCalc ) {
+      const $topcontent = AccountComponents.topcontent( V.getState( 'activeEntity' ).fullId );
+      const $list = CanvasComponents.list( 'narrow' );
+
       const transactions = await V.getTransaction();
-      const $listingsUl = AccountComponents.listingsUl();
+
+      if( !transactions.success ) {
+        return {
+          topcontent: CanvasComponents.notFound(),
+        };
+      }
 
       for ( const txData of transactions.data[0].reverse() ) {
         if ( V.getSetting( 'transactionLedger' ) != 'MongoDB' ) {
@@ -38,13 +46,14 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
           txData.title = 'Community Payout';
         }
 
-        const $card = AccountComponents.accountCard( txData );
-        V.setNode( $listingsUl, $card );
+        const $cardContent = AccountComponents.accountCard( txData );
+        const $card = CanvasComponents.card( $cardContent );
+        V.setNode( $list, $card );
       }
 
       // DemoContent.transactionsArr.forEach( cardData => {
       //   const $card = AccountComponents.accountCard( cardData );
-      //   V.setNode( $listingsUl, $card );
+      //   V.setNode( $list, $card );
       // } );
 
       // const $topsliderUl = AccountComponents.topSliderUl();
@@ -56,21 +65,13 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       const pageData = {
       // topslider: $topsliderUl,
-        topcontent: V.cN( {
-          tag: 'p',
-          class: 'pxy fs-xl font-bold txt-center',
-          html: 'Account of ' + V.getState( 'activeEntity' ).fullId,
-        } ),
-        listings: $listingsUl,
+        topcontent: $topcontent,
+        listings: $list,
         position: 'top'
       };
 
       return pageData;
     }
-    else {
-      return null;
-    }
-
   }
 
   function view( pageData ) {

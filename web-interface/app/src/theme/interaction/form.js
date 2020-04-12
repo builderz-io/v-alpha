@@ -52,7 +52,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( formData.error == 'invalid title' ) {
       DOM.$formtitle = V.getNode( '.plusform__title' );
-      DOM.$formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title' ) );
+      DOM.$formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
       DOM.$formtitle.value = '';
       DOM.$formtitle.className += ' border-error';
     }

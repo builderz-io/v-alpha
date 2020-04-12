@@ -42,38 +42,26 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function entitiesUl() {
+  function entityNavUl() {
     return V.setNode( {
       tag: 'ul',
-      classes: 'entities-nav__ul flex items-center font-medium fs-rr',
+      classes: 'entity-nav__ul flex items-center font-medium fs-rr',
       setStyle: {
-        'entities-nav': {
-          'padding-top': '4px',
-          'padding-bottom': '8px',
-          'top': 'var(--entities-nav-top)',
-          'left': 'var(--entities-nav-left)'
-        },
-        'entities-nav__ul': {
-          'width': '1000px',
+        'entity-nav__ul': {
+          'width': '600px',
           'padding-left': '3px' /* needed for selected shadow */
         }
       }
     } );
   }
 
-  function navUl() {
+  function serviceNavUl() {
     return V.setNode( {
       tag: 'ul',
-      classes: 'app-nav__ul flex items-center font-medium',
+      classes: 'service-nav__ul flex items-center font-medium',
       setStyle: {
-        'app-nav': {
-          'padding-top': '4px',
-          'padding-bottom': '28px',
-          'top': 'var(--app-nav-top)',
-          'left': 'var(--app-nav-left)'
-        },
-        'app-nav__ul': {
-          'width': '1000px',
+        'service-nav__ul': {
+          'width': '600px',
           'padding-left': '3px' /* needed for selected shadow */
         }
       }
@@ -82,8 +70,8 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     pill: pill,
-    entitiesUl: entitiesUl,
-    navUl: navUl
+    entityNavUl: entityNavUl,
+    serviceNavUl: serviceNavUl
   };
 
 } )();

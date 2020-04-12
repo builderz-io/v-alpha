@@ -8,27 +8,20 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
 
-  function cacheDom() {
-    DOM.$nav = V.getNode( 'nav' );
-    DOM.$entities = V.getNode( 'entities' );
-  }
-
   function checkCookies() {
-    const navState = V.getCookie( 'nav-state' );
+    const navState = V.getCookie( 'service-nav-state' );
     const navItems = Object.values( V.getState( 'serviceNav' ) );
     if ( !navState || JSON.parse( navState ).length != navItems.length ) {
-      V.setCookie( 'nav-state', navItems );
+      V.setCookie( 'service-nav-state', navItems );
     }
 
-    const entitiesState = V.getCookie( 'entities-state' );
+    const entitiesState = V.getCookie( 'entity-nav-state' );
     const entitiesItems = Object.values( V.getState( 'entityNav' ) ); // DemoContent.entitiesNavArr;
 
     if ( !entitiesState || JSON.parse( entitiesState ).length != entitiesItems.length ) {
-      V.setCookie( 'entities-state', entitiesItems );
+      V.setCookie( 'entity-nav-state', entitiesItems );
     }
   }
 
@@ -39,11 +32,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     let $rowUl;
 
-    if ( which == 'entities' ) {
-      $rowUl = NavComponents.entitiesUl();
+    if ( which == 'entity-nav' ) {
+      $rowUl = NavComponents.entityNavUl();
     }
-    else if ( which == 'nav' ) {
-      $rowUl = NavComponents.navUl();
+    else if ( which == 'service-nav' ) {
+      $rowUl = NavComponents.serviceNavUl();
     }
 
     const orderedRow = rowData.sort( function( a, b ) {
@@ -70,11 +63,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     rowData.ul.addEventListener( 'click', menuItemClickHandler );
 
-    if ( rowData.row == 'entities' ) {
-      V.setNode( DOM.$entities, rowData.ul );
+    if ( rowData.row == 'entity-nav' ) {
+      V.setNode( 'entity-nav', rowData.ul );
     }
-    else if ( rowData.row == 'nav' ) {
-      V.setNode( DOM.$nav, rowData.ul );
+    else if ( rowData.row == 'service-nav' ) {
+      V.setNode( 'service-nav', rowData.ul );
     }
 
     function menuItemClickHandler( e ) {
@@ -100,7 +93,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         const menuStateObj = V.getState( 'menu' );
         const row = $itemClicked.parentNode.parentNode.localName;
         const itemClickedRect = $itemClicked.getBoundingClientRect();
-        const otherRow = row == 'nav' ? 'entities' : 'nav';
+        const otherRow = row == 'service-nav' ? 'entity-nav' : 'service-nav';
 
         select( $itemClicked );
         movingPillAnimation( row, $itemClicked, itemClickedRect, menuStateObj );
@@ -160,7 +153,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         // adjusted from LukePH https://stackoverflow.com/questions/907279/jquery-animate-moving-dom-element-to-new-parent
 
         let classes = ' absolute font-medium';
-        if ( $itemClicked.getAttribute( 'idfy' ) > 1000 ) {
+        if ( $itemClicked.getAttribute( 'cid' ) > 1000 ) {
           classes += ' fs-rr';
         }
 
@@ -221,16 +214,16 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     deselect( menuStateObj );
 
-    V.getNode( 'entities' ).scrollLeft = 0;
-    V.getNode( 'nav' ).scrollLeft = 0;
+    V.getNode( 'entity-nav' ).scrollLeft = 0;
+    V.getNode( 'service-nav' ).scrollLeft = 0;
 
-    V.setAnimation( 'entities', {
+    V.setAnimation( 'entity-nav', {
       // scrollLeft: 0,
       height: defaultHeight,
       width: width
     }, { duration: 1 } );
 
-    V.setAnimation( 'nav', {
+    V.setAnimation( 'service-nav', {
       // scrollLeft: 0,
       height: defaultHeight,
       width: width,
@@ -242,14 +235,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     Haze.draw( { fade: 'out' } );
     Form.draw( 'all', { fade: 'out' } );
     Button.draw( 'all', { fade: 'out' } );
-    Chat.drawMessageBox( 'clear' );
+    Chat.drawMessageForm( 'clear' );
 
   }
 
   /* ============ public methods and exports ============ */
 
   function launch() {
-    cacheDom();
     checkCookies();
   }
 

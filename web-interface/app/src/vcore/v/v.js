@@ -43,8 +43,8 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     castRemToPixel: VDom.castRemToPixel,
 
     /* Helper */
+    castEntityTitle: VEntity.castEntityTitle,
     castInitials: VHelper.castInitials,
-    castEntityTitle: VHelper.castEntityTitle,
     castCamelCase: VHelper.castCamelCase,
     castLinks: VHelper.castLinks,
     castTime: VHelper.castTime,
@@ -80,7 +80,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     getAddressState: VWeb3.getAddressState,
     getAddressHistory: VWeb3.getAddressHistory,
     setAddressVerification: VWeb3.setAddressVerification,
-    setEtherTransaction: VWeb3.setEtherTransaction,
+    setCoinTransaction: VWeb3.setCoinTransaction,
     setTokenTransaction: VWeb3.setTokenTransaction,
 
   };

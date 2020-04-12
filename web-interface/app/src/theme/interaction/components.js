@@ -14,12 +14,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function img( icon ) {
     return V.sN( {
       t: 'div',
-      s: {
-        'circle-1': {
-          width: '2.5rem',
-          height: '2.5rem'
-        }
-      },
       c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
       h: V.getIcon( icon )
     } );
@@ -27,6 +21,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function modalClose() {
     V.setNode( '.modal', 'clear' );
+  }
+
+  function stopProp( e ) {
+    e.stopPropagation();
   }
 
   /* ============ public methods and exports ============ */
@@ -100,7 +98,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: formClasses,
-      a: { placeholder: V.i18n( 'Search' ) }
+      a: { placeholder: V.i18n( 'Search', 'placeholder' ) }
     } );
   }
 
@@ -108,24 +106,27 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: formClasses,
-      a: { placeholder: V.i18n( 'Your preferred name' ) }
+      a: { placeholder: V.i18n( 'Your preferred name', 'placeholder' ) }
     } );
   }
+
   function title() {
     return V.sN( {
       t: 'input',
       c: 'plusform__title ' + formClasses,
-      a: { placeholder: V.i18n( 'Title' ) }
+      a: { placeholder: V.i18n( 'Title', 'placeholder' ) }
     } );
   }
+
   function loc() {
     return V.sN( {
       t: 'input',
       i: 'plusform__loc',
       c: 'plusform__loc ' + formClasses,
-      a: { placeholder: V.i18n( 'Location' ) }
+      a: { placeholder: V.i18n( 'Location', 'placeholder' ) }
     } );
   }
+
   function locLat() {
     return V.sN( {
       t: 'input',
@@ -133,6 +134,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { type: 'hidden', step: '0.00001' }
     } );
   }
+
   function locLng() {
     return V.sN( {
       t: 'input',
@@ -140,27 +142,32 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       a: { type: 'hidden', step: '0.00001' }
     } );
   }
+
   function desc() {
     return V.sN( {
       t: 'textarea',
       c: 'plusform__desc ' + formClasses,
-      a: { placeholder: V.i18n( 'Description' ) }
+      a: { placeholder: V.i18n( 'Description', 'placeholder' ) }
     } );
   }
+
   function target() {
     return V.sN( {
       t: 'input',
       c: 'plusform__target w-1/3 m-2 mr-2 pxy rounded border-blackalpha',
-      a: { placeholder: V.i18n( 'Price' ) }
+      a: { placeholder: V.i18n( 'Price', 'placeholder' ) }
     } );
   }
+
   function unit() {
     return V.sN( {
       t: 'input',
       c: 'plusform__unit w-1/3 m-2 pxy rounded border-blackalpha',
-      a: { placeholder: V.i18n( 'Unit' ) }
+      a: { placeholder: V.i18n( 'Unit', 'placeholder' ) }
     } );
   }
+
+  // join and temp
 
   function joinBtn() {
     return V.sN( {
@@ -168,7 +175,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'balance fixed cursor-pointer txt-anchor-mid',
       h: V.setNode( {
         tag: 'a',
-        href: '#modal',
         html: `<svg width="54px" viewBox="0 0 36 36">
                 <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
                        stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="#ffa41b"
@@ -200,6 +206,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  // modal
+
   function modal() {
     return V.cN( {
       t: 'modal',
@@ -207,10 +215,52 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       h: V.cN( {
         t: 'div',
         c: 'modal__close',
-        h: V.i18n( 'Close' ),
+        h: V.i18n( 'Close', 'modal' ),
         click: modalClose
       } ),
       click: modalClose
+    } );
+  }
+
+  function nameForm() {
+    return V.sN( {
+      t: 'div',
+      s: {
+        namebox: {
+          position: 'absolute',
+          top: '7vh'
+        }
+      },
+      c: 'namebox flex w-100',
+    } );
+  }
+
+  function nameInput() {
+    return V.sN( {
+      t: 'input',
+      c: 'namebox__input mr-2',
+      s: {
+        namebox__input: {
+          'height': '36px',
+          'padding': '8px 15px',
+          'min-width': '100px',
+          'border': '1px solid #e8e8ec',
+          'resize': 'none',
+          'border-radius': '30px'
+        }
+      },
+      a: {
+        placeholder: V.i18n( 'Choose preferred name', 'placeholder' ),
+      },
+      click: stopProp
+    } );
+  }
+
+  function nameSend() {
+    return V.sN( {
+      t: 'button',
+      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+      h: V.getIcon( 'send' )
     } );
   }
 
@@ -234,6 +284,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     joinBtn: joinBtn,
     tempBtn: tempBtn,
     modal: modal,
+    nameForm: nameForm,
+    nameInput: nameInput,
+    nameSend: nameSend
   };
 
 } )();

@@ -1,3 +1,6 @@
+.list-none {
+  list-style-type: none;
+}
 
 .w-screen {
   width: 100vw;
@@ -9,6 +12,13 @@
 
 .w-1\/3 {
   width: 33.333333%;
+}
+.min-w-360 {
+  min-width: 360px;
+}
+
+.h-full {
+  height: 100%;
 }
 
 /* Space */
@@ -49,6 +59,15 @@
 }
 .pb-r {
   padding-bottom: 1rem;
+}
+.pb-l {
+  padding-bottom: 2rem;
+}
+.pb-xl {
+  padding-bottom: 4rem;
+}
+.pb-xxl {
+  padding-bottom: 8rem;
 }
 .pl-xxs {
   padding-left: 0.125rem;
@@ -172,8 +191,12 @@
   display: none;
 }
 
+.contents {
+  display: contents;
+}
+
 .flex {
-  display: flex;
+  display:flex;
 }
 
 .flex-wrap {

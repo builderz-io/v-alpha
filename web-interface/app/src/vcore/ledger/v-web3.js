@@ -1793,8 +1793,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     if ( !transfers.length ) {
       return {
         success: false,
-        status: 'no transfers retrieved',
-        data: [ ]
+        status: 'no evm transfers',
       };
     }
 
@@ -1825,8 +1824,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
     return {
       success: true,
-      status: 'transfer history retrieved',
-      message: 'Transfer history retrieved from EVM',
+      status: 'evm transactions retrieved',
       data: [ filteredTransfers ]
     };
 
@@ -1853,7 +1851,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
       } );
   }
 
-  function setEtherTransaction( data ) {
+  function setCoinTransaction( data ) {
 
     const txObject = {
       from: data.initiatorAddress,
@@ -1919,7 +1917,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     getAddressState: getAddressState,
     getAddressHistory: getAddressHistory,
     setAddressVerification: setAddressVerification,
-    setEtherTransaction: setEtherTransaction,
+    setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
   };
 

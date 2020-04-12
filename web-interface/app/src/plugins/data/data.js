@@ -37,8 +37,8 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     const all = await Promise.all( [{ status: 'fail' }, b, c] );
 
     const airQuality = all[0];
-    const weatherData = all[1];
-    const forecastData = all[2];
+    const weatherData = all[1].data[0];
+    const forecastData = all[2].data[0];
 
     let formattedAirQualityData = {
       city: 'Sorry, could not get data',
@@ -85,15 +85,17 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
       }
     };
 
-    const $listingsUl = DataComponents.listingsUl();
+    const $list = CanvasComponents.list();
     const $weatherCard = DataComponents.weatherCard( formattedWeatherDataNow, formattedWeatherDataForecast );
+    const $card = CanvasComponents.card( $weatherCard );
     // const $airCard = DataComponents.airCard( formattedAirQualityData );
+    // const $card2 = CanvasComponents.card( $airCard );
 
-    V.setNode( $listingsUl, $weatherCard );
-    // V.setNode( $listingsUl, $airCard );
+    V.setNode( $list, $card );
+    // V.setNode( $list, $card2 );
 
     const pageData = {
-      listings: $listingsUl,
+      listings: $list,
       position: 'top'
     };
 

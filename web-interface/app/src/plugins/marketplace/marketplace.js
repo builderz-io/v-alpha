@@ -51,8 +51,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     const mapData = [];
 
-    const $topsliderUl = MarketplaceComponents.topSliderUl();
-    const $listingsUl = MarketplaceComponents.listingsUl();
+    const $slider = CanvasComponents.slider();
+    const $list = CanvasComponents.list();
 
     const entities = await V.getEntity( which );
 
@@ -60,24 +60,21 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       entities.data.reverse().forEach( cardData => {
         mapData.push( { type: 'Feature', geometry: cardData.geometry } );
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
-        const $card = MarketplaceComponents.entitiesCard( cardData );
-        V.setNode( $topsliderUl, $smallcard );
-        V.setNode( $listingsUl, $card );
+        const $cardContent = MarketplaceComponents.cardContent( cardData );
+        const $card = CanvasComponents.card( $cardContent );
+        V.setNode( $slider, $smallcard );
+        V.setNode( $list, $card );
       } );
     }
     else {
-      V.setNode( $topsliderUl, {
-        t: 'p',
-        h: 'No entities found'
-      } );
-
+      V.setNode( $slider, CanvasComponents.notFound() );
     }
 
     return {
       mapData: mapData,
       pageData: {
-        topslider: $topsliderUl,
-        listings: $listingsUl,
+        topslider: $slider,
+        listings: $list,
         position: 'peek',
       }
     };
@@ -94,21 +91,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
-  function drawHelloWorld() {
-    Page.draw( {
-      topcontent: V.cN( {
-        tag: 'p',
-        html: 'I am feeling happy!'
-      } ),
-      position: 'top'
-    } );
-
-    V.setMessage( 'Peter', 'Hi server 5?' );
-  }
-
   return {
     draw: draw,
-    drawHelloWorld: drawHelloWorld
   };
 
 } )();

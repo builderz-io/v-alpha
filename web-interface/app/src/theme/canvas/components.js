@@ -1,28 +1,31 @@
 const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Frame Components
-   *
+   * V Canvas Components
    *
    */
 
   'use strict';
 
-  function map() {
+  function notFound() {
     return V.setNode( {
-      tag: 'map',
-      html: V.setNode( {
-        tag: 'div',
-        id: 'map',
-        classes: 'map fixed w-screen',
-        setStyle: {
-          map: {
-            'background': 'rgba(115,182,230,1)',
-            'height': 'calc(var(--screen-height) - var(--page-position-closed))',
-            'z-index': -1
-          }
+      t: 'p',
+      h: V.i18n( 'No entries found', 'theme' )
+    } );
+  }
+
+  function background() {
+    return V.setNode( {
+      tag: 'background',
+      id: 'background',
+      classes: 'background fixed w-screen',
+      setStyle: {
+        background: {
+          'background': 'rgba(115,182,230,1)',
+          'height': 'calc(var(--screen-height) - var(--page-position-closed))',
+          'z-index': -1
         }
-      } )
+      }
     } );
   }
   function haze() {
@@ -74,16 +77,32 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
   }
-  function entities() {
+  function entityNav() {
     return V.setNode( {
-      tag: 'entities',
-      classes: 'entities-nav fixed w-screen overflow-x-scroll',
+      tag: 'entity-nav',
+      classes: 'entity-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'entity-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '8px',
+          'top': 'var(--entities-nav-top)',
+          'left': 'var(--entities-nav-left)'
+        }
+      }
     } );
   }
-  function nav() {
+  function serviceNav() {
     return V.setNode( {
-      tag: 'nav',
-      classes: 'app-nav fixed w-screen overflow-x-scroll',
+      tag: 'service-nav',
+      classes: 'service-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'service-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '28px',
+          'top': 'var(--app-nav-top)',
+          'left': 'var(--app-nav-left)'
+        }
+      }
     } );
   }
   function back() {
@@ -145,12 +164,77 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
   function topSlider() {
     return V.setNode( {
-      tag: 'topslider',
+      tag: 'topslider'
     } );
   }
+
+  function slider() {
+    return V.castNode( {
+      tag: 'slider',
+      classes: 'flex overflow-x-scroll list-none'
+    } );
+  }
+
   function listings() {
     return V.setNode( {
-      tag: 'listings',
+      tag: 'listings'
+    } );
+  }
+
+  function list( which ) {
+
+    const $list = V.setNode( {
+      tag: 'list',
+      classes: 'flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
+    } );
+
+    if ( which == 'narrow' ) {
+      $list.style['max-width'] = '380px';
+      $list.style.margin = '0 auto';
+    }
+
+    return $list;
+  }
+
+  function card( $cardContent ) {
+
+    const cardLeftWidth = 25;
+
+    return V.setNode( {
+      t: 'li',
+      c: 'pxy min-w-360',
+      setStyle: {
+        'card__top-left': {
+          width: cardLeftWidth + '%',
+        },
+        'card__bottom-left': {
+          'display': 'grid',
+          'justify-items': 'center',
+          'text-align': 'center',
+          'width': cardLeftWidth + '%',
+        },
+        'card__top-right': {
+          width: 100 - cardLeftWidth - 6 + '%',
+        },
+        'card__bottom-right': {
+          width: 100 - cardLeftWidth - 6 + '%',
+        },
+        'card__unit': {
+          width: '100%'
+        }
+      },
+      h: V.setNode( {
+        t: 'card',
+        c: 'card__container flex card-shadow rounded bkg-white pxy',
+        s: {
+          card__container: {
+            // 'height': 'var(--card-height)',
+            'max-width': '360px',
+            'flex-wrap': 'wrap'
+          },
+        },
+        h: $cardContent
+      } )
     } );
   }
 
@@ -181,18 +265,22 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    map: map,
+    notFound: notFound,
+    background: background,
     haze: haze,
     feature: feature,
     form: form,
     balance: balance,
-    entities: entities,
-    nav: nav,
+    entityNav: entityNav,
+    serviceNav: serviceNav,
     back: back,
     interactions: interactions,
     handle: handle,
     topSlider: topSlider,
+    slider: slider,
     listings: listings,
+    list: list,
+    card: card,
     header: header,
     page: page,
     content: content

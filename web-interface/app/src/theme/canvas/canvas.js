@@ -108,7 +108,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   function presenter() {
 
     /* overall nodes */
-    const $map = CanvasComponents.map();
+    const $background = CanvasComponents.background();
     const $haze = CanvasComponents.haze();
     const $feature = CanvasComponents.feature();
     const $form = CanvasComponents.form();
@@ -116,8 +116,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     /* header nodes */
     const $header = CanvasComponents.header();
     const $balance = CanvasComponents.balance();
-    const $entities = CanvasComponents.entities();
-    const $nav = CanvasComponents.nav();
+    const $entityNav = CanvasComponents.entityNav();
+    const $serviceNav = CanvasComponents.serviceNav();
     const $back = CanvasComponents.back();
     const $interactions = CanvasComponents.interactions();
 
@@ -130,11 +130,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     /* place nodes */
 
-    V.setNode( $header, [ $balance, $entities, $nav, $back, $interactions ] );
+    V.setNode( $header, [ $balance, $entityNav, $serviceNav, $back, $interactions ] );
     V.setNode( $content, [$topSlider, $listings ] );
     V.setNode( $page, [$handle, $content] );
 
-    return [$map, $haze, $feature, $form, $header, $page ];
+    return [$background, $haze, $feature, $form, $header, $page ];
   }
 
   function view( appCanvas ) {
@@ -151,6 +151,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     Form.launch();
     Join.launch();
     Navigation.launch();
+    Chat.launch();
     Page.launch();
     VMap.launch();
     Google.launch();
@@ -159,8 +160,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function drawFirstViews() {
 
-    Navigation.draw( 'nav', { keep: 3 } );
-    Navigation.draw( 'entities', { keep: 5 } );
+    Navigation.draw( 'service-nav', { keep: 3 } );
+    Navigation.draw( 'entity-nav', { keep: 5 } );
 
     setTimeout( Marketplace.draw, 300 );
 

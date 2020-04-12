@@ -60,10 +60,10 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'flick', { endX: e.changedTouches[0].clientX } );
       V.setState( 'flick', { endY: e.changedTouches[0].clientY } );
 
-      const $listingsUl = V.getNode( 'listings > ul' );
+      const $list = V.getNode( 'list' );
       let isListingsUlAtTop = true;
 
-      if ( $listingsUl && $listingsUl.scrollTop > 0 && e.currentTarget.localName == 'listings' ) {
+      if ( $list && $list.scrollTop > 0 && e.currentTarget.localName == 'listings' ) {
         isListingsUlAtTop = false;
       }
 
@@ -123,8 +123,8 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( pageData.listings ) {
       V.setNode( DOM.$listings, pageData.listings );
     }
-    pageData.position ? slide( pageData.position ) : null;
-    pageData.pos ? slide( pageData.pos ) : null;
+    pageData.position ? slide( pageData.position, pageData.scroll ) : null;
+    pageData.pos ? slide( pageData.pos, pageData.scroll ) : null;
 
   }
 
@@ -153,15 +153,25 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( 'handle', { height: h + 'px' } );
   }
 
-  function slide( pagePos ) {
+  function slide( pagePos, pageScroll ) {
+    const $list = V.getNode( 'list' );
+    // if ( !pageScroll ) {
+    //   $list.scrollTop = 0;
+    // }
+    if ( pageScroll == 'bottom' ) {
+      $list.scrollTop = $list.scrollHeight;
+    }
     const p = V.getState( 'page' );
     const newHeight = getPageHeight( pagePos );
     if ( newHeight == p.height ) { return }
     V.setAnimation( DOM.$page, { height: newHeight + 'px' }, { duration: 3 } ).then( () => {
-      const $listingsUl = V.getNode( 'listings > ul' );
-      if ( $listingsUl ) {
-        $listingsUl.scrollTop = 0;
+      // const $list = V.getNode( 'list' );
+      if ( $list && !pageScroll ) {
+        $list.scrollTop = 0;
       }
+      // else if ( pageScroll == 'bottom' ) {
+      //   $list.scrollTop = $list.scrollHeight;
+      // }
     } );
     if ( pagePos == 'top' ) {
       Haze.draw();

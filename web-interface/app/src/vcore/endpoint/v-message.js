@@ -3,12 +3,9 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   /**
   * Module to add messaging to the app
   *
-  *
   */
 
   'use strict';
-
-  const DOM = {};
 
   const triggers = {
     // NOTE: Adding request and transfer commands requires updating the backend language files also
@@ -62,15 +59,15 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     const text = sanitize( message );
 
     if ( text.indexOf( 'vx' ) > -1 ) {
-      return Promise.resolve( { status: 'error', message: 'unique phrase entered?' } );
+      return Promise.resolve( { success: false, status: 'unique phrase entered?' } );
     }
 
     else if ( text.match( /[a-zA-Z0-9+]/ ) === null ) {
-      return Promise.resolve( { status: 'error', message: 'not a valid message' } );
+      return Promise.resolve( { success: false, status: 'invalid message' } );
     }
 
     else if ( triggers.misspellingsEN.concat( triggers.misspellingsDE ).indexOf( text.substr( 0, 4 ) ) >= 0 ) {
-      return Promise.resolve( { status: 'error', message: 'misspelled trigger' } );
+      return Promise.resolve( { success: false, status: 'misspelled trigger' } );
     }
 
     else {
@@ -168,16 +165,16 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   function getMessage(
     which = 'all'
   ) {
-    return V.getData( which, 'get message', V.getSetting( 'chatLedger' ) );
+    return V.getData( which, 'message', V.getSetting( 'chatLedger' ) );
   }
 
   function setMessage(
-    whichMessage,
+    whichMessage
   ) {
     const msgData = {};
     msgData.message = whichMessage;
     msgData.sender = V.getState( 'activeEntity' ).fullId;
-    return V.setData( msgData, 'set message', V.getSetting( 'chatLedger' ) );
+    return V.setData( msgData, 'message', V.getSetting( 'chatLedger' ) );
   }
 
   return {
