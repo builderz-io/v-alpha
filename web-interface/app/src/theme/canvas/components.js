@@ -10,25 +10,22 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function notFound() {
     return V.setNode( {
       t: 'p',
-      h: V.i18n( 'No entities found' )
+      h: V.i18n( 'No entries found' )
     } );
   }
 
-  function map() {
+  function background() {
     return V.setNode( {
-      tag: 'map',
-      html: V.setNode( {
-        tag: 'div',
-        id: 'map',
-        classes: 'map fixed w-screen',
-        setStyle: {
-          map: {
-            'background': 'rgba(115,182,230,1)',
-            'height': 'calc(var(--screen-height) - var(--page-position-closed))',
-            'z-index': -1
-          }
+      tag: 'background',
+      id: 'background',
+      classes: 'background fixed w-screen',
+      setStyle: {
+        background: {
+          'background': 'rgba(115,182,230,1)',
+          'height': 'calc(var(--screen-height) - var(--page-position-closed))',
+          'z-index': -1
         }
-      } )
+      }
     } );
   }
   function haze() {
@@ -80,16 +77,32 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
   }
-  function entities() {
+  function entityNav() {
     return V.setNode( {
       tag: 'entity-nav',
-      classes: 'entities-nav fixed w-screen overflow-x-scroll',
+      classes: 'entity-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'entity-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '8px',
+          'top': 'var(--entities-nav-top)',
+          'left': 'var(--entities-nav-left)'
+        }
+      }
     } );
   }
-  function nav() {
+  function serviceNav() {
     return V.setNode( {
       tag: 'service-nav',
-      classes: 'app-nav fixed w-screen overflow-x-scroll',
+      classes: 'service-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'service-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '28px',
+          'top': 'var(--app-nav-top)',
+          'left': 'var(--app-nav-left)'
+        }
+      }
     } );
   }
   function back() {
@@ -184,9 +197,32 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function card( $cardContent ) {
+
+    const cardLeftWidth = 25;
+
     return V.setNode( {
       t: 'li',
       c: 'pxy min-w-360',
+      setStyle: {
+        'card__top-left': {
+          width: cardLeftWidth + '%',
+        },
+        'card__bottom-left': {
+          'display': 'grid',
+          'justify-items': 'center',
+          'text-align': 'center',
+          'width': cardLeftWidth + '%',
+        },
+        'card__top-right': {
+          width: 100 - cardLeftWidth - 6 + '%',
+        },
+        'card__bottom-right': {
+          width: 100 - cardLeftWidth - 6 + '%',
+        },
+        'card__unit': {
+          width: '100%'
+        }
+      },
       h: V.setNode( {
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
@@ -230,13 +266,13 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     notFound: notFound,
-    map: map,
+    background: background,
     haze: haze,
     feature: feature,
     form: form,
     balance: balance,
-    entities: entities,
-    nav: nav,
+    entityNav: entityNav,
+    serviceNav: serviceNav,
     back: back,
     interactions: interactions,
     handle: handle,

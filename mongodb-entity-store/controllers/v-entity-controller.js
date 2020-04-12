@@ -6,89 +6,63 @@ const initialBalance = systemInit.tokenDyn.initialBalance; // TODO: depends on e
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
 
-exports.findByRole = function( req, res ) {
+async function findEntity( query ) {
+  return new Promise( resolve => {
+    EntityDB.find( query ).exec( ( err, entities ) => {
+      if ( err ) {
+        resolve( {
+          success: false,
+          status: 'error finding entities',
+          message: err,
+        } );
+      }
+      else if ( !entities.length ) {
+        resolve( {
+          success: false,
+          status: 'nothing found',
+        } );
+      }
+      else {
+        resolve( {
+          success: true,
+          status: 'entities retrieved',
+          data: entities
+        } );
+      }
+    } );
+  } );
+}
+
+exports.findByRole = async function( req, res ) {
 
   const find = req != 'all' ? { 'profile.role': req } : {};
 
-  EntityDB.find( find, function( err, entities ) {
-    if ( err ) {
-      res( {
-        success: false,
-        status: 'error',
-        message: err,
-      } );
-    }
-    else if ( !entities.length ) {
-      res( {
-        success: false,
-        status: 'entities not found',
-        message: 'Could not find entities',
-      } );
-    }
-    else {
-      res( {
-        success: true,
-        status: 'success',
-        message: 'Entities retrieved successfully',
-        data: entities
-      } );
-    }
-  } );
+  res( await findEntity( find ) );
+
 };
 
-exports.findByEvmAddress = function( req, res ) {
-  EntityDB.find( { 'evmCredentials.address': req }, function( err, entities ) {
-    if ( err ) {
-      res( {
-        success: false,
-        status: 'error',
-        message: err,
-      } );
-    }
-    else if ( !entities.length ) {
-      res( {
-        success: false,
-        status: 'entities not found',
-        message: 'Could not find entities',
-      } );
-    }
-    else {
-      res( {
-        success: true,
-        status: 'success',
-        message: 'Entities retrieved successfully',
-        data: entities
-      } );
-    }
-  } );
+exports.findByTag = async function( req, res ) {
+
+  const find = { 'profile.tag': req };
+
+  res( await findEntity( find ) );
+
 };
 
-exports.findByFullId = function( req, res ) {
+exports.findByEvmAddress = async function( req, res ) {
 
-  EntityDB.find( { fullId: req }, function( err, entities ) {
-    if ( err ) {
-      res( {
-        success: false,
-        status: 'error',
-        message: err,
-      } );
-    }
-    else if ( !entities.length ) {
-      res( {
-        success: false,
-        status: 'entities not found',
-        message: 'Could not find entities',
-      } );
-    }
-    else {
-      res( {
-        success: true,
-        status: 'success',
-        message: 'Entities retrieved successfully',
-        data: entities
-      } );
-    }
-  } );
+  const find = { 'evmCredentials.address': req };
+
+  res( await findEntity( find ) );
+
+};
+
+exports.findByFullId = async function( req, res ) {
+
+  const find = { fullId: req };
+
+  res( await findEntity( find ) );
+
 };
 
 exports.register = function( req, res ) {
@@ -200,7 +174,7 @@ exports.register = function( req, res ) {
     if ( err ) {
       res( {
         success: false,
-        status: 'error',
+        status: 'error saving entity',
         message: err,
       } );
     }
@@ -243,15 +217,14 @@ exports.register = function( req, res ) {
         if ( err ) {
           res( {
             success: false,
-            status: 'error',
+            status: 'error saving inital transaction',
             message: err,
           } );
         }
         else {
           res( {
             success: true,
-            status: 'success',
-            message: 'New entity registered successfully'
+            status: 'new entity registered',
           } );
         }
       } ); // end newEntityInitialTx save
@@ -266,8 +239,7 @@ exports.verify = function( req, cb ) {
   if ( req.adminPass != systemInit.communityGovernance.commuPhrase ) {
     return cb( {
       success: false,
-      status: 'verification password invalid',
-      message: 'Could not verify entity, invalid password'
+      status: 'invalid password',
     } );
   }
 
@@ -275,8 +247,7 @@ exports.verify = function( req, cb ) {
     if ( err || res === null ) {
       return cb( {
         success: false,
-        status: 'entity not found',
-        message: 'Could not find entity to verify',
+        status: 'entity to verify not found',
       } );
     }
     res.profile.role = 'member';
@@ -289,14 +260,12 @@ exports.verify = function( req, cb ) {
         return cb( {
           success: false,
           status: 'error in verification',
-          message: 'Could not verify entity'
         } );
       }
       else {
         return cb( {
           success: true,
-          status: 'verified successfully',
-          message: 'Entity verified successfully'
+          status: 'verification successfull',
         } );
       }
     } );

@@ -36,14 +36,14 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.sN( {
       t: 'div',
       s: {
-        messagebox: {
+        messageform: {
           'bottom': '0',
           'border-top': '1px solid #e8e8ec',
           'background': '#d1d2da',
           'padding': '8px 5px'
         }
       },
-      c: 'messagebox flex fixed pxy w-full bkg-white card-shadow',
+      c: 'messageform flex fixed pxy w-full bkg-white card-shadow',
     } );
   }
 
@@ -58,7 +58,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         placeholder: V.i18n( 'Send message or funds' )
       },
       s: {
-        messagebox__input: {
+        messageform__input: {
           'height': '36px',
           'padding': '8px 15px',
           'min-width': '302px',
@@ -67,19 +67,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           'border-radius': '30px'
         }
       },
-      c: 'messagebox__input mr-2'
+      c: 'messageform__input mr-2'
     } );
   }
 
   function messageSend() {
     return V.sN( {
       t: 'button',
-      s: {
-        'circle-1': {
-          width: '2.5rem',
-          height: '2.5rem'
-        }
-      },
       c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
       h: V.getIcon( 'send' )
     } );

@@ -38,11 +38,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   function entitiesSmallCard( cardData ) {
     return V.castNode( {
       tag: 'li',
-      setStyle:
-        `.circle-3 {
-          width: 4.5rem;
-          height: 4.5rem
-        }`,
       classes: 'pxy',
       html: `<smallcard class="smallcard__container flex rounded bkg-white pxy">
               <a href="#" target="_blank">
@@ -55,40 +50,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function cardContent( cardData ) {
-
-    const cardLeftWidth = 25;
-
     return V.castNode( {
       tag: 'div',
       c: 'contents',
-      setStyle: {
-        'circle-2': {
-          width: '3.5rem',
-          height: '3.5rem'
-        },
-        'circle-3': {
-          width: '4.5rem',
-          height: '4.5rem'
-        },
-        'card__top-left': {
-          width: cardLeftWidth + '%',
-        },
-        'card__bottom-left': {
-          'display': 'grid',
-          'justify-items': 'center',
-          'text-align': 'center',
-          'width': cardLeftWidth + '%',
-        },
-        'card__top-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__bottom-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__unit': {
-          width: '100%'
-        }
-      },
       html: `<div class="card__top-left flex justify-center items-center">
                 <div class="circle-3 flex justify-center items-center rounded-full"
                      style="background: ${background( cardData )}; background-position: center center; background-size: cover;">

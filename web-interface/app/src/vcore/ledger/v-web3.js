@@ -1793,8 +1793,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
     if ( !transfers.length ) {
       return {
         success: false,
-        status: 'no transfers retrieved',
-        data: [ ]
+        status: 'no evm transfers',
       };
     }
 
@@ -1825,8 +1824,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
 
     return {
       success: true,
-      status: 'transfer history retrieved',
-      message: 'Transfer history retrieved from EVM',
+      status: 'evm transactions retrieved',
       data: [ filteredTransfers ]
     };
 

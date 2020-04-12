@@ -125,9 +125,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function drawMessageForm( options ) {
     if ( options == 'clear' ) {
-      return V.setNode( '.messagebox', 'clear' );
+      return V.setNode( '.messageform', 'clear' );
     }
-    const $box = ChatComponents.messageForm();
+    const $form = ChatComponents.messageForm();
     const $input = ChatComponents.messageInput();
 
     const $send = ChatComponents.messageSend();
@@ -136,27 +136,27 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     //   e.target.placeholder = placeholder;
     // } );
     $send.addEventListener( 'click', function() {
-      DOM.$box = V.getNode( '.messagebox__input' );
+      DOM.$form = V.getNode( '.messageform__input' );
 
-      const message = DOM.$box.value;
+      const message = DOM.$form.value;
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
           Account.drawHeaderBalance();
-          DOM.$box.value = '';
-          DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
+          DOM.$form.value = '';
+          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status ) );
           console.log( res.status );
         }
         else {
-          DOM.$box.value = '';
-          DOM.$box.setAttribute( 'placeholder', V.i18n( res.status ) );
+          DOM.$form.value = '';
+          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status ) );
           console.error( 'try again, because: ', res.status );
         }
       } );
     } );
 
-    V.setNode( $box, [ $input, $send ] );
-    V.setNode( 'body', $box );
+    V.setNode( $form, [ $input, $send ] );
+    V.setNode( 'body', $form );
 
   }
 

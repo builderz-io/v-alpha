@@ -66,11 +66,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
-      viMap = L.map( 'map' ).setView( [ map.lat, map.lng ], map.zoom );
+      viMap = L.map( 'background' ).setView( [ map.lat, map.lng ], map.zoom );
       V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
     }
     else {
-      viMap = L.map( 'map' ).setView( [ 52.522, 13.383 ], 12 );
+      viMap = L.map( 'background' ).setView( [ 52.522, 13.383 ], 12 );
       V.setState( 'map', { lat: 52.522, lng: 13.383, zoom: 12 } );
     }
 

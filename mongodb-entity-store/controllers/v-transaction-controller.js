@@ -40,8 +40,6 @@ exports.updateEntities = function( req, res ) {
     ]
   }
   */
-  // res( { status: 'error', message: 'need to code transaction still' } );
-  // return;
 
   const txData = req;
 
@@ -54,20 +52,30 @@ exports.updateEntities = function( req, res ) {
       const checkValidity = checkValid.checkTxValidity( txRoleEntities, txData.amount, txData.timeSecondsUNIX, txData.reference, txData.command );
 
       if ( checkValidity != true ) {
-        res( { success: false, status: 'MongoDB transaction not successful', message: 'Could not validate MongoDB transaction: ' + checkValidity } );
+        res( {
+          success: false,
+          status: 'MongoDB transaction not valid',
+          message: 'Could not validate MongoDB transaction: ' + checkValidity } );
       }
       else {
         // Updating MongoDB Accounts
         updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command );
 
         // TODO: callback only after updating finished
-        res( { success: true, status: 'MongoDB transaction successful' } );
+        res( {
+          success: true,
+          status: 'MongoDB transaction successful'
+        } );
       } // close else (valid transaction)
 
     } )
     .catch( ( err ) => {
       console.log( 'Issue in transaction - ' + err );
-      res( { success: false, status: 'error', message: 'Issue in transaction - ' + err } );
+      res( {
+        success: false,
+        status: 'error',
+        message: err
+      } );
     } );
 
 };
@@ -78,15 +86,14 @@ exports.findTransaction = function( req, res ) {
     if ( err ) {
       res( {
         success: false,
-        status: 'error',
+        status: 'error getting transactions',
         message: err,
       } );
     }
     else {
       res( {
         success: true,
-        status: 'success',
-        message: 'Transaction history retrieved from MongoDB',
+        status: 'transactions retrieved from MongoDB',
         data: [entities[0].txHistory]
       } );
     }

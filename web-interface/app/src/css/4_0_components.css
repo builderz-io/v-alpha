@@ -1,4 +1,17 @@
 
+.circle-1 {
+	width: 2.5rem;
+	height: 2.5rem;
+}
+.circle-2 {
+	width: 3.5rem;
+	height: 3.5rem
+}
+.circle-3 {
+	width: 4.5rem;
+	height: 4.5rem
+}
+
 .modal {
 	top: 0;
 	right: 0;

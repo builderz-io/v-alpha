@@ -14,12 +14,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function img( icon ) {
     return V.sN( {
       t: 'div',
-      s: {
-        'circle-1': {
-          width: '2.5rem',
-          height: '2.5rem'
-        }
-      },
       c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
       h: V.getIcon( icon )
     } );
@@ -181,7 +175,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'balance fixed cursor-pointer txt-anchor-mid',
       h: V.setNode( {
         tag: 'a',
-        href: '#modal',
         html: `<svg width="54px" viewBox="0 0 36 36">
                 <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
                        stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="#ffa41b"

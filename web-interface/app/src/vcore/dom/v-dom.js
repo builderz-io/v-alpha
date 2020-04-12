@@ -22,13 +22,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     const $elem = data.t ? document.createElement( data.t ) : document.createElement( data.tag );
 
     for ( const key in data ) {
-      if ( ['s', 'setStyle', 'setStyles'].includes( key ) ) {
+      if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
         setStyle( 'component-styles', data[key] );
       }
       else if ( ['c', 'class', 'classes'].includes( key ) ) {
         $elem.className = data[key];
       }
-      else if ( ['click'].includes( key ) ) {
+      else if ( ['k', 'click'].includes( key ) ) {
         $elem.addEventListener( 'click', data[key] );
       }
       else if ( ['y', 'style', 'styles'].includes( key ) ) {

@@ -37,8 +37,8 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     const all = await Promise.all( [{ status: 'fail' }, b, c] );
 
     const airQuality = all[0];
-    const weatherData = all[1];
-    const forecastData = all[2];
+    const weatherData = all[1].data[0];
+    const forecastData = all[2].data[0];
 
     let formattedAirQualityData = {
       city: 'Sorry, could not get data',

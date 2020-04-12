@@ -172,7 +172,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return Promise.resolve( {
           success: false,
           status: 'invalid title',
-          message: 'invalid title'
         } );
       }
     }
@@ -185,10 +184,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     let all;
 
     if( txLedger == 'EVM' ) {
+
       all = await Promise.all( [
         getEntity( aA ),
         V.getAddressState( aA )
       ] );
+
       if ( all[0].success && all[1].success ) {
         return  {
           success: true,

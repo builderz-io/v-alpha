@@ -24,6 +24,12 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       const transactions = await V.getTransaction();
 
+      if( !transactions.success ) {
+        return {
+          topcontent: CanvasComponents.notFound(),
+        };
+      }
+
       for ( const txData of transactions.data[0].reverse() ) {
         if ( V.getSetting( 'transactionLedger' ) != 'MongoDB' ) {
           if ( txData.txType == 'in' ) {
@@ -66,10 +72,6 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       return pageData;
     }
-    else {
-      return null;
-    }
-
   }
 
   function view( pageData ) {

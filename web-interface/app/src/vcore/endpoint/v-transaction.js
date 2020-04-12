@@ -9,7 +9,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function constructTx( data ) {
+  async function castTransaction( data ) {
 
     /*
     * data: array
@@ -56,24 +56,45 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
     const recipientData = await V.getEntity( recipient );
 
-    return initiator ? {
-      status: 'success',
-      date: new Date(),
-      amount: amount,
-      currency: 'V', // TODO
-      command: command,
-      initiator: initiator.fullId,
-      initiatorAddress: initiator.evmCredentials.address,
-      sender: initiator.fullId, // currently the same as initiator
-      senderAddress: initiator.evmCredentials.address, // currently the same as initiator
-      recipient: recipient,
-      recipientAddress: recipientData.data[0].evmCredentials.address,
-      reference: reference,
-      timeSecondsUNIX: timeSecondsUNIX,
-      origMessage: data
-    } : {
-      status: 'no active entity'
-    };
+    if ( !initiator ) {
+      return {
+        success: false,
+        status: 'no active entity'
+      };
+    }
+    else if ( !recipientData ) {
+      return {
+        success: false,
+        status: 'no recipient'
+      };
+    }
+    else if ( !amount ) {
+      return {
+        success: false,
+        status: 'invalid amount'
+      };
+    }
+    else {
+      return {
+        success: true,
+        status: 'transaction casted',
+        data: [{
+          date: new Date(),
+          amount: amount,
+          currency: 'V', // TODO
+          command: command,
+          initiator: initiator.fullId,
+          initiatorAddress: initiator.evmCredentials.address,
+          sender: initiator.fullId, // currently the same as initiator
+          senderAddress: initiator.evmCredentials.address, // currently the same as initiator
+          recipient: recipient,
+          recipientAddress: recipientData.data[0].evmCredentials.address,
+          reference: reference,
+          timeSecondsUNIX: timeSecondsUNIX,
+          origMessage: data
+        }]
+      };
+    }
   }
 
   function reduceNumbers( array ) {
@@ -92,16 +113,13 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setTransaction( which ) {
-    const txData = await constructTx( which );
+    const txData = await castTransaction( which );
 
-    if ( txData.amount == 0 ) {
-      return Promise.resolve( { status: 'error', message: 'invalid or no amount' } );
-    }
-    if ( txData.status == 'no active entity' ) {
-      return Promise.resolve( { status: 'error', message: 'no active entity' } );
+    if ( txData.success ) {
+      return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
     }
     else {
-      return V.setData( txData, 'transaction', V.getSetting( 'transactionLedger' ) );
+      return Promise.resolve( txData );
     }
   }
 

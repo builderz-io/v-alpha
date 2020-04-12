@@ -26,10 +26,17 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         return response.json();
       } )
       .then( ( data ) => {
-        return data;
+        return {
+          success: true,
+          status: 'fetch success',
+          data: [ data ] };
       } )
       .catch( ( error ) => {
-        return { status: 'error', message: error };
+        return {
+          success: false,
+          status: 'fetch error',
+          message: error
+        };
       } );
   }
 

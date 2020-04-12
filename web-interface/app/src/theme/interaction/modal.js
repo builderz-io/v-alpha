@@ -22,6 +22,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       inner = `<p class="modal__welcome-back">${ which == 'entity new' ? V.i18n( 'Welcome' ) : V.i18n( 'Welcome back' ) }, ${ activeEntity.fullId }</p>`;
 
       const entityData = await V.getActiveEntityData();
+
       const x = entityData.data[0];
       if ( x ) {
         inner += `<p class="modal__details">

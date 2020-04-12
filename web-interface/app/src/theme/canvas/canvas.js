@@ -108,7 +108,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   function presenter() {
 
     /* overall nodes */
-    const $map = CanvasComponents.map();
+    const $background = CanvasComponents.background();
     const $haze = CanvasComponents.haze();
     const $feature = CanvasComponents.feature();
     const $form = CanvasComponents.form();
@@ -116,8 +116,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     /* header nodes */
     const $header = CanvasComponents.header();
     const $balance = CanvasComponents.balance();
-    const $entities = CanvasComponents.entities();
-    const $nav = CanvasComponents.nav();
+    const $entityNav = CanvasComponents.entityNav();
+    const $serviceNav = CanvasComponents.serviceNav();
     const $back = CanvasComponents.back();
     const $interactions = CanvasComponents.interactions();
 
@@ -130,11 +130,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     /* place nodes */
 
-    V.setNode( $header, [ $balance, $entities, $nav, $back, $interactions ] );
+    V.setNode( $header, [ $balance, $entityNav, $serviceNav, $back, $interactions ] );
     V.setNode( $content, [$topSlider, $listings ] );
     V.setNode( $page, [$handle, $content] );
 
-    return [$map, $haze, $feature, $form, $header, $page ];
+    return [$background, $haze, $feature, $form, $header, $page ];
   }
 
   function view( appCanvas ) {

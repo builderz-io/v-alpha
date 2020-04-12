@@ -39,15 +39,14 @@ exports.get = function( req, res ) {
     if ( err ) {
       res( {
         success: false,
-        status: 'error',
+        status: 'error getting messages',
         message: err,
       } );
     }
     else {
       res( {
         success: true,
-        status: 'success',
-        message: 'Messages retrieved successfully',
+        status: 'messages retrieved',
         data: [messages]
       } );
     }
