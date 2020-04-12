@@ -20,7 +20,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     if ( pageState.height != pageState.topCalc ) {
       const $topcontent = AccountComponents.topcontent( V.getState( 'activeEntity' ).fullId );
-      const $list = CanvasComponents.list();
+      const $list = CanvasComponents.list( 'narrow' );
+
       const transactions = await V.getTransaction();
 
       for ( const txData of transactions.data[0].reverse() ) {
@@ -39,7 +40,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
           txData.title = 'Community Payout';
         }
 
-        const $card = AccountComponents.accountCard( txData );
+        const $cardContent = AccountComponents.accountCard( txData );
+        const $card = CanvasComponents.card( $cardContent );
         V.setNode( $list, $card );
       }
 

@@ -166,7 +166,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( newHeight == p.height ) { return }
     V.setAnimation( DOM.$page, { height: newHeight + 'px' }, { duration: 3 } ).then( () => {
       // const $list = V.getNode( 'list' );
-      if ( !pageScroll ) {
+      if ( $list && !pageScroll ) {
         $list.scrollTop = 0;
       }
       // else if ( pageScroll == 'bottom' ) {

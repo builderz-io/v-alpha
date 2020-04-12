@@ -54,13 +54,13 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function entitiesCard( cardData ) {
+  function cardContent( cardData ) {
 
     const cardLeftWidth = 25;
 
     return V.castNode( {
-      tag: 'li',
-      classes: 'pxy',
+      tag: 'div',
+      c: 'contents',
       setStyle: {
         'circle-2': {
           width: '3.5rem',
@@ -69,11 +69,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         'circle-3': {
           width: '4.5rem',
           height: '4.5rem'
-        },
-        'card__container': {
-          'height': 'var(--card-height)',
-          'max-width': '360px',
-          'flex-wrap': 'wrap'
         },
         'card__top-left': {
           width: cardLeftWidth + '%',
@@ -94,8 +89,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           width: '100%'
         }
       },
-      html: `<card class="card__container flex card-shadow rounded bkg-white pxy">
-              <div class="card__top-left flex justify-center items-center">
+      html: `<div class="card__top-left flex justify-center items-center">
                 <div class="circle-3 flex justify-center items-center rounded-full"
                      style="background: ${background( cardData )}; background-position: center center; background-size: cover;">
                   <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData )}</div>
@@ -111,14 +105,13 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
               <div class="card__bottom-right pxy">
                 <p>${cardData.properties.description}</p>
                 <p>in ${cardData.properties.location}</p>
-              </div>
-            </card>`
+              </div>`
     } );
   }
 
   return {
     entitiesSmallCard: entitiesSmallCard,
-    entitiesCard: entitiesCard,
+    cardContent: cardContent,
   };
 
 } )();

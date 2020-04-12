@@ -7,6 +7,13 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  function notFound() {
+    return V.setNode( {
+      t: 'p',
+      h: V.i18n( 'No entities found' )
+    } );
+  }
+
   function map() {
     return V.setNode( {
       tag: 'map',
@@ -161,10 +168,37 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function list() {
-    return V.setNode( {
+  function list( which ) {
+
+    const $list = V.setNode( {
       tag: 'list',
       classes: 'flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
+    } );
+
+    if ( which == 'narrow' ) {
+      $list.style['max-width'] = '380px';
+      $list.style.margin = '0 auto';
+    }
+
+    return $list;
+  }
+
+  function card( $cardContent ) {
+    return V.setNode( {
+      t: 'li',
+      c: 'pxy min-w-360',
+      h: V.setNode( {
+        t: 'card',
+        c: 'card__container flex card-shadow rounded bkg-white pxy',
+        s: {
+          card__container: {
+            // 'height': 'var(--card-height)',
+            'max-width': '360px',
+            'flex-wrap': 'wrap'
+          },
+        },
+        h: $cardContent
+      } )
     } );
   }
 
@@ -195,6 +229,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    notFound: notFound,
     map: map,
     haze: haze,
     feature: feature,
@@ -209,6 +244,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     slider: slider,
     listings: listings,
     list: list,
+    card: card,
     header: header,
     page: page,
     content: content

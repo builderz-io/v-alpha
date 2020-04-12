@@ -60,17 +60,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       entities.data.reverse().forEach( cardData => {
         mapData.push( { type: 'Feature', geometry: cardData.geometry } );
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
-        const $card = MarketplaceComponents.entitiesCard( cardData );
+        const $cardContent = MarketplaceComponents.cardContent( cardData );
+        const $card = CanvasComponents.card( $cardContent );
         V.setNode( $slider, $smallcard );
         V.setNode( $list, $card );
       } );
     }
     else {
-      V.setNode( $slider, {
-        t: 'p',
-        h: 'No entities found'
-      } );
-
+      V.setNode( $slider, CanvasComponents.notFound() );
     }
 
     return {

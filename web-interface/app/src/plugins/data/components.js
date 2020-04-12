@@ -12,8 +12,8 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
     const cardLeftWidth = 25;
 
     return V.setNode( {
-      tag: 'li',
-      classes: 'pxy',
+      tag: 'div',
+      classes: 'contents',
       setStyle: {
         'icon': {
           height: '80px',
@@ -32,11 +32,6 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
         'circle-3': {
           width: '4.5rem',
           height: '4.5rem'
-        },
-        'card__container': {
-          'height': 'var(--card-height)',
-          'max-width': '360px',
-          'flex-wrap': 'wrap'
         },
         'card__top-left': {
           width: cardLeftWidth + '%',
@@ -57,8 +52,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
           width: '100%'
         }
       },
-      html: '<card class="card__container flex card-shadow rounded bkg-white pxy">' +
-              '<div class="card__top-left flex justify-center items-center">' +
+      html: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-3 flex justify-center items-center rounded-full" style="background: antiquewhite; background-position: center center; background-size: cover;">' +
                   '<div class="card__initials font-bold fs-xxl txt-white"><img src="' + cardData.iconUrl + '"></div>' +
                 '</div>' +
@@ -102,8 +96,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
                   '</div>' +
                 '</div>' +
       // '<p>' + cardData.sunrise + '<br/>' + cardData.sunset + '</p>' +
-              '</div>' +
-            '</card>'
+              '</div>'
     } );
   }
 
@@ -151,8 +144,8 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
     const cardLeftWidth = 25;
 
     return V.setNode( {
-      tag: 'li',
-      classes: 'pxy',
+      tag: 'div',
+      classes: 'contents',
       setStyle: {
         'icon': {
           height: '80px',
@@ -196,8 +189,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
           width: '100%'
         }
       },
-      html: '<card class="card__container flex card-shadow rounded bkg-white pxy">' +
-              '<div class="card__top-left flex justify-center items-center">' +
+      html: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-2 flex justify-center items-center rounded-full" style="background-color: ' + level( cardData.pollution.aqius ).c + ';background-position: center center; background-size: cover;">' +
                 '</div>' +
               '</div>' +
@@ -210,9 +202,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
               '</div>' +
               '<div class="card__bottom-right pxy">' +
                 '<p>' + level( cardData.pollution.aqius ).h + '</p>' +
-
-              '</div>' +
-            '</card>'
+              '</div>'
     } );
   }
 

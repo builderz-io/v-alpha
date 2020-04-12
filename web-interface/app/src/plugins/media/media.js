@@ -39,16 +39,13 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
-        const $card = MediaComponents.mediaCard( cardData );
+        const $cardContent = MediaComponents.mediaCard( cardData );
+        const $card = CanvasComponents.card( $cardContent );
         V.setNode( $list, $card );
       } );
     }
     else {
-      V.setNode( $list, V.sN( {
-        t: 'p',
-        h: 'No entities found'
-      } ) );
-
+      V.setNode( $list, CanvasComponents.notFound() );
     }
 
     const pageData = {

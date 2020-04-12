@@ -87,10 +87,12 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = CanvasComponents.list();
     const $weatherCard = DataComponents.weatherCard( formattedWeatherDataNow, formattedWeatherDataForecast );
+    const $card = CanvasComponents.card( $weatherCard );
     // const $airCard = DataComponents.airCard( formattedAirQualityData );
+    // const $card2 = CanvasComponents.card( $airCard );
 
-    V.setNode( $list, $weatherCard );
-    // V.setNode( $list, $airCard );
+    V.setNode( $list, $card );
+    // V.setNode( $list, $card2 );
 
     const pageData = {
       listings: $list,

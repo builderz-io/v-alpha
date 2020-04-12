@@ -79,7 +79,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   async function presenter( which ) {
 
     const $topcontent = ChatComponents.topcontent();
-    const $list = CanvasComponents.list();
+    const $list = CanvasComponents.list( 'narrow' );
 
     const activeEntity = V.getState( 'activeEntity' );
     const messages = await V.getMessage();
@@ -118,8 +118,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const $list = V.getNode( 'list' );
     const activeEntity = V.getState( 'activeEntity' );
     activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
-    const $card = ChatComponents.message( cardData );
-    V.setNode( $list, $card );
+    const $messageCard = ChatComponents.message( cardData );
+    V.setNode( $list, $messageCard );
     $list.scrollTop = $list.scrollHeight + 75;
   }
 

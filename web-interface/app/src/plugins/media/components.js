@@ -30,25 +30,23 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function mediaCard( cardData ) {
-    const $li = V.cN( { t: 'li', c: 'pxy w-screen' } );
-    const $card = V.cN( {
-      t: 'card',
-      s: {
-        mediacard__container: {
-          'height': '230px',
-          'max-width': '360px',
-          'flex-wrap': 'wrap'
-        }
-      },
-      c: 'mediacard__container flex card-shadow rounded bkg-white pxy',
-    } );
-    const $title = V.cN( { t: 'p', c: 'font-medium pxy', h: cardData.fullId } );
-    const $video = videoFeature( cardData.properties.description );
-    V.setNode( $card, $title );
-    V.setNode( $card, $video );
-    V.setNode( $li, $card );
 
-    return $li;
+    const $cardContent = V.cN( {
+      t: 'media',
+      c: 'contents',
+    } );
+
+    const $title = V.cN( {
+      t: 'p',
+      c: 'font-medium pxy',
+      h: cardData.fullId
+    } );
+
+    const $video = videoFeature( cardData.properties.description );
+
+    V.setNode( $cardContent, [$title, $video] );
+
+    return $cardContent;
   }
 
   function featureUl() {

@@ -112,17 +112,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     return V.castNode( {
-      tag: 'li',
+      tag: 'div',
+      c: 'contents',
       setStyle: {
         'circle-3': {
           width: '4.5rem',
           height: '4.5rem'
         }
       },
-      classes: 'pxy w-screen',
-      html: '<card class="flex card-shadow rounded bkg-white pxy">' +
-
-                '<div class="circle-3 pxy rounded-full flex justify-center items-center" style="background: ' + background + ';">' + // ' + background + '
+      html: '<div class="circle-3 pxy rounded-full flex justify-center items-center" style="background: ' + background + ';">' + // ' + background + '
                   '<div class="card__initials font-medium fs-xl txt-white">' + txData.amount + '</div>' +
                 '</div>' +
 
@@ -134,8 +132,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       // '<p>' + 'Log Index ' + txData.logIndex + '</p>' +
       //  '<p>' + 'Price was ' + ( txData.price == 0 ? 'free' : txData.price + ' ' + txData.unit ) + '</p>' +
       // '<p>' + 'Booked ' + txData.amount + ' times' + '</p>' +
-              '</div>' +
-            '</card>'
+              '</div>'
     } );
   }
 
