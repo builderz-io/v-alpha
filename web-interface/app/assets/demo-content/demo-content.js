@@ -20,6 +20,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
     nine: 'none', // '0x10dee3399b9c819c2465fd61bc59ecd61b63567e',
     ten: 'none', // '0xd601fa8bab4df5bcb1b72f031f8643263917b81b',
   };
+
   /* use mnemonic:
    bachelor subway public potato crunch domain carbon scissors scene gauge what congress
   */
@@ -29,6 +30,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Community',
         role: 'community',
+        uPhrase: 'vxCommLogin',
         location: 'Berlin, Germany',
         lat: 52.5200,
         lng: 13.4050,
@@ -40,6 +42,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Community Contribution',
         role: 'community-contribution',
+        uPhrase: 'vxCommContrLogin',
         location: 'Berlin, Germany',
         lat: 52.5200,
         lng: 13.4050,
@@ -51,6 +54,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Accountant',
         role: 'job',
+        uPhrase: 'vxTestLoginThree',
         location: 'Berlin, Germany',
         lat: 52.5200,
         lng: 13.4050,
@@ -62,6 +66,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Frontend Developer',
         role: 'job',
+        uPhrase: 'vxTestLoginFour',
         location: 'Amsterdam, Netherlands',
         lat: 52.3667,
         lng: 4.8945,
@@ -73,6 +78,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Expert in NodeJS',
         role: 'skill',
+        uPhrase: 'vxTestLoginFive',
         location: 'Paris, France',
         lat: 48.85661,
         lng: 2.35222,
@@ -84,6 +90,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Solidity EVM Developer',
         role: 'skill',
+        uPhrase: 'vxTestLoginSix',
         location: 'Tunis, Tunisia',
         lat: 36.8064,
         lng: 10.1815,
@@ -95,6 +102,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Gardening and Tree Trimming',
         role: 'skill',
+        uPhrase: 'vxTestLoginSeven',
         location: 'Hamburg, Germany',
         lat: 53.55108,
         lng: 9.99368,
@@ -106,6 +114,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Tailored Suits',
         role: 'skill',
+        uPhrase: 'vxTestLoginEight',
         location: 'Rome, Italy',
         lat: 41.90278,
         lng: 12.49637,
@@ -117,6 +126,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'CO2 Capture Plant',
         role: 'media',
+        uPhrase: 'vxTestLoginNine',
         location: 'Hinwil, Switzerland',
         lat: 47.3075,
         lng: 8.8205,
@@ -128,6 +138,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Robot delivery',
         role: 'media',
+        uPhrase: 'vxTestLoginTen',
         location: 'Pacific Ocean',
         lat: 52.0406,
         lng: 0.7594,
@@ -139,6 +150,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Solar Energy Marocco',
         role: 'media',
+        uPhrase: 'vxTestLogin11',
         location: 'Marocco',
         lat: 31.7917,
         lng: 7.0926,
@@ -150,6 +162,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'The Ocean Cleanup',
         role: 'media',
+        uPhrase: 'vxTestLogin12',
         location: 'Pacific Ocean',
         lat: 37.8610,
         lng: -142.7596,
@@ -161,6 +174,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Web Developing',
         role: 'mooc',
+        uPhrase: 'vxTestLogin13',
         location: 'Berlin, Germany',
         lat: 52.5200,
         lng: 13.4050,
@@ -172,6 +186,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Learning Strategies',
         role: 'mooc',
+        uPhrase: 'vxTestLogin14',
         location: 'Berlin, Germany',
         lat: 52.5200,
         lng: 13.4050,
@@ -501,6 +516,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         p: 'top'
       }
     ],
+
     /*entitiesNavArr: [
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
       {

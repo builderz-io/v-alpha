@@ -130,7 +130,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const $form = ChatComponents.messageForm();
     const $input = ChatComponents.messageInput();
 
-    const $send = ChatComponents.messageSend();
+    const $send = InteractionComponents.sendBtn();
 
     // $input.addEventListener( 'focus', function( e ) {
     //   e.target.placeholder = placeholder;

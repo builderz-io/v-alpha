@@ -57,6 +57,14 @@ exports.findByFullId = async function( req, res ) {
 
 };
 
+exports.findByUPhrase = async function( req, res ) {
+
+  const find = { uPhrase: req };
+
+  res( await findEntity( find ) );
+
+};
+
 exports.register = function( req, res ) {
 
   /**
@@ -217,6 +225,7 @@ exports.register = function( req, res ) {
           res( {
             success: true,
             status: 'new entity registered',
+            data: [ newEntity ]
           } );
         }
       } ); // end newEntityInitialTx save

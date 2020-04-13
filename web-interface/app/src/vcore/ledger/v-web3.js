@@ -1663,7 +1663,7 @@ const VWeb3 = ( function() { // eslint-disable-line no-unused-vars
           }
           else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
             V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
-            Join.draw( 'new address set' );
+            Join.draw( 'setup new entity' );
           }
 
         } );

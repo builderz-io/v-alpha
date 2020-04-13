@@ -1,21 +1,22 @@
 const VInit = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
+    mapUse: true,
     socketUse: true,
+
+    // web3Use: true,
+    // threeBoxUse: false,
+
+    entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box'
+    chatLedger: 'MongoDB',
+    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' ('EVM' requires web3Use set to 'true')
+
     socketHost: 'http://localhost',
     socketPort: 6021,
     // socketHost: 'https://mongodb.valueinstrument.org',
     // socketPort: 443,
 
-    entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box'
-    chatLedger: 'MongoDB',
-    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM'
-
-    web3Use: true,
-
-    mapUse: true,
-
-    demoContent: false,
+    demoContent: false, // set to 'true', then reload page once, then set to 'false'
     update3BoxEntityStore: false,
 
   };

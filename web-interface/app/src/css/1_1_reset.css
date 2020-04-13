@@ -27,6 +27,9 @@ fieldset{border-width:0; padding:0; margin:0;}
 *::-webkit-scrollbar {
   display: none; /* Webkit based browsers */
 }
+*:focus {
+    outline: none;
+}
 
 html {
   -webkit-tap-highlight-color:transparent;
@@ -52,10 +55,4 @@ h2:before {
   height: 0;
   width: 0;
   margin-top: calc((1 - 1.125) * 1.44em); /* (1 - line-height) * font-size */
-}
-
-
-/* Cross-browser bottom list padding */
-list > *:last-child {
-    padding-bottom: 115px;
 }

@@ -10,9 +10,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function placeNode( $targetNode, $node ) {
+  function placeNode( $targetNode, $node, prepend ) {
     // TODO: add prepend node
-    $targetNode.append( $node );
+    prepend == 'prepend' || prepend == true ? $targetNode.prepend( $node ) : $targetNode.append( $node );
   }
 
   /* ============ public methods and exports ============ */
@@ -61,7 +61,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     return castNode( data );
   }
 
-  function setNode( targetNode, data ) {
+  function setNode( targetNode, data, prepend ) {
 
     /**
      * Create a HTML element and optionally place it into target node
@@ -115,7 +115,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
            * place each node from array into target node
            */
 
-          placeNode( $targetNode, $node );
+          placeNode( $targetNode, $node, prepend );
 
         } );
       }
@@ -127,7 +127,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
            * 2. place this new node into target node
            */
 
-          placeNode( $targetNode, castNode( data ) );
+          placeNode( $targetNode, castNode( data ), prepend );
 
         }
         else {
@@ -136,7 +136,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
            * place given node into target node
            */
 
-          placeNode( $targetNode, data );
+          placeNode( $targetNode, data, prepend );
 
         }
       }

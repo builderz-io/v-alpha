@@ -52,11 +52,19 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         }
       } );
     }
-    if ( V.getSetting( 'web3Use' ) ) {
+    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       V.sN( 'head', {
         t: 'script',
         a: {
           src: 'dist/web3.min.js'
+        }
+      } );
+    }
+    if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
+      V.sN( 'head', {
+        t: 'script',
+        a: {
+          src: 'dist/3box.min.js'
         }
       } );
     }

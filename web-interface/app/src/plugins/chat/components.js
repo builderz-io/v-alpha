@@ -60,7 +60,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       s: {
         messageform__input: {
           'height': '36px',
-          'padding': '8px 15px',
+          'padding': '9px 15px',
           'min-width': '302px',
           'border': '1px solid #e8e8ec',
           'resize': 'none',

@@ -1,15 +1,16 @@
 const Join = ( function() { // eslint-disable-line no-unused-vars
+
   /**
-  * Join module
-  *
-  *
-  */
+   * Join module
+   *
+   */
 
   'use strict';
 
   /* ================== private methods ================= */
 
   async function ckeckEntityStore() {
+
     const activeAddress = V.getState( 'activeAddress' );
 
     return activeAddress ? V.getEntity( activeAddress ).then( res => {
@@ -33,25 +34,30 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    if ( which == 'launch' && V.getSetting( 'web3Use' ) ) {
-
-      Modal.draw( 'please wait' );
-
-      await V.setActiveAddress().then( async res => {
-        if ( res.success ) {
-          which = await ckeckEntityStore();
-        }
-        else {
-          which = res.status;
-        }
-
-      } );
+    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
+      if ( which == 'launch' ) {
+        Modal.draw( 'please wait' );
+        await V.setActiveAddress().then( async res => {
+          if ( res.success ) {
+            which = await ckeckEntityStore();
+          }
+          else {
+            which = res.status;
+          }
+        } );
+      }
+      else if ( which == 'setup new entity' ) {
+        Modal.draw( 'please wait' );
+        which = await ckeckEntityStore();
+      }
     }
-    else if ( which == 'new address set' ) {
-
-      Modal.draw( 'please wait' );
-
-      which = await ckeckEntityStore();
+    else { // web2 join
+      if ( which == 'launch' ) {
+        which = 'web2 login';
+      }
+      else if ( which == 'setup new entity' ) {
+        which = 'entity found';
+      }
     }
 
     return which;

@@ -87,7 +87,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function drawHeaderBalance( which ) {
-    V.getActiveEntityData().then( accState => {
+    const aE = V.getState( 'activeEntity' );
+    V.getEntityBalance( aE ).then( accState => {
       const balance = accState.data[0] ? accState.data[0][ which || 'liveBalance' ] : 'n/a';
       const $navBal = AccountComponents.headerBalance( balance );
       V.setNode( 'join', 'clear' );

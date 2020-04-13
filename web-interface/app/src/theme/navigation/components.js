@@ -14,7 +14,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.setNode( {
       tag: 'li',
-      classes: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select',
+      classes: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
       setStyle: {
         'pill': {
           'height': '2.5rem',
@@ -48,7 +48,6 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       classes: 'entity-nav__ul flex items-center font-medium fs-rr',
       setStyle: {
         'entity-nav__ul': {
-          'width': '600px',
           'padding-left': '3px' /* needed for selected shadow */
         }
       }
@@ -61,7 +60,6 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       classes: 'service-nav__ul flex items-center font-medium',
       setStyle: {
         'service-nav__ul': {
-          'width': '600px',
           'padding-left': '3px' /* needed for selected shadow */
         }
       }

@@ -19,12 +19,20 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  /* ================== event handlers ================== */
+
   function modalClose() {
     V.setNode( '.modal', 'clear' );
   }
 
   function stopProp( e ) {
     e.stopPropagation();
+  }
+
+  function handleClick( e ) {
+    e.stopPropagation();
+    V.sN( '.modal__new', 'clear' );
+    Modal.drawNameForm( this ); // using .bind
   }
 
   /* ============ public methods and exports ============ */
@@ -67,7 +75,16 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function send() {
+  function close() {
+    return V.sN( {
+      t: 'li',
+      id: 'close',
+      c: btnClasses,
+      h: img( 'close' )
+    } );
+  }
+
+  function sendNav() {
     return V.sN( {
       t: 'li',
       id: 'send',
@@ -76,12 +93,23 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function close() {
+  function sendBtn() {
     return V.sN( {
-      t: 'li',
-      id: 'close',
-      c: btnClasses,
-      h: img( 'close' )
+      t: 'button',
+      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+      h: V.cN( {
+        t: 'span',
+        c: 'sendbtn',
+        s: {
+          sendbtn: {
+            position: 'relative',
+            left: '1px',
+            top: '1px',
+            opacity: '0.75',
+          }
+        },
+        h: V.getIcon( 'send' )
+      } )
     } );
   }
 
@@ -212,9 +240,27 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.cN( {
       t: 'modal',
       c: 'modal fixed',
+      s: {
+        modal: {
+          top: '0',
+          right: '0',
+          bottom: '0',
+          left: '0',
+          background: 'rgba(0,0,0,0.8)'
+        }
+      },
       h: V.cN( {
         t: 'div',
         c: 'modal__close',
+        s: {
+          modal__close: {
+            'position': 'absolute',
+            'right': '1rem',
+            'top': '1rem',
+            'text-decoration': 'none',
+            'color': 'white'
+          }
+        },
         h: V.i18n( 'Close', 'modal' ),
         click: modalClose
       } ),
@@ -222,45 +268,213 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function modalContent() {
+    return V.cN( {
+      t: 'div',
+      c: 'modal__content',
+      s: {
+        modal__content: {
+          background: 'white',
+          width: '75vw',
+          height: '60vh',
+          position: 'relative',
+          margin: '18vh auto',
+          padding: '0.5rem',
+        }
+      },
+    } );
+  }
+
+  function modalMessage( text ) {
+    const $content = modalContent();
+    const $msg = V.cN( {
+      t: 'p',
+      c: 'modal__p',
+      h: V.i18n( text, 'modal' )
+    } );
+    V.setNode( $content, $msg );
+    return $content;
+  }
+
+  function web2Login() {
+    const $content = modalContent();
+    const $new = V.cN( {
+      t: 'div',
+      c: 'modal__new font-medium',
+      s: {
+        modal__new: {
+          'background': '#ffa41b',
+          'position': 'relative',
+          'top': '5vh',
+          'margin': '0 auto',
+          'padding': '1rem',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'set entity' ),
+      h: V.i18n( 'Create new account', 'modal' )
+    } );
+    const $key = V.cN( {
+      t: 'p',
+      c: 'modal__return',
+      s: {
+        modal__return: {
+          'position': 'relative',
+          'top': '10vh',
+          'margin': '0 auto',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'get entity' ),
+      h: V.i18n( 'Login with key', 'modal' )
+    } );
+    V.setNode( $content, [$new, $key] );
+    return $content;
+  }
+
+  function entityFound( activeEntity, entityBalance ) {
+    const $content = modalContent();
+    const $welcome = V.cN( {
+      t: 'p',
+      c: 'modal__welcome-back',
+      h: V.i18n( 'Welcome', 'modal' ) + ', ' + activeEntity.fullId
+    } );
+
+    let $balance;
+
+    const x = entityBalance.data[0];
+    if ( x ) {
+      $balance = V.cN( {
+        t: 'p',
+        c: 'modal__details',
+        h: `ETH: ${ x.ethBalance }<br>
+        V: ${ x.tokenBalance }<br>
+        ${ V.i18n( 'V Live', 'modal' ) }: ${ x.liveBalance }<br>
+        ${ V.i18n( 'Last Block', 'modal' ) }: ${ x.lastBlock }<br>
+        ${ V.i18n( 'Zero Block', 'modal' ) }: ${ x.zeroBlock }`
+      } );
+    }
+    else {
+      $balance = V.cN( {
+        t: 'p',
+        h: V.i18n( 'Sorry, token details could not be found', 'modal' )
+      } );
+    }
+    V.setNode( $content, [$welcome, $balance] );
+    return $content;
+  }
+
+  function entityNotFound() {
+    const $content = modalContent();
+    const $new = V.cN( {
+      t: 'div',
+      c: 'modal__new font-medium',
+      s: {
+        modal__new: {
+          'background': '#ffa41b',
+          'position': 'relative',
+          'top': '5vh',
+          'margin': '0 auto',
+          'padding': '1rem',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'set entity' ),
+      h: V.i18n( 'Name your account', 'modal' )
+    } );
+    const $descr = V.cN( {
+      t: 'p',
+      c: 'modal__descr',
+      s: {
+        modal__descr: {
+          'position': 'relative',
+          'top': '8vh',
+          'margin': '0 auto',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      h: V.i18n( 'Naming your account creates a new entity for your address. ' +
+                  'An entity can be anything you want to make visible in the network.', 'modal' )
+    } );
+
+    V.setNode( $content, [$new, $descr] );
+    return $content;
+  }
+
+  function tempUser() {
+    const $content = modalContent();
+    const $new = V.cN( {
+      t: 'div',
+      c: 'modal__new font-medium',
+      s: {
+        modal__new: {
+          'background': '#ffa41b',
+          'position': 'relative',
+          'top': '5vh',
+          'margin': '0 auto',
+          'padding': '1rem',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'set temp user' ),
+      h: V.i18n( 'Use temporary name', 'modal' )
+    } );
+    const $descr = V.cN( {
+      t: 'p',
+      c: 'modal__descr',
+      s: {
+        modal__descr: {
+          'position': 'relative',
+          'top': '8vh',
+          'margin': '0 auto',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      h: V.i18n( 'Creating a temporary user name enables you to join the conversation and ' +
+                  'test out the app.', 'modal' )
+    } );
+
+    V.setNode( $content, [$new, $descr] );
+    return $content;
+  }
+
   function nameForm() {
     return V.sN( {
       t: 'div',
       s: {
         namebox: {
-          position: 'absolute',
-          top: '7vh'
+          position: 'relative',
+          top: '5vh'
         }
       },
-      c: 'namebox flex w-100',
+      c: 'namebox flex w-100 justify-center',
     } );
   }
 
-  function nameInput() {
+  function nameInput( options ) {
     return V.sN( {
       t: 'input',
       c: 'namebox__input mr-2',
       s: {
         namebox__input: {
           'height': '36px',
-          'padding': '8px 15px',
-          'min-width': '100px',
+          'padding': '9px 15px',
+          'min-width': '200px',
           'border': '1px solid #e8e8ec',
           'resize': 'none',
           'border-radius': '30px'
         }
       },
       a: {
-        placeholder: V.i18n( 'Choose preferred name', 'placeholder' ),
+        placeholder: options == 'get entity' ? V.i18n( 'vx...', 'placeholder' ) : V.i18n( 'Choose preferred name', 'placeholder' ),
       },
       click: stopProp
-    } );
-  }
-
-  function nameSend() {
-    return V.sN( {
-      t: 'button',
-      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-      h: V.getIcon( 'send' )
     } );
   }
 
@@ -269,8 +483,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     filter: filter,
     searchBtn: searchBtn,
     plus: plus,
-    send: send,
     close: close,
+    sendNav: sendNav,
+    sendBtn: sendBtn,
     form: form,
     searchForm: searchForm,
     joinForm: joinForm,
@@ -284,9 +499,14 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     joinBtn: joinBtn,
     tempBtn: tempBtn,
     modal: modal,
+    modalContent: modalContent,
+    modalMessage: modalMessage,
+    web2Login: web2Login,
+    entityFound: entityFound,
+    entityNotFound: entityNotFound,
+    tempUser: tempUser,
     nameForm: nameForm,
     nameInput: nameInput,
-    nameSend: nameSend
   };
 
 } )();

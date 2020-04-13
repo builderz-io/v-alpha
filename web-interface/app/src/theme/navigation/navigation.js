@@ -52,6 +52,18 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $rowUl, $pill );
     }
 
+    // place a last pill into ul, using title length to set width
+    // to gain scrollable space, set invisible via css
+    let $placeholderPill;
+
+    if ( which == 'entity-nav' ) {
+      $placeholderPill = NavComponents.pill( { title: 'place' } );
+    }
+    else if ( which == 'service-nav' ) {
+      $placeholderPill = NavComponents.pill( { title: '' } );
+    }
+    V.setNode( $rowUl, $placeholderPill );
+
     return { row: which, ul: $rowUl };
   }
 
