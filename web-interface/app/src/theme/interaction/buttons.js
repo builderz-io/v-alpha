@@ -23,7 +23,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     const $filter = InteractionComponents.filter();
     const $search = InteractionComponents.searchBtn();
     const $plus = InteractionComponents.plus();
-    const $send = InteractionComponents.send();
+    const $send = InteractionComponents.sendNav();
     const $close = InteractionComponents.close();
 
     // $back.addEventListener( 'click', function() {
@@ -67,11 +67,11 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           console.log( res.status );
         }
         else if ( res.status == 'invalid title' ) {
-          Form.draw( { error: 'invalid title' } );
+          Form.draw( 'error', { error: 'invalid title' } );
           console.error( res.status );
         }
         else {
-          Form.draw( { error: 'check console' } );
+          Form.draw( 'error', { error: 'check console' } );
           console.error( 'try again, because: ', res.status );
         }
       } );

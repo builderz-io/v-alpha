@@ -3,7 +3,7 @@ var mongoose = require( 'mongoose' );
 var entitySchema = mongoose.Schema( {
   fullId: String, // name + tag
   evmAddress: String,
-  // uPhrase: String,
+  uPhrase: String,
   profile: {
     fullId: String,
     title: String,
@@ -16,7 +16,9 @@ var entitySchema = mongoose.Schema( {
       date: String,
       unix: Number,
       block: Number,
-    }
+    },
+    creator: String,
+    creatorTag: String,
   },
   evmCredentials: {
     address: String,

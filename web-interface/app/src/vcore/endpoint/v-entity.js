@@ -47,7 +47,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const address = entityData.evmAddress ? entityData.evmAddress : V.getState( 'activeAddress' );
+    const activeEntity = V.getState( 'activeEntity' );
+
+    const address = entityData.evmAddress ? entityData.evmAddress : V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
 
     const d = new Date();
     const date = d.toString();
@@ -68,21 +70,47 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
+    let uPhrase;
+
+    if ( entityData.uPhrase ) {
+      uPhrase = entityData.uPhrase;
+    }
+    else if ( socket ) {
+      uPhrase = 'vx' + socket.id.replace( '_', 'a' ).replace( '-', '2' ).slice( 0, 16 );
+    }
+    else {
+      uPhrase = 'unset';
+    }
+
+    let creator, creatorTag;
+
+    if ( activeEntity ) {
+      creator = activeEntity.profile.title;
+      creatorTag = activeEntity.profile.tag;
+    }
+    else {
+      creator = title.data[0];
+      creatorTag = tag;
+    }
+
     const newEntity = {
       fullId: fullId,
       evmAddress: address,
+      uPhrase: uPhrase,
       profile: {
         fullId: fullId,
         title: title.data[0],
         tag: tag,
         role: entityData.role ? entityData.role : 'network',
+        status: 'active',
         verified: false,
         joined: {
           date: date,
           unix: unix,
           // block: all[1].success ? all[1].data[0].currentBlock : 0,
         },
-        status: 'active'
+        creator: creator,
+        creatorTag: creatorTag,
       },
       evmCredentials: {
         address: address
@@ -92,6 +120,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         description: entityData.description || 'no description given',
         target: entityData.target || 'none',
         unit: entityData.unit || 'none',
+        creator: creator,
+        creatorTag: creatorTag,
       },
       geometry: geometry,
     };
@@ -105,8 +135,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   function castTag() {
 
-    // for testing and demo content creation
-    // return '#2121';
+    // for demo content creation
+    if ( V.getSetting( 'demoContent' ) ) {
+      return '#2121';
+    }
 
     let continueDice = true;
 
@@ -183,6 +215,73 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  async function getEntityBalance( entity ) {
+    // const aE = V.getState( 'activeEntity' );
+    const txLedger = V.getSetting( 'transactionLedger' );
+
+    let all;
+
+    if ( txLedger == 'EVM' ) {
+
+      all = await Promise.all( [
+        getEntity( entity.evmAddress ),
+        V.getAddressState( entity.evmAddress )
+      ] );
+
+      if ( all[0].success && all[1].success ) {
+        return  {
+          success: true,
+          status: 'EVM all entity data retrieved',
+          data: [
+            {
+              name: all[0].data[0].fullId,
+              ethBalance: all[1].data[0].ethBalance,
+              tokenBalance: all[1].data[0].tokenBalance,
+              liveBalance: all[1].data[0].liveBalance,
+              lastBlock: all[1].data[0].lastBlock,
+              zeroBlock: all[1].data[0].zeroBlock
+            }
+          ]
+        };
+      }
+      else {
+        return  {
+          success: false,
+          status: 'EVM all entity data not retrieved',
+          data: []
+        };
+      }
+    }
+    else if ( txLedger == 'MongoDB' ) {
+      all = await Promise.all( [
+        getEntity( entity.fullId )
+      ] );
+      if ( all[0].success && all[0].data.length ) {
+        return  {
+          success: true,
+          status: 'MongoDB all entity data retrieved',
+          data: [
+            {
+              name: all[0].data[0].fullId,
+              ethBalance: 'not available',
+              tokenBalance: all[0].data[0].onChain.balance,
+              liveBalance: all[0].data[0].onChain.balance, // TODO: this is the wrong balance
+              lastBlock: all[0].data[0].onChain.lastMove,
+              zeroBlock: 'not available'
+            }
+          ]
+        };
+      }
+      else {
+        return  {
+          success: false,
+          status: 'MongoDB all entity data not retrieved',
+          data: []
+        };
+      }
+    }
+  }
+
   function getEntity(
     // defaults to searching all entities (by 'role')
     which = 'all',
@@ -191,6 +290,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( which.substr( 0, 2 ) == '0x' ) {
       filter = 'evmAddress';
+    }
+    else if ( which.substr( 0, 2 ) == 'vx' ) {
+      filter = 'uPhrase';
     }
     else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
       filter = 'fullId';
@@ -220,78 +322,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  async function getActiveEntityData() {
-    const aA = V.getState( 'activeAddress' );
-    const txLedger = V.getSetting( 'transactionLedger' );
-
-    let all;
-
-    if( txLedger == 'EVM' ) {
-
-      all = await Promise.all( [
-        getEntity( aA ),
-        V.getAddressState( aA )
-      ] );
-
-      if ( all[0].success && all[1].success ) {
-        return  {
-          success: true,
-          status: 'EVM all entity data retrieved',
-          data: [
-            {
-              name: all[0].data[0].fullId,
-              ethBalance: all[1].data[0].ethBalance,
-              tokenBalance: all[1].data[0].tokenBalance,
-              liveBalance: all[1].data[0].liveBalance,
-              lastBlock: all[1].data[0].lastBlock,
-              zeroBlock: all[1].data[0].zeroBlock
-            }
-          ]
-        };
-      }
-      else {
-        return  {
-          success: false,
-          status: 'EVM all entity data not retrieved',
-          data: []
-        };
-      }
-    }
-    else if ( txLedger == 'MongoDB' ) {
-      all = await Promise.all( [
-        getEntity( aA )
-      ] );
-      if ( all[0].success && all[0].data[0].length ) {
-        return  {
-          success: true,
-          status: 'MongoDB all entity data retrieved',
-          data: [
-            {
-              name: all[0].data[0].fullId,
-              ethBalance: 'not available',
-              tokenBalance: all[0].data[0].onChain.balance,
-              liveBalance: all[0].data[0].onChain.balance, // TODO: this is the wrong balance
-              lastBlock: all[0].data[0].onChain.lastMove,
-              zeroBlock: 'not available'
-            }
-          ]
-        };
-      }
-      else {
-        return  {
-          success: false,
-          status: 'MongoDB all entity data not retrieved',
-          data: []
-        };
-      }
-    }
-  }
-
   return {
     castEntityTitle: castEntityTitle,
     getEntity: getEntity,
     setEntity: setEntity,
-    getActiveEntityData: getActiveEntityData
+    getEntityBalance: getEntityBalance
   };
 
 } )();

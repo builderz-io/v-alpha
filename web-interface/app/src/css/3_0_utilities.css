@@ -2,6 +2,10 @@
   list-style-type: none;
 }
 
+.whitespace-no-wrap	{
+  white-space: nowrap;
+}
+
 .w-screen {
   width: 100vw;
 }

@@ -19,7 +19,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     /* Action */
     getEntity: VEntity.getEntity,
     setEntity: VEntity.setEntity,
-    getActiveEntityData: VEntity.getActiveEntityData,
+    getEntityBalance: VEntity.getEntityBalance,
 
     getMessage: VMessage.getMessage,
     setMessage: VMessage.setMessage,
