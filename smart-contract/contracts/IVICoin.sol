@@ -24,9 +24,9 @@ interface IVICoin {
 
     function makeSettingsImmutable(bool _confirm) external;
 
-    function changeCommunityContributionAccount(address _newCommunityContributionAccount) external;
+    function changeNetworkContributionAccount(address _newNetworkContributionAccount) external;
 
-    function updateCommunityContribution(uint _communityContribution) external;
+    function updateNetworkContribution(uint _networkContribution) external;
 
     function updateTransactionFee(uint _transactionFee) external;
 
