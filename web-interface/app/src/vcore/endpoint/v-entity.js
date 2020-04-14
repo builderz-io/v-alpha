@@ -283,22 +283,41 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getEntity(
-    // defaults to searching all entities (by 'role')
+    // defaults to searching all entities (via all roles)
     which = 'all',
     filter = 'role'
   ) {
 
-    if ( which.substr( 0, 2 ) == '0x' ) {
-      filter = 'evmAddress';
+    const whichLedger = V.getSetting( 'entityLedger' );
+
+    if ( whichLedger == 'MongoDB' ) {
+      if ( which.substr( 0, 2 ) == '0x' ) {
+        filter = 'evmAddress';
+      }
+      else if ( which.substr( 0, 2 ) == 'vx' ) {
+        filter = 'uPhrase';
+      }
+      else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
+        filter = 'fullId';
+      }
     }
-    else if ( which.substr( 0, 2 ) == 'vx' ) {
-      filter = 'uPhrase';
-    }
-    else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
-      filter = 'fullId';
+    else if ( whichLedger == '3Box' ) {
+
+      // TODO: this currently only requests a single entity if address is given
+      // and returns false otherwise in order to allow castEntity to run successfully
+
+      if ( which.substr( 0, 2 ) == '0x' ) {
+        // TODO: filter = 'evmAddress';
+      }
+      else {
+        return Promise.resolve( {
+          success: false,
+          status: 'return false for testing',
+        } );
+      }
     }
 
-    return V.getData( which, 'entity by ' + filter, V.getSetting( 'entityLedger' ) );
+    return V.getData( which, 'entity by ' + filter, whichLedger );
   }
 
   async function setEntity( entityData, options = 'entity' ) {

@@ -14,16 +14,17 @@ const V3Box = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   async function set3BoxSpace( which, data ) {
+
     await space.public.set( which, data );
 
     // for testing only
-    // const entityData = await space.public.get( 'entity' );
-    // console.log( 'saved:', entityData );
+    const entityData = await space.public.get( 'entity' );
+    console.log( 'saved:', entityData );
   }
 
   async function get3BoxSpace( which ) {
-    if ( Web3Obj && Web3Obj._provider ) {
-      box = await Box.openBox( which, Web3Obj._provider );
+    if ( window.Web3Obj && window.Web3Obj._provider ) {
+      box = await Box.openBox( which, window.Web3Obj._provider );
       await box.syncDone;
       space = await box.openSpace( 'v-alpha-2' );
 

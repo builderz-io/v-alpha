@@ -7,7 +7,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  let Web3Obj;
+  // let window.Web3Obj;
   let contract;
 
   /* ================== private methods ================= */
@@ -1590,15 +1590,15 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       if ( res.success ) {
 
-        Web3Obj = new Web3( res.data[0] );
-        contract = new Web3Obj.eth.Contract( viAbi(), V.getNetwork( V.getNetwork( 'choice' ) )['contractAddress'] );
+        window.Web3Obj = new Web3( res.data[0] );
+        contract = new window.Web3Obj.eth.Contract( viAbi(), V.getNetwork( V.getNetwork( 'choice' ) )['contractAddress'] );
 
-        const activeAddress = Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+        const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
         V.setState( 'activeAddress', activeAddress ? activeAddress.toLowerCase() : false );
 
-        Web3Obj.currentProvider.publicConfigStore.on( 'update', function setNewActiveAddress() {
+        window.Web3Obj.currentProvider.publicConfigStore.on( 'update', function setNewActiveAddress() {
 
-          var currentActiveAddress = Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+          var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
           // console.log( currentActiveAddress );
           // console.log( V.getState( 'activeAddress' ) );
           if ( currentActiveAddress == null ) {
@@ -1689,7 +1689,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   async function getAddressState( which ) {
 
     const all = await Promise.all( [
-      Web3Obj.eth.getBalance( which ),
+      window.Web3Obj.eth.getBalance( which ),
       contract.methods.liveBalanceOf( which ).call(),
       contract.methods.getDetails( which ).call()
     ] );
@@ -1800,14 +1800,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const txObject = {
       from: data.initiatorAddress,
       to: data.recipientAddress,
-      value: Web3Obj.utils.toWei( data.amount.toString(), 'ether' ),
+      value: window.Web3Obj.utils.toWei( data.amount.toString(), 'ether' ),
       // "gas": 21000,         (optional)
       // "gasPrice": 4500000,  (optional)
       // "data": 'For testing' (optional)
       // "nonce": 10           (optional)
     };
 
-    return Web3Obj.eth.sendTransaction( txObject )
+    return window.Web3Obj.eth.sendTransaction( txObject )
       .once( 'transactionHash', function( hash ) { console.log( 'Hash: ' + hash ) } )
       .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
       .on( 'confirmation', function( confNumber, receipt ) {
@@ -1829,7 +1829,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setTokenTransaction( data ) {
-    const recipient = Web3Obj.utils.toChecksumAddress( data.recipientAddress );
+    const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const sender = data.initiatorAddress;
     const amount = data.amount * 10**6;
     contract.methods.transfer( recipient, amount ).send( { from: sender } )

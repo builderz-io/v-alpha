@@ -118,16 +118,6 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
 
   };
 
-  if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {
-    await Promise.all( [
-      setScript( 'dist/3box.min.js' ),
-      setScript( 'src/vcore/ledger/v-3box.js' )
-    ] );
-    console.log( '*** 3Box scripts loaded ***' );
-    VMethods.set3BoxSpace = V3Box.set3BoxSpace;
-    VMethods.get3BoxSpace = V3Box.get3BoxSpace;
-  }
-
   if ( VInit.getSetting( 'transactionLedger' ) == 'EVM' ) {
     await Promise.all( [
       setScript( 'dist/web3.min.js' ),
@@ -141,6 +131,16 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     VMethods.setAddressVerification = VEvm.setAddressVerification;
     VMethods.setCoinTransaction = VEvm.setCoinTransaction;
     VMethods.setTokenTransaction = VEvm.setTokenTransaction;
+  }
+
+  if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {
+    await Promise.all( [
+      setScript( 'dist/3box.min.js' ),
+      setScript( 'src/vcore/ledger/v-3box.js' )
+    ] );
+    console.log( '*** 3Box scripts loaded ***' );
+    VMethods.set3BoxSpace = V3Box.set3BoxSpace;
+    VMethods.get3BoxSpace = V3Box.get3BoxSpace;
   }
 
   return VMethods;
