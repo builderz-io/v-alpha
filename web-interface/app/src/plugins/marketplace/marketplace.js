@@ -8,43 +8,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setNavItem( 'serviceNav', [
-    {
-      title: 'Marketplace',
-      use: {
-        button: 'search',
-      },
-      draw: function() { Marketplace.draw() }
-    },
-    {
-      title: 'Jobs',
-      role: 'job',
-      use: {
-        button: 'plus search',
-        form: 'new entity'
-      },
-      draw: function() {  Marketplace.draw( 'job' ) }
-    },
-    {
-      title: 'Skills',
-      role: 'skill',
-      use: {
-        button: 'plus search',
-        form: 'new entity'
-      },
-      draw: function() {  Marketplace.draw( 'skill' ) }
-    },
-    {
-      title: 'Events',
-      role: 'event',
-      use: {
-        button: 'plus search',
-        form: 'new entity'
-      },
-      draw: function() {  Marketplace.draw( 'event' ) }
-    }
-  ] );
-
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -87,11 +50,51 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
+  function launch() {
+    V.setNavItem( 'serviceNav', [
+      {
+        title: 'Marketplace',
+        use: {
+          button: 'search',
+        },
+        draw: function() { Marketplace.draw() }
+      },
+      {
+        title: 'Jobs',
+        role: 'job',
+        use: {
+          button: 'plus search',
+          form: 'new entity'
+        },
+        draw: function() {  Marketplace.draw( 'job' ) }
+      },
+      {
+        title: 'Skills',
+        role: 'skill',
+        use: {
+          button: 'plus search',
+          form: 'new entity'
+        },
+        draw: function() {  Marketplace.draw( 'skill' ) }
+      },
+      {
+        title: 'Events',
+        role: 'event',
+        use: {
+          button: 'plus search',
+          form: 'new entity'
+        },
+        draw: function() {  Marketplace.draw( 'event' ) }
+      }
+    ] );
+  }
+
   function draw( which ) {
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
   return {
+    launch: launch,
     draw: draw,
   };
 

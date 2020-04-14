@@ -207,6 +207,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   function sA( targetNode, css, options ) {
     return setAnimation( targetNode, css, options );
   }
+
   function setStyle( whichId, data ) {
     if ( !document.getElementById( whichId ) ) {
       setNode( 'head', {

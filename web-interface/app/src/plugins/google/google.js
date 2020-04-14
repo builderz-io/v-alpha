@@ -10,11 +10,9 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
 
   const DOM = {};
 
-  const key = V.getApiKey( 'googlePlaces' );
-
   /* ================== private methods ================= */
 
-  function addPlacesLibraryScript() {
+  function addPlacesLibraryScript( key ) {
     V.sN( 'head', {
       t: 'script',
       a: { src: 'https://maps.googleapis.com/maps/api/js?key=' + key + '&libraries=places&language=en&region=US' }
@@ -46,8 +44,10 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function launch() {
-    if ( V.getApiKey( 'googlePlaces' ).length > 10 ) {
-      addPlacesLibraryScript();
+    const key = V.getApiKey( 'googlePlaces' );
+
+    if ( key.length > 10 ) {
+      addPlacesLibraryScript( key );
     }
     else {
       console.warn( 'Missing Google Places API key' );
