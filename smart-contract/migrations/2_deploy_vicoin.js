@@ -8,10 +8,10 @@ module.exports = function( deployer ) {
     lifetimeInBlocks = 10,
     generationAmount = 100,
     generationPeriod = 10,
-    communityContributionPercentage = 0,
+    networkContributionPercentage = 0,
     transactionFeePercentage = 0,
     initialBalance = 200000000,
-    communityContributionAccount = '0x3107b077b7745994cd93d85092db034ca1984d46',
+    networkContributionAccount = '0x0000000000000000000000000000000000000000',
     controller = '0x0000000000000000000000000000000000000000';
 
   deployer.deploy(  VICoin,
@@ -21,10 +21,10 @@ module.exports = function( deployer ) {
     lifetimeInBlocks,
     generationAmount,
     generationPeriod,
-    communityContributionPercentage,
+    networkContributionPercentage,
     transactionFeePercentage,
     initialBalance,
-    communityContributionAccount,
+    networkContributionAccount,
     controller );
 
 };
@@ -37,10 +37,10 @@ module.exports = function( deployer ) {
 //       lifetimeInBlocks = 10,
 //       generationAmount = 100,
 //       generationPeriod = 10,
-//       communityContributionPercentage = 0,
+//       networkContributionPercentage = 0,
 //       transactionFeePercentage = 0,
 //       initialBalance = 200 * (10**decimals),
-//       communityContributionAccount = "0x0000000000000000000000000000000000000000",
+//       networkContributionAccount = "0x0000000000000000000000000000000000000000",
 //       controller = "0x0000000000000000000000000000000000000000";
 //       deployer.deploy(  VICoin,
 //                         name,
@@ -49,10 +49,10 @@ module.exports = function( deployer ) {
 //                         lifetimeInBlocks,
 //                         generationAmount,
 //                         generationPeriod,
-//                         communityContributionPercentage,
+//                         networkContributionPercentage,
 //                         transactionFeePercentage,
 //                         initialBalance,
-//                         communityContributionAccount,
+//                         networkContributionAccount,
 //                         controller);
 //
 // };
