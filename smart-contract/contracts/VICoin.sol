@@ -2,14 +2,14 @@ pragma solidity ^0.5.8;
 
 /**
     @title An open source smart contract for a UBI token with demurrage that
-        gives control of the currency to the community.
+        gives control of the currency to the network.
     @author The Value Instrument Team
     @notice In the current form, the contract does not use a decentralised
         approach to identification. It relies on the use of the key associated
-        with the 'community' address as a special account that confirms the
-        validity of a particular person. For example, a community like enkel
+        with the 'network' address as a special account that confirms the
+        validity of a particular person. For example, a network like enkel
         would confirm that we know who "Bob Smith" is, and that he doesn't have
-        an account already. The community handles the processes of verifying
+        an account already. The network handles the processes of verifying
         participants, and is responsible for any KYC process that may be
         required now or in the future. We don't know what laws apply to the
         deployment and use of this smart contract.
@@ -24,7 +24,7 @@ import './lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
 import './lib/openzeppelin-solidity/contracts/math/Math.sol';
 import './FusedController.sol';
 
-/// @notice One contract is deployed for each community
+/// @notice One contract is deployed for each network
 /// @dev Based on openzeppelin's burnable and mintable ERC20 tokens
 contract VICoin is
     ERC20Mintable,
@@ -59,11 +59,11 @@ contract VICoin is
     // starting balance for a new account
 
     // 3. Fees and contribution
-    uint public communityContribution;
+    uint public networkContribution;
     // contribution % taken from the transaction fee on every transfer
     uint public transactionFee;
     // transaction fee % taken from every transfer
-    address public communityContributionAccount;
+    address public networkContributionAccount;
     // account that receives the contribution payments
 
     // Constants
@@ -90,9 +90,9 @@ contract VICoin is
     event UpdateInitialBalance(uint _initialBalance);
     event UpdateGenerationAmount(uint _generationAmount);
     event UpdateGenerationPeriod(uint _generationPeriod);
-    event UpdateCommunityContributionAccount(address _newCommunityContributionAccount);
+    event UpdateNetworkContributionAccount(address _newNetworkContributionAccount);
     event UpdateTransactionFee(uint _transactionFee);
-    event UpdateCommunityContribution(uint _communityContribution);
+    event UpdateNetworkContribution(uint _networkContribution);
     event Mined(uint _block);
     event Log(string _name, uint _value);
 
@@ -103,10 +103,10 @@ contract VICoin is
         uint _lifetime,
         uint _generationAmount,
         uint _generationPeriod,
-        uint _communityContribution,
+        uint _networkContribution,
         uint _transactionFee,
         uint _initialBalance,
-        address _communityContributionAccount,
+        address _networkContributionAccount,
         address _controller
     )
         ERC20Detailed(_name, _symbol, _decimals)
@@ -116,11 +116,11 @@ contract VICoin is
         lifetime = _lifetime;
         generationAmount = _generationAmount;
         generationPeriod = _generationPeriod;
-        communityContribution = _communityContribution;
+        networkContribution = _networkContribution;
         transactionFee = _transactionFee;
         initialBalance = _initialBalance;
-        communityContributionAccount = _communityContributionAccount;
-        if (communityContributionAccount == address(0)) communityContributionAccount = msg.sender;
+        networkContributionAccount = _networkContributionAccount;
+        if (networkContributionAccount == address(0)) networkContributionAccount = msg.sender;
     }
 
     function () external payable {
@@ -304,7 +304,7 @@ contract VICoin is
         uint feesAndContribution = processFeesAndContribution(
             _value,
             transactionFee,
-            communityContribution
+            networkContribution
         );
         uint valueAfterFees = _value.sub(feesAndContribution);
 
@@ -397,7 +397,7 @@ contract VICoin is
     function processFeesAndContribution(
         uint _value,
         uint _transactionFee,
-        uint _communityContribution)
+        uint _networkContribution)
         internal
         returns (uint)
     {
@@ -408,12 +408,12 @@ contract VICoin is
         uint contribution = calcContribution(
             _value,
             _transactionFee,
-            _communityContribution
+            _networkContribution
         );
         uint feesToBurn = calcFeesToBurn(
             _value,
             _transactionFee,
-            _communityContribution
+            _networkContribution
         );
         require(feesIncContribution == contribution.add(feesToBurn),
             "feesIncContribution should equal contribution + feesToBurn"
@@ -425,7 +425,7 @@ contract VICoin is
         }
 
         if (contribution > 0) {
-            super.transfer(communityContributionAccount, contribution);
+            super.transfer(networkContributionAccount, contribution);
             emit PaidContribution(msg.sender, contribution);
         }
 
@@ -677,23 +677,23 @@ contract VICoin is
     /////////////////
 
     /// @notice Set the address that the contribution will be sent to
-    function updateCommunityContributionAccount(address _newCommunityContributionAccount)
+    function updateNetworkContributionAccount(address _newNetworkContributionAccount)
         external
         onlyController
         fused(0)
     {
-      	communityContributionAccount = _newCommunityContributionAccount;
-        emit UpdateCommunityContributionAccount(_newCommunityContributionAccount);
+      	networkContributionAccount = _newNetworkContributionAccount;
+        emit UpdateNetworkContributionAccount(_newNetworkContributionAccount);
     }
 
     /// @notice Set the contribution percentage, to be taken from the fee %
-    function updateCommunityContribution(uint _communityContribution)
+    function updateNetworkContribution(uint _networkContribution)
         external
         onlyController
         fused(1)
     {
-        communityContribution = _communityContribution;
-        emit UpdateCommunityContribution(_communityContribution);
+        networkContribution = _networkContribution;
+        emit UpdateNetworkContribution(_networkContribution);
     }
 
     /// @notice Set the fee %, to be take from every transaction
