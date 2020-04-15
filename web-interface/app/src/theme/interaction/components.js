@@ -377,6 +377,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'p',
         h: V.i18n( 'Sorry, token details could not be found', 'modal' )
       } );
+      V.setSymbolAddress();
+
     }
     V.setNode( $content, [$uPhrase, $welcome, $balance] );
     return $content;

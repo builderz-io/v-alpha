@@ -229,7 +229,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     let all;
 
-    if ( txLedger == 'EVM' ) {
+    if ( txLedger == 'Symbol' ) {
+      return  {
+        success: false,
+        status: 'Symbol ledger currently not functional',
+        data: []
+      };
+    }
+    else if ( txLedger == 'EVM' ) {
 
       all = await Promise.all( [
         getEntity( entity.evmAddress ),

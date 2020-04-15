@@ -120,6 +120,15 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     VMethods.setTokenTransaction = VEvm.setTokenTransaction;
   }
 
+  if ( VInit.getSetting( 'transactionLedger' ) == 'Symbol' ) {
+    await Promise.all( [
+      setScript( 'dist/symbol-sdk-0.17.5-alpha.js' ),
+      setScript( 'src/vcore/ledger/v-symbol.js' )
+    ] );
+    console.log( '*** symbol scripts loaded ***' );
+    VMethods.setSymbolAddress = VSymbol.setSymbolAddress;
+  }
+
   if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {
     await Promise.all( [
       setScript( 'dist/3box.min.js' ),
