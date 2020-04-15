@@ -115,6 +115,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       evmCredentials: {
         address: address
       },
+      owners: [{
+        ownerName: creator,
+        ownerTag: creatorTag,
+      }],
+      admins: [{
+        adminName: creator,
+        adminTag: creatorTag,
+      }],
       properties: {
         location: entityData.location || 'no location given',
         description: entityData.description || 'no description given',

@@ -24,9 +24,9 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
       const transactions = await V.getTransaction();
 
-      if( !transactions.success ) {
+      if( !transactions.success || !transactions.data[0].length ) {
         return {
-          topcontent: CanvasComponents.notFound(),
+          topcontent: CanvasComponents.notFound( 'transactions' ),
         };
       }
 

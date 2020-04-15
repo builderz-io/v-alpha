@@ -2,9 +2,9 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    entityLedger: '3Box', // choices are: 'MongoDB' or '3Box'
+    entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box'
     chatLedger: 'MongoDB',
-    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM'
+    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM'
 
     socketHost: 'http://localhost',
     socketPort: 6021,

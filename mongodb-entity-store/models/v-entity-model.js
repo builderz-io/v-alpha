@@ -34,14 +34,14 @@ var entitySchema = mongoose.Schema( {
   //   loginExpires: Date,
   //   timeZone: String,
   // },
-  // owners: [{
-  //   ownerName: String,
-  //   ownerTag: String,
-  // }],
-  // admins: [{
-  //   adminName: String,
-  //   adminTag: String,
-  // }],
+  owners: [{
+    ownerName: String,
+    ownerTag: String,
+  }],
+  admins: [{
+    adminName: String,
+    adminTag: String,
+  }],
   properties: {
     location: String,
     description: String,

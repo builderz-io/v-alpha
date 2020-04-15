@@ -9,6 +9,7 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
   'use strict';
 
   function setScript( src ) {
+    // console.log( src );
     return new Promise( function( resolve, reject ) {
       const s = document.createElement( 'script' );
       s.src = src;
@@ -20,34 +21,20 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
 
   window.setScript = setScript;
 
-  await initialScripts();
+  await Promise.all( [
+    setScript( 'src/vcore/v/v-key.js' ),
+    setScript( 'src/vcore/v/v-init.js' ),
+    setScript( 'src/vcore/dom/v-dom.js' ),
+    setScript( 'src/vcore/helper/v-helper-debug.js' ),
+    setScript( 'src/vcore/helper/v-helper.js' ),
+    setScript( 'src/vcore/endpoint/v-entity.js' ),
+    setScript( 'src/vcore/endpoint/v-message.js' ),
+    setScript( 'src/vcore/endpoint/v-transaction.js' ),
+    setScript( 'src/vcore/state/v-state.js' ),
+    setScript( 'src/vcore/ledger/v-ledger.js' ),
+    setScript( 'src/theme/canvas/canvas.js' ),
+  ] );
   console.log( '*** vcore and canvas scripts loaded ***' );
-
-  async function initialScripts() {
-    await Promise.all( [
-      setScript( 'src/vcore/v/v-key.js' ),
-      setScript( 'src/vcore/v/v-init.js' ),
-      setScript( 'src/vcore/dom/v-dom.js' ),
-      setScript( 'src/vcore/helper/v-helper-debug.js' ),
-      setScript( 'src/vcore/helper/v-helper.js' ),
-      setScript( 'src/vcore/endpoint/v-entity.js' ),
-      setScript( 'src/vcore/endpoint/v-message.js' ),
-      setScript( 'src/vcore/endpoint/v-transaction.js' ),
-      setScript( 'src/vcore/state/v-state.js' ),
-      setScript( 'src/vcore/ledger/v-ledger.js' ),
-      setScript( 'src/theme/canvas/canvas.js' ),
-    ] );
-  }
-
-  if ( [ VInit.getSetting( 'entityLedger' ), VInit.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
-    await Promise.all( [
-      setScript( 'dist/socket.io.min.js' ),
-    ] );
-    console.log( '*** socket scripts loaded ***' );
-    await VLedger.setSocket().then( res => {
-      console.log( res );
-    } );
-  }
 
   const VMethods = {
     kicksAss: function kicksAss() {
@@ -141,6 +128,16 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     console.log( '*** 3Box scripts loaded ***' );
     VMethods.set3BoxSpace = V3Box.set3BoxSpace;
     VMethods.get3BoxSpace = V3Box.get3BoxSpace;
+  }
+
+  if ( [ VInit.getSetting( 'entityLedger' ), VInit.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
+    await Promise.all( [
+      setScript( 'dist/socket.io.min.js' ),
+    ] );
+    console.log( '*** socket scripts loaded ***' );
+    await VLedger.setSocket().then( res => {
+      console.log( res );
+    } );
   }
 
   return VMethods;

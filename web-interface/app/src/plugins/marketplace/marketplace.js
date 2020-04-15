@@ -30,7 +30,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      V.setNode( $slider, CanvasComponents.notFound() );
+      V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
     }
 
     return {

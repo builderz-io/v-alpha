@@ -48,7 +48,6 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, InteractionComponents.modalMessage( 'Please connect your wallet' ) );
     }
     else if ( which == 'logged out' ) {
-      console.log( 'we are here' );
       V.setNode( $modal, InteractionComponents.modalMessage( 'You are logged out' ) );
     }
     else if ( which == 'please wait' ) {

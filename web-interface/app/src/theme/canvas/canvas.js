@@ -32,13 +32,15 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       window.setScript( 'src/theme/interaction/modal.js' ),
       window.setScript( 'src/theme/account/components.js' ),
       window.setScript( 'src/theme/account/account.js' ),
+      window.setScript( 'src/theme/profile/components.js' ),
+      window.setScript( 'src/theme/profile/profile.js' ),
+      window.setScript( 'src/theme/chat/components.js' ),
+      window.setScript( 'src/theme/chat/chat.js' ),
 
       window.setScript( 'src/plugins/map/map.js' ),
       window.setScript( 'src/plugins/google/google.js' ),
       window.setScript( 'src/plugins/data/components.js' ),
       window.setScript( 'src/plugins/data/data.js' ),
-      window.setScript( 'src/plugins/chat/components.js' ),
-      window.setScript( 'src/plugins/chat/chat.js' ),
       window.setScript( 'src/plugins/marketplace/components.js' ),
       window.setScript( 'src/plugins/marketplace/marketplace.js' ),
       window.setScript( 'src/plugins/media/components.js' ),
@@ -178,6 +180,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     Button.launch();
     Form.launch();
     Join.launch();
+    Profile.launch();
 
     // Account and Modal do not need launching
 

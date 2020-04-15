@@ -282,6 +282,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           padding: '0.5rem',
         }
       },
+      click: stopProp
     } );
   }
 
@@ -336,6 +337,19 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function entityFound( activeEntity, entityBalance ) {
     const $content = modalContent();
+
+    const $uPhrase = V.cN( {
+      t: 'div',
+      c: 'txt-center',
+      s: {
+        modal__uphrase: {
+          color: 'red'
+        }
+      },
+      h: `<p class="pxy">${V.i18n( 'Your login key is' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${activeEntity.uPhrase}</p>
+      <p class="pxy"> ${V.i18n( 'Take note of the phrase above' ) }<br>${ V.i18n( 'to login with later', 'modal' )}</p>`
+    } );
+
     const $welcome = V.cN( {
       t: 'p',
       c: 'modal__welcome-back',
@@ -349,11 +363,13 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       $balance = V.cN( {
         t: 'p',
         c: 'modal__details',
-        h: `ETH: ${ x.ethBalance }<br>
+        h: `
         V: ${ x.tokenBalance }<br>
         ${ V.i18n( 'V Live', 'modal' ) }: ${ x.liveBalance }<br>
-        ${ V.i18n( 'Last Block', 'modal' ) }: ${ x.lastBlock }<br>
-        ${ V.i18n( 'Zero Block', 'modal' ) }: ${ x.zeroBlock }`
+        ETH: ${ x.ethBalance }<br>
+        ${ V.i18n( 'Zero Block', 'modal' ) }: ${ x.zeroBlock }<br>
+        ${ V.i18n( 'Last Block', 'modal' ) }: ${ x.lastBlock }
+        `
       } );
     }
     else {
@@ -362,7 +378,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         h: V.i18n( 'Sorry, token details could not be found', 'modal' )
       } );
     }
-    V.setNode( $content, [$welcome, $balance] );
+    V.setNode( $content, [$uPhrase, $welcome, $balance] );
     return $content;
   }
 

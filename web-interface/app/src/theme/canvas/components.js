@@ -7,10 +7,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  function notFound() {
+  function notFound( which ) {
     return V.setNode( {
       t: 'p',
-      h: V.i18n( 'No entries found', 'theme' )
+      c: 'pxy',
+      h: V.i18n( 'No ' + which + ' found', 'theme' )
     } );
   }
 

@@ -128,9 +128,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
       function drawContentForItemClicked( $itemClicked ) {
         const chatId = $itemClicked.getAttribute( 'cid' );
-        if ( chatId > 1000 ) {
+        if ( chatId > 2000 ) {
           Chat.draw( chatId );
           Button.draw( 'search' );
+        }
+        else if ( chatId == 1001 ) {
+          Profile.draw( 'active entity' );
         }
         else {
           Page.draw( { active: true } );
