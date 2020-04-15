@@ -8,27 +8,6 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setNavItem( 'serviceNav', [
-    {
-      title: 'Media',
-      role: 'media',
-      use: {
-        button: 'plus search',
-        form: 'new entity'
-      },
-      draw: function() { Media.draw( 'media', { feature: 'https://youtu.be/XQEDw6IKTK8' } ) }
-    },
-    {
-      title: 'Moocs',
-      role: 'mooc',
-      use: {
-        button: 'plus search',
-        form: 'new entity'
-      },
-      draw: function() { Media.draw( 'mooc', { feature: 'https://youtu.be/ygJ4uu4XNM8' } ) }
-    }
-  ] );
-
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -45,7 +24,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      V.setNode( $list, CanvasComponents.notFound() );
+      V.setNode( $list, CanvasComponents.notFound( 'media items' ) );
     }
 
     const pageData = {
@@ -81,6 +60,29 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
+  function launch() {
+    V.setNavItem( 'serviceNav', [
+      {
+        title: 'Media',
+        role: 'media',
+        use: {
+          button: 'plus search',
+          form: 'new entity'
+        },
+        draw: function() { Media.draw( 'media', { feature: 'https://youtu.be/XQEDw6IKTK8' } ) }
+      },
+      {
+        title: 'Moocs',
+        role: 'mooc',
+        use: {
+          button: 'plus search',
+          form: 'new entity'
+        },
+        draw: function() { Media.draw( 'mooc', { feature: 'https://youtu.be/ygJ4uu4XNM8' } ) }
+      }
+    ] );
+  }
+
   function draw( which, options ) {
     featurePresenter( options ).then( viewData => { view( viewData ) } );
 
@@ -89,6 +91,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    launch: launch,
     draw: draw,
   };
 

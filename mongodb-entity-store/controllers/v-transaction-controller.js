@@ -54,7 +54,8 @@ exports.updateEntities = function( req, res ) {
       if ( checkValidity != true ) {
         res( {
           success: false,
-          status: 'MongoDB transaction not valid',
+          status: 'invalid transaction',
+          ledger: 'MongoDB',
           message: 'Could not validate MongoDB transaction: ' + checkValidity } );
       }
       else {
@@ -64,7 +65,8 @@ exports.updateEntities = function( req, res ) {
         // TODO: callback only after updating finished
         res( {
           success: true,
-          status: 'MongoDB transaction successful'
+          status: 'transaction successful',
+          ledger: 'MongoDB'
         } );
       } // close else (valid transaction)
 
@@ -74,6 +76,7 @@ exports.updateEntities = function( req, res ) {
       res( {
         success: false,
         status: 'error',
+        ledger: 'MongoDB',
         message: err
       } );
     } );

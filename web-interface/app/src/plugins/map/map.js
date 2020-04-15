@@ -48,7 +48,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    if ( V.getSetting( 'mapUse' ) ) {
+    if ( V.getSetting( 'loadMap' ) ) {
       V.sN( 'head', {
         t: 'script',
         a: {
@@ -91,7 +91,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( options ) {
-    if ( V.getSetting( 'mapUse' ) ) {
+    if ( V.getSetting( 'loadMap' ) ) {
       presenter( options ).then( viewData => { view( viewData ) } );
     }
   }

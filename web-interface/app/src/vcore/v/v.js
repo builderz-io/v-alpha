@@ -1,4 +1,4 @@
-const V = ( function() { // eslint-disable-line no-unused-vars
+let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
 
   /**
   * Module to make V's core methods accessible
@@ -8,13 +8,39 @@ const V = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  async function kicksAss() {
-    await VLedger.launch();
-    Canvas.launch();
+  function setScript( src ) {
+    // console.log( src );
+    return new Promise( function( resolve, reject ) {
+      const s = document.createElement( 'script' );
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild( s );
+    } );
   }
 
-  return {
-    kicksAss: kicksAss,
+  window.setScript = setScript;
+
+  await Promise.all( [
+    setScript( 'src/vcore/v/v-key.js' ),
+    setScript( 'src/vcore/v/v-init.js' ),
+    setScript( 'src/vcore/dom/v-dom.js' ),
+    setScript( 'src/vcore/helper/v-helper-debug.js' ),
+    setScript( 'src/vcore/helper/v-helper.js' ),
+    setScript( 'src/vcore/endpoint/v-entity.js' ),
+    setScript( 'src/vcore/endpoint/v-message.js' ),
+    setScript( 'src/vcore/endpoint/v-transaction.js' ),
+    setScript( 'src/vcore/state/v-state.js' ),
+    setScript( 'src/vcore/ledger/v-ledger.js' ),
+    setScript( 'src/theme/canvas/canvas.js' ),
+  ] );
+  console.log( '*** vcore and canvas scripts loaded ***' );
+
+  const VMethods = {
+    kicksAss: function kicksAss() {
+      Canvas.launch();
+      // console.log( 'we are kickin' );
+    },
 
     /* Action */
     getEntity: VEntity.getEntity,
@@ -29,6 +55,7 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     setTransaction: VTransaction.setTransaction,
 
     /* DOM */
+    setScript: setScript,
     castNode: VDom.castNode,
     cN: VDom.cN,
     setNode: VDom.setNode,
@@ -72,17 +99,47 @@ const V = ( function() { // eslint-disable-line no-unused-vars
     getNetwork: VInit.getNetwork,
     getApiKey: VKey.getApiKey,
 
-    /* Web3 */
-    set3BoxSpace: VWeb3.set3BoxSpace,
-    get3BoxSpace: VWeb3.get3BoxSpace,
-    setActiveAddress: VWeb3.setActiveAddress,
-    getContractState: VWeb3.getContractState,
-    getAddressState: VWeb3.getAddressState,
-    getAddressHistory: VWeb3.getAddressHistory,
-    setAddressVerification: VWeb3.setAddressVerification,
-    setCoinTransaction: VWeb3.setCoinTransaction,
-    setTokenTransaction: VWeb3.setTokenTransaction,
+    /* 3Box added */
+
+    /* EVM added */
 
   };
+
+  if ( VInit.getSetting( 'transactionLedger' ) == 'EVM' ) {
+    await Promise.all( [
+      setScript( 'dist/web3.min.js' ),
+      setScript( 'src/vcore/ledger/v-evm.js' )
+    ] );
+    console.log( '*** web3 and evm scripts loaded ***' );
+    VMethods.setActiveAddress = VEvm.setActiveAddress;
+    VMethods.getContractState = VEvm.getContractState;
+    VMethods.getAddressState = VEvm.getAddressState;
+    VMethods.getAddressHistory = VEvm.getAddressHistory;
+    VMethods.setAddressVerification = VEvm.setAddressVerification;
+    VMethods.setCoinTransaction = VEvm.setCoinTransaction;
+    VMethods.setTokenTransaction = VEvm.setTokenTransaction;
+  }
+
+  if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {
+    await Promise.all( [
+      setScript( 'dist/3box.min.js' ),
+      setScript( 'src/vcore/ledger/v-3box.js' )
+    ] );
+    console.log( '*** 3Box scripts loaded ***' );
+    VMethods.set3BoxSpace = V3Box.set3BoxSpace;
+    VMethods.get3BoxSpace = V3Box.get3BoxSpace;
+  }
+
+  if ( [ VInit.getSetting( 'entityLedger' ), VInit.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
+    await Promise.all( [
+      setScript( 'dist/socket.io.min.js' ),
+    ] );
+    console.log( '*** socket scripts loaded ***' );
+    await VLedger.setSocket().then( res => {
+      console.log( res );
+    } );
+  }
+
+  return VMethods;
 
 } )();

@@ -7,18 +7,6 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setNavItem( 'serviceNav', [
-    {
-      title: 'Data',
-      role: 'data',
-      use: {
-        button: 'search',
-        form: 'new entity'
-      },
-      draw: function() { Data.draw() }
-    }
-  ] );
-
   /* ================== private methods ================= */
 
   async function presenter( options ) {
@@ -108,11 +96,26 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
+  function launch() {
+    V.setNavItem( 'serviceNav', [
+      {
+        title: 'Data',
+        role: 'data',
+        use: {
+          button: 'search',
+          form: 'new entity'
+        },
+        draw: function() { Data.draw() }
+      }
+    ] );
+  }
+
   function draw( options ) {
     presenter( options ).then( viewData => { view( viewData ) } );
   }
 
   return {
+    launch: launch,
     draw: draw,
   };
 

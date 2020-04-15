@@ -42,58 +42,29 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function launch() {
-    if ( V.getSetting( 'socketUse' ) ) {
-      V.sN( 'head', {
-        t: 'script',
-        a: {
-          src: 'dist/socket.io.min.js',
-          onload: 'VLedger.setSocket()'
-        }
-      } );
-    }
-    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      V.sN( 'head', {
-        t: 'script',
-        a: {
-          src: 'dist/web3.min.js'
-        }
-      } );
-    }
-    if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
-      V.sN( 'head', {
-        t: 'script',
-        a: {
-          src: 'dist/3box.min.js'
-        }
-      } );
-    }
-  }
-
   function setSocket() {
+    return new Promise( ( resolve, reject ) => {
+      const host = VInit.getSetting( 'socketHost' );
+      const port = VInit.getSetting( 'socketPort' );
 
-    const host = V.getSetting( 'socketHost' );
-    const port = V.getSetting( 'socketPort' );
+      const connection = host + ( port ? ':' + port : '' );
 
-    const connection = host + ( port ? ':' + port : '' );
+      const socketSettings = {
+        // transports: ['websocket'],
+        secure: true
+      };
 
-    const socketSettings = {
-      // transports: ['websocket'],
-      secure: true
-    };
+      window.socket = io.connect( connection, socketSettings );
 
-    window.socket = io.connect( connection, socketSettings );
+      window.socket.on( 'connect', () => {
+        resolve( socket.id + ' connected' );
+      } );
 
-    socket.on( 'connect', () => {
-      // V.debug( socket.id );
-      console.log( socket.id, 'connected' );
+      window.socket.on( 'connect_error', ( error ) => {
+        VDebugHelper.debug( error );
+        reject( 'could not connect socket' );
+      } );
     } );
-
-    socket.on( 'connect_error', ( error ) => {
-      V.debug( error );
-    } );
-
-    socket.on( 'community message', Chat.drawMessage );
   }
 
   function setData( data, whichEndpoint, whichLedger ) {
@@ -149,7 +120,6 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    launch: launch,
     setSocket: setSocket,
     getData: getData,
     setData: setData

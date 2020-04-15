@@ -8,9 +8,47 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  launchScripts();
+
   /* ================== private methods ================= */
 
-  function setStates() {
+  async function launchScripts() {
+    await Promise.all( [
+      window.setScript( 'dist/velocity.min.js' ),
+      window.setScript( 'dist/moment.min.js' ),
+      window.setScript( 'dist/js.cookie.min.js' ),
+
+      window.setScript( 'assets/demo-content/demo-content.js' ),
+      window.setScript( 'src/theme/canvas/components.js' ),
+      window.setScript( 'src/theme/canvas/feature.js' ),
+      window.setScript( 'src/theme/canvas/haze.js' ),
+      window.setScript( 'src/theme/canvas/page.js' ),
+      window.setScript( 'src/theme/navigation/components.js' ),
+      window.setScript( 'src/theme/navigation/navigation.js' ),
+      window.setScript( 'src/theme/interaction/components.js' ),
+      window.setScript( 'src/theme/interaction/buttons.js' ),
+      window.setScript( 'src/theme/interaction/form.js' ),
+      window.setScript( 'src/theme/interaction/join.js' ),
+      window.setScript( 'src/theme/interaction/modal.js' ),
+      window.setScript( 'src/theme/account/components.js' ),
+      window.setScript( 'src/theme/account/account.js' ),
+      window.setScript( 'src/theme/profile/components.js' ),
+      window.setScript( 'src/theme/profile/profile.js' ),
+      window.setScript( 'src/theme/chat/components.js' ),
+      window.setScript( 'src/theme/chat/chat.js' ),
+
+      window.setScript( 'src/plugins/map/map.js' ),
+      window.setScript( 'src/plugins/google/google.js' ),
+      window.setScript( 'src/plugins/data/components.js' ),
+      window.setScript( 'src/plugins/data/data.js' ),
+      window.setScript( 'src/plugins/marketplace/components.js' ),
+      window.setScript( 'src/plugins/marketplace/marketplace.js' ),
+      window.setScript( 'src/plugins/media/components.js' ),
+      window.setScript( 'src/plugins/media/media.js' ),
+    ] );
+  }
+
+  function setState() {
 
     V.setState( 'screen', {
       height: Number( window.innerHeight ),
@@ -49,15 +87,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       tag: 'title',
       html: 'VI UI 2020'
     } );
-
-    // ['js.cookie', 'moment', 'velocity'].forEach( vendor => {
-    //   V.sN( 'body', {
-    //     t: 'script',
-    //     a: {
-    //       src: 'dist/' + vendor + '.min.js',
-    //     }
-    //   } );
-    // } );
 
   }
 
@@ -143,19 +172,31 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function launchModules() {
+  function launchThemeModules() {
 
     Feature.launch();
     Haze.launch();
+    Page.launch();
     Button.launch();
     Form.launch();
     Join.launch();
-    Navigation.launch();
-    Chat.launch();
-    Page.launch();
-    VMap.launch();
-    Google.launch();
+    Profile.launch();
 
+    // Account and Modal do not need launching
+
+  }
+
+  function launchPlugins() {
+    Chat.launch();
+    Data.launch();
+    Google.launch();
+    VMap.launch();
+    Marketplace.launch();
+    Media.launch();
+  }
+
+  function updateNav() {
+    Navigation.launch();
   }
 
   function drawFirstViews() {
@@ -187,19 +228,23 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     V.setPipe(
-      setStates,
+      setState,
       setHead,
       setCss,
       setFont,
       presenter,
       view,
-      launchModules,
+      launchThemeModules,
+      launchPlugins,
+      updateNav,
       drawFirstViews,
-    //  join
+      //  join
     )();
+
   }
 
   return {
+    launchScripts: launchScripts,
     launch: launch,
   };
 

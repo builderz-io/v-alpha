@@ -8,70 +8,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setNavItem( 'entityNav', [
-    // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
-    {
-      cid: '2001',
-      c: 0,
-      l: -1,
-      f: 'Community',
-      title: 'Community',
-      role: 'community',
-      // draw: function() { Chat.draw() },
-      o: true,
-    },
-    {
-      cid: '2002',
-      c: 0,
-      l: -1,
-      f: 'Vivi Bot',
-      title: 'Vivi Bot',
-      role: 'bot',
-      // draw: function() { Chat.draw() },
-      o: true,
-    },
-    {
-      cid: '1001',
-      c: 0,
-      l: -1,
-      f: 'Sheela Anand',
-      title: 'SA',
-      role: 'user',
-      // draw: function() { Chat.draw() },
-      o: true,
-    },
-    {
-      cid: '1002',
-      c: 0,
-      l: -1,
-      f: 'Bertrand Arnaud',
-      title: 'BJ',
-      // draw: function() { Chat.draw() },
-      o: true,
-    },
-    {
-      cid: '1003',
-      c: 0,
-      l: -1,
-      f: 'Marc Woods',
-      title: 'MG',
-      role: 'user',
-      // draw: function() { Chat.draw() },
-      o: false,
-    },
-    {
-      cid: '1004',
-      c: 0,
-      l: -1,
-      f: 'Missy Z',
-      title: 'MZ',
-      role: 'user',
-      // draw: function() { Chat.draw() },
-      o: true,
-    }
-  ]
-  );
-
   const DOM = {};
 
   /* ================== private methods ================= */
@@ -83,6 +19,12 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     const activeEntity = V.getState( 'activeEntity' );
     const messages = await V.getMessage();
+
+    if( !messages.success || !messages.data[0].length ) {
+      return {
+        topcontent: CanvasComponents.notFound( 'messages' ),
+      };
+    }
 
     messages.data[0].forEach( cardData => {
       activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
@@ -108,12 +50,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     Chat.drawMessageForm();
   }
 
-  /* ============ public methods and exports ============ */
-
-  function launch() {
-    // socket.on( 'community message', Chat.drawMessage );
-  }
-
   function drawMessage( cardData ) {
     const $list = V.getNode( 'list' );
     const activeEntity = V.getState( 'activeEntity' );
@@ -121,6 +57,79 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const $messageCard = ChatComponents.message( cardData );
     V.setNode( $list, $messageCard );
     $list.scrollTop = $list.scrollHeight + 75;
+  }
+
+  /* ============ public methods and exports ============ */
+
+  function launch() {
+
+    V.setNavItem( 'entityNav', [
+      // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
+      {
+        cid: '2001',
+        c: 0,
+        l: -1,
+        f: 'Community',
+        title: 'Community',
+        // role: 'community',
+        // draw: function() { Chat.draw() },
+        o: true,
+      },
+      {
+        cid: '2002',
+        c: 0,
+        l: -1,
+        f: 'Vivi Bot',
+        title: 'Vivi Bot',
+        // role: 'bot',
+        // draw: function() { Chat.draw() },
+        o: true,
+      },
+      {
+        cid: '3001',
+        c: 0,
+        l: -1,
+        f: 'Sheela Anand',
+        title: 'SA',
+        // role: 'user',
+        // draw: function() { Chat.draw() },
+        o: true,
+      },
+      {
+        cid: '3002',
+        c: 0,
+        l: -1,
+        f: 'Bertrand Arnaud',
+        title: 'BJ',
+        // draw: function() { Chat.draw() },
+        o: true,
+      },
+      {
+        cid: '3003',
+        c: 0,
+        l: -1,
+        f: 'Marc Woods',
+        title: 'MG',
+        // role: 'user',
+        // draw: function() { Chat.draw() },
+        o: false,
+      },
+      {
+        cid: '3004',
+        c: 0,
+        l: -1,
+        f: 'Missy Z',
+        title: 'MZ',
+        // role: 'user',
+        // draw: function() { Chat.draw() },
+        o: true,
+      }
+    ] );
+
+    if ( V.getSetting( 'chatLedger' ) == 'MongoDB' ) {
+      window.socket.on( 'community message', drawMessage );
+    }
+
   }
 
   function drawMessageForm( options ) {
@@ -142,7 +151,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
-          Account.drawHeaderBalance();
+          res.status == 'transaction successful' ? Account.drawHeaderBalance() : null;
           DOM.$form.value = '';
           DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           console.log( res.status );
@@ -165,7 +174,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    drawMessage: drawMessage,
     drawMessageForm: drawMessageForm,
     draw: draw,
     launch: launch
