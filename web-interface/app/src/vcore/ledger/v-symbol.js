@@ -11,16 +11,24 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function setSymbolAddress() {
-    console.log( 'symbol module is alive' );
+  function setActiveAddress() {
 
     const Nem = require( '/node_modules/symbol-sdk' );
-    console.log( Nem.Account.generateNewAccount( Nem.NetworkType.MIJIN_TEST ) );
 
+    const account = Nem.Account.generateNewAccount( Nem.NetworkType.MIJIN_TEST );
+    // console.log( 'Your new account address is:', account.address.pretty(), 'and its private key is:', account.privateKey );
+    return {
+      success: true,
+      status: 'Symbol credentials created',
+      data: [ {
+        account: account.address.pretty(),
+        privateKey: account.privateKey
+      } ]
+    };
   }
 
   return {
-    setSymbolAddress: setSymbolAddress,
+    setActiveAddress: setActiveAddress,
   };
 
 } )();

@@ -15,6 +15,9 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
     update3BoxEntityStore: false,
     loadMap: true,
 
+    coinTicker: 'ETH',
+    tokenTicker: 'V',
+
   };
 
   const networks = {
@@ -23,6 +26,9 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
       rpc: 'http://127.0.0.1:9545'
     },
+    symbol: {
+      rpc: 'http://198.199.80.167:3000'
+    }
   };
 
   function getSetting( which ) {

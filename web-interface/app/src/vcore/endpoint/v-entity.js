@@ -21,7 +21,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function castEntity( entityData ) {
-
+    console.log( entityData );
     // check whether we have a valid title
     const title = castEntityTitle( entityData.title, entityData.role );
 
@@ -224,37 +224,33 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getEntityBalance( entity ) {
-    // const aE = V.getState( 'activeEntity' );
-    const txLedger = V.getSetting( 'transactionLedger' );
 
-    let all;
+    const tL = V.getSetting( 'transactionLedger' );
 
-    if ( txLedger == 'Symbol' ) {
+    if ( tL == 'Symbol' ) {
       return  {
         success: false,
-        status: 'Symbol ledger currently not functional',
+        status: 'ledger currently not functional',
+        ledger: 'Symbol',
         data: []
       };
     }
-    else if ( txLedger == 'EVM' ) {
+    else if ( tL == 'EVM' ) {
 
-      all = await Promise.all( [
-        getEntity( entity.evmAddress ),
-        V.getAddressState( entity.evmAddress )
-      ] );
+      const bal = await V.getAddressState( entity.evmAddress );
 
-      if ( all[0].success && all[1].success ) {
+      if ( bal.success ) {
         return  {
           success: true,
-          status: 'EVM all entity data retrieved',
+          status: 'entity balance retrieved',
+          ledger: 'EVM',
           data: [
             {
-              name: all[0].data[0].fullId,
-              ethBalance: all[1].data[0].ethBalance,
-              tokenBalance: all[1].data[0].tokenBalance,
-              liveBalance: all[1].data[0].liveBalance,
-              lastBlock: all[1].data[0].lastBlock,
-              zeroBlock: all[1].data[0].zeroBlock
+              coinBalance: bal.data[0].ethBalance,
+              tokenBalance: bal.data[0].tokenBalance,
+              liveBalance: bal.data[0].liveBalance,
+              lastBlock: bal.data[0].lastBlock,
+              zeroBlock: bal.data[0].zeroBlock
             }
           ]
         };
@@ -262,27 +258,25 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return  {
           success: false,
-          status: 'EVM all entity data not retrieved',
+          status: 'could not retrieve entity balance',
+          ledger: 'EVM',
           data: []
         };
       }
     }
-    else if ( txLedger == 'MongoDB' ) {
-      all = await Promise.all( [
-        getEntity( entity.fullId )
-      ] );
-      if ( all[0].success && all[0].data.length ) {
+    else if ( tL == 'MongoDB' ) {
+      const bal = await getEntity( entity.fullId );
+
+      if ( bal.success ) {
         return  {
           success: true,
-          status: 'MongoDB all entity data retrieved',
+          status: 'entity balance retrieved',
+          ledger: 'MongoDB',
           data: [
             {
-              name: all[0].data[0].fullId,
-              ethBalance: 'not available',
-              tokenBalance: all[0].data[0].onChain.balance,
-              liveBalance: all[0].data[0].onChain.balance, // TODO: this is the wrong balance
-              lastBlock: all[0].data[0].onChain.lastMove,
-              zeroBlock: 'not available'
+              tokenBalance: bal.data[0].onChain.balance,
+              liveBalance: bal.data[0].onChain.balance, // TODO: this is the wrong live balance
+              lastBlock: bal.data[0].onChain.lastMove,
             }
           ]
         };
@@ -290,7 +284,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return  {
           success: false,
-          status: 'MongoDB all entity data not retrieved',
+          status: 'could not retrieve entity balance',
+          ledger: 'MongoDB',
           data: []
         };
       }
@@ -336,6 +331,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setEntity( entityData, options = 'entity' ) {
+
+    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
+      const newSymbolAddress = V.setActiveAddress();
+      entityData.symbolCredentials = newSymbolAddress.data[0];
+      V.setState( 'activeAddress', newSymbolAddress.data[0].account );
+    }
 
     if ( options == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );

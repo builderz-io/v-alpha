@@ -19,7 +19,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     if ( which == 'entity found' ) {
       const aE = V.getState( 'activeEntity' );
       const eB = await V.getEntityBalance( aE );
-      V.setNode( $modal, InteractionComponents.entityFound( aE, eB ) );
+      const cT = V.getSetting( 'coinTicker' );
+      const tT = V.getSetting( 'tokenTicker' );
+      V.setNode( $modal, InteractionComponents.entityFound( aE, eB, cT, tT ) );
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
