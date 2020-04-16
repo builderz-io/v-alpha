@@ -21,7 +21,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function castEntity( entityData ) {
-    console.log( entityData );
+
     // check whether we have a valid title
     const title = castEntityTitle( entityData.title, entityData.role );
 
@@ -32,6 +32,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
+    // cast tag and fullId
     const tag = castTag();
     const fullId = title.data[0] + ' ' + tag;
 
@@ -48,14 +49,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-
-    const address = entityData.evmAddress ? entityData.evmAddress : V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
-
+    const activeAddress = V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry;
+    let geometry, uPhrase, creator, creatorTag;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -70,8 +69,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    let uPhrase;
-
     if ( entityData.uPhrase ) {
       uPhrase = entityData.uPhrase;
     }
@@ -79,10 +76,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = 'vx' + socket.id.replace( '_', 'a' ).replace( '-', '2' ).slice( 0, 16 );
     }
     else {
-      uPhrase = 'unset';
+      uPhrase = 'none';
     }
-
-    let creator, creatorTag;
 
     if ( activeEntity ) {
       creator = activeEntity.profile.title;
@@ -95,7 +90,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const newEntity = {
       fullId: fullId,
-      evmAddress: address,
+      activeAddress: activeAddress,
       uPhrase: uPhrase,
       profile: {
         fullId: fullId,
@@ -113,8 +108,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         creatorTag: creatorTag,
       },
       evmCredentials: {
-        address: address
+        address: entityData.evmAddress ? entityData.evmAddress : 'none'
       },
+      symbolCredentials: entityData.symbolCredentials || { address: 'none' },
       owners: [{
         ownerName: creator,
         ownerTag: creatorTag,
@@ -237,7 +233,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( tL == 'EVM' ) {
 
-      const bal = await V.getAddressState( entity.evmAddress );
+      const bal = await V.getAddressState( entity.evmCredentials.address );
 
       if ( bal.success ) {
         return  {
@@ -335,7 +331,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       const newSymbolAddress = V.setActiveAddress();
       entityData.symbolCredentials = newSymbolAddress.data[0];
-      V.setState( 'activeAddress', newSymbolAddress.data[0].account );
+      V.setState( 'activeAddress', newSymbolAddress.data[0].address );
     }
 
     if ( options == 'verification' ) {

@@ -105,6 +105,8 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
 
   };
 
+  // Add ledger-specific scripts and methods
+
   if ( VInit.getSetting( 'transactionLedger' ) == 'EVM' ) {
     await Promise.all( [
       setScript( 'dist/web3.min.js' ),
@@ -126,6 +128,7 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     ] );
     console.log( '*** symbol scripts loaded ***' );
     VMethods.setActiveAddress = VSymbol.setActiveAddress;
+    VMethods.setMosaicTransaction = VSymbol.setMosaicTransaction;
   }
 
   if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {

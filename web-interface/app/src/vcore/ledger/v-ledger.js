@@ -86,12 +86,22 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           return V.setTokenTransaction( data );
         }
       }
-      if ( whichEndpoint == 'verification' ) {
+      else if ( whichEndpoint == 'verification' ) {
         return V.setAddressVerification( data );
       }
     }
+    else if ( whichLedger == 'Symbol' ) {
+      if ( whichEndpoint == 'transaction' ) {
+        return V.setMosaicTransaction( data );
+      }
+    }
     else if ( whichLedger == '3Box' ) {
-      return V.set3BoxSpace( whichEndpoint, data );
+      if ( whichEndpoint == 'entity' ) {
+        return V.set3BoxSpace( whichEndpoint, data );
+      }
+      else if ( whichEndpoint == 'verification' ) {
+        // todo
+      }
     }
   }
 

@@ -2,7 +2,7 @@ var mongoose = require( 'mongoose' );
 
 var entitySchema = mongoose.Schema( {
   fullId: String, // name + tag
-  evmAddress: String,
+  activeAddress: String,
   uPhrase: String,
   profile: {
     fullId: String,
@@ -22,7 +22,11 @@ var entitySchema = mongoose.Schema( {
   },
   evmCredentials: {
     address: String,
-    privKey: String,
+    privateKey: String,
+  },
+  symbolCredentials: {
+    address: String,
+    privateKey: String,
   },
   geometry: {
     type: { type: String },
