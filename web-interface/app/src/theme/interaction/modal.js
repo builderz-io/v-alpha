@@ -55,6 +55,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'please wait' ) {
       V.setNode( $modal, InteractionComponents.modalMessage( 'Please wait... requesting data' ) );
     }
+    else if ( which == 'transaction sent' ) {
+      V.setNode( $modal, InteractionComponents.modalMessage( 'Transaction has been sent to the network' ) );
+    }
     else {
       V.setNode( $modal, InteractionComponents.modalMessage( 'An error occured' ) );
     }
@@ -106,7 +109,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
         V.setEntity( entityData ).then( res => {
           if ( res.success ) {
             V.setState( 'activeEntity', res.data[0] );
-            Join.draw( 'setup new entity' );
+            Join.draw( 'new entity was set up' );
           }
           else {
             DOM.$box.value = '';
@@ -120,7 +123,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
         V.getEntity( DOM.$box.value ).then( res => {
           if ( res.success ) {
             V.setState( 'activeEntity', res.data[0] );
-            Join.draw( 'setup new entity' );
+            Join.draw( 'new entity was set up' );
           }
           else {
             console.log( 'entity not found', res );

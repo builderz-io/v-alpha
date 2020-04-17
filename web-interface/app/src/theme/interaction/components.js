@@ -489,6 +489,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       },
       a: {
         placeholder: options == 'get entity' ? V.i18n( 'vx...', 'placeholder' ) : V.i18n( 'Choose preferred name', 'placeholder' ),
+        value: 'vxCommLogin'
       },
       click: stopProp
     } );

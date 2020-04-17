@@ -46,16 +46,25 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
           }
         } );
       }
-      else if ( which == 'setup new entity' ) {
+      else if ( which == 'new entity was set up' ) {
         Modal.draw( 'please wait' );
         which = await ckeckEntityStore();
+      }
+    }
+    else if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) { // web3 join
+      if ( which == 'launch' ) {
+        which = 'web2 login';
+      }
+      else if ( which == 'new entity was set up' ) {
+        V.setState( 'activeAddress', V.getState( 'activeEntity' ).symbolCredentials.address );
+        which = 'entity found';
       }
     }
     else { // web2 join
       if ( which == 'launch' ) {
         which = 'web2 login';
       }
-      else if ( which == 'setup new entity' ) {
+      else if ( which == 'new entity was set up' ) {
         which = 'entity found';
       }
     }

@@ -212,16 +212,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function launchDemoContent() {
-    let delay = 100;
-    DemoContent.mongoArr.forEach( entityData => {
-      setTimeout( write, delay );
-
-      function write() {
-        delay += 100;
-        V.setEntity( entityData );
-      }
-    } );
+  async function launchDemoContent() {
+    for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
+      await V.setEntity( DemoContent.mongoArr[i] );
+    }
   }
 
   /* ============ public methods and exports ============ */

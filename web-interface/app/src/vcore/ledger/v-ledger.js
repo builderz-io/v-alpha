@@ -119,6 +119,11 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         return V.getAddressHistory();
       }
     }
+    else if ( whichLedger == 'Symbol' ) {
+      if ( whichEndpoint == 'transaction' ) {
+        return V.getAddressHistory();
+      }
+    }
     else if ( whichLedger == '3Box' ) {
       return V.get3BoxSpace( data ).then( res => {
         return res;

@@ -42,14 +42,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( exists.success ) { // success is not a good thing here ;)
       console.log( 'entity already exists:', exists.data[0].fullId );
       castEntity( entityData );
-      return {
-        success: false,
-        status: 'entity exists'
-      };
+      // return {
+      //   success: false,
+      //   status: 'entity exists'
+      // };
     }
 
     const activeEntity = V.getState( 'activeEntity' );
     const activeAddress = V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
+
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
@@ -223,26 +224,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const tL = V.getSetting( 'transactionLedger' );
 
-    if ( tL == 'Symbol' ) {
-      return  {
-        success: false,
-        status: 'ledger currently not functional',
-        ledger: 'Symbol',
-        data: []
-      };
-    }
-    else if ( tL == 'EVM' ) {
+    if ( ['EVM', 'Symbol'].includes( tL ) ) {
 
-      const bal = await V.getAddressState( entity.evmCredentials.address );
+      const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 
       if ( bal.success ) {
         return  {
           success: true,
           status: 'entity balance retrieved',
-          ledger: 'EVM',
+          ledger: tL,
           data: [
             {
-              coinBalance: bal.data[0].ethBalance,
+              coinBalance: bal.data[0].coinBalance,
               tokenBalance: bal.data[0].tokenBalance,
               liveBalance: bal.data[0].liveBalance,
               lastBlock: bal.data[0].lastBlock,
@@ -255,7 +248,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return  {
           success: false,
           status: 'could not retrieve entity balance',
-          ledger: 'EVM',
+          ledger: tL,
           data: []
         };
       }
@@ -267,7 +260,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return  {
           success: true,
           status: 'entity balance retrieved',
-          ledger: 'MongoDB',
+          ledger: tL,
           data: [
             {
               tokenBalance: bal.data[0].onChain.balance,
@@ -281,7 +274,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return  {
           success: false,
           status: 'could not retrieve entity balance',
-          ledger: 'MongoDB',
+          ledger: tL,
           data: []
         };
       }
@@ -329,11 +322,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   async function setEntity( entityData, options = 'entity' ) {
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-      const newSymbolAddress = V.setActiveAddress();
+      const newSymbolAddress = await V.setActiveAddress();
       entityData.symbolCredentials = newSymbolAddress.data[0];
       V.setState( 'activeAddress', newSymbolAddress.data[0].address );
     }
-
     if ( options == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
     }

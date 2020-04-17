@@ -128,7 +128,9 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     ] );
     console.log( '*** symbol scripts loaded ***' );
     VMethods.setActiveAddress = VSymbol.setActiveAddress;
+    VMethods.getAddressState = VSymbol.getAddressState;
     VMethods.setMosaicTransaction = VSymbol.setMosaicTransaction;
+    VMethods.getAddressHistory = VSymbol.getAddressHistory;
   }
 
   if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {
