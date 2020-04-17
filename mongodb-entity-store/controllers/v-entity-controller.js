@@ -49,6 +49,14 @@ exports.findByEvmAddress = async function( req, res ) {
 
 };
 
+exports.findBySymbolAddress = async function( req, res ) {
+
+  const find = { 'symbolCredentials.address': req };
+
+  res( await findEntity( find ) );
+
+};
+
 exports.findByFullId = async function( req, res ) {
 
   const find = { fullId: req };

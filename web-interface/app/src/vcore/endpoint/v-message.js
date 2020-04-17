@@ -173,8 +173,18 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   ) {
     const msgData = {};
     msgData.message = whichMessage;
-    msgData.sender = V.getState( 'activeEntity' ).fullId;
-    return V.setData( msgData, 'message', V.getSetting( 'chatLedger' ) );
+    const aE = V.getState( 'activeEntity' );
+
+    if ( aE ) {
+      msgData.sender = V.getState( 'activeEntity' ).fullId;
+      return V.setData( msgData, 'message', V.getSetting( 'chatLedger' ) );
+    }
+    else {
+      return Promise.resolve( {
+        success: false,
+        status: 'not joined'
+      } );
+    }
   }
 
   return {

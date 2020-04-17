@@ -28,7 +28,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
   return {
     mongoArr: [
       {
-        title: 'Community',
+        title: 'Jane Wood',
         role: 'community',
         uPhrase: 'vxCommLogin',
         location: 'Berlin, Germany',
@@ -37,10 +37,15 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'The community account',
         unit: 'day',
         target: 400,
-        evmAddress: evmAddresses.one
+        evmAddress: evmAddresses.one,
+        symbolCredentials: {
+          rawAddress: 'TADHFN-NIGJXO-C74D2J-WLWAMO-RXPHNP-BXHJV4-6BQQ',
+          address: 'TADHFNNIGJXOC74D2JWLWAMORXPHNPBXHJV46BQQ',
+          privateKey: '0291753B4B58EF14DEF3C68C250EBF0960243E2F67C8D2D379109B5010A393AF'
+        },
       },
       {
-        title: 'Community Contribution',
+        title: 'Peter Smith',
         role: 'community-contribution',
         uPhrase: 'vxCommContrLogin',
         location: 'Berlin, Germany',
@@ -49,7 +54,29 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'The community contribution account',
         unit: 'day',
         target: 400,
-        evmAddress: evmAddresses.two
+        evmAddress: evmAddresses.two,
+        symbolCredentials: {
+          rawAddress: 'TC7XRU-EL5NJ2-DCGP5L-OEZBJL-QIJXBP-XFA25S-DVOQ',
+          address: 'TC7XRUEL5NJ2DCGP5LOEZBJLQIJXBPXFA25SDVOQ',
+          privateKey: '0A9A000052C2CBF38433400EED1F6F348EA1E3165D167E64443FDC84F43E0AB3'
+        },
+      },
+      {
+        title: 'Symbol Testnet Faucet',
+        role: 'member',
+        uPhrase: 'vxSymFaucetLogin',
+        location: 'Berlin, Germany',
+        lat: 52.5200,
+        lng: 13.4050,
+        description: 'I give you Mosaics',
+        unit: 'view',
+        target: 10,
+        evmAddress: 'none',
+        symbolCredentials: {
+          rawAddress: 'TCQSO3-LUEWJZ-X4ITOY-4YWVL5-TAOEJ5-6YXUMS-AJHH',
+          address: 'TCQSO3LUEWJZX4ITOY4YWVL5TAOEJ56YXUMSAJHH',
+          privateKey: 'none'
+        },
       },
       {
         title: 'Accountant',

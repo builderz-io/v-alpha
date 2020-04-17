@@ -45,6 +45,8 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get entity by evmAddress', handleEntity.findByEvmAddress );
 
+  client.on( 'get entity by symbolAddress', handleEntity.findBySymbolAddress );
+
   client.on( 'get entity by fullId', handleEntity.findByFullId );
 
   client.on( 'get entity by uPhrase', handleEntity.findByUPhrase );

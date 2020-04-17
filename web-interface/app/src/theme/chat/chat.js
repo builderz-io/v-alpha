@@ -69,8 +69,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         cid: '2001',
         c: 0,
         l: -1,
-        f: 'Community',
-        title: 'Community',
+        f: 'Chat',
+        title: 'Chat',
         // role: 'community',
         // draw: function() { Chat.draw() },
         o: true,
@@ -153,8 +153,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           res.status == 'transaction successful' ? Account.drawHeaderBalance() : null;
           DOM.$form.value = '';
-          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-          console.log( res.status );
+          // DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+          // console.log( res.status );
         }
         else {
           DOM.$form.value = '';
