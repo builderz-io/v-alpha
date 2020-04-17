@@ -32,6 +32,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
+    // cast tag and fullId
     const tag = castTag();
     const fullId = title.data[0] + ' ' + tag;
 
@@ -41,21 +42,20 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( exists.success ) { // success is not a good thing here ;)
       console.log( 'entity already exists:', exists.data[0].fullId );
       castEntity( entityData );
-      return {
-        success: false,
-        status: 'entity exists'
-      };
+      // return {
+      //   success: false,
+      //   status: 'entity exists'
+      // };
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-
-    const address = entityData.evmAddress ? entityData.evmAddress : V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
+    const activeAddress = V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
 
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry;
+    let geometry, uPhrase, creator, creatorTag;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -70,8 +70,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    let uPhrase;
-
     if ( entityData.uPhrase ) {
       uPhrase = entityData.uPhrase;
     }
@@ -79,10 +77,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = 'vx' + socket.id.replace( '_', 'a' ).replace( '-', '2' ).slice( 0, 16 );
     }
     else {
-      uPhrase = 'unset';
+      uPhrase = 'none';
     }
-
-    let creator, creatorTag;
 
     if ( activeEntity ) {
       creator = activeEntity.profile.title;
@@ -95,7 +91,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const newEntity = {
       fullId: fullId,
-      evmAddress: address,
+      activeAddress: activeAddress,
       uPhrase: uPhrase,
       profile: {
         fullId: fullId,
@@ -113,8 +109,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         creatorTag: creatorTag,
       },
       evmCredentials: {
-        address: address
+        address: entityData.evmAddress ? entityData.evmAddress : 'none'
       },
+      symbolCredentials: entityData.symbolCredentials || { address: 'none' },
       owners: [{
         ownerName: creator,
         ownerTag: creatorTag,
@@ -224,30 +221,25 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getEntityBalance( entity ) {
-    // const aE = V.getState( 'activeEntity' );
-    const txLedger = V.getSetting( 'transactionLedger' );
 
-    let all;
+    const tL = V.getSetting( 'transactionLedger' );
 
-    if ( txLedger == 'EVM' ) {
+    if ( ['EVM', 'Symbol'].includes( tL ) ) {
 
-      all = await Promise.all( [
-        getEntity( entity.evmAddress ),
-        V.getAddressState( entity.evmAddress )
-      ] );
+      const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 
-      if ( all[0].success && all[1].success ) {
+      if ( bal.success ) {
         return  {
           success: true,
-          status: 'EVM all entity data retrieved',
+          status: 'entity balance retrieved',
+          ledger: tL,
           data: [
             {
-              name: all[0].data[0].fullId,
-              ethBalance: all[1].data[0].ethBalance,
-              tokenBalance: all[1].data[0].tokenBalance,
-              liveBalance: all[1].data[0].liveBalance,
-              lastBlock: all[1].data[0].lastBlock,
-              zeroBlock: all[1].data[0].zeroBlock
+              coinBalance: bal.data[0].coinBalance,
+              tokenBalance: bal.data[0].tokenBalance,
+              liveBalance: bal.data[0].liveBalance,
+              lastBlock: bal.data[0].lastBlock,
+              zeroBlock: bal.data[0].zeroBlock
             }
           ]
         };
@@ -255,27 +247,25 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return  {
           success: false,
-          status: 'EVM all entity data not retrieved',
+          status: 'could not retrieve entity balance',
+          ledger: tL,
           data: []
         };
       }
     }
-    else if ( txLedger == 'MongoDB' ) {
-      all = await Promise.all( [
-        getEntity( entity.fullId )
-      ] );
-      if ( all[0].success && all[0].data.length ) {
+    else if ( tL == 'MongoDB' ) {
+      const bal = await getEntity( entity.fullId );
+
+      if ( bal.success ) {
         return  {
           success: true,
-          status: 'MongoDB all entity data retrieved',
+          status: 'entity balance retrieved',
+          ledger: tL,
           data: [
             {
-              name: all[0].data[0].fullId,
-              ethBalance: 'not available',
-              tokenBalance: all[0].data[0].onChain.balance,
-              liveBalance: all[0].data[0].onChain.balance, // TODO: this is the wrong balance
-              lastBlock: all[0].data[0].onChain.lastMove,
-              zeroBlock: 'not available'
+              tokenBalance: bal.data[0].onChain.balance,
+              liveBalance: bal.data[0].onChain.balance, // TODO: this is the wrong live balance
+              lastBlock: bal.data[0].onChain.lastMove,
             }
           ]
         };
@@ -283,7 +273,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return  {
           success: false,
-          status: 'MongoDB all entity data not retrieved',
+          status: 'could not retrieve entity balance',
+          ledger: tL,
           data: []
         };
       }
@@ -330,6 +321,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function setEntity( entityData, options = 'entity' ) {
 
+    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
+      const newSymbolAddress = await V.setActiveAddress();
+      entityData.symbolCredentials = newSymbolAddress.data[0];
+      V.setState( 'activeAddress', newSymbolAddress.data[0].address );
+    }
     if ( options == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
     }

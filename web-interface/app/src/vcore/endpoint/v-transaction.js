@@ -53,8 +53,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const initiator = V.getState( 'activeEntity' );
+    const aA = V.getState( 'activeAddress' );
+    const tL = V.getSetting( 'transactionLedger' );
 
     const recipientData = await V.getEntity( recipient );
+
+    let recipientAddress, signature;
+
+    if ( tL == 'EVM' ) {
+      recipientAddress = recipientData.data[0].evmCredentials.address;
+      signature = initiator.evmCredentials.privateKey;
+    }
+    else if ( tL == 'Symbol' ) {
+      recipientAddress = recipientData.data[0].symbolCredentials.address;
+      signature = initiator.symbolCredentials.privateKey;
+    }
 
     if ( !initiator ) {
       return {
@@ -84,14 +97,15 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
           currency: 'V', // TODO
           command: command,
           initiator: initiator.fullId,
-          initiatorAddress: initiator.evmCredentials.address,
+          initiatorAddress: aA,
           sender: initiator.fullId, // currently the same as initiator
-          senderAddress: initiator.evmCredentials.address, // currently the same as initiator
+          senderAddress: aA, // currently the same as initiator
           recipient: recipient,
-          recipientAddress: recipientData.data[0].evmCredentials.address,
-          reference: reference,
+          recipientAddress: recipientAddress,
+          reference: reference || 'no reference given',
           timeSecondsUNIX: timeSecondsUNIX,
-          origMessage: data
+          origMessage: data,
+          signature: signature
         }]
       };
     }

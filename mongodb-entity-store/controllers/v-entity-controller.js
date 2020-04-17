@@ -12,14 +12,14 @@ async function findEntity( query ) {
       if ( err ) {
         resolve( {
           success: false,
-          status: 'error finding entities',
+          status: 'error in find (entity)',
           message: err,
         } );
       }
       else if ( !entities.length ) {
         resolve( {
           success: false,
-          status: 'nothing found',
+          status: 'could not find entities',
         } );
       }
       else {
@@ -68,94 +68,11 @@ exports.findByUPhrase = async function( req, res ) {
 exports.register = function( req, res ) {
 
   /**
-   * @req: Object { title: '', tag: '', role: '', location: '', description: '', unit: '', target: '' }
+   * @req: full entity data object
    *
    */
 
   const date = new Date();
-
-  // const entityData = req;
-
-  /*
-  const newEntity = new EntityDB( {
-    fullId: entityData.title + ' ' + entityData.tag,
-    evmAddress: entityData.evmAddress,
-    uPhrase: entityData.uPhrase,
-    credentials: { // replaced with "profile"
-      name: entityData.title, // !! key is named 'name' to retain compatibility with VI Alpha One
-      tag: entityData.tag,
-      role: entityData.role,
-      status: 'active', // entityData.status,
-      socketID: 'offline' // entityData.socketID,
-    },
-    evmCredentials: {
-      address: entityData.evmAddress,
-    },
-    properties: {
-      location: entityData.location,
-      description: entityData.description,
-      creator: 'test', // TODO: creator[0].profile.title,
-      creatorTag: 'test', // TODO: creator[0].profile.tag,
-      created: date,
-      fillUntil: new Date( date ).setDate( new Date( date ).getDate() + 7 ), // TODO: systemInit.poolGovernance.fillPeriod
-      expires: new Date( date ).setMonth( new Date( date ).getMonth() + 6 ), // TODO: systemInit.poolGovernance.expires
-      target: entityData.target,
-      unit: entityData.unit,
-    },
-    stats: {
-      sendVolume: 0,
-      receiveVolume: 0,
-    },
-    profile: {
-      joined: date,
-      lastLogin: date,
-      loginExpires: entityData.loginExpires,
-      timeZone: entityData.tz,
-    },
-    owners: [{
-      ownerName: 'test', // TODO: tools.constructUserName( entityData.ownerAdmin.creator ),
-      ownerTag: 'test' // TODO: entityData.ownerAdmin.creatorTag,
-    }],
-    admins: [{
-      adminName: 'test', // TODO: tools.constructUserName( entityData.ownerAdmin.creator ),
-      adminTag: 'test' // TODO: entityData.ownerAdmin.creatorTag,
-    }],
-    onChain: {
-      balance: initialBalance, // TODO: depends on entity role, was "entityData.initialBalance"
-      lastMove: Number( Math.floor( date / 1000 ) ),
-      timeToZero: baseTimeToZero
-    }
-  } );
-*/
-
-  // if ( entityData.properties ) {
-  //   newEntity.properties = entityData.properties;
-  // }
-  // else {
-  //   newEntity.properties = {
-  //                            description: '',
-  //                            location: '',
-  //                            creator: 'test', // TODO: tools.constructUserName( entityData.ownerAdmin.creator ),
-  //                            creatorTag: 'test' // TODO: entityData.ownerAdmin.creatorTag,
-  //                          };
-  // }
-
-  // if ( entityData.location && entityData.lat ) {
-  //   newEntity.geometry = {
-  //     type: 'Point',
-  //     coordinates: [entityData.lng, entityData.lat],
-  //   };
-  // }
-  // else {
-  //   newEntity.geometry = {
-  //     type: 'Point',
-  //     coordinates: [( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1, ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 )],
-  //   };
-  // }
-
-  // if ( entityData.evmCredentials.address ) {
-  //   newEntity.evmCredentials = entityData.evmCredentials;
-  // }
 
   // feed in onChain into entityData when using MongoDB
   // for compatibility with functionality introduced in V Alpha 1
@@ -166,6 +83,7 @@ exports.register = function( req, res ) {
     timeToZero: baseTimeToZero
   };
 
+  // force verification to be false
   req.profile.verified = false;
 
   const newEntity = new EntityDB( req );
@@ -174,7 +92,7 @@ exports.register = function( req, res ) {
     if ( err ) {
       res( {
         success: false,
-        status: 'error saving entity',
+        status: 'error in save (register new entity)',
         message: err,
       } );
     }
@@ -217,14 +135,14 @@ exports.register = function( req, res ) {
         if ( err ) {
           res( {
             success: false,
-            status: 'error saving inital transaction',
+            status: 'error in save (inital transaction)',
             message: err,
           } );
         }
         else {
           res( {
             success: true,
-            status: 'new entity registered',
+            status: 'new entity and inital transaction registered',
             data: [ newEntity ]
           } );
         }
@@ -245,10 +163,17 @@ exports.verify = function( req, cb ) {
   }
 
   EntityDB.findOne( { fullId: req.fullId }, { profile: true } ).exec( ( err, res ) => {
-    if ( err || res === null ) {
+    if ( err ) {
       return cb( {
         success: false,
-        status: 'entity to verify not found',
+        status: 'error in find (verify entity)',
+        message: err
+      } );
+    }
+    if ( res === null ) {
+      return cb( {
+        success: false,
+        status: 'could not find entity to verify',
       } );
     }
     res.profile.role = 'member';
@@ -260,13 +185,14 @@ exports.verify = function( req, cb ) {
       if ( err ) {
         return cb( {
           success: false,
-          status: 'error in verification',
+          status: 'error in save (verify entity)',
+          message: err
         } );
       }
       else {
         return cb( {
           success: true,
-          status: 'verification successfull',
+          status: 'entity verified',
         } );
       }
     } );

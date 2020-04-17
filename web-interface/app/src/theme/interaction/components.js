@@ -335,7 +335,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return $content;
   }
 
-  function entityFound( activeEntity, entityBalance ) {
+  function entityFound( activeEntity, entityBalance, coinTicker, tokenTicker ) {
     const $content = modalContent();
 
     const $uPhrase = V.cN( {
@@ -364,9 +364,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'p',
         c: 'modal__details',
         h: `
-        V: ${ x.tokenBalance }<br>
-        ${ V.i18n( 'V Live', 'modal' ) }: ${ x.liveBalance }<br>
-        ETH: ${ x.ethBalance }<br>
+        ${tokenTicker} ${ V.i18n( 'Balance', 'modal' ) }: ${ x.tokenBalance }<br>
+        ${tokenTicker} ${ V.i18n( 'Live Balance', 'modal' ) }: ${ x.liveBalance }<br>
+        ${coinTicker}: ${ x.coinBalance }<br>
         ${ V.i18n( 'Zero Block', 'modal' ) }: ${ x.zeroBlock }<br>
         ${ V.i18n( 'Last Block', 'modal' ) }: ${ x.lastBlock }
         `
@@ -375,7 +375,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     else {
       $balance = V.cN( {
         t: 'p',
-        h: V.i18n( 'Sorry, token details could not be found', 'modal' )
+        h: V.i18n( 'Sorry, account details could not be retrieved', 'modal' )
       } );
     }
     V.setNode( $content, [$uPhrase, $welcome, $balance] );
@@ -489,6 +489,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       },
       a: {
         placeholder: options == 'get entity' ? V.i18n( 'vx...', 'placeholder' ) : V.i18n( 'Choose preferred name', 'placeholder' ),
+        value: 'vxCommLogin'
       },
       click: stopProp
     } );

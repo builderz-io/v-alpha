@@ -8,44 +8,44 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  launchScripts();
-
   /* ================== private methods ================= */
 
   async function launchScripts() {
     await Promise.all( [
-      window.setScript( 'dist/velocity.min.js' ),
-      window.setScript( 'dist/moment.min.js' ),
-      window.setScript( 'dist/js.cookie.min.js' ),
+      V.setScript( 'dist/velocity.min.js' ),
+      V.setScript( 'dist/moment.min.js' ),
+      V.setScript( 'dist/js.cookie.min.js' ),
 
-      window.setScript( 'assets/demo-content/demo-content.js' ),
-      window.setScript( 'src/theme/canvas/components.js' ),
-      window.setScript( 'src/theme/canvas/feature.js' ),
-      window.setScript( 'src/theme/canvas/haze.js' ),
-      window.setScript( 'src/theme/canvas/page.js' ),
-      window.setScript( 'src/theme/navigation/components.js' ),
-      window.setScript( 'src/theme/navigation/navigation.js' ),
-      window.setScript( 'src/theme/interaction/components.js' ),
-      window.setScript( 'src/theme/interaction/buttons.js' ),
-      window.setScript( 'src/theme/interaction/form.js' ),
-      window.setScript( 'src/theme/interaction/join.js' ),
-      window.setScript( 'src/theme/interaction/modal.js' ),
-      window.setScript( 'src/theme/account/components.js' ),
-      window.setScript( 'src/theme/account/account.js' ),
-      window.setScript( 'src/theme/profile/components.js' ),
-      window.setScript( 'src/theme/profile/profile.js' ),
-      window.setScript( 'src/theme/chat/components.js' ),
-      window.setScript( 'src/theme/chat/chat.js' ),
+      V.setScript( 'assets/demo-content/demo-content.js' ),
+      V.setScript( 'src/theme/canvas/components.js' ),
+      V.setScript( 'src/theme/canvas/feature.js' ),
+      V.setScript( 'src/theme/canvas/haze.js' ),
+      V.setScript( 'src/theme/canvas/page.js' ),
+      V.setScript( 'src/theme/navigation/components.js' ),
+      V.setScript( 'src/theme/navigation/navigation.js' ),
+      V.setScript( 'src/theme/interaction/components.js' ),
+      V.setScript( 'src/theme/interaction/buttons.js' ),
+      V.setScript( 'src/theme/interaction/form.js' ),
+      V.setScript( 'src/theme/interaction/join.js' ),
+      V.setScript( 'src/theme/interaction/modal.js' ),
+      V.setScript( 'src/theme/account/components.js' ),
+      V.setScript( 'src/theme/account/account.js' ),
+      V.setScript( 'src/theme/profile/components.js' ),
+      V.setScript( 'src/theme/profile/profile.js' ),
+      V.setScript( 'src/theme/chat/components.js' ),
+      V.setScript( 'src/theme/chat/chat.js' ),
 
-      window.setScript( 'src/plugins/map/map.js' ),
-      window.setScript( 'src/plugins/google/google.js' ),
-      window.setScript( 'src/plugins/data/components.js' ),
-      window.setScript( 'src/plugins/data/data.js' ),
-      window.setScript( 'src/plugins/marketplace/components.js' ),
-      window.setScript( 'src/plugins/marketplace/marketplace.js' ),
-      window.setScript( 'src/plugins/media/components.js' ),
-      window.setScript( 'src/plugins/media/media.js' ),
+      V.setScript( 'src/plugins/map/map.js' ),
+      V.setScript( 'src/plugins/google/google.js' ),
+      V.setScript( 'src/plugins/data/components.js' ),
+      V.setScript( 'src/plugins/data/data.js' ),
+      V.setScript( 'src/plugins/marketplace/components.js' ),
+      V.setScript( 'src/plugins/marketplace/marketplace.js' ),
+      V.setScript( 'src/plugins/media/components.js' ),
+      V.setScript( 'src/plugins/media/media.js' ),
     ] );
+    console.log( '*** canvas scripts loaded ***' );
+
   }
 
   function setState() {
@@ -207,26 +207,23 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     setTimeout( Marketplace.draw, 300 );
 
     if ( V.getSetting( 'demoContent' ) ) {
-      setTimeout( launchDemoContent, 1000 ); // sockets should be available after 1 sec...
+      launchDemoContent();
     }
 
   }
 
-  function launchDemoContent() {
-    let delay = 100;
-    DemoContent.mongoArr.forEach( entityData => {
-      setTimeout( write, delay );
-
-      function write() {
-        delay += 100;
-        V.setEntity( entityData );
-      }
-    } );
+  async function launchDemoContent() {
+    for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
+      await V.setEntity( DemoContent.mongoArr[i] );
+    }
   }
 
   /* ============ public methods and exports ============ */
 
-  function launch() {
+  async function launch() {
+
+    await launchScripts();
+
     V.setPipe(
       setState,
       setHead,
@@ -238,13 +235,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       launchPlugins,
       updateNav,
       drawFirstViews,
-      //  join
     )();
 
   }
 
   return {
-    launchScripts: launchScripts,
     launch: launch,
   };
 

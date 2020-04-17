@@ -128,7 +128,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
             }
             else {
               const entity = await V.getEntity( caseArray.join( ' ' ) );
-              entityToVerify = entity.data[0].evmAddress;
+              entityToVerify = entity.data[0].evmCredentials.address;
             }
           }
 

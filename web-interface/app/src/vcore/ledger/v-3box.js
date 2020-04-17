@@ -11,7 +11,7 @@ const V3Box = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods  ================= */
 
   async function set3BoxSpace( which, data ) {
 
@@ -68,6 +68,13 @@ const V3Box = ( function() { // eslint-disable-line no-unused-vars
       };
     }
   }
+
+  /* ====================== export  ===================== */
+
+  ( () => {
+    V.set3BoxSpace = set3BoxSpace;
+    V.get3BoxSpace = get3BoxSpace;
+  } )();
 
   return {
     set3BoxSpace: set3BoxSpace,

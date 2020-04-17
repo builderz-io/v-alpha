@@ -7,7 +7,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  // let window.Web3Obj;
   let contract;
 
   /* ================== private methods ================= */
@@ -1578,7 +1577,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods  ================= */
 
   function setActiveAddress() {
 
@@ -1607,7 +1606,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           }
           else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
             V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
-            Join.draw( 'setup new entity' );
+            Join.draw( 'new entity was set up' );
           }
 
         } );
@@ -1698,8 +1697,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: true,
         status: 'address state retrieved',
+        ledger: 'EVM',
         data: [{
-          ethBalance: castEthBalance( all[0] ),
+          coinBalance: castEthBalance( all[0] ),
           liveBalance: castTokenBalance( all[1] ),
           tokenBalance: castTokenBalance( all[2]._balance ),
           lastBlock: all[2]._lastBlock,
@@ -1710,7 +1710,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     else {
       return {
         success: false,
-        status: 'address state not retrieved',
+        status: 'could not retrieve address state',
+        ledger: 'EVM'
       };
     }
 
@@ -1737,7 +1738,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     if ( !transfers.length ) {
       return {
         success: false,
-        status: 'no evm transfers',
+        status: 'no transfers',
+        ledger: 'EVM',
       };
     }
 
@@ -1749,9 +1751,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     } ).map( tx => {
       const txData = {};
 
+      txData.amount = ( tx.returnValues.value / 10**6 ).toFixed( 0 );
+
       txData.fromAddress = tx.returnValues.from.toLowerCase();
       txData.toAddress = tx.returnValues.to.toLowerCase();
-      txData.amount = ( tx.returnValues.value / 10**6 ).toFixed( 0 );
 
       txData.fromAddress == which ? txData.txType = 'out' : null;
       txData.toAddress == which ? txData.txType = 'in' : null;
@@ -1762,13 +1765,16 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       txData.logIndex = tx.logIndex;
       txData.hash = tx.transactionHash;
 
+      txData.message = 'n/a';
+
       return txData;
 
     } );
 
     return {
       success: true,
-      status: 'evm transactions retrieved',
+      status: 'transactions retrieved',
+      ledger: 'EVM',
       data: [ filteredTransfers ]
     };
 
@@ -1852,6 +1858,18 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       } );
   }
+
+  /* ====================== export  ===================== */
+
+  ( () => {
+    V.setActiveAddress = setActiveAddress;
+    V.getContractState = getContractState;
+    V.getAddressState = getAddressState;
+    V.getAddressHistory = getAddressHistory;
+    V.setAddressVerification = setAddressVerification;
+    V.setCoinTransaction = setCoinTransaction;
+    V.setTokenTransaction = setTokenTransaction;
+  } )();
 
   return {
     setActiveAddress: setActiveAddress,
