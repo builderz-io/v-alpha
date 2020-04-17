@@ -1,31 +1,27 @@
 const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Symbol
+   * V Symbol Module to access Symbol chains
    *
    */
 
   'use strict';
 
-  let Nem;
-  let network;
-  let tD;
+  const Symbol = require( '/node_modules/symbol-sdk' ); // eslint-disable-line global-require
+  const network = V.getNetwork( V.getNetwork( 'choice' ) );
+  const repositoryFactory = new Symbol.RepositoryFactoryHttp( network.rpc );
+  const accountHttp = repositoryFactory.createAccountRepository();
+  const transactionHttp = repositoryFactory.createTransactionRepository();
 
-  // launch()
+  const divisibility = V.getSetting( 'tokenDivisibility' );
 
   /* ================== private methods ================= */
 
-  function launch() {
-    // TODO
-  }
-
-  /* ============ public methods and exports ============ */
+  /* ================== public methods  ================= */
 
   function setActiveAddress() {
-    const Nem = require( '/node_modules/symbol-sdk' ); // eslint-disable-line global-require
-    const network = V.getNetwork( V.getNetwork( 'choice' ) );
 
-    const account = Nem.Account.generateNewAccount( Nem.NetworkType[network.type] );
+    const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
     // console.log( 'Your new account address is:', account.address.pretty(), 'and its private key is:', account.privateKey );
     return {
       success: true,
@@ -37,22 +33,18 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
     };
   }
 
-  async function getAddressState( which ) {
-    const Nem = require( '/node_modules/symbol-sdk' ); // eslint-disable-line global-require
-    const network = V.getNetwork( V.getNetwork( 'choice' ) );
-    const tD = V.getSetting( 'tokenDivisibility' );
+  async function getAddressState(
+    which = V.getState( 'activeAddress' )
+  ) {
 
-    const address = Nem.Address.createFromRawAddress( which );
-
-    const repositoryFactory = new Nem.RepositoryFactoryHttp( network.rpc );
-    const accountHttp = repositoryFactory.createAccountRepository();
+    const address = Symbol.Address.createFromRawAddress( which );
 
     const state = await accountHttp.getAccountInfo( address ).toPromise();
     console.log( state );
 
     const bal = state.mosaics.map( m => {
-      const uInt = new Nem.UInt64( [m.amount.lower, m.amount.higher] );
-      const convert = uInt.compact() / Math.pow( 10, tD );
+      const uInt = new Symbol.UInt64( [m.amount.lower, m.amount.higher] );
+      const convert = uInt.compact() / Math.pow( 10, divisibility );
       return convert;
     } );
 
@@ -80,17 +72,12 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   async function getAddressHistory(
     which = V.getState( 'activeAddress' )
   ) {
-    const Nem = require( '/node_modules/symbol-sdk' ); // eslint-disable-line global-require
-    const network = V.getNetwork( V.getNetwork( 'choice' ) );
-    const tD = V.getSetting( 'tokenDivisibility' );
 
-    const address = Nem.Address.createFromRawAddress( which );
+    const address = Symbol.Address.createFromRawAddress( which );
 
-    const repositoryFactory = new Nem.RepositoryFactoryHttp( network.rpc );
-    const accountHttp = repositoryFactory.createAccountRepository();
     // Page size between 10 and 100
     const pageSize = 10;
-    const queryParams = new Nem.QueryParams( { pageSize } );
+    const queryParams = new Symbol.QueryParams( { pageSize } );
 
     const transfers = await accountHttp.getAccountTransactions( address, queryParams ).toPromise();
     console.log( transfers );
@@ -99,8 +86,8 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
       const txData = {};
 
       txData.amount = tx.mosaics.map( m => {
-        const uInt = new Nem.UInt64( [m.amount.lower, m.amount.higher] );
-        const convert = uInt.compact() / Math.pow( 10, tD );
+        const uInt = new Symbol.UInt64( [m.amount.lower, m.amount.higher] );
+        const convert = uInt.compact() / Math.pow( 10, divisibility );
         return convert;
       } );
 
@@ -111,7 +98,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
       txData.block = ( function( tx ) {
         const blk = tx.transactionInfo.height;
-        const uInt = new Nem.UInt64( [blk.lower, blk.higher] );
+        const uInt = new Symbol.UInt64( [blk.lower, blk.higher] );
         const convert = uInt.compact();
         return convert;
       } )( tx );
@@ -124,7 +111,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
         return '';
       } )( tx );
 
-      console.log( txData );
+      // console.log( txData );
 
       return txData;
 
@@ -150,37 +137,31 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   function setMosaicTransaction( data ) {
 
-    const Nem = require( '/node_modules/symbol-sdk' ); // eslint-disable-line global-require
-    const tD = V.getSetting( 'tokenDivisibility' );
-    const network = V.getNetwork( V.getNetwork( 'choice' ) );
-
     // 1. Define the TransferTransaction
+    console.log( data );
 
-    const recipientAddress = Nem.Address.createFromRawAddress( data.recipientAddress );
-    const networkType = Nem.NetworkType[network.type];
-    const networkCurrencyMosaicId = new Nem.MosaicId( network.mosaicId );
+    const recipientAddress = Symbol.Address.createFromRawAddress( data.recipientAddress );
+    const networkType = Symbol.NetworkType[network.type];
+    const networkCurrencyMosaicId = new Symbol.MosaicId( network.mosaicId );
 
-    const transferTransaction = Nem.TransferTransaction.create(
-      Nem.Deadline.create(),
+    const transferTransaction = Symbol.TransferTransaction.create(
+      Symbol.Deadline.create(),
       recipientAddress,
-      [ new Nem.Mosaic( networkCurrencyMosaicId, Nem.UInt64.fromUint( 10 * Math.pow( 10, tD ) ) ) ],
-      Nem.PlainMessage.create( data.reference ),
+      [ new Symbol.Mosaic( networkCurrencyMosaicId, Symbol.UInt64.fromUint( 10 * Math.pow( 10, divisibility ) ) ) ],
+      Symbol.PlainMessage.create( data.reference ),
       networkType,
-      Nem.UInt64.fromUint( data.amount * tD )
+      Symbol.UInt64.fromUint( data.amount * divisibility )
     );
     console.log( transferTransaction );
 
     // 2. Sign the transaction
 
-    const account = Nem.Account.createFromPrivateKey( data.signature, networkType );
+    const account = Symbol.Account.createFromPrivateKey( data.signature, networkType );
     const signedTransaction = account.sign( transferTransaction, network.generationHash );
 
     console.log( signedTransaction );
 
     // 3. Announce the transaction to the network
-
-    const repositoryFactory = new Nem.RepositoryFactoryHttp( network.rpc );
-    const transactionHttp = repositoryFactory.createTransactionRepository();
 
     console.log( transactionHttp );
 
@@ -194,6 +175,15 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
       } );
 
   }
+
+  /* ====================== export  ===================== */
+
+  ( () => {
+    V.setActiveAddress = setActiveAddress;
+    V.getAddressState = getAddressState;
+    V.setMosaicTransaction = setMosaicTransaction;
+    V.getAddressHistory = getAddressHistory;
+  } )();
 
   return {
     setActiveAddress: setActiveAddress,

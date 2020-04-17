@@ -1,7 +1,9 @@
-let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
+const V = {}; // eslint-disable-line no-unused-vars
+
+( async function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to make V's core methods accessible
+  * Load VCore Modules and make methods accessible
   * through e.g. "V.methodNameHere()"
   *
   */
@@ -19,8 +21,6 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     } );
   }
 
-  window.setScript = setScript;
-
   await Promise.all( [
     setScript( 'src/vcore/v/v-key.js' ),
     setScript( 'src/vcore/v/v-init.js' ),
@@ -34,15 +34,15 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     setScript( 'src/vcore/ledger/v-ledger.js' ),
     setScript( 'src/theme/canvas/canvas.js' ),
   ] );
-  console.log( '*** vcore and canvas scripts loaded ***' );
+  console.log( '*** vcore scripts loaded ***' );
 
-  const VMethods = {
-    kicksAss: function kicksAss() {
-      Canvas.launch();
-      // console.log( 'we are kickin' );
-    },
+  const methods = {
+    // kicksAss: function kicksAss() {
+    //   Canvas.launch();
+    //   // console.log( 'we are kickin' );
+    // },
 
-    /* Action */
+    /* Endpoints */
     getEntity: VEntity.getEntity,
     setEntity: VEntity.setEntity,
     getEntityBalance: VEntity.getEntityBalance,
@@ -82,10 +82,6 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     getIcon: VHelper.getIcon,
     debug: VDebugHelper.debug,
 
-    /* Ledger */
-    getData: VLedger.getData,
-    setData: VLedger.setData,
-
     /* State */
     getState: VState.getState,
     setState: VState.setState,
@@ -99,60 +95,18 @@ let V = ( async function() { // eslint-disable-line prefer-const, no-unused-vars
     getNetwork: VInit.getNetwork,
     getApiKey: VKey.getApiKey,
 
-    /* 3Box added */
-
-    /* EVM added */
-
   };
 
-  // Add ledger-specific scripts and methods
+  Object.assign( V, methods );
 
-  if ( VInit.getSetting( 'transactionLedger' ) == 'EVM' ) {
-    await Promise.all( [
-      setScript( 'dist/web3.min.js' ),
-      setScript( 'src/vcore/ledger/v-evm.js' )
-    ] );
-    console.log( '*** web3 and evm scripts loaded ***' );
-    VMethods.setActiveAddress = VEvm.setActiveAddress;
-    VMethods.getContractState = VEvm.getContractState;
-    VMethods.getAddressState = VEvm.getAddressState;
-    VMethods.getAddressHistory = VEvm.getAddressHistory;
-    VMethods.setAddressVerification = VEvm.setAddressVerification;
-    VMethods.setCoinTransaction = VEvm.setCoinTransaction;
-    VMethods.setTokenTransaction = VEvm.setTokenTransaction;
-  }
-  else if ( VInit.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-    await Promise.all( [
-      setScript( 'dist/symbol-sdk-0.17.5-alpha.js' ),
-      setScript( 'src/vcore/ledger/v-symbol.js' )
-    ] );
-    console.log( '*** symbol scripts loaded ***' );
-    VMethods.setActiveAddress = VSymbol.setActiveAddress;
-    VMethods.getAddressState = VSymbol.getAddressState;
-    VMethods.setMosaicTransaction = VSymbol.setMosaicTransaction;
-    VMethods.getAddressHistory = VSymbol.getAddressHistory;
-  }
+  /**
+   * Launch ledger-specific VCore scripts and methods,
+   * then launch the Canvas
+   *
+   */
 
-  if ( VInit.getSetting( 'entityLedger' ) == '3Box' ) {
-    await Promise.all( [
-      setScript( 'dist/3box.min.js' ),
-      setScript( 'src/vcore/ledger/v-3box.js' )
-    ] );
-    console.log( '*** 3Box scripts loaded ***' );
-    VMethods.set3BoxSpace = V3Box.set3BoxSpace;
-    VMethods.get3BoxSpace = V3Box.get3BoxSpace;
-  }
-
-  if ( [ VInit.getSetting( 'entityLedger' ), VInit.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
-    await Promise.all( [
-      setScript( 'dist/socket.io.min.js' ),
-    ] );
-    console.log( '*** socket scripts loaded ***' );
-    await VLedger.setSocket().then( res => {
-      console.log( res );
-    } );
-  }
-
-  return VMethods;
+  VLedger.launch().then( () => {
+    Canvas.launch();
+  } );
 
 } )();

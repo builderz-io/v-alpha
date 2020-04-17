@@ -7,7 +7,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  // let window.Web3Obj;
   let contract;
 
   /* ================== private methods ================= */
@@ -1578,7 +1577,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods  ================= */
 
   function setActiveAddress() {
 
@@ -1859,6 +1858,18 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       } );
   }
+
+  /* ====================== export  ===================== */
+
+  ( () => {
+    V.setActiveAddress = setActiveAddress;
+    V.getContractState = getContractState;
+    V.getAddressState = getAddressState;
+    V.getAddressHistory = getAddressHistory;
+    V.setAddressVerification = setAddressVerification;
+    V.setCoinTransaction = setCoinTransaction;
+    V.setTokenTransaction = setTokenTransaction;
+  } )();
 
   return {
     setActiveAddress: setActiveAddress,
