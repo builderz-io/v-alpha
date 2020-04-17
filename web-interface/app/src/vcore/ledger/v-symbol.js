@@ -22,12 +22,15 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   function setActiveAddress() {
 
     const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
-    // console.log( 'Your new account address is:', account.address.pretty(), 'and its private key is:', account.privateKey );
+
+    V.setState( 'activeAddress', account.address.address );
+
     return {
       success: true,
       status: 'Symbol credentials created',
       data: [ {
-        address: account.address.pretty(),
+        rawAddress: account.address.pretty(),
+        address: account.address.address,
         privateKey: account.privateKey
       } ]
     };
@@ -40,11 +43,10 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
     const address = Symbol.Address.createFromRawAddress( which );
 
     const state = await accountHttp.getAccountInfo( address ).toPromise();
-    console.log( state );
 
     const bal = state.mosaics.map( m => {
       const uInt = new Symbol.UInt64( [m.amount.lower, m.amount.higher] );
-      const convert = uInt.compact() / Math.pow( 10, divisibility );
+      const convert = uInt.compact() / 10**( divisibility );
       return convert;
     } );
 
@@ -54,8 +56,8 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
         status: 'address state retrieved',
         ledger: 'Symbol',
         data: [{
-          tokenBalance: bal,
-          liveBalance: bal,
+          tokenBalance: bal[0].toFixed( 0 ),
+          liveBalance: bal[0].toFixed( 0 ),
         }]
       };
     }
@@ -81,8 +83,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
     const transfers = await accountHttp.getAccountTransactions( address, queryParams ).toPromise();
     console.log( transfers );
-
-    const filteredTransfers = transfers.map( ( tx ) => {
+    const filteredTransfers = transfers.reverse().map( ( tx ) => {
       const txData = {};
 
       txData.amount = tx.mosaics.map( m => {
@@ -91,10 +92,10 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
         return convert;
       } );
 
-      txData.fromAddress = '';
+      txData.fromAddress = tx.signer.address.address;
       txData.toAddress = tx.recipientAddress.address;
 
-      txData.txType = '';
+      tx.recipientAddress.address == address.address ? txData.txType = 'in' : txData.txType = 'out';
 
       txData.block = ( function( tx ) {
         const blk = tx.transactionInfo.height;
@@ -111,7 +112,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
         return '';
       } )( tx );
 
-      // console.log( txData );
+      console.log( txData );
 
       return txData;
 
@@ -138,7 +139,6 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   function setMosaicTransaction( data ) {
 
     // 1. Define the TransferTransaction
-    console.log( data );
 
     const recipientAddress = Symbol.Address.createFromRawAddress( data.recipientAddress );
     const networkType = Symbol.NetworkType[network.type];
@@ -147,23 +147,18 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
     const transferTransaction = Symbol.TransferTransaction.create(
       Symbol.Deadline.create(),
       recipientAddress,
-      [ new Symbol.Mosaic( networkCurrencyMosaicId, Symbol.UInt64.fromUint( 10 * Math.pow( 10, divisibility ) ) ) ],
+      [ new Symbol.Mosaic( networkCurrencyMosaicId, Symbol.UInt64.fromUint( data.amount * 10**( divisibility ) ) ) ],
       Symbol.PlainMessage.create( data.reference ),
       networkType,
-      Symbol.UInt64.fromUint( data.amount * divisibility )
+      Symbol.UInt64.fromUint( 2000000 )
     );
-    console.log( transferTransaction );
 
     // 2. Sign the transaction
 
     const account = Symbol.Account.createFromPrivateKey( data.signature, networkType );
     const signedTransaction = account.sign( transferTransaction, network.generationHash );
 
-    console.log( signedTransaction );
-
     // 3. Announce the transaction to the network
-
-    console.log( transactionHttp );
 
     transactionHttp
       .announce( signedTransaction )

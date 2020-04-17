@@ -12,7 +12,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   async function castEntityName( address ) {
     const entity = await V.getEntity( address );
-    return entity.data[0] ? entity.data[0].fullId : V.castShortAddress( address );
+    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
   }
 
   async function presenter() {
@@ -39,8 +39,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
             txData.title = await castEntityName( txData.toAddress );
           }
         }
-        if ( txData.txType == 'burned' ) {
-          txData.title = 'Burn Account';
+        if ( txData.txType == 'fee' ) {
+          txData.title = 'Transaction Fee';
         }
         else if ( txData.txType == 'generated' ) {
           txData.title = 'Community Payout';

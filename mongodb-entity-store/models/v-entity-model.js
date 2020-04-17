@@ -25,6 +25,7 @@ var entitySchema = mongoose.Schema( {
     privateKey: String,
   },
   symbolCredentials: {
+    rawAddress: String,
     address: String,
     privateKey: String,
   },

@@ -1523,7 +1523,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTokenBalance( balance, decimals ) {
-    return Number( balance / 10**( decimals || 6 ) ).toFixed( 0 ); // TODO: get decimals from contract
+    const divisibility = V.getSetting( 'tokenDivisibility' );
+    return Number( balance / 10**( divisibility ) ).toFixed( 0 ); // TODO: get decimals from contract
   }
 
   async function getWeb3Provider() {
@@ -1758,7 +1759,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       txData.fromAddress == which ? txData.txType = 'out' : null;
       txData.toAddress == which ? txData.txType = 'in' : null;
-      txData.toAddress == burnA ? txData.txType = 'burned' : null;
+      txData.toAddress == burnA ? txData.txType = 'fee' : null;
       txData.fromAddress == burnA ? txData.txType = 'generated' : null;
 
       txData.block = tx.blockNumber;

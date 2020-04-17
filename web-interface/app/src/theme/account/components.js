@@ -64,9 +64,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       background = '#B4ECB4';
       break;
     case 'out':
-      background = '#ffa41b'; // '#FFAACC';
+      background = '#FFAACC';
       break;
-    case 'burned':
+    case 'fee':
       background = 'lightblue';
       break;
     case 'generated':

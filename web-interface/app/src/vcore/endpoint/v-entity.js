@@ -74,7 +74,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = entityData.uPhrase;
     }
     else if ( socket ) {
-      uPhrase = 'vx' + socket.id.replace( '_', 'a' ).replace( '-', '2' ).slice( 0, 16 );
+      uPhrase = 'vx' + socket.id.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
     }
     else {
       uPhrase = 'none';
@@ -293,6 +293,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       if ( which.substr( 0, 2 ) == '0x' ) {
         filter = 'evmAddress';
       }
+      if (
+        which.substr( 0, 1 ) == 'T' &&
+        which.length == 40
+      ) {
+        filter = 'symbolAddress';
+      }
       else if ( which.substr( 0, 2 ) == 'vx' ) {
         filter = 'uPhrase';
       }
@@ -323,8 +329,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       const newSymbolAddress = await V.setActiveAddress();
-      entityData.symbolCredentials = newSymbolAddress.data[0];
-      V.setState( 'activeAddress', newSymbolAddress.data[0].address );
+      entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
     if ( options == 'verification' ) {
       return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
