@@ -32,8 +32,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( features ) {
-
-    featureLayer.remove();
+    console.log( featureLayer );
+    if ( featureLayer ) {
+      featureLayer.remove();
+    }
 
     featureLayer = L.geoJSON( features, {
       pointToLayer: function( feature, latlng ) {
@@ -52,7 +54,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       V.sN( 'head', {
         t: 'script',
         a: {
-          src: 'dist/leaflet.js',
+          src: '/dist/leaflet.js',
           onload: 'VMap.setMap()'
         }
       } );

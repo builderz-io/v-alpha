@@ -52,7 +52,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
-          Page.draw( { active: true } );
+          // Page.draw( { active: true } );
           Form.draw( 'all', { fade: 'out' } );
           Button.draw( 'all', { fade: 'out' } );
           Button.draw( 'plus search', { delay: 1 } );

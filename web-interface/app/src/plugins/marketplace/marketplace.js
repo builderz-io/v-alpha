@@ -17,6 +17,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     const $slider = CanvasComponents.slider();
     const $list = CanvasComponents.list();
 
+    if ( which ) {
+      // force the removal of plural
+      which = which.substring( 0, which.length - 1 );
+    }
+
     const entities = await V.getEntity( which );
 
     if ( entities.data ) {
@@ -57,7 +62,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
         },
-        draw: function() { Marketplace.draw() }
+        draw: function() {
+          V.setBrowserHistory( '/market' );
+          Marketplace.draw();
+        }
       },
       {
         title: 'Jobs',
@@ -66,7 +74,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           button: 'plus search',
           form: 'new entity'
         },
-        draw: function() {  Marketplace.draw( 'job' ) }
+        draw: function() {
+          V.setBrowserHistory( '/market/jobs' );
+          Marketplace.draw( 'jobs' );
+        }
       },
       {
         title: 'Skills',
@@ -75,7 +86,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           button: 'plus search',
           form: 'new entity'
         },
-        draw: function() {  Marketplace.draw( 'skill' ) }
+        draw: function() {
+          V.setBrowserHistory( '/market/skills' );
+          Marketplace.draw( 'skills' );
+        }
       },
       {
         title: 'Events',
@@ -84,7 +98,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           button: 'plus search',
           form: 'new entity'
         },
-        draw: function() {  Marketplace.draw( 'event' ) }
+        draw: function() {
+          V.setBrowserHistory( '/market/events' );
+          Marketplace.draw( 'events' );
+        }
       }
     ] );
   }

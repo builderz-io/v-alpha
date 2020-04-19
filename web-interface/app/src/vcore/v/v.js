@@ -11,7 +11,7 @@ const V = {}; // eslint-disable-line no-unused-vars
   'use strict';
 
   function setScript( src, id ) {
-    console.log( src );
+    // console.log( src );
     return new Promise( function( resolve, reject ) {
       const s = document.createElement( 'script' );
       s.src = src;
@@ -22,18 +22,29 @@ const V = {}; // eslint-disable-line no-unused-vars
     } );
   }
 
+  function setBrowserHistory( which ) {
+    if( V.getState( 'active' ).path != which ) {
+      window.history.pushState(
+        { path: which },
+        which,
+        window.location.origin + which
+      );
+      V.setState( 'active', { path: which } );
+    }
+  }
+
   await Promise.all( [
-    setScript( 'src/vcore/v/v-key.js' ),
-    setScript( 'src/vcore/v/v-init.js' ),
-    setScript( 'src/vcore/dom/v-dom.js' ),
-    setScript( 'src/vcore/helper/v-helper-debug.js' ),
-    setScript( 'src/vcore/helper/v-helper.js' ),
-    setScript( 'src/vcore/endpoint/v-entity.js' ),
-    setScript( 'src/vcore/endpoint/v-message.js' ),
-    setScript( 'src/vcore/endpoint/v-transaction.js' ),
-    setScript( 'src/vcore/state/v-state.js' ),
-    setScript( 'src/vcore/ledger/v-ledger.js' ),
-    setScript( 'src/theme/canvas/canvas.js' ),
+    setScript( '/src/vcore/v/v-key.js' ),
+    setScript( '/src/vcore/v/v-init.js' ),
+    setScript( '/src/vcore/dom/v-dom.js' ),
+    setScript( '/src/vcore/helper/v-helper-debug.js' ),
+    setScript( '/src/vcore/helper/v-helper.js' ),
+    setScript( '/src/vcore/endpoint/v-entity.js' ),
+    setScript( '/src/vcore/endpoint/v-message.js' ),
+    setScript( '/src/vcore/endpoint/v-transaction.js' ),
+    setScript( '/src/vcore/state/v-state.js' ),
+    setScript( '/src/vcore/ledger/v-ledger.js' ),
+    setScript( '/src/theme/canvas/canvas.js' ),
   ] );
   console.log( '*** vcore scripts loaded ***' );
 
@@ -57,6 +68,7 @@ const V = {}; // eslint-disable-line no-unused-vars
 
     /* DOM */
     setScript: setScript,
+    setBrowserHistory: setBrowserHistory,
     castNode: VDom.castNode,
     cN: VDom.cN,
     setNode: VDom.setNode,
@@ -106,8 +118,13 @@ const V = {}; // eslint-disable-line no-unused-vars
    *
    */
 
-  VLedger.launch().then( () => {
-    Canvas.launch();
-  } );
+  await VLedger.launch();
+  await Canvas.launch();
+
+  Canvas.draw( window.location.pathname );
+
+  window.onpopstate = () => {
+    Canvas.draw( window.location.pathname );
+  };
 
 } )();

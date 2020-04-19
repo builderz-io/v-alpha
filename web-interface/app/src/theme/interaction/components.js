@@ -116,11 +116,25 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   // form
 
   function form() {
-    return V.sN( {
-      t: 'form',
-      c: 'pxy'
+    return V.setNode( {
+      tag: 'form',
+      classes: 'plusform fixed w-screen hidden bkg-white pxy',
+      setStyle: {
+        plusform: {
+          'padding-top': 'var(--page-position-top-selected)',
+          'height': '100%',
+          'z-index': -1
+        }
+      }
     } );
   }
+
+  // function form() {
+  //   return V.sN( {
+  //     t: 'form',
+  //     c: 'pxy'
+  //   } );
+  // }
 
   function searchForm() {
     return V.sN( {

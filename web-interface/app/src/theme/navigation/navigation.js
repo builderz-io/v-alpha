@@ -133,10 +133,14 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
           Button.draw( 'search' );
         }
         else if ( chatId == 1001 ) {
-          Profile.draw( 'active entity' );
+          // Page.draw( { active: true } );
+          V.getNavItem( 'active', 'entityNav' ).draw();
         }
         else {
-          Page.draw( { active: true } );
+          // Page.draw( { active: true } );
+          console.log( V.getState( 'all' ) );
+
+          V.getNavItem( 'active', 'serviceNav' ).draw();
           Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
         }
       }
@@ -201,7 +205,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     $itemClicked.className += ' pill--selected';
     $itemClicked.addEventListener( 'click', pillSelectedClickHandler, { once: true } );
 
-    V.setState( 'menu', { activeTitle: $itemClicked.innerHTML } );
+    V.setState( 'active', { navItem: $itemClicked.innerHTML } );
   }
 
   function deselect() {
@@ -210,7 +214,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       $itemSelected[0].removeEventListener( 'click', pillSelectedClickHandler );
       $itemSelected[0].classList.remove( 'pill--selected' ); // .removeClass( 'pill--selected' );
 
-      V.setState( 'menu', { activeTitle: false } );
+      V.setState( 'active', { navItem: false } );
     }
   }
 

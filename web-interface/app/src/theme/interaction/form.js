@@ -40,10 +40,13 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( formData ) {
-    const $form = V.getNode( 'form' );
+
     if ( formData.fadeOut ) {
-      $form.innerHTML = '';
-      V.setAnimation( $form, 'fadeOut', { delay: 0.2, duration: 1 } );
+      if ( V.getNode( 'form' ) ) {
+        V.setAnimation( 'form', 'fadeOut', { delay: 0.2, duration: 1 } ).then( () => {
+          V.setNode( 'form', 'clear' );
+        } );
+      }
     }
     else if ( formData.error == 'invalid title' ) {
       const $formtitle = V.getNode( '.plusform__title' );
@@ -52,8 +55,8 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       $formtitle.className += ' border-error';
     }
     else {
-      V.setNode( $form, formData.$form );
-      V.setAnimation( $form, 'fadeIn', { delay: 0.2, duration: 1 } );
+      V.setNode( 'body', formData.$form );
+      V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
       Google.launch().then( () => { // adds places lib script
         Google.initAutocomplete( 'plusform' ); // + __loc, __lng and __lat
       } );

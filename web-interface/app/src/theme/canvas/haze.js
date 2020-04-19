@@ -1,10 +1,9 @@
 const Haze = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to show/hide the haze
-  *
-  *
-  */
+   * Module to show/hide the haze
+   *
+   */
 
   'use strict';
 
@@ -14,31 +13,25 @@ const Haze = ( function() { // eslint-disable-line no-unused-vars
     return options;
   }
 
-  function view( hazeData ) {
-    const m = V.getState( 'menu' );
-    const $haze = V.getNode( 'haze' );
+  function view( options ) {
 
-    if ( hazeData && hazeData.fade == 'out' ) {
-      $haze.classList.remove( 'bkg-white' );
-      $haze.classList.remove( 'bkg-black' );
+    if ( options && options.fade == 'out' ) {
       V.setState( 'menu', { isHazed: false } );
-      V.setAnimation( $haze, 'fadeOut', { delay: 0.1, duration: 1 } );
+      V.setAnimation( 'haze', 'fadeOut', { delay: 0.1, duration: 1 } );
       return;
     }
 
-    if ( m.isHazed != true ) {
-      if ( hazeData && hazeData.color ) {
-        hazeData.color == 'black' ? $haze.className += ' bkg-black' : null;
-      }
-      else {
-        $haze.className += ' bkg-white';
-      }
+    if ( V.getState( 'menu' ).isHazed != true ) {
       V.setState( 'menu', { isHazed: true } );
-      V.setAnimation( $haze, 'fadeIn', { delay: 2, duration: 3 } );
+      V.setAnimation( 'haze', 'fadeIn', { delay: 2, duration: 3 } );
     }
   }
 
   /* ============ public methods and exports ============ */
+
+  function launch() {
+    V.setNode( 'body', CanvasComponents.haze() );
+  }
 
   function draw( options ) {
     V.setPipe(
@@ -48,6 +41,7 @@ const Haze = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    launch: launch,
     draw: draw,
   };
 

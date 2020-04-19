@@ -71,7 +71,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getIcon( which ) {
-    return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="assets/icon/' + which + '-24px.svg" height="16px">';
+    return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
   }
 
   function setPipe( ...functions ) {

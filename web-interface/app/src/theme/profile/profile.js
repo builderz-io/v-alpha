@@ -58,6 +58,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         // role: 'member',
         // draw: function() { Chat.draw() },
         o: true,
+        draw: function() {
+          V.setBrowserHistory( '/profile/me' );
+          Profile.draw( 'me' );
+        }
       },
       // {
       //   cid: '1002',

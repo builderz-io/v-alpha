@@ -1,10 +1,9 @@
 const Feature = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module driving the app's feature section
-  *
-  *
-  */
+   * Module driving the app's feature section
+   *
+   */
 
   'use strict';
 
@@ -34,6 +33,10 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
+  function launch() {
+    V.setNode( 'body', CanvasComponents.feature() );
+  }
+
   function draw( options ) {
     V.setPipe(
       presenter,
@@ -42,6 +45,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    launch: launch,
     draw: draw,
   };
 

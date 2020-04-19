@@ -30,7 +30,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function getNavItem( whichItem, whichNav ) {
     if ( whichItem == 'active' ) {
-      const converted = V.castCamelCase( getState( 'menu' ).activeTitle );
+      const converted = V.castCamelCase( getState( 'active' ).navItem );
+      console.log( whichNav, converted );
       return getState( whichNav )[ converted ];
     }
     else {

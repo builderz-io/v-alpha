@@ -24,7 +24,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         background: {
           'background': 'rgba(115,182,230,1)',
           'height': 'calc(var(--screen-height) - var(--page-position-closed))',
-          'z-index': -1
+          'z-index': -2
         }
       }
     } );
@@ -32,11 +32,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function haze() {
     return V.setNode( {
       tag: 'haze',
-      classes: 'haze fixed w-screen hidden',
+      classes: 'haze fixed w-screen bkg-white hidden',
       setStyle: {
         haze: {
-          top: 0,
-          height: '45vh'
+          'top': 0,
+          'height': '45vh',
+          'z-index': -1
         }
       }
     } );
@@ -49,18 +50,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         feature: {
           top: 'var(--page-position-top-selected)',
           height: 'calc(var(--screen-width) * (9 / 16))'
-        }
-      }
-    } );
-  }
-  function form() {
-    return V.setNode( {
-      tag: 'form',
-      classes: 'plusform fixed w-screen hidden bkg-white',
-      setStyle: {
-        plusform: {
-          'padding-top': 'var(--page-position-top-selected)',
-          'height': '100%'
         }
       }
     } );
@@ -104,21 +93,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
           'left': 'var(--app-nav-left)'
         }
       }
-    } );
-  }
-  function back() {
-    return V.setNode( {
-      tag: 'back',
-      classes: 'back fixed',
-      setStyle: {
-        back: {
-          top: 'var(--page-position-top-selected)',
-          left: '11px'
-        }
-      },
-      html: V.setNode( {
-        tag: 'ul',
-      } )
     } );
   }
   function interactions() {
@@ -258,10 +232,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
   function content() {
     return V.setNode( {
-      tag: 'content',
-      html: V.setNode( {
-        tag: 'topcontent'
-      } )
+      tag: 'content'
+    } );
+  }
+  function topContent() {
+    return V.setNode( {
+      tag: 'topcontent'
     } );
   }
 
@@ -270,11 +246,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     background: background,
     haze: haze,
     feature: feature,
-    form: form,
     balance: balance,
     entityNav: entityNav,
     serviceNav: serviceNav,
-    back: back,
     interactions: interactions,
     handle: handle,
     topSlider: topSlider,
@@ -284,7 +258,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     card: card,
     header: header,
     page: page,
-    content: content
+    content: content,
+    topContent: topContent
   };
 
 } )();

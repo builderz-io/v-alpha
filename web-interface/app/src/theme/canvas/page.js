@@ -12,27 +12,23 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function cacheDom() {
-    DOM.$page = V.getNode( 'page' );
-    DOM.$topcontent = V.getNode( 'topcontent' );
-    DOM.$topslider = V.getNode( 'topslider' );
-    DOM.$listings = V.getNode( 'listings' );
-  }
+  function castPage() {
 
-  function bindPageEvents() {
-
-    const $handle = V.getNode( 'handle' );
-    const $topcontent = V.getNode( 'topcontent' );
-    const $topslider = V.getNode( 'topslider' );
-    const $listings = V.getNode( 'listings' );
+    /* page nodes */
+    const $page = CanvasComponents.page();
+    const $handle = CanvasComponents.handle();
+    const $content = CanvasComponents.content();
+    const $topContent = CanvasComponents.topContent();
+    const $topSlider = CanvasComponents.topSlider();
+    const $listings = CanvasComponents.listings();
 
     $handle.addEventListener( 'click', handleClickHandler );
     $handle.addEventListener( 'touchstart', pageFlickStartHandler );
     $handle.addEventListener( 'touchend', pageFlickEndHandler );
-    $topcontent.addEventListener( 'touchstart', pageFlickStartHandler );
-    $topcontent.addEventListener( 'touchend', pageFlickEndHandler );
-    $topslider.addEventListener( 'touchstart', pageFlickStartHandler );
-    $topslider.addEventListener( 'touchend', pageFlickEndHandler );
+    $topContent.addEventListener( 'touchstart', pageFlickStartHandler );
+    $topContent.addEventListener( 'touchend', pageFlickEndHandler );
+    $topSlider.addEventListener( 'touchstart', pageFlickStartHandler );
+    $topSlider.addEventListener( 'touchend', pageFlickEndHandler );
     $listings.addEventListener( 'touchstart', pageFlickStartHandler );
     $listings.addEventListener( 'touchend', pageFlickEndHandler );
 
@@ -97,6 +93,16 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
+    V.setNode( $content, [$topContent, $topSlider, $listings ] );
+    V.setNode( $page, [$handle, $content] );
+
+    V.setNode( 'body', $page );
+
+    DOM.$page = V.getNode( 'page' );
+    DOM.$topcontent = V.getNode( 'topcontent' );
+    DOM.$topslider = V.getNode( 'topslider' );
+    DOM.$listings = V.getNode( 'listings' );
+
   }
 
   function presenter( options ) {
@@ -104,15 +110,14 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
-
     if ( !pageData ) { return }
 
     pageData.reset == false ? null : reset();
 
-    if ( pageData.active == true ) {
-      V.getNavItem( 'active', 'serviceNav' ).draw();
-      return;
-    }
+    // if ( pageData.active == true ) {
+    //   V.getNavItem( 'active', 'serviceNav' ).draw();
+    //   return;
+    // }
 
     if ( pageData.topcontent ) {
       V.setNode( DOM.$topcontent, pageData.topcontent );
@@ -130,10 +135,10 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   function getPageHeight( pagePos ) {
     const p = V.getState( 'page' );
-    const m = V.getState( 'menu' );
+    const aI = V.getState( 'active' );
     switch ( pagePos ) {
     case 'top':
-      if ( m.activeTitle ) {
+      if ( aI.navItem ) {
         return p.topSelectedCalc;
       }
       else {
@@ -203,8 +208,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    cacheDom();
-    bindPageEvents();
+    castPage();
   }
 
   function draw( options ) {
