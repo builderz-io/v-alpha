@@ -8,16 +8,7 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
-
-  function addPlacesLibraryScript( key ) {
-    V.sN( 'head', {
-      t: 'script',
-      a: { src: 'https://maps.googleapis.com/maps/api/js?key=' + key + '&libraries=places&language=en&region=US' }
-    } );
-  }
 
   function presenter( options ) {
     return options;
@@ -44,13 +35,19 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function launch() {
-    const key = V.getApiKey( 'googlePlaces' );
+    if ( !document.getElementById( 'google-places-script' ) ) {
 
-    if ( key.length > 10 ) {
-      addPlacesLibraryScript( key );
+      const key = V.getApiKey( 'googlePlaces' );
+
+      if ( key.length > 10 ) {
+        return V.setScript( 'https://maps.googleapis.com/maps/api/js?key=' + key + '&libraries=places&language=en&region=US', 'google-places-script' );
+      }
+      else {
+        console.warn( 'Missing Google Places API key' );
+      }
     }
     else {
-      console.warn( 'Missing Google Places API key' );
+      return Promise.resolve();
     }
   }
 

@@ -17,6 +17,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setScript( 'dist/js.cookie.min.js' ),
 
       V.setScript( 'assets/demo-content/demo-content.js' ),
+
       V.setScript( 'src/theme/canvas/components.js' ),
       V.setScript( 'src/theme/canvas/feature.js' ),
       V.setScript( 'src/theme/canvas/haze.js' ),
@@ -24,7 +25,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setScript( 'src/theme/navigation/components.js' ),
       V.setScript( 'src/theme/navigation/navigation.js' ),
       V.setScript( 'src/theme/interaction/components.js' ),
-      V.setScript( 'src/theme/interaction/buttons.js' ),
+      V.setScript( 'src/theme/interaction/button.js' ),
       V.setScript( 'src/theme/interaction/form.js' ),
       V.setScript( 'src/theme/interaction/join.js' ),
       V.setScript( 'src/theme/interaction/modal.js' ),
@@ -92,7 +93,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function setCss() {
 
-    /* make screenhight available to CSS */
+    /* make screen size available to CSS */
     document.documentElement.style.setProperty( '--screen-height', `${ window.innerHeight }px` );
     document.documentElement.style.setProperty( '--screen-width', `${ window.innerWidth }px` );
 
@@ -174,29 +175,23 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function launchThemeModules() {
 
-    Feature.launch();
-    Haze.launch();
-    Page.launch();
-    Button.launch();
-    Form.launch();
-    Join.launch();
-    Profile.launch();
-
-    // Account and Modal do not need launching
+    Page.launch(); // caches page elements and adds flick and click handlers for sliding
+    Button.launch(); // sets buttons into dom as hidden
+    Join.launch(); // launches the join button
+    Profile.launch(); // sets the "me" navItem
 
   }
 
   function launchPlugins() {
-    Chat.launch();
-    Data.launch();
-    Google.launch();
-    VMap.launch();
-    Marketplace.launch();
-    Media.launch();
+    Chat.launch(); // sets navItem & sets socket.on
+    Data.launch(); // sets navItem
+    VMap.launch(); // adds map scripts & sets map onload
+    Marketplace.launch(); // sets navItem
+    Media.launch(); // sets navItem
   }
 
   function updateNav() {
-    Navigation.launch();
+    Navigation.launch(); // updates Cookies
   }
 
   function drawFirstViews() {
@@ -207,15 +202,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     setTimeout( Marketplace.draw, 300 );
 
     if ( V.getSetting( 'demoContent' ) ) {
-      launchDemoContent();
+      ( async () => {
+        for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
+          await V.setEntity( DemoContent.mongoArr[i] );
+        }
+      } )();
     }
 
-  }
-
-  async function launchDemoContent() {
-    for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
-      await V.setEntity( DemoContent.mongoArr[i] );
-    }
   }
 
   /* ============ public methods and exports ============ */

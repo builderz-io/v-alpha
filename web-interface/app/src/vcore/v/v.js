@@ -10,13 +10,14 @@ const V = {}; // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  function setScript( src ) {
-    // console.log( src );
+  function setScript( src, id ) {
+    console.log( src );
     return new Promise( function( resolve, reject ) {
       const s = document.createElement( 'script' );
       s.src = src;
       s.onload = resolve;
       s.onerror = reject;
+      id ? s.id = id : null;
       document.head.appendChild( s );
     } );
   }

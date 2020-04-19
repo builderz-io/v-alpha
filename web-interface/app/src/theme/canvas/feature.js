@@ -8,13 +8,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
-
-  function cacheDom() {
-    DOM.$feature = V.getNode( 'feature' );
-  }
 
   function presenter( options ) {
     const $content = typeof options == 'object' ? options : options.content ? options.content : undefined;
@@ -26,22 +20,19 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( featureData ) {
+    const $feature = V.getNode( 'feature' );
     if ( featureData.fade == 'out' ) {
       V.setAnimation( 'feature', 'fadeOut' );
       return;
     }
     if ( featureData.fade == 'in' || featureData.$content ) {
-      DOM.$feature.innerHTML = '';
-      V.setNode( DOM.$feature, featureData.$content );
+      $feature.innerHTML = '';
+      V.setNode( $feature, featureData.$content );
       V.setAnimation( 'feature', 'fadeIn' );
     }
   }
 
   /* ============ public methods and exports ============ */
-
-  function launch() {
-    cacheDom();
-  }
 
   function draw( options ) {
     V.setPipe(
@@ -51,7 +42,6 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    launch: launch,
     draw: draw,
   };
 

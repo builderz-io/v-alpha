@@ -8,8 +8,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -145,20 +143,20 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     //   e.target.placeholder = placeholder;
     // } );
     $send.addEventListener( 'click', function() {
-      DOM.$form = V.getNode( '.messageform__input' );
+      const $form = V.getNode( '.messageform__input' );
 
-      const message = DOM.$form.value;
+      const message = $form.value;
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
           res.status == 'transaction successful' ? Account.drawHeaderBalance() : null;
-          DOM.$form.value = '';
-          // DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+          $form.value = '';
+          // $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           // console.log( res.status );
         }
         else {
-          DOM.$form.value = '';
-          DOM.$form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+          $form.value = '';
+          $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           console.error( 'try again, because: ', res.status );
         }
       } );

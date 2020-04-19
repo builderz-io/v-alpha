@@ -1,23 +1,15 @@
 const Button = ( function() { // eslint-disable-line no-unused-vars
+
   /**
   * Create buttons
-  *
   *
   */
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
 
-  function cacheDom() {
-    // DOM.$backUL = V.getNode( 'back > ul' );
-    DOM.$interactionsUL = V.getNode( 'interactions > ul' );
-    DOM.$join = V.getNode( 'body' );
-  }
-
-  function setButtonNodes() {
+  function setButton() {
 
     // const $back = InteractionComponents.back();
     const $filter = InteractionComponents.filter();
@@ -79,7 +71,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     // V.setNode( DOM.$backUL, $back );
-    V.setNode( DOM.$interactionsUL, [ $close, $plus, $filter, $search, $send ] );
+    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $send ] );
   }
 
   function presenter( which, options ) {
@@ -102,8 +94,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    cacheDom();
-    setButtonNodes();
+    setButton();
   }
 
   function draw( which, options ) {
