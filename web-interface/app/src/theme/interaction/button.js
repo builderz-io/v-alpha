@@ -23,7 +23,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     //   Navigation.draw( 'all', { reset: true } );
     // } );
     $plus.addEventListener( 'click', function() {
-      console.log( V.getState() );
       Page.draw( { position: 'close', reset: false } );
       Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
     } );

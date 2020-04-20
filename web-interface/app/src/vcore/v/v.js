@@ -11,7 +11,7 @@ const V = {}; // eslint-disable-line no-unused-vars
   'use strict';
 
   function setScript( src, id ) {
-    console.log( src );
+    // console.log( src );
     return new Promise( function( resolve, reject ) {
       const s = document.createElement( 'script' );
       s.src = src;
@@ -34,9 +34,15 @@ const V = {}; // eslint-disable-line no-unused-vars
   }
 
   await Promise.all( [
+    setScript( '/dist/velocity.min.js' ),
+    setScript( '/dist/moment.min.js' ),
+    setScript( '/dist/js.cookie.min.js' ),
+    setScript( '/dist/universal-router.js' ),
+
     setScript( '/src/vcore/v/v-key.js' ),
     setScript( '/src/vcore/v/v-init.js' ),
     setScript( '/src/vcore/dom/v-dom.js' ),
+    setScript( '/src/vcore/dom/v-route.js' ),
     setScript( '/src/vcore/helper/v-helper-debug.js' ),
     setScript( '/src/vcore/helper/v-helper.js' ),
     setScript( '/src/vcore/endpoint/v-entity.js' ),
@@ -49,10 +55,6 @@ const V = {}; // eslint-disable-line no-unused-vars
   console.log( '*** vcore scripts loaded ***' );
 
   const methods = {
-    // kicksAss: function kicksAss() {
-    //   Canvas.launch();
-    //   // console.log( 'we are kickin' );
-    // },
 
     /* Endpoints */
     getEntity: VEntity.getEntity,
@@ -81,6 +83,8 @@ const V = {}; // eslint-disable-line no-unused-vars
     setClick: VDom.setClick,
     getCss: VDom.getCss,
     castRemToPixel: VDom.castRemToPixel,
+    castRoute: VRoute.castRoute,
+    setRoute: VRoute.setRoute,
 
     /* Helper */
     castEntityTitle: VEntity.castEntityTitle,
@@ -134,9 +138,5 @@ const V = {}; // eslint-disable-line no-unused-vars
   Canvas.draw( {
     path: window.location.pathname
   } );
-
-  window.onpopstate = () => {
-    Canvas.draw( window.history.state );
-  };
 
 } )();

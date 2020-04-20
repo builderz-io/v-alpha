@@ -31,7 +31,20 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   function getNavItem( whichItem, whichNav ) {
     if ( whichItem == 'active' ) {
       const converted = V.castCamelCase( getState( 'active' ).navItem );
-      return getState( whichNav )[ converted ];
+      if( Array.isArray( whichNav ) ) {
+        let state;
+        for ( let i = 0; i < whichNav.length; i++ ) {
+          const query = getState( whichNav[i] )[ converted ];
+          if ( query ) {
+            state = query;
+            break;
+          }
+        }
+        return state;
+      }
+      else {
+        return getState( whichNav )[ converted ];
+      }
     }
     else {
       return getState( whichNav )[ whichItem ];
@@ -47,7 +60,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
           const state = getState( whichNav );
           const titleKey = V.castCamelCase( item.title );
           if ( state && state[titleKey] ) {
-            throw new Error( item.title + ' already set' );
+            throw new Error( '"' + item.title + '" already set' );
           }
           const obj = {};
 
@@ -59,7 +72,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       catch ( e ) {
-        console.log( e );
+        console.error( e );
       }
     } );
 

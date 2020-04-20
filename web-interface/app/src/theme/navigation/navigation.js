@@ -145,8 +145,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         }
         else {
           // Page.draw( { active: true } );
-
-          V.getNavItem( 'active', 'serviceNav' ).draw();
+          V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw();
           // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
         }
       }
@@ -290,7 +289,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }, { duration: 1 } );
     V.getNode( row ).scrollLeft = 0;
 
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+    Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
 
   }
 

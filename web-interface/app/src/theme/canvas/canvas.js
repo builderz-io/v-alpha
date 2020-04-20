@@ -1,23 +1,16 @@
 const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to initialize the app and its "canvas".
-  *
-  *
-  */
+   * Module to initialize the app and its "canvas".
+   *
+   */
 
   'use strict';
-
-  let Router;
 
   /* ================== private methods ================= */
 
   async function launchScripts() {
     await Promise.all( [
-      V.setScript( '/dist/universal-router.js' ),
-      V.setScript( '/dist/velocity.min.js' ),
-      V.setScript( '/dist/moment.min.js' ),
-      V.setScript( '/dist/js.cookie.min.js' ),
 
       V.setScript( '/assets/demo-content/demo-content.js' ),
 
@@ -52,68 +45,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     ] );
     console.log( '*** canvas scripts loaded ***' );
 
-  }
-
-  function setRouter() {
-    const routes = [
-      {
-        path: '',
-        action: () => {
-          return {
-            status: 'home',
-            data: []
-          };
-        }
-      },
-      {
-        path: '/profile',
-        children: [
-          {
-            path: '',
-            action: () => {
-              return {
-                status: 'me',
-                data: []
-              };
-            }
-          },
-          {
-            path: '/:id',
-            action: ( context ) => {
-              return {
-                status: 'profile',
-                data: [ context.params.id ]
-              };
-            }
-          }
-        ]
-      },
-      {
-        path: '/market',
-        children: [
-          {
-            path: '',
-            action: () => {
-              return {
-                status: 'market',
-                data: [ 'marketplace' ]
-              };
-            }
-          },
-          {
-            path: '/:id',
-            action: ( context ) => {
-              return {
-                status: 'market category',
-                data: [ context.params.id ]
-              };
-            }
-          }
-        ]
-      }
-    ];
-
-    Router = new UniversalRouter( routes );
   }
 
   function setState() {
@@ -207,10 +138,16 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( historyState ) {
+
+    /**
+     * View renders on history change
+     *
+     */
+
     historyState = historyState ? historyState : historyState = { path: '' };
     initCanvas();
 
-    Router.resolve( historyState.path )
+    V.castRoute( historyState.path )
       .then( which => {
         if ( ['home'].includes( which.status ) ) {
           Marketplace.draw(); // no parameter to display all entities and reset navigation
@@ -218,8 +155,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if ( ['market', 'market category'].includes( which.status ) ) {
           Marketplace.draw( which.data[0] );
         }
+        else if ( ['media', 'media category'].includes( which.status ) ) {
+          Media.draw( which.data[0] );
+        }
+        else if ( ['data'].includes( which.status ) ) {
+          Data.draw( which.data[0] );
+        }
         else if ( which.status == 'profile' ) {
-          Profile.draw();
+          Profile.draw( which.data[0] );
         }
 
       } );
@@ -239,7 +182,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Profile.launch(); // sets navItem "me"
       Chat.launch(); // sets navItem & sets socket.on
       Data.launch(); // sets navItem
-      // VMap.launch(); // adds map scripts & sets map onload
       Marketplace.launch(); // sets navItem
       Media.launch(); // sets navItem
 
@@ -266,7 +208,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     await launchScripts();
 
     V.setPipe(
-      setRouter,
       setState,
       setHead,
       setCss,

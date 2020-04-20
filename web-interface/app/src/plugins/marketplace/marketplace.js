@@ -51,13 +51,13 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( data ) {
-    Page.draw( data.pageData );
     if ( data.which ) {
       Navigation.animate( data.which );
     }
     else {
       Navigation.draw( 'all', { reset: true } );
     }
+    Page.draw( data.pageData );
     VMap.draw( data.mapData );
   }
 
