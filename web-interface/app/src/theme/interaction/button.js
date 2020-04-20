@@ -23,6 +23,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     //   Navigation.draw( 'all', { reset: true } );
     // } );
     $plus.addEventListener( 'click', function() {
+      console.log( V.getState() );
       Page.draw( { position: 'close', reset: false } );
       Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
     } );
@@ -36,7 +37,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       Page.draw( { position: 'peek', reset: false } );
     } );
     $send.addEventListener( 'click', function() {
-      const role = V.getNavItem( 'active', 'serviceNav' ).role;
+      const role = V.getNavItem( 'active', 'serviceNav' ).use.role;
       const form = V.getNode( 'form' );
       const title = form.getNode( '.plusform__title' ).value;
       const entityData = {

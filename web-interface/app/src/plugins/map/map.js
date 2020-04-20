@@ -28,40 +28,26 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function presenter( features ) {
-    return Promise.resolve( features );
-  }
-
-  function view( features ) {
-    console.log( featureLayer );
-    if ( featureLayer ) {
-      featureLayer.remove();
-    }
-
-    featureLayer = L.geoJSON( features, {
-      pointToLayer: function( feature, latlng ) {
-        return L.circleMarker( latlng, geojsonMarkerOptions );
-      }
-    } );
-
-    featureLayer.addTo( viMap );
-
-  }
-
-  /* ============ public methods and exports ============ */
-
-  function launch() {
     if ( V.getSetting( 'loadMap' ) ) {
-      V.sN( 'head', {
-        t: 'script',
-        a: {
-          src: '/dist/leaflet.js',
-          onload: 'VMap.setMap()'
-        }
-      } );
+      if ( V.getNode( '.leaflet-pane' ) ) {
+        return Promise.resolve( features );
+      }
+      else {
+        return launch()
+          .then( () => {
+            setMap();
+            return features;
+          } );
+      }
     }
+  }
+
+  async function launch() {
+    return V.setScript( '/dist/leaflet.js' );
   }
 
   function setMap() {
+
     featureLayer = L.geoJSON();
 
     const mapData = V.getCookie( 'map' );
@@ -80,8 +66,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       attribution: attribution,
       maxZoom: 16,
       minZoom: 2,
-      id: 'mapbox.streets',
-      accessToken: 'your.mapbox.access.token'
+      // id: 'mapbox.streets',
+      // accessToken: 'your.mapbox.access.token'
     } ).addTo( viMap );
 
     viMap.on( 'moveend', function() {
@@ -92,6 +78,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function view( features ) {
+
+    if ( featureLayer ) {
+      featureLayer.remove();
+    }
+
+    featureLayer = L.geoJSON( features, {
+      pointToLayer: function( feature, latlng ) {
+        return L.circleMarker( latlng, geojsonMarkerOptions );
+      }
+    } );
+
+    featureLayer.addTo( viMap );
+
+  }
+
+  /* ============ public methods and exports ============ */
+
   function draw( options ) {
     if ( V.getSetting( 'loadMap' ) ) {
       presenter( options ).then( viewData => { view( viewData ) } );
@@ -99,8 +103,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    launch: launch,
-    setMap: setMap,
     draw: draw,
   };
 

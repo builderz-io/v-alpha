@@ -12,17 +12,18 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
+    let whichRole;
     const mapData = [];
 
     const $slider = CanvasComponents.slider();
     const $list = CanvasComponents.list();
 
-    if ( which ) {
+    if ( which && which != 'marketplace' ) {
       // force the removal of plural
-      which = which.substring( 0, which.length - 1 );
+      whichRole = which.substring( 0, which.length - 1 );
     }
 
-    const entities = await V.getEntity( which );
+    const entities = await V.getEntity( whichRole );
 
     if ( entities.data ) {
       entities.data.reverse().forEach( cardData => {
@@ -39,6 +40,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
 
     return {
+      which: which,
       mapData: mapData,
       pageData: {
         topslider: $slider,
@@ -50,6 +52,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   function view( data ) {
     Page.draw( data.pageData );
+    if ( data.which ) {
+      Navigation.animate( data.which );
+    }
+    else {
+      Navigation.draw( 'all', { reset: true } );
+    }
     VMap.draw( data.mapData );
   }
 
@@ -59,47 +67,47 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', [
       {
         title: 'Marketplace',
+        path: '/market',
         use: {
           button: 'search',
         },
         draw: function() {
-          V.setBrowserHistory( '/market' );
-          Marketplace.draw();
+          Marketplace.draw( 'marketplace' );
         }
       },
       {
         title: 'Jobs',
-        role: 'job',
+        path: '/market/jobs',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'job',
         },
         draw: function() {
-          V.setBrowserHistory( '/market/jobs' );
           Marketplace.draw( 'jobs' );
         }
       },
       {
         title: 'Skills',
-        role: 'skill',
+        path: '/market/skills',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'skill',
         },
         draw: function() {
-          V.setBrowserHistory( '/market/skills' );
           Marketplace.draw( 'skills' );
         }
       },
       {
         title: 'Events',
-        role: 'event',
+        path: '/market/events',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'event',
         },
         draw: function() {
-          V.setBrowserHistory( '/market/events' );
           Marketplace.draw( 'events' );
         }
       }

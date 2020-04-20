@@ -9,7 +9,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   const state = {};
 
-  function getState( which ) {
+  function getState( which = 'all' ) {
     return which == 'all' ? state : state[which];
   }
 
@@ -31,7 +31,6 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   function getNavItem( whichItem, whichNav ) {
     if ( whichItem == 'active' ) {
       const converted = V.castCamelCase( getState( 'active' ).navItem );
-      console.log( whichNav, converted );
       return getState( whichNav )[ converted ];
     }
     else {

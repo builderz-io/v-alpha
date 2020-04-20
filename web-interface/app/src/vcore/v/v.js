@@ -11,7 +11,7 @@ const V = {}; // eslint-disable-line no-unused-vars
   'use strict';
 
   function setScript( src, id ) {
-    // console.log( src );
+    console.log( src );
     return new Promise( function( resolve, reject ) {
       const s = document.createElement( 'script' );
       s.src = src;
@@ -22,14 +22,14 @@ const V = {}; // eslint-disable-line no-unused-vars
     } );
   }
 
-  function setBrowserHistory( which ) {
-    if( V.getState( 'active' ).path != which ) {
+  function setBrowserHistory( data ) {
+    if( V.getState( 'active' ).path != data.path ) {
       window.history.pushState(
-        { path: which },
-        which,
-        window.location.origin + which
+        data,
+        data.path,
+        window.location.origin + data.path
       );
-      V.setState( 'active', { path: which } );
+      V.setState( 'active', { path: data.path } );
     }
   }
 
@@ -114,17 +114,29 @@ const V = {}; // eslint-disable-line no-unused-vars
 
   /**
    * Launch ledger-specific VCore scripts and methods,
-   * then launch the Canvas
    *
    */
 
   await VLedger.launch();
+
+  /**
+   * Launch the Canvas
+   *
+   */
+
   await Canvas.launch();
 
-  Canvas.draw( window.location.pathname );
+  /**
+   * Draw the first view
+   *
+   */
+
+  Canvas.draw( {
+    path: window.location.pathname
+  } );
 
   window.onpopstate = () => {
-    Canvas.draw( window.location.pathname );
+    Canvas.draw( window.history.state );
   };
 
 } )();

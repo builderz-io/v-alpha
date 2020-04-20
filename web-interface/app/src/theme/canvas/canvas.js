@@ -14,7 +14,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   async function launchScripts() {
     await Promise.all( [
-      V.setScript( '/dist/page.js' ),
       V.setScript( '/dist/universal-router.js' ),
       V.setScript( '/dist/velocity.min.js' ),
       V.setScript( '/dist/moment.min.js' ),
@@ -35,13 +34,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setScript( '/src/theme/interaction/form.js' ),
       V.setScript( '/src/theme/interaction/join.js' ),
       V.setScript( '/src/theme/interaction/modal.js' ),
-      V.setScript( '/src/theme/account/components.js' ),
-      V.setScript( '/src/theme/account/account.js' ),
-      V.setScript( '/src/theme/profile/components.js' ),
-      V.setScript( '/src/theme/profile/profile.js' ),
-      V.setScript( '/src/theme/chat/components.js' ),
-      V.setScript( '/src/theme/chat/chat.js' ),
 
+      V.setScript( '/src/plugins/account/components.js' ),
+      V.setScript( '/src/plugins/account/account.js' ),
+      V.setScript( '/src/plugins/profile/components.js' ),
+      V.setScript( '/src/plugins/profile/profile.js' ),
+      V.setScript( '/src/plugins/chat/components.js' ),
+      V.setScript( '/src/plugins/chat/chat.js' ),
       V.setScript( '/src/plugins/map/map.js' ),
       V.setScript( '/src/plugins/google/google.js' ),
       V.setScript( '/src/plugins/data/components.js' ),
@@ -97,7 +96,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
             action: () => {
               return {
                 status: 'market',
-                data: []
+                data: [ 'marketplace' ]
               };
             }
           },
@@ -203,22 +202,20 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function presenter( path = '' ) {
-    return Promise.resolve( path );
+  function presenter( historyState ) {
+    return Promise.resolve( historyState );
   }
 
-  function view( path ) {
-    // page( '/', launchThemeModules );
-
+  function view( historyState ) {
+    historyState = historyState ? historyState : historyState = { path: '' };
     initCanvas();
 
-    Router.resolve( path )
+    Router.resolve( historyState.path )
       .then( which => {
-
-        if ( ['home', 'market'].includes( which.status ) ) {
-          Marketplace.draw();
+        if ( ['home'].includes( which.status ) ) {
+          Marketplace.draw(); // no parameter to display all entities and reset navigation
         }
-        else if ( which.status == 'market category' ) {
+        else if ( ['market', 'market category'].includes( which.status ) ) {
           Marketplace.draw( which.data[0] );
         }
         else if ( which.status == 'profile' ) {
@@ -235,15 +232,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Haze.launch(); // sets node
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
-      Button.launch(); // sets buttons into dom as hidden
-      Join.launch(); // launches the join button
-      Page.launch(); // caches page elements and adds flick and click handlers for sliding
+      Button.launch(); // sets nodes: hidden buttons
+      Join.launch(); // sets node: join button
+      Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
 
-      Profile.launch(); // sets the "me" navItem
+      Profile.launch(); // sets navItem "me"
       Chat.launch(); // sets navItem & sets socket.on
-
       Data.launch(); // sets navItem
-      VMap.launch(); // adds map scripts & sets map onload
+      // VMap.launch(); // adds map scripts & sets map onload
       Marketplace.launch(); // sets navItem
       Media.launch(); // sets navItem
 
@@ -251,8 +247,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       Navigation.draw( 'service-nav', { keep: 3 } );
       Navigation.draw( 'entity-nav', { keep: 5 } );
-
-      // setTimeout( Marketplace.draw, 300 );
 
       if ( V.getSetting( 'demoContent' ) ) {
         ( async () => {
@@ -283,8 +277,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function draw( path ) {
-    presenter( path ).then( path => { view( path ) } );
+  function draw( historyState ) {
+    presenter( historyState ).then( historyState => { view( historyState ) } );
   }
 
   return {
