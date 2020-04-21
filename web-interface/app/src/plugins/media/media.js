@@ -60,6 +60,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     // else {
     //   Navigation.draw( 'all', { reset: true } );
     // }
+    VMap.draw();
   }
 
   function delayContentLoad( which ) {

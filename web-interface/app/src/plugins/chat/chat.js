@@ -44,6 +44,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
+    Navigation.animate( 'chat' );
     Page.draw( pageData );
     Chat.drawMessageForm();
   }
@@ -65,62 +66,43 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
       {
         cid: '2001',
-        c: 0,
-        l: -1,
         f: 'Chat',
         title: 'Chat',
         // role: 'community',
         // draw: function() { Chat.draw() },
-        o: true,
+        // o: false,
+        path: '/chat/everyone',
+        use: {
+          button: 'none',
+        },
+        draw: function() {
+          Chat.draw( 'chat' );
+        }
       },
-      {
-        cid: '2002',
-        c: 0,
-        l: -1,
-        f: 'Vivi Bot',
-        title: 'Vivi Bot',
-        // role: 'bot',
-        // draw: function() { Chat.draw() },
-        o: true,
-      },
+      // {
+      //   cid: '2002',
+      //   f: 'Vivi Bot',
+      //   title: 'Vivi Bot',
+      // },
       {
         cid: '3001',
-        c: 0,
-        l: -1,
         f: 'Sheela Anand',
         title: 'SA',
-        // role: 'user',
-        // draw: function() { Chat.draw() },
-        o: true,
       },
       {
         cid: '3002',
-        c: 0,
-        l: -1,
         f: 'Bertrand Arnaud',
         title: 'BJ',
-        // draw: function() { Chat.draw() },
-        o: true,
       },
       {
         cid: '3003',
-        c: 0,
-        l: -1,
         f: 'Marc Woods',
         title: 'MG',
-        // role: 'user',
-        // draw: function() { Chat.draw() },
-        o: false,
       },
       {
         cid: '3004',
-        c: 0,
-        l: -1,
         f: 'Missy Z',
         title: 'MZ',
-        // role: 'user',
-        // draw: function() { Chat.draw() },
-        o: true,
       }
     ] );
 

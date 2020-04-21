@@ -80,14 +80,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function setHead() {
-
-    V.setNode( 'head', {
-      tag: 'title',
-      html: 'VI UI 2020'
-    } );
-
-  }
+  // function setHead() {
+  //
+  //   V.setNode( 'head', {
+  //     tag: 'title',
+  //     html: 'VI UI 2020'
+  //   } );
+  //
+  // }
 
   function setCss() {
 
@@ -137,32 +137,41 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     return Promise.resolve( historyState );
   }
 
-  function view( historyState ) {
+  function view(
+    historyState,
+    path = historyState ? historyState.path : ''
+  ) {
 
     /**
      * View renders on history change
      *
      */
 
-    historyState = historyState ? historyState : historyState = { path: '' };
     initCanvas();
 
-    V.castRoute( historyState.path )
-      .then( which => {
-        if ( ['home'].includes( which.status ) ) {
-          Marketplace.draw(); // no parameter to display all entities and reset navigation
+    V.castRoute( path )
+      .then( (
+        x,
+        s = x.status,
+        w = x.data[0]
+      ) => {
+        if ( ['home'].includes( s ) ) {
+          Marketplace.draw(); // no argument displays all entities and resets navigation
         }
-        else if ( ['market', 'market category'].includes( which.status ) ) {
-          Marketplace.draw( which.data[0] );
+        else if ( ['market', 'market category'].includes( s ) ) {
+          Marketplace.draw( w );
         }
-        else if ( ['media', 'media category'].includes( which.status ) ) {
-          Media.draw( which.data[0] );
+        else if ( ['media', 'media category'].includes( s ) ) {
+          Media.draw( w );
         }
-        else if ( ['data'].includes( which.status ) ) {
-          Data.draw( which.data[0] );
+        else if ( ['data'].includes( s ) ) {
+          Data.draw( w );
         }
-        else if ( which.status == 'profile' ) {
-          Profile.draw( which.data[0] );
+        else if ( ['chat everyone'].includes( s ) ) {
+          Chat.draw( 'chat' );
+        }
+        else if ( ['profile'].includes( s ) ) {
+          Profile.draw( w );
         }
 
       } );
@@ -205,16 +214,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   async function launch() {
 
-    await launchScripts();
-
     V.setPipe(
       setState,
-      setHead,
+      // setHead,
       setCss,
       setFont,
     )();
 
-    return Promise.resolve();
+    return launchScripts();
 
   }
 

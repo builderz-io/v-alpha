@@ -94,6 +94,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   function view( pageData ) {
     Navigation.animate( pageData.which );
     Page.draw( pageData );
+    VMap.draw();
   }
 
   /* ============ public methods and exports ============ */

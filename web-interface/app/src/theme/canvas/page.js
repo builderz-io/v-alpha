@@ -84,11 +84,12 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       ) {
         if ( p.height == p.peek ) {
           Page.draw( { position: 'closed', reset: false } );
+          // Feature.draw( { fade: 'out' } );
           Navigation.draw( 'all', { reset: true } );
         }
         else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
           Page.draw( { position: 'peek', reset: false } );
-          Feature.draw( { fade: 'out' } );
+          // Feature.draw( { fade: 'out' } );
         }
       }
     }
@@ -178,8 +179,12 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       //   $list.scrollTop = $list.scrollHeight;
       // }
     } );
+
+    Chat.drawMessageForm( 'clear' );
+
     if ( pagePos == 'top' ) {
       Haze.draw();
+      Feature.draw( { fade: 'out' } );
       handlebar( 7, 19 );
     }
     else if ( pagePos == 'feature' ) {
@@ -189,11 +194,13 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     else if ( pagePos == 'closed' ) {
       // DOM.$feature.innerHTML = '';
       Haze.draw( { fade: 'out' } );
+      Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
     }
     else if ( pagePos == 'peek' ) {
       // DOM.$feature.innerHTML = '';
       Haze.draw( { fade: 'out' } );
+      Feature.draw( { fade: 'out' } );
       handlebar( 5, 25 );
     }
     V.setState( 'page', { height: newHeight } );

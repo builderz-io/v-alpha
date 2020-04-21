@@ -17,8 +17,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const entitiesState = V.getCookie( 'entity-nav-state' );
-    const entitiesItems = Object.values( V.getState( 'entityNav' ) ); // DemoContent.entitiesNavArr;
-
+    const entitiesItems = Object.values( V.getState( 'entityNav' ) );
     if ( !entitiesState || JSON.parse( entitiesState ).length != entitiesItems.length ) {
       V.setCookie( 'entity-nav-state', entitiesItems );
     }
@@ -134,20 +133,25 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       } // end if $itemClicked
 
       function drawContentForItemClicked( $itemClicked ) {
-        const chatId = $itemClicked.getAttribute( 'cid' );
-        if ( chatId > 2000 ) {
-          Chat.draw( chatId );
-          Button.draw( 'search' );
-        }
-        else if ( chatId == 1001 ) {
-          // Page.draw( { active: true } );
-          V.getNavItem( 'active', 'entityNav' ).draw();
-        }
-        else {
-          // Page.draw( { active: true } );
-          V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw();
-          // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
-        }
+        // const chatId = $itemClicked.getAttribute( 'cid' );
+        const path = $itemClicked.getAttribute( 'path' );
+        const slug = V.castSlugOrId( path );
+
+        // if ( chatId > 2000 ) {
+        //   Chat.draw( chatId );
+        //   Button.draw( 'search' );
+        // }
+        // else if ( chatId == 1001 ) {
+        //   // Page.draw( { active: true } );
+        //   V.getNavItem( 'active', 'entityNav' ).draw();
+        // }
+        // else {
+        //   // Page.draw( { active: true } );
+        //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+        //   // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+        // }
+        V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+
       }
 
     } // end menuItemClickHandler
@@ -156,7 +160,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function updateCookies( row ) {
     const $rowAfter = V.getNode( row + ' > ul' ).childNodes;
     const cookieMenu = JSON.parse( V.getCookie( row + '-state' ) );
-
     for ( let i = 0; i < $rowAfter.length; i++ ) {
       const $li = $rowAfter[i];
       for ( let j = 0; j < cookieMenu.length; j++ ) {
@@ -204,7 +207,14 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     } ).then( () => {
       $itemToAnimate.style.visibility = 'visible';
       $tempMover.remove();
+
+      /**
+       * Update menu status in cookies
+       *
+       */
+
       updateCookies( row );
+
     } );
 
   }
@@ -258,11 +268,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       left: menuStateObj.navLeft
     }, { duration: 2 } );
 
-    Feature.draw( { fade: 'out' } );
-    Haze.draw( { fade: 'out' } );
+    // Feature.draw( { fade: 'out' } );
+    // Haze.draw( { fade: 'out' } );
     Form.draw( 'all', { fade: 'out' } );
     Button.draw( 'all', { fade: 'out' } );
-    Chat.drawMessageForm( 'clear' );
+    // Chat.drawMessageForm( 'clear' );
 
   }
 

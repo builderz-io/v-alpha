@@ -45,6 +45,29 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       ]
     },
     {
+      path: '/chat',
+      children: [
+        {
+          path: '/everyone',
+          action: () => {
+            return {
+              status: 'chat everyone',
+              data: [ 'chat everyone' ]
+            };
+          }
+        },
+        {
+          path: '/:id',
+          action: ( context ) => {
+            return {
+              status: 'chat id',
+              data: [ context.params.id ]
+            };
+          }
+        }
+      ]
+    },
+    {
       path: '/market',
       children: [
         {
@@ -105,6 +128,8 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  /* ============ public methods and exports ============ */
+
   function castRoute( route ) {
     return Router.resolve( route );
   }
@@ -113,11 +138,21 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
     // todo
   }
 
-  /* ============ public methods and exports ============ */
+  function setBrowserHistory( data ) {
+    if( V.getState( 'active' ).path != data.path ) {
+      window.history.pushState(
+        data,
+        data.path,
+        window.location.origin + data.path
+      );
+      V.setState( 'active', { path: data.path } );
+    }
+  }
 
   return {
     castRoute: castRoute,
-    setRoute: setRoute
+    setRoute: setRoute,
+    setBrowserHistory: setBrowserHistory
   };
 
 } )();

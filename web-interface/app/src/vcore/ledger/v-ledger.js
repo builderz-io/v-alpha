@@ -9,7 +9,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function launch() {
+  async function launchScripts() {
 
     V.getData = getData;
     V.setData = setData;
@@ -171,6 +171,12 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     else if ( whichLedger == 'http' ) {
       return http( data );
     }
+  }
+
+  async function launch() {
+
+    return launchScripts();
+
   }
 
   return {

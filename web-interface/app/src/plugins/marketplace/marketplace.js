@@ -83,8 +83,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           form: 'new entity',
           role: 'job',
         },
-        draw: function() {
-          Marketplace.draw( 'jobs' );
+        draw: function( slug ) {
+          Marketplace.draw( slug );
         }
       },
       {
@@ -95,8 +95,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           form: 'new entity',
           role: 'skill',
         },
-        draw: function() {
-          Marketplace.draw( 'skills' );
+        draw: function( slug ) {
+          Marketplace.draw( slug );
         }
       },
       {
@@ -107,8 +107,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           form: 'new entity',
           role: 'event',
         },
-        draw: function() {
-          Marketplace.draw( 'events' );
+        draw: function( slug ) {
+          Marketplace.draw( slug );
         }
       }
     ] );

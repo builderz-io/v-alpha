@@ -8,46 +8,20 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
 
-  function addNavItem( entity ) {
-    // const obj = {};
-    // obj[V.castCamelCase( entity.profile.title )] = {
-    //   cid: '1003',
-    //   c: 0,
-    //   l: -1,
-    //   f: entity.fullId,
-    //   title: V.castInitials( entity.profile.title ),
-    //   // role: 'member',
-    //   // draw: function() { Chat.draw() },
-    //   o: false,
-    //   path: '/profile/jane-wood-2121',
-    //   use: {
-    //     button: 'none',
-    //   },
-    //   draw: function() {
-    //     Profile.draw( 'jane-wood-2121' );
-    //   }
-    // };
-    // V.setState( 'entityNav', obj );
-
+  function addToNavItems( entity ) {
+    const slug = V.castSlugOrId( entity.fullId );
     V.setNavItem( 'entityNav', {
       cid: '1003',
-      c: 0,
-      l: -1,
       f: entity.fullId,
       title: V.castInitials( entity.profile.title ),
-      // role: 'member',
-      // draw: function() { Chat.draw() },
-      o: false,
-      path: '/profile/jane-wood-2121',
+      path: '/profile/' + slug,
       use: {
         button: 'none',
       },
-      draw: function() {
-        Profile.draw( 'jane-wood-2121' );
+      draw: function( slug ) {
+        Profile.draw( slug );
       }
     } );
     console.log( V.getState() );
@@ -55,21 +29,19 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const split = which.split( '-' );
-    const tag = '#' + split.pop();
-    const title = V.castEntityTitle( split.join( ' ' ) ).data[0];
-    const fullId = title + ' ' + tag;
-
+    const fullId = V.castSlugOrId( which );
     const query = await V.getEntity( fullId );
 
-    console.log( query );
-
     let $topcontent, $list;
+    const mapData = [];
+
     if ( query.success ) {
       // add a navItem to entityNav
       const entity = query.data[0];
 
-      addNavItem( entity );
+      mapData.push( { type: 'Feature', geometry: entity.geometry } );
+
+      addToNavItems( entity );
 
       $topcontent = ProfileComponents.topcontent( entity.fullId );
       $list = CanvasComponents.list( 'narrow' );
@@ -89,20 +61,22 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    const pageData = {
-      topcontent: $topcontent,
-      listings: $list,
-      position: 'top',
+    const data = {
+      mapData: mapData,
+      pageData: {
+        topcontent: $topcontent,
+        listings: $list,
+        position: 'top',
+      }
     };
 
-    return pageData;
+    return data;
   }
 
-  function view( pageData ) {
-
+  function view( data ) {
     Navigation.animate( 'profile' );
-
-    Page.draw( pageData );
+    Page.draw( data.pageData );
+    VMap.draw( data.mapData );
   }
 
   /* ============ public methods and exports ============ */
@@ -113,13 +87,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
       {
         cid: '1001',
-        c: 0,
-        l: -1,
         f: 'Me',
         title: 'Me',
-        // role: 'member',
-        // draw: function() { Chat.draw() },
-        o: true,
         path: '/profile/me',
         draw: function() {
           Profile.draw( 'me' );
@@ -127,13 +96,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         cid: '1002',
-        c: 0,
-        l: -1,
         f: 'Profile',
         title: 'Profile',
-        // role: 'member',
-        // draw: function() { Chat.draw() },
-        o: false,
         path: '/profile/profile',
         use: {
           button: 'none',
@@ -142,16 +106,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           Profile.draw( 'profile' );
         }
       },
-      // {
-      //   cid: '1002',
-      //   c: 0,
-      //   l: -1,
-      //   f: 'Me2',
-      //   title: 'Me2',
-      //   // role: 'member',
-      //   // draw: function() { Chat.draw() },
-      //   o: true,
-      // }
     ] );
 
   }

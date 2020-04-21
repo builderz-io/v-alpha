@@ -43,7 +43,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function launch() {
-    return V.setScript( '/dist/leaflet.js' );
+    await V.setScript( '/dist/leaflet.js' );
+    console.log( '*** map scripts loaded ***' );
+
   }
 
   function setMap() {
