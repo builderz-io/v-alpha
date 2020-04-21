@@ -15,19 +15,50 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     let whichRole;
     const mapData = [];
 
-    const $slider = CanvasComponents.slider();
-    const $list = CanvasComponents.list();
-
     if ( which && which != 'marketplace' ) {
       // force the removal of plural
       whichRole = which.substring( 0, which.length - 1 );
     }
 
-    const entities = await V.getEntity( whichRole );
+    const query = await V.getEntity( whichRole );
 
-    if ( entities.data ) {
-      entities.data.reverse().forEach( cardData => {
-        mapData.push( { type: 'Feature', geometry: cardData.geometry } );
+    if ( query.success ) {
+      query.data.forEach( entity => {
+        mapData.push( { type: 'Feature', geometry: entity.geometry } );
+      } );
+      return {
+        success: true,
+        status: 'entities retrieved',
+        data: [{
+          which: which,
+          entities: query.data,
+          mapData: mapData,
+        }]
+      };
+    }
+    else {
+      return {
+        success: false,
+        status: 'cound not retrieve any entities',
+        data: [{
+          which: which,
+          entities: query.data,
+          mapData: mapData,
+        }]
+      };
+    }
+
+  }
+
+  function view( data ) {
+
+    const $slider = CanvasComponents.slider();
+    const $list = CanvasComponents.list();
+
+    const viewData = data.data[0];
+
+    if ( data.success ) {
+      viewData.entities.reverse().forEach( cardData => {
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
         const $cardContent = MarketplaceComponents.cardContent( cardData );
         const $card = CanvasComponents.card( $cardContent );
@@ -39,26 +70,20 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
     }
 
-    return {
-      which: which,
-      mapData: mapData,
-      pageData: {
-        topslider: $slider,
-        listings: $list,
-        position: 'peek',
-      }
-    };
-  }
-
-  function view( data ) {
-    if ( data.which ) {
-      Navigation.animate( data.which );
+    if ( viewData.which ) {
+      Navigation.animate( viewData.which );
     }
     else {
       Navigation.draw( 'all', { reset: true } );
     }
-    Page.draw( data.pageData );
-    VMap.draw( data.mapData );
+
+    Page.draw( {
+      topslider: $slider,
+      listings: $list,
+      position: 'peek',
+    } );
+
+    VMap.draw( viewData.mapData );
   }
 
   /* ============ public methods and exports ============ */
@@ -115,7 +140,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which ) {
-    presenter( which ).then( viewData => { view( viewData ) } );
+    presenter( which ).then( data => { view( data ) } );
   }
 
   return {
