@@ -60,7 +60,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, $card );
     }
 
-    Navigation.animate( 'profile' );
+    // Navigation.draw( 'entity-nav', { keep: 5 } );
+    // Navigation.animate( 'profile' );
 
     Page.draw( {
       topcontent: $topcontent,
@@ -96,22 +97,23 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
 
+    /*
     V.setNavItem( 'entityNav', [
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
-      {
-        cid: '1001',
-        f: 'Me',
-        title: 'Me',
-        path: '/profile/me',
-        draw: function() {
-          Profile.draw( 'me' );
-        }
-      },
+      // {
+      //   cid: '1001',
+      //   f: 'Me',
+      //   title: 'Me',
+      //   path: '/profile/me',
+      //   draw: function() {
+      //     Profile.draw( 'me' );
+      //   }
+      // },
       {
         cid: '1002',
         f: 'Profile',
         title: 'Profile',
-        path: '/profile/profile',
+        path: '/profile',
         use: {
           button: 'none',
         },
@@ -120,6 +122,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         }
       },
     ] );
+    */
 
   }
 

@@ -139,7 +139,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     const aI = V.getState( 'active' );
     switch ( pagePos ) {
     case 'top':
-      if ( aI.navItem ) {
+      if ( aI && aI.navItem ) {
         return p.topSelectedCalc;
       }
       else {
