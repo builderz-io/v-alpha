@@ -10,8 +10,73 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  async function presenter( which ) {
+
+    const fullId = V.castSlugOrId( which );
+    const query = await V.getEntity( fullId );
+
+    const mapData = [];
+
+    if ( query.success ) {
+      mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
+
+      // add a navItem to entityNav
+      addToNavItems( query.data[0] );
+
+      return {
+        success: true,
+        status: 'entities retrieved',
+        data: [{
+          which: which,
+          entity: query.data[0],
+          mapData: mapData,
+        }]
+      };
+    }
+    else {
+      return {
+        success: false,
+        status: 'cound not retrieve entities',
+        data: [{
+          which: which,
+          entity: {},
+          mapData: [],
+        }]
+      };
+    }
+  }
+
+  function view( data ) {
+
+    let $topcontent, $list;
+
+    if ( data.success ) {
+      const entity = data.data[0].entity;
+
+      $topcontent = ProfileComponents.topcontent( entity.fullId );
+      $list = CanvasComponents.list( 'narrow' );
+      const $loc = ProfileComponents.locationCard( entity );
+      const $card = CanvasComponents.card( $loc );
+      V.setNode( $list, $card );
+    }
+
+    Navigation.animate( 'profile' );
+
+    Page.draw( {
+      topcontent: $topcontent,
+      listings: $list,
+      position: 'top',
+    } );
+
+    VMap.draw( data.mapData );
+  }
+
   function addToNavItems( entity ) {
     const slug = V.castSlugOrId( entity.fullId );
+
+    // const clone = JSON.parse( JSON.stringify( V.getState() ) );
+    // console.log( clone );
+
     V.setNavItem( 'entityNav', {
       cid: '1003',
       f: entity.fullId,
@@ -24,59 +89,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         Profile.draw( slug );
       }
     } );
-    console.log( V.getState() );
-  }
-
-  async function presenter( which ) {
-
-    const fullId = V.castSlugOrId( which );
-    const query = await V.getEntity( fullId );
-
-    let $topcontent, $list;
-    const mapData = [];
-
-    if ( query.success ) {
-      // add a navItem to entityNav
-      const entity = query.data[0];
-
-      mapData.push( { type: 'Feature', geometry: entity.geometry } );
-
-      addToNavItems( entity );
-
-      $topcontent = ProfileComponents.topcontent( entity.fullId );
-      $list = CanvasComponents.list( 'narrow' );
-      const $loc = ProfileComponents.locationCard( entity );
-      const $card = CanvasComponents.card( $loc );
-      V.setNode( $list, $card );
-    }
-
-    if ( which == 'active entity' ) {
-      const aE = V.getState( 'activeEntity' );
-      if ( aE ) {
-        const eB = await V.getEntityBalance( aE );
-        V.setNode( $list, InteractionComponents.entityFound( aE, eB ) );
-      }
-      else {
-        V.setNode( $list, V.cN( { t: 'p', h: 'please join first' } ) );
-      }
-    }
-
-    const data = {
-      mapData: mapData,
-      pageData: {
-        topcontent: $topcontent,
-        listings: $list,
-        position: 'top',
-      }
-    };
-
-    return data;
-  }
-
-  function view( data ) {
-    Navigation.animate( 'profile' );
-    Page.draw( data.pageData );
-    VMap.draw( data.mapData );
+    // console.log( V.getState() );
   }
 
   /* ============ public methods and exports ============ */
@@ -111,7 +124,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which ) {
-    presenter( which ).then( viewData => { view( viewData ) } );
+    presenter( which ).then( data => { view( data ) } );
   }
 
   return {
