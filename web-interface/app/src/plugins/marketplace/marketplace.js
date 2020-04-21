@@ -12,16 +12,53 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
+    let whichRole;
     const mapData = [];
+
+    if ( which && which != 'marketplace' ) {
+      // force the removal of plural
+      whichRole = which.substring( 0, which.length - 1 );
+    }
+
+    const query = await V.getEntity( whichRole );
+
+    if ( query.success ) {
+      query.data.forEach( entity => {
+        mapData.push( { type: 'Feature', geometry: entity.geometry } );
+      } );
+      return {
+        success: true,
+        status: 'entities retrieved',
+        data: [{
+          which: which,
+          entities: query.data,
+          mapData: mapData,
+        }]
+      };
+    }
+    else {
+      return {
+        success: false,
+        status: 'cound not retrieve any entities',
+        data: [{
+          which: which,
+          entities: query.data,
+          mapData: mapData,
+        }]
+      };
+    }
+
+  }
+
+  function view( data ) {
 
     const $slider = CanvasComponents.slider();
     const $list = CanvasComponents.list();
 
-    const entities = await V.getEntity( which );
+    const viewData = data.data[0];
 
-    if ( entities.data ) {
-      entities.data.reverse().forEach( cardData => {
-        mapData.push( { type: 'Feature', geometry: cardData.geometry } );
+    if ( data.success ) {
+      viewData.entities.reverse().forEach( cardData => {
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
         const $cardContent = MarketplaceComponents.cardContent( cardData );
         const $card = CanvasComponents.card( $cardContent );
@@ -33,19 +70,20 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
     }
 
-    return {
-      mapData: mapData,
-      pageData: {
-        topslider: $slider,
-        listings: $list,
-        position: 'peek',
-      }
-    };
-  }
+    if ( viewData.which ) {
+      Navigation.animate( viewData.which );
+    }
+    else {
+      Navigation.draw( 'all', { reset: true } );
+    }
 
-  function view( data ) {
-    Page.draw( data.pageData );
-    VMap.draw( data.mapData );
+    Page.draw( {
+      topslider: $slider,
+      listings: $list,
+      position: 'peek',
+    } );
+
+    VMap.draw( viewData.mapData );
   }
 
   /* ============ public methods and exports ============ */
@@ -54,43 +92,55 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', [
       {
         title: 'Marketplace',
+        path: '/market',
         use: {
           button: 'search',
         },
-        draw: function() { Marketplace.draw() }
+        draw: function() {
+          Marketplace.draw( 'marketplace' );
+        }
       },
       {
         title: 'Jobs',
-        role: 'job',
+        path: '/market/jobs',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'job',
         },
-        draw: function() {  Marketplace.draw( 'job' ) }
+        draw: function( slug ) {
+          Marketplace.draw( slug );
+        }
       },
       {
         title: 'Skills',
-        role: 'skill',
+        path: '/market/skills',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'skill',
         },
-        draw: function() {  Marketplace.draw( 'skill' ) }
+        draw: function( slug ) {
+          Marketplace.draw( slug );
+        }
       },
       {
         title: 'Events',
-        role: 'event',
+        path: '/market/events',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'event',
         },
-        draw: function() {  Marketplace.draw( 'event' ) }
+        draw: function( slug ) {
+          Marketplace.draw( slug );
+        }
       }
     ] );
   }
 
   function draw( which ) {
-    presenter( which ).then( viewData => { view( viewData ) } );
+    presenter( which ).then( data => { view( data ) } );
   }
 
   return {

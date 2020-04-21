@@ -1,20 +1,13 @@
 const Feature = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module driving the app's feature section
-  *
-  *
-  */
+   * Module driving the app's feature section
+   *
+   */
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
-
-  function cacheDom() {
-    DOM.$feature = V.getNode( 'feature' );
-  }
 
   function presenter( options ) {
     const $content = typeof options == 'object' ? options : options.content ? options.content : undefined;
@@ -26,13 +19,14 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( featureData ) {
+    const $feature = V.getNode( 'feature' );
     if ( featureData.fade == 'out' ) {
       V.setAnimation( 'feature', 'fadeOut' );
       return;
     }
     if ( featureData.fade == 'in' || featureData.$content ) {
-      DOM.$feature.innerHTML = '';
-      V.setNode( DOM.$feature, featureData.$content );
+      $feature.innerHTML = '';
+      V.setNode( $feature, featureData.$content );
       V.setAnimation( 'feature', 'fadeIn' );
     }
   }
@@ -40,7 +34,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    cacheDom();
+    V.setNode( 'body', CanvasComponents.feature() );
   }
 
   function draw( options ) {

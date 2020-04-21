@@ -10,103 +10,134 @@ const V = {}; // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  function setScript( src ) {
+  await launchScripts();
+
+  await kickAss();
+
+  function setScript( src, id ) {
     // console.log( src );
     return new Promise( function( resolve, reject ) {
       const s = document.createElement( 'script' );
       s.src = src;
       s.onload = resolve;
       s.onerror = reject;
+      id ? s.id = id : null;
       document.head.appendChild( s );
     } );
   }
 
-  await Promise.all( [
-    setScript( 'src/vcore/v/v-key.js' ),
-    setScript( 'src/vcore/v/v-init.js' ),
-    setScript( 'src/vcore/dom/v-dom.js' ),
-    setScript( 'src/vcore/helper/v-helper-debug.js' ),
-    setScript( 'src/vcore/helper/v-helper.js' ),
-    setScript( 'src/vcore/endpoint/v-entity.js' ),
-    setScript( 'src/vcore/endpoint/v-message.js' ),
-    setScript( 'src/vcore/endpoint/v-transaction.js' ),
-    setScript( 'src/vcore/state/v-state.js' ),
-    setScript( 'src/vcore/ledger/v-ledger.js' ),
-    setScript( 'src/theme/canvas/canvas.js' ),
-  ] );
-  console.log( '*** vcore scripts loaded ***' );
+  async function launchScripts() {
+    await Promise.all( [
+      setScript( '/dist/velocity.min.js' ),
+      setScript( '/dist/moment.min.js' ),
+      setScript( '/dist/js.cookie.min.js' ),
+      setScript( '/dist/universal-router.js' ),
 
-  const methods = {
-    // kicksAss: function kicksAss() {
-    //   Canvas.launch();
-    //   // console.log( 'we are kickin' );
-    // },
+      setScript( '/src/vcore/v/v-key.js' ),
+      setScript( '/src/vcore/v/v-init.js' ),
+      setScript( '/src/vcore/dom/v-dom.js' ),
+      setScript( '/src/vcore/dom/v-route.js' ),
+      setScript( '/src/vcore/helper/v-helper-debug.js' ),
+      setScript( '/src/vcore/helper/v-helper.js' ),
+      setScript( '/src/vcore/endpoint/v-entity.js' ),
+      setScript( '/src/vcore/endpoint/v-message.js' ),
+      setScript( '/src/vcore/endpoint/v-transaction.js' ),
+      setScript( '/src/vcore/state/v-state.js' ),
+      setScript( '/src/vcore/ledger/v-ledger.js' ),
+      setScript( '/src/theme/canvas/canvas.js' ),
+    ] );
+    console.log( '*** vcore scripts loaded ***' );
 
-    /* Endpoints */
-    getEntity: VEntity.getEntity,
-    setEntity: VEntity.setEntity,
-    getEntityBalance: VEntity.getEntityBalance,
+    const methods = {
 
-    getMessage: VMessage.getMessage,
-    setMessage: VMessage.setMessage,
-    setMessageBot: VMessage.setMessageBot,
+      /* Endpoints */
+      getEntity: VEntity.getEntity,
+      setEntity: VEntity.setEntity,
+      getEntityBalance: VEntity.getEntityBalance,
 
-    getTransaction: VTransaction.getTransaction,
-    setTransaction: VTransaction.setTransaction,
+      getMessage: VMessage.getMessage,
+      setMessage: VMessage.setMessage,
+      setMessageBot: VMessage.setMessageBot,
 
-    /* DOM */
-    setScript: setScript,
-    castNode: VDom.castNode,
-    cN: VDom.cN,
-    setNode: VDom.setNode,
-    sN: VDom.sN,
-    getNode: VDom.getNode,
-    gN: VDom.gN,
-    setAnimation: VDom.setAnimation,
-    sA: VDom.sA,
-    setStyle: VDom.setStyle,
-    setClick: VDom.setClick,
-    getCss: VDom.getCss,
-    castRemToPixel: VDom.castRemToPixel,
+      getTransaction: VTransaction.getTransaction,
+      setTransaction: VTransaction.setTransaction,
 
-    /* Helper */
-    castEntityTitle: VEntity.castEntityTitle,
-    castInitials: VHelper.castInitials,
-    castCamelCase: VHelper.castCamelCase,
-    castLinks: VHelper.castLinks,
-    castTime: VHelper.castTime,
-    castShortAddress: VHelper.castShortAddress,
-    setPipe: VHelper.setPipe,
-    getTranslation: VHelper.getTranslation,
-    i18n: VHelper.i18n,
-    getIcon: VHelper.getIcon,
-    debug: VDebugHelper.debug,
+      /* DOM */
+      setScript: setScript,
+      setBrowserHistory: VRoute.setBrowserHistory,
+      castNode: VDom.castNode,
+      cN: VDom.cN,
+      setNode: VDom.setNode,
+      sN: VDom.sN,
+      getNode: VDom.getNode,
+      gN: VDom.gN,
+      setAnimation: VDom.setAnimation,
+      sA: VDom.sA,
+      setStyle: VDom.setStyle,
+      setClick: VDom.setClick,
+      getCss: VDom.getCss,
+      castRemToPixel: VDom.castRemToPixel,
+      castRoute: VRoute.castRoute,
+      setRoute: VRoute.setRoute,
 
-    /* State */
-    getState: VState.getState,
-    setState: VState.setState,
-    getNavItem: VState.getNavItem,
-    setNavItem: VState.setNavItem,
-    getCookie: VState.getCookie,
-    setCookie: VState.setCookie,
+      /* Helper */
+      castEntityTitle: VEntity.castEntityTitle,
+      castInitials: VHelper.castInitials,
+      castCamelCase: VHelper.castCamelCase,
+      castSlugOrId: VHelper.castSlugOrId,
+      castLinks: VHelper.castLinks,
+      castTime: VHelper.castTime,
+      castShortAddress: VHelper.castShortAddress,
+      setPipe: VHelper.setPipe,
+      getTranslation: VHelper.getTranslation,
+      i18n: VHelper.i18n,
+      getIcon: VHelper.getIcon,
+      debug: VDebugHelper.debug,
 
-    /* Settings */
-    getSetting: VInit.getSetting,
-    getNetwork: VInit.getNetwork,
-    getApiKey: VKey.getApiKey,
+      /* State */
+      getState: VState.getState,
+      setState: VState.setState,
+      getNavItem: VState.getNavItem,
+      setNavItem: VState.setNavItem,
+      getCookie: VState.getCookie,
+      setCookie: VState.setCookie,
 
-  };
+      /* Settings */
+      getSetting: VInit.getSetting,
+      getNetwork: VInit.getNetwork,
+      getApiKey: VKey.getApiKey,
 
-  Object.assign( V, methods );
+    };
 
-  /**
-   * Launch ledger-specific VCore scripts and methods,
-   * then launch the Canvas
-   *
-   */
+    Object.assign( V, methods );
 
-  VLedger.launch().then( () => {
-    Canvas.launch();
-  } );
+  }
+
+  async function kickAss() {
+
+    /**
+    * Launch ledger-specific VCore scripts and methods,
+    *
+    */
+
+    await VLedger.launch();
+
+    /**
+    * Launch the Canvas
+    *
+    */
+
+    await Canvas.launch();
+
+    /**
+    * Draw the first view
+    *
+    */
+
+    Canvas.draw( {
+      path: window.location.pathname
+    } );
+
+  }
 
 } )();

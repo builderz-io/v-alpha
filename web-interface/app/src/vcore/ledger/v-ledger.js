@@ -9,36 +9,36 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function launch() {
+  async function launchScripts() {
 
     V.getData = getData;
     V.setData = setData;
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       await Promise.all( [
-        V.setScript( 'dist/web3.min.js' ),
-        V.setScript( 'src/vcore/ledger/v-evm.js' )
+        V.setScript( '/dist/web3.min.js' ),
+        V.setScript( '/src/vcore/ledger/v-evm.js' )
       ] );
       console.log( '*** web3 and evm scripts loaded ***' );
     }
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-      await V.setScript( 'dist/symbol-sdk-0.17.5-alpha.js' );
-      await V.setScript( 'src/vcore/ledger/v-symbol.js' );
+      await V.setScript( '/dist/symbol-sdk-0.17.5-alpha.js' );
+      await V.setScript( '/src/vcore/ledger/v-symbol.js' );
       console.log( '*** symbol scripts loaded ***' );
     }
 
     if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
       await Promise.all( [
-        V.setScript( 'dist/3box.min.js' ),
-        V.setScript( 'src/vcore/ledger/v-3box.js' )
+        V.setScript( '/dist/3box.min.js' ),
+        V.setScript( '/src/vcore/ledger/v-3box.js' )
       ] );
       console.log( '*** 3Box scripts loaded ***' );
     }
 
     if ( [ V.getSetting( 'entityLedger' ), V.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
       await Promise.all( [
-        V.setScript( 'dist/socket.io.min.js' ),
+        V.setScript( '/dist/socket.io.min.js' ),
       ] );
       console.log( '*** socket scripts loaded ***' );
       await setSocket().then( res => {
@@ -171,6 +171,12 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     else if ( whichLedger == 'http' ) {
       return http( data );
     }
+  }
+
+  async function launch() {
+
+    return launchScripts();
+
   }
 
   return {

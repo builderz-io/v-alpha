@@ -9,9 +9,9 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( options ) {
+  async function presenter( which ) {
 
-    const geometry = V.getState( 'map' ); // || { lat: 52.522, lng: 13.383, zoom: 12 };
+    const geometry = V.getState( 'map' ) || { lat: 52.522, lng: 13.383, zoom: 12 };
     // const geometry = { lat: 52.3667, lng: 4.8945, zoom: 12 }; // Amsterdam
 
     // const apiKeyAir = '43efc70f-a3e2-4cc3-a261-fb5bd47a3e1c';
@@ -83,6 +83,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     // V.setNode( $list, $card2 );
 
     const pageData = {
+      which: which,
       listings: $list,
       position: 'top'
     };
@@ -91,7 +92,9 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
+    Navigation.animate( pageData.which );
     Page.draw( pageData );
+    VMap.draw();
   }
 
   /* ============ public methods and exports ============ */
@@ -100,18 +103,21 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', [
       {
         title: 'Data',
-        role: 'data',
+        path: '/data',
         use: {
           button: 'search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'data',
         },
-        draw: function() { Data.draw() }
+        draw: function() {
+          Data.draw( 'data' );
+        }
       }
     ] );
   }
 
-  function draw( options ) {
-    presenter( options ).then( viewData => { view( viewData ) } );
+  function draw( which ) {
+    presenter( which ).then( viewData => { view( viewData ) } );
   }
 
   return {

@@ -66,12 +66,31 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return which.toLowerCase().replace( /[^a-zA-Z0-9]+(.)/g, ( m, chr ) => {return chr.toUpperCase()} );
   }
 
+  function castSlugOrId( which ) {
+    if ( which.includes( '#' ) ) {
+      // returns a slug from a fullId
+      return which.toLowerCase().replace( '#', '' ).replace( /\s/g, '-' );
+    }
+    if ( which.includes( '/' ) ) {
+      // returns a slug from a path
+      const split = which.split( '/' );
+      return split.pop();
+    }
+    else {
+      // returns a fullId from a slug
+      const split = which.split( '-' );
+      const tag = '#' + split.pop();
+      const title = V.castEntityTitle( split.join( ' ' ) ).data[0];
+      return title + ' ' + tag;
+    }
+  }
+
   function castShortAddress( address, chars ) {
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
 
   function getIcon( which ) {
-    return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="assets/icon/' + which + '-24px.svg" height="16px">';
+    return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
   }
 
   function setPipe( ...functions ) {
@@ -98,6 +117,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castTime: castTime,
     castInitials: castInitials,
     castCamelCase: castCamelCase,
+    castSlugOrId: castSlugOrId,
     castShortAddress: castShortAddress,
     getIcon: getIcon,
     setPipe: setPipe,

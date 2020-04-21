@@ -1,19 +1,13 @@
 const Form = ( function() { // eslint-disable-line no-unused-vars
+
   /**
-  * Form layouts
-  *
-  *
-  */
+   * Form layouts
+   *
+   */
 
   'use strict';
 
-  const DOM = {};
-
   /* ================== private methods ================= */
-
-  function cacheDom() {
-    DOM.$form = V.getNode( 'form' );
-  }
 
   function presenter( which, options ) {
     if ( options && options.fade == 'out' ) { return { fadeOut: true } }
@@ -46,20 +40,26 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( formData ) {
+
     if ( formData.fadeOut ) {
-      DOM.$form.innerHTML = '';
-      V.setAnimation( DOM.$form, 'fadeOut', { delay: 0.2, duration: 1 } );
+      if ( V.getNode( 'form' ) ) {
+        V.setAnimation( 'form', 'fadeOut', { delay: 0.2, duration: 1 } ).then( () => {
+          V.setNode( 'form', 'clear' );
+        } );
+      }
     }
     else if ( formData.error == 'invalid title' ) {
-      DOM.$formtitle = V.getNode( '.plusform__title' );
-      DOM.$formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
-      DOM.$formtitle.value = '';
-      DOM.$formtitle.className += ' border-error';
+      const $formtitle = V.getNode( '.plusform__title' );
+      $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
+      $formtitle.value = '';
+      $formtitle.className += ' border-error';
     }
     else {
-      V.setNode( DOM.$form, formData.$form );
-      V.setAnimation( DOM.$form, 'fadeIn', { delay: 0.2, duration: 1 } );
-      Google.initAutocomplete( 'plusform' ); // + __loc, __lng and __lat
+      V.setNode( 'body', formData.$form );
+      V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
+      Google.launch().then( () => { // adds places lib script
+        Google.initAutocomplete( 'plusform' ); // + __loc, __lng and __lat
+      } );
       // Page.draw( { pos: 'closed', reset: false } );
       // Button.draw( ( formData.layout == 'search' ? 'plus' : 'plus search' ), { fade: 'out' } );
       Button.draw( 'all', { fade: 'out' } );
@@ -69,16 +69,11 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function launch() {
-    cacheDom();
-  }
-
   function draw( which, options ) {
     view( presenter( which, options ) );
   }
 
   return {
-    launch: launch,
     draw: draw
   };
 

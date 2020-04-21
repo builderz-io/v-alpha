@@ -1,8 +1,9 @@
 const Media = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module driving the display of media items, currently videos
+   * Module driving the display of media items
    *
+   * DEMO PURPOSE only
    *
    */
 
@@ -14,7 +15,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = CanvasComponents.list();
 
-    const entities = await V.getEntity( which );
+    const entities = await V.getEntity( which == 'moocs' ? 'mooc' : which );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
@@ -28,6 +29,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const pageData = {
+      which: which,
       listings: $list,
     };
 
@@ -36,7 +38,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   function featurePresenter( options ) {
     const $featureUl = MediaComponents.featureUl();
-    const $videoFeature = MediaComponents.videoFeature( options.feature );
+    const $videoFeature = MediaComponents.videoFeature( options && options.feature ? options.feature : 'https://youtu.be/ygJ4uu4XNM8' );
     V.setNode( $featureUl, $videoFeature );
 
     const pageData = {
@@ -48,10 +50,17 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
+    if ( pageData.which ) {
+      Navigation.animate( pageData.which );
+    }
     Page.draw( pageData );
     if ( pageData.feature ) {
       Feature.draw( pageData.feature );
     }
+    // else {
+    //   Navigation.draw( 'all', { reset: true } );
+    // }
+    VMap.draw();
   }
 
   function delayContentLoad( which ) {
@@ -64,21 +73,27 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', [
       {
         title: 'Media',
-        role: 'media',
+        path: '/media',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'media',
         },
-        draw: function() { Media.draw( 'media', { feature: 'https://youtu.be/XQEDw6IKTK8' } ) }
+        draw: function() {
+          Media.draw( 'media', { feature: 'https://youtu.be/XQEDw6IKTK8' } );
+        }
       },
       {
         title: 'Moocs',
-        role: 'mooc',
+        path: '/media/moocs',
         use: {
           button: 'plus search',
-          form: 'new entity'
+          form: 'new entity',
+          role: 'mooc',
         },
-        draw: function() { Media.draw( 'mooc', { feature: 'https://youtu.be/ygJ4uu4XNM8' } ) }
+        draw: function() {
+          Media.draw( 'moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
+        }
       }
     ] );
   }

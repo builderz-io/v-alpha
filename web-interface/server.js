@@ -15,6 +15,6 @@ server.listen( settings.port, function( err ) {
   console.log( 'App server listening on port', settings.port );
 } );
 
-app.get( '/', function( req, res ) {
+app.get( '*', function( req, res ) {
   res.sendFile( __dirname + '/app/app.html' );
 } );
