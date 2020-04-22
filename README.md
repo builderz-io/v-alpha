@@ -9,26 +9,29 @@ This repository contains three distinct code bases:
 - Smart Contract
 - MongoDB Entity Store
 
-### Web Interface
+**Web Interface**
 
-A client side responsive web app, build with the VCore library and including a Theme and Plugins. All written in plain Javascript.
+Modules to connect to distributed ledger technologies and distributed identity mechanisms, and build user interfaces around these technologies. All written in plain Javascript.
 
-**VCore**
-A bunch of modules and helper functions to aid the development of user interfaces
+VCore
 
-**VTheme**
-A first theme build with VCore.
+> VCore provides modules to access [Ethereum](https://ethereum.org/) and all [EVM compatible](https://chainid.network/) ledgers, [Symbol](https://nemtech.github.io/) ledgers (by NEM), [3Box](https://3box.io/) identity store and chat, [MongoDB](https://www.mongodb.com/) entity store
 
-**VPlugins**
-A bunch of functionality to create and display content. Plugins control the Theme.
+VTheme
 
-### Smart Contract
+> A first theme build with VCore. A responsive web app, featuring an intelligent menu, login user flow, mapping and more.
 
-The VToken smart contract can be setup optionally. This is a special kind of token, that has several properties which can be set to the initiators liking.
+VPlugins
 
-### MongoDB Entity Store
+> Modules to create and display content. Plugins control what is displayed in the Theme.
 
-The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used, and also enables token accounts and transactions in VToken format, if no distributed ledger is used (as a simulation of such).
+**Smart Contract**
+
+The VToken concept cast into a smart contract, which can be setup on Ethereum and EVM-compatible ledgers. This is a special kind of token with several customizable properties, which can be set to the initiators liking.
+
+**MongoDB Entity Store**
+
+The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used to transact funds but not used for identities. This is helpful for testing and exploring user needs. This module also enables token accounts and transactions in VToken format, if no distributed ledger is used for transactions either (as a simulation of such).
 
 ## Documentation
 
