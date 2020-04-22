@@ -1,6 +1,6 @@
 # Value Instrument Alpha - Version 2
 
-**Integrating with**
+### Integrating with
 
 ![eth-ledger](https://user-images.githubusercontent.com/20671922/79995007-f060a000-84b6-11ea-94cd-3b7c1ee50543.png) &nbsp;&nbsp;
 ![3box-ledger](https://user-images.githubusercontent.com/20671922/79994898-ceffb400-84b6-11ea-92d5-38d365f89d5c.png) &nbsp;
@@ -13,7 +13,7 @@
 [MongoDB](https://www.mongodb.com/)
 
 
-**Written in**
+### Written in
 
 &nbsp;&nbsp;&nbsp;&nbsp;![javascript](https://user-images.githubusercontent.com/20671922/79997118-7ed62100-84b9-11ea-9e4e-47e7def69f47.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![eth-ledger-logo](https://user-images.githubusercontent.com/20671922/80020449-59590f80-84d9-11ea-94c2-037d60e4288c.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
