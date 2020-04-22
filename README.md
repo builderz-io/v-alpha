@@ -11,7 +11,7 @@ This repository contains three distinct code bases:
 
 Integrating with:
 
-![eth-ledger](https://user-images.githubusercontent.com/20671922/79995007-f060a000-84b6-11ea-94cd-3b7c1ee50543.png)![3box-ledger](https://user-images.githubusercontent.com/20671922/79994898-ceffb400-84b6-11ea-92d5-38d365f89d5c.png) ![xym-ledger](https://user-images.githubusercontent.com/20671922/79994971-e50d7480-84b6-11ea-8d76-0167467dfe79.png) ![mongodb-ledger](https://user-images.githubusercontent.com/20671922/79994780-abd50480-84b6-11ea-970d-ec0eedd7d609.png) ![javascript](https://user-images.githubusercontent.com/20671922/79997118-7ed62100-84b9-11ea-9e4e-47e7def69f47.png)
+![eth-ledger](https://user-images.githubusercontent.com/20671922/79995007-f060a000-84b6-11ea-94cd-3b7c1ee50543.png)![3box-ledger](https://user-images.githubusercontent.com/20671922/79994898-ceffb400-84b6-11ea-92d5-38d365f89d5c.png) ![xym-ledger](https://user-images.githubusercontent.com/20671922/79999144-daa1a980-84bb-11ea-8a9b-12501cc992a7.png) ![mongodb-ledger](https://user-images.githubusercontent.com/20671922/79994780-abd50480-84b6-11ea-970d-ec0eedd7d609.png) ![javascript](https://user-images.githubusercontent.com/20671922/79997118-7ed62100-84b9-11ea-9e4e-47e7def69f47.png)
 
 
 **Web Interface**
