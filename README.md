@@ -3,13 +3,13 @@
 ### Integrating with
 
 ![eth-ledger](https://user-images.githubusercontent.com/20671922/79995007-f060a000-84b6-11ea-94cd-3b7c1ee50543.png) &nbsp;&nbsp;
-![3box-ledger](https://user-images.githubusercontent.com/20671922/79994898-ceffb400-84b6-11ea-92d5-38d365f89d5c.png) &nbsp;
-![xym-ledger](https://user-images.githubusercontent.com/20671922/79999144-daa1a980-84bb-11ea-8a9b-12501cc992a7.png) &nbsp;&nbsp;
+![3box-ledger](https://user-images.githubusercontent.com/20671922/79994898-ceffb400-84b6-11ea-92d5-38d365f89d5c.png) &nbsp;&nbsp;
+![xym-ledger](https://user-images.githubusercontent.com/20671922/79999144-daa1a980-84bb-11ea-8a9b-12501cc992a7.png) &nbsp;&nbsp;&nbsp;
 ![mongodb-ledger](https://user-images.githubusercontent.com/20671922/79994780-abd50480-84b6-11ea-970d-ec0eedd7d609.png)
 
 [Ethereum](https://ethereum.org/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[3Box](https://3box.io/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[Symbol](https://nemtech.github.io/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[3Box](https://3box.io/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[Symbol](https://nemtech.github.io/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [MongoDB](https://www.mongodb.com/)
 
 
