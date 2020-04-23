@@ -16,11 +16,11 @@
 ### Written in
 
 &nbsp;&nbsp;&nbsp;&nbsp;![javascript](https://user-images.githubusercontent.com/20671922/79997118-7ed62100-84b9-11ea-9e4e-47e7def69f47.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-![eth-ledger-logo](https://user-images.githubusercontent.com/20671922/80020449-59590f80-84d9-11ea-94c2-037d60e4288c.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+![solidity](https://user-images.githubusercontent.com/20671922/80140871-e4eda180-85a8-11ea-98e3-0cac98571010.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![tailwind-logo](https://user-images.githubusercontent.com/20671922/80020969-25cab500-84da-11ea-952e-74006c460884.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-JavaScript&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Solidity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[Solidity](https://solidity.readthedocs.io/en/v0.6.6/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [Tailwind CSS](https://tailwindcss.com/docs/utility-first)
 
 ## Contains
