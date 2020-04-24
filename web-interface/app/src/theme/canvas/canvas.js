@@ -49,6 +49,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function setState() {
 
+    V.setState( 'active', {
+      registeredNav: ['service-nav', 'entity-nav'],
+    } );
     V.setState( 'screen', {
       height: Number( window.innerHeight ),
       width: Number( window.innerWidth )
@@ -67,7 +70,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected } );
     V.setState( 'page', { featureCalc: Math.floor( state.screen.height - state.page.topSelected - state.screen.width * 9/16 ) } );
 
-    V.setState( 'menu', {
+    V.setState( 'header', {
       // activeTitle: false,
       isHazed: false,
 
@@ -143,38 +146,56 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   ) {
 
     /**
-     * View renders on history change
+     * Canvas view renders on initial page load, reload and history change
      *
      */
 
-    initCanvas();
+    setServiceNavState(); // always
+
+    initCanvas(); // if( !V.getNode( 'background' ) )
 
     V.castRoute( path )
       .then( (
         x,
-        s = x.status,
-        w = x.data[0]
+        status = x.status,
+        which = x.data[0]
       ) => {
-        if ( ['home'].includes( s ) ) {
+        if ( ['home'].includes( status ) ) {
           Marketplace.draw(); // no argument displays all entities and resets navigation
         }
-        else if ( ['market', 'market category'].includes( s ) ) {
-          Marketplace.draw( w );
+        else if ( ['market', 'market category'].includes( status ) ) {
+          Marketplace.draw( which );
         }
-        else if ( ['media', 'media category'].includes( s ) ) {
-          Media.draw( w );
+        else if ( ['media', 'media category'].includes( status ) ) {
+          Media.draw( which );
         }
-        else if ( ['data'].includes( s ) ) {
-          Data.draw( w );
+        else if ( ['data'].includes( status ) ) {
+          Data.draw( which );
         }
-        else if ( ['chat everyone'].includes( s ) ) {
-          Chat.draw( 'chat' );
+        else if ( ['chat everyone'].includes( status ) ) {
+          Chat.draw( which );
         }
-        else if ( ['profile'].includes( s ) ) {
-          Profile.draw( w );
+        else if ( ['profile'].includes( status ) ) {
+          Profile.draw( which );
         }
 
       } );
+  }
+
+  function setServiceNavState() {
+    Profile.launch(); // sets navItem "me"
+    Chat.launch(); // sets navItem & sets socket.on
+    Data.launch(); // sets navItem
+    Marketplace.launch(); // sets navItem
+    Media.launch(); // sets navItem
+
+    if ( V.getSetting( 'demoContent' ) ) {
+      ( async () => {
+        for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
+          await V.setEntity( DemoContent.mongoArr[i] );
+        }
+      } )();
+    }
   }
 
   function initCanvas() {
@@ -188,24 +209,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Join.launch(); // sets node: join button
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
 
-      Profile.launch(); // sets navItem "me"
-      Chat.launch(); // sets navItem & sets socket.on
-      Data.launch(); // sets navItem
-      Marketplace.launch(); // sets navItem
-      Media.launch(); // sets navItem
-
       Navigation.launch(); // updates Cookies
-
       Navigation.draw( 'service-nav', { keep: 3 } );
       Navigation.draw( 'entity-nav', { keep: 5 } );
-
-      if ( V.getSetting( 'demoContent' ) ) {
-        ( async () => {
-          for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
-            await V.setEntity( DemoContent.mongoArr[i] );
-          }
-        } )();
-      }
 
     }
   }
@@ -221,7 +227,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       setFont,
     )();
 
-    return launchScripts();
+    await launchScripts();
 
   }
 

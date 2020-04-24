@@ -85,6 +85,21 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castJson( data, clone ) {
+    if ( clone ) {
+      return JSON.parse( JSON.stringify( data ) );
+    }
+    else if ( typeof data === 'string' ) {
+      return JSON.parse( data );
+    }
+    else if ( typeof data === 'object' ) {
+      return JSON.stringify( data );
+    }
+    else {
+      console.error( 'Could not convert JSON' );
+    }
+  }
+
   function castShortAddress( address, chars ) {
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
@@ -119,6 +134,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
     castShortAddress: castShortAddress,
+    castJson: castJson,
     getIcon: getIcon,
     setPipe: setPipe,
     getTranslation: getTranslation,

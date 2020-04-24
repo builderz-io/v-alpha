@@ -65,8 +65,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'entityNav', [
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
       {
-        cid: '2001',
-        f: 'Chat',
+        // cid: '2001',
+        // f: 'Chat',
         title: 'Chat',
         // role: 'community',
         // draw: function() { Chat.draw() },

@@ -1,7 +1,9 @@
 var mongoose = require( 'mongoose' );
 
 var entitySchema = mongoose.Schema( {
-  fullId: String, // name + tag
+  fullId: String, // name + tag, e.g. 'Jane Wood #2121'
+  slug: String, // name + tag in slug format, e.g. 'jane-wood-2121'
+  path: String, // name + tag in path format, e.g. '/profile/jane-wood-2121'
   activeAddress: String,
   uPhrase: String,
   profile: {

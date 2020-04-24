@@ -30,11 +30,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function getNavItem( whichItem, whichNav ) {
     if ( whichItem == 'active' ) {
-      const converted = V.castCamelCase( getState( 'active' ).navItem );
+      // const converted = V.castCamelCase( getState( 'active' ).navItem );
       if( Array.isArray( whichNav ) ) {
         let state;
         for ( let i = 0; i < whichNav.length; i++ ) {
-          const query = getState( whichNav[i] )[ converted ];
+          const query = getState( whichNav[i] )[ getState( 'active' ).navItem ];
           if ( query ) {
             state = query;
             break;
@@ -43,7 +43,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
         return state;
       }
       else {
-        return getState( whichNav )[ converted ];
+        return getState( whichNav )[ getState( 'active' ).navItem ];
       }
     }
     else {
@@ -58,13 +58,13 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
         const maxLength = 20;
         if ( item.title.length <= maxLength ) {
           const state = getState( whichNav );
-          const titleKey = V.castCamelCase( item.title );
-          if ( state && state[titleKey] ) {
-            throw new Error( '"' + item.title + '" already set' );
+          // const key = item.path;
+          if ( state && state[item.path] ) {
+            throw new Error( '"' + item.path + '" already set' );
           }
           const obj = {};
 
-          obj[titleKey] = item;
+          obj[item.path] = item;
           setState( whichNav, obj );
         }
         else {
@@ -81,6 +81,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   function getCookie( which ) {
     return Cookies.get( which );
   }
+
   function setCookie( which, data ) {
     Cookies.set( which, JSON.stringify( data ) );
   }

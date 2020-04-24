@@ -53,7 +53,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     return V.castNode( {
       tag: 'div',
       c: 'contents',
-      html: `<div class="card__top-left flex justify-center items-center">
+      html: `<div class="card__top-left flex justify-center items-center pxy">
                 <div class="circle-3 flex justify-center items-center rounded-full"
                      style="background: ${background( cardData )}; background-position: center center; background-size: cover;">
                   <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData )}</div>
@@ -62,7 +62,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
               <div class="card__top-right flex items-center pxy">
                 <h2 class="font-bold fs-l leading-snug">${cardData.fullId}</h2>
               </div>
-              <div class="card__bottom-left items-center">
+              <div class="card__bottom-left items-center pxy">
                 <div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
                 <p class="card__unit fs-xxs"> V per ${( cardData.properties.unit == 'free' ? '' : cardData.properties.unit )}</p>
               </div>

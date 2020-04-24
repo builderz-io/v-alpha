@@ -124,18 +124,30 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( slug );
         }
       },
-      {
-        title: 'Events',
-        path: '/market/events',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'event',
-        },
-        draw: function( slug ) {
-          Marketplace.draw( slug );
-        }
-      }
+      // {
+      //   title: 'Events',
+      //   path: '/market/events',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'event',
+      //   },
+      //   draw: function( slug ) {
+      //     Marketplace.draw( slug );
+      //   }
+      // },
+      // {
+      //   title: 'Concerts',
+      //   path: '/market/concerts',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'concert',
+      //   },
+      //   draw: function( slug ) {
+      //     Marketplace.draw( slug );
+      //   }
+      // }
     ] );
   }
 

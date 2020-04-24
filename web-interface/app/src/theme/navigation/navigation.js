@@ -9,6 +9,147 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  // start test new nav code
+
+  function presenterV2( newEntity ) {
+
+    /**
+     * Update serviceNavOrder from plugins (always)
+     * Plugins have already registered their service nav items at this stage
+     *
+     */
+
+    const serviceNavOrder = V.castJson( V.getCookie( 'service-nav-order' ) || '{}' );
+    const serviceNav = V.getState( 'serviceNav' );
+    //
+    // console.log( V.getState() );
+    // console.log( serviceNav );
+    // console.log( V.castJson( serviceNavOrder, 'clone' ) );
+
+    syncNavOrder( serviceNavOrder, serviceNav );
+
+    V.setCookie( 'service-nav-order', serviceNavOrder );
+
+    // console.log( V.castJson( V.getCookie( 'service-nav-order' ) ) );
+
+    /**
+     * Update entityNavOrder from plugins
+     * Plugins have already registered their entity nav items at this stage
+     *
+     * AND
+     *
+     * Update entityNav in app state from entityNavOrder, as well as
+     * newly viewed profile (newEntity parameter)
+     *
+     */
+
+    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNav = V.getState( 'entityNav' );
+
+    for ( const item in entityNavOrder ) {
+      if ( !entityNav[item] ) {
+        V.setNavItem( 'entityNav', {
+          title: entityNavOrder[item].title,
+          path: entityNavOrder[item].path,
+          use: { button: 'none' },
+          draw: function( slug ) { Profile.draw( slug ) }
+        } );
+      }
+    }
+
+    if ( newEntity.path && !entityNav[newEntity.path] ) {
+      V.setNavItem( 'entityNav', {
+        title: V.castInitials( newEntity.profile.title ),
+        path: newEntity.path,
+        use: { button: 'none' },
+        draw: function( slug ) { Profile.draw( slug ) }
+      } );
+    }
+
+    // console.log( entityNav );
+    // console.log( V.castJson( entityNavOrder, 'clone' ) );
+
+    syncNavOrder( entityNavOrder, entityNav );
+
+    V.setCookie( 'entity-nav-order', entityNavOrder );
+
+    // console.log( V.castJson( V.getCookie( 'entity-nav-order' ) ) );
+
+    return {
+      success: true,
+      status: 'navigation updated',
+      data: [{
+        entityNav: entityNavOrder,
+        serviceNav: serviceNavOrder,
+        keep: 5
+      }]
+    };
+  }
+
+  function viewV2( viewData ) {
+    // draw serviceNav
+
+    const $serviceNavUl = NavComponents.serviceNavUl();
+    $serviceNavUl.addEventListener( 'click', navItemClickHandler );
+
+    const serviceRow = castNavDrawOrder( viewData.data[0].serviceNav, 3 );
+
+    for ( let i = 0; i < serviceRow.length; i++ ) {
+      const $pill = NavComponents.pill( serviceRow[i] );
+      V.setNode( $serviceNavUl, $pill );
+    }
+
+    V.setNode( $serviceNavUl, NavComponents.pill( { title: '' } ) ); // a last placeholder pill
+
+    V.setNode( 'service-nav', $serviceNavUl );
+
+    // draw entityNav
+
+    const $entityNavUl = NavComponents.entityNavUl();
+    $entityNavUl.addEventListener( 'click', navItemClickHandler );
+
+    const entityRow = castNavDrawOrder( viewData.data[0].entityNav, 3 );
+
+    for ( let i = 0; i < entityRow.length; i++ ) {
+      const $pill = NavComponents.pill( entityRow[i] );
+      V.setNode( $entityNavUl, $pill );
+    }
+
+    V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
+
+    V.setNode( 'entity-nav', $entityNavUl );
+
+  }
+
+  function castNavDrawOrder( rowObj, keep ) {
+    const row = Object.values( rowObj );
+    const orderedRow = row.sort( function( a, b ) { return a.l - b.l } );
+    const weightedRow = orderedRow.slice( keep ).sort( function( a, b ) { return b.c - a.c } );
+    return orderedRow.slice( 0 ).splice( 0, keep ).concat( weightedRow );
+  }
+
+  function syncNavOrder( a, b ) {
+    // remove old entries
+    for ( const oldKey in a ) {
+      if( !b.hasOwnProperty( oldKey ) ) {
+        delete a[oldKey];
+      }
+    }
+    // add new entries
+    for ( const newKey in b ) {
+      if( !a.hasOwnProperty( newKey ) ) {
+        a[b[newKey].path] = {
+          // c: 0,
+          // l: -1,
+          title: b[newKey].title,
+          path: b[newKey].path
+        };
+      }
+    }
+  }
+
+  // end test new nav code
+
   function checkCookies() {
     const navState = V.getCookie( 'service-nav-state' );
     const navItems = Object.values( V.getState( 'serviceNav' ) );
@@ -37,12 +178,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       $rowUl = NavComponents.serviceNavUl();
     }
 
-    const orderedRow = rowData.sort( function( a, b ) {
-      return a.l - b.l;
-    } );
-    const weightedRow = orderedRow.slice( options.keep ).sort( function( a, b ) {
-      return b.c - a.c;
-    } );
+    const orderedRow = rowData.sort( function( a, b ) { return a.l - b.l } );
+    const weightedRow = orderedRow.slice( options.keep ).sort( function( a, b ) { return b.c - a.c } );
     const combinedRow = orderedRow.slice( 0 ).splice( 0, options.keep ).concat( weightedRow );
 
     for ( let i = 0; i < combinedRow.length; i++ ) {
@@ -71,93 +208,90 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
 
-    rowData.ul.addEventListener( 'click', menuItemClickHandler );
+    rowData.ul.addEventListener( 'click', navItemClickHandler );
 
-    if ( rowData.row == 'entity-nav' ) {
-      V.setNode( 'entity-nav', rowData.ul );
-    }
-    else if ( rowData.row == 'service-nav' ) {
-      V.setNode( 'service-nav', rowData.ul );
-    }
+    // if ( rowData.row == 'entity-nav' ) {
+    //   V.setNode( 'entity-nav', rowData.ul );
+    // }
+    // else if ( rowData.row == 'service-nav' ) {
+    //   V.setNode( 'service-nav', rowData.ul );
+    // }
+  }
 
-    function menuItemClickHandler( e ) {
+  function navItemClickHandler( e ) {
 
-      /**
-      * Private function to arrange the menu after an item has been clicked
-      * gets and sets the app' menu state
-      *
-      */
+    e.stopPropagation(); // no need to bubble any further
 
-      e.stopPropagation(); // no need to bubble any further
+    const $itemClicked = ( ( e ) => {
+      //In case svg is used in the pill, return the correct li clicked
+      const t = e.target;
+      if ( t.localName == 'li' ) { return t }
+      else if ( t.localName == 'svg' ) { return t.parentNode }
+      else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
+    } )( e );
 
-      const $itemClicked = ( ( e ) => {
-        //In case svg is used in the pill, return the correct li clicked
-        const t = e.target;
-        if ( t.localName == 'li' ) { return t }
-        else if ( t.localName == 'svg' ) { return t.parentNode }
-        else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
-      } )( e );
+    if ( $itemClicked ) {
 
-      if ( $itemClicked ) {
+      // const menuStateObj = V.getState( 'header' );
+      // const row = $itemClicked.parentNode.parentNode.localName;
+      // const itemClickedRect = $itemClicked.getBoundingClientRect();
+      // const otherRow = row == 'service-nav' ? 'entity-nav' : 'service-nav';
 
-        // const menuStateObj = V.getState( 'menu' );
-        // const row = $itemClicked.parentNode.parentNode.localName;
-        // const itemClickedRect = $itemClicked.getBoundingClientRect();
-        // const otherRow = row == 'service-nav' ? 'entity-nav' : 'service-nav';
+      // select( $itemClicked );
 
-        // select( $itemClicked );
+      const path = $itemClicked.getAttribute( 'path' );
 
-        V.setState( 'active', { navItem: $itemClicked.innerHTML } );
+      V.setState( 'active', { navItem: path } );
 
-        V.setBrowserHistory( {
-          path: $itemClicked.getAttribute( 'path' )
-        } );
+      V.setBrowserHistory( { path: path } );
 
-        // animate( $itemClicked.id );
+      const slug = V.castSlugOrId( path );
+      V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
 
-        // movingPillAnimation( row, $itemClicked, itemClickedRect, menuStateObj );
-        // V.sA( otherRow, { height: 0, width: 0 }, { duration: 1 } );
-        // V.setAnimation( row, {
-        //   // scrollLeft: 0,
-        //   width: itemClickedRect.width + 11,
-        //   top: menuStateObj.entitiesTop,
-        //   left: menuStateObj.entitiesLeft
-        // }, { duration: 1 } );
-        // V.getNode( row ).scrollLeft = 0;
+      // animate( $itemClicked.id );
 
-        drawContentForItemClicked( $itemClicked );
+      // movingPillAnimation( row, $itemClicked, itemClickedRect, menuStateObj );
+      // V.sA( otherRow, { height: 0, width: 0 }, { duration: 1 } );
+      // V.setAnimation( row, {
+      //   // scrollLeft: 0,
+      //   width: itemClickedRect.width + 11,
+      //   top: menuStateObj.entitiesTop,
+      //   left: menuStateObj.entitiesLeft
+      // }, { duration: 1 } );
+      // V.getNode( row ).scrollLeft = 0;
 
-        // TODO: using setTimeout is questionable, use resolved promise from pill animation
-        // setTimeout( () => {return updateCookies( row )}, 1000 );
+      // drawContentForItemClicked( $itemClicked );
 
-      } // end if $itemClicked
+      // TODO: using setTimeout is questionable, use resolved promise from pill animation
+      // setTimeout( () => {return setNavStore( row )}, 1000 );
 
-      function drawContentForItemClicked( $itemClicked ) {
-        // const chatId = $itemClicked.getAttribute( 'cid' );
-        const path = $itemClicked.getAttribute( 'path' );
-        const slug = V.castSlugOrId( path );
+    } // end if $itemClicked
 
-        // if ( chatId > 2000 ) {
-        //   Chat.draw( chatId );
-        //   Button.draw( 'search' );
-        // }
-        // else if ( chatId == 1001 ) {
-        //   // Page.draw( { active: true } );
-        //   V.getNavItem( 'active', 'entityNav' ).draw();
-        // }
-        // else {
-        //   // Page.draw( { active: true } );
-        //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
-        //   // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
-        // }
-        V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+  }
 
-      }
+  // function drawContentForItemClicked( $itemClicked ) {
+  //   // const chatId = $itemClicked.getAttribute( 'cid' );
+  //   const path = $itemClicked.getAttribute( 'path' );
+  //   const slug = V.castSlugOrId( path );
+  //
+  //   // if ( chatId > 2000 ) {
+  //   //   Chat.draw( chatId );
+  //   //   Button.draw( 'search' );
+  //   // }
+  //   // else if ( chatId == 1001 ) {
+  //   //   // Page.draw( { active: true } );
+  //   //   V.getNavItem( 'active', 'entityNav' ).draw();
+  //   // }
+  //   // else {
+  //   //   // Page.draw( { active: true } );
+  //   //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+  //   //   // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+  //   // }
+  //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+  //
+  // }
 
-    } // end menuItemClickHandler
-  } // end view
-
-  function updateCookies( row ) {
+  function setNavStore( row ) {
     const $rowAfter = V.getNode( row + ' > ul' ).childNodes;
     const cookieMenu = JSON.parse( V.getCookie( row + '-state' ) );
     for ( let i = 0; i < $rowAfter.length; i++ ) {
@@ -209,11 +343,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       $tempMover.remove();
 
       /**
-       * Update menu status in cookies
+       * Update nav status in cookies
        *
        */
 
-      updateCookies( row );
+      setNavStore( row );
 
     } );
 
@@ -229,8 +363,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function deselect() {
     const $itemSelected = document.getElementsByClassName( 'pill--selected' ); // $( 'header' ).find( '.pill--selected:first' );
     if ( $itemSelected.length ) {
-      $itemSelected[0].removeEventListener( 'click', resetOnClick );
-      $itemSelected[0].classList.remove( 'pill--selected' ); // .removeClass( 'pill--selected' );
+      for ( let i = 0; i < $itemSelected.length; i++ ) {
+        $itemSelected[i].removeEventListener( 'click', resetOnClick );
+        $itemSelected[i].classList.remove( 'pill--selected' ); // .removeClass( 'pill--selected' );
+      }
     }
   }
 
@@ -243,11 +379,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function reset() {
 
-    const menuStateObj = V.getState( 'menu' );
+    const menuStateObj = V.getState( 'header' );
     const width = window.innerWidth;
     const defaultHeight = 48; // TODO: this is unclean: initially no height is set
 
-    deselect( menuStateObj );
+    deselect();
 
     V.setState( 'active', { navItem: false } );
 
@@ -284,7 +420,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setState( 'active', { navItem: $itemToAnimate.innerHTML } );
 
-    const menuStateObj = V.getState( 'menu' );
+    const menuStateObj = V.getState( 'header' );
     const row = $itemToAnimate.parentNode.parentNode.localName;
     const itemClickedRect = $itemToAnimate.getBoundingClientRect();
     const otherRow = row == 'service-nav' ? 'entity-nav' : 'service-nav';
@@ -311,10 +447,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     view( presenter( which, options ) );
   }
 
+  function drawV2( entity, options ) {
+    viewV2( presenterV2( entity, options ) );
+  }
+
   return {
     animate: animate,
     launch: launch,
-    draw: draw
+    draw: draw,
+    drawV2: drawV2
   };
 
 } )();

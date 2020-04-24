@@ -35,6 +35,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // cast tag and fullId
     const tag = castTag();
     const fullId = title.data[0] + ' ' + tag;
+    const slug = V.castSlugOrId( fullId );
+    const path = '/profile/' + slug;
 
     // check whether this title and tag combination exists, otherwise start again
     const exists = await getEntity( fullId );
@@ -91,6 +93,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const newEntity = {
       fullId: fullId,
+      slug: slug,
+      path: path,
       activeAddress: activeAddress,
       uPhrase: uPhrase,
       profile: {
