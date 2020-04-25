@@ -47,7 +47,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( data ) {
-    console.log( data );
+
     let $topcontent, $list;
 
     if ( data.success ) {

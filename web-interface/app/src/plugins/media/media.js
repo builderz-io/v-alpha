@@ -92,7 +92,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           role: 'mooc',
         },
         draw: function() {
-          Media.draw( '/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
+          Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
         }
       }
     ] );

@@ -98,7 +98,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           action: () => {
             return {
               status: 'media',
-              data: [ 'media' ]
+              data: [ '/media' ]
             };
           }
         },

@@ -11,7 +11,24 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   // start test new nav code
 
-  function presenterV2( newEntity ) {
+  function presenterV2(
+    data,
+    whichPath = typeof data == 'object' ? data.profile.path : data
+  ) {
+
+    const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
+    if (
+      doesNodeExist &&
+      doesNodeExist.closest( 'header' )
+    ) {
+      return {
+        success: false,
+        status: 'navigation does not need updating',
+        data: [{
+          which: whichPath
+        }]
+      };
+    }
 
     /**
      * Update serviceNavOrder from plugins (always)
@@ -21,16 +38,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     const serviceNavOrder = V.castJson( V.getCookie( 'service-nav-order' ) || '{}' );
     const serviceNav = V.getState( 'serviceNav' );
-    //
-    // console.log( V.getState() );
-    // console.log( serviceNav );
-    // console.log( V.castJson( serviceNavOrder, 'clone' ) );
 
     syncNavOrder( serviceNavOrder, serviceNav );
 
     V.setCookie( 'service-nav-order', serviceNavOrder );
-
-    // console.log( V.castJson( V.getCookie( 'service-nav-order' ) ) );
 
     /**
      * Update entityNavOrder from plugins
@@ -39,7 +50,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      * AND
      *
      * Update entityNav in app state from entityNavOrder, as well as
-     * newly viewed profile (newEntity parameter)
+     * newly viewed profile (data parameter)
      *
      */
 
@@ -56,28 +67,23 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    if ( newEntity && newEntity.fullId && !entityNav[newEntity.path] ) {
+    if ( data && data.fullId && !entityNav[data.path] ) {
       V.setNavItem( 'entityNav', {
-        title: V.castInitials( newEntity.profile.title ),
-        path: newEntity.path,
+        title: V.castInitials( data.profile.title ),
+        path: data.path,
         draw: function( path ) { Profile.draw( path ) }
       } );
     }
-
-    // console.log( entityNav );
-    // console.log( V.castJson( entityNavOrder, 'clone' ) );
 
     syncNavOrder( entityNavOrder, entityNav );
 
     V.setCookie( 'entity-nav-order', entityNavOrder );
 
-    // console.log( V.castJson( V.getCookie( 'entity-nav-order' ) ) );
-
     return {
       success: true,
       status: 'navigation updated',
       data: [{
-        which: typeof newEntity == 'object' ? newEntity.profile.path : newEntity,
+        which: whichPath,
         entityNav: entityNavOrder,
         serviceNav: serviceNavOrder,
         keep: 5
@@ -87,45 +93,51 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function viewV2( viewData ) {
 
-    /**
-     * draw serviceNav
-     *
-     */
+    if ( viewData.success ) {
 
-    const $serviceNavUl = NavComponents.serviceNavUl();
-    $serviceNavUl.addEventListener( 'click', navItemClickHandler );
+      !viewData.data[0].which ? reset() : null;
 
-    const serviceRow = castNavDrawingOrder( viewData.data[0].serviceNav, 3 );
+      /**
+       * draw serviceNav
+       *
+       */
 
-    for ( let i = 0; i < serviceRow.length; i++ ) {
-      const $pill = NavComponents.pill( serviceRow[i] );
-      V.setNode( $serviceNavUl, $pill );
-    }
+      const $serviceNavUl = NavComponents.serviceNavUl();
+      $serviceNavUl.addEventListener( 'click', navItemClickHandler );
 
-    V.setNode( $serviceNavUl, NavComponents.pill( { title: '' } ) ); // a last placeholder pill
+      const serviceRow = castNavDrawingOrder( viewData.data[0].serviceNav, 3 );
 
-    V.setNode( 'service-nav', '' );
-    V.setNode( 'service-nav', $serviceNavUl );
+      for ( let i = 0; i < serviceRow.length; i++ ) {
+        const $pill = NavComponents.pill( serviceRow[i] );
+        V.setNode( $serviceNavUl, $pill );
+      }
 
-    /**
+      V.setNode( $serviceNavUl, NavComponents.pill( { title: '' } ) ); // a last placeholder pill
+
+      V.setNode( 'service-nav', '' );
+      V.setNode( 'service-nav', $serviceNavUl );
+
+      /**
      * draw entityNav
      *
      */
 
-    const $entityNavUl = NavComponents.entityNavUl();
-    $entityNavUl.addEventListener( 'click', navItemClickHandler );
+      const $entityNavUl = NavComponents.entityNavUl();
+      $entityNavUl.addEventListener( 'click', navItemClickHandler );
 
-    const entityRow = castNavDrawingOrder( viewData.data[0].entityNav, 3 );
+      const entityRow = castNavDrawingOrder( viewData.data[0].entityNav, 3 );
 
-    for ( let i = 0; i < entityRow.length; i++ ) {
-      const $pill = NavComponents.pill( entityRow[i] );
-      V.setNode( $entityNavUl, $pill );
+      for ( let i = 0; i < entityRow.length; i++ ) {
+        const $pill = NavComponents.pill( entityRow[i] );
+        V.setNode( $entityNavUl, $pill );
+      }
+
+      V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
+
+      V.setNode( 'entity-nav', '' );
+      V.setNode( 'entity-nav', $entityNavUl );
+
     }
-
-    V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
-
-    V.setNode( 'entity-nav', '' );
-    V.setNode( 'entity-nav', $entityNavUl );
 
     /**
      * animate, if path was provided
@@ -263,7 +275,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setBrowserHistory( { path: path } );
 
       // const slug = V.castSlugOrId( path );
-      console.log( V.getState() );
+
       V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( path );
 
       // animate( $itemClicked.id );
@@ -333,10 +345,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.setCookie( row + '-order', navOrder );
 
     // debug
-    const debug = V.castJson( V.getCookie( row + '-order' ) );
-    for( const item in debug ) {
-      console.log( /*'key', item, 'value', */ debug[item] );
-    }
+    // const debug = V.castJson( V.getCookie( row + '-order' ) );
+    // for( const item in debug ) {
+    //   console.log( /*'key', item, 'value', */ debug[item] );
+    // }
   }
 
   function movingPillAnimation( row, $itemToAnimate, itemClickedRect, menuStateObj ) {
@@ -367,13 +379,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     } ).then( () => {
       $itemToAnimate.style.visibility = 'visible';
       $tempMover.remove();
-
-      /**
-       * Update nav status in cookies
-       *
-       */
-
-      setCountAndLastIndex( row );
 
     } );
 
@@ -407,7 +412,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     const menuStateObj = V.getState( 'header' );
     const width = window.innerWidth;
-    const defaultHeight = 48; // TODO: this is unclean: initially no height is set
 
     deselect();
 
@@ -418,17 +422,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setAnimation( 'entity-nav', {
       // scrollLeft: 0,
-      height: defaultHeight,
       width: width
-    }, { duration: 1 } );
+    }, { duration: 1.5 } );
 
     V.setAnimation( 'service-nav', {
       // scrollLeft: 0,
-      height: defaultHeight,
       width: width,
       top: menuStateObj.navTop,
       left: menuStateObj.navLeft
-    }, { duration: 2 } );
+    }, { duration: 2.5 } );
 
     // Feature.draw( { fade: 'out' } );
     // Haze.draw( { fade: 'out' } );
@@ -442,7 +444,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function animate( which ) {
 
-    const $itemToAnimate = V.getNode( '[path="' + which + '"]' /* '#' + which */ );
+    const $itemToAnimate = V.getNode( '[path="' + which + '"]' );
 
     V.setState( 'active', { navItem: $itemToAnimate.getAttribute( 'path' ) } );
 
@@ -452,9 +454,18 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const otherRow = row == 'service-nav' ? 'entity-nav' : 'service-nav';
 
     movingPillAnimation( row, $itemToAnimate, itemClickedRect, menuStateObj );
-    V.sA( otherRow, { height: 0, width: 0 }, { duration: 1 } );
+
+    /**
+     * Update nav status in cookies
+     *
+     */
+
+    setCountAndLastIndex( row );
+
+    V.sA( otherRow, { width: 0 }, { duration: 1 } );
+    // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
+
     V.setAnimation( row, {
-      // scrollLeft: 0,
       width: itemClickedRect.width + 13,
       top: menuStateObj.entitiesTop,
       left: menuStateObj.entitiesLeft

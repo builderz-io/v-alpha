@@ -80,7 +80,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       Page.draw( pageData );
     }
     else {
-      Marketplace.draw( 'marketplace' );
+      Marketplace.draw( '/market/all' );
     }
   }
 

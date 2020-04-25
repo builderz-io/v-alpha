@@ -150,9 +150,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    setServiceNavState(); // always
+    setNavStates(); // if !serviceNav
 
-    initCanvas(); // if( !V.getNode( 'background' ) )
+    initCanvas(); // if !background
 
     V.castRoute( path )
       .then( (
@@ -161,7 +161,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         which = x.data[0]
       ) => {
         if ( ['home'].includes( status ) ) {
-          Marketplace.draw( which );
+          Marketplace.draw();
         }
         else if ( ['market', 'market category'].includes( status ) ) {
           Marketplace.draw( which );
@@ -182,12 +182,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       } );
   }
 
-  function setServiceNavState() {
-    Profile.launch(); // sets navItem "me"
-    Chat.launch(); // sets navItem & sets socket.on
-    Data.launch(); // sets navItem
-    Marketplace.launch(); // sets navItem
-    Media.launch(); // sets navItem
+  function setNavStates() {
+    if( !V.getState( 'serviceNav' ) ) {
+      Profile.launch(); // sets navItem "me"
+      Chat.launch(); // sets navItem & sets socket.on
+      Data.launch(); // sets navItem
+      Marketplace.launch(); // sets navItem
+      Media.launch(); // sets navItem
+    }
 
     if ( V.getSetting( 'demoContent' ) ) {
       ( async () => {
@@ -209,9 +211,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Join.launch(); // sets node: join button
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
 
-      Navigation.launch(); // updates Cookies
-      Navigation.draw( 'service-nav', { keep: 3 } );
-      Navigation.draw( 'entity-nav', { keep: 5 } );
+      // Navigation.launch(); // updates Cookies
+      // Navigation.draw( 'service-nav', { keep: 3 } );
+      // Navigation.draw( 'entity-nav', { keep: 5 } );
 
     }
   }

@@ -43,7 +43,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( viewData ) {
-    console.log( viewData );
+
     const $topcontent = ChatComponents.topcontent();
     const $list = CanvasComponents.list( 'narrow' );
 

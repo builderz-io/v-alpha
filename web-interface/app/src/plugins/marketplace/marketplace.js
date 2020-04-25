@@ -74,9 +74,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( viewData.which ) {
       Navigation.drawV2( viewData.which );
     }
-    // else {
-    //   Navigation.draw( 'all', { reset: true } );
-    // }
+    else {
+      Navigation.drawV2();
+    }
 
     Page.draw( {
       topslider: $slider,
