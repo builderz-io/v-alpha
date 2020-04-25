@@ -15,7 +15,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = CanvasComponents.list();
 
-    const entities = await V.getEntity( which == 'moocs' ? 'mooc' : which );
+    const entities = await V.getEntity( which == '/media/moocs' ? 'mooc' : 'media' );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
@@ -51,7 +51,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData.which ) {
-      Navigation.animate( pageData.which );
+      Navigation.drawV2( pageData.which );
     }
     Page.draw( pageData );
     if ( pageData.feature ) {
@@ -80,7 +80,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           role: 'media',
         },
         draw: function() {
-          Media.draw( 'media', { feature: 'https://youtu.be/XQEDw6IKTK8' } );
+          Media.draw( '/media', { feature: 'https://youtu.be/XQEDw6IKTK8' } );
         }
       },
       {
@@ -92,7 +92,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           role: 'mooc',
         },
         draw: function() {
-          Media.draw( 'moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
+          Media.draw( '/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
         }
       }
     ] );

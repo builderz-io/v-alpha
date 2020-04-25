@@ -85,6 +85,22 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castPathOrId( which, whichBase ) {
+    const base = whichBase ? '/' + whichBase + '/' : '/profile/';
+    if ( which.includes( '#' ) ) {
+      // returns a path from a fullId
+      return base + which.toLowerCase().replace( '#', '' ).replace( /\s/g, '-' );
+    }
+    else {
+      // returns a fullId from a path
+      which = which.replace( base, '' );
+      const split = which.split( '-' );
+      const tag = '#' + split.pop();
+      const title = V.castEntityTitle( split.join( ' ' ) ).data[0];
+      return title + ' ' + tag;
+    }
+  }
+
   function castJson( data, clone ) {
     if ( clone ) {
       return JSON.parse( JSON.stringify( data ) );
@@ -133,6 +149,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castInitials: castInitials,
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
+    castPathOrId: castPathOrId,
     castShortAddress: castShortAddress,
     castJson: castJson,
     getIcon: getIcon,

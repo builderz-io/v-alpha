@@ -17,7 +17,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       action: () => {
         return {
           status: 'home',
-          data: []
+          data: [ '/market/all' ]
         };
       }
     },
@@ -75,7 +75,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           action: () => {
             return {
               status: 'market',
-              data: [ 'marketplace' ]
+              data: [ '/market' ]
             };
           }
         },
@@ -84,7 +84,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           action: ( context ) => {
             return {
               status: 'market category',
-              data: [ context.params.id ]
+              data: [ '/market/' + context.params.id ]
             };
           }
         }
@@ -107,7 +107,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           action: ( context ) => {
             return {
               status: 'media category',
-              data: [ context.params.id ]
+              data: [ '/media/' + context.params.id ]
             };
           }
         }
@@ -118,7 +118,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       action: () => {
         return {
           status: 'data',
-          data: [ 'data' ]
+          data: [ '/data' ]
         };
       }
     }

@@ -51,7 +51,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         V.setNavItem( 'entityNav', {
           title: entityNavOrder[item].title,
           path: entityNavOrder[item].path,
-          draw: function( slug ) { Profile.draw( slug ) }
+          draw: function( path ) { Profile.draw( path ) }
         } );
       }
     }
@@ -60,7 +60,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setNavItem( 'entityNav', {
         title: V.castInitials( newEntity.profile.title ),
         path: newEntity.path,
-        draw: function( slug ) { Profile.draw( slug ) }
+        draw: function( path ) { Profile.draw( path ) }
       } );
     }
 
@@ -77,7 +77,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       status: 'navigation updated',
       data: [{
-        which: newEntity ? newEntity.profile.path : undefined,
+        which: typeof newEntity == 'object' ? newEntity.profile.path : newEntity,
         entityNav: entityNavOrder,
         serviceNav: serviceNavOrder,
         keep: 5
@@ -262,8 +262,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
       V.setBrowserHistory( { path: path } );
 
-      const slug = V.castSlugOrId( path );
-      V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+      // const slug = V.castSlugOrId( path );
+      console.log( V.getState() );
+      V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( path );
 
       // animate( $itemClicked.id );
 
@@ -301,10 +302,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   //   // }
   //   // else {
   //   //   // Page.draw( { active: true } );
-  //   //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+  //   //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( path );
   //   //   // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
   //   // }
-  //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( slug );
+  //   V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( path );
   //
   // }
 
@@ -344,7 +345,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     select( $itemToAnimate );
 
     let classes = ' absolute font-medium';
-    if ( $itemToAnimate.getAttribute( 'cid' ) > 1000 ) {
+    if ( row == 'entity-nav' ) {
       classes += ' fs-rr';
     }
 

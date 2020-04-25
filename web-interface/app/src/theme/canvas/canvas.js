@@ -161,7 +161,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         which = x.data[0]
       ) => {
         if ( ['home'].includes( status ) ) {
-          Marketplace.draw(); // no argument displays all entities and resets navigation
+          Marketplace.draw( which );
         }
         else if ( ['market', 'market category'].includes( status ) ) {
           Marketplace.draw( which );

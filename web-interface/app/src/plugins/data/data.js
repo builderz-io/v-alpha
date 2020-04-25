@@ -92,7 +92,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
-    Navigation.animate( pageData.which );
+    Navigation.drawV2( pageData.which );
     Page.draw( pageData );
     VMap.draw();
   }
@@ -110,7 +110,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
           role: 'data',
         },
         draw: function() {
-          Data.draw( 'data' );
+          Data.draw( '/data' );
         }
       }
     ] );

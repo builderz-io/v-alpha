@@ -12,7 +12,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const fullId = V.castSlugOrId( which );
+    const fullId = V.castPathOrId( which );
     const query = await V.getEntity( fullId );
 
     const mapData = [];
@@ -47,7 +47,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( data ) {
-
+    console.log( data );
     let $topcontent, $list;
 
     if ( data.success ) {
@@ -86,8 +86,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   //     use: {
   //       button: 'none',
   //     },
-  //     draw: function( slug ) {
-  //       Profile.draw( slug );
+  //     draw: function( path ) {
+  //       Profile.draw( path );
   //     }
   //   } );
   //   console.log( 'after add', V.getState() );

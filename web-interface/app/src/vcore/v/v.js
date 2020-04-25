@@ -85,6 +85,7 @@ const V = {}; // eslint-disable-line no-unused-vars
       castInitials: VHelper.castInitials,
       castCamelCase: VHelper.castCamelCase,
       castSlugOrId: VHelper.castSlugOrId,
+      castPathOrId: VHelper.castPathOrId,
       castLinks: VHelper.castLinks,
       castTime: VHelper.castTime,
       castJson: VHelper.castJson,
