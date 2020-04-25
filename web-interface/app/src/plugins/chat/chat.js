@@ -34,6 +34,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     // V.setNode( $list, $lastCard );
 
     const pageData = {
+      which: which,
       topcontent: $topcontent,
       listings: $list,
       position: 'top',
@@ -44,7 +45,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
-    Navigation.animate( 'chat' );
+    // Navigation.animate( 'chat' );
+    console.log( pageData.which );
+    Navigation.drawV2( pageData.which );
     Page.draw( pageData );
     Chat.drawMessageForm();
   }
@@ -72,11 +75,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         // draw: function() { Chat.draw() },
         // o: false,
         path: '/chat/everyone',
-        use: {
-          button: 'none',
-        },
         draw: function() {
-          Chat.draw( 'chat' );
+          Chat.draw( '/chat/everyone' );
         }
       },
       // {

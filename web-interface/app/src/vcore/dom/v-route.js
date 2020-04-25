@@ -52,7 +52,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           action: () => {
             return {
               status: 'chat everyone',
-              data: [ 'chat everyone' ]
+              data: [ '/chat/everyone' ]
             };
           }
         },

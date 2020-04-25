@@ -35,7 +35,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       attributes: {
         // cid: item.cid,
         path: item.path || '/',
-        id: item.title.toLowerCase() || 'not-assigned',
+        // id: item.title.toLowerCase() || 'not-assigned',
         // role: item.role,
         // pagepos: item.p,
         // feature: item.f || 'none'

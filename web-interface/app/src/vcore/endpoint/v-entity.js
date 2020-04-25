@@ -93,12 +93,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const newEntity = {
       fullId: fullId,
-      slug: slug,
       path: path,
       activeAddress: activeAddress,
       uPhrase: uPhrase,
       profile: {
         fullId: fullId,
+        slug: slug,
+        path: path,
         title: title.data[0],
         tag: tag,
         role: entityData.role ? entityData.role : 'network',

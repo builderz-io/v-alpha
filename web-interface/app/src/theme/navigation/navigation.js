@@ -51,17 +51,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         V.setNavItem( 'entityNav', {
           title: entityNavOrder[item].title,
           path: entityNavOrder[item].path,
-          use: { button: 'none' },
           draw: function( slug ) { Profile.draw( slug ) }
         } );
       }
     }
 
-    if ( newEntity.path && !entityNav[newEntity.path] ) {
+    if ( newEntity && newEntity.fullId && !entityNav[newEntity.path] ) {
       V.setNavItem( 'entityNav', {
         title: V.castInitials( newEntity.profile.title ),
         path: newEntity.path,
-        use: { button: 'none' },
         draw: function( slug ) { Profile.draw( slug ) }
       } );
     }
@@ -79,6 +77,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       status: 'navigation updated',
       data: [{
+        which: newEntity ? newEntity.profile.path : undefined,
         entityNav: entityNavOrder,
         serviceNav: serviceNavOrder,
         keep: 5
@@ -87,12 +86,16 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function viewV2( viewData ) {
-    // draw serviceNav
+
+    /**
+     * draw serviceNav
+     *
+     */
 
     const $serviceNavUl = NavComponents.serviceNavUl();
     $serviceNavUl.addEventListener( 'click', navItemClickHandler );
 
-    const serviceRow = castNavDrawOrder( viewData.data[0].serviceNav, 3 );
+    const serviceRow = castNavDrawingOrder( viewData.data[0].serviceNav, 3 );
 
     for ( let i = 0; i < serviceRow.length; i++ ) {
       const $pill = NavComponents.pill( serviceRow[i] );
@@ -101,14 +104,18 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( $serviceNavUl, NavComponents.pill( { title: '' } ) ); // a last placeholder pill
 
+    V.setNode( 'service-nav', '' );
     V.setNode( 'service-nav', $serviceNavUl );
 
-    // draw entityNav
+    /**
+     * draw entityNav
+     *
+     */
 
     const $entityNavUl = NavComponents.entityNavUl();
     $entityNavUl.addEventListener( 'click', navItemClickHandler );
 
-    const entityRow = castNavDrawOrder( viewData.data[0].entityNav, 3 );
+    const entityRow = castNavDrawingOrder( viewData.data[0].entityNav, 3 );
 
     for ( let i = 0; i < entityRow.length; i++ ) {
       const $pill = NavComponents.pill( entityRow[i] );
@@ -117,11 +124,21 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
 
+    V.setNode( 'entity-nav', '' );
     V.setNode( 'entity-nav', $entityNavUl );
+
+    /**
+     * animate, if path was provided
+     *
+     */
+
+    if ( viewData.data[0].which ) {
+      animate( viewData.data[0].which );
+    }
 
   }
 
-  function castNavDrawOrder( rowObj, keep ) {
+  function castNavDrawingOrder( rowObj, keep ) {
     const row = Object.values( rowObj );
     const orderedRow = row.sort( function( a, b ) { return a.l - b.l } );
     const weightedRow = orderedRow.slice( keep ).sort( function( a, b ) { return b.c - a.c } );
@@ -263,7 +280,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       // drawContentForItemClicked( $itemClicked );
 
       // TODO: using setTimeout is questionable, use resolved promise from pill animation
-      // setTimeout( () => {return setNavStore( row )}, 1000 );
+      // setTimeout( () => {return setCountAndLastIndex( row )}, 1000 );
 
     } // end if $itemClicked
 
@@ -291,26 +308,34 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   //
   // }
 
-  function setNavStore( row ) {
+  function setCountAndLastIndex( row ) {
     const $rowAfter = V.getNode( row + ' > ul' ).childNodes;
-    const cookieMenu = JSON.parse( V.getCookie( row + '-state' ) );
-    for ( let i = 0; i < $rowAfter.length; i++ ) {
+    const navOrder = V.castJson( V.getCookie( row + '-order' ) );
+
+    for ( let i = 0; i < $rowAfter.length - 1; i++ ) { // -1 to ignore placeholder pill
       const $li = $rowAfter[i];
-      for ( let j = 0; j < cookieMenu.length; j++ ) {
-        if ( cookieMenu[j].title == $li.innerHTML ) {
-          $li.classList.contains( 'pill--selected' ) ? cookieMenu[j].c += 1 : null;
-          cookieMenu[j].l = i;
-          break;
-        }
-      }
+      const path = $li.getAttribute( 'path' );
+
+      $li.classList.contains( 'pill--selected' ) ?
+        navOrder[ path ].c ? navOrder[ path ].c += 1 : navOrder[ path ].c = 1 : null;
+
+      navOrder[ path ].l = i;
+      // for ( let j = 0; j < navOrder.length; j++ ) {
+      //   if ( navOrder[j].path == $li.getAttribute( 'path' ) ) {
+      //     $li.classList.contains( 'pill--selected' ) ? navOrder[j].c += 1 : null;
+      //     navOrder[j].l = i;
+      //     break;
+      //   }
+      // }
     }
 
-    V.setCookie( row + '-state', cookieMenu );
+    V.setCookie( row + '-order', navOrder );
 
     // debug
-    // JSON.parse( V.getCookie( row + '-state' ) ).forEach( item => {
-    //   console.log( item );
-    // } );
+    const debug = V.castJson( V.getCookie( row + '-order' ) );
+    for( const item in debug ) {
+      console.log( /*'key', item, 'value', */ debug[item] );
+    }
   }
 
   function movingPillAnimation( row, $itemToAnimate, itemClickedRect, menuStateObj ) {
@@ -347,7 +372,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
-      setNavStore( row );
+      setCountAndLastIndex( row );
 
     } );
 
@@ -416,9 +441,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function animate( which ) {
 
-    const $itemToAnimate = V.getNode( '#' + which );
+    const $itemToAnimate = V.getNode( '[path="' + which + '"]' /* '#' + which */ );
 
-    V.setState( 'active', { navItem: $itemToAnimate.innerHTML } );
+    V.setState( 'active', { navItem: $itemToAnimate.getAttribute( 'path' ) } );
 
     const menuStateObj = V.getState( 'header' );
     const row = $itemToAnimate.parentNode.parentNode.localName;
@@ -435,7 +460,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }, { duration: 1 } );
     V.getNode( row ).scrollLeft = 0;
 
-    Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+    // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
 
   }
 

@@ -72,26 +72,26 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function addToNavItems( entity ) {
-    const slug = V.castSlugOrId( entity.fullId );
-
-    const clone = JSON.parse( JSON.stringify( V.getState() ) );
-    console.log( 'before add', clone );
-
-    V.setNavItem( 'entityNav', {
-      cid: '1003',
-      f: entity.fullId,
-      title: V.castInitials( entity.profile.title ),
-      path: '/profile/' + slug,
-      use: {
-        button: 'none',
-      },
-      draw: function( slug ) {
-        Profile.draw( slug );
-      }
-    } );
-    console.log( 'after add', V.getState() );
-  }
+  // function addToNavItems( entity ) {
+  //   const slug = V.castSlugOrId( entity.fullId );
+  //
+  //   const clone = JSON.parse( JSON.stringify( V.getState() ) );
+  //   console.log( 'before add', clone );
+  //
+  //   V.setNavItem( 'entityNav', {
+  //     cid: '1003',
+  //     f: entity.fullId,
+  //     title: V.castInitials( entity.profile.title ),
+  //     path: '/profile/' + slug,
+  //     use: {
+  //       button: 'none',
+  //     },
+  //     draw: function( slug ) {
+  //       Profile.draw( slug );
+  //     }
+  //   } );
+  //   console.log( 'after add', V.getState() );
+  // }
 
   /* ============ public methods and exports ============ */
 
