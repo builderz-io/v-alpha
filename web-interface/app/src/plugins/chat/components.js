@@ -25,7 +25,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       y: style,
       html: '<message style="background:' + background + '" class="message__container flex card-shadow rounded bkg-white pxy">' +
                   '<div class="font-medium pxy">' +
-                    ( msg.sender == 'Me' ? '' : '<p>' + msg.sender + '</p>' ) +
+                    ( msg.sender == 'Me' ? '' : '<p onclick="Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')" >' + msg.sender + '</p>' ) +
                     '<p>' + msg.msg + '</p>' +
                   '</div>' +
               '</message>'

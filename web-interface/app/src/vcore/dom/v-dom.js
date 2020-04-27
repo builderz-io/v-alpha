@@ -42,7 +42,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in data[key] ) {
-          $elem.setAttribute( attr, data[key][attr] );
+          if ( data[key][attr] ) {
+            $elem.setAttribute( attr, data[key][attr] );
+          }
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {

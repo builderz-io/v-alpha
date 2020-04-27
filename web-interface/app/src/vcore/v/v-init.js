@@ -13,7 +13,7 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
 
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     update3BoxEntityStore: false,
-    loadMap: false,
+    loadMap: true,
 
     coinTicker: 'ETH',
     tokenTicker: 'V',

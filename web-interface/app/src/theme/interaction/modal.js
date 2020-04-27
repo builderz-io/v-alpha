@@ -86,7 +86,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   function drawNameForm( options ) {
     if ( options == 'clear' ) {
-      return V.setNode( '.messagebox', 'clear' );
+      return V.setNode( '.namebox', 'clear' );
     }
 
     const $box = InteractionComponents.nameForm();
@@ -148,6 +148,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     } ); // end addEventListener
 
     V.setNode( $box, [ $input, $send ] );
+    V.setNode( '.namebox', 'clear' );
     V.setNode( '.modal__content', $box, 'prepend' );
 
   }

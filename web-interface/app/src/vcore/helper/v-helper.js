@@ -102,7 +102,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castJson( data, clone ) {
-    if ( clone ) {
+
+    if ( !data || data === 'undefined' ) {
+      return data;
+    }
+    else if ( clone ) {
       return JSON.parse( JSON.stringify( data ) );
     }
     else if ( typeof data === 'string' ) {

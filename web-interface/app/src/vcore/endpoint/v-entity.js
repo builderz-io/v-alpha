@@ -22,6 +22,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function castEntity( entityData ) {
 
+    if ( entityData.location && !entityData.lat ) {
+      return {
+        success: false,
+        status: 'could not attach geo data'
+      };
+    }
+
     // check whether we have a valid title
     const title = castEntityTitle( entityData.title, entityData.role );
 
@@ -347,10 +354,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return V.setData( entityCast.data[0], options, V.getSetting( 'entityLedger' ) );
       }
       else {
-        return Promise.resolve( {
-          success: false,
-          status: 'invalid title',
-        } );
+        return Promise.resolve( entityCast );
       }
     }
   }

@@ -36,7 +36,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           which: which,
           messages: messages.data[0],
-          activeEntity: activeEntity ? activeEntity.data[0] : undefined,
+          activeEntity: activeEntity ? activeEntity : undefined,
         }]
       };
     }

@@ -58,7 +58,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       Feature.draw( pageData.feature );
     }
     // else {
-    //   Navigation.draw( 'all', { reset: true } );
+    //   Navigation.drawV2();
     // }
     VMap.draw();
   }

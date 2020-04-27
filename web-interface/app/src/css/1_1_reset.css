@@ -31,6 +31,10 @@ fieldset{border-width:0; padding:0; margin:0;}
     outline: none;
 }
 
+input:focus, textarea:focus {
+  border: 2px solid rgba(var(--brand), 1);
+}
+
 html {
   -webkit-tap-highlight-color:transparent;
 }

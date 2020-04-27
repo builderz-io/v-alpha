@@ -211,10 +211,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Join.launch(); // sets node: join button
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
 
-      // Navigation.launch(); // updates Cookies
-      // Navigation.draw( 'service-nav', { keep: 3 } );
-      // Navigation.draw( 'entity-nav', { keep: 5 } );
-
     }
   }
 

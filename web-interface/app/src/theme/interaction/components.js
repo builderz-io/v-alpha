@@ -33,20 +33,12 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     e.stopPropagation();
     V.sN( '.modal__new', 'clear' );
     Modal.drawNameForm( this ); // using .bind
+    V.setNode( '.modal__return', 'clear' );
   }
 
   /* ============ public methods and exports ============ */
 
   // btns
-
-  // function back() {
-  //   return V.sN( {
-  //     t: 'li',
-  //     id: 'back',
-  //     c: btnClasses,
-  //     h: img( 'arrow_back' )
-  //   } );
-  // }
 
   function filter() {
     return V.sN( {
@@ -61,6 +53,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'li',
       id: 'search',
+      c: btnClasses,
+      h: img( 'search' )
+    } );
+  }
+
+  function query() {
+    return V.sN( {
+      t: 'li',
+      id: 'query',
       c: btnClasses,
       h: img( 'search' )
     } );
@@ -121,7 +122,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       classes: 'plusform fixed w-screen hidden bkg-white pxy',
       setStyle: {
         plusform: {
-          'padding-top': 'var(--page-position-top-selected)',
+          'padding-top': 'calc(var(--page-position-top-selected) + 5px)',
           'height': '100%',
           'z-index': -1
         }
@@ -152,60 +153,81 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function title() {
+  function title( value ) {
     return V.sN( {
       t: 'input',
       c: 'plusform__title ' + formClasses,
-      a: { placeholder: V.i18n( 'Title', 'placeholder' ) }
+      a: {
+        placeholder: V.i18n( 'Title', 'placeholder' ),
+        value: value
+      }
     } );
   }
 
-  function loc() {
+  function loc( value ) {
     return V.sN( {
       t: 'input',
       i: 'plusform__loc',
       c: 'plusform__loc ' + formClasses,
-      a: { placeholder: V.i18n( 'Location', 'placeholder' ) }
+      a: {
+        placeholder: V.i18n( 'Location', 'placeholder' ),
+        value: value
+      }
     } );
   }
 
-  function locLat() {
+  function locLat( value ) {
     return V.sN( {
       t: 'input',
       i: 'plusform__lat',
-      a: { type: 'hidden', step: '0.00001' }
+      a: {
+        type: 'hidden',
+        step: '0.00001',
+        value: value
+      }
     } );
   }
 
-  function locLng() {
+  function locLng( value ) {
     return V.sN( {
       t: 'input',
       i: 'plusform__lng',
-      a: { type: 'hidden', step: '0.00001' }
+      a: {
+        type: 'hidden',
+        step: '0.00001',
+        value: value
+      }
     } );
   }
 
-  function desc() {
+  function desc( value ) {
     return V.sN( {
       t: 'textarea',
       c: 'plusform__desc ' + formClasses,
-      a: { placeholder: V.i18n( 'Description', 'placeholder' ) }
+      a: { placeholder: V.i18n( 'Description', 'placeholder' ) },
+      h: value
     } );
   }
 
-  function target() {
+  function target( value ) {
     return V.sN( {
       t: 'input',
       c: 'plusform__target w-1/3 m-2 mr-2 pxy rounded border-blackalpha',
-      a: { placeholder: V.i18n( 'Price', 'placeholder' ) }
+      a: {
+        placeholder: V.i18n( 'Price', 'placeholder' ),
+        value: value
+      }
     } );
   }
 
-  function unit() {
+  function unit( value ) {
     return V.sN( {
       t: 'input',
       c: 'plusform__unit w-1/3 m-2 pxy rounded border-blackalpha',
-      a: { placeholder: V.i18n( 'Unit', 'placeholder' ) }
+      a: {
+        placeholder: V.i18n( 'Unit', 'placeholder' ),
+        value: value
+      }
     } );
   }
 
@@ -503,16 +525,16 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       },
       a: {
         placeholder: options == 'get entity' ? V.i18n( 'vx...', 'placeholder' ) : V.i18n( 'Choose preferred name', 'placeholder' ),
-        value: 'vxCommLogin'
+        // value: 'vxCommLogin'
       },
       click: stopProp
     } );
   }
 
   return {
-    // back: back,
     filter: filter,
     searchBtn: searchBtn,
+    query: query,
     plus: plus,
     close: close,
     sendNav: sendNav,

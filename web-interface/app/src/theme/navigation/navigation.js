@@ -179,80 +179,80 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   // end test new nav code
 
-  function checkCookies() {
-    const navState = V.getCookie( 'service-nav-state' );
-    const navItems = Object.values( V.getState( 'serviceNav' ) );
-    if ( !navState || JSON.parse( navState ).length != navItems.length ) {
-      V.setCookie( 'service-nav-state', navItems );
-    }
-
-    const entitiesState = V.getCookie( 'entity-nav-state' );
-    const entitiesItems = Object.values( V.getState( 'entityNav' ) );
-    if ( !entitiesState || JSON.parse( entitiesState ).length != entitiesItems.length ) {
-      V.setCookie( 'entity-nav-state', entitiesItems );
-    }
-  }
-
-  function presenter( which, options ) {
-    if ( options.reset ) { return { reset: true } }
-
-    const rowData = JSON.parse( V.getCookie( which + '-state' ) ); // Row-Cookie was set in checkCookies()
-
-    let $rowUl;
-
-    if ( which == 'entity-nav' ) {
-      $rowUl = NavComponents.entityNavUl();
-    }
-    else if ( which == 'service-nav' ) {
-      $rowUl = NavComponents.serviceNavUl();
-    }
-
-    const orderedRow = rowData.sort( function( a, b ) { return a.l - b.l } );
-    const weightedRow = orderedRow.slice( options.keep ).sort( function( a, b ) { return b.c - a.c } );
-    const combinedRow = orderedRow.slice( 0 ).splice( 0, options.keep ).concat( weightedRow );
-
-    for ( let i = 0; i < combinedRow.length; i++ ) {
-      const $pill = NavComponents.pill( combinedRow[i] );
-      V.setNode( $rowUl, $pill );
-    }
-
-    // place a last pill into ul, using title length to set width
-    // to gain scrollable space, set invisible via css
-    let $placeholderPill;
-
-    if ( which == 'entity-nav' ) {
-      $placeholderPill = NavComponents.pill( { title: 'zzzzz' } );
-    }
-    else if ( which == 'service-nav' ) {
-      $placeholderPill = NavComponents.pill( { title: '' } );
-    }
-    V.setNode( $rowUl, $placeholderPill );
-
-    return { row: which, ul: $rowUl };
-  }
-
-  function view( rowData ) {
-    if ( rowData.reset ) {
-      reset();
-      return;
-    }
-
-    rowData.ul.addEventListener( 'click', navItemClickHandler );
-
-    // if ( rowData.row == 'entity-nav' ) {
-    //   V.setNode( 'entity-nav', rowData.ul );
-    // }
-    // else if ( rowData.row == 'service-nav' ) {
-    //   V.setNode( 'service-nav', rowData.ul );
-    // }
-  }
+  // function checkCookies() {
+  //   const navState = V.getCookie( 'service-nav-state' );
+  //   const navItems = Object.values( V.getState( 'serviceNav' ) );
+  //   if ( !navState || JSON.parse( navState ).length != navItems.length ) {
+  //     V.setCookie( 'service-nav-state', navItems );
+  //   }
+  //
+  //   const entitiesState = V.getCookie( 'entity-nav-state' );
+  //   const entitiesItems = Object.values( V.getState( 'entityNav' ) );
+  //   if ( !entitiesState || JSON.parse( entitiesState ).length != entitiesItems.length ) {
+  //     V.setCookie( 'entity-nav-state', entitiesItems );
+  //   }
+  // }
+  //
+  // function presenter( which, options ) {
+  //   if ( options.reset ) { return { reset: true } }
+  //
+  //   const rowData = JSON.parse( V.getCookie( which + '-state' ) ); // Row-Cookie was set in checkCookies()
+  //
+  //   let $rowUl;
+  //
+  //   if ( which == 'entity-nav' ) {
+  //     $rowUl = NavComponents.entityNavUl();
+  //   }
+  //   else if ( which == 'service-nav' ) {
+  //     $rowUl = NavComponents.serviceNavUl();
+  //   }
+  //
+  //   const orderedRow = rowData.sort( function( a, b ) { return a.l - b.l } );
+  //   const weightedRow = orderedRow.slice( options.keep ).sort( function( a, b ) { return b.c - a.c } );
+  //   const combinedRow = orderedRow.slice( 0 ).splice( 0, options.keep ).concat( weightedRow );
+  //
+  //   for ( let i = 0; i < combinedRow.length; i++ ) {
+  //     const $pill = NavComponents.pill( combinedRow[i] );
+  //     V.setNode( $rowUl, $pill );
+  //   }
+  //
+  //   // place a last pill into ul, using title length to set width
+  //   // to gain scrollable space, set invisible via css
+  //   let $placeholderPill;
+  //
+  //   if ( which == 'entity-nav' ) {
+  //     $placeholderPill = NavComponents.pill( { title: 'zzzzz' } );
+  //   }
+  //   else if ( which == 'service-nav' ) {
+  //     $placeholderPill = NavComponents.pill( { title: '' } );
+  //   }
+  //   V.setNode( $rowUl, $placeholderPill );
+  //
+  //   return { row: which, ul: $rowUl };
+  // }
+  //
+  // function view( rowData ) {
+  //   if ( rowData.reset ) {
+  //     reset();
+  //     return;
+  //   }
+  //
+  //   rowData.ul.addEventListener( 'click', navItemClickHandler );
+  //
+  //   // if ( rowData.row == 'entity-nav' ) {
+  //   //   V.setNode( 'entity-nav', rowData.ul );
+  //   // }
+  //   // else if ( rowData.row == 'service-nav' ) {
+  //   //   V.setNode( 'service-nav', rowData.ul );
+  //   // }
+  // }
 
   function navItemClickHandler( e ) {
 
     e.stopPropagation(); // no need to bubble any further
 
     const $itemClicked = ( ( e ) => {
-      //In case svg is used in the pill, return the correct li clicked
+      // in case svg is used in the pill, return the correct li clicked
       const t = e.target;
       if ( t.localName == 'li' ) { return t }
       else if ( t.localName == 'svg' ) { return t.parentNode }
@@ -440,8 +440,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  /* ============ public methods and exports ============ */
-
   function animate( which ) {
 
     const $itemToAnimate = V.getNode( '[path="' + which + '"]' );
@@ -455,13 +453,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     movingPillAnimation( row, $itemToAnimate, itemClickedRect, menuStateObj );
 
-    /**
-     * Update nav status in cookies
-     *
-     */
-
-    setCountAndLastIndex( row );
-
     V.sA( otherRow, { width: 0 }, { duration: 1 } );
     // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
 
@@ -472,26 +463,33 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }, { duration: 1 } );
     V.getNode( row ).scrollLeft = 0;
 
-    // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+    /**
+     * Update nav status in cookies
+     *
+     */
+
+    setCountAndLastIndex( row );
 
   }
 
-  function launch() {
-    checkCookies();
-  }
+  /* ============ public methods and exports ============ */
 
-  function draw( which, options ) {
-    view( presenter( which, options ) );
-  }
+  // function launch() {
+  //   checkCookies();
+  // }
 
-  function drawV2( entity, options ) {
-    viewV2( presenterV2( entity, options ) );
+  // function draw( which, options ) {
+  //   view( presenter( which, options ) );
+  // }
+
+  function drawV2( data ) {
+    viewV2( presenterV2( data ) );
   }
 
   return {
-    animate: animate,
-    launch: launch,
-    draw: draw,
+    // animate: animate,
+    // launch: launch,
+    // draw: draw,
     drawV2: drawV2
   };
 
