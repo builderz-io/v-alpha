@@ -31,6 +31,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       else if ( ['k', 'click'].includes( key ) ) {
         $elem.addEventListener( 'click', data[key] );
       }
+      else if ( ['e', 'event', 'events'].includes( key ) ) {
+        for ( const evt in data[key] ) {
+          if ( data[key][evt] ) {
+            $elem.addEventListener( evt, data[key][evt] );
+          }
+        }
+      }
       else if ( ['y', 'style', 'styles'].includes( key ) ) {
         Object.assign( $elem.style, data[key] );
       }

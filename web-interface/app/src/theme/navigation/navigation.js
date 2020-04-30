@@ -103,7 +103,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
        */
 
       const $serviceNavUl = NavComponents.serviceNavUl();
-      $serviceNavUl.addEventListener( 'click', navItemClickHandler );
+      $serviceNavUl.addEventListener( 'click', itemClickHandler );
 
       const serviceRow = castNavDrawingOrder( viewData.data[0].serviceNav, 3 );
 
@@ -123,7 +123,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      */
 
       const $entityNavUl = NavComponents.entityNavUl();
-      $entityNavUl.addEventListener( 'click', navItemClickHandler );
+      $entityNavUl.addEventListener( 'click', itemClickHandler );
 
       const entityRow = castNavDrawingOrder( viewData.data[0].entityNav, 3 );
 
@@ -237,7 +237,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   //     return;
   //   }
   //
-  //   rowData.ul.addEventListener( 'click', navItemClickHandler );
+  //   rowData.ul.addEventListener( 'click', itemClickHandler );
   //
   //   // if ( rowData.row == 'entity-nav' ) {
   //   //   V.setNode( 'entity-nav', rowData.ul );
@@ -247,7 +247,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   //   // }
   // }
 
-  function navItemClickHandler( e ) {
+  function itemClickHandler( e ) {
 
     e.stopPropagation(); // no need to bubble any further
 

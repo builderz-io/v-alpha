@@ -49,9 +49,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function setState() {
 
-    V.setState( 'active', {
-      registeredNav: ['service-nav', 'entity-nav'],
-    } );
+    // V.setState( 'active', {
+    //   registeredNav: ['service-nav', 'entity-nav'],
+    // } );
     V.setState( 'screen', {
       height: Number( window.innerHeight ),
       width: Number( window.innerWidth )

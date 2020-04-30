@@ -20,9 +20,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     if ( query.success ) {
       mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
 
-      // add a navItem to entityNav
-      // addToNavItems( query.data[0] );
-
       return {
         success: true,
         status: 'entities retrieved',

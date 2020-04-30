@@ -149,7 +149,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           res.status == 'transaction successful' ? Account.drawHeaderBalance() : null;
           $form.value = '';
-          // $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+          $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           // console.log( res.status );
         }
         else {
