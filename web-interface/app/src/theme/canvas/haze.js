@@ -16,13 +16,13 @@ const Haze = ( function() { // eslint-disable-line no-unused-vars
   function view( options ) {
 
     if ( options && options.fade == 'out' ) {
-      V.setState( 'menu', { isHazed: false } );
+      V.setState( 'header', { isHazed: false } );
       V.setAnimation( 'haze', 'fadeOut', { delay: 0.1, duration: 1 } );
       return;
     }
 
-    if ( V.getState( 'menu' ).isHazed != true ) {
-      V.setState( 'menu', { isHazed: true } );
+    if ( V.getState( 'header' ).isHazed != true ) {
+      V.setState( 'header', { isHazed: true } );
       V.setAnimation( 'haze', 'fadeIn', { delay: 2, duration: 3 } );
     }
   }

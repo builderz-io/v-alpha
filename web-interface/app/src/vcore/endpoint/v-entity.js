@@ -22,6 +22,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function castEntity( entityData ) {
 
+    if ( entityData.location && !entityData.lat ) {
+      return {
+        success: false,
+        status: 'could not attach geo data'
+      };
+    }
+
     // check whether we have a valid title
     const title = castEntityTitle( entityData.title, entityData.role );
 
@@ -35,6 +42,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // cast tag and fullId
     const tag = castTag();
     const fullId = title.data[0] + ' ' + tag;
+    const slug = V.castSlugOrId( fullId );
+    const path = '/profile/' + slug;
 
     // check whether this title and tag combination exists, otherwise start again
     const exists = await getEntity( fullId );
@@ -91,10 +100,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const newEntity = {
       fullId: fullId,
+      path: path,
       activeAddress: activeAddress,
       uPhrase: uPhrase,
       profile: {
         fullId: fullId,
+        slug: slug,
+        path: path,
         title: title.data[0],
         tag: tag,
         role: entityData.role ? entityData.role : 'network',
@@ -342,10 +354,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return V.setData( entityCast.data[0], options, V.getSetting( 'entityLedger' ) );
       }
       else {
-        return Promise.resolve( {
-          success: false,
-          status: 'invalid title',
-        } );
+        return Promise.resolve( entityCast );
       }
     }
   }

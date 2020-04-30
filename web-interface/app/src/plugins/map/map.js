@@ -2,7 +2,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /**
   * Module to launch and draw the map
-  * Tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
+  * List of tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
+  * Locations: Map Center [ 41.576, 4.63 ], Berlin [ 52.522, 13.383 ]
   *
   */
 
@@ -16,13 +17,22 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   let viMap, featureLayer;
 
-  const geojsonMarkerOptions = {
+  const geojsonMarkerSettings = {
     radius: 7,
     fillColor: '#1b1aff',
     // color: '#000',
     weight: 0,
     opacity: 1,
     fillOpacity: 0.8
+  };
+
+  const mapSettings = {
+    // map center with arcgisonline.com tiles
+    lat: 43.776, // lesser numbers = move map south
+    lng: 4.63, // lesser numbers = moce map west
+    zoom: 4,
+    maxZoom: 16,
+    minZoom: 2,
   };
 
   /* ================== private methods ================= */
@@ -52,7 +62,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     featureLayer = L.geoJSON();
 
-    const mapData = V.getCookie( 'map' );
+    const mapData = V.getCookie( 'map-state' );
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
@@ -60,14 +70,14 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
     }
     else {
-      viMap = L.map( 'background' ).setView( [ 52.522, 13.383 ], 12 );
-      V.setState( 'map', { lat: 52.522, lng: 13.383, zoom: 12 } );
+      viMap = L.map( 'background' ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
+      V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
     }
 
     L.tileLayer( tiles, {
       attribution: attribution,
-      maxZoom: 16,
-      minZoom: 2,
+      maxZoom: mapSettings.maxZoom,
+      minZoom: mapSettings.minZoom,
       // id: 'mapbox.streets',
       // accessToken: 'your.mapbox.access.token'
     } ).addTo( viMap );
@@ -76,7 +86,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       const map = viMap.getBounds().getCenter();
       Object.assign( map, { zoom: viMap.getZoom() } );
       V.setState( 'map', map );
-      V.setCookie( 'map', map );
+      V.setCookie( 'map-state', map );
     } );
   }
 
@@ -88,7 +98,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     featureLayer = L.geoJSON( features, {
       pointToLayer: function( feature, latlng ) {
-        return L.circleMarker( latlng, geojsonMarkerOptions );
+        return L.circleMarker( latlng, geojsonMarkerSettings );
       }
     } );
 

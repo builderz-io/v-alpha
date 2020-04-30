@@ -14,19 +14,17 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     // const $back = InteractionComponents.back();
     const $filter = InteractionComponents.filter();
     const $search = InteractionComponents.searchBtn();
+    const $query = InteractionComponents.query();
     const $plus = InteractionComponents.plus();
     const $send = InteractionComponents.sendNav();
     const $close = InteractionComponents.close();
 
-    // $back.addEventListener( 'click', function() {
-    //   Page.draw( { pos: 'closed' } );
-    //   Navigation.draw( 'all', { reset: true } );
-    // } );
     $plus.addEventListener( 'click', function() {
       Page.draw( { position: 'close', reset: false } );
       Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
     } );
     $search.addEventListener( 'click', function() {
+      Page.draw( { position: 'close', reset: false } );
       Form.draw( 'search' );
     } );
     $close.addEventListener( 'click', function() {
@@ -35,47 +33,55 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
       Page.draw( { position: 'peek', reset: false } );
     } );
-    $send.addEventListener( 'click', function() {
-      const role = V.getNavItem( 'active', 'serviceNav' ).use.role;
+    $query.addEventListener( 'click', function() {
       const form = V.getNode( 'form' );
-      const title = form.getNode( '.plusform__title' ).value;
+      const query = form.getNode( '.searchform__search' ).value;
+      console.log( query );
+
+    } );
+    $send.addEventListener( 'click', function() {
+      const form = V.getNode( 'form' );
+
+      const location = form.getNode( '.plusform__loc' ).value;
       const entityData = {
-        title: title,
-        role: role,
-        location: form.getNode( '.plusform__loc' ).value,
-        lat: form.getNode( '#plusform__lat' ).value || undefined,
-        lng: form.getNode( '#plusform__lng' ).value || undefined,
+        title: form.getNode( '.plusform__title' ).value,
+        role: V.getNavItem( 'active', 'serviceNav' ).use.role,
+        location: location,
+        lat: location ? form.getNode( '#plusform__lat' ).value || undefined : undefined,
+        lng: location ? form.getNode( '#plusform__lng' ).value || undefined : undefined,
         description: form.getNode( '.plusform__desc' ).value,
         unit: form.getNode( '.plusform__unit' ).value,
         target: form.getNode( '.plusform__target' ).value
       };
 
-      V.setEntity( entityData ).then( res => {
-        if ( res.success ) {
-          // Page.draw( { active: true } );
-          Form.draw( 'all', { fade: 'out' } );
-          Button.draw( 'all', { fade: 'out' } );
-          Button.draw( 'plus search', { delay: 1 } );
-          console.log( res.status );
-        }
-        else if ( res.status == 'invalid title' ) {
-          Form.draw( 'error', { error: 'invalid title' } );
-          console.error( res.status );
-        }
-        else {
-          Form.draw( 'error', { error: 'check console' } );
-          console.error( 'try again, because: ', res.status );
-        }
-      } );
+      if ( !V.getState( 'activeEntity' ) ) {
+        V.setCookie( 'last-form', entityData );
+        Join.draw( 'authenticate' );
+      }
+      else {
+        V.setEntity( entityData ).then( res => {
+          if ( res.success ) {
+            Form.draw( 'all', { fade: 'out' } );
+            Button.draw( 'all', { fade: 'out' } );
+            Button.draw( 'plus search', { delay: 1 } );
+            console.log( res.status );
+          }
+          else {
+            Form.draw( 'error', res );
+            console.error( res.status );
+          }
+        } );
+        V.setCookie( 'last-form', undefined );
+      }
 
     } );
 
     // V.setNode( DOM.$backUL, $back );
-    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $send ] );
+    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $query, $send ] );
   }
 
   function presenter( which, options ) {
-    const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'send'] : which.split( ' ' );
+    const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'send', 'query'] : which.split( ' ' );
     return {
       btnArr: btnArr,
       options: options

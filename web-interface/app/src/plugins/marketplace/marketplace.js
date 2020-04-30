@@ -15,9 +15,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     let whichRole;
     const mapData = [];
 
-    if ( which && which != 'marketplace' ) {
-      // force the removal of plural
-      whichRole = which.substring( 0, which.length - 1 );
+    if ( which && which != '/market/all' ) {
+      // remove the plural from slug
+      whichRole = which.substring( 0, which.length - 1 ).replace( '/market/', '' );
+
     }
 
     const query = await V.getEntity( whichRole );
@@ -71,10 +72,17 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( viewData.which ) {
-      Navigation.animate( viewData.which );
+      Navigation.drawV2( viewData.which );
+      // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+      Button.draw( 'plus search', { delay: 2 } );
+      // if ( V.getState( 'activeEntity' ) ) {
+      // }
+      // else {
+      //   Button.draw( 'search', { delay: 2 } );
+      // }
     }
     else {
-      Navigation.draw( 'all', { reset: true } );
+      Navigation.drawV2();
     }
 
     Page.draw( {
@@ -92,12 +100,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', [
       {
         title: 'Marketplace',
-        path: '/market',
+        path: '/market/all',
         use: {
           button: 'search',
         },
-        draw: function() {
-          Marketplace.draw( 'marketplace' );
+        draw: function( path ) {
+          Marketplace.draw( path );
         }
       },
       {
@@ -108,8 +116,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           form: 'new entity',
           role: 'job',
         },
-        draw: function( slug ) {
-          Marketplace.draw( slug );
+        draw: function( path ) {
+          Marketplace.draw( path );
         }
       },
       {
@@ -120,22 +128,34 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           form: 'new entity',
           role: 'skill',
         },
-        draw: function( slug ) {
-          Marketplace.draw( slug );
+        draw: function( path ) {
+          Marketplace.draw( path );
         }
       },
-      {
-        title: 'Events',
-        path: '/market/events',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'event',
-        },
-        draw: function( slug ) {
-          Marketplace.draw( slug );
-        }
-      }
+      // {
+      //   title: 'Events',
+      //   path: '/market/events',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'event',
+      //   },
+      //   draw: function( path ) {
+      //     Marketplace.draw( path );
+      //   }
+      // },
+      // {
+      //   title: 'Concerts',
+      //   path: '/market/concerts',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'concert',
+      //   },
+      //   draw: function( path ) {
+      //     Marketplace.draw( path );
+      //   }
+      // }
     ] );
   }
 

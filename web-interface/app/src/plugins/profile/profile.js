@@ -12,7 +12,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const fullId = V.castSlugOrId( which );
+    const fullId = V.castPathOrId( which );
     const query = await V.getEntity( fullId );
 
     const mapData = [];
@@ -21,7 +21,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
 
       // add a navItem to entityNav
-      addToNavItems( query.data[0] );
+      // addToNavItems( query.data[0] );
 
       return {
         success: true,
@@ -58,40 +58,39 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       const $loc = ProfileComponents.locationCard( entity );
       const $card = CanvasComponents.card( $loc );
       V.setNode( $list, $card );
+
+      Navigation.drawV2( entity );
+
+      Page.draw( {
+        topcontent: $topcontent,
+        listings: $list,
+        position: 'top',
+      } );
+
+      VMap.draw( data.mapData );
     }
-
-    // Navigation.draw( 'entity-nav', { keep: 5 } );
-    // Navigation.animate( 'profile' );
-
-    Page.draw( {
-      topcontent: $topcontent,
-      listings: $list,
-      position: 'top',
-    } );
-
-    VMap.draw( data.mapData );
   }
 
-  function addToNavItems( entity ) {
-    const slug = V.castSlugOrId( entity.fullId );
-
-    // const clone = JSON.parse( JSON.stringify( V.getState() ) );
-    // console.log( clone );
-
-    V.setNavItem( 'entityNav', {
-      cid: '1003',
-      f: entity.fullId,
-      title: V.castInitials( entity.profile.title ),
-      path: '/profile/' + slug,
-      use: {
-        button: 'none',
-      },
-      draw: function( slug ) {
-        Profile.draw( slug );
-      }
-    } );
-    // console.log( V.getState() );
-  }
+  // function addToNavItems( entity ) {
+  //   const slug = V.castSlugOrId( entity.fullId );
+  //
+  //   const clone = JSON.parse( JSON.stringify( V.getState() ) );
+  //   console.log( 'before add', clone );
+  //
+  //   V.setNavItem( 'entityNav', {
+  //     cid: '1003',
+  //     f: entity.fullId,
+  //     title: V.castInitials( entity.profile.title ),
+  //     path: '/profile/' + slug,
+  //     use: {
+  //       button: 'none',
+  //     },
+  //     draw: function( path ) {
+  //       Profile.draw( path );
+  //     }
+  //   } );
+  //   console.log( 'after add', V.getState() );
+  // }
 
   /* ============ public methods and exports ============ */
 

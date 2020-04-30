@@ -42,7 +42,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in data[key] ) {
-          $elem.setAttribute( attr, data[key][attr] );
+          if ( data[key][attr] ) {
+            $elem.setAttribute( attr, data[key][attr] );
+          }
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {
@@ -81,12 +83,17 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
      */
 
     /**
-     * clear node
+     * clear node or clear innerHTML of node
      */
 
     if ( data && ( data == 'clear' || data.clear == true ) ) {
       const elem = document.querySelector( targetNode );
       elem ? elem.parentNode.removeChild( elem ) : null;
+      return;
+    }
+
+    if ( data == '' ) {
+      document.querySelector( targetNode ).innerHTML = '';
       return;
     }
 

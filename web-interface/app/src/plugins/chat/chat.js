@@ -12,40 +12,59 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const $topcontent = ChatComponents.topcontent();
-    const $list = CanvasComponents.list( 'narrow' );
-
     const activeEntity = V.getState( 'activeEntity' );
     const messages = await V.getMessage();
 
     if( !messages.success || !messages.data[0].length ) {
       return {
-        topcontent: CanvasComponents.notFound( 'messages' ),
+        success: false,
+        status: 'no messages found',
+        data: []
       };
     }
+    else if ( !activeEntity && which != '/chat/everyone' ) {
+      return {
+        success: false,
+        status: 'not logged in',
+        data: []
+      };
+    }
+    else {
+      return {
+        success: true,
+        status: 'ok',
+        data: [{
+          which: which,
+          messages: messages.data[0],
+          activeEntity: activeEntity ? activeEntity : undefined,
+        }]
+      };
+    }
+  }
 
-    messages.data[0].forEach( cardData => {
-      activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
-      const $card = ChatComponents.message( cardData );
-      V.setNode( $list, $card );
-    } );
+  function view( viewData ) {
 
-    // const $lastCard = ChatComponents.message( { sender: 'Me', msg: 'You\'ve sent 560 V to Sheela Anand #3565' } );
-    // V.setNode( $list, $lastCard );
+    const $topcontent = ChatComponents.topcontent();
+    const $list = CanvasComponents.list( 'narrow' );
 
-    const pageData = {
+    if ( viewData.success ) {
+      viewData.data[0].messages.forEach( cardData => {
+        viewData.data[0].activeEntity && viewData.data[0].activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+        const $card = ChatComponents.message( cardData );
+        V.setNode( $list, $card );
+      } );
+    }
+    else {
+      V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
+    }
+
+    Navigation.drawV2( viewData.data[0].which );
+    Page.draw( {
       topcontent: $topcontent,
       listings: $list,
       position: 'top',
       scroll: 'bottom'
-    };
-
-    return pageData;
-  }
-
-  function view( pageData ) {
-    Navigation.animate( 'chat' );
-    Page.draw( pageData );
+    } );
     Chat.drawMessageForm();
   }
 
@@ -65,18 +84,15 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'entityNav', [
       // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
       {
-        cid: '2001',
-        f: 'Chat',
+        // cid: '2001',
+        // f: 'Chat',
         title: 'Chat',
         // role: 'community',
         // draw: function() { Chat.draw() },
         // o: false,
         path: '/chat/everyone',
-        use: {
-          button: 'none',
-        },
         draw: function() {
-          Chat.draw( 'chat' );
+          Chat.draw( '/chat/everyone' );
         }
       },
       // {

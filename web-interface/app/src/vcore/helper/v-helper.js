@@ -85,6 +85,41 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castPathOrId( which, whichBase ) {
+    const base = whichBase ? '/' + whichBase + '/' : '/profile/';
+    if ( which.includes( '#' ) ) {
+      // returns a path from a fullId
+      return base + which.toLowerCase().replace( '#', '' ).replace( /\s/g, '-' );
+    }
+    else {
+      // returns a fullId from a path
+      which = which.replace( base, '' );
+      const split = which.split( '-' );
+      const tag = '#' + split.pop();
+      const title = V.castEntityTitle( split.join( ' ' ) ).data[0];
+      return title + ' ' + tag;
+    }
+  }
+
+  function castJson( data, clone ) {
+
+    if ( !data || data === 'undefined' ) {
+      return data;
+    }
+    else if ( clone ) {
+      return JSON.parse( JSON.stringify( data ) );
+    }
+    else if ( typeof data === 'string' ) {
+      return JSON.parse( data );
+    }
+    else if ( typeof data === 'object' ) {
+      return JSON.stringify( data );
+    }
+    else {
+      console.error( 'Could not convert JSON' );
+    }
+  }
+
   function castShortAddress( address, chars ) {
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
@@ -118,7 +153,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castInitials: castInitials,
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
+    castPathOrId: castPathOrId,
     castShortAddress: castShortAddress,
+    castJson: castJson,
     getIcon: getIcon,
     setPipe: setPipe,
     getTranslation: getTranslation,

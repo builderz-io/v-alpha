@@ -41,7 +41,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         Page.draw( { position: 'top', reset: false } );
       }
       else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
-        Navigation.draw( 'all', { reset: true } );
+        Navigation.drawV2();
         Page.draw( { position: 'closed', reset: false } );
       }
     }
@@ -85,7 +85,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         if ( p.height == p.peek ) {
           Page.draw( { position: 'closed', reset: false } );
           // Feature.draw( { fade: 'out' } );
-          Navigation.draw( 'all', { reset: true } );
+          Navigation.drawV2();
         }
         else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
           Page.draw( { position: 'peek', reset: false } );

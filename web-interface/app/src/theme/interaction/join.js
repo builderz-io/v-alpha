@@ -35,7 +35,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   async function presenter( which ) {
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
-      if ( which == 'launch' ) {
+      if ( which == 'authenticate' ) {
         Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
@@ -52,7 +52,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) { // web3 join
-      if ( which == 'launch' ) {
+      if ( which == 'authenticate' ) {
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
@@ -61,7 +61,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else { // web2 join
-      if ( which == 'launch' ) {
+      if ( which == 'authenticate' ) {
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
@@ -76,17 +76,16 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function view( which ) {
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
-      Marketplace.draw( 'marketplace' );
-      Navigation.draw( 'all', { reset: 'true' } );
+      Marketplace.draw();
       Modal.draw( which );
     }
     else if ( which == 'logged out' ) {
       Join.launch();
-      Marketplace.draw( 'marketplace' );
+      Marketplace.draw();
       Modal.draw( which );
     }
     else {
-      Marketplace.draw( 'marketplace' );
+      Marketplace.draw();
       Modal.draw( which );
     }
   }
@@ -99,7 +98,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'balance > svg', 'clear' );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
-        Join.draw( 'launch' );
+        Join.draw( 'authenticate' );
       } );
 
       V.setNode( 'header', $join );

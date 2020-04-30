@@ -11,19 +11,43 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
 
   function presenter( which, options ) {
     if ( options && options.fade == 'out' ) { return { fadeOut: true } }
-    if ( options && options.error == 'invalid title' ) { return { error: 'invalid title' } }
+    if ( which == 'error' ) { return options }
 
     const $form = InteractionComponents.form();
 
     if ( which == 'new entity' ) {
+
+      const values = {
+        title: undefined,
+        role: undefined,
+        location: undefined,
+        lat: undefined,
+        lng: undefined,
+        description: undefined,
+        unit: undefined,
+        target: undefined
+      };
+
+      const lastForm = V.castJson( V.getCookie( 'last-form' ) );
+
+      if ( lastForm ) {
+        values.title = lastForm.title,
+        values.location = lastForm.location,
+        values.lat = lastForm.lat,
+        values.lng = lastForm.lng,
+        values.description = lastForm.description,
+        values.unit = lastForm.unit,
+        values.target = lastForm.target;
+      }
+
       V.setNode( $form, [
-        InteractionComponents.title(),
-        InteractionComponents.loc(),
-        InteractionComponents.desc(),
-        InteractionComponents.target(),
-        InteractionComponents.unit(),
-        InteractionComponents.locLat(),
-        InteractionComponents.locLng()
+        InteractionComponents.title( values.title ),
+        InteractionComponents.loc( values.location ),
+        InteractionComponents.desc( values.description ),
+        InteractionComponents.target( values.target ),
+        InteractionComponents.unit( values.unit ),
+        InteractionComponents.locLat( values.lat ),
+        InteractionComponents.locLng( values.lng )
       ] );
     }
     else if ( which == 'search' ) {
@@ -48,9 +72,15 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         } );
       }
     }
-    else if ( formData.error == 'invalid title' ) {
+    else if ( formData.status == 'invalid title' ) {
       const $formtitle = V.getNode( '.plusform__title' );
       $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
+      $formtitle.value = '';
+      $formtitle.className += ' border-error';
+    }
+    else if ( formData.status == 'could not attach geo data' ) {
+      const $formtitle = V.getNode( '.plusform__loc' );
+      $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';
     }
@@ -63,7 +93,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       // Page.draw( { pos: 'closed', reset: false } );
       // Button.draw( ( formData.layout == 'search' ? 'plus' : 'plus search' ), { fade: 'out' } );
       Button.draw( 'all', { fade: 'out' } );
-      Button.draw( formData.layout == 'search' ? 'close search' : 'close send', { delay: 1 } );
+      Button.draw( formData.layout == 'search' ? 'close query' : 'close send', { delay: 1 } );
     }
   }
 

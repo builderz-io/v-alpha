@@ -76,11 +76,11 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData ) {
-      Navigation.draw( 'all', { reset: true } );
+      Navigation.drawV2();
       Page.draw( pageData );
     }
     else {
-      Marketplace.draw( 'marketplace' );
+      Marketplace.draw();
     }
   }
 

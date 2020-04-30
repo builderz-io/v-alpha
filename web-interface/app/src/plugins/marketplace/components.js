@@ -40,11 +40,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       tag: 'li',
       classes: 'pxy',
       html: `<smallcard class="smallcard__container flex rounded bkg-white pxy">
-              <a href="#" target="_blank">
-                <div class="circle-3 rounded-full flex justify-center items-center" style="background:${background( cardData )}; background-position: center center; background-size: cover;">
+                <div onclick="Profile.draw('${ cardData.path }')" class="circle-3 rounded-full flex justify-center items-center" style="background:${background( cardData )}; background-position: center center; background-size: cover;">
                   <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData ) }</div>
                 </div>
-              </a>
             </smallcard>`
     } );
   }
@@ -53,16 +51,16 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     return V.castNode( {
       tag: 'div',
       c: 'contents',
-      html: `<div class="card__top-left flex justify-center items-center">
-                <div class="circle-3 flex justify-center items-center rounded-full"
+      html: `<div class="card__top-left flex justify-center items-center pxy">
+                <div onclick="Profile.draw('${ cardData.path }')" class="circle-3 flex justify-center items-center rounded-full"
                      style="background: ${background( cardData )}; background-position: center center; background-size: cover;">
                   <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData )}</div>
                 </div>
               </div>
               <div class="card__top-right flex items-center pxy">
-                <h2 class="font-bold fs-l leading-snug">${cardData.fullId}</h2>
+                <h2 onclick="Profile.draw('${ cardData.path }')" class="font-bold fs-l leading-snug">${cardData.fullId}</h2>
               </div>
-              <div class="card__bottom-left items-center">
+              <div class="card__bottom-left items-center pxy">
                 <div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
                 <p class="card__unit fs-xxs"> V per ${( cardData.properties.unit == 'free' ? '' : cardData.properties.unit )}</p>
               </div>
