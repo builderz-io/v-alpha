@@ -60,7 +60,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, $card );
 
       Navigation.drawV2( entity );
-      // Navigation.animate( 'profile' );
 
       Page.draw( {
         topcontent: $topcontent,

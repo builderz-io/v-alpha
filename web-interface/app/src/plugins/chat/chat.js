@@ -58,7 +58,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
     }
 
-    // Navigation.animate( viewData.data[0].which );
     Navigation.drawV2( viewData.data[0].which );
     Page.draw( {
       topcontent: $topcontent,

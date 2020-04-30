@@ -34,7 +34,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       Page.draw( { position: 'peek', reset: false } );
     } );
     $query.addEventListener( 'click', function() {
-      console.log( 'query clicked' );
+      const form = V.getNode( 'form' );
+      const query = form.getNode( '.searchform__search' ).value;
+      console.log( query );
+
     } );
     $send.addEventListener( 'click', function() {
       const form = V.getNode( 'form' );

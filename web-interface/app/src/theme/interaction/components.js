@@ -140,7 +140,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function searchForm() {
     return V.sN( {
       t: 'input',
-      c: formClasses,
+      c: 'searchform__search ' + formClasses,
       a: { placeholder: V.i18n( 'Search', 'placeholder' ) }
     } );
   }
