@@ -19,7 +19,12 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   function castNode( data ) {
 
-    const $elem = data.t ? document.createElement( data.t ) : document.createElement( data.tag );
+    let $elem;
+
+    const tag = data.t ? data.t : data.tag;
+
+    tag != 'svg' ? $elem = document.createElement( tag ) :
+      $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 
     for ( const key in data ) {
       if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {

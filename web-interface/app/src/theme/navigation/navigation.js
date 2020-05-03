@@ -285,8 +285,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       // V.setAnimation( row, {
       //   // scrollLeft: 0,
       //   width: itemClickedRect.width + 11,
-      //   top: menuStateObj.entitiesTop,
-      //   left: menuStateObj.entitiesLeft
+      //   top: menuStateObj.entityNavTop,
+      //   left: menuStateObj.entityNavLeft
       // }, { duration: 1 } );
       // V.getNode( row ).scrollLeft = 0;
 
@@ -372,8 +372,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( row + ' > ul' ).prepend( $itemToAnimate );
 
     V.setAnimation( $tempMover, {
-      top: menuStateObj.entitiesTop + 4,
-      left: menuStateObj.entitiesLeft + 3
+      top: menuStateObj.entityNavTop + 4,
+      left: menuStateObj.entityNavLeft + 3
     }, {
       duration: 2
     } ).then( () => {
@@ -428,8 +428,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( 'service-nav', {
       // scrollLeft: 0,
       width: width,
-      top: menuStateObj.navTop,
-      left: menuStateObj.navLeft
+      top: menuStateObj.serviceNavTop,
+      left: menuStateObj.serviceNavLeft
     }, { duration: 2.5 } );
 
     // Feature.draw( { fade: 'out' } );
@@ -458,8 +458,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setAnimation( row, {
       width: itemClickedRect.width + 13,
-      top: menuStateObj.entitiesTop,
-      left: menuStateObj.entitiesLeft
+      top: menuStateObj.entityNavTop,
+      left: menuStateObj.entityNavLeft
     }, { duration: 1 } );
     V.getNode( row ).scrollLeft = 0;
 

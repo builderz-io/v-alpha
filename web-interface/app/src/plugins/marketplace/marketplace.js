@@ -73,8 +73,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.which ) {
       Navigation.drawV2( viewData.which );
-      // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
-      Button.draw( 'plus search', { delay: 2 } );
+      Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+      // Button.draw( 'plus search', { delay: 2 } );
       // if ( V.getState( 'activeEntity' ) ) {
       // }
       // else {
