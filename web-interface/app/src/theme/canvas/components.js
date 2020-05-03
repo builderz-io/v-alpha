@@ -146,7 +146,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function slider() {
     return V.castNode( {
       tag: 'slider',
-      classes: 'flex overflow-x-scroll list-none'
+      classes: 'flex overflow-x-scroll list-none pb-s'
     } );
   }
 

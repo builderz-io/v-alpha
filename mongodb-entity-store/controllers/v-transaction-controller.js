@@ -60,14 +60,14 @@ exports.updateEntities = function( req, res ) {
       }
       else {
         // Updating MongoDB Accounts
-        updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command );
-
-        // TODO: callback only after updating finished
-        res( {
-          success: true,
-          status: 'transaction successful',
-          ledger: 'MongoDB'
+        updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command ).then( success => {
+          res( {
+            success: true,
+            status: 'transaction successful',
+            ledger: 'MongoDB'
+          } );
         } );
+
       } // close else (valid transaction)
 
     } )

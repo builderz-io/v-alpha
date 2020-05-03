@@ -59,3 +59,9 @@
   /* --listings-ul-height: calc(var(--card-height) + 2 * var(--global-padding)); */
 
 }
+
+@media screen and (min-height: 920px) {
+    :root {
+      --page-position-peek: 308px;
+    }
+}

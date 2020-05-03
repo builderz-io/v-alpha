@@ -147,7 +147,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
-          res.status == 'transaction successful' ? Account.drawHeaderBalance() : null;
+          console.log( res );
+          Account.drawHeaderBalance();
           $form.value = '';
           $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           // console.log( res.status );

@@ -185,20 +185,18 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( pagePos == 'top' ) {
       Haze.draw();
       Feature.draw( { fade: 'out' } );
-      handlebar( 7, 19 );
+      handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
       Haze.draw();
-      handlebar( 7, 19 );
+      handlebar( 7, 22 );
     }
     else if ( pagePos == 'closed' ) {
-      // DOM.$feature.innerHTML = '';
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
     }
     else if ( pagePos == 'peek' ) {
-      // DOM.$feature.innerHTML = '';
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 25 );

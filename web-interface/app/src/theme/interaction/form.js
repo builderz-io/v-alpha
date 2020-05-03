@@ -31,27 +31,28 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       const lastForm = V.castJson( V.getCookie( 'last-form' ) );
 
       if ( lastForm ) {
-        values.title = lastForm.title,
-        values.location = lastForm.location,
-        values.lat = lastForm.lat,
-        values.lng = lastForm.lng,
-        values.description = lastForm.description,
-        values.unit = lastForm.unit,
+        values.title = lastForm.title;
+        values.location = lastForm.location;
+        values.lat = lastForm.lat;
+        values.lng = lastForm.lng;
+        values.description = lastForm.description;
+        values.unit = lastForm.unit;
         values.target = lastForm.target;
       }
 
       V.setNode( $form, [
-        InteractionComponents.title( values.title ),
-        InteractionComponents.loc( values.location ),
-        InteractionComponents.desc( values.description ),
-        InteractionComponents.target( values.target ),
-        InteractionComponents.unit( values.unit ),
+        InteractionComponents.formField( 'title', values.title ),
+        InteractionComponents.formField( 'location', values.location ),
+        InteractionComponents.formField( 'description', values.description ),
+        InteractionComponents.formField( 'target', values.target ),
+        InteractionComponents.formField( 'unit', values.unit ),
         InteractionComponents.locLat( values.lat ),
-        InteractionComponents.locLng( values.lng )
+        InteractionComponents.locLng( values.lng ),
       ] );
     }
     else if ( which == 'search' ) {
-      V.setNode( $form, InteractionComponents.searchForm() );
+      V.setNode( $form, InteractionComponents.formField( 'search' ) );
+      // V.setNode( $form, InteractionComponents.searchForm() );
     }
     else {
       V.setNode( $form, [ InteractionComponents.title(), InteractionComponents.desc() ] );
@@ -73,13 +74,13 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( formData.status == 'invalid title' ) {
-      const $formtitle = V.getNode( '.plusform__title' );
+      const $formtitle = V.getNode( '#plusform__title' );
       $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';
     }
     else if ( formData.status == 'could not attach geo data' ) {
-      const $formtitle = V.getNode( '.plusform__loc' );
+      const $formtitle = V.getNode( '#plusform__loc' );
       $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';

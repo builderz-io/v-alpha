@@ -1,17 +1,16 @@
 const Button = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Create buttons
-  *
-  */
+   * Cast buttons and draw them according to Plugins
+   *
+   */
 
   'use strict';
 
   /* ================== private methods ================= */
 
-  function setButton() {
+  function castButtons() {
 
-    // const $back = InteractionComponents.back();
     const $filter = InteractionComponents.filter();
     const $search = InteractionComponents.searchBtn();
     const $query = InteractionComponents.query();
@@ -20,11 +19,11 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     const $close = InteractionComponents.close();
 
     $plus.addEventListener( 'click', function() {
-      Page.draw( { position: 'close', reset: false } );
+      Page.draw( { position: 'closed', reset: false } );
       Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
     } );
     $search.addEventListener( 'click', function() {
-      Page.draw( { position: 'close', reset: false } );
+      Page.draw( { position: 'closed', reset: false } );
       Form.draw( 'search' );
     } );
     $close.addEventListener( 'click', function() {
@@ -35,26 +34,33 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     } );
     $query.addEventListener( 'click', function() {
       const form = V.getNode( 'form' );
-      const query = form.getNode( '.searchform__search' ).value;
+      const query = form.getNode( '#search-input' ).value;
       console.log( query );
 
     } );
     $send.addEventListener( 'click', function() {
       const form = V.getNode( 'form' );
 
-      const location = form.getNode( '.plusform__loc' ).value;
+      const location = form.getNode( '#plusform__loc' ).value;
       const entityData = {
-        title: form.getNode( '.plusform__title' ).value,
+        title: form.getNode( '#plusform__title' ).value,
         role: V.getNavItem( 'active', 'serviceNav' ).use.role,
         location: location,
         lat: location ? form.getNode( '#plusform__lat' ).value || undefined : undefined,
         lng: location ? form.getNode( '#plusform__lng' ).value || undefined : undefined,
-        description: form.getNode( '.plusform__desc' ).value,
-        unit: form.getNode( '.plusform__unit' ).value,
-        target: form.getNode( '.plusform__target' ).value
+        description: form.getNode( '#plusform__descr' ).value,
+        unit: form.getNode( '#plusform__unit' ).value,
+        target: form.getNode( '#plusform__target' ).value
       };
 
       if ( !V.getState( 'activeEntity' ) ) {
+
+        /**
+         * ask user to authenticate first
+         * save form to cookies to keep user's progress
+         *
+         */
+
         V.setCookie( 'last-form', entityData );
         Join.draw( 'authenticate' );
       }
@@ -100,7 +106,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    setButton();
+    castButtons();
   }
 
   function draw( which, options ) {

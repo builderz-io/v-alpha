@@ -48,12 +48,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'pxy',
       h: V.cN( {
         t: 'smallcard',
-        c: 'smallcard__container flex rounded bkg-white pxy',
+        c: 'smallcard__container flex rounded bkg-white',
         h: V.cN( {
           t: 'div',
-          c: 'circle-3 rounded-full flex justify-center items-center',
+          c: 'circle-3 rounded-full flex justify-center items-center cursor-pointer',
           a: {
-            style: 'background:' + background( cardData ) + '; background-position: center center; background-size: cover;'
+            style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
           },
           h: V.cN( {
             t: 'div',
@@ -80,7 +80,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'card__top-left flex justify-center items-center pxy',
       h: V.cN( {
         t: 'div',
-        c: 'circle-3 flex justify-center items-center rounded-full',
+        c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
         a: {
           style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
         },
@@ -100,7 +100,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'card__top-right flex items-center pxy',
       h: V.cN( {
         t: 'h2',
-        c: 'font-bold fs-l leading-snug',
+        c: 'font-bold fs-l leading-snug cursor-pointer',
         h: cardData.fullId,
         k: handleProfileDraw.bind( cardData.path )
       } )
