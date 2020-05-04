@@ -21,15 +21,15 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function initAutocomplete( component ) {
-    if ( document.getElementById( component + '__lat' ) ) {
+    if ( document.getElementById( component + '__loc' ) ) {
       const autocomplete = new google.maps.places.Autocomplete(
       /** @type {!HTMLInputElement} */( document.getElementById( component + '__loc' ) ),
         { types: ['geocode'] } );
 
       autocomplete.addListener( 'place_changed', function() {
         var place = autocomplete.getPlace();
-        document.getElementById( component + '__lat' ).value = place.geometry.location.lat().toFixed( 5 );
-        document.getElementById( component + '__lng' ).value = place.geometry.location.lng().toFixed( 5 );
+        document.getElementById( component + '__loc' ).setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
+        document.getElementById( component + '__loc' ).setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
       } );
     }
   }

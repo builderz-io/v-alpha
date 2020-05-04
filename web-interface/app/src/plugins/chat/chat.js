@@ -36,7 +36,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           which: which,
           messages: messages.data[0],
-          activeEntity: activeEntity ? activeEntity : undefined,
+          activeEntity: activeEntity || undefined,
         }]
       };
     }
@@ -58,7 +58,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
     }
 
-    Navigation.drawV2( viewData.data[0].which );
+    Navigation.draw( viewData.data[0].which );
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,
@@ -147,9 +147,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
-          res.status == 'transaction successful' ? Account.drawHeaderBalance() : null;
+          console.log( res );
+          Account.drawHeaderBalance();
           $form.value = '';
-          // $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+          $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           // console.log( res.status );
         }
         else {

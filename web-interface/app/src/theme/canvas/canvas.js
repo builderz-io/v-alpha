@@ -20,13 +20,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setScript( '/src/theme/canvas/feature.js' ),
       V.setScript( '/src/theme/canvas/header.js' ),
       V.setScript( '/src/theme/canvas/page.js' ),
-      V.setScript( '/src/theme/navigation/components.js' ),
-      V.setScript( '/src/theme/navigation/navigation.js' ),
+      V.setScript( '/src/theme/canvas/modal.js' ),
       V.setScript( '/src/theme/interaction/components.js' ),
       V.setScript( '/src/theme/interaction/button.js' ),
       V.setScript( '/src/theme/interaction/form.js' ),
       V.setScript( '/src/theme/interaction/join.js' ),
-      V.setScript( '/src/theme/interaction/modal.js' ),
+      V.setScript( '/src/theme/navigation/components.js' ),
+      V.setScript( '/src/theme/navigation/navigation.js' ),
 
       V.setScript( '/src/plugins/account/components.js' ),
       V.setScript( '/src/plugins/account/account.js' ),
@@ -49,9 +49,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function setState() {
 
-    V.setState( 'active', {
-      registeredNav: ['service-nav', 'entity-nav'],
-    } );
+    // V.setState( 'active', {
+    //   registeredNav: ['service-nav', 'entity-nav'],
+    // } );
     V.setState( 'screen', {
       height: Number( window.innerHeight ),
       width: Number( window.innerWidth )
@@ -64,21 +64,21 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       closed: V.getCss( '--page-position-closed' ),
     } );
 
-    /* calculate page size for the feature and top position according to screen dimentions */
+    /* calculate page size for the feature and top position according to screen dimensions */
     const state = V.getState( 'all' );
     V.setState( 'page', { topCalc: state.screen.height - state.page.top } );
     V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected } );
     V.setState( 'page', { featureCalc: Math.floor( state.screen.height - state.page.topSelected - state.screen.width * 9/16 ) } );
 
     V.setState( 'header', {
-      // activeTitle: false,
+
       isHazed: false,
 
-      navTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--app-nav-top' ),
-      navLeft: V.setPipe( V.getCss, Number )( '--app-nav-left' ),
+      serviceNavTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--service-nav-top' ),
+      serviceNavLeft: V.setPipe( V.getCss, Number )( '--service-nav-left' ),
 
-      entitiesTop: V.setPipe( V.getCss, Number )( '--entities-nav-top' ),
-      entitiesLeft: V.setPipe( V.getCss, Number )( '--entities-nav-left' ),
+      entityNavTop: V.setPipe( V.getCss, Number )( '--entity-nav-top' ),
+      entityNavLeft: V.setPipe( V.getCss, Number )( '--entity-nav-left' ),
 
     } );
   }
@@ -98,6 +98,19 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     document.documentElement.style.setProperty( '--screen-height', `${ window.innerHeight }px` );
     document.documentElement.style.setProperty( '--screen-width', `${ window.innerWidth }px` );
 
+  }
+
+  function setWindow() {
+
+    function refresh() {
+      location.reload();
+    }
+
+    window.onresize = function() {
+      V.setNode( 'body', 'clear' );
+      clearTimeout( V.getState( 'throttle' ) );
+      V.setState( 'throttle', setTimeout( refresh, 200 ) );
+    };
   }
 
   function setFont() {
@@ -221,6 +234,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     V.setPipe(
       setState,
       // setHead,
+      setWindow,
       setCss,
       setFont,
     )();

@@ -6,10 +6,10 @@
 
   --card-height: 172px;
 
-  --app-nav-top: 4rem;
-  --app-nav-left: 7px;
-  --entities-nav-top: 7px;
-  --entities-nav-left: 61px;
+  --entity-nav-top: 7px;
+  --entity-nav-left: 61px;
+  --service-nav-top: 4rem;
+  --service-nav-left: 7px;
 
   --page-position-top: 7rem;
   --page-position-top-selected: 4rem;
@@ -58,4 +58,22 @@
   /* Helper Calculations */
   /* --listings-ul-height: calc(var(--card-height) + 2 * var(--global-padding)); */
 
+}
+
+@media screen and (min-height: 920px) {
+    :root {
+      --page-position-peek: 308px;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    :root {
+      --entity-nav-top: 23px;
+      --entity-nav-left: 84px;
+      --service-nav-top: 5.5rem;
+      --service-nav-left: 12px;
+
+      --page-position-top: 9rem;
+      --page-position-top-selected: 5.5rem;
+    }
 }

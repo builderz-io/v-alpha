@@ -18,27 +18,48 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function castNode( data ) {
+    const tag = data.t ? data.t : data.tag;
 
-    const $elem = data.t ? document.createElement( data.t ) : document.createElement( data.tag );
+    let $elem = document.createElement( tag );
+    tag == 'svg' || data.type == 'svg' ? $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' ) : null;
 
     for ( const key in data ) {
       if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
-        setStyle( 'component-styles', data[key] );
+        if ( data[key] ) {
+          setStyle( 'component-styles', data[key] );
+        }
       }
       else if ( ['c', 'class', 'classes'].includes( key ) ) {
-        $elem.className = data[key];
+        if ( data[key] ) {
+          $elem.className = data[key];
+        }
       }
       else if ( ['k', 'click'].includes( key ) ) {
-        $elem.addEventListener( 'click', data[key] );
+        if ( data[key] ) {
+          $elem.addEventListener( 'click', data[key] );
+        }
+      }
+      else if ( ['e', 'event', 'events'].includes( key ) ) {
+        for ( const evt in data[key] ) {
+          if ( data[key][evt] ) {
+            $elem.addEventListener( evt, data[key][evt] );
+          }
+        }
       }
       else if ( ['y', 'style', 'styles'].includes( key ) ) {
-        Object.assign( $elem.style, data[key] );
+        if ( data[key] ) {
+          Object.assign( $elem.style, data[key] );
+        }
       }
       else if ( ['i', 'id'].includes( key ) ) {
-        $elem.setAttribute( 'id', data[key] );
+        if ( data[key] ) {
+          $elem.setAttribute( 'id', data[key] );
+        }
       }
       else if ( ['f', 'href'].includes( key ) ) {
-        $elem.setAttribute( 'href', data[key] );
+        if ( data[key] ) {
+          $elem.setAttribute( 'href', data[key] );
+        }
       }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in data[key] ) {
@@ -48,10 +69,16 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {
-        if ( typeof data[key] == 'object' ) {
+        if ( Array.isArray( data[key] ) ) {
+          for ( let i = 0; i < data[key].length; i++ ) {
+            console.log( data[key][i] );
+            $elem.appendChild( data[key][i] );
+          }
+        }
+        else if ( data[key] && typeof data[key] == 'object' ) {
           $elem.appendChild( data[key] );
         }
-        else if ( typeof data[key] == 'string' ) {
+        else if ( data[key] && typeof data[key] == 'string' ) {
           $elem.innerHTML = data[key];
         }
       }

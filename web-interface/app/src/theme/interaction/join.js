@@ -76,16 +76,17 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function view( which ) {
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
-      Marketplace.draw();
+      Navigation.draw();
       Modal.draw( which );
     }
     else if ( which == 'logged out' ) {
       Join.launch();
-      Marketplace.draw();
+      Navigation.draw();
       Modal.draw( which );
     }
     else {
-      Marketplace.draw();
+      Navigation.draw();
+      Page.draw( { position: 'closed' } );
       Modal.draw( which );
     }
   }

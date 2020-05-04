@@ -56,15 +56,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function balance() {
+    const sc = V.getState( 'screen' );
+
     return V.setNode( {
       tag: 'balance',
       classes: 'balance fixed cursor-pointer txt-anchor-mid',
-      setStyle: {
-        balance: {
-          top: '2px',
-          left: '2px'
-        }
-      }
+      y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
     } );
   }
   function entityNav() {
@@ -75,8 +72,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         'entity-nav': {
           'padding-top': '4px',
           'padding-bottom': '8px',
-          'top': 'var(--entities-nav-top)',
-          'left': 'var(--entities-nav-left)'
+          'top': 'var(--entity-nav-top)',
+          'left': 'var(--entity-nav-left)'
         }
       }
     } );
@@ -89,19 +86,21 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         'service-nav': {
           'padding-top': '4px',
           'padding-bottom': '28px',
-          'top': 'var(--app-nav-top)',
-          'left': 'var(--app-nav-left)'
+          'top': 'var(--service-nav-top)',
+          'left': 'var(--service-nav-left)'
         }
       }
     } );
   }
   function interactions() {
+    const sc = V.getState( 'screen' );
+
     return V.setNode( {
       tag: 'interactions',
       classes: 'interactions fixed',
       setStyle: {
         interactions: {
-          top: '11px',
+          top: sc.width > 800 ? '23px' : '11px',
           right: 0,
           width: '45%'
         }
@@ -146,7 +145,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function slider() {
     return V.castNode( {
       tag: 'slider',
-      classes: 'flex overflow-x-scroll list-none'
+      classes: 'flex overflow-x-scroll list-none pb-s'
     } );
   }
 

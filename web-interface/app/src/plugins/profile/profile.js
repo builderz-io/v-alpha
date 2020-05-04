@@ -20,9 +20,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     if ( query.success ) {
       mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
 
-      // add a navItem to entityNav
-      // addToNavItems( query.data[0] );
-
       return {
         success: true,
         status: 'entities retrieved',
@@ -59,7 +56,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       const $card = CanvasComponents.card( $loc );
       V.setNode( $list, $card );
 
-      Navigation.drawV2( entity );
+      Navigation.draw( entity );
 
       Page.draw( {
         topcontent: $topcontent,

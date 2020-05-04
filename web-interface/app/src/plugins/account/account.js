@@ -76,7 +76,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData ) {
-      Navigation.drawV2();
+      Navigation.draw();
       Page.draw( pageData );
     }
     else {

@@ -14,7 +14,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function img( icon ) {
     return V.sN( {
       t: 'div',
-      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white transition',
       h: V.getIcon( icon )
     } );
   }
@@ -130,13 +130,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  // function form() {
-  //   return V.sN( {
-  //     t: 'form',
-  //     c: 'pxy'
-  //   } );
-  // }
-
   function searchForm() {
     return V.sN( {
       t: 'input',
@@ -145,107 +138,176 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function joinForm() {
-    return V.sN( {
-      t: 'input',
-      c: formClasses,
-      a: { placeholder: V.i18n( 'Your preferred name', 'placeholder' ) }
-    } );
-  }
+  function formField( whichField, whichValue, lat, lng ) {
 
-  function title( value ) {
-    return V.sN( {
-      t: 'input',
-      c: 'plusform__title ' + formClasses,
-      a: {
-        placeholder: V.i18n( 'Title', 'placeholder' ),
-        value: value
+    function autoHeight() {
+      const elem = this;
+      elem.style.height = '1px';
+      elem.style.height = ( elem.scrollHeight )+'px';
+
+    }
+
+    function handleFocus() {
+      this.closest( '.field' ).classList += ' field--static field--focus';
+    }
+
+    function handleBlur() {
+      const close = this.closest( '.field' ).classList;
+      if( !this.value ) {
+        close.remove( 'field--static' );
       }
-    } );
-  }
+      close.remove( 'field--focus' );
+    }
 
-  function loc( value ) {
-    return V.sN( {
-      t: 'input',
-      i: 'plusform__loc',
-      c: 'plusform__loc ' + formClasses,
-      a: {
-        placeholder: V.i18n( 'Location', 'placeholder' ),
-        value: value
+    const fields = {
+      title: {
+        label: 'Title',
+        inputId: 'plusform__title'
+      },
+      location: {
+        label: 'Location',
+        inputId: 'plusform__loc',
+        attributes: {
+          value: whichValue,
+          lat: lat,
+          lng: lng
+        }
+      },
+      description: {
+        label: 'Description',
+        inputId: 'plusform__descr',
+        multiline: true
+      },
+      target: {
+        label: 'Target',
+        inputId: 'plusform__target',
+        fieldClasses: 'w-1/3 inline-block'
+      },
+      unit: {
+        label: 'Unit',
+        inputId: 'plusform__unit',
+        fieldClasses: 'w-1/3 inline-block'
+      },
+      search: {
+        label: 'Search',
+        inputId: 'search-input',
       }
-    } );
-  }
+    };
 
-  function locLat( value ) {
-    return V.sN( {
+    const $inputContainer = V.cN( {
+      t: 'div',
+      c: 'field__input-container',
+    } );
+
+    const $labelNode = V.cN( {
+      t: 'div',
+      c: 'field__label-wrapper',
+      h: V.cN( {
+        t: 'label',
+        c: 'field__label label-primary',
+        h: V.cN( {
+          t: 'span',
+          c: 'label__content',
+          h: fields[whichField].label
+        } )
+      } )
+    } );
+
+    const $input = V.cN( {
       t: 'input',
-      i: 'plusform__lat',
-      a: {
-        type: 'hidden',
-        step: '0.00001',
-        value: value
-      }
+      c: 'field__input',
+      id: fields[whichField].inputId,
+      e: {
+        focus: handleFocus,
+        blur: handleBlur
+      },
+      a: fields[whichField].attributes || { value: whichValue }
     } );
-  }
 
-  function locLng( value ) {
-    return V.sN( {
-      t: 'input',
-      i: 'plusform__lng',
-      a: {
-        type: 'hidden',
-        step: '0.00001',
-        value: value
-      }
-    } );
-  }
-
-  function desc( value ) {
-    return V.sN( {
+    const $textarea = V.cN( {
       t: 'textarea',
-      c: 'plusform__desc ' + formClasses,
-      a: { placeholder: V.i18n( 'Description', 'placeholder' ) },
-      h: value
-    } );
-  }
-
-  function target( value ) {
-    return V.sN( {
-      t: 'input',
-      c: 'plusform__target w-1/3 m-2 mr-2 pxy rounded border-blackalpha',
+      c: 'field__input auto-height',
+      id: fields[whichField].inputId,
       a: {
-        placeholder: V.i18n( 'Price', 'placeholder' ),
-        value: value
+        row: '1',
+      },
+      h: whichValue,
+      e: {
+        input: autoHeight,
+        focus: handleFocus,
+        blur: handleBlur
       }
     } );
-  }
 
-  function unit( value ) {
-    return V.sN( {
-      t: 'input',
-      c: 'plusform__unit w-1/3 m-2 pxy rounded border-blackalpha',
-      a: {
-        placeholder: V.i18n( 'Unit', 'placeholder' ),
-        value: value
-      }
+    if ( fields[whichField].multiline ) {
+      V.setNode( $inputContainer, [ $labelNode, $textarea ] );
+    }
+    else {
+      V.setNode( $inputContainer, [ $labelNode, $input ] );
+    }
+
+    const fieldClasses = fields[whichField].fieldClasses || '';
+    const hasValue = whichValue ? ' field--static' : '';
+
+    return V.cN( {
+      t: 'div',
+      c: 'field pxy ' + fieldClasses + hasValue,
+      h: V.cN( {
+        t: 'div',
+        c: 'field__border',
+        h: V.cN( {
+          t: 'div',
+          c: 'field__internal',
+          h: $inputContainer
+        } )
+      } )
     } );
   }
 
   // join and temp
 
   function joinBtn() {
+    const sc = V.getState( 'screen' );
+
     return V.sN( {
       t: 'join',
-      c: 'balance fixed cursor-pointer txt-anchor-mid',
+      c: 'fixed cursor-pointer txt-anchor-mid',
+      y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
       h: V.setNode( {
-        tag: 'a',
-        html: `<svg width="54px" viewBox="0 0 36 36">
-                <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
+        tag: 'svg',
+        a: {
+          width: sc.width > 800 ? '66px' : '54px',
+          viewBox: '0 0 36 36'
+        },
+        // h: [
+        //   V.cN( {
+        //     type: 'svg',
+        //     t: 'circle',
+        //     a: {
+        //       'stroke-dasharray': '100',
+        //       'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+        //       'stroke-dashoffset': '-200',
+        //       'cx': '18',
+        //       'cy': '18',
+        //       'r': '15.91549430918954',
+        //       'fill': '#ffa41b',
+        //       'stroke': '#ffa41b',
+        //       'stroke-width': '2.7'
+        //     }
+        //   } ),
+        //   V.cN( {
+        //     type: 'svg',
+        //     t: 'text',
+        //     c: 'font-medium fs-xs',
+        //     a: { x: '50%', y: '59%' },
+        //     h: 'Join'
+        //   } )
+        // ]
+        h: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
                        stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="#ffa41b"
                        stroke="#ffa41b" stroke-width="2.7">
                 </circle>
-                <text class="font-medium fs-xs" x="50%" y="59%">Join</text>
-              </svg>`
+                <text class="font-medium fs-xs" x="50%" y="59%">Join</text>`
 
       } )
     } );
@@ -541,14 +603,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     sendBtn: sendBtn,
     form: form,
     searchForm: searchForm,
-    joinForm: joinForm,
-    title: title,
-    loc: loc,
-    locLat: locLat,
-    locLng: locLng,
-    desc: desc,
-    target: target,
-    unit: unit,
+    formField: formField,
     joinBtn: joinBtn,
     tempBtn: tempBtn,
     modal: modal,

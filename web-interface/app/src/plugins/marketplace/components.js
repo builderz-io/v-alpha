@@ -7,6 +7,13 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   'use strict';
 
+  function handleProfileDraw() {
+    const path = this;
+    V.setState( 'active', { navItem: path } );
+    V.setBrowserHistory( { path: path } );
+    Profile.draw( path );
+  }
+
   // const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc']; // https://colorhunt.co/palette/167860
   const palette = ['#d1d2da', '#3a0088', '#930077', '#e61c5d', '#ffbd39']; // https://colorhunt.co/palette/108152
 
@@ -36,39 +43,86 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   };
 
   function entitiesSmallCard( cardData ) {
-    return V.castNode( {
-      tag: 'li',
-      classes: 'pxy',
-      html: `<smallcard class="smallcard__container flex rounded bkg-white pxy">
-                <div onclick="Profile.draw('${ cardData.path }')" class="circle-3 rounded-full flex justify-center items-center" style="background:${background( cardData )}; background-position: center center; background-size: cover;">
-                  <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData ) }</div>
-                </div>
-            </smallcard>`
+    return V.cN( {
+      t: 'li',
+      c: 'pxy',
+      h: V.cN( {
+        t: 'smallcard',
+        c: 'smallcard__container flex rounded bkg-white',
+        h: V.cN( {
+          t: 'div',
+          c: 'circle-3 rounded-full flex justify-center items-center cursor-pointer',
+          a: {
+            style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
+          },
+          h: V.cN( {
+            t: 'div',
+            c: 'card__initials font-bold fs-xxl txt-white',
+            h: initials( cardData )
+          } ),
+          e: {
+            click: handleProfileDraw.bind( cardData.path )
+          }
+        } )
+      } )
     } );
   }
 
   function cardContent( cardData ) {
-    return V.castNode( {
+
+    const $cardContentFrame = V.castNode( {
       tag: 'div',
-      c: 'contents',
-      html: `<div class="card__top-left flex justify-center items-center pxy">
-                <div onclick="Profile.draw('${ cardData.path }')" class="circle-3 flex justify-center items-center rounded-full"
-                     style="background: ${background( cardData )}; background-position: center center; background-size: cover;">
-                  <div class="card__initials font-bold fs-xxl txt-white">${initials( cardData )}</div>
-                </div>
-              </div>
-              <div class="card__top-right flex items-center pxy">
-                <h2 onclick="Profile.draw('${ cardData.path }')" class="font-bold fs-l leading-snug">${cardData.fullId}</h2>
-              </div>
-              <div class="card__bottom-left items-center pxy">
-                <div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
-                <p class="card__unit fs-xxs"> V per ${( cardData.properties.unit == 'free' ? '' : cardData.properties.unit )}</p>
-              </div>
-              <div class="card__bottom-right pxy">
-                <p>${cardData.properties.description}</p>
-                <p>in ${cardData.properties.location}</p>
-              </div>`
+      c: 'contents'
     } );
+
+    const $topLeft = V.cN( {
+      t: 'div',
+      c: 'card__top-left flex justify-center items-center pxy',
+      h: V.cN( {
+        t: 'div',
+        c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
+        a: {
+          style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
+        },
+        h: V.cN( {
+          t: 'div',
+          c: 'card__initials font-bold fs-xxl txt-white',
+          h: initials( cardData )
+        } ),
+        e: {
+          click: handleProfileDraw.bind( cardData.path )
+        }
+      } )
+    } );
+
+    const $topRight = V.cN( {
+      t: 'div',
+      c: 'card__top-right flex items-center pxy',
+      h: V.cN( {
+        t: 'h2',
+        c: 'font-bold fs-l leading-snug cursor-pointer',
+        h: cardData.fullId,
+        k: handleProfileDraw.bind( cardData.path )
+      } )
+    } );
+
+    const $bottomLeft = V.cN( {
+      t: 'div',
+      c: 'card__bottom-left items-center pxy',
+      h: `<div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
+      <p class="card__unit fs-xxs"> V per ${( cardData.properties.unit == 'free' ? '' : cardData.properties.unit )}</p>`
+    } );
+
+    const $bottomRight = V.cN( {
+      t: 'div',
+      c: 'card__bottom-right pxy',
+      h: `<p>${cardData.properties.description}</p><p>in ${cardData.properties.location}</p>`
+    } );
+
+    V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
+
+    return $cardContentFrame;
+
   }
 
   return {

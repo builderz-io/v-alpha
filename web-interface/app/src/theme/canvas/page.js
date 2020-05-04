@@ -41,7 +41,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         Page.draw( { position: 'top', reset: false } );
       }
       else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
-        Navigation.drawV2();
+        Navigation.draw();
         Page.draw( { position: 'closed', reset: false } );
       }
     }
@@ -85,7 +85,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         if ( p.height == p.peek ) {
           Page.draw( { position: 'closed', reset: false } );
           // Feature.draw( { fade: 'out' } );
-          Navigation.drawV2();
+          Navigation.draw();
         }
         else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
           Page.draw( { position: 'peek', reset: false } );
@@ -185,20 +185,18 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( pagePos == 'top' ) {
       Haze.draw();
       Feature.draw( { fade: 'out' } );
-      handlebar( 7, 19 );
+      handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
       Haze.draw();
-      handlebar( 7, 19 );
+      handlebar( 7, 22 );
     }
     else if ( pagePos == 'closed' ) {
-      // DOM.$feature.innerHTML = '';
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
     }
     else if ( pagePos == 'peek' ) {
-      // DOM.$feature.innerHTML = '';
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 25 );
