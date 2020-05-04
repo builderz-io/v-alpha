@@ -56,15 +56,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function balance() {
+    const sc = V.getState( 'screen' );
+
     return V.setNode( {
       tag: 'balance',
       classes: 'balance fixed cursor-pointer txt-anchor-mid',
-      setStyle: {
-        balance: {
-          top: '2px',
-          left: '2px'
-        }
-      }
+      y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
     } );
   }
   function entityNav() {

@@ -36,7 +36,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           which: which,
           messages: messages.data[0],
-          activeEntity: activeEntity ? activeEntity : undefined,
+          activeEntity: activeEntity || undefined,
         }]
       };
     }
@@ -58,7 +58,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
     }
 
-    Navigation.drawV2( viewData.data[0].which );
+    Navigation.draw( viewData.data[0].which );
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,

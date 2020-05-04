@@ -4,7 +4,7 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
-    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedger: 'Symbol', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
 
     socketHost: 'http://localhost',
     socketPort: 6021,
@@ -23,7 +23,7 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
 
   const networks = {
 
-    choice: 'symbol2',
+    choice: 'truffle',
 
     truffle: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',

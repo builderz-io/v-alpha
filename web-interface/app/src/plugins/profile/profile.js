@@ -56,7 +56,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       const $card = CanvasComponents.card( $loc );
       V.setNode( $list, $card );
 
-      Navigation.drawV2( entity );
+      Navigation.draw( entity );
 
       Page.draw( {
         topcontent: $topcontent,

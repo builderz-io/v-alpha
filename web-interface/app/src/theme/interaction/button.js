@@ -41,13 +41,13 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     $send.addEventListener( 'click', function() {
       const form = V.getNode( 'form' );
 
-      const location = form.getNode( '#plusform__loc' ).value;
+      const location = form.getNode( '#plusform__loc' );
       const entityData = {
         title: form.getNode( '#plusform__title' ).value,
         role: V.getNavItem( 'active', 'serviceNav' ).use.role,
-        location: location,
-        lat: location ? form.getNode( '#plusform__lat' ).value || undefined : undefined,
-        lng: location ? form.getNode( '#plusform__lng' ).value || undefined : undefined,
+        location: location.value,
+        lat: location.value ? location.getAttribute( 'lat' ) || undefined : undefined,
+        lng: location.value ? location.getAttribute( 'lng' ) || undefined : undefined,
         description: form.getNode( '#plusform__descr' ).value,
         unit: form.getNode( '#plusform__unit' ).value,
         target: form.getNode( '#plusform__target' ).value

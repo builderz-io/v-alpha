@@ -138,39 +138,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function joinForm() {
-    return V.sN( {
-      t: 'input',
-      c: formClasses,
-      a: { placeholder: V.i18n( 'Your preferred name', 'placeholder' ) }
-    } );
-  }
-
-  function locLat( value ) {
-    return V.sN( {
-      t: 'input',
-      i: 'plusform__lat',
-      a: {
-        type: 'hidden',
-        step: '0.00001',
-        value: value
-      }
-    } );
-  }
-
-  function locLng( value ) {
-    return V.sN( {
-      t: 'input',
-      i: 'plusform__lng',
-      a: {
-        type: 'hidden',
-        step: '0.00001',
-        value: value
-      }
-    } );
-  }
-
-  function formField( whichField, whichValue ) {
+  function formField( whichField, whichValue, lat, lng ) {
 
     function autoHeight() {
       const elem = this;
@@ -198,7 +166,12 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       },
       location: {
         label: 'Location',
-        inputId: 'plusform__loc'
+        inputId: 'plusform__loc',
+        attributes: {
+          value: whichValue,
+          lat: lat,
+          lng: lng
+        }
       },
       description: {
         label: 'Description',
@@ -248,9 +221,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         focus: handleFocus,
         blur: handleBlur
       },
-      a: {
-        value: whichValue
-      }
+      a: fields[whichField].attributes || { value: whichValue }
     } );
 
     const $textarea = V.cN( {
@@ -275,7 +246,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       V.setNode( $inputContainer, [ $labelNode, $input ] );
     }
 
-    const fieldClasses = fields[whichField].fieldClasses ? fields[whichField].fieldClasses : '';
+    const fieldClasses = fields[whichField].fieldClasses || '';
     const hasValue = whichValue ? ' field--static' : '';
 
     return V.cN( {
@@ -308,6 +279,30 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           width: sc.width > 800 ? '66px' : '54px',
           viewBox: '0 0 36 36'
         },
+        // h: [
+        //   V.cN( {
+        //     type: 'svg',
+        //     t: 'circle',
+        //     a: {
+        //       'stroke-dasharray': '100',
+        //       'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+        //       'stroke-dashoffset': '-200',
+        //       'cx': '18',
+        //       'cy': '18',
+        //       'r': '15.91549430918954',
+        //       'fill': '#ffa41b',
+        //       'stroke': '#ffa41b',
+        //       'stroke-width': '2.7'
+        //     }
+        //   } ),
+        //   V.cN( {
+        //     type: 'svg',
+        //     t: 'text',
+        //     c: 'font-medium fs-xs',
+        //     a: { x: '50%', y: '59%' },
+        //     h: 'Join'
+        //   } )
+        // ]
         h: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
                        stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="#ffa41b"
                        stroke="#ffa41b" stroke-width="2.7">
@@ -608,9 +603,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     sendBtn: sendBtn,
     form: form,
     searchForm: searchForm,
-    joinForm: joinForm,
-    locLat: locLat,
-    locLng: locLng,
     formField: formField,
     joinBtn: joinBtn,
     tempBtn: tempBtn,

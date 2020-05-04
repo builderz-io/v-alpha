@@ -42,12 +42,10 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $form, [
         InteractionComponents.formField( 'title', values.title ),
-        InteractionComponents.formField( 'location', values.location ),
+        InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
         InteractionComponents.formField( 'description', values.description ),
         InteractionComponents.formField( 'target', values.target ),
-        InteractionComponents.formField( 'unit', values.unit ),
-        InteractionComponents.locLat( values.lat ),
-        InteractionComponents.locLng( values.lng ),
+        InteractionComponents.formField( 'unit', values.unit )
       ] );
     }
     else if ( which == 'search' ) {

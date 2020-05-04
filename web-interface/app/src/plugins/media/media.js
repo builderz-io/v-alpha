@@ -51,14 +51,14 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData.which ) {
-      Navigation.drawV2( pageData.which );
+      Navigation.draw( pageData.which );
     }
     Page.draw( pageData );
     if ( pageData.feature ) {
       Feature.draw( pageData.feature );
     }
     // else {
-    //   Navigation.drawV2();
+    //   Navigation.draw();
     // }
     VMap.draw();
   }

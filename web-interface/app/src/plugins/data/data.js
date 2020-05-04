@@ -92,7 +92,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( pageData ) {
-    Navigation.drawV2( pageData.which );
+    Navigation.draw( pageData.which );
     Page.draw( pageData );
     VMap.draw();
   }

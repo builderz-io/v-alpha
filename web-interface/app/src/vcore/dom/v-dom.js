@@ -18,13 +18,10 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function castNode( data ) {
-
-    let $elem;
-
     const tag = data.t ? data.t : data.tag;
 
-    tag != 'svg' ? $elem = document.createElement( tag ) :
-      $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+    let $elem = document.createElement( tag );
+    tag == 'svg' || data.type == 'svg' ? $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' ) : null;
 
     for ( const key in data ) {
       if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
@@ -72,7 +69,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {
-        if ( data[key] && typeof data[key] == 'object' ) {
+        if ( Array.isArray( data[key] ) ) {
+          for ( let i = 0; i < data[key].length; i++ ) {
+            console.log( data[key][i] );
+            $elem.appendChild( data[key][i] );
+          }
+        }
+        else if ( data[key] && typeof data[key] == 'object' ) {
           $elem.appendChild( data[key] );
         }
         else if ( data[key] && typeof data[key] == 'string' ) {
