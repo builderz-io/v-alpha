@@ -78,6 +78,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     if ( pageData ) {
       Navigation.draw();
       Page.draw( pageData );
+      Chat.drawMessageForm();
     }
     else {
       Marketplace.draw();

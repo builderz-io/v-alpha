@@ -17,6 +17,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       await Promise.all( [
         V.setScript( '/dist/web3.min.js' ),
+        V.setScript( '/src/vcore/ledger/v-evm-abi.js' ),
         V.setScript( '/src/vcore/ledger/v-evm.js' )
       ] );
       console.log( '*** web3 and evm scripts loaded ***' );

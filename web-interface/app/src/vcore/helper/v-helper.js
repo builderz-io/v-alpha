@@ -124,6 +124,159 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
 
+  function castUUID( input ) {
+
+    // converts a UUID to a URL-safe version of base 64.
+    const encode = uuid => {
+      const stripped = uuid.replace( /-/g, '' ); // remove dashes from uuid
+      const true64 = btoa(
+        String.fromCharCode.apply(
+          null,
+          stripped
+            .replace( /\r|\n/g, '' )
+            .replace( /([\da-fA-F]{2}) ?/g, '0x$1 ' )
+            .replace( / +$/, '' )
+            .split( ' ' )
+        )
+      ); // turn uuid into base 64
+      const url64 = true64
+        .replace( /\//g, '_' )
+        .replace( /\+/g, '-' ) // replace non URL-safe characters
+        .substring( 0, 22 );    // drop '=='
+      return url64;
+    };
+
+    // takes a URL-safe version of base 64 and converts it back to a UUID.
+    const decode = url64 => {
+      const true64 = url64.replace( /_/g, '/' ).replace( /-/g, '+' ); // replace url-safe characters with base 64 characters
+      const raw = atob( true64 ); // decode the raw base 64 into binary buffer.
+
+      let hex = ''; // create a string of length 0
+      let hexChar; // mostly because you don't want to initialize a variable inside a loop.
+      for ( let i = 0, l = raw.length; i < l; i++ ) {
+        hexChar = raw.charCodeAt( i ).toString( 16 ); // get the char code and turn it back into hex.
+        hex += hexChar.length === 2 ? hexChar : '0' + hexChar; // append hexChar as 2 character hex.
+      }
+      hex = hex.toLowerCase(); // standardize.
+      // pad zeroes at the front of the UUID.
+      while ( hex.length < 32 ) {
+        hex = '0' + hex;
+      }
+      // add dashes for 8-4-4-4-12 representation
+      const uuid = hex.replace( /(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5' );
+      return uuid;
+    };
+
+    if ( !input ) {
+      // creation adapted from https://github.com/uuidjs/uuid
+      // encode/decode adapted from https://gist.github.com/brianboyko/1b652a1bf85c48bc982ab1f2352246c8
+      // on 6th May 2020
+
+      const bytesToUuid = ( buf, offset ) => {
+        const i = offset || 0;
+
+        const byteToHex = [];
+
+        for ( let i = 0; i < 256; ++i ) {
+          byteToHex.push( ( i + 0x100 ).toString( 16 ).substr( 1 ) );
+        }
+
+        const bth = byteToHex;
+
+        // Note: Be careful editing this code!  It's been tuned for performance
+        // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+        return (
+          bth[buf[i + 0]] +
+          bth[buf[i + 1]] +
+          bth[buf[i + 2]] +
+          bth[buf[i + 3]] +
+          '-' +
+          bth[buf[i + 4]] +
+          bth[buf[i + 5]] +
+          '-' +
+          bth[buf[i + 6]] +
+          bth[buf[i + 7]] +
+          '-' +
+          bth[buf[i + 8]] +
+          bth[buf[i + 9]] +
+          '-' +
+          bth[buf[i + 10]] +
+          bth[buf[i + 11]] +
+          bth[buf[i + 12]] +
+          bth[buf[i + 13]] +
+          bth[buf[i + 14]] +
+          bth[buf[i + 15]]
+        ).toLowerCase();
+      };
+
+      const rng = () => {
+        // Unique ID creation requires a high quality random # generator. In the browser we therefore
+        // require the crypto API and do not support built-in fallback to lower quality random number
+        // generators (like Math.random()).
+
+        // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
+        // find the complete implementation of crypto (msCrypto) on IE11.
+        const getRandomValues =
+        ( typeof crypto !== 'undefined' &&
+        crypto.getRandomValues &&
+        crypto.getRandomValues.bind( crypto ) ) ||
+        ( typeof msCrypto !== 'undefined' &&
+        typeof msCrypto.getRandomValues === 'function' &&
+        msCrypto.getRandomValues.bind( msCrypto ) );
+
+        const rnds8 = new Uint8Array( 16 );
+
+        if ( !getRandomValues ) {
+          throw new Error(
+            'crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported',
+          );
+        }
+
+        return getRandomValues( rnds8 );
+      };
+
+      const v4 = ( options, buf, offset ) => {
+        const i = ( buf && offset ) || 0;
+
+        if ( typeof options === 'string' ) {
+          buf = options === 'binary' ? new Uint32Array( 16 ) : null;
+          options = null;
+        }
+
+        options = options || {};
+
+        const rnds = options.random || ( options.rng || rng )();
+
+        // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+        rnds[6] = ( rnds[6] & 0x0f ) | 0x40;
+        rnds[8] = ( rnds[8] & 0x3f ) | 0x80;
+
+        // Copy bytes to buffer, if provided
+        if ( buf ) {
+          for ( let ii = 0; ii < 16; ++ii ) {
+            buf[i + ii] = rnds[ii];
+          }
+        }
+
+        return buf || bytesToUuid( rnds );
+      };
+
+      const uuidV4 = v4();
+
+      return {
+        v4: uuidV4,
+        base64Url: encode( uuidV4 ),
+      };
+    }
+    else if ( input.length == 22 ) {
+      return decode( input );
+    }
+    else {
+      return encode( input );
+    }
+
+  }
+
   function getIcon( which ) {
     return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
   }
@@ -156,6 +309,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castPathOrId: castPathOrId,
     castShortAddress: castShortAddress,
     castJson: castJson,
+    castUUID: castUUID,
     getIcon: getIcon,
     setPipe: setPipe,
     getTranslation: getTranslation,

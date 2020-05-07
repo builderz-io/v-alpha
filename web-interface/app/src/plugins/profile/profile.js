@@ -53,8 +53,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       $topcontent = ProfileComponents.topcontent( entity.fullId );
       $list = CanvasComponents.list( 'narrow' );
       const $loc = ProfileComponents.locationCard( entity );
-      const $card = CanvasComponents.card( $loc );
-      V.setNode( $list, $card );
+      const $locCard = CanvasComponents.card( $loc );
+      const $brightId = ProfileComponents.brightIdCard();
+      const $bidCard = CanvasComponents.card( $brightId );
+
+      V.setNode( $list, [$locCard, $bidCard] );
 
       Navigation.draw( entity );
 
@@ -65,6 +68,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       VMap.draw( data.mapData );
+    }
+    else {
+      Page.draw( {
+        topcontent: CanvasComponents.notFound( 'entity' ),
+      } );
     }
   }
 

@@ -80,13 +80,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( entityData.uPhrase ) {
-      uPhrase = entityData.uPhrase;
+      uPhrase = entityData.uPhrase; // for demo data
     }
-    else if ( socket ) {
-      uPhrase = 'vx' + socket.id.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
-    }
+    // else if ( socket ) {
+    //   uPhrase = 'vx' + socket.id.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
+    // }
     else {
-      uPhrase = 'none';
+      const gen = V.castUUID();
+      uPhrase = 'vx' + gen.base64Url.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
     }
 
     if ( activeEntity ) {
@@ -98,11 +99,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       creatorTag = tag;
     }
 
+    const uuid = V.castUUID();
+
     const newEntity = {
       fullId: fullId,
       path: path,
-      activeAddress: activeAddress,
-      uPhrase: uPhrase,
+      private: {
+        uPhrase: uPhrase,
+        uuidV4: uuid.v4,
+        base64Url: uuid.base64Url
+      },
       profile: {
         fullId: fullId,
         slug: slug,

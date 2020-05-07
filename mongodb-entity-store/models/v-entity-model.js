@@ -3,8 +3,11 @@ var mongoose = require( 'mongoose' );
 var entitySchema = mongoose.Schema( {
   fullId: String,
   path: String,
-  activeAddress: String,
-  uPhrase: String,
+  private: {
+    uPhrase: String,
+    uuidV4: String,
+    base64Url: String,
+  },
   profile: {
     fullId: String, // name + tag, e.g. 'Jane Wood #2121'
     slug: String, // name + tag in slug format, e.g. 'jane-wood-2121'
@@ -13,7 +16,6 @@ var entitySchema = mongoose.Schema( {
     tag: String,
     role: String,
     status: String,
-    // socketID: String,
     verified: Boolean,
     joined: {
       date: String,

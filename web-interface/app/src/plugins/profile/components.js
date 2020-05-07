@@ -23,9 +23,18 @@ const ProfileComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function brightIdCard() {
+    return V.castNode( {
+      tag: 'div',
+      c: 'flex w-full items-center justify-evenly',
+      html: '<p>connect your</p> <a href="https://brightid.org"><img src="/assets/img/brightID-logo_sm.png"></a>'
+    } );
+  }
+
   return {
     topcontent: topcontent,
     locationCard: locationCard,
+    brightIdCard: brightIdCard
   };
 
 } )();

@@ -11,7 +11,6 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( which ) {
-
     const $modal = InteractionComponents.modal();
 
     // let inner = 'An unknown error occured';

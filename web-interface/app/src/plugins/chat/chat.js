@@ -19,7 +19,11 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         status: 'no messages found',
-        data: []
+        data: [{
+          which: which,
+          messages: [],
+          activeEntity: activeEntity || undefined,
+        }]
       };
     }
     else if ( !activeEntity && which != '/chat/everyone' ) {

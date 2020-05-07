@@ -444,7 +444,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           color: 'red'
         }
       },
-      h: `<p class="pxy">${V.i18n( 'Your login key is' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${activeEntity.uPhrase}</p>
+      h: `<p class="pxy">${V.i18n( 'Your login key is' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${activeEntity.private.uPhrase}</p>
       <p class="pxy"> ${V.i18n( 'Take note of the phrase above' ) }<br>${ V.i18n( 'to login with later', 'modal' )}</p>`
     } );
 
