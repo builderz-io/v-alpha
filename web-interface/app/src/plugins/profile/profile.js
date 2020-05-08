@@ -54,10 +54,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       $list = CanvasComponents.list( 'narrow' );
       const $loc = ProfileComponents.locationCard( entity );
       const $locCard = CanvasComponents.card( $loc );
-      const $brightId = ProfileComponents.brightIdCard();
+      const $brightId = ProfileComponents.brightIdCard( entity );
       const $bidCard = CanvasComponents.card( $brightId );
 
-      V.setNode( $list, [$locCard, $bidCard] );
+      V.setNode( $list, [ $bidCard, $locCard ] );
 
       Navigation.draw( entity );
 

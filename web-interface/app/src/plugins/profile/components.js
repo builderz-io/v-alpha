@@ -23,11 +23,11 @@ const ProfileComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function brightIdCard() {
+  function brightIdCard( entity ) {
     return V.castNode( {
       tag: 'div',
       c: 'flex w-full items-center justify-evenly',
-      html: '<p>connect your</p> <a href="https://brightid.org"><img src="/assets/img/brightID-logo_sm.png"></a>'
+      html: `<p>Connect your</p> <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>`
     } );
   }
 
