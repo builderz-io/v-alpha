@@ -11,7 +11,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( which ) {
-    const $modal = InteractionComponents.modal();
+    const $modal = ModalComponents.modal();
 
     // let inner = 'An unknown error occured';
 
@@ -20,15 +20,15 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       const eB = await V.getEntityBalance( aE );
       const cT = V.getSetting( 'coinTicker' );
       const tT = V.getSetting( 'tokenTicker' );
-      V.setNode( $modal, InteractionComponents.entityFound( aE, eB, cT, tT ) );
+      V.setNode( $modal, ModalComponents.entityFound( aE, eB, cT, tT ) );
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
       Join.launch();
-      V.setNode( $modal, InteractionComponents.entityNotFound() );
+      V.setNode( $modal, ModalComponents.entityNotFound() );
     }
     else if ( which == 'web3 provider not found' ) {
-      V.setNode( $modal, InteractionComponents.tempUser() );
+      V.setNode( $modal, ModalComponents.tempUser() );
 
       // inner = `<div class="modal__new font-medium" onclick="Modal.handleClick(event, 'set temp user')">${ V.i18n( 'Use temporary name', 'modal' ) }</div>`;
     }
@@ -40,25 +40,25 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       //           <p class="modal__return" onclick="Modal.handleClick(event, 'get entity')">
       //             ${ V.i18n( 'Login with key', 'modal' ) }
       //           </p>`;
-      V.setNode( $modal, InteractionComponents.web2Login() );
+      V.setNode( $modal, ModalComponents.web2Login() );
     }
     else if ( which == 'user denied auth' ) {
-      V.setNode( $modal, InteractionComponents.modalMessage( 'Authorization denied' ) );
+      V.setNode( $modal, ModalComponents.modalMessage( 'Authorization denied' ) );
     }
     else if ( which == 'wallet locked' ) {
-      V.setNode( $modal, InteractionComponents.modalMessage( 'Please connect your wallet' ) );
+      V.setNode( $modal, ModalComponents.modalMessage( 'Please connect your wallet' ) );
     }
     else if ( which == 'logged out' ) {
-      V.setNode( $modal, InteractionComponents.modalMessage( 'You are logged out' ) );
+      V.setNode( $modal, ModalComponents.modalMessage( 'You are logged out' ) );
     }
     else if ( which == 'please wait' ) {
-      V.setNode( $modal, InteractionComponents.modalMessage( 'Please wait... requesting data' ) );
+      V.setNode( $modal, ModalComponents.modalMessage( 'Please wait... requesting data' ) );
     }
     else if ( which == 'transaction sent' ) {
-      V.setNode( $modal, InteractionComponents.modalMessage( 'Transaction has been sent to the network' ) );
+      V.setNode( $modal, ModalComponents.modalMessage( 'Transaction has been sent to the network' ) );
     }
     else {
-      V.setNode( $modal, InteractionComponents.modalMessage( 'An error occured' ) );
+      V.setNode( $modal, ModalComponents.modalMessage( 'An error occured' ) );
     }
 
     // else if ( which == 'web3 provider not found' ) {
@@ -88,8 +88,8 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       return V.setNode( '.namebox', 'clear' );
     }
 
-    const $box = InteractionComponents.nameForm();
-    const $input = InteractionComponents.nameInput( options );
+    const $box = ModalComponents.nameForm();
+    const $input = ModalComponents.nameInput( options );
     const $send = InteractionComponents.sendBtn();
 
     $send.addEventListener( 'click', function( e ) {
@@ -138,7 +138,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
           fullId: V.castEntityTitle( DOM.$box.value ) + ' ' + '#0000'
         } );
         V.setNode( '.modal', 'clear' );
-        const $temp = InteractionComponents.tempBtn();
+        const $temp = ModalComponents.tempBtn();
         V.setNode( 'join', 'clear' );
         V.setNode( 'header', $temp );
 
