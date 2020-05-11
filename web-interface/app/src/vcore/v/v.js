@@ -89,6 +89,7 @@ const V = {}; // eslint-disable-line no-unused-vars
       castLinks: VHelper.castLinks,
       castTime: VHelper.castTime,
       castJson: VHelper.castJson,
+      castUUID: VHelper.castUUID,
       castShortAddress: VHelper.castShortAddress,
       setPipe: VHelper.setPipe,
       getTranslation: VHelper.getTranslation,

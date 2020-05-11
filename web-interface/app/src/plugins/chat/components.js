@@ -53,7 +53,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'textarea',
       // h: 'send 100 to Community #2121',
       // h: 'send Expert In Nodejs #2121 100',
-      h: 'send Peter Smiths #2121 100 for corona masks funding',
+      h: 'send Peter Smith #2121 100',
       // h: 'send Community Contribution #2121 100 for corona masks funding',
       // h: 'verify 0x3107b077b7745994cd93d85092db034ca1984d46',
       a: {

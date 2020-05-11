@@ -67,7 +67,7 @@ exports.findByFullId = async function( req, res ) {
 
 exports.findByUPhrase = async function( req, res ) {
 
-  const find = { uPhrase: req };
+  const find = { 'private.uPhrase': req };
 
   res( await findEntity( find ) );
 
