@@ -1,0 +1,82 @@
+{
+  "roles": [
+    {
+      "name": "Verify account",
+      "id": "VERIFYACCOUNT",
+      "params": []
+    },
+    {
+      "name": "Change community contribution amount",
+      "id": "CHANGECOMMUNITYCONTRIBUTIONACCOUNT",
+      "params": []
+    },
+    {
+      "name": "Change generation amount",
+      "id": "UPDATEGENERATIONAMOUNT",
+      "params": []
+    },
+    {
+      "name": "Set address of token being governed",
+      "id": "SETCOINADDRESS",
+      "params": []
+    },
+    {
+      "name": "Update lifetime of token",
+      "id": "UPDATELIFETIME",
+      "params": []
+    },
+    {
+      "name": "Update generation period of token",
+      "id": "UPDATEGENERATIONPERIOD",
+      "params": []
+    },
+    {
+      "name": "Change initial account balance",
+      "id": "UPDATEINITIALBALANCE",
+      "params": []
+    },
+    {
+      "name": "Change controller of governed token",
+      "id": "CHANGECONTROLLER",
+      "params": []
+    },
+    {
+      "name": "Permanently lock parameter",
+      "id": "BLOWFUSE",
+      "params": []
+    },
+    {
+      "name": "Change contribution rate",
+      "id": "UPDATECOMMUNITYCONTRIBUTION",
+      "params": []
+    },
+    {
+      "name": "Change transaction fee",
+      "id": "UPDATETRANSACTIONFEE",
+      "params": []
+    }
+  ],
+  "environments": {
+    "default": {
+      "appName": "v-governance.aragonpm.eth",
+      "network": "rpc"
+    },
+    "rinkeby": {
+      "registry": "0x98df287b6c145399aaa709692c8d308357bc085d",
+      "appName": "v-governance.aragonpm.eth",
+      "network": "rinkeby"
+    },
+    "staging": {
+      "registry": "0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939",
+      "appName": "v-governance.aragonpm.eth",
+      "network": "rinkeby"
+    },
+    "mainnet": {
+      "registry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      "appName": "v-governance.aragonpm.eth",
+      "network": "mainnet"
+    }
+  },
+  "appName": "v-governance.aragonpm.eth",
+  "path": "contracts/VCommunityApp.sol"
+}
