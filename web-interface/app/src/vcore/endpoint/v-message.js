@@ -155,7 +155,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
         //
         // }
         else { // command can only be "send" or "request" at this point
-          return V.setTransaction( caseArray );
+          return V.setTransactionConfirmation( caseArray );
         }
       }
     }

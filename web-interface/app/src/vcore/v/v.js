@@ -61,6 +61,7 @@ const V = {}; // eslint-disable-line no-unused-vars
 
       getTransaction: VTransaction.getTransaction,
       setTransaction: VTransaction.setTransaction,
+      setTransactionConfirmation: VTransaction.setTransactionConfirmation,
 
       /* DOM */
       setScript: setScript,

@@ -24,6 +24,19 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.modal__return', 'clear' );
   }
 
+  function handleTx( e ) {
+    e.stopPropagation();
+    V.setTransaction( this )
+      .then( res => {
+        console.log( res );
+        Modal.draw( 'transaction successful' );
+      } )
+      .catch( err => {
+        console.error( err );
+        Modal.draw();
+      } );
+  }
+
   /* ============ public methods and exports ============ */
 
   function modal() {
@@ -84,6 +97,40 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: V.i18n( text, 'modal' )
     } );
     V.setNode( $content, $msg );
+    return $content;
+  }
+
+  function modalConfirmTx( txData ) {
+
+    const tx = txData.data[0];
+
+    const $content = modalContent();
+    const $txDetails = V.cN( {
+      t: 'p',
+      c: 'modal__p',
+      h: `<p>Amount: ${tx.amount}</p>
+      <p>Fee: ${tx.feeAmount}</p>
+      <p>Contribution: ${tx.contribution}</p>
+      <p>Total: ${tx.txTotal}</p>`
+    } );
+    const $confirm = V.cN( {
+      t: 'div',
+      c: 'modal__confirm font-medium',
+      s: {
+        modal__confirm: {
+          'background': '#ffa41b',
+          'position': 'relative',
+          'top': '5vh',
+          'margin': '0 auto',
+          'padding': '1rem',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleTx.bind( txData ),
+      h: V.i18n( 'Sign Transaction', 'modal' )
+    } );
+    V.setNode( $content, [$txDetails, $confirm]  );
     return $content;
   }
 
@@ -289,6 +336,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     modal: modal,
     modalContent: modalContent,
     modalMessage: modalMessage,
+    modalConfirmTx: modalConfirmTx,
     web2Login: web2Login,
     entityFound: entityFound,
     entityNotFound: entityNotFound,

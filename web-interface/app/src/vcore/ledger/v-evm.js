@@ -120,6 +120,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     if ( contract ) {
 
       const blockNumber = contract.methods.getBlockNumber().call();
+      const fee = contract.methods.transactionFee.call().call();
+      const contribution = contract.methods.communityContribution.call().call();
 
       const allEvents = contract.getPastEvents( 'allEvents', {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -139,24 +141,32 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           } ).reverse();
         } );
 
-      const all = await Promise.all( [ blockNumber, allEvents ] );
+      const all = await Promise.all( [ blockNumber, fee, contribution, allEvents ] );
 
-      if ( all[0] && all[1] ) {
+      if ( all[0] ) {
 
         console.log( '*** CONTRACT STATUS ***' );
         console.log( 'Current Block: ', all[0] );
+        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
         console.log( 'Contract: ', contract._address );
-        console.log( 'All Events:', all[1] );
+        console.log( 'All Events:', all[3] );
         console.log( '*** CONTRACT STATUS END ***' );
+
+        const data = {
+          currentBlock: Number( all[0] ),
+          fee: all[1],
+          contribution: all[2],
+          contract: contract._address,
+          allEvents: all[3],
+        };
+
+        V.setState( 'contract', data );
 
         return {
           success: true,
           status: 'contract state retrieved',
-          data: [{
-            currentBlock: Number( all[0] ),
-            contract: contract._address,
-            allEvents: all[1],
-          }]
+          data: [ data ]
         };
       }
       else {
@@ -300,7 +310,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const txObject = {
       from: data.initiatorAddress,
       to: data.recipientAddress,
-      value: window.Web3Obj.utils.toWei( data.amount.toString(), 'ether' ),
+      value: window.Web3Obj.utils.toWei( data.txTotal.toString(), 'ether' ),
       // "gas": 21000,         (optional)
       // "gasPrice": 4500000,  (optional)
       // "data": 'For testing' (optional)
@@ -328,29 +338,42 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function setTokenTransaction( data ) {
+  async function setTokenTransaction( data ) {
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const sender = data.initiatorAddress;
-    const amount = data.amount * 10**6;
-    contract.methods.transfer( recipient, amount ).send( { from: sender } )
-      .once( 'transactionHash', function( hash ) { console.log( 'Hash: ' + hash ) } )
-      .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
-      .on( 'confirmation', function( confNumber, receipt ) {
-        console.log( 'Confirmation Number: ' + JSON.stringify( confNumber ) );
-        console.log( 'Receipt B: ' + JSON.stringify( receipt ) );
-      } )
-      .on( 'error', function( error ) {
-        console.log( 'Error: ' + error );
-      } )
-      .then( function( receipt ) {
-        console.log( 'Success: ' + JSON.stringify( receipt ) );
+    const amount = data.txTotal * 10**6;
+    const txFunction = await new Promise( ( resolve, reject ) => {
+      return contract.methods.transfer( recipient, amount ).send( { from: sender } )
+        .once( 'transactionHash', function( hash ) { console.log( 'Hash: ' + hash ) } )
+      // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
+      // .on( 'confirmation', function( confNumber, receipt ) {
+        //   console.log( 'Confirmation Number: ' + JSON.stringify( confNumber ) );
+        //   console.log( 'Receipt B: ' + JSON.stringify( receipt ) );
+        // } )
+        .on( 'error', function( error ) {
+          console.log( 'Error: ' + JSON.stringify( error ) );
 
-        return {
-          success: true,
-          status: 'last token transaction successful',
-        };
+          reject( {
+            success: false,
+            status: error.code,
+            message: error.message,
+            data: []
+          } );
 
-      } );
+        } )
+        .then( function( receipt ) {
+          console.log( 'Success: ' + JSON.stringify( receipt ) );
+
+          resolve( {
+            success: true,
+            status: 'last token transaction successful',
+            data: [ receipt ]
+          } );
+
+        } );
+    } );
+
+    return txFunction;
   }
 
   /* ====================== export  ===================== */
