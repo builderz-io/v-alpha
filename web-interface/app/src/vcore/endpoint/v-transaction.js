@@ -22,7 +22,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     if ( !initiator ) {
       return {
         success: false,
-        type: 'transaction',
+        endpoint: 'transaction',
         status: 'no active entity'
       };
     }
@@ -67,7 +67,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     if ( !amount ) {
       return {
         success: false,
-        type: 'transaction',
+        endpoint: 'transaction',
         status: 'invalid amount'
       };
     }
@@ -76,7 +76,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     if ( !recipientData ) {
       return {
         success: false,
-        type: 'transaction',
+        endpoint: 'transaction',
         status: 'no recipient'
       };
     }
@@ -112,7 +112,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
     return {
       success: true,
-      type: 'transaction',
+      endpoint: 'transaction',
       status: 'transaction cast',
       data: [{
         date: new Date(),

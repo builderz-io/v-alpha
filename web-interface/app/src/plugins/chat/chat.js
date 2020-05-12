@@ -152,7 +152,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
-          if ( res.type == 'transaction' ) {
+          if ( res.endpoint == 'transaction' ) {
             V.setState( 'active', { transaction: res } );
             Modal.draw( 'confirm transaction' );
           }
