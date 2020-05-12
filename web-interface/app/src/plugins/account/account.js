@@ -24,9 +24,11 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       const transactions = await V.getTransaction();
 
       if( !transactions.success || !transactions.data[0].length ) {
-        return {
+        const pageData = {
           topcontent: CanvasComponents.notFound( 'transactions' ),
+          position: 'top'
         };
+        return pageData;
       }
 
       for ( const txData of transactions.data[0].reverse() ) {

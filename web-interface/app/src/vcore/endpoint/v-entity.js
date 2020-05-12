@@ -49,15 +49,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( exists.success ) { // success is not a good thing here ;)
       console.log( 'entity already exists:', exists.data[0].fullId );
       castEntity( entityData );
-      // return {
-      //   success: false,
-      //   endpoint: 'entity',
-      //   status: 'entity exists'
-      // };
+      return {
+        success: false,
+        endpoint: 'entity',
+        status: 'entity exists'
+      };
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-    const activeAddress = V.getState( 'activeAddress' ) ? V.getState( 'activeAddress' ) : 'none';
+    const activeAddress = V.getState( 'activeAddress' ) || 'none';
 
     const d = new Date();
     const date = d.toString();
@@ -81,9 +81,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( entityData.uPhrase ) {
       uPhrase = entityData.uPhrase; // for demo data
     }
-    // else if ( socket ) {
-    //   uPhrase = 'vx' + socket.id.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
-    // }
     else {
       const gen = V.castUUID();
       uPhrase = 'vx' + gen.base64Url.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
@@ -126,7 +123,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         creatorTag: creatorTag,
       },
       evmCredentials: {
-        address: entityData.evmAddress ? entityData.evmAddress : 'none'
+        address: entityData.evmAddress || activeAddress || 'none'
       },
       symbolCredentials: entityData.symbolCredentials || { address: 'none' },
       owners: [{

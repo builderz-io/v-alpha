@@ -1,10 +1,32 @@
-# Installing V Alpha 2
+# Installing V Alpha 2 - Running it locally
+
+## Content
+
+Prerequisites
+- Node.js
+- MongoDB
+- Truffle
+
+Installing the App
+- MongoDB Entity Store
+- Web Interface
+
+Adding Content
+- Manual Content
+- Demo Content
+
+Using the Smart Contract
+- Starting Truffle and Deploy
+- Adding Truffle to MetaMask
+- Changing V Core Settings to EVM
+- Using Addresses
+
 
 ## Prerequisites
 
-### You need node.js installed and running
+### You need Node.js installed and running
 
-Running the MongoDB Entity Store and serving the Web Interface with a simple Express server requires Node.js
+Serving the Web Interface locally requires a simple Express server with Node.js. Node is also required when running the MongoDB Entity Store locally.
 
 ```
 https://nodejs.org/en/
@@ -12,13 +34,13 @@ https://nodejs.org/en/
 
 ### You need MongoDB installed and running
 
-Running the MongoDB Entity Store requires the Community Edition of MongoDB
+Running the MongoDB Entity Store locally requires the Community Edition of MongoDB.
 
 ```
 https://docs.mongodb.com/manual/administration/install-community/
 ```
 
-Don't forget to start MongoDB after installation
+Don't forget to start MongoDB after installation.
 
 ```
 sudo mongod
@@ -26,14 +48,23 @@ sudo mongod
 
 ### You need Truffle installed and running (optional)
 
-Running the Smart Contract requires Truffle
+Running the Smart Contract locally requires Truffle.
 
 ```
 https://www.trufflesuite.com/truffle
 ```
 
+### You need a wallet installed and running (optional)
 
-## Installing the app
+Accessing the Smart Contract requires a wallet, such as
+the MetaMask browser extension.
+
+```
+https://metamask.io/
+```
+
+
+## Installing the App
 
 Open a Terminal window and run the following commands.
 
@@ -57,8 +88,7 @@ git checkout branch-name
 
 ### Starting the MongoDB Entity Store
 
-Make sure MongoDB is running. Then, from the main V Alpha 2 folder
-execute the following:
+Make sure MongoDB is installed and running. Then, from the main V Alpha 2 folder, execute the following:
 
 Install dependencies for the MongoDB Entity Store
 
@@ -80,8 +110,7 @@ The MongoDB Entity Store should now be listening on port 6021
 
 ### Starting the Web Interface
 
-Open a new Terminal window, navigate to the main V Alpha 2 folder
-and execute the following:
+Open a new Terminal window. Then, from the main V Alpha 2 folder, execute the following:
 
 Install dependencies for the Web Interface
 
@@ -107,7 +136,7 @@ localhost:6029
 
 If all is well you should see an empty app, with "no items found"
 
-## Add Content
+## Adding Content
 
 ### Manual Content
 
@@ -122,26 +151,17 @@ You may have to reload the page (currently) to see the added items.
 
 ### Demo Content
 
-To install the demo content also, open a new terminal window and execute the following from the main V Alpha 2 folder
+Note: When planning to use the Smart Contract, you should add addresses to the demo content file before running the following routine. See also `Using Addresses` below.
 
-```
-cd web-interface/app/src/vcore/v
-```
+To install the demo content, open `v-setup.js` in your preferred text editor and set `demoContent` to `true`.
 
+*in*
 ```
-nano v-setup.js
+web-interface/app/src/vcore/v/v-setup.js
 ```
-
-In the opened file change `demoContent` to `true`
-
+*set*
 ```
-demoContent: true, // set to 'true', then ...
-```
-
-To save press 'Ctrl-X', then 'Y', then 'Enter'
-
-```
-'Ctrl-X' 'Y' 'Enter'
+demoContent: true, // ...
 ```
 
 Now reload the app in the browser. This triggers the adding of demo content into the MongoDB Entity Store.
@@ -156,12 +176,84 @@ Before continuing, change `demoContent` back to `false` in order to not add it a
 demoContent: false, // ...
 ```
 
-```
-'Ctrl-X' 'Y' 'Enter'
-```
-
 Now reload the app in the browser again to see all content added.
 
 ```
 reload app in browser
+```
+
+## Using the Smart Contract
+
+### Starting Truffle and Deploying the Smart Contract
+
+Make sure Truffle is installed. Then, from the main V Alpha 2 folder,
+execute the following:
+
+Install dependencies for the Smart Contract / for Truffle
+
+```
+cd smart-contract
+```
+
+```
+npm install
+```
+
+Start Truffle and deploy the Smart Contract
+
+```
+cd migrations
+```
+
+```
+truffle develop
+```
+
+```
+migrate
+```
+
+Take note of addresses and contract address
+
+### Adding Truffle to MetaMask
+
+Make sure MetaMask is installed. Add your local Truffle network to MetaMask where it usually says `Ethereuem Main Net` by selecting `Special RPC` and
+entering/confirming the following:
+
+*Network name*
+```
+Truffle
+```
+*RPC*
+```
+http://127.0.0.1:9545/
+```
+
+
+### Changing V Core Settings to use EVM and contract
+
+To use the app/make transactions with the Smart Contract, open `v-setup.js` in your preferred text editor and set `transactionLedger` to `EVM`.
+
+*in*
+```
+web-interface/app/src/vcore/v/v-setup.js
+```
+*set*
+```
+transactionLedger: 'EVM', // ...
+```
+*set*
+```
+contractAddress: '0x...',
+```
+
+### Using Addresses
+
+The app will prompt to name your address, when joining and no entity associated with that address is found in the Entity Store.
+
+You can optionally add addresses to `demo-content.js`, before running the demo content installation routine.
+
+*in*
+```
+web-interface/app/assets/demo-content/demo-content.js
 ```

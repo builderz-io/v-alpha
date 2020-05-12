@@ -47,7 +47,7 @@ The MongoDB Entity Store resolves user names to Web3 addresses, when a distribut
 
 ## Installation
 
-Please refer to the [INSTALL.md](https://github.com/valueinstrument/v-alpha-2/blob/development/INSTALL.md) file.
+Please refer to the [INSTALL](https://github.com/valueinstrument/v-alpha-2/blob/development/INSTALL.md) file.
 
 ## Documentation
 
