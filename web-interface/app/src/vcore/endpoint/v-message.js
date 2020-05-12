@@ -1,9 +1,9 @@
 const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to add messaging to the app
-  *
-  */
+   * V Core Module to manage messaging
+   *
+   */
 
   'use strict';
 
@@ -52,7 +52,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     return input.trim().replace( /(?:\r\n|\r|\n)/g, ' ' ).replace( /<[^>]+>/g, '' );
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   async function setMessageBot( message ) {
 
@@ -185,6 +185,14 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.getMessage = getMessage;
+    V.setMessage = setMessage;
+    V.setMessageBot = setMessageBot;
+  } )();
 
   return {
     getMessage: getMessage,

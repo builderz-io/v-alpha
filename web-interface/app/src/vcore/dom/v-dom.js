@@ -1,10 +1,9 @@
 const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module for dom-manipulation methods
-  *
-  *
-  */
+   * V Core Module for dom-manipulation
+   *
+   */
 
   'use strict';
 
@@ -15,7 +14,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     prepend == 'prepend' || prepend == true ? $targetNode.prepend( $node ) : $targetNode.append( $node );
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   function castNode( data ) {
     const tag = data.t ? data.t : data.tag;
@@ -304,6 +303,23 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   function castRemToPixel( remValue ) {
     return Number( remValue ) * parseFloat( getComputedStyle( document.documentElement ).fontSize );
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.castNode = castNode;
+    V.cN = cN;
+    V.setNode = setNode;
+    V.sN = sN;
+    V.getNode = getNode;
+    V.gN = gN;
+    V.setAnimation = setAnimation;
+    V.sA = sA;
+    V.setStyle = setStyle;
+    V.setClick = setClick;
+    V.getCss = getCss;
+    V.castRemToPixel = castRemToPixel;
+  } )();
 
   return {
     castNode: castNode,

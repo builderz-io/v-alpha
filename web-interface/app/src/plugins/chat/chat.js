@@ -1,10 +1,9 @@
 const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module driving the chat
-  *
-  *
-  */
+   * V Plugin driving the chat
+   *
+   */
 
   'use strict';
 

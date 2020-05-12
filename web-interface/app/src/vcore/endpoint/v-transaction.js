@@ -1,7 +1,7 @@
 const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module to transact funds
+   * V Core Module to manage transactions
    *
    */
 
@@ -144,7 +144,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       .reduce( function( acc, val ) { return Number( acc ) + Number( val ) }, 0 );
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   async function getTransaction(
     which = V.getState( 'activeEntity' ).fullId
@@ -165,6 +165,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return Promise.resolve( txData );
     }
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.getTransaction = getTransaction;
+    V.setTransactionConfirmation = setTransactionConfirmation;
+    V.setTransaction = setTransaction;
+  } )();
 
   return {
     getTransaction: getTransaction,

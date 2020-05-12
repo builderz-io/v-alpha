@@ -1,9 +1,9 @@
 const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module for the app whichLedger / database connections
-  *
-  */
+   * V Core Module to route ledger/database queries
+   *
+   */
 
   'use strict';
 
@@ -51,8 +51,8 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   async function setSocket() {
     return new Promise( ( resolve, reject ) => {
-      const host = VInit.getSetting( 'socketHost' );
-      const port = VInit.getSetting( 'socketPort' );
+      const host = VSetup.getSetting( 'socketHost' );
+      const port = VSetup.getSetting( 'socketPort' );
 
       const connection = host + ( port ? ':' + port : '' );
 

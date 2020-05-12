@@ -1,7 +1,7 @@
 const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Modal Components
+   * V Theme Module for modal components
    *
    */
 

@@ -1,10 +1,9 @@
-const VDebugHelper = ( function() { // eslint-disable-line no-unused-vars
+const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Places a debugging element into the DOM
-  *
-  *
-  */
+   * V Core Module to place a debbuging-element in the DOM
+   *
+   */
 
   'use strict';
 
@@ -37,6 +36,8 @@ const VDebugHelper = ( function() { // eslint-disable-line no-unused-vars
     VDom.setNode( 'debug', 'clear' );
   } );
 
+  /* ================== public methods ================== */
+
   function debug( one, two, three, four, five, six ) {
     const debugArr = [one, two, three, four, five, six];
     console.log( '*** debug ***' );
@@ -50,9 +51,14 @@ const VDebugHelper = ( function() { // eslint-disable-line no-unused-vars
     VDom.setNode( 'body', $debug );
   }
 
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.debug = debug;
+  } )();
+
   return {
     debug: debug
-
   };
 
 } )();

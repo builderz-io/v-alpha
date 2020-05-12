@@ -1,13 +1,15 @@
 const VState = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V State
+   * V Core Module to manage the app's state
    *
    */
 
   'use strict';
 
   const state = {};
+
+  /* ================== public methods ================== */
 
   function getState( which = 'all' ) {
     return which == 'all' ? state : state[which];
@@ -85,6 +87,17 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   function setCookie( which, data ) {
     Cookies.set( which, JSON.stringify( data ) );
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.getState = getState;
+    V.setState = setState;
+    V.getNavItem = getNavItem;
+    V.setNavItem = setNavItem;
+    V.getCookie = getCookie;
+    V.setCookie = setCookie;
+  } )();
 
   return {
     getState: getState,

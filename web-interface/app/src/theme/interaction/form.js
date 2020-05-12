@@ -1,7 +1,7 @@
 const Form = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Form layouts
+   * V Theme Module to draw forms
    *
    */
 

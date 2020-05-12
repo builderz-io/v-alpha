@@ -1,7 +1,7 @@
 const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for Chat Plugin
+   * Components for V Chat Plugin
    *
    */
 

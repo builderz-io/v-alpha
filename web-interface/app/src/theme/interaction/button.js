@@ -1,7 +1,7 @@
 const Button = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Cast buttons and draw them according to Plugins
+   * V Theme Module to draw buttons
    *
    */
 

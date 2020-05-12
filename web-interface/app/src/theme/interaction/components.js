@@ -1,7 +1,7 @@
 const InteractionComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Interaction Components
+   * V Theme Module for interaction components
    *
    */
 
@@ -106,7 +106,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       classes: 'plusform fixed w-screen hidden bkg-white pxy',
       setStyle: {
         plusform: {
-          'padding-top': 'calc(var(--page-position-top-selected) + 5px)',
+          'padding-top': 'calc(var(--page-position-top-selected) + 5px) !important',
           'height': '100%',
           'z-index': -1
         }

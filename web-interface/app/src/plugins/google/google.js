@@ -1,7 +1,7 @@
 const Google = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to add Google services to the app
+  * V Plugin to add Google services
   *
   *
   */

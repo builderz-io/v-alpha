@@ -1,8 +1,7 @@
 const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module driving the Marketplace
-   *
+   * V Plugin driving the Marketplace
    *
    */
 

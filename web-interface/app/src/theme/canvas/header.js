@@ -1,7 +1,7 @@
 const Header = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module to control the header
+   * V Theme Module to draw the theme's header
    *
    */
 

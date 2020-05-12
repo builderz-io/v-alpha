@@ -1,6 +1,7 @@
 const Modal = ( function() { // eslint-disable-line no-unused-vars
+
   /**
-   * Modal layouts and interaction
+   * V Theme Module to draw modal layouts and interaction
    *
    */
 

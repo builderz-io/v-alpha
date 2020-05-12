@@ -1,4 +1,9 @@
-const VInit = ( function() { // eslint-disable-line no-unused-vars
+const VSetup = ( function() { // eslint-disable-line no-unused-vars
+
+  /**
+   * V Core Setup Module
+   *
+   */
 
   const settings = {
 
@@ -46,6 +51,8 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
     }
   };
 
+  /* ================== public methods ================== */
+
   function getSetting( which ) {
     return settings[which];
   }
@@ -53,6 +60,13 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
   function getNetwork( which ) {
     return networks[which];
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.getSetting = getSetting;
+    V.getNetwork = getNetwork;
+  } )();
 
   return {
     getSetting: getSetting,

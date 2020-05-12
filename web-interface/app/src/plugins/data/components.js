@@ -1,7 +1,7 @@
 const DataComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for Data Plugin
+   * Components for V Data Plugin
    *
    */
 

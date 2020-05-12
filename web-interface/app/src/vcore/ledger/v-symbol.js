@@ -1,7 +1,7 @@
 const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Symbol Module to access Symbol chains
+   * V Core Module to access Symbol (by NEM) ledgers
    *
    */
 

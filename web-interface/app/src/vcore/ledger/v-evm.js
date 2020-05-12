@@ -1,7 +1,7 @@
 const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Evm
+   * V Core Module to access EVM-compatible ledgers
    *
    */
 

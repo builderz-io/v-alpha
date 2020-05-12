@@ -1,7 +1,7 @@
 const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for Marketplace Plugin
+   * Components for V Account Plugin
    *
    */
 

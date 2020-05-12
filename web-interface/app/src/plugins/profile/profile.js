@@ -1,10 +1,10 @@
 const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module driving the profile pages,
-  * including the logged in user profile
-  *
-  */
+   * V Plugin driving the profile pages,
+   * including the logged in user profile
+   *
+   */
 
   'use strict';
 
