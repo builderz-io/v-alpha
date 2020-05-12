@@ -13,7 +13,7 @@ const server = http.createServer( app );
 
 server.listen( settings.port, function( err ) {
   if ( err ) {throw err}
-  console.log( 'MongoDB Connector listening on port', settings.port );
+  console.log( 'MongoDB Entity Store listening on port', settings.port );
 } );
 
 app.get( '/', function( req, res ) {

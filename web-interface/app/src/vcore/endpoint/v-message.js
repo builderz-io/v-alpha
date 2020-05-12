@@ -59,15 +59,15 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     const text = sanitize( message );
 
     if ( text.indexOf( 'vx' ) > -1 ) {
-      return Promise.resolve( { success: false, status: 'unique phrase entered?' } );
+      return Promise.resolve( { success: false, endpoint: 'message', status: 'unique phrase entered?' } );
     }
 
     else if ( text.match( /[a-zA-Z0-9+]/ ) === null ) {
-      return Promise.resolve( { success: false, status: 'invalid message' } );
+      return Promise.resolve( { success: false, endpoint: 'message', status: 'invalid message' } );
     }
 
     else if ( triggers.misspellingsEN.concat( triggers.misspellingsDE ).indexOf( text.substr( 0, 4 ) ) >= 0 ) {
-      return Promise.resolve( { success: false, status: 'misspelled trigger' } );
+      return Promise.resolve( { success: false, endpoint: 'message', status: 'misspelled trigger' } );
     }
 
     else {
@@ -181,6 +181,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     else {
       return Promise.resolve( {
         success: false,
+        endpoint: 'message',
         status: 'not joined'
       } );
     }

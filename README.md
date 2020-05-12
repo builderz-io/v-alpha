@@ -45,13 +45,17 @@ The VToken concept cast into a smart contract, which can be setup on Ethereum an
 
 The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used to transact funds but not used for identities. This is helpful for testing and exploring user needs. This module also enables token accounts and transactions in VToken format, if no distributed ledger is used for transactions either (as a simulation of such) and provides a network/community chat-thread.
 
+## Installation
+
+Please refer to the [INSTALL.md](https://github.com/valueinstrument/v-alpha-2/blob/development/INSTALL.md) file.
+
 ## Documentation
 
 Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here on GitHub to find the documentation
 
 ## Contribute
 
-Visit the [Project Board](https://github.com/valueinstrument/v-alpha-2/projects/1) here on GitHub to find things to contribute
+Visit the [Issues](https://github.com/valueinstrument/v-alpha-2/issues) to find a selection of tasks in need of attention. The issues listed mainly provide a global overview. We do not currently track detailed issues or the project roadmap here on GitHub.
 
 ## Intro Video
 

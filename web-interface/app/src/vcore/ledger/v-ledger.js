@@ -68,7 +68,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       window.socket.on( 'connect_error', ( error ) => {
-        VDebugHelper.debug( error );
+        VDebugger.debug( error );
         reject( 'could not connect socket' );
       } );
     } );

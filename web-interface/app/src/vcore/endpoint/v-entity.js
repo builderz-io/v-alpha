@@ -21,6 +21,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( entityData.location && !entityData.lat ) {
       return {
         success: false,
+        endpoint: 'entity',
         status: 'could not attach geo data'
       };
     }
@@ -31,6 +32,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( !title.success ) {
       return {
         success: false,
+        endpoint: 'entity',
         status: 'invalid title'
       };
     }
@@ -49,6 +51,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       castEntity( entityData );
       // return {
       //   success: false,
+      //   endpoint: 'entity',
       //   status: 'entity exists'
       // };
     }
@@ -147,6 +150,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     return {
       success: true,
+      endpoint: 'entity',
       status: 'cast entity',
       data: [ newEntity ]
     };
@@ -207,6 +211,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     ) {
       return {
         success: false,
+        endpoint: 'entity',
         status: 'invalid title'
       };
     }
@@ -228,6 +233,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       return {
         success: true,
+        endpoint: 'entity',
         status: 'cast entity title',
         data: [ formattedTitle ]
       };
@@ -245,6 +251,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       if ( bal.success ) {
         return  {
           success: true,
+          endpoint: 'entity',
           status: 'entity balance retrieved',
           ledger: tL,
           data: [
@@ -261,6 +268,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return  {
           success: false,
+          endpoint: 'entity',
           status: 'could not retrieve entity balance',
           ledger: tL,
           data: []
@@ -273,6 +281,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       if ( bal.success ) {
         return  {
           success: true,
+          endpoint: 'entity',
           status: 'entity balance retrieved',
           ledger: tL,
           data: [
@@ -287,6 +296,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return  {
           success: false,
+          endpoint: 'entity',
           status: 'could not retrieve entity balance',
           ledger: tL,
           data: []
@@ -331,6 +341,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       else {
         return Promise.resolve( {
           success: false,
+          endpoint: 'entity',
           status: 'return false for testing',
         } );
       }
