@@ -1,7 +1,7 @@
 const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Canvas Components
+   * V Theme Module for canvas components
    *
    */
 

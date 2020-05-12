@@ -1,7 +1,7 @@
 const Background = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module to control the background
+   * V Theme Module to draw the background (map)
    *
    */
 

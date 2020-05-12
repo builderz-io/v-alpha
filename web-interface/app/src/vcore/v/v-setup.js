@@ -1,10 +1,15 @@
-const VInit = ( function() { // eslint-disable-line no-unused-vars
+const VSetup = ( function() { // eslint-disable-line no-unused-vars
+
+  /**
+   * V Core Setup Module
+   *
+   */
 
   const settings = {
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
-    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
 
     socketHost: 'http://localhost',
     socketPort: 6021,
@@ -17,7 +22,10 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
 
     coinTicker: 'ETH',
     tokenTicker: 'V',
+
     tokenDivisibility: 6,
+    transactionFee: 33.33 * ( 10**2 ), // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 33.33 * (10**2)
+    communityContribution: 10 * ( 10**2 ), // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 10 * (10**2)
 
   };
 
@@ -43,6 +51,8 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
     }
   };
 
+  /* ================== public methods ================== */
+
   function getSetting( which ) {
     return settings[which];
   }
@@ -50,6 +60,13 @@ const VInit = ( function() { // eslint-disable-line no-unused-vars
   function getNetwork( which ) {
     return networks[which];
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.getSetting = getSetting;
+    V.getNetwork = getNetwork;
+  } )();
 
   return {
     getSetting: getSetting,

@@ -1,7 +1,7 @@
 const V3Box = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V 3Box
+   * V Core Module to access 3Box
    *
    */
 
@@ -10,6 +10,8 @@ const V3Box = ( function() { // eslint-disable-line no-unused-vars
   let box, space;
 
   /* ================== private methods ================= */
+
+  // currently none
 
   /* ================== public methods  ================= */
 

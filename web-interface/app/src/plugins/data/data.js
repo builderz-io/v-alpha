@@ -1,7 +1,9 @@
 const Data = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module for data display
+   * V Plugin driving the display of data
+   *
+   * Note: Currently for DEMO PURPOSE only
    *
    */
 

@@ -1,7 +1,7 @@
 const ProfileComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for Profiles
+   * Components for V Profile Plugin
    *
    */
 

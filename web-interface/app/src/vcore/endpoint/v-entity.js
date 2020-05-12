@@ -1,11 +1,7 @@
 const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
-  // TODO:
-  // what if dice cant find a free number? better pick from list?
-  // location
-
   /**
-   * V Entity
+   * V Core Module to manage entities
    *
    */
 
@@ -189,7 +185,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   function castEntityTitle( title, role ) {
 
@@ -364,6 +360,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       }
     }
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.castEntityTitle = castEntityTitle;
+    V.getEntity = getEntity;
+    V.setEntity = setEntity;
+    V.getEntityBalance = getEntityBalance;
+  } )();
 
   return {
     castEntityTitle: castEntityTitle,

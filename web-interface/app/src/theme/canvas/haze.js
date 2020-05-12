@@ -1,7 +1,7 @@
 const Haze = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module to show/hide the haze
+   * V Theme Module to draw (show/hide) the haze
    *
    */
 

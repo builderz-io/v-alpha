@@ -1,6 +1,7 @@
 const Modal = ( function() { // eslint-disable-line no-unused-vars
+
   /**
-   * Modal layouts and interaction
+   * V Theme Module to draw modal layouts and interaction
    *
    */
 
@@ -54,8 +55,15 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'please wait' ) {
       V.setNode( $modal, ModalComponents.modalMessage( 'Please wait... requesting data' ) );
     }
+    else if ( which == 'confirm transaction' ) {
+      const aTx = V.getState( 'active' ).transaction;
+      V.setNode( $modal, ModalComponents.modalConfirmTx( aTx ) );
+    }
     else if ( which == 'transaction sent' ) {
       V.setNode( $modal, ModalComponents.modalMessage( 'Transaction has been sent to the network' ) );
+    }
+    else if ( which == 'transaction successful' ) {
+      V.setNode( $modal, ModalComponents.modalMessage( 'Transaction successful' ) );
     }
     else {
       V.setNode( $modal, ModalComponents.modalMessage( 'An error occured' ) );

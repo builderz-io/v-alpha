@@ -1,7 +1,7 @@
 const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for Media Plugin
+   * Components for V Media Plugin
    *
    */
 

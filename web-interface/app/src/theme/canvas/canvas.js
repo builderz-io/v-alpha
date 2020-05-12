@@ -1,13 +1,29 @@
 const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module to initialize the app and its "canvas".
+   * V Theme Module to initialize the app and its "canvas"
+   *
+   * Note: This module is loaded by V Core to INITIALIZE THE THEME
    *
    */
 
   'use strict';
 
   /* ================== private methods ================= */
+
+  async function launchStylesheets() {
+    await Promise.all( [
+      V.setStylesheet( '/src/css/0_0_variables.css' ),
+      V.setStylesheet( '/src/css/1_0_reset-normalize.css' ),
+      V.setStylesheet( '/src/css/1_1_reset.css' ),
+      V.setStylesheet( '/src/css/2_0_typography.css' ),
+      V.setStylesheet( '/src/css/2_2_color.css' ),
+      V.setStylesheet( '/src/css/3_0_utilities.css' ),
+      V.setStylesheet( '/src/css/4_0_components.css' ),
+      V.setStylesheet( '/src/css/8_0_overrides.css' ),
+      V.setStylesheet( '/src/css/9_0_leaflet.css' )
+    ] );
+  }
 
   async function launchScripts() {
     await Promise.all( [
@@ -48,74 +64,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function setState() {
-
-    // V.setState( 'active', {
-    //   registeredNav: ['service-nav', 'entity-nav'],
-    // } );
-    V.setState( 'screen', {
-      height: Number( window.innerHeight ),
-      width: Number( window.innerWidth )
-    } );
-    V.setState( 'page', {
-      height: V.getCss( '--page-position-peek' ),
-      top: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top' ),
-      topSelected: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top-selected' ),
-      peek: V.getCss( '--page-position-peek' ),
-      closed: V.getCss( '--page-position-closed' ),
-    } );
-
-    /* calculate page size for the feature and top position according to screen dimensions */
-    const state = V.getState( 'all' );
-    V.setState( 'page', { topCalc: state.screen.height - state.page.top } );
-    V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected } );
-    V.setState( 'page', { featureCalc: Math.floor( state.screen.height - state.page.topSelected - state.screen.width * 9/16 ) } );
-
-    V.setState( 'header', {
-
-      isHazed: false,
-
-      serviceNavTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--service-nav-top' ),
-      serviceNavLeft: V.setPipe( V.getCss, Number )( '--service-nav-left' ),
-
-      entityNavTop: V.setPipe( V.getCss, Number )( '--entity-nav-top' ),
-      entityNavLeft: V.setPipe( V.getCss, Number )( '--entity-nav-left' ),
-
-    } );
-  }
-
-  // function setHead() {
-  //
-  //   V.setNode( 'head', {
-  //     tag: 'title',
-  //     html: 'VI UI 2020'
-  //   } );
-  //
-  // }
-
-  function setCss() {
-
-    /* make screen size available to CSS */
-    document.documentElement.style.setProperty( '--screen-height', `${ window.innerHeight }px` );
-    document.documentElement.style.setProperty( '--screen-width', `${ window.innerWidth }px` );
-
-  }
-
-  function setWindow() {
-
-    function refresh() {
-      location.reload();
-    }
-
-    window.onresize = function() {
-      V.setNode( 'body', 'clear' );
-      clearTimeout( V.getState( 'throttle' ) );
-      V.setState( 'throttle', setTimeout( refresh, 200 ) );
-    };
-  }
-
   function setFont() {
 
+    // TODO
     // ['IBMPlexSans-Regular', 'IBMPlexSans-Medium', 'IBMPlexSans-Bold'].forEach( font => {
     //   V.sN( 'head', {
     //     t: 'link',
@@ -148,6 +99,60 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         'unicode-range': 'U+000-024F'
       }
     } );
+  }
+
+  function setState() {
+
+    V.setState( 'screen', {
+      height: Number( window.innerHeight ),
+      width: Number( window.innerWidth )
+    } );
+    V.setState( 'page', {
+      height: V.getCss( '--page-position-peek' ),
+      top: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top' ),
+      topSelected: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top-selected' ),
+      peek: V.getCss( '--page-position-peek' ),
+      closed: V.getCss( '--page-position-closed' ),
+    } );
+
+    /* calculate page size for the feature and top position according to screen dimensions */
+    const state = V.getState( 'all' );
+    V.setState( 'page', { topCalc: state.screen.height - state.page.top } );
+    V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected } );
+    V.setState( 'page', { featureCalc: Math.floor( state.screen.height - state.page.topSelected - state.screen.width * 9/16 ) } );
+
+    V.setState( 'header', {
+
+      isHazed: false,
+
+      serviceNavTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--service-nav-top' ),
+      serviceNavLeft: V.setPipe( V.getCss, Number )( '--service-nav-left' ),
+
+      entityNavTop: V.setPipe( V.getCss, Number )( '--entity-nav-top' ),
+      entityNavLeft: V.setPipe( V.getCss, Number )( '--entity-nav-left' ),
+
+    } );
+  }
+
+  function setCss() {
+
+    /* make screen size available to CSS */
+    document.documentElement.style.setProperty( '--screen-height', `${ window.innerHeight }px` );
+    document.documentElement.style.setProperty( '--screen-width', `${ window.innerWidth }px` );
+
+  }
+
+  function setWindow() {
+
+    function refresh() {
+      location.reload();
+    }
+
+    window.onresize = function() {
+      V.setNode( 'body', 'clear' );
+      clearTimeout( V.getState( 'throttle' ) );
+      V.setState( 'throttle', setTimeout( refresh, 200 ) );
+    };
   }
 
   function presenter( historyState ) {
@@ -198,7 +203,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function setNavStates() {
     if( !V.getState( 'serviceNav' ) ) {
-      Profile.launch(); // sets navItem "me"
+      Profile.launch(); // sets navItem
       Chat.launch(); // sets navItem & sets socket.on
       Data.launch(); // sets navItem
       Marketplace.launch(); // sets navItem
@@ -232,15 +237,15 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   async function launch() {
 
+    await launchStylesheets();
+    await launchScripts();
+
     V.setPipe(
       setState,
-      // setHead,
       setWindow,
       setCss,
       setFont,
     )();
-
-    await launchScripts();
 
   }
 

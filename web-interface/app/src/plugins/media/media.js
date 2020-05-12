@@ -1,9 +1,9 @@
 const Media = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module driving the display of media items
+   * V Plugin driving the display of media items
    *
-   * DEMO PURPOSE only
+   * Note: Currently for DEMO PURPOSE only
    *
    */
 

@@ -1,7 +1,7 @@
 const VRoute = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module for routing methods
+   * V Core Module for routing
    *
    */
 
@@ -126,9 +126,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
 
   const Router = new UniversalRouter( routes );
 
-  /* ================== private methods ================= */
-
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   function castRoute( route ) {
     return Router.resolve( route );
@@ -150,6 +148,14 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'active', { path: data.path } );
     }
   }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.castRoute = castRoute;
+    V.setRoute = setRoute;
+    V.setBrowserHistory = setBrowserHistory;
+  } )();
 
   return {
     castRoute: castRoute,

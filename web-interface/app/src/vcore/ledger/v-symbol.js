@@ -1,7 +1,7 @@
 const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Symbol Module to access Symbol chains
+   * V Core Module to access Symbol (by NEM) ledgers
    *
    */
 
@@ -147,7 +147,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
     const transferTransaction = Symbol.TransferTransaction.create(
       Symbol.Deadline.create(),
       recipientAddress,
-      [ new Symbol.Mosaic( networkCurrencyMosaicId, Symbol.UInt64.fromUint( data.amount * 10**( divisibility ) ) ) ],
+      [ new Symbol.Mosaic( networkCurrencyMosaicId, Symbol.UInt64.fromUint( data.txTotal * 10**( divisibility ) ) ) ],
       Symbol.PlainMessage.create( data.reference ),
       networkType,
       Symbol.UInt64.fromUint( 2000000 )

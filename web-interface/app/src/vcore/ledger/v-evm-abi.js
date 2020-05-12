@@ -1,4 +1,10 @@
 const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-vars
+
+  /**
+   * V Core Module for the V Token ABI
+   *
+   */
+
   [
     {
       constant: true,

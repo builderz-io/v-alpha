@@ -1,30 +1,35 @@
-const V = {}; // eslint-disable-line no-unused-vars
+
+const V = {
+
+  /**
+   * Global Object for all V Core Methods to become
+   * accessible via V.someMethod( param )
+   *
+   */
+
+};
 
 ( async function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Load VCore Modules and make methods accessible
-  * through e.g. "V.methodNameHere()"
-  *
-  */
+   * V Core Initialization Module
+   *
+   * - load all V Core modules, relevant ledger modules and methods
+   * - load V Theme Canvas
+   * - draw the first app view
+   *
+   */
 
   'use strict';
+
+  V.setScript = setScript;
+  V.setStylesheet = setStylesheet;
 
   await launchScripts();
 
   await kickAss();
 
-  function setScript( src, id ) {
-    // console.log( src );
-    return new Promise( function( resolve, reject ) {
-      const s = document.createElement( 'script' );
-      s.src = src;
-      s.onload = resolve;
-      s.onerror = reject;
-      id ? s.id = id : null;
-      document.head.appendChild( s );
-    } );
-  }
+  /* ================== private methods ================= */
 
   async function launchScripts() {
     await Promise.all( [
@@ -34,85 +39,26 @@ const V = {}; // eslint-disable-line no-unused-vars
       setScript( '/dist/universal-router.js' ),
 
       setScript( '/src/vcore/v/v-key.js' ),
-      setScript( '/src/vcore/v/v-init.js' ),
+      setScript( '/src/vcore/v/v-setup.js' ),
       setScript( '/src/vcore/dom/v-dom.js' ),
       setScript( '/src/vcore/dom/v-route.js' ),
-      setScript( '/src/vcore/helper/v-helper-debug.js' ),
+      setScript( '/src/vcore/helper/v-debugger.js' ),
       setScript( '/src/vcore/helper/v-helper.js' ),
       setScript( '/src/vcore/endpoint/v-entity.js' ),
       setScript( '/src/vcore/endpoint/v-message.js' ),
       setScript( '/src/vcore/endpoint/v-transaction.js' ),
       setScript( '/src/vcore/state/v-state.js' ),
       setScript( '/src/vcore/ledger/v-ledger.js' ),
+
+      /**
+       * Also load the canvas script (the first theme script)
+       * to enable theme-initialization
+       *
+       */
+
       setScript( '/src/theme/canvas/canvas.js' ),
     ] );
     console.log( '*** vcore scripts loaded ***' );
-
-    const methods = {
-
-      /* Endpoints */
-      getEntity: VEntity.getEntity,
-      setEntity: VEntity.setEntity,
-      getEntityBalance: VEntity.getEntityBalance,
-
-      getMessage: VMessage.getMessage,
-      setMessage: VMessage.setMessage,
-      setMessageBot: VMessage.setMessageBot,
-
-      getTransaction: VTransaction.getTransaction,
-      setTransaction: VTransaction.setTransaction,
-
-      /* DOM */
-      setScript: setScript,
-      setBrowserHistory: VRoute.setBrowserHistory,
-      castNode: VDom.castNode,
-      cN: VDom.cN,
-      setNode: VDom.setNode,
-      sN: VDom.sN,
-      getNode: VDom.getNode,
-      gN: VDom.gN,
-      setAnimation: VDom.setAnimation,
-      sA: VDom.sA,
-      setStyle: VDom.setStyle,
-      setClick: VDom.setClick,
-      getCss: VDom.getCss,
-      castRemToPixel: VDom.castRemToPixel,
-      castRoute: VRoute.castRoute,
-      setRoute: VRoute.setRoute,
-
-      /* Helper */
-      castEntityTitle: VEntity.castEntityTitle,
-      castInitials: VHelper.castInitials,
-      castCamelCase: VHelper.castCamelCase,
-      castSlugOrId: VHelper.castSlugOrId,
-      castPathOrId: VHelper.castPathOrId,
-      castLinks: VHelper.castLinks,
-      castTime: VHelper.castTime,
-      castJson: VHelper.castJson,
-      castUUID: VHelper.castUUID,
-      castShortAddress: VHelper.castShortAddress,
-      setPipe: VHelper.setPipe,
-      getTranslation: VHelper.getTranslation,
-      i18n: VHelper.i18n,
-      getIcon: VHelper.getIcon,
-      debug: VDebugHelper.debug,
-
-      /* State */
-      getState: VState.getState,
-      setState: VState.setState,
-      getNavItem: VState.getNavItem,
-      setNavItem: VState.setNavItem,
-      getCookie: VState.getCookie,
-      setCookie: VState.setCookie,
-
-      /* Settings */
-      getSetting: VInit.getSetting,
-      getNetwork: VInit.getNetwork,
-      getApiKey: VKey.getApiKey,
-
-    };
-
-    Object.assign( V, methods );
 
   }
 
@@ -141,6 +87,32 @@ const V = {}; // eslint-disable-line no-unused-vars
       path: window.location.pathname
     } );
 
+  }
+
+  /* ================== public methods ================== */
+
+  function setScript( src, id ) {
+    // console.log( src );
+    return new Promise( function( resolve, reject ) {
+      const s = document.createElement( 'script' );
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      id ? s.id = id : null;
+      document.head.appendChild( s );
+    } );
+  }
+
+  function setStylesheet( src ) {
+    return new Promise( function( resolve, reject ) {
+      const l = document.createElement( 'link' );
+      l.type = 'text/css';
+      l.rel = 'stylesheet';
+      l.href = src;
+      l.onload = resolve;
+      l.onerror = reject;
+      document.head.appendChild( l );
+    } );
   }
 
 } )();

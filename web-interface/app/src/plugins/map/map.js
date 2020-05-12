@@ -1,7 +1,8 @@
 const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to launch and draw the map
+  * V Plugin driving the Map
+  *
   * List of tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
   * Locations: Map Center [ 41.576, 4.63 ], Berlin [ 52.522, 13.383 ]
   *

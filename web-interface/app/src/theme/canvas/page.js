@@ -1,10 +1,10 @@
 const Page = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Page Slider
-  * https://stackoverflow.com/questions/13278087/determine-vertical-direction-of-a-touchmove
-  *
-  */
+   * V Theme Module to draw the page and control the page sliding
+   * https://stackoverflow.com/questions/13278087/determine-vertical-direction-of-a-touchmove
+   *
+   */
 
   'use strict';
 

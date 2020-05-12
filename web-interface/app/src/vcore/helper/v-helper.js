@@ -1,14 +1,13 @@
 const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module for the app-core helper functions
-  *
-  *
-  */
+   * V Core Module for helper functions
+   *
+   */
 
   'use strict';
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   function castLinks( which ) {
 
@@ -291,14 +290,32 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
   }
 
-  function i18n( which ) {
-    return getTranslation( which );
-  }
-
   function getTranslation( which ) {
     // TODO
     return which;
   }
+
+  function i18n( which ) {
+    return getTranslation( which );
+  }
+
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.castLinks = castLinks;
+    V.castTime = castTime;
+    V.castInitials = castInitials;
+    V.castCamelCase = castCamelCase;
+    V.castSlugOrId = castSlugOrId;
+    V.castPathOrId = castPathOrId;
+    V.castJson = castJson;
+    V.castShortAddress = castShortAddress;
+    V.castUUID = castUUID;
+    V.getIcon = getIcon;
+    V.setPipe = setPipe;
+    V.getTranslation = getTranslation;
+    V.i18n = i18n;
+  } )();
 
   return {
     castLinks: castLinks,
@@ -307,8 +324,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
     castPathOrId: castPathOrId,
-    castShortAddress: castShortAddress,
     castJson: castJson,
+    castShortAddress: castShortAddress,
     castUUID: castUUID,
     getIcon: getIcon,
     setPipe: setPipe,

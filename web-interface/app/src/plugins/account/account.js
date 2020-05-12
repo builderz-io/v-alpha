@@ -1,10 +1,9 @@
 const Account = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module driving the transaction history / account display
-  *
-  *
-  */
+   * V Plugin driving the transaction history / account display
+   *
+   */
 
   'use strict';
 

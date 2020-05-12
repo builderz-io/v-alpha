@@ -1,9 +1,9 @@
 const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module to transact funds
-  *
-  */
+   * V Core Module to manage transactions
+   *
+   */
 
   'use strict';
 
@@ -11,9 +11,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   async function castTransaction( data ) {
 
-    /*
-    * data: array
-    */
+    /**
+     * @param data {Array} - The message as Array,
+     *                       e.g. ["send", "Peter", "Smith", "#2121", "100", "for", "gardening", "work"]
+     *                       or ["send", "100", "to", "Peter", "Smith", "#2121", "for", "gardening", "work"]
+     *
+     */
+
+    const initiator = V.getState( 'activeEntity' );
+    if ( !initiator ) {
+      return {
+        success: false,
+        type: 'transaction',
+        status: 'no active entity'
+      };
+    }
 
     const messageParts = data.slice(),
       date = Date.now(),
@@ -21,8 +33,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger' ) ),
       toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger' ) );
 
-    // extract reference
-    let reference = '', recipient = '', amount = 0;
+    let reference = '', recipient = '', currency,
+      amount = 0, feeAmount = 0, contribution = 0, txTotal = 0;
 
     const command = messageParts[0];
 
@@ -52,13 +64,40 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    const initiator = V.getState( 'activeEntity' );
-    const aA = V.getState( 'activeAddress' );
-    const tL = V.getSetting( 'transactionLedger' );
+    if ( !amount ) {
+      return {
+        success: false,
+        type: 'transaction',
+        status: 'invalid amount'
+      };
+    }
 
     const recipientData = await V.getEntity( recipient );
+    if ( !recipientData ) {
+      return {
+        success: false,
+        type: 'transaction',
+        status: 'no recipient'
+      };
+    }
+
+    // TODO
+    currency = 'V'; // eslint-disable-line prefer-const
+
+    if ( currency == 'V' ) {
+      const fee = V.getSetting( 'transactionFee' );
+      const contr = V.getSetting( 'communityContribution' );
+      const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+      const totalFee = amount / ( 1 - ( contractState.fee / 100**2 ) ) - amount;
+      contribution = totalFee * ( contractState.contribution / 100**2 );
+      feeAmount = totalFee - contribution;
+    }
+
+    txTotal = amount + feeAmount + contribution;
 
     let recipientAddress, signature;
+
+    const tL = V.getSetting( 'transactionLedger' );
 
     if ( tL == 'EVM' ) {
       recipientAddress = recipientData.data[0].evmCredentials.address;
@@ -69,46 +108,33 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       signature = initiator.symbolCredentials.privateKey;
     }
 
-    if ( !initiator ) {
-      return {
-        success: false,
-        status: 'no active entity'
-      };
-    }
-    else if ( !recipientData ) {
-      return {
-        success: false,
-        status: 'no recipient'
-      };
-    }
-    else if ( !amount ) {
-      return {
-        success: false,
-        status: 'invalid amount'
-      };
-    }
-    else {
-      return {
-        success: true,
-        status: 'transaction casted',
-        data: [{
-          date: new Date(),
-          amount: amount,
-          currency: 'V', // TODO
-          command: command,
-          initiator: initiator.fullId,
-          initiatorAddress: aA,
-          sender: initiator.fullId, // currently the same as initiator
-          senderAddress: aA, // currently the same as initiator
-          recipient: recipient,
-          recipientAddress: recipientAddress,
-          reference: reference || 'no reference given',
-          timeSecondsUNIX: timeSecondsUNIX,
-          origMessage: data,
-          signature: signature
-        }]
-      };
-    }
+    const aA = V.getState( 'activeAddress' );
+
+    return {
+      success: true,
+      type: 'transaction',
+      status: 'transaction cast',
+      data: [{
+        date: new Date(),
+        amount: amount,
+        feeAmount: Math.ceil( feeAmount ),
+        contribution: Math.ceil( contribution ),
+        txTotal: Math.ceil( txTotal ),
+        currency: currency,
+        command: command,
+        initiator: initiator.fullId,
+        initiatorAddress: aA,
+        sender: initiator.fullId, // currently the same as initiator
+        senderAddress: aA, // currently the same as initiator
+        recipient: recipient,
+        recipientAddress: recipientAddress,
+        reference: reference || 'no reference given',
+        timeSecondsUNIX: timeSecondsUNIX,
+        origMessage: data,
+        signature: signature
+      }]
+    };
+
   }
 
   function reduceNumbers( array ) {
@@ -118,7 +144,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       .reduce( function( acc, val ) { return Number( acc ) + Number( val ) }, 0 );
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   async function getTransaction(
     which = V.getState( 'activeEntity' ).fullId
@@ -126,9 +152,12 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     return V.getData( which, 'transaction', V.getSetting( 'transactionLedger' ) );
   }
 
-  async function setTransaction( which ) {
+  async function setTransactionConfirmation( which ) {
     const txData = await castTransaction( which );
+    return Promise.resolve( txData );
+  }
 
+  function setTransaction( txData ) {
     if ( txData.success ) {
       return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
     }
@@ -137,8 +166,17 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  /* ====================== export ====================== */
+
+  ( () => {
+    V.getTransaction = getTransaction;
+    V.setTransactionConfirmation = setTransactionConfirmation;
+    V.setTransaction = setTransaction;
+  } )();
+
   return {
     getTransaction: getTransaction,
+    setTransactionConfirmation: setTransactionConfirmation,
     setTransaction: setTransaction
   };
 

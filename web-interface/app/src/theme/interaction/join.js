@@ -1,7 +1,7 @@
 const Join = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Join module
+   * V Theme Module to draw the user login (join)
    *
    */
 

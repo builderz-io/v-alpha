@@ -1,7 +1,7 @@
 const Feature = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Module driving the app's feature section
+   * V Theme Module to draw the feature section
    *
    */
 

@@ -1,10 +1,9 @@
 const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-  * Module driving the chat
-  *
-  *
-  */
+   * V Plugin driving the chat
+   *
+   */
 
   'use strict';
 
@@ -136,6 +135,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     if ( options == 'clear' ) {
       return V.setNode( '.messageform', 'clear' );
     }
+
+    V.setNode( '.messageform', 'clear' );
     const $form = ChatComponents.messageForm();
     const $input = ChatComponents.messageInput();
 
@@ -151,8 +152,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
       V.setMessageBot( message ).then( res => {
         if ( res.success ) {
-          console.log( res );
-          Account.drawHeaderBalance();
+          if ( res.type == 'transaction' ) {
+            V.setState( 'active', { transaction: res } );
+            Modal.draw( 'confirm transaction' );
+          }
           $form.value = '';
           $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
           // console.log( res.status );
