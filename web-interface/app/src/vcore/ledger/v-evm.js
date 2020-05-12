@@ -94,6 +94,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
           // console.log( currentActiveAddress );
           // console.log( V.getState( 'activeAddress' ) );
+          V.setState( 'activeEntity', false );
+
           if ( currentActiveAddress == null ) {
             V.setState( 'activeAddress', false );
             Join.draw( 'logged out' );
@@ -122,6 +124,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockNumber = contract.methods.getBlockNumber().call();
       const fee = contract.methods.transactionFee.call().call();
       const contribution = contract.methods.communityContribution.call().call();
+      const divisibility = contract.methods.decimals.call().call();
 
       const allEvents = contract.getPastEvents( 'allEvents', {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -141,7 +144,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           } ).reverse();
         } );
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, allEvents ] );
+      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] );
 
       if ( all[0] ) {
 
@@ -149,16 +152,18 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         console.log( 'Current Block: ', all[0] );
         console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
         console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        console.log( 'Divisibility: ', all[3] );
         console.log( 'Contract: ', contract._address );
-        console.log( 'All Events:', all[3] );
+        console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATUS END ***' );
 
         const data = {
           currentBlock: Number( all[0] ),
           fee: all[1],
           contribution: all[2],
+          divisibility: all[3],
           contract: contract._address,
-          allEvents: all[3],
+          allEvents: all[4],
         };
 
         V.setState( 'contract', data );
