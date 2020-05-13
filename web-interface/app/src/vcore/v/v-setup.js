@@ -25,8 +25,8 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     tokenTicker: 'V',
 
     tokenDivisibility: 6,
-    transactionFee: 33.34 * ( 10**2 ), // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 33.33 * (10**2)
-    communityContribution: 10 * ( 10**2 ), // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 10 * (10**2)
+    transactionFee: 3333, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
+    communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
   };
 

@@ -17,6 +17,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function setState( which, data ) {
 
+    /**
+     * sync Cookies also for activeAddress and activeEntity
+     *
+     */
+
     if ( data == 'clear' ) {
       delete state[which];
       return;
@@ -31,6 +36,13 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       state[which] = data;
+    }
+
+    if ( which == 'activeAddress' ) {
+      setCookie( 'lastActiveAddress', data );
+    }
+    else if ( which == 'activeEntity' ) {
+      setCookie( 'lastActiveUphrase', data.private.uPhrase );
     }
 
   }
@@ -90,6 +102,10 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setCookie( which, data ) {
+    if ( data == 'clear' ) {
+      Cookies.remove( which );
+      return;
+    }
     Cookies.set( which, JSON.stringify( data ) );
   }
 

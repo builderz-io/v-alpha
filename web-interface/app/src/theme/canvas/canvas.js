@@ -205,6 +205,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         }
 
       } );
+
+    returningUser();
+
   }
 
   function setNavStates() {
@@ -236,6 +239,22 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Join.launch(); // sets node: join button
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
 
+    }
+  }
+
+  function returningUser() {
+    const returningWallet = V.getCookie( 'lastActiveAddress' );
+    const returningUphrase = V.getCookie( 'lastActiveUphrase' );
+
+    if ( returningWallet ) {
+      Join.draw( 'authenticate' );
+    }
+    else if ( returningUphrase ) {
+      ( async () => {
+        const returningEntity = await V.getEntity( V.castJson( returningUphrase ) );
+        V.setState( 'activeEntity', returningEntity.data[0] );
+        Join.draw( 'new entity was set up' );
+      } )();
     }
   }
 

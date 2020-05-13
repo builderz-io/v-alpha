@@ -89,8 +89,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       const fee = V.getSetting( 'transactionFee' );
       const contr = V.getSetting( 'communityContribution' );
       const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-      const totalFee = Math.floor( amount / ( 1 - ( contractState.fee / 100**2 ) ) - amount );
-      contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( contractState.contribution / 100**2 ) );
+      const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
+      contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
       feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
     }
 

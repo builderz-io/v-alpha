@@ -58,7 +58,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) { // web3 join
-      if ( which == 'authenticate' ) {
+      if ( which == 'initialize join' ) {
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
@@ -67,7 +67,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else { // web2 join
-      if ( which == 'authenticate' ) {
+      if ( which == 'initialize join' ) {
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
