@@ -43,7 +43,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           'padding': '8px 5px'
         }
       },
-      c: 'messageform flex fixed pxy w-full bkg-white card-shadow',
+      c: 'messageform flex fixed pxy w-full card-shadow',
     } );
   }
 

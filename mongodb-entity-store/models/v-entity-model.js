@@ -20,7 +20,11 @@ var entitySchema = mongoose.Schema( {
     joined: {
       date: String,
       unix: Number,
-      block: Number,
+      network: {
+        block: Number,
+        rpc: String,
+        contract: String,
+      }
     },
     creator: String,
     creatorTag: String,

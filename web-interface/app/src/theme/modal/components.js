@@ -20,16 +20,23 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleClick( e ) {
     e.stopPropagation();
     V.sN( '.modal__new', 'clear' );
+    V.sN( '.modal__name', 'clear' );
     Modal.drawNameForm( this ); // using .bind
     V.setNode( '.modal__return', 'clear' );
+  }
+
+  function handleWeb3Join( e ) {
+    e.stopPropagation();
+    Join.draw( 'authenticate' );
   }
 
   function handleTx( e ) {
     e.stopPropagation();
     V.setTransaction( this )
       .then( res => {
-        console.log( res );
+        // console.log( res );
         Modal.draw( 'transaction successful' );
+        Account.drawHeaderBalance();
       } )
       .catch( err => {
         console.error( err );
@@ -131,6 +138,59 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: V.i18n( 'Sign Transaction', 'modal' )
     } );
     V.setNode( $content, [$txDetails, $confirm]  );
+    return $content;
+  }
+
+  function initWeb3Join() {
+    const $content = modalContent();
+    const $new = V.cN( {
+      t: 'div',
+      c: 'modal__new font-medium',
+      s: {
+        modal__new: {
+          'background': '#ffa41b',
+          'position': 'relative',
+          'top': '5vh',
+          'margin': '0 auto',
+          'padding': '1rem',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleWeb3Join,
+      h: V.i18n( 'Connect wallet', 'modal' )
+    } );
+    const $newName = V.cN( {
+      t: 'p',
+      c: 'modal__name',
+      s: {
+        modal__name: {
+          'position': 'relative',
+          'top': '10vh',
+          'margin': '0 auto',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'set entity' ),
+      h: V.i18n( 'Name account only', 'modal' )
+    } );
+    const $key = V.cN( {
+      t: 'p',
+      c: 'modal__return',
+      s: {
+        modal__return: {
+          'position': 'relative',
+          'top': '15vh',
+          'margin': '0 auto',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'get entity' ),
+      h: V.i18n( 'Login with key', 'modal' )
+    } );
+    V.setNode( $content, [$new, $newName, $key] );
     return $content;
   }
 
@@ -337,6 +397,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     modalContent: modalContent,
     modalMessage: modalMessage,
     modalConfirmTx: modalConfirmTx,
+    initWeb3Join: initWeb3Join,
     web2Login: web2Login,
     entityFound: entityFound,
     entityNotFound: entityNotFound,

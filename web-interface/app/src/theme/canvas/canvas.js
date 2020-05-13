@@ -153,6 +153,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       clearTimeout( V.getState( 'throttle' ) );
       V.setState( 'throttle', setTimeout( refresh, 200 ) );
     };
+
+    document.onkeyup = function( e ) {
+      if ( e.ctrlKey && e.which == 83 ) {
+        console.log( V.getState() );
+      }
+    };
   }
 
   function presenter( historyState ) {

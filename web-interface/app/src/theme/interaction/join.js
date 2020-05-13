@@ -9,7 +9,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function ckeckEntityStore() {
+  async function ckeckEntityStoreByAddress() {
 
     const activeAddress = V.getState( 'activeAddress' );
 
@@ -18,11 +18,8 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         return 'entity not found';
       }
       else if ( res.success ) {
-        V.setState( 'activeEntity', res.data[0] );
 
-        // debug info
-        V.getContractState();
-        console.log( V.getState( 'all' ) );
+        V.setState( 'activeEntity', res.data[0] );
 
         return 'entity found';
       }
@@ -35,11 +32,15 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   async function presenter( which ) {
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
-      if ( which == 'authenticate' ) {
+
+      if ( which == 'initialize join' ) {
+        which = 'initialize web3 join';
+      }
+      else if ( which == 'authenticate' ) {
         Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
-            which = await ckeckEntityStore();
+            which = await ckeckEntityStoreByAddress();
           }
           else {
             which = res.status;
@@ -48,7 +49,12 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         Modal.draw( 'please wait' );
-        which = await ckeckEntityStore();
+        if ( V.getState( 'activeAddress' ) ) {
+          which = await ckeckEntityStoreByAddress();
+        }
+        else if ( V.getState( 'activeEntity' ).fullId ) {
+          which = 'entity found';
+        }
       }
     }
     else if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) { // web3 join
@@ -99,7 +105,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'balance > svg', 'clear' );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
-        Join.draw( 'authenticate' );
+        Join.draw( 'initialize join' );
       } );
 
       V.setNode( 'header', $join );

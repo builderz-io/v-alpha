@@ -20,6 +20,9 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( '/src/vcore/ledger/v-evm-abi.js' ),
         V.setScript( '/src/vcore/ledger/v-evm.js' )
       ] );
+
+      V.getWeb3Provider();
+
       console.log( '*** web3 and evm scripts loaded ***' );
     }
 

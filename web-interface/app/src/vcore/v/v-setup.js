@@ -10,6 +10,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedgerWeb2: 'MongoDB',
 
     socketHost: 'http://localhost',
     socketPort: 6021,
@@ -18,13 +19,13 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
 
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     update3BoxEntityStore: false,
-    loadMap: true,
+    loadMap: false,
 
     coinTicker: 'ETH',
     tokenTicker: 'V',
 
     tokenDivisibility: 6,
-    transactionFee: 33.33 * ( 10**2 ), // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 33.33 * (10**2)
+    transactionFee: 33.34 * ( 10**2 ), // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 33.33 * (10**2)
     communityContribution: 10 * ( 10**2 ), // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 10 * (10**2)
 
   };
@@ -58,7 +59,14 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getNetwork( which ) {
-    return networks[which];
+    if ( which ) {
+      return networks[which];
+    }
+    else {
+      const obj = networks[networks.choice];
+      obj.network = networks.choice;
+      return obj;
+    }
   }
 
   /* ====================== export ====================== */

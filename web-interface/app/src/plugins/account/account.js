@@ -18,7 +18,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const pageState = V.getState( 'page' );
 
     if ( pageState.height != pageState.topCalc ) {
-      const $topcontent = AccountComponents.topcontent( V.getState( 'activeEntity' ).fullId );
+      const aE = V.getState( 'activeEntity' );
+      const $topcontent = AccountComponents.topcontent( aE.fullId );
       const $list = CanvasComponents.list( 'narrow' );
 
       const transactions = await V.getTransaction();
@@ -32,7 +33,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       }
 
       for ( const txData of transactions.data[0].reverse() ) {
-        if ( V.getSetting( 'transactionLedger' ) != 'MongoDB' ) {
+        if ( V.getState( 'activeAddress' ) ) {
           if ( txData.txType == 'in' ) {
             txData.title = await castEntityName( txData.fromAddress );
           }

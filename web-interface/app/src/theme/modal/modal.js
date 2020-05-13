@@ -11,16 +11,20 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  function presenter( which ) {
+    return which;
+  }
+
+  async function view( which ) {
+
     const $modal = ModalComponents.modal();
 
-    // let inner = 'An unknown error occured';
+    const aE = V.getState( 'activeEntity' );
+    const cT = V.getSetting( 'coinTicker' );
+    const tT = V.getSetting( 'tokenTicker' );
 
     if ( which == 'entity found' ) {
-      const aE = V.getState( 'activeEntity' );
       const eB = await V.getEntityBalance( aE );
-      const cT = V.getSetting( 'coinTicker' );
-      const tT = V.getSetting( 'tokenTicker' );
       V.setNode( $modal, ModalComponents.entityFound( aE, eB, cT, tT ) );
     }
     else if ( which == 'entity not found' ) {
@@ -30,17 +34,11 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'web3 provider not found' ) {
       V.setNode( $modal, ModalComponents.tempUser() );
-
-      // inner = `<div class="modal__new font-medium" onclick="Modal.handleClick(event, 'set temp user')">${ V.i18n( 'Use temporary name', 'modal' ) }</div>`;
+    }
+    else if ( which == 'initialize web3 join' ) {
+      V.setNode( $modal, ModalComponents.initWeb3Join() );
     }
     else if ( which == 'web2 login' ) {
-      // inner = `<div class="modal__new font-medium"
-      //               onclick="Modal.handleClick(event, 'set entity')">
-      //             ${ V.i18n( 'Create new account', 'modal' ) }
-      //           </div>
-      //           <p class="modal__return" onclick="Modal.handleClick(event, 'get entity')">
-      //             ${ V.i18n( 'Login with key', 'modal' ) }
-      //           </p>`;
       V.setNode( $modal, ModalComponents.web2Login() );
     }
     else if ( which == 'user denied auth' ) {
@@ -69,22 +67,6 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, ModalComponents.modalMessage( 'An error occured' ) );
     }
 
-    // else if ( which == 'web3 provider not found' ) {
-    //   inner = `<div class="modal__new font-medium">${ V.i18n( 'Create new wallet', 'modal' ) }</div><p class="modal__return">${ V.i18n( 'Recover from mnemonic phrase', 'modal' ) } (${ V.i18n( 'A Web3 provider was not found', 'modal' ) })</p>`;
-    // }
-
-    // V.setNode( $modal, $modalContent );
-    // V.setNode( $modal, {
-    //   t: 'div',
-    //   c: 'modal__content',
-    //   h: inner,
-    // } );
-
-    return $modal;
-
-  }
-
-  function view( $modal ) {
     V.setNode( '.modal', 'clear' );
     V.setNode( 'body', $modal );
   }
@@ -161,7 +143,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which ) {
-    presenter( which ).then( viewData => { view( viewData ) } );
+    view( presenter( which ) );
   }
 
   return {

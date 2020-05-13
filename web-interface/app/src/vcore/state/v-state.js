@@ -17,6 +17,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function setState( which, data ) {
 
+    if ( data == 'clear' ) {
+      delete state[which];
+      return;
+    }
+
     if ( !state[which] ) {
       state[which] = {};
     }
