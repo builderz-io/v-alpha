@@ -372,7 +372,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     return V.getData( which, 'entity by ' + filter, whichLedger );
   }
 
-  async function setEntity( entityData, options = 'entity' ) {
+  async function setEntity(
+    entityData,
+    options = 'entity'
+  ) {
+
+    if ( options.includes( 'address' ) ) {
+      return V.setData( entityData, options, V.getSetting( 'entityLedger' ) );
+    }
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       const newSymbolAddress = await V.setActiveAddress();

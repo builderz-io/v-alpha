@@ -161,6 +161,43 @@ exports.register = function( req, res ) {
 
 };
 
+exports.setEvmAddress = function( req, cb ) {
+
+  EntityDB.findOne( { fullId: req.fullId }, { evmCredentials: true } ).exec( ( err, res ) => {
+    if ( err ) {
+      return cb( {
+        success: false,
+        status: 'error in find (set entity evm address)',
+        message: err
+      } );
+    }
+    if ( res === null ) {
+      return cb( {
+        success: false,
+        status: 'could not find entity to set evm address',
+      } );
+    }
+    res.evmCredentials.address = req.address;
+
+    res.save( ( err ) => {
+      if ( err ) {
+        return cb( {
+          success: false,
+          status: 'error in save (set entity evm address)',
+          message: err
+        } );
+      }
+      else {
+        return cb( {
+          success: true,
+          status: 'entity evm address set',
+        } );
+      }
+    } );
+  } );
+
+};
+
 exports.verify = function( req, cb ) {
   console.log( req );
   if ( req.adminPass != systemInit.communityGovernance.commuPhrase ) {

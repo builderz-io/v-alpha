@@ -13,13 +13,17 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
     const activeAddress = V.getState( 'activeAddress' );
 
-    return activeAddress ? V.getEntity( activeAddress ).then( res => {
+    return activeAddress ? V.getEntity( activeAddress ).then( async res => {
       if ( res.reset ) {
         return 'entity not found';
       }
       else if ( res.success ) {
 
         V.setState( 'activeEntity', res.data[0] );
+
+        const eB = await V.getEntityBalance( res.data[0] );
+
+        V.setState( 'activeEntity', { balance: eB.data[0] } );
 
         return 'entity found';
       }
@@ -31,16 +35,27 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
+    if ( window.Web3Obj && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
 
       if ( which == 'initialize join' ) {
         which = 'initialize web3 join';
       }
-      else if ( which == 'authenticate' ) {
+      else if ( which.includes( 'authenticate' ) ) {
         Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
-            which = await ckeckEntityStoreByAddress();
+            const check = await ckeckEntityStoreByAddress();
+            if ( check == 'entity found' ) {
+              which = check;
+            }
+            else {
+              if ( which.includes( 'existing entity' ) ) {
+                which = 'authenticate existing entity';
+              }
+              else {
+                which = check;
+              }
+            }
           }
           else {
             which = res.status;
@@ -97,6 +112,54 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function onboardingCard( entity ) {
+
+    const aE = V.getState( 'activeEntity' );
+
+    if ( aE ) {
+      let $cardContent;
+      const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
+
+      if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'onboading' ) + '</p>'
+        } );
+        $cardContent.addEventListener( 'click', function handleAddWallet() {
+          if ( window.Web3Obj ) {
+            Join.draw( 'authenticate existing entity' );
+          }
+          else {
+            Join.draw( 'install metamask' );
+          }
+        } );
+      }
+      else if ( !balanceCheck ) { // wallet balance is 0
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE and we then also add a BrightID Sponsorship to your address.', 'onboading' ) + '</p>'
+        } );
+      }
+      else if ( balanceCheck ) { // no brightID connected
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Verify your unique account with BrightID, the open web-of-trust, and receive regular VALUE.', 'onboading' ) + '</p>'
+        // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
+        } );
+      }
+
+      const $onboardingCard = CanvasComponents.card( $cardContent );
+
+      return $onboardingCard;
+    }
+    else {
+      return '';
+    }
+  }
+
   /* ============ public methods and exports ============ */
 
   function launch() {
@@ -118,7 +181,8 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    draw: draw
+    draw: draw,
+    onboardingCard: onboardingCard
   };
 
 } )();

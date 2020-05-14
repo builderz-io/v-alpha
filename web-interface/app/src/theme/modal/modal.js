@@ -15,22 +15,25 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     return which;
   }
 
-  async function view( which ) {
+  function view( which ) {
 
     const $modal = ModalComponents.modal();
 
-    const aE = V.getState( 'activeEntity' );
-    const cT = V.getSetting( 'coinTicker' );
-    const tT = V.getSetting( 'tokenTicker' );
-
     if ( which == 'entity found' ) {
-      const eB = await V.getEntityBalance( aE );
-      V.setNode( $modal, ModalComponents.entityFound( aE, eB, cT, tT ) );
+      // const eB = await V.getEntityBalance( aE );
+      const aE = V.getState( 'activeEntity' );
+      const cT = V.getSetting( 'coinTicker' );
+      const tT = V.getSetting( 'tokenTicker' );
+
+      V.setNode( $modal, ModalComponents.entityFound( aE, cT, tT ) );
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
       Join.launch();
       V.setNode( $modal, ModalComponents.entityNotFound() );
+    }
+    else if ( which == 'authenticate existing entity' ) {
+      V.setNode( $modal, ModalComponents.existingEntity() );
     }
     else if ( which == 'web3 provider not found' ) {
       V.setNode( $modal, ModalComponents.tempUser() );
@@ -49,6 +52,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.modalMessage( 'You are logged out' ) );
+    }
+    else if ( which == 'install metamask' ) {
+      V.setNode( $modal, ModalComponents.modalMessage( 'Please install a crypto wallet in your browser, for example MetaMask' ) );
     }
     else if ( which == 'please wait' ) {
       V.setNode( $modal, ModalComponents.modalMessage( 'Please wait... requesting data' ) );
@@ -69,6 +75,17 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( '.modal', 'clear' );
     V.setNode( 'body', $modal );
+  }
+
+  function setNewEntity( res ) {
+    if ( res.success ) {
+      V.setState( 'activeEntity', res.data[0] );
+      Join.draw( 'new entity was set up' );
+    }
+    else {
+      DOM.$box.value = '';
+      DOM.$box.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+    }
   }
 
   /* ============ public methods and exports ============ */
@@ -95,44 +112,31 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
           role: 'network',
         };
 
+        V.setState( 'activeEntity', 'clear' );
+
         V.setEntity( entityData ).then( res => {
-          if ( res.success ) {
-            V.setState( 'activeEntity', res.data[0] );
-            Join.draw( 'new entity was set up' );
-          }
-          else {
-            DOM.$box.value = '';
-            DOM.$box.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-          }
+          setNewEntity( res );
         } );
 
       }
       else if ( options == 'get entity' ) {
 
         V.getEntity( DOM.$box.value ).then( res => {
-          if ( res.success ) {
-            V.setState( 'activeEntity', res.data[0] );
-            Join.draw( 'new entity was set up' );
-          }
-          else {
-            console.log( 'entity not found', res );
-            DOM.$box.value = '';
-            DOM.$box.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-          }
+          setNewEntity( res );
         } );
 
       }
-      else if ( options == 'set temp user' ) {
-
-        V.setState( 'activeEntity', {
-          fullId: V.castEntityTitle( DOM.$box.value ) + ' ' + '#0000'
-        } );
-        V.setNode( '.modal', 'clear' );
-        const $temp = ModalComponents.tempBtn();
-        V.setNode( 'join', 'clear' );
-        V.setNode( 'header', $temp );
-
-      }
+      // else if ( options == 'set temp user' ) {
+      //
+      //   V.setState( 'activeEntity', {
+      //     fullId: V.castEntityTitle( DOM.$box.value ) + ' ' + '#0000'
+      //   } );
+      //   V.setNode( '.modal', 'clear' );
+      //   const $temp = ModalComponents.tempBtn();
+      //   V.setNode( 'join', 'clear' );
+      //   V.setNode( 'header', $temp );
+      //
+      // }
 
     } ); // end addEventListener
 

@@ -17,16 +17,22 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   async function presenter() {
     const pageState = V.getState( 'page' );
 
+    const aE = V.getState( 'activeEntity' );
+    const $topcontent = AccountComponents.topcontent( aE.fullId );
+
     if ( pageState.height != pageState.topCalc ) {
-      const aE = V.getState( 'activeEntity' );
-      const $topcontent = AccountComponents.topcontent( aE.fullId );
       const $list = CanvasComponents.list( 'narrow' );
 
       const transactions = await V.getTransaction();
 
+      V.setNode( $list, Join.onboardingCard() );
+
       if( !transactions.success || !transactions.data[0].length ) {
+        // V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
+
         const pageData = {
-          topcontent: CanvasComponents.notFound( 'transactions' ),
+          topcontent: $topcontent,
+          listings: $list,
           position: 'top'
         };
         return pageData;

@@ -21,8 +21,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     e.stopPropagation();
     V.sN( '.modal__new', 'clear' );
     V.sN( '.modal__name', 'clear' );
+    V.sN( '.modal__return', 'clear' );
+    V.sN( '.modal__mapnew', 'clear' );
+    V.sN( '.modal__mapexisting', 'clear' );
     Modal.drawNameForm( this ); // using .bind
-    V.setNode( '.modal__return', 'clear' );
   }
 
   function handleWeb3Join( e ) {
@@ -42,6 +44,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         console.error( err );
         Modal.draw();
       } );
+  }
+
+  function mapAddressToExistingEntity() {
+    const aE = V.getState( 'activeEntity' );
+    const aA = V.getState( 'activeAddress' );
+    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+      const entityData = {
+        fullId: aE.fullId,
+        address: aA
+      };
+      V.setEntity( entityData, 'evm address' ).then( () => {
+        Join.draw( 'authenticate' );
+      } );
+    }
   }
 
   /* ============ public methods and exports ============ */
@@ -84,12 +100,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'modal__content',
       s: {
         modal__content: {
-          background: 'white',
-          width: '75vw',
-          height: '60vh',
-          position: 'relative',
-          margin: '18vh auto',
-          padding: '0.5rem',
+          'background': 'white',
+          'width': '75vw',
+          'max-width': '500px',
+          'height': '60vh',
+          'position': 'relative',
+          'margin': '18vh auto',
+          'padding': '0.5rem',
         }
       },
       click: stopProp
@@ -232,7 +249,45 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
-  function entityFound( activeEntity, entityBalance, coinTicker, tokenTicker ) {
+  function existingEntity() {
+    const $content = modalContent();
+    const $current = V.cN( {
+      t: 'div',
+      c: 'modal__mapexisting font-medium',
+      s: {
+        modal__mapexisting: {
+          'background': '#ffa41b',
+          'position': 'relative',
+          'top': '5vh',
+          'margin': '0 auto',
+          'padding': '1rem',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: mapAddressToExistingEntity,
+      h: V.i18n( 'Use current name', 'modal' )
+    } );
+    const $new = V.cN( {
+      t: 'p',
+      c: 'modal__mapnew',
+      s: {
+        modal__mapnew: {
+          'position': 'relative',
+          'top': '10vh',
+          'margin': '0 auto',
+          'text-align': 'center',
+          'cursor': 'pointer'
+        }
+      },
+      click: handleClick.bind( 'set entity' ),
+      h: V.i18n( 'Create new name', 'modal' )
+    } );
+    V.setNode( $content, [$current, $new] );
+    return $content;
+  }
+
+  function entityFound( activeEntity, coinTicker, tokenTicker ) {
     const $content = modalContent();
 
     const $uPhrase = V.cN( {
@@ -255,7 +310,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     let $balance;
 
-    const x = entityBalance.data[0];
+    const x = activeEntity.balance;
     if ( x ) {
       $balance = V.cN( {
         t: 'p',
@@ -318,7 +373,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
-  function tempUser() {
+  /* function tempUser() {
     const $content = modalContent();
     const $new = V.cN( {
       t: 'div',
@@ -355,7 +410,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( $content, [$new, $descr] );
     return $content;
-  }
+  } */
 
   function nameForm() {
     return V.sN( {
@@ -399,9 +454,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     modalConfirmTx: modalConfirmTx,
     initWeb3Join: initWeb3Join,
     web2Login: web2Login,
+    existingEntity: existingEntity,
     entityFound: entityFound,
     entityNotFound: entityNotFound,
-    tempUser: tempUser,
+    // tempUser: tempUser,
     nameForm: nameForm,
     nameInput: nameInput,
   };

@@ -54,10 +54,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       $list = CanvasComponents.list( 'narrow' );
       const $loc = ProfileComponents.locationCard( entity );
       const $locCard = CanvasComponents.card( $loc );
-      const $brightId = ProfileComponents.brightIdCard( entity );
-      const $bidCard = CanvasComponents.card( $brightId );
+      const $onboardingCard = Join.onboardingCard();
 
-      V.setNode( $list, [ $bidCard, $locCard ] );
+      V.setNode( $list, [ $onboardingCard, $locCard ] );
 
       Navigation.draw( entity );
 

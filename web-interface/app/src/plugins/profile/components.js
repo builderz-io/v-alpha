@@ -23,18 +23,9 @@ const ProfileComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function brightIdCard( entity ) {
-    return V.castNode( {
-      tag: 'div',
-      c: 'flex w-full items-center justify-evenly',
-      html: `<p>Connect your</p> <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>`
-    } );
-  }
-
   return {
     topcontent: topcontent,
     locationCard: locationCard,
-    brightIdCard: brightIdCard
   };
 
 } )();
