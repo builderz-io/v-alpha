@@ -9,30 +9,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function ckeckEntityStoreByAddress() {
-
-    const activeAddress = V.getState( 'activeAddress' );
-
-    return activeAddress ? V.getEntity( activeAddress ).then( async res => {
-      if ( res.reset ) {
-        return 'entity not found';
-      }
-      else if ( res.success ) {
-
-        V.setState( 'activeEntity', res.data[0] );
-
-        const eB = await V.getEntityBalance( res.data[0] );
-
-        V.setState( 'activeEntity', { balance: eB.data[0] } );
-
-        return 'entity found';
-      }
-      else {
-        return 'entity not found';
-      }
-    } ) : 'error';
-  }
-
   async function presenter( which ) {
 
     if ( window.Web3Obj && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
@@ -83,7 +59,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else { // web2 join
       if ( which == 'initialize join' ) {
-        which = 'web2 login';
+        which = 'initialize web2 join';
       }
       else if ( which == 'new entity was set up' ) {
         which = 'entity found';
@@ -100,6 +76,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Navigation.draw();
       Modal.draw( which );
     }
+    else if ( which == 'entity not found' ) {
+      V.sN( 'balance > svg', 'clear' );
+      Join.launch();
+      Modal.draw( which );
+    }
     else if ( which == 'logged out' ) {
       Join.launch();
       Navigation.draw();
@@ -112,7 +93,33 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function onboardingCard( entity ) {
+  async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
+
+    const activeAddress = V.getState( 'activeAddress' );
+
+    return activeAddress ? V.getEntity( activeAddress ).then( async res => {
+      if ( res.reset ) {
+        return 'entity not found';
+      }
+      else if ( res.success ) {
+
+        V.setState( 'activeEntity', res.data[0] );
+
+        const eB = await V.getEntityBalance( res.data[0] );
+
+        V.setState( 'activeEntity', { balance: eB.data[0] } );
+
+        return 'entity found';
+      }
+      else {
+        return 'entity not found';
+      }
+    } ) : 'error';
+  }
+
+  /* ================== public methods ================== */
+
+  function onboardingCard() {
 
     const aE = V.getState( 'activeEntity' );
 
@@ -124,7 +131,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 2! Connect a crypto wallet', 'onboading' ) + '</p>'
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -139,15 +146,15 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE and we then also add a BrightID Sponsorship to your address.', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 3! Ask a friend to transfer 1 VALUE and we sponsor your BrightID verification.', 'onboading' ) + '</p>'
         } );
       }
       else if ( balanceCheck ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Verify your unique account with BrightID, the open web-of-trust, and receive regular VALUE.', 'onboading' ) + '</p>'
-        // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
+          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 4! Verify your unique account with BrightID and receive VALUE basic income.', 'onboading' ) + '</p>'
+          // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
       }
 
@@ -159,8 +166,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       return '';
     }
   }
-
-  /* ============ public methods and exports ============ */
 
   function launch() {
     // sets the view on launch (the header "Join" button)
@@ -179,10 +184,12 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
+  /* ====================== export ====================== */
+
   return {
+    onboardingCard: onboardingCard,
     launch: launch,
     draw: draw,
-    onboardingCard: onboardingCard
   };
 
 } )();

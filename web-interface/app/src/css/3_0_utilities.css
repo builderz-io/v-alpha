@@ -35,6 +35,10 @@
  padding: var(--global-padding) var(--global-padding);
 }
 
+.pxy-1 {
+ padding: 1rem;
+}
+
 .p-s {
   padding: 0.5rem;
 }
@@ -153,6 +157,9 @@
 .ml-r {
   margin-left: 1rem;
 }
+.ml-auto {
+  margin-left: auto;
+}
 .mr-xxs {
   margin-right: 0.125rem;
 }
@@ -167,6 +174,9 @@
 }
 .mr-r {
   margin-right: 1rem;
+}
+.mr-auto {
+  margin-right: auto;
 }
 .h-r {
   height: 1rem;

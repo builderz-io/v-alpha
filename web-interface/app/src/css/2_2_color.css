@@ -20,6 +20,10 @@ body {
   background-color: rgba(var(--black), 1);
 }
 
+.bkg-button {
+  background-color: rgba(var(--button), 1);
+}
+
 .txt-offblack {
   color: rgba(var(--offblack), 1);
 }

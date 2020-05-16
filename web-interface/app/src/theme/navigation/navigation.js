@@ -7,6 +7,17 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  V.setStyle( {
+
+    /* Gain scrollable space adding invisible last pill to navs */
+    'entity-nav__ul > *:last-child': {
+      visibility: 'hidden'
+    },
+    'service-nav__ul > *:last-child': {
+      visibility: 'hidden'
+    }
+  } );
+
   /* ================== private methods ================= */
 
   function presenter(

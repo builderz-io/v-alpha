@@ -124,26 +124,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function formField( whichField, whichValue, lat, lng ) {
 
-    function autoHeight() {
-      const elem = this;
-      elem.style.height = '1px';
-      elem.style.height = ( elem.scrollHeight )+'px';
-
-    }
-
-    function handleFocus() {
-      this.closest( '.field' ).classList += ' field--static field--focus';
-    }
-
-    function handleBlur() {
-      const close = this.closest( '.field' ).classList;
-      if( !this.value ) {
-        close.remove( 'field--static' );
-      }
-      close.remove( 'field--focus' );
-    }
-
     const fields = {
+      uPhrase: {
+        label: 'Key',
+        inputId: 'loginform__uphrase'
+      },
       title: {
         label: 'Title',
         inputId: 'plusform__title'
@@ -177,6 +162,24 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         inputId: 'search-input',
       }
     };
+
+    function autoHeight() {
+      const elem = this;
+      elem.style.height = '1px';
+      elem.style.height = ( elem.scrollHeight )+'px';
+    }
+
+    function handleFocus() {
+      this.closest( '.field' ).classList += ' field--static field--focus';
+    }
+
+    function handleBlur() {
+      const close = this.closest( '.field' ).classList;
+      if( !this.value ) {
+        close.remove( 'field--static' );
+      }
+      close.remove( 'field--focus' );
+    }
 
     const $inputContainer = V.cN( {
       t: 'div',
