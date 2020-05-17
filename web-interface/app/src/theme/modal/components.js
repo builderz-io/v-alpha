@@ -304,6 +304,19 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function entityFound( activeEntity, coinTicker, tokenTicker ) {
     const $content = modalContent();
 
+    const $welcome = V.cN( {
+      t: 'div',
+      c: 'txt-center pxy',
+      h: [
+        V.cN( { t: 'p', h: V.i18n( 'Welcome', 'modal' ) } ),
+        V.cN( {
+          t: 'p',
+          c: 'font-medium fs-l pxy',
+          h: activeEntity.fullId
+        } )
+      ]
+    } );
+
     const $uPhrase = V.cN( {
       t: 'div',
       c: 'txt-center',
@@ -312,13 +325,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           color: 'red'
         }
       },
-      h: `<p class="pxy">${V.i18n( 'Your login key is' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${activeEntity.private.uPhrase}</p>
-      <p class="pxy"> ${V.i18n( 'Take note of the phrase above' ) }<br>${ V.i18n( 'to login with later', 'modal' )}</p>`
-    } );
-
-    const $welcome = V.cN( {
-      t: 'p',
-      h: V.i18n( 'Welcome', 'modal' ) + ', ' + activeEntity.fullId
+      h: `<p class="pxy">${V.i18n( 'Take note of the key' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${activeEntity.private.uPhrase}</p>
+      <p class="pxy"> ${V.i18n( 'You\'ll need this key to manage the' ) + ' ' + activeEntity.fullId + ' ' + V.i18n( 'entity' )}</p>`
     } );
 
     let $balance;
@@ -329,11 +337,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'p',
         c: 'modal__details',
         h: `
-        ${tokenTicker} ${ V.i18n( 'Balance', 'modal' ) }: ${ x.tokenBalance }<br>
         ${tokenTicker} ${ V.i18n( 'Live Balance', 'modal' ) }: ${ x.liveBalance }<br>
         ${coinTicker}: ${ x.coinBalance }<br>
-        ${ V.i18n( 'Zero Block', 'modal' ) }: ${ x.zeroBlock }<br>
-        ${ V.i18n( 'Last Block', 'modal' ) }: ${ x.lastBlock }
         `
       } );
     }
@@ -343,7 +348,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         h: V.i18n( 'Sorry, account details could not be retrieved', 'modal' )
       } );
     }
-    V.setNode( $content, [$uPhrase, $welcome, $balance] );
+    V.setNode( $content, [$welcome, $uPhrase, $balance] );
     return $content;
   }
 

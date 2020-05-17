@@ -66,7 +66,8 @@ body {
 }
 
 input:focus, textarea:focus {
-  border: 2px solid rgba(var(--brand), 1);
+  box-shadow: 0px -1px 1px 0px rgba(var(--black), .11), 0px 2px 1px 0px rgba(var(--black), .15);
+  /* border: 2px solid rgba(var(--brand), 1); */
 }
 
 .circle-1:hover {

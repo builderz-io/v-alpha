@@ -1,13 +1,3 @@
-/* Cross-browser bottom list padding */
-/* list > *:last-child {
-    padding-bottom: 115px;
-} */
-
-/* Gain scrollable space adding invisible last pill to navs */
-/* .entity-nav__ul > *:last-child,
-.service-nav__ul > *:last-child {
-  visibility: hidden;
-} */
 
 
 .circle-1 {

@@ -53,7 +53,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'textarea',
       // h: 'send 100 to Community #2121',
       // h: 'send Expert In Nodejs #2121 100',
-      h: 'send Peter Smith #2121 100',
+      // h: 'send Peter Smith #2121 100',
+      h: 'send Acc Two #9858 100',
       // h: 'send Community Contribution #2121 100 for corona masks funding',
       // h: 'verify 0x3107b077b7745994cd93d85092db034ca1984d46',
       a: {
@@ -81,12 +82,30 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function messageResponse() {
+    return V.sN( {
+      t: 'div',
+      c: 'messageform__response',
+      s: {
+        messageform__response: {
+          position: 'absolute',
+          top: '-24px',
+          // color: 'red',
+          // background: 'white',
+          // padding: '2px 8px'
+        }
+      },
+      // h: 'test response msg'
+    } );
+  }
+
   return {
     topcontent: topcontent,
     message: message,
     messageForm: messageForm,
     messageInput: messageInput,
-    messageSend: messageSend
+    messageSend: messageSend,
+    messageResponse: messageResponse
   };
 
 } )();

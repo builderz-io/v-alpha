@@ -60,7 +60,7 @@ exports.updateEntities = function( req, res ) {
       }
       else {
         // Updating MongoDB Accounts
-        updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command ).then( success => {
+        updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.feeAmount, txData.contribution, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command ).then( success => {
           res( {
             success: true,
             status: 'transaction successful',
