@@ -7,6 +7,46 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  function handleInputFocus() {
+    const $response = V.getNode( '.messageform__response' );
+    $response.innerHTML = '';
+  }
+
+  function handleSetMessageBot() {
+    const $form = V.getNode( '.messageform__input' );
+    const $response = V.getNode( '.messageform__response' );
+
+    const message = $form.value;
+
+    V.setMessageBot( message ).then( res => {
+      if ( res.success ) {
+        if ( res.endpoint == 'transaction' ) {
+          V.setState( 'active', { transaction: res } );
+          Modal.draw( 'confirm transaction' );
+        }
+        else {
+          $form.value = '';
+        }
+        // $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
+        // console.log( res.status );
+      }
+      else {
+        $response.append( V.sN( {
+          t: 'div',
+          c: 'messageform__respinner',
+          s: {
+            messageform__respinner: {
+              color: 'red',
+              background: 'white',
+              padding: '2px 8px'
+            }
+          },
+          h: res.status
+        } ) );
+      }
+    } );
+  }
+
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -132,43 +172,22 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawMessageForm( options ) {
-    if ( options == 'clear' ) {
-      return V.setNode( '.messageform', 'clear' );
-    }
-
     V.setNode( '.messageform', 'clear' );
+    if ( options == 'clear' ) { return }
+
     const $form = ChatComponents.messageForm();
     const $input = ChatComponents.messageInput();
+    const $response = ChatComponents.messageResponse();
 
     const $send = InteractionComponents.sendBtn();
 
     // $input.addEventListener( 'focus', function( e ) {
     //   e.target.placeholder = placeholder;
     // } );
-    $send.addEventListener( 'click', function() {
-      const $form = V.getNode( '.messageform__input' );
+    $send.addEventListener( 'click', handleSetMessageBot );
+    $input.addEventListener( 'focus', handleInputFocus );
 
-      const message = $form.value;
-
-      V.setMessageBot( message ).then( res => {
-        if ( res.success ) {
-          if ( res.endpoint == 'transaction' ) {
-            V.setState( 'active', { transaction: res } );
-            Modal.draw( 'confirm transaction' );
-          }
-          $form.value = '';
-          $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-          // console.log( res.status );
-        }
-        else {
-          $form.value = '';
-          $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-          console.error( 'try again, because: ', res.status );
-        }
-      } );
-    } );
-
-    V.setNode( $form, [ $input, $send ] );
+    V.setNode( $form, [ $response, $input, $send ] );
     V.setNode( 'body', $form );
 
   }

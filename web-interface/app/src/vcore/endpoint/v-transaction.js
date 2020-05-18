@@ -73,11 +73,12 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const recipientData = await V.getEntity( recipient );
-    if ( !recipientData ) {
+
+    if ( !recipientData.success ) {
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'no recipient'
+        status: 'recipient not found'
       };
     }
 
@@ -88,9 +89,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       const fee = V.getSetting( 'transactionFee' );
       const contr = V.getSetting( 'communityContribution' );
       const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-      const totalFee = amount / ( 1 - ( contractState.fee / 100**2 ) ) - amount;
-      contribution = totalFee * ( contractState.contribution / 100**2 );
-      feeAmount = totalFee - contribution;
+      const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
+      contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+      feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
     }
 
     txTotal = amount + feeAmount + contribution;
@@ -117,9 +118,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       data: [{
         date: new Date(),
         amount: amount,
-        feeAmount: Math.ceil( feeAmount ),
-        contribution: Math.ceil( contribution ),
-        txTotal: Math.ceil( txTotal ),
+        feeAmount: feeAmount,
+        contribution: contribution,
+        txTotal: txTotal,
         currency: currency,
         command: command,
         initiator: initiator.fullId,
@@ -149,7 +150,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   async function getTransaction(
     which = V.getState( 'activeEntity' ).fullId
   ) {
-    return V.getData( which, 'transaction', V.getSetting( 'transactionLedger' ) );
+    const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
+    return V.getData( which, 'transaction', V.getSetting( choice ) );
   }
 
   async function setTransactionConfirmation( which ) {
@@ -159,7 +161,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
+      const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
+      return V.setData( txData.data[0], 'transaction', V.getSetting( choice ) );
     }
     else {
       return Promise.resolve( txData );

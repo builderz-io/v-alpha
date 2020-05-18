@@ -41,6 +41,8 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'set entity', handleEntity.register );
 
+  client.on( 'set evm address', handleEntity.setEvmAddress );
+
   client.on( 'get entity by role', handleEntity.findByRole );
 
   client.on( 'get entity by evmAddress', handleEntity.findByEvmAddress );

@@ -63,7 +63,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry, uPhrase, creator, creatorTag;
+    let geometry, uPhrase, creator, creatorTag, block, rpc, contract;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -95,6 +95,26 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       creatorTag = tag;
     }
 
+    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+      await V.getContractState().then( res => {
+        if ( res.success ) {
+          block = res.data[0].currentBlock;
+          rpc = res.data[0].network.rpc;
+          contract = res.data[0].contract;
+        }
+        else {
+          block = -1;
+          rpc = 'error';
+          contract = 'error';
+        }
+      } );
+    }
+    else {
+      block = Math.floor( unix / 1000 );
+      rpc = 'none';
+      contract = 'none';
+    }
+
     const uuid = V.castUUID();
 
     const newEntity = {
@@ -117,7 +137,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         joined: {
           date: date,
           unix: unix,
-          // block: all[1].success ? all[1].data[0].currentBlock : 0,
+          network: {
+            block: block,
+            rpc: rpc,
+            contract: contract,
+          }
         },
         creator: creator,
         creatorTag: creatorTag,
@@ -240,8 +264,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   async function getEntityBalance( entity ) {
 
     const tL = V.getSetting( 'transactionLedger' );
+    const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
-    if ( ['EVM', 'Symbol'].includes( tL ) ) {
+    if ( ['EVM', 'Symbol'].includes( tL ) && V.getState( 'activeAddress' ) ) {
 
       const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 
@@ -249,8 +274,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return  {
           success: true,
           endpoint: 'entity',
-          status: 'entity balance retrieved',
           ledger: tL,
+          status: 'entity balance retrieved',
           data: [
             {
               coinBalance: bal.data[0].coinBalance,
@@ -266,21 +291,21 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return  {
           success: false,
           endpoint: 'entity',
-          status: 'could not retrieve entity balance',
           ledger: tL,
+          status: 'could not retrieve entity balance',
           data: []
         };
       }
     }
-    else if ( tL == 'MongoDB' ) {
+    else if ( tLWeb2 == 'MongoDB' ) {
       const bal = await getEntity( entity.fullId );
 
       if ( bal.success ) {
         return  {
           success: true,
           endpoint: 'entity',
+          ledger: tLWeb2,
           status: 'entity balance retrieved',
-          ledger: tL,
           data: [
             {
               tokenBalance: bal.data[0].onChain.balance,
@@ -294,8 +319,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return  {
           success: false,
           endpoint: 'entity',
+          ledger: tLWeb2,
           status: 'could not retrieve entity balance',
-          ledger: tL,
           data: []
         };
       }
@@ -347,7 +372,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     return V.getData( which, 'entity by ' + filter, whichLedger );
   }
 
-  async function setEntity( entityData, options = 'entity' ) {
+  async function setEntity(
+    entityData,
+    options = 'entity'
+  ) {
+
+    if ( options.includes( 'address' ) ) {
+      return V.setData( entityData, options, V.getSetting( 'entityLedger' ) );
+    }
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       const newSymbolAddress = await V.setActiveAddress();

@@ -18,11 +18,11 @@ const getBurned = ( entity, timeSecondsUNIX ) => {
   return { burnedBlocks: a, burnedBalance: b, burnedDelta: c, remainingTimeToZero: d };
 };
 
-module.exports.updateAllEntities = async ( txRoleEntities, amount, date, timeSecondsUNIX, reference, txType ) => {
+module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, contribution, date, timeSecondsUNIX, reference, txType ) => {
 
   var processedRecipients = 0;
 
-  const txFee = Math.ceil( amount * setTxFee );  // var txFee = txArray[0] & 1 == 1 ? Math.ceil(txArray[0] * setTxFee) : Math.floor(txArray[0] * setTxFee); // i & 1 == 1 ? checks first bit
+  const txFee = feeAmount + contribution; // Math.ceil( amount * setTxFee );  // var txFee = txArray[0] & 1 == 1 ? Math.ceil(txArray[0] * setTxFee) : Math.floor(txArray[0] * setTxFee); // i & 1 == 1 ? checks first bit
   const sender = txRoleEntities[2]; // TODO , was txRoleEntities.find( obj => {return obj.roleInTx === 'sender' } );
   const numberOfRecipients = 1; // TODO , was txRoleEntities.filter( obj => {return obj.roleInTx === 'recipient' } ).length;
 
@@ -157,26 +157,85 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, date, timeSec
               initiatorTag: txRoleEntities[2].profile.tag,
               from: sender.profile.title,
               fromTag: sender.profile.tag,
-              to: entity.profile.title,
-              toTag: entity.profile.tag,
-              for: reference.trim().charAt( 0 ).toUpperCase() + reference.trim().slice( 1 ),
-              senderFee: txFee,
-              burned: processedRecipients === 1 ? burnS.burnedDelta : 0, // only first time
+              to: 'burn', // entity.profile.title,
+              toTag: 'burn', // entity.profile.tag,
+              for: 'fee', // reference.trim().charAt( 0 ).toUpperCase() + reference.trim().slice( 1 ),
+              senderFee: 0, // txFee,
+              burned: 0, // processedRecipients === 1 ? burnS.burnedDelta : 0, // only first time
               tt0: burnS.remainingTimeToZero,
               credit: 0,
-              debit: amount,
-              chainBalance: burnS.burnedBalance - ( processedRecipients * ( amount + txFee ) ), // reduces with each processed recipient
-              amount: amount,
-              txType: 'out',
-              title: entity.profile.title + ' ' + entity.profile.tag,
+              debit: feeAmount,
+              chainBalance: burnS.burnedBalance - ( processedRecipients * ( amount + txFee ) ) + ( amount + contribution ), // reduces with each processed recipient
+              amount: feeAmount,
+              txType: 'fee',
+              title: 'Transaction Fee', // entity.profile.title + ' ' + entity.profile.tag,
               fromAddress: 'address unaval',
               toAddress: 'address unaval'
             } } },
             ( err ) => {
               if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
-              resolve( 'd resolved' );
+
+              TxDB.findOneAndUpdate(
+                { fullId: sender.fullId },
+                { $push: { txHistory: {
+                  date: date,
+                  initiator: txRoleEntities[2].profile.title,
+                  initiatorTag: txRoleEntities[2].profile.tag,
+                  from: sender.profile.title,
+                  fromTag: sender.profile.tag,
+                  to: 'Community', //entity.profile.title,
+                  toTag: '#2121', // entity.profile.tag,
+                  for: 'contribution', // reference.trim().charAt( 0 ).toUpperCase() + reference.trim().slice( 1 ),
+                  senderFee: 0, // txFee,
+                  burned: 0, // processedRecipients === 1 ? burnS.burnedDelta : 0, // only first time
+                  tt0: burnS.remainingTimeToZero,
+                  credit: 0,
+                  debit: contribution,
+                  chainBalance: burnS.burnedBalance - ( processedRecipients * ( amount + txFee ) ) + ( amount ), // reduces with each processed recipient
+                  amount: contribution,
+                  txType: 'out',
+                  title: 'Community Contribution', // entity.profile.title + ' ' + entity.profile.tag,
+                  fromAddress: 'address unaval',
+                  toAddress: 'address unaval'
+                } } },
+                ( err ) => {
+                  if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
+
+                  TxDB.findOneAndUpdate(
+                    { fullId: sender.fullId },
+                    { $push: { txHistory: {
+                      date: date,
+                      initiator: txRoleEntities[2].profile.title,
+                      initiatorTag: txRoleEntities[2].profile.tag,
+                      from: sender.profile.title,
+                      fromTag: sender.profile.tag,
+                      to: entity.profile.title,
+                      toTag: entity.profile.tag,
+                      for: reference.trim().charAt( 0 ).toUpperCase() + reference.trim().slice( 1 ),
+                      senderFee: txFee,
+                      burned: processedRecipients === 1 ? burnS.burnedDelta : 0, // only first time
+                      tt0: burnS.remainingTimeToZero,
+                      credit: 0,
+                      debit: amount,
+                      chainBalance: burnS.burnedBalance - ( processedRecipients * ( amount + txFee ) ), // reduces with each processed recipient
+                      amount: amount,
+                      txType: 'out',
+                      title: entity.profile.title + ' ' + entity.profile.tag,
+                      fromAddress: 'address unaval',
+                      toAddress: 'address unaval'
+                    } } },
+                    ( err ) => {
+                      if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
+                      resolve( 'd resolved' );
+                    } // close callback
+                  ); // close findOneAndUpdate AMOUNT
+
+                } // close callback
+              ); // close findOneAndUpdate CONTRIBUTION
+
             } // close callback
-          ); // close findOneAndUpdate
+          ); // close findOneAndUpdate FEE
+
         } ); // close Promise d
 
         return Promise.all( [a, b, c, d] );

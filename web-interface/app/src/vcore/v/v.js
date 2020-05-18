@@ -36,19 +36,26 @@ const V = {
       setScript( '/dist/velocity.min.js' ),
       setScript( '/dist/moment.min.js' ),
       setScript( '/dist/js.cookie.min.js' ),
-      setScript( '/dist/universal-router.js' ),
+      setScript( '/dist/universal-router.js' )
+    ] );
+    console.log( '*** vcore dependency-scripts loaded ***' );
 
+    await Promise.all( [
+      setScript( '/src/vcore/dom/v-dom.js' ),
+      setScript( '/src/vcore/state/v-state.js' ),
       setScript( '/src/vcore/v/v-key.js' ),
       setScript( '/src/vcore/v/v-setup.js' ),
-      setScript( '/src/vcore/dom/v-dom.js' ),
       setScript( '/src/vcore/dom/v-route.js' ),
       setScript( '/src/vcore/helper/v-debugger.js' ),
-      setScript( '/src/vcore/helper/v-helper.js' ),
+      setScript( '/src/vcore/helper/v-helper.js' )
+    ] );
+    console.log( '*** vcore scripts (1) loaded ***' );
+
+    await Promise.all( [
+      setScript( '/src/vcore/ledger/v-ledger.js' ),
       setScript( '/src/vcore/endpoint/v-entity.js' ),
       setScript( '/src/vcore/endpoint/v-message.js' ),
       setScript( '/src/vcore/endpoint/v-transaction.js' ),
-      setScript( '/src/vcore/state/v-state.js' ),
-      setScript( '/src/vcore/ledger/v-ledger.js' ),
 
       /**
        * Also load the canvas script (the first theme script)
@@ -58,7 +65,7 @@ const V = {
 
       setScript( '/src/theme/canvas/canvas.js' ),
     ] );
-    console.log( '*** vcore scripts loaded ***' );
+    console.log( '*** vcore scripts (2) loaded ***' );
 
   }
 

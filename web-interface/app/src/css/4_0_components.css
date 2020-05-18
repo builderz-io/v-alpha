@@ -1,13 +1,3 @@
-/* Cross-browser bottom list padding */
-list > *:last-child {
-    padding-bottom: 115px;
-}
-
-/* Gain scrollable space adding invisible last pill to navs */
-.entity-nav__ul > *:last-child,
-.service-nav__ul > *:last-child {
-  visibility: hidden;
-}
 
 
 .circle-1 {
@@ -159,7 +149,7 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 
 .field--focus .field__border,
 .field--focus .field__border:hover {
-    background: #3659E3;
+    background: rgba(var(--brand), 1);
     padding: 2px
 }
 
@@ -168,5 +158,5 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 }
 
 .field--focus .field__internal .label-primary {
-    color: #3659E3
+    color: rgba(var(--brand), 1);
 }

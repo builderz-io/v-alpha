@@ -25,7 +25,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     for ( const key in data ) {
       if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
         if ( data[key] ) {
-          setStyle( 'component-styles', data[key] );
+          setStyle( data[key] );
         }
       }
       else if ( ['c', 'class', 'classes'].includes( key ) ) {
@@ -242,6 +242,11 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setStyle( whichId, data ) {
+
+    if ( typeof whichId == 'object' ) {
+      data = whichId;
+      whichId = 'component-styles';
+    }
     if ( !document.getElementById( whichId ) ) {
       setNode( 'head', {
         t: 'style',

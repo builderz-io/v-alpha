@@ -9,6 +9,27 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   let contract;
 
+  /* ================== event handlers ================== */
+
+  function setNewActiveAddress() {
+
+    var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+    // console.log( currentActiveAddress );
+    // console.log( V.getState( 'activeAddress' ) );
+
+    if ( currentActiveAddress == null ) {
+      V.setState( 'activeEntity', 'clear' );
+      V.setState( 'activeAddress', 'clear' );
+      Join.draw( 'logged out' );
+    }
+    else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
+      V.setState( 'activeEntity', 'clear' );
+      V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
+      Join.draw( 'new entity was set up' );
+    }
+
+  }
+
   /* ================== private methods ================= */
 
   function castEthBalance( balance ) {
@@ -16,106 +37,90 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTokenBalance( balance ) {
-    const divisibility = V.getSetting( 'tokenDivisibility' );
-    return Number( balance / 10**( divisibility ) ).toFixed( 0 ); // TODO: get decimals from contract
+    const divisibility = V.getState( 'contract' ).divisibility;
+    return Number( balance / 10**( divisibility ) ).toFixed( 0 );
   }
 
-  async function getWeb3Provider() {
+  /* ================== public methods  ================= */
 
+  function getWeb3Provider() {
     let provider;
-
-    // Modern dapp browsers...
     if ( window.ethereum ) {
+      // Modern dapp browsers
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
-
-      try {
-      // Request account access
-        await window.ethereum.enable();
-
-        return {
-          success: true,
-          status: 'provider set',
-          data: [ provider ]
-        };
-
-      }
-      catch ( error ) {
-      // User denied account access...
-        return {
-          success: false,
-          status: 'user denied auth',
-        };
-      }
     }
-    // Legacy dapp browsers...
     else if ( window.web3 ) {
+      // Legacy dapp browsers
       // console.log( 'web3 is there' );
-      provider = window.web3.currentProvider;
-
+      // provider = window.web3.currentProvider;
       return {
-        success: true,
-        status: 'legacy provider set',
-        data: [ provider ]
+        success: false,
+        status: 'web3 provider outdated',
       };
     }
-    // If no injected web3 instance is detected, fall back to Ganache
     else {
-      //  console.log( 'local network is there' );
-      //  provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
+      // If no injected web3 instance is detected, fall back to Truffel/Ganache
+      // console.log( 'local network is there' );
+      // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
       return {
         success: false,
         status: 'web3 provider not found',
       };
     }
 
+    window.Web3Obj = new Web3( provider );
+    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
+
+    V.getContractState().then( res => {
+      V.setState( 'contract', res.data[0] );
+    } );
+
+    return {
+      success: true,
+      status: 'provider set',
+    };
+
   }
 
-  /* ================== public methods  ================= */
-
-  function setActiveAddress() {
+  async function setActiveAddress() {
 
     if ( window.ethereum && !window.ethereum.selectedAddress ) {
+
       Join.draw( 'wallet locked' );
-    }
 
-    return getWeb3Provider().then( res => {
-
-      if ( res.success ) {
-
-        window.Web3Obj = new Web3( res.data[0] );
-        contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork( V.getNetwork( 'choice' ) )['contractAddress'] );
-
-        const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-        V.setState( 'activeAddress', activeAddress ? activeAddress.toLowerCase() : false );
-
-        window.Web3Obj.currentProvider.publicConfigStore.on( 'update', function setNewActiveAddress() {
-
-          var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-          // console.log( currentActiveAddress );
-          // console.log( V.getState( 'activeAddress' ) );
-          V.setState( 'activeEntity', false );
-
-          if ( currentActiveAddress == null ) {
-            V.setState( 'activeAddress', false );
-            Join.draw( 'logged out' );
-          }
-          else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
-            V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
-            Join.draw( 'new entity was set up' );
-          }
-
-        } );
-
+      try {
+        // Request account access
+        await window.ethereum.enable();
+      }
+      catch ( error ) {
+        // User denied account access...
         return {
-          success: true,
-          status: 'address set',
+          success: false,
+          status: 'user denied auth',
         };
       }
-      else {
-        return res;
-      }
-    } );
+    }
+
+    if ( window.Web3Obj ) {
+
+      window.Web3Obj.currentProvider.publicConfigStore.on( 'update', setNewActiveAddress );
+
+      const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+      V.setState( 'activeAddress', activeAddress ? activeAddress.toLowerCase() : false );
+
+      return {
+        success: true,
+        status: 'address set',
+      };
+    }
+    else {
+      return {
+        success: false,
+        status: 'Web3Obj not available',
+      };
+    }
+
   }
 
   async function getContractState() {
@@ -154,6 +159,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
         console.log( 'Divisibility: ', all[3] );
         console.log( 'Contract: ', contract._address );
+        console.log( 'Network: ', V.getNetwork() );
         console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATUS END ***' );
 
@@ -163,10 +169,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           contribution: all[2],
           divisibility: all[3],
           contract: contract._address,
+          network: V.getNetwork(),
           allEvents: all[4],
         };
-
-        V.setState( 'contract', data );
 
         return {
           success: true,
@@ -384,6 +389,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export  ===================== */
 
   ( () => {
+    V.getWeb3Provider = getWeb3Provider;
     V.setActiveAddress = setActiveAddress;
     V.getContractState = getContractState;
     V.getAddressState = getAddressState;

@@ -7,7 +7,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const $debug = VDom.setNode( {
+  const $debug = V.setNode( {
     tag: 'debug',
     classes: 'debug',
     setStyle: {
@@ -27,13 +27,13 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
         'overflow-y': 'scroll'
       }
     },
-    html: VDom.setNode( {
+    html: V.setNode( {
       tag: 'ul'
     } )
   } );
 
   $debug.addEventListener( 'click', function() {
-    VDom.setNode( 'debug', 'clear' );
+    V.setNode( 'debug', 'clear' );
   } );
 
   /* ================== public methods ================== */
@@ -41,14 +41,14 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   function debug( one, two, three, four, five, six ) {
     const debugArr = [one, two, three, four, five, six];
     console.log( '*** debug ***' );
-    $debug.appendChild( VDom.setNode( { tag: 'li', html: '*** debug ***' } ) );
+    $debug.appendChild( V.setNode( { tag: 'li', html: '*** debug ***' } ) );
     debugArr.forEach( item => {
       if ( item != undefined ) {
         console.log( item );
-        $debug.appendChild( VDom.setNode( { tag: 'li', html: JSON.stringify( item ) } ) );
+        $debug.appendChild( V.setNode( { tag: 'li', html: JSON.stringify( item ) } ) );
       }
     } );
-    VDom.setNode( 'body', $debug );
+    V.setNode( 'body', $debug );
   }
 
   /* ====================== export ====================== */

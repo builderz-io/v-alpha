@@ -9,37 +9,29 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function ckeckEntityStore() {
-
-    const activeAddress = V.getState( 'activeAddress' );
-
-    return activeAddress ? V.getEntity( activeAddress ).then( res => {
-      if ( res.reset ) {
-        return 'entity not found';
-      }
-      else if ( res.success ) {
-        V.setState( 'activeEntity', res.data[0] );
-
-        // debug info
-        V.getContractState();
-        console.log( V.getState( 'all' ) );
-
-        return 'entity found';
-      }
-      else {
-        return 'entity not found';
-      }
-    } ) : 'error';
-  }
-
   async function presenter( which ) {
 
-    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
-      if ( which == 'authenticate' ) {
+    if ( window.Web3Obj && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
+
+      if ( which == 'initialize join' ) {
+        which = 'initialize web3 join';
+      }
+      else if ( which.includes( 'authenticate' ) ) {
         Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
-            which = await ckeckEntityStore();
+            const check = await ckeckEntityStoreByAddress();
+            if ( check == 'entity found' ) {
+              which = check;
+            }
+            else {
+              if ( which.includes( 'existing entity' ) ) {
+                which = 'authenticate existing entity';
+              }
+              else {
+                which = check;
+              }
+            }
           }
           else {
             which = res.status;
@@ -48,11 +40,16 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         Modal.draw( 'please wait' );
-        which = await ckeckEntityStore();
+        if ( V.getState( 'activeAddress' ) ) {
+          which = await ckeckEntityStoreByAddress();
+        }
+        else if ( V.getState( 'activeEntity' ).fullId ) {
+          which = 'entity found';
+        }
       }
     }
     else if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) { // web3 join
-      if ( which == 'authenticate' ) {
+      if ( which == 'initialize join' ) {
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
@@ -61,8 +58,8 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else { // web2 join
-      if ( which == 'authenticate' ) {
-        which = 'web2 login';
+      if ( which == 'initialize join' ) {
+        which = 'initialize web2 join';
       }
       else if ( which == 'new entity was set up' ) {
         which = 'entity found';
@@ -79,6 +76,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Navigation.draw();
       Modal.draw( which );
     }
+    else if ( which == 'entity not found' ) {
+      V.sN( 'balance > svg', 'clear' );
+      Join.launch();
+      Modal.draw( which );
+    }
     else if ( which == 'logged out' ) {
       Join.launch();
       Navigation.draw();
@@ -91,7 +93,79 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  /* ============ public methods and exports ============ */
+  async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
+
+    const activeAddress = V.getState( 'activeAddress' );
+
+    return activeAddress ? V.getEntity( activeAddress ).then( async res => {
+      if ( res.reset ) {
+        return 'entity not found';
+      }
+      else if ( res.success ) {
+
+        V.setState( 'activeEntity', res.data[0] );
+
+        const eB = await V.getEntityBalance( res.data[0] );
+
+        V.setState( 'activeEntity', { balance: eB.data[0] } );
+
+        return 'entity found';
+      }
+      else {
+        return 'entity not found';
+      }
+    } ) : 'error';
+  }
+
+  /* ================== public methods ================== */
+
+  function onboardingCard() {
+
+    const aE = V.getState( 'activeEntity' );
+
+    if ( aE ) {
+      let $cardContent;
+      const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
+
+      if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 2! Connect a crypto wallet', 'onboading' ) + '</p>'
+        } );
+        $cardContent.addEventListener( 'click', function handleAddWallet() {
+          if ( window.Web3Obj ) {
+            Join.draw( 'authenticate existing entity' );
+          }
+          else {
+            Join.draw( 'install metamask' );
+          }
+        } );
+      }
+      else if ( !balanceCheck ) { // wallet balance is 0
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 3! Ask a friend to transfer 1 VALUE and we sponsor your BrightID verification.', 'onboading' ) + '</p>'
+        } );
+      }
+      else if ( balanceCheck ) { // no brightID connected
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 4! Verify your unique account with BrightID and receive VALUE basic income.', 'onboading' ) + '</p>'
+          // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
+        } );
+      }
+
+      const $onboardingCard = CanvasComponents.card( $cardContent );
+
+      return $onboardingCard;
+    }
+    else {
+      return '';
+    }
+  }
 
   function launch() {
     // sets the view on launch (the header "Join" button)
@@ -99,7 +173,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'balance > svg', 'clear' );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
-        Join.draw( 'authenticate' );
+        Join.draw( 'initialize join' );
       } );
 
       V.setNode( 'header', $join );
@@ -110,9 +184,12 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
+  /* ====================== export ====================== */
+
   return {
+    onboardingCard: onboardingCard,
     launch: launch,
-    draw: draw
+    draw: draw,
   };
 
 } )();

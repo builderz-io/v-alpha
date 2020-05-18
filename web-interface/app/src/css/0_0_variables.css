@@ -51,6 +51,7 @@
   --green: 65, 183, 135;       /* rgba(65, 183, 135, 1) */
   --orange: 255, 164, 27;      /* rgb(255, 164, 27) */
   --brand: 27, 26, 255;        /* rgba(27, 26, 255, 1) or #1b1aff */
+  --button: 255, 164, 27;      /* rgba(255, 164, 27, 1) or #ffa41b */
 
   /* Spacing */
   --global-padding: 5px;

@@ -7,4 +7,4 @@ Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here 
 
 ## Contribute
 
-Visit the [Project Board](https://github.com/valueinstrument/v-alpha-2/projects/1) here on GitHub to find things to contribute
+Visit the [Issues](https://github.com/valueinstrument/v-alpha-2/issues) to find a selection of tasks in need of attention. The issues listed mainly provide a global overview. We do not currently track detailed issues or the project roadmap here on GitHub.

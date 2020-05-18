@@ -7,6 +7,14 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  V.setStyle( {
+
+  /* Cross-browser bottom list padding */
+    'list > *:last-child': {
+      'padding-bottom': '137px'
+    }
+  } );
+
   function notFound( which ) {
     return V.setNode( {
       t: 'p',
@@ -159,7 +167,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = V.setNode( {
       tag: 'list',
-      classes: 'flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
+      classes: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
     } );
 
     if ( which == 'narrow' ) {
