@@ -49,6 +49,14 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
       rpc: 'http://api-01.us-west-1.symboldev.network:3000',
       generationHash: '44D2225B8932C9A96DCB13508CBCDFFA9A9663BFBA2354FEEC8FCFCB7E19846C',
       mosaicId: '747B276C30626442'
+    },
+    localeos: {
+      rpc: 'http://localhost:8888',
+      privKey: '5JtUScZK2XEp3g9gh7F8bwtPTRAkASmNrrftmx4AxDKD5K4zDnr'
+    },
+    testeos: {
+      rpc: 'https://api.testnet.eos.io',
+
     }
   };
 

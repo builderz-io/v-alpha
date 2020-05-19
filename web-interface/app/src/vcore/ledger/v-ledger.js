@@ -26,6 +26,17 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       console.log( '*** web3 and evm scripts loaded ***' );
     }
 
+    if ( V.getSetting( 'transactionLedger' ) == 'EOS' ) {
+      await Promise.all( [
+        V.setScript( '/dist/eosjs-api.js' ),
+        V.setScript( '/dist/eosjs-jsonrpc.js' ),
+        V.setScript( '/dist/eosjs-jssig.js' ),
+        V.setScript( '/dist/eosjs-numeric.js' )
+      ] );
+
+      console.log( '*** eos scripts loaded ***' );
+    }
+
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       await V.setScript( '/dist/symbol-sdk-0.17.5-alpha.js' );
       await V.setScript( '/src/vcore/ledger/v-symbol.js' );
@@ -138,6 +149,11 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         return V.setMosaicTransaction( data );
       }
     }
+    else if ( whichLedger == 'EOS' ) {
+      if ( whichEndpoint == 'transaction' ) {
+        return V.setEOSTransaction( data );
+      }
+    }
     else if ( whichLedger == '3Box' ) {
       if ( whichEndpoint == 'entity' ) {
         return V.set3BoxSpace( whichEndpoint, data );
@@ -163,6 +179,11 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( whichLedger == 'Symbol' ) {
+      if ( whichEndpoint == 'transaction' ) {
+        return V.getAddressHistory();
+      }
+    }
+    else if ( whichLedger == 'EOS' ) {
       if ( whichEndpoint == 'transaction' ) {
         return V.getAddressHistory();
       }
