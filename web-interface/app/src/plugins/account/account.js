@@ -15,71 +15,75 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function presenter() {
-    const pageState = V.getState( 'page' );
-
+    // const pageState = V.getState( 'page' );
     const aE = V.getState( 'activeEntity' );
+
+    if ( !aE ) {
+      return;
+    }
+
+    // if ( true /* V.getState( 'active' ).path != '/me/account' /* pageState.height != pageState.topCalc */ ) {
+
     const $topcontent = AccountComponents.topcontent( aE.fullId );
+    const $list = CanvasComponents.list( 'narrow' );
 
-    if ( pageState.height != pageState.topCalc ) {
-      const $list = CanvasComponents.list( 'narrow' );
+    const transactions = await V.getTransaction();
 
-      const transactions = await V.getTransaction();
+    V.setNode( $list, Join.onboardingCard() );
 
-      V.setNode( $list, Join.onboardingCard() );
-
-      if( !transactions.success || !transactions.data[0].length ) {
-        // V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
-
-        const pageData = {
-          topcontent: $topcontent,
-          listings: $list,
-          position: 'top'
-        };
-        return pageData;
-      }
-
-      for ( const txData of transactions.data[0].reverse() ) {
-        if ( V.getState( 'activeAddress' ) ) {
-          if ( txData.txType == 'in' ) {
-            txData.title = await castEntityName( txData.fromAddress );
-          }
-          else if ( txData.txType == 'out' ) {
-            txData.title = await castEntityName( txData.toAddress );
-          }
-        }
-        if ( txData.txType == 'fee' ) {
-          txData.title = 'Transaction Fee';
-        }
-        else if ( txData.txType == 'generated' ) {
-          txData.title = 'Community Payout';
-        }
-
-        const $cardContent = AccountComponents.accountCard( txData );
-        const $card = CanvasComponents.card( $cardContent );
-        V.setNode( $list, $card );
-      }
-
-      // DemoContent.transactionsArr.forEach( cardData => {
-      //   const $card = AccountComponents.accountCard( cardData );
-      //   V.setNode( $list, $card );
-      // } );
-
-      // const $topsliderUl = AccountComponents.topSliderUl();
-      // V.setNode( $topsliderUl, AccountComponents.accountBalance() );
-      // for ( const variable in DemoContent.accountData ) {
-      //   const $accountData = AccountComponents.accountSmallCard( variable, DemoContent.accountData );
-      //   V.setNode( $topsliderUl, $accountData );
-      // }
+    if( !transactions.success || !transactions.data[0].length ) {
+      // V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
 
       const pageData = {
-      // topslider: $topsliderUl,
         topcontent: $topcontent,
         listings: $list,
         position: 'top'
       };
-
       return pageData;
     }
+
+    for ( const txData of transactions.data[0].reverse() ) {
+      if ( V.getState( 'activeAddress' ) ) {
+        if ( txData.txType == 'in' ) {
+          txData.title = await castEntityName( txData.fromAddress );
+        }
+        else if ( txData.txType == 'out' ) {
+          txData.title = await castEntityName( txData.toAddress );
+        }
+      }
+      if ( txData.txType == 'fee' ) {
+        txData.title = 'Transaction Fee';
+      }
+      else if ( txData.txType == 'generated' ) {
+        txData.title = 'Community Payout';
+      }
+
+      const $cardContent = AccountComponents.accountCard( txData );
+      const $card = CanvasComponents.card( $cardContent );
+      V.setNode( $list, $card );
+    }
+
+    // DemoContent.transactionsArr.forEach( cardData => {
+    //   const $card = AccountComponents.accountCard( cardData );
+    //   V.setNode( $list, $card );
+    // } );
+
+    // const $topsliderUl = AccountComponents.topSliderUl();
+    // V.setNode( $topsliderUl, AccountComponents.accountBalance() );
+    // for ( const variable in DemoContent.accountData ) {
+    //   const $accountData = AccountComponents.accountSmallCard( variable, DemoContent.accountData );
+    //   V.setNode( $topsliderUl, $accountData );
+    // }
+
+    const pageData = {
+      // topslider: $topsliderUl,
+      topcontent: $topcontent,
+      listings: $list,
+      position: 'top'
+    };
+
+    return pageData;
+    // }
   }
 
   function view( pageData ) {
@@ -102,7 +106,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       const $navBal = AccountComponents.headerBalance( balance );
       V.setNode( 'join', 'clear' );
       V.setNode( 'balance > svg', 'clear' );
-      setTimeout( () => {return V.setNode( 'balance', $navBal )}, 700 );
+      V.setNode( 'balance', $navBal );
+      // setTimeout( () => {return V.setNode( 'balance', $navBal )}, 100 );
     } );
   }
 

@@ -1,7 +1,7 @@
-const Profile = ( function() { // eslint-disable-line no-unused-vars
+const User = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Plugin driving the profile pages,
+   * V Plugin driving the user profile/edit page
    *
    */
 
@@ -11,23 +11,20 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const fullId = V.castPathOrId( which );
-
-    const aE = V.getState( 'activeEntity' );
-    if ( aE && fullId == aE.fullId ) {
-      V.setBrowserHistory( { path: '/me/profile' } );
-      User.draw();
+    if ( !V.getState( 'activeEntity' ) ) {
       return {
         success: false,
-        status: 'diverted to User.draw'
+        status: ''
       };
     }
 
+    const fullId = V.getState( 'activeEntity' ).fullId;
     const query = await V.getEntity( fullId );
 
     const mapData = [];
 
     if ( query.success ) {
+
       mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
 
       return {
@@ -55,14 +52,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     if ( data.success ) {
       const entity = data.data[0].entity;
 
-      $topcontent = ProfileComponents.topcontent( entity.fullId );
+      $topcontent = UserComponents.topcontent( entity.fullId );
       $list = CanvasComponents.list( 'narrow' );
-      const $loc = ProfileComponents.locationCard( entity );
+      const $loc = UserComponents.locationCard( entity );
       const $locCard = CanvasComponents.card( $loc );
+      const $onboardingCard = Join.onboardingCard();
 
-      V.setNode( $list, [ $locCard ] );
+      V.setNode( $list, [ $onboardingCard, $locCard ] );
 
-      Navigation.draw( entity );
+      Navigation.draw();
 
       Page.draw( {
         topcontent: $topcontent,
@@ -70,12 +68,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
       } );
 
+      Chat.drawMessageForm( 'clear' );
+
       VMap.draw( data.mapData );
     }
     else if ( data.success === null ) {
       Page.draw( {
         topcontent: CanvasComponents.notFound( 'entity' ),
       } );
+    }
+    else {
+      Marketplace.draw();
     }
   }
 

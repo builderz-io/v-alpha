@@ -17,7 +17,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'initialize web3 join';
       }
       else if ( which.includes( 'authenticate' ) ) {
-        Modal.draw( 'please wait' );
+        // Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
             const check = await ckeckEntityStoreByAddress();
@@ -39,7 +39,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         } );
       }
       else if ( which == 'new entity was set up' ) {
-        Modal.draw( 'please wait' );
+        // Modal.draw( 'please wait' );
         if ( V.getState( 'activeAddress' ) ) {
           which = await ckeckEntityStoreByAddress();
         }
@@ -73,8 +73,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function view( which ) {
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
-      Navigation.draw();
-      Modal.draw( which );
+      // Navigation.draw();
+      if ( !V.getCookie( 'welcome-modal' ) ) {
+        Modal.draw( which );
+        V.setCookie( 'welcome-modal', 0 );
+      }
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );

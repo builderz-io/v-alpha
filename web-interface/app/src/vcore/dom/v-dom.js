@@ -70,7 +70,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       else if ( ['h', 'html'].includes( key ) ) {
         if ( Array.isArray( data[key] ) ) {
           for ( let i = 0; i < data[key].length; i++ ) {
-            console.log( data[key][i] );
             $elem.appendChild( data[key][i] );
           }
         }

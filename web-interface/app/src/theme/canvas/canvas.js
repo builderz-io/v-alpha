@@ -47,6 +47,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       V.setScript( '/src/plugins/account/components.js' ),
       V.setScript( '/src/plugins/account/account.js' ),
+      V.setScript( '/src/plugins/user/components.js' ),
+      V.setScript( '/src/plugins/user/user.js' ),
       V.setScript( '/src/plugins/profile/components.js' ),
       V.setScript( '/src/plugins/profile/profile.js' ),
       V.setScript( '/src/plugins/chat/components.js' ),
@@ -107,6 +109,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       height: Number( window.innerHeight ),
       width: Number( window.innerWidth )
     } );
+    V.setState( 'active', {} );
     V.setState( 'page', {
       height: V.getCss( '--page-position-peek' ),
       top: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top' ),
@@ -179,6 +182,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     initCanvas(); // if !background
 
+    returningUser(); // if !activeEntity
+
     V.castRoute( path )
       .then( (
         x,
@@ -197,6 +202,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if ( ['data'].includes( status ) ) {
           Data.draw( which );
         }
+        else if ( ['user profile'].includes( status ) ) {
+          User.draw();
+        }
+        else if ( ['user account'].includes( status ) ) {
+          Account.draw();
+        }
         else if ( ['chat everyone'].includes( status ) ) {
           Chat.draw( which );
         }
@@ -206,13 +217,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       } );
 
-    returningUser();
-
   }
 
   function setNavStates() {
     if( !V.getState( 'serviceNav' ) ) {
-      Profile.launch(); // sets navItem
       Chat.launch(); // sets navItem & sets socket.on
       Data.launch(); // sets navItem
       Marketplace.launch(); // sets navItem
@@ -236,25 +244,29 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
       Button.launch(); // sets nodes: hidden buttons
-      Join.launch(); // sets node: join button
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
 
     }
   }
 
   function returningUser() {
-    const returningWallet = V.getCookie( 'lastActiveAddress' );
-    const returningUphrase = V.getCookie( 'lastActiveUphrase' );
+    if( !V.getState( 'activeEntity' ) ) {
+      const returningWallet = V.getCookie( 'lastActiveAddress' );
+      const returningUphrase = V.getCookie( 'lastActiveUphrase' );
 
-    if ( returningWallet ) {
-      Join.draw( 'authenticate' );
-    }
-    else if ( returningUphrase ) {
-      ( async () => {
-        const returningEntity = await V.getEntity( V.castJson( returningUphrase ) );
-        V.setState( 'activeEntity', returningEntity.data[0] );
-        Join.draw( 'new entity was set up' );
-      } )();
+      if ( returningWallet ) {
+        Join.draw( 'authenticate' );
+      }
+      else if ( returningUphrase ) {
+        ( async () => {
+          const returningEntity = await V.getEntity( V.castJson( returningUphrase ) );
+          V.setState( 'activeEntity', returningEntity.data[0] );
+          Join.draw( 'new entity was set up' );
+        } )();
+      }
+      else {
+        Join.launch(); // sets node: join button
+      }
     }
   }
 

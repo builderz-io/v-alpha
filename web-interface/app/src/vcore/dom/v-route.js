@@ -8,6 +8,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   window.onpopstate = () => {
+    V.setState( 'active', window.history.state );
     Canvas.draw( window.history.state );
   };
 
@@ -24,15 +25,6 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
     {
       path: '/profile',
       children: [
-        {
-          path: '',
-          action: () => {
-            return {
-              status: 'me',
-              data: []
-            };
-          }
-        },
         {
           path: '/:rawentity',
           action: ( context ) => {
@@ -85,6 +77,29 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
             return {
               status: 'market category',
               data: [ '/market/' + context.params.id ]
+            };
+          }
+        }
+      ]
+    },
+    {
+      path: '/me',
+      children: [
+        {
+          path: '/account',
+          action: () => {
+            return {
+              status: 'user account',
+              data: [ '/me/account' ]
+            };
+          }
+        },
+        {
+          path: '/profile',
+          action: () => {
+            return {
+              status: 'user profile',
+              data: [ '/me/profile' ]
             };
           }
         }

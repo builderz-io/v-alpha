@@ -199,15 +199,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     } )( e );
 
     if ( $itemClicked ) {
-
       const path = $itemClicked.getAttribute( 'path' );
-
       V.setState( 'active', { navItem: path } );
-
       V.setBrowserHistory( { path: path } );
-
       V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( path );
-
     }
 
   }
@@ -297,6 +292,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const width = window.innerWidth;
 
     deselect();
+
+    // also reset path if not account or profile path
+    if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {
+      V.setBrowserHistory( { path: '/' } );
+    }
 
     V.setState( 'active', { navItem: false } );
 
