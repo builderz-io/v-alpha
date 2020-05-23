@@ -7,11 +7,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  function handleViewAccount( e ) {
-    e.stopPropagation();
-    V.setBrowserHistory( { path: '/me/account' } );
-    Account.draw();
-  }
+  // function handleViewAccount( e ) {
+  //   e.stopPropagation();
+  //   V.setBrowserHistory( { path: '/me/account' } );
+  //   Account.draw();
+  // }
 
   function topcontent( fullId ) {
     return V.cN( {
@@ -19,14 +19,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         V.cN( {
           tag: 'h1',
-          class: 'font-bold fs-xl leading-snug txt-center w-screen pxy',
-          html: V.i18n( 'Your Profile', 'account' ) + '<br>' + fullId,
-        } ),
-        V.cN( {
-          tag: 'p',
-          class: 'pxy txt-center',
-          html: V.i18n( 'View account', 'account' ),
-          k: handleViewAccount
+          class: 'font-bold txt-center pxy',
+          html: /* V.i18n( 'Your Profile', 'account' ) + '<br>' + */ fullId,
         } )
       ]
     } );

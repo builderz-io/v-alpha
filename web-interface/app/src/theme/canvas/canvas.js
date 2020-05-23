@@ -203,10 +203,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           Data.draw( which );
         }
         else if ( ['user profile'].includes( status ) ) {
-          User.draw();
+          User.draw( which );
         }
         else if ( ['user account'].includes( status ) ) {
-          Account.draw();
+          Account.draw( which );
         }
         else if ( ['chat everyone'].includes( status ) ) {
           Chat.draw( which );
@@ -225,6 +225,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Data.launch(); // sets navItem
       Marketplace.launch(); // sets navItem
       Media.launch(); // sets navItem
+      User.launch(); // sets navItem
     }
 
     if ( V.getSetting( 'demoContent' ) ) {

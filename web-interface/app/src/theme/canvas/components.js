@@ -72,34 +72,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
     } );
   }
-  function entityNav() {
-    return V.setNode( {
-      tag: 'entity-nav',
-      classes: 'entity-nav fixed w-screen overflow-x-scroll',
-      setStyle: {
-        'entity-nav': {
-          'padding-top': '4px',
-          'padding-bottom': '8px',
-          'top': 'var(--entity-nav-top)',
-          'left': 'var(--entity-nav-left)'
-        }
-      }
-    } );
-  }
-  function serviceNav() {
-    return V.setNode( {
-      tag: 'service-nav',
-      classes: 'service-nav fixed w-screen overflow-x-scroll',
-      setStyle: {
-        'service-nav': {
-          'padding-top': '4px',
-          'padding-bottom': '28px',
-          'top': 'var(--service-nav-top)',
-          'left': 'var(--service-nav-left)'
-        }
-      }
-    } );
-  }
   function interactions() {
     const sc = V.getState( 'screen' );
 
@@ -254,8 +226,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     haze: haze,
     feature: feature,
     balance: balance,
-    entityNav: entityNav,
-    serviceNav: serviceNav,
     interactions: interactions,
     handle: handle,
     topSlider: topSlider,

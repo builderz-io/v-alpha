@@ -6,25 +6,39 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
    */
 
   'use strict';
+  //
+  // function handleViewProfile() {
+  //   V.setBrowserHistory( { path: '/me/profile' } );
+  //   User.draw();
+  // }
+  //
+  // function handleViewAccount() {
+  //   V.setBrowserHistory( { path: '/me/account' } );
+  //   Account.draw();
+  // }
+  //
+  // function handleDrawTxHistory() {
+  //   if ( window.location.pathname != '/me/account' ) {
+  //     V.setBrowserHistory( { path: '/me/account' } );
+  //     Account.draw();
+  //   }
+  //   else {
+  //     V.setBrowserHistory( { path: '/' } );
+  //     Marketplace.draw();
+  //   }
+  // }
 
-  function handleViewProfile() {
-    V.setBrowserHistory( { path: '/me/profile' } );
-    User.draw();
-  }
-
-  function handleViewAccount() {
-    V.setBrowserHistory( { path: '/me/account' } );
-    Account.draw();
-  }
-
-  function handleDrawBalance() {
-    if ( window.location.pathname != '/me/account' ) {
-      V.setBrowserHistory( { path: '/me/account' } );
-      Account.draw();
+  function handleDrawUserNav() {
+    if ( V.getVisibility( 'user-nav' ) ) {
+      V.setState( 'active', { navItem: false } );
+      // Navigation.draw();
+      // Page.draw( { reset: false } );
+      Marketplace.draw();
     }
     else {
-      V.setBrowserHistory( { path: '/' } );
-      Marketplace.draw();
+      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
+      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
+      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
     }
   }
 
@@ -32,82 +46,76 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'div',
       h: [
-        V.cN( {
-          tag: 'div',
-          c: 'flex justify-evenly',
-          html: [
-            V.cN( {
-              t: 'button',
-              c: 'useraccount__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-              k: handleViewAccount,
-              h: V.cN( {
-                t: 'span',
-                c: 'useraccount__btninner font-bold fs-xs',
-                s: {
-                  useraccount__btninner: {
-                    position: 'relative',
-                    top: '0px',
-                    left: '1px',
-                    opacity: '0.75',
-                  }
-                },
-                h: '123'
-              } )
-            } ),
-            V.cN( {
-              t: 'button',
-              c: 'usersettings__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-              k: handleViewProfile,
-              h: V.cN( {
-                t: 'span',
-                c: 'usersettings__btninner',
-                s: {
-                  usersettings__btninner: {
-                    position: 'relative',
-                    top: '0px',
-                    left: '1px',
-                    opacity: '0.75',
-                  }
-                },
-                h: V.getIcon( 'settings' )
-              } )
-            } ),
-            V.cN( {
-              t: 'button',
-              c: 'userprofile__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-              k: handleViewProfile,
-              h: V.cN( {
-                t: 'span',
-                c: 'userprofile__btninner',
-                s: {
-                  userprofile__btninner: {
-                    position: 'relative',
-                    top: '0px',
-                    left: '1px',
-                    opacity: '0.75',
-                  }
-                },
-                h: V.getIcon( 'person' )
-              } )
-            } )
-          ]
-        } ),
+        // V.cN( {
+        //   tag: 'div',
+        //   c: 'flex justify-evenly',
+        //   html: [
+        //     V.cN( {
+        //       t: 'button',
+        //       c: 'useraccount__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+        //       k: handleViewAccount,
+        //       h: V.cN( {
+        //         t: 'span',
+        //         c: 'useraccount__btninner font-bold fs-xs',
+        //         s: {
+        //           useraccount__btninner: {
+        //             position: 'relative',
+        //             top: '0px',
+        //             left: '1px',
+        //             opacity: '0.75',
+        //           }
+        //         },
+        //         h: '123'
+        //       } )
+        //     } ),
+        //     V.cN( {
+        //       t: 'button',
+        //       c: 'usersettings__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+        //       k: handleViewProfile,
+        //       h: V.cN( {
+        //         t: 'span',
+        //         c: 'usersettings__btninner',
+        //         s: {
+        //           usersettings__btninner: {
+        //             position: 'relative',
+        //             top: '0px',
+        //             left: '1px',
+        //             opacity: '0.75',
+        //           }
+        //         },
+        //         h: V.getIcon( 'settings' )
+        //       } )
+        //     } ),
+        //     V.cN( {
+        //       t: 'button',
+        //       c: 'userprofile__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+        //       k: handleViewProfile,
+        //       h: V.cN( {
+        //         t: 'span',
+        //         c: 'userprofile__btninner',
+        //         s: {
+        //           userprofile__btninner: {
+        //             position: 'relative',
+        //             top: '0px',
+        //             left: '1px',
+        //             opacity: '0.75',
+        //           }
+        //         },
+        //         h: V.getIcon( 'person' )
+        //       } )
+        //     } )
+        //   ]
+        // } ),
         V.cN( {
           tag: 'h1',
-          class: 'font-bold fs-l txt-center pxy',
-          html: V.i18n( 'Account of', 'account' ) + ' ' + fullId
+          class: 'font-bold txt-center pxy',
+          // y: {
+          //   position: 'fixed',
+          //   top: '14px',
+          //   right: '10px'
+          // },
+          html: /* V.i18n( 'Account of', 'account' ) + ' ' + */ fullId
         } ),
-        // V.cN( {
-        //   tag: 'p',
-        //   class: 'font-bold fs-l txt-center',
-        //   html: fullId,
-        //   k: handleViewProfile
-        // } ),
-        // V.cN( {
-        //   tag: 'p',
-        //   class: 'pxy txt-center',
-        //   html: V.i18n( 'View and edit profile', 'account' ),
-        // } ),
       ]
     } );
   }
@@ -123,7 +131,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       },
       html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="#1b1aff" stroke-width="2.7"></circle>
               <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ balance }</text>`,
-      click: handleDrawBalance
+      click: handleDrawUserNav // handleDrawTxHistory
 
     } );
   }

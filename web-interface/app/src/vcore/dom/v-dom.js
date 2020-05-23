@@ -304,6 +304,17 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     return Number( getComputedStyle( document.documentElement ).getPropertyValue( which ).replace( 'px', '' ).replace( 'rem', '' ) );
   }
 
+  function getVisibility( which ) {
+    // ;) from https://github.com/jquery/jquery/blob/master/src/css/hiddenVisibleSelectors.js
+    const elem = getNode( which );
+    if ( elem ) {
+      return !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
+    }
+    else {
+      return undefined;
+    }
+  }
+
   function castRemToPixel( remValue ) {
     return Number( remValue ) * parseFloat( getComputedStyle( document.documentElement ).fontSize );
   }
@@ -322,6 +333,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     V.setStyle = setStyle;
     V.setClick = setClick;
     V.getCss = getCss;
+    V.getVisibility = getVisibility;
     V.castRemToPixel = castRemToPixel;
   } )();
 
@@ -337,6 +349,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     setStyle: setStyle,
     setClick: setClick,
     getCss: getCss,
+    getVisibility: getVisibility,
     castRemToPixel: castRemToPixel
   };
 

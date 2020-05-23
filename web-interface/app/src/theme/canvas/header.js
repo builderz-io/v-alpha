@@ -22,11 +22,12 @@ const Header = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const $header = CanvasComponents.header();
     const $balance = CanvasComponents.balance();
-    const $entityNav = CanvasComponents.entityNav();
-    const $serviceNav = CanvasComponents.serviceNav();
+    const $entityNav = NavComponents.entityNav();
+    const $userNav = NavComponents.userNav();
+    const $serviceNav = NavComponents.serviceNav();
     const $interactions = CanvasComponents.interactions();
 
-    V.setNode( $header, [ $balance, $entityNav, $serviceNav, $interactions ] );
+    V.setNode( $header, [ $balance, $entityNav, $userNav, $serviceNav, $interactions ] );
 
     V.setNode( 'body', $header );
   }

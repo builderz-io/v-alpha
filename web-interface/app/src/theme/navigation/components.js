@@ -45,6 +45,52 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function entityNav() {
+    return V.setNode( {
+      tag: 'entity-nav',
+      classes: 'nav entity-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'entity-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '8px',
+          'top': 'var(--entity-nav-top)',
+          'left': 'var(--entity-nav-left)'
+        }
+      }
+    } );
+  }
+
+  function userNav() {
+    return V.setNode( {
+      tag: 'user-nav',
+      classes: 'nav user-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'user-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '8px',
+          'top': 'var(--user-nav-top)',
+          'left': 'var(--user-nav-left)',
+          'display': 'none'
+        }
+      }
+    } );
+  }
+
+  function serviceNav() {
+    return V.setNode( {
+      tag: 'service-nav',
+      classes: 'nav service-nav fixed w-screen overflow-x-scroll',
+      setStyle: {
+        'service-nav': {
+          'padding-top': '4px',
+          'padding-bottom': '28px',
+          'top': 'var(--service-nav-top)',
+          'left': 'var(--service-nav-left)'
+        }
+      }
+    } );
+  }
+
   function entityNavUl() {
     return V.setNode( {
       tag: 'ul',
@@ -69,10 +115,26 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function userNavUl() {
+    return V.setNode( {
+      tag: 'ul',
+      classes: 'user-nav__ul flex items-center font-medium',
+      setStyle: {
+        'user-nav__ul': {
+          'padding-left': '3px' /* needed for selected shadow */
+        }
+      }
+    } );
+  }
+
   return {
     pill: pill,
+    entityNav: entityNav,
+    userNav: userNav,
+    serviceNav: serviceNav,
     entityNavUl: entityNavUl,
-    serviceNavUl: serviceNavUl
+    serviceNavUl: serviceNavUl,
+    userNavUl: userNavUl
   };
 
 } )();

@@ -15,6 +15,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     },
     'service-nav__ul > *:last-child': {
       visibility: 'hidden'
+    },
+    'user-nav__ul > *:last-child': {
+      visibility: 'hidden'
     }
   } );
 
@@ -51,6 +54,19 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     syncNavOrder( serviceNavOrder, serviceNav );
 
     V.setCookie( 'service-nav-order', serviceNavOrder );
+
+    /**
+     * Update userNavOrder (always)
+     * User Plugin has already registered its nav items at this stage
+     *
+     */
+
+    const userNavOrder = V.castJson( V.getCookie( 'user-nav-order' ) || '{}' );
+    const userNav = V.getState( 'userNav' );
+
+    syncNavOrder( userNavOrder, userNav );
+
+    V.setCookie( 'user-nav-order', userNavOrder );
 
     /**
      * Update entityNavOrder
@@ -94,6 +110,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       data: [{
         which: whichPath,
         entityNav: entityNavOrder,
+        userNav: userNavOrder,
         serviceNav: serviceNavOrder,
         keep: 5
       }]
@@ -146,6 +163,26 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'entity-nav', '' );
       V.setNode( 'entity-nav', $entityNavUl );
 
+      /**
+       * draw userNav
+       *
+       */
+
+      const $userNavUl = NavComponents.userNavUl();
+      $userNavUl.addEventListener( 'click', itemClickHandler );
+
+      const userRow = castNavDrawingOrder( viewData.data[0].userNav, 1 );
+
+      for ( let i = 0; i < userRow.length; i++ ) {
+        const $pill = NavComponents.pill( userRow[i] );
+        V.setNode( $userNavUl, $pill );
+      }
+
+      V.setNode( $userNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
+
+      V.setNode( 'user-nav', '' );
+      V.setNode( 'user-nav', $userNavUl );
+
     }
 
     /**
@@ -153,8 +190,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    if ( viewData.data[0].which ) {
-      animate( viewData.data[0].which );
+    const which = viewData.data[0].which;
+
+    if ( which ) {
+      animate( which );
     }
 
   }
@@ -197,12 +236,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       else if ( t.localName == 'svg' ) { return t.parentNode }
       else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
     } )( e );
-
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( { path: path } );
-      V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).draw( path );
+      V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
     }
 
   }
@@ -231,13 +269,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // }
   }
 
-  function movingPillAnimation( row, $itemToAnimate, itemClickedRect, menuStateObj ) {
+  function movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj ) {
     // adjusted from LukePH https://stackoverflow.com/questions/907279/jquery-animate-moving-dom-element-to-new-parent
     deselect();
     select( $itemToAnimate );
 
     let classes = ' absolute font-medium';
-    if ( row == 'entity-nav' ) {
+    if ( nav == 'entity-nav' ) {
       classes += ' fs-rr';
     }
 
@@ -249,7 +287,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( 'body' ).appendChild( $tempMover );
 
     $itemToAnimate.style.visibility = 'hidden';
-    V.getNode( row + ' > ul' ).prepend( $itemToAnimate );
+    V.getNode( nav + ' > ul' ).prepend( $itemToAnimate );
 
     V.setAnimation( $tempMover, {
       top: menuStateObj.entityNavTop + 4,
@@ -293,9 +331,26 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     deselect();
 
-    // also reset path if not account or profile path
-    if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {
-      V.setBrowserHistory( { path: '/' } );
+    // (previous version) also reset path if not account or profile path
+    // if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {
+    V.setBrowserHistory( { path: '/' } );
+    // }
+
+    if ( V.getVisibility( 'user-nav' ) ) {
+      // (alt version) return to full usernav first
+      // if ( V.getState( 'active' ).navItem ) {
+      //   V.setAnimation( 'user-nav', { width: width } );
+      //   V.setState( 'active', { navItem: false } );
+      //   return;
+      // }
+      // else {
+
+      V.setAnimation( 'user-nav', 'fadeOut', { duration: 0.1 } ).then( () => {
+        V.setAnimation( 'user-nav', { width: width } );
+      } );
+      V.setAnimation( 'entity-nav', 'fadeIn', { duration: 0.2 } );
+      V.setAnimation( 'service-nav', 'fadeIn', { duration: 0.6 } );
+      // }
     }
 
     V.setState( 'active', { navItem: false } );
@@ -324,29 +379,37 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setState( 'active', { navItem: $itemToAnimate.getAttribute( 'path' ) } );
 
-    const menuStateObj = V.getState( 'header' );
-    const row = $itemToAnimate.parentNode.parentNode.localName;
-    const itemClickedRect = $itemToAnimate.getBoundingClientRect();
-    const otherRow = row == 'service-nav' ? 'entity-nav' : 'service-nav';
+    const $navToAnimate = $itemToAnimate.closest( '.nav' );
+    const nav = $navToAnimate.localName;
 
-    movingPillAnimation( row, $itemToAnimate, itemClickedRect, menuStateObj );
+    if ( nav == 'user-nav' ) {
+      if ( !V.getVisibility( 'user-nav' ) ) {
+        $navToAnimate.style.display = 'block';
+        V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
+        V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
+        V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
+      }
+    }
+
+    const menuStateObj = V.getState( 'header' );
+    const itemClickedRect = $itemToAnimate.getBoundingClientRect();
+
+    movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj );
+
+    setCountAndLastIndex( nav ); // updates nav status in cookies after movingPillAnimation
+
+    const otherRow = nav == 'service-nav' ? 'entity-nav' : 'service-nav';
 
     V.sA( otherRow, { width: 0 }, { duration: 1 } );
+    // V.sA( otherRow, 'fadeOut', { duration: 0.5 } ); // alternative animation
     // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
 
-    V.setAnimation( row, {
+    V.setAnimation( nav, {
       width: itemClickedRect.width + 13,
       top: menuStateObj.entityNavTop,
       left: menuStateObj.entityNavLeft
     }, { duration: 1 } );
-    V.getNode( row ).scrollLeft = 0;
-
-    /**
-     * Update nav status in cookies
-     *
-     */
-
-    setCountAndLastIndex( row );
+    V.getNode( nav ).scrollLeft = 0;
 
   }
 

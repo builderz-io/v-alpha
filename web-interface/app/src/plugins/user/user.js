@@ -60,7 +60,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [ $onboardingCard, $locCard ] );
 
-      Navigation.draw();
+      Navigation.draw( data.data[0].which );
 
       Page.draw( {
         topcontent: $topcontent,
@@ -84,12 +84,58 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
+  function launch() {
+    V.setNavItem( 'userNav', [
+      {
+        title: 'Account',
+        path: '/me/account',
+        use: {
+          button: 'search',
+        },
+        draw: function( path ) {
+          Account.draw( path );
+        }
+      },
+      {
+        title: 'Profile',
+        path: '/me/profile',
+        use: {
+          button: 'plus search',
+        },
+        draw: function( path ) {
+          User.draw( path );
+        }
+      },
+      {
+        title: 'Settings',
+        path: '/me/settings',
+        use: {
+          button: 'plus search',
+        },
+        draw: function( path ) {
+          Settings.draw( path );
+        }
+      },
+      {
+        title: 'Entities',
+        path: '/me/entities',
+        use: {
+          button: 'plus search',
+        },
+        draw: function( path ) {
+          Entities.draw( path );
+        }
+      }
+    ] );
+  }
+
   function draw( which ) {
     presenter( which ).then( data => { view( data ) } );
   }
 
   return {
     draw: draw,
+    launch: launch
   };
 
 } )();

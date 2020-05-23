@@ -14,7 +14,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
   }
 
-  async function presenter() {
+  async function presenter( path ) {
     // const pageState = V.getState( 'page' );
     const aE = V.getState( 'activeEntity' );
 
@@ -79,7 +79,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       // topslider: $topsliderUl,
       topcontent: $topcontent,
       listings: $list,
-      position: 'top'
+      position: 'top',
+      path: path
     };
 
     return pageData;
@@ -88,7 +89,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData ) {
-      Navigation.draw();
+      Navigation.draw( pageData.path );
       Page.draw( pageData );
       Chat.drawMessageForm();
     }
@@ -111,8 +112,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function draw( options ) {
-    presenter( options ).then( viewData => { view( viewData ) } );
+  function draw( path ) {
+    presenter( path ).then( viewData => { view( viewData ) } );
   }
 
   return {
