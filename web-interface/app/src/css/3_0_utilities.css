@@ -250,6 +250,12 @@
 .txt-center {
   text-align: center;
 }
+.txt-right {
+  text-align: right;
+}
+.capitalize {
+    text-transform: capitalize;
+}
 
 .overflow-x-scroll {
   overflow-x: scroll;

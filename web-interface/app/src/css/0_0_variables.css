@@ -73,6 +73,8 @@
     :root {
       --entity-nav-top: 23px;
       --entity-nav-left: 84px;
+      --user-nav-top: 23px;
+      --user-nav-left: 84px;
       --service-nav-top: 5.5rem;
       --service-nav-left: 12px;
 

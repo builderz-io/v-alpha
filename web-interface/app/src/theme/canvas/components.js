@@ -7,11 +7,36 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const cardLeftWidth = 25;
+
   V.setStyle( {
 
   /* Cross-browser bottom list padding */
     'list > *:last-child': {
       'padding-bottom': '137px'
+    },
+    'card__top-left': {
+      width: cardLeftWidth + '%',
+    },
+    'card__bottom-left': {
+      'display': 'grid',
+      'justify-items': 'center',
+      'text-align': 'center',
+      'width': cardLeftWidth + '%',
+    },
+    'card__top-right': {
+      width: 100 - cardLeftWidth - 6 + '%',
+    },
+    'card__bottom-right': {
+      width: 100 - cardLeftWidth - 6 + '%',
+    },
+    'card__unit': {
+      width: '100%'
+    },
+    'card__container': {
+      // 'height': 'var(--card-height)',
+      'max-width': '360px',
+      'flex-wrap': 'wrap'
     }
   } );
 
@@ -150,44 +175,18 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return $list;
   }
 
-  function card( $cardContent ) {
-
-    const cardLeftWidth = 25;
+  function card( $cardContent, cardTitle ) {
 
     return V.setNode( {
       t: 'li',
       c: 'pxy min-w-360',
-      setStyle: {
-        'card__top-left': {
-          width: cardLeftWidth + '%',
-        },
-        'card__bottom-left': {
-          'display': 'grid',
-          'justify-items': 'center',
-          'text-align': 'center',
-          'width': cardLeftWidth + '%',
-        },
-        'card__top-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__bottom-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__unit': {
-          width: '100%'
-        }
-      },
       h: V.setNode( {
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
-        s: {
-          card__container: {
-            // 'height': 'var(--card-height)',
-            'max-width': '360px',
-            'flex-wrap': 'wrap'
-          },
-        },
-        h: $cardContent
+        h: cardTitle ? [
+          V.cN( { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'card-title' ) } ),
+          $cardContent
+        ] : $cardContent
       } )
     } );
   }

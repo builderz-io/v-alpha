@@ -50,15 +50,22 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
-      const entity = data.data[0].entity;
+      UserComponents.setData( {
+        entity: data.data[0].entity,
+        editable: true
+      } );
 
-      $topcontent = UserComponents.topcontent( entity.fullId );
       $list = CanvasComponents.list( 'narrow' );
-      const $loc = UserComponents.locationCard( entity );
-      const $locCard = CanvasComponents.card( $loc );
-      const $onboardingCard = Join.onboardingCard();
+      $topcontent = UserComponents.topcontent();
 
-      V.setNode( $list, [ $onboardingCard, $locCard ] );
+      V.setNode( $list, [
+        Join.onboardingCard(),
+        UserComponents.entityCard(),
+        UserComponents.introCard(),
+        UserComponents.financialCard(),
+        UserComponents.socialCard(),
+        UserComponents.locationCard()
+      ] );
 
       Navigation.draw( data.data[0].which );
 

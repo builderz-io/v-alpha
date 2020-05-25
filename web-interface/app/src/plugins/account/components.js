@@ -6,27 +6,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
    */
 
   'use strict';
-  //
-  // function handleViewProfile() {
-  //   V.setBrowserHistory( { path: '/me/profile' } );
-  //   User.draw();
-  // }
-  //
-  // function handleViewAccount() {
-  //   V.setBrowserHistory( { path: '/me/account' } );
-  //   Account.draw();
-  // }
-  //
-  // function handleDrawTxHistory() {
-  //   if ( window.location.pathname != '/me/account' ) {
-  //     V.setBrowserHistory( { path: '/me/account' } );
-  //     Account.draw();
-  //   }
-  //   else {
-  //     V.setBrowserHistory( { path: '/' } );
-  //     Marketplace.draw();
-  //   }
-  // }
 
   function handleDrawUserNav() {
     if ( V.getVisibility( 'user-nav' ) ) {
@@ -45,78 +24,12 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   function topcontent( fullId ) {
     return V.cN( {
       t: 'div',
-      h: [
-        // V.cN( {
-        //   tag: 'div',
-        //   c: 'flex justify-evenly',
-        //   html: [
-        //     V.cN( {
-        //       t: 'button',
-        //       c: 'useraccount__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-        //       k: handleViewAccount,
-        //       h: V.cN( {
-        //         t: 'span',
-        //         c: 'useraccount__btninner font-bold fs-xs',
-        //         s: {
-        //           useraccount__btninner: {
-        //             position: 'relative',
-        //             top: '0px',
-        //             left: '1px',
-        //             opacity: '0.75',
-        //           }
-        //         },
-        //         h: '123'
-        //       } )
-        //     } ),
-        //     V.cN( {
-        //       t: 'button',
-        //       c: 'usersettings__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-        //       k: handleViewProfile,
-        //       h: V.cN( {
-        //         t: 'span',
-        //         c: 'usersettings__btninner',
-        //         s: {
-        //           usersettings__btninner: {
-        //             position: 'relative',
-        //             top: '0px',
-        //             left: '1px',
-        //             opacity: '0.75',
-        //           }
-        //         },
-        //         h: V.getIcon( 'settings' )
-        //       } )
-        //     } ),
-        //     V.cN( {
-        //       t: 'button',
-        //       c: 'userprofile__btn circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
-        //       k: handleViewProfile,
-        //       h: V.cN( {
-        //         t: 'span',
-        //         c: 'userprofile__btninner',
-        //         s: {
-        //           userprofile__btninner: {
-        //             position: 'relative',
-        //             top: '0px',
-        //             left: '1px',
-        //             opacity: '0.75',
-        //           }
-        //         },
-        //         h: V.getIcon( 'person' )
-        //       } )
-        //     } )
-        //   ]
-        // } ),
-        V.cN( {
-          tag: 'h1',
-          class: 'font-bold txt-center pxy',
-          // y: {
-          //   position: 'fixed',
-          //   top: '14px',
-          //   right: '10px'
-          // },
-          html: /* V.i18n( 'Account of', 'account' ) + ' ' + */ fullId
-        } ),
-      ]
+      h: V.cN( {
+        tag: 'h1',
+        class: 'font-bold txt-center pxy',
+        html: /* V.i18n( 'Account of', 'account' ) + ' ' + */ fullId
+      } )
+
     } );
   }
 

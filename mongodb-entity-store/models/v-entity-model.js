@@ -69,12 +69,12 @@ var entitySchema = mongoose.Schema( {
     languages: String,
   },
   social: {
-    fb: String,
-    tw: String,
-    web: String,
-    tele: String,
-    teleChatID: Number,
+    facebook: String,
+    twitter: String,
+    telegram: String,
+    website: String,
     email: String,
+    teleChatID: Number,
     confirmation: {
       time: Number,
       sixDigit: Number,

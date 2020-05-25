@@ -159,8 +159,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         adminTag: creatorTag,
       }],
       properties: {
-        location: entityData.location || 'no location given',
-        description: entityData.description || 'no description given',
+        location: entityData.location || 'none',
+        description: entityData.description || 'none',
         target: entityData.target || 'none',
         unit: entityData.unit || 'none',
         creator: creator,
@@ -374,26 +374,26 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function setEntity(
     entityData,
-    options = 'entity'
+    whichEndpoint = 'entity'
   ) {
 
-    if ( options.includes( 'address' ) ) {
-      return V.setData( entityData, options, V.getSetting( 'entityLedger' ) );
+    if ( whichEndpoint.includes( 'address' ) ) {
+      return V.setData( entityData, whichEndpoint, V.getSetting( 'entityLedger' ) );
     }
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       const newSymbolAddress = await V.setActiveAddress();
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
-    if ( options == 'verification' ) {
-      return V.setData( entityData, options, V.getSetting( 'transactionLedger' ) );
+    if ( whichEndpoint == 'verification' ) {
+      return V.setData( entityData, whichEndpoint, V.getSetting( 'transactionLedger' ) );
     }
     else {
 
       const entityCast = await castEntity( entityData );
 
       if ( entityCast.success ) {
-        return V.setData( entityCast.data[0], options, V.getSetting( 'entityLedger' ) );
+        return V.setData( entityCast.data[0], whichEndpoint, V.getSetting( 'entityLedger' ) );
       }
       else {
         return Promise.resolve( entityCast );

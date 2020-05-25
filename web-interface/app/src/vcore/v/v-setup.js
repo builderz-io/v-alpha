@@ -9,7 +9,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
-    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
     socketHost: 'http://localhost',
@@ -19,7 +19,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
 
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     update3BoxEntityStore: false,
-    loadMap: true,
+    loadMap: false,
 
     coinTicker: 'ETH',
     tokenTicker: 'V',
