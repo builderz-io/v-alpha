@@ -21,15 +21,18 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function initAutocomplete( component ) {
-    if ( document.getElementById( component + '__loc' ) ) {
+    console.log( 2, component );
+    const $elem = document.getElementById( component + '__loc' );
+    console.log( $elem );
+    if ( $elem ) {
       const autocomplete = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */( document.getElementById( component + '__loc' ) ),
+      /** @type {!HTMLInputElement} */( $elem ),
         { types: ['geocode'] } );
 
       autocomplete.addListener( 'place_changed', function() {
         var place = autocomplete.getPlace();
-        document.getElementById( component + '__loc' ).setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
-        document.getElementById( component + '__loc' ).setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
+        $elem.setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
+        $elem.setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
       } );
     }
   }

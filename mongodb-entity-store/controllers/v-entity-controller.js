@@ -161,6 +161,33 @@ exports.register = function( req, res ) {
 
 };
 
+exports.update = function( req, cb ) {
+
+  const updateWhat = {};
+  updateWhat[req.field] = req.data;
+  const how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
+
+  EntityDB.findOneAndUpdate(
+    { 'private.uPhrase': req.auth },
+    how,
+    ( err ) => {
+      if ( err ) {
+        return cb( {
+          success: false,
+          status: 'error in updating',
+          message: err
+        } );
+      }
+      else {
+        return cb( {
+          success: true,
+          status: 'entity updated',
+        } );
+      }
+    }
+  );
+};
+
 exports.setEvmAddress = function( req, cb ) {
 
   EntityDB.findOne( { fullId: req.fullId }, { evmCredentials: true } ).exec( ( err, res ) => {

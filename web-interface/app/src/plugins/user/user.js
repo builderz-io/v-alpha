@@ -61,10 +61,10 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, [
         Join.onboardingCard(),
         UserComponents.entityCard(),
+        UserComponents.locationCard(),
         UserComponents.introCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),
-        UserComponents.locationCard()
       ] );
 
       Navigation.draw( data.data[0].which );
@@ -73,6 +73,10 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         topcontent: $topcontent,
         listings: $list,
         position: 'top',
+      } ).then( () => {
+        Google.launch().then( () => { // adds places lib script
+          Google.initAutocomplete( 'user' );
+        } );
       } );
 
       Chat.drawMessageForm( 'clear' );

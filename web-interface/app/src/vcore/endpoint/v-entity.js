@@ -115,6 +115,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       contract = 'none';
     }
 
+    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
+      const newSymbolAddress = await V.setActiveAddress();
+      entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
+    }
+
     const uuid = V.castUUID();
 
     const newEntity = {
@@ -372,33 +377,40 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     return V.getData( which, 'entity by ' + filter, whichLedger );
   }
 
-  async function setEntity(
-    entityData,
-    whichEndpoint = 'entity'
-  ) {
-
-    if ( whichEndpoint.includes( 'address' ) ) {
-      return V.setData( entityData, whichEndpoint, V.getSetting( 'entityLedger' ) );
-    }
-
-    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-      const newSymbolAddress = await V.setActiveAddress();
-      entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
-    }
-    if ( whichEndpoint == 'verification' ) {
-      return V.setData( entityData, whichEndpoint, V.getSetting( 'transactionLedger' ) );
-    }
-    else {
-
-      const entityCast = await castEntity( entityData );
+  async function setEntity( whichEntity, data ) {
+    if ( typeof whichEntity == 'object' ) {
+      const entityCast = await castEntity( whichEntity );
 
       if ( entityCast.success ) {
-        return V.setData( entityCast.data[0], whichEndpoint, V.getSetting( 'entityLedger' ) );
+        return V.setData( entityCast.data[0], 'entity', V.getSetting( 'entityLedger' ) );
       }
       else {
         return Promise.resolve( entityCast );
       }
     }
+    else {
+      Object.assign( data, { entity: whichEntity } );
+      return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) );
+    }
+
+    // if ( whichEndpoint.includes( 'address' ) ) {
+    //   return V.setData( entityData, whichEndpoint, V.getSetting( 'entityLedger' ) );
+    // }
+
+    // if ( whichEndpoint == 'verification' ) {
+    //   return V.setData( entityData, whichEndpoint, V.getSetting( 'transactionLedger' ) );
+    // }
+    // else {
+    //
+    //   const entityCast = await castEntity( entityData );
+    //
+    //   if ( entityCast.success ) {
+    //     return V.setData( entityCast.data[0], whichEndpoint, V.getSetting( 'entityLedger' ) );
+    //   }
+    //   else {
+    //     return Promise.resolve( entityCast );
+    //   }
+    // }
   }
 
   /* ====================== export ====================== */

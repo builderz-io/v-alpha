@@ -10,9 +10,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( which ) {
-
     if ( window.Web3Obj && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
-
       if ( which == 'initialize join' ) {
         which = 'initialize web3 join';
       }
@@ -21,17 +19,18 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
             const check = await ckeckEntityStoreByAddress();
-            if ( check == 'entity found' ) {
-              which = check;
+            // if ( check == 'entity found' ) {
+            //   which = check;
+            // }
+            // else {
+            if ( which.includes( 'existing entity' ) ) {
+              V.setCookie( 'welcome-modal', 1 );
+              which = 'authenticate existing entity';
             }
             else {
-              if ( which.includes( 'existing entity' ) ) {
-                which = 'authenticate existing entity';
-              }
-              else {
-                which = check;
-              }
+              which = check;
             }
+            // }
           }
           else {
             which = res.status;
@@ -74,7 +73,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
       // Navigation.draw();
-      if ( !V.getCookie( 'welcome-modal' ) ) {
+      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
         Modal.draw( which );
         V.setCookie( 'welcome-modal', 0 );
       }
@@ -125,8 +124,9 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function onboardingCard() {
 
     const aE = V.getState( 'activeEntity' );
+    const ledger = V.getSetting( 'transactionLedger' );
 
-    if ( aE ) {
+    if ( aE && ledger == 'EVM' ) {
       let $cardContent;
       const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
 
@@ -174,6 +174,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     // sets the view on launch (the header "Join" button)
     if ( !V.getNode( 'join' ) ) {
       V.setNode( 'balance > svg', 'clear' );
+      V.setCookie( 'welcome-modal', 1 );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
         Join.draw( 'initialize join' );

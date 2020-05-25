@@ -58,6 +58,7 @@ var entitySchema = mongoose.Schema( {
   }],
   properties: {
     location: String,
+    introduction: String,
     description: String,
     target: String,
     unit: String,

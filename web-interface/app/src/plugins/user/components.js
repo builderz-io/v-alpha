@@ -16,10 +16,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   // }
   const DOM = {};
 
-  function setData( data ) {
-    entity = data.entity;
-    editable = data.editable ? true : false;
-  }
+  /* ================== event handlers ================== */
 
   function handleEntryFocus() {
     DOM.entry = this.innerHTML;
@@ -54,22 +51,56 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( entry == 'not valid' ) {
         this.innerHTML = 'not valid';
-
+        return;
       }
       else {
         this.innerHTML = entry;
-        const aE = V.getState( 'activeEntity' );
-        V.setEntity( aE.fullId, {
-          // endpoint: 'update',
-          field: db + '.' + title,
-          data: entry
-        } );
       }
+      const aE = V.getState( 'activeEntity' );
+      V.setEntity( aE.fullId, {
+        field: db + '.' + title,
+        data: entry,
+        auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+      } );
     }
   }
 
-  function card( $innerContent, whichTitle ) {
+  function handleLocation() {
+    const lat = this.getAttribute( 'lat' );
+    const lng = this.getAttribute( 'lng' );
+    const value = this.value;
+    console.log( lat, lng, value );
+  }
+
+  /* ================== private methods ================= */
+
+  function castCard( $innerContent, whichTitle ) {
     return CanvasComponents.card( $innerContent, whichTitle );
+  }
+
+  function castTableNode( titles, db, editable ) {
+    return V.cN( {
+      t: 'table',
+      c: 'w-full pxy',
+      h: titles.map( title => {
+        return V.cN( {
+          t: 'tr',
+          h: [
+            V.cN( { t: 'td', c: 'capitalize', h: title } ),
+            V.cN( editable ? setEditable( {
+              t: 'td',
+              c: 'txt-right txt-brand',
+              a: { title: title, db: db },
+              h: entity[db] ? entity[db][title] : undefined
+            } ) : {
+              t: 'td',
+              c: 'txt-right',
+              h: entity[db] ? entity[db][title] : undefined
+            } ),
+          ]
+        } );
+      } )
+    } );
   }
 
   function setEditable( obj ) {
@@ -94,6 +125,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  /* ================== public methods ================== */
+
+  function setData( data ) {
+    entity = data.entity;
+    editable = data.editable ? true : false;
+  }
+
   function topcontent() {
     return V.cN( {
       t: 'div',
@@ -107,78 +145,60 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function locationCard() {
-    const $innerContent = V.castNode( {
-      tag: 'p',
-      c: 'pxy',
-      html: `${entity.properties.location}`
-    } );
-    return card( $innerContent, 'Location' );
-  }
-
-  function entityCard() {
-    const data = entity.profile;
-    const $innerContent = V.castNode( {
-      tag: 'p',
-      c: 'pxy',
-      html: data.title
-    } );
-    return card( $innerContent, 'Entity' );
-  }
-
-  function financialCard() {
-    const data = entity.properties;
-    const $innerContent = V.castNode( {
-      tag: 'p',
-      c: 'pxy',
-      html: data.target,
-      a: editable ? { contenteditable: 'true' } : {},
-    } );
-    return card( $innerContent, 'Financial' );
-  }
-
   function introCard() {
-    const data = entity.properties.description;
     const $innerContent = V.castNode( setEditable( {
       t: 'p',
       c: 'pxy',
-      h: data,
+      a: { title: 'description', db: 'properties' },
+      h: entity.properties.description,
     } ) );
-    return card( $innerContent, 'Introduction' );
+    return castCard( $innerContent, 'Description' );
+  }
+
+  function locationCard() {
+    const $innerContent = V.castNode( {
+      tag: 'input',
+      i: 'user__loc',
+      c: 'pxy w-full',
+      html: entity.properties.location,
+      e: {
+        input: handleLocation
+      }
+    } );
+    return castCard( $innerContent, 'Location' );
+  }
+
+  function entityCard() {
+    const titles = ['title', 'tag', 'role', 'creator', 'creatorTag'];
+    const db = 'profile';
+    const $innerContent = castTableNode( titles, db );
+    return castCard( $innerContent, 'Entity' );
+  }
+
+  function financialCard() {
+    const titles = ['target', 'unit'];
+    const db = 'properties';
+    const $innerContent = castTableNode( titles, db, 'editable' );
+    return castCard( $innerContent, 'Financial' );
   }
 
   function socialCard() {
     const titles = ['facebook', 'twitter', 'telegram', 'website', 'email'];
     const db = 'social';
-    const $innerContent = V.cN( {
-      t: 'table',
-      c: 'w-full pxy',
-      h: titles.map( title => {
-        return V.cN( {
-          t: 'tr',
-          h: [
-            V.cN( { t: 'td', c: 'capitalize', h: title } ),
-            V.cN( setEditable( {
-              t: 'td',
-              c: 'txt-right',
-              a: { title: title, db: db },
-              h: entity.social ? entity.social[title] : undefined
-            } ) ),
-          ]
-        } );
-      } )
-    } );
-    return card( $innerContent, 'Social' );
+    const $innerContent = castTableNode( titles, db, 'editable' );
+    return castCard( $innerContent, 'Social' );
   }
+
+  /* ====================== export ====================== */
 
   return {
     setData: setData,
     topcontent: topcontent,
-    entityCard: entityCard,
     introCard: introCard,
     locationCard: locationCard,
+    entityCard: entityCard,
+    financialCard: financialCard,
     socialCard: socialCard,
-    financialCard: financialCard
   };
 
 } )();
