@@ -59,7 +59,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       $list = CanvasComponents.list( 'narrow' );
-      $topcontent = UserComponents.topcontent();
+      $topcontent = ProfileComponents.topcontent();
 
       V.setNode( $list, [
         UserComponents.entityCard(),
@@ -79,7 +79,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       Chat.drawMessageForm( 'clear' );
 
-      VMap.draw( data.mapData );
+      VMap.draw( data.data[0].mapData );
     }
     else {
       Page.draw( {

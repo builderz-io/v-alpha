@@ -15,17 +15,8 @@ const ProfileComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function locationCard( entity ) {
-    return V.castNode( {
-      tag: 'div',
-      c: 'contents',
-      html: `${entity.properties.location}`
-    } );
-  }
-
   return {
     topcontent: topcontent,
-    locationCard: locationCard,
   };
 
 } )();
