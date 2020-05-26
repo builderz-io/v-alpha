@@ -131,7 +131,6 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     }
     pageData.position ? slide( pageData.position, pageData.scroll ) : null;
     pageData.pos ? slide( pageData.pos, pageData.scroll ) : null;
-
   }
 
   function getPageHeight( pagePos ) {
@@ -217,10 +216,11 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( options ) {
-    V.setPipe(
-      presenter,
-      view
-    )( options );
+    return Promise.resolve( view( presenter( options ) ) );
+    // V.setPipe(
+    //   presenter,
+    //   view
+    // )( options );
   }
 
   return {

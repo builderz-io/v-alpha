@@ -7,11 +7,36 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const cardLeftWidth = 25;
+
   V.setStyle( {
 
   /* Cross-browser bottom list padding */
     'list > *:last-child': {
       'padding-bottom': '137px'
+    },
+    'card__top-left': {
+      width: cardLeftWidth + '%',
+    },
+    'card__bottom-left': {
+      'display': 'grid',
+      'justify-items': 'center',
+      'text-align': 'center',
+      'width': cardLeftWidth + '%',
+    },
+    'card__top-right': {
+      width: 100 - cardLeftWidth - 6 + '%',
+    },
+    'card__bottom-right': {
+      width: 100 - cardLeftWidth - 6 + '%',
+    },
+    'card__unit': {
+      width: '100%'
+    },
+    'card__container': {
+      // 'height': 'var(--card-height)',
+      'max-width': '360px',
+      'flex-wrap': 'wrap'
     }
   } );
 
@@ -70,34 +95,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       tag: 'balance',
       classes: 'balance fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
-    } );
-  }
-  function entityNav() {
-    return V.setNode( {
-      tag: 'entity-nav',
-      classes: 'entity-nav fixed w-screen overflow-x-scroll',
-      setStyle: {
-        'entity-nav': {
-          'padding-top': '4px',
-          'padding-bottom': '8px',
-          'top': 'var(--entity-nav-top)',
-          'left': 'var(--entity-nav-left)'
-        }
-      }
-    } );
-  }
-  function serviceNav() {
-    return V.setNode( {
-      tag: 'service-nav',
-      classes: 'service-nav fixed w-screen overflow-x-scroll',
-      setStyle: {
-        'service-nav': {
-          'padding-top': '4px',
-          'padding-bottom': '28px',
-          'top': 'var(--service-nav-top)',
-          'left': 'var(--service-nav-left)'
-        }
-      }
     } );
   }
   function interactions() {
@@ -178,44 +175,18 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return $list;
   }
 
-  function card( $cardContent ) {
-
-    const cardLeftWidth = 25;
+  function card( $cardContent, cardTitle ) {
 
     return V.setNode( {
       t: 'li',
       c: 'pxy min-w-360',
-      setStyle: {
-        'card__top-left': {
-          width: cardLeftWidth + '%',
-        },
-        'card__bottom-left': {
-          'display': 'grid',
-          'justify-items': 'center',
-          'text-align': 'center',
-          'width': cardLeftWidth + '%',
-        },
-        'card__top-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__bottom-right': {
-          width: 100 - cardLeftWidth - 6 + '%',
-        },
-        'card__unit': {
-          width: '100%'
-        }
-      },
       h: V.setNode( {
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
-        s: {
-          card__container: {
-            // 'height': 'var(--card-height)',
-            'max-width': '360px',
-            'flex-wrap': 'wrap'
-          },
-        },
-        h: $cardContent
+        h: cardTitle ? [
+          V.cN( { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'card-title' ) } ),
+          $cardContent
+        ] : $cardContent
       } )
     } );
   }
@@ -254,8 +225,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     haze: haze,
     feature: feature,
     balance: balance,
-    entityNav: entityNav,
-    serviceNav: serviceNav,
     interactions: interactions,
     handle: handle,
     topSlider: topSlider,

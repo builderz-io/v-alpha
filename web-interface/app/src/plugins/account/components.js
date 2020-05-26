@@ -7,11 +7,29 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  function handleDrawUserNav() {
+    if ( V.getVisibility( 'user-nav' ) ) {
+      V.setState( 'active', { navItem: false } );
+      // Navigation.draw();
+      // Page.draw( { reset: false } );
+      Marketplace.draw();
+    }
+    else {
+      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
+      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
+      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
+    }
+  }
+
   function topcontent( fullId ) {
     return V.cN( {
-      tag: 'p',
-      class: 'pxy fs-xl font-bold txt-center',
-      html: V.i18n( 'Account', 'account' ) + '<br>' + fullId,
+      t: 'div',
+      h: V.cN( {
+        tag: 'h1',
+        class: 'font-bold txt-center pxy',
+        html: /* V.i18n( 'Account of', 'account' ) + ' ' + */ fullId
+      } )
+
     } );
   }
 
@@ -26,9 +44,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       },
       html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="#1b1aff" stroke-width="2.7"></circle>
               <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ balance }</text>`,
-      click: function() {
-        Account.draw();
-      }
+      click: handleDrawUserNav // handleDrawTxHistory
 
     } );
   }

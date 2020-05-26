@@ -124,11 +124,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const aE = V.getState( 'activeEntity' );
     const aA = V.getState( 'activeAddress' );
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      const entityData = {
-        fullId: aE.fullId,
-        address: aA
-      };
-      V.setEntity( entityData, 'evm address' ).then( () => {
+      V.setEntity( aE.fullId, {
+        field: 'evmCredentials.address',
+        data: aA,
+        auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+      } ).then( () => {
         Join.draw( 'authenticate' );
       } );
     }

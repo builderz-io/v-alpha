@@ -10,28 +10,27 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( which ) {
-
     if ( window.Web3Obj && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
-
       if ( which == 'initialize join' ) {
         which = 'initialize web3 join';
       }
       else if ( which.includes( 'authenticate' ) ) {
-        Modal.draw( 'please wait' );
+        // Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
             const check = await ckeckEntityStoreByAddress();
-            if ( check == 'entity found' ) {
-              which = check;
+            // if ( check == 'entity found' ) {
+            //   which = check;
+            // }
+            // else {
+            if ( which.includes( 'existing entity' ) ) {
+              V.setCookie( 'welcome-modal', 1 );
+              which = 'authenticate existing entity';
             }
             else {
-              if ( which.includes( 'existing entity' ) ) {
-                which = 'authenticate existing entity';
-              }
-              else {
-                which = check;
-              }
+              which = check;
             }
+            // }
           }
           else {
             which = res.status;
@@ -39,7 +38,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         } );
       }
       else if ( which == 'new entity was set up' ) {
-        Modal.draw( 'please wait' );
+        // Modal.draw( 'please wait' );
         if ( V.getState( 'activeAddress' ) ) {
           which = await ckeckEntityStoreByAddress();
         }
@@ -73,8 +72,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function view( which ) {
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
-      Navigation.draw();
-      Modal.draw( which );
+      // Navigation.draw();
+      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+        Modal.draw( which );
+        V.setCookie( 'welcome-modal', 0 );
+      }
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
@@ -122,8 +124,9 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function onboardingCard() {
 
     const aE = V.getState( 'activeEntity' );
+    const ledger = V.getSetting( 'transactionLedger' );
 
-    if ( aE ) {
+    if ( aE && ledger == 'EVM' ) {
       let $cardContent;
       const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
 
@@ -131,7 +134,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 2! Connect a crypto wallet', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'onboading' ) + '</p>'
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -146,14 +149,14 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 3! Ask a friend to transfer 1 VALUE and we sponsor your BrightID verification.', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'onboading' ) + '</p>'
         } );
       }
       else if ( balanceCheck ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Enable Tier 4! Verify your unique account with BrightID and receive VALUE basic income.', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'onboading' ) + '</p>'
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
       }
@@ -171,6 +174,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     // sets the view on launch (the header "Join" button)
     if ( !V.getNode( 'join' ) ) {
       V.setNode( 'balance > svg', 'clear' );
+      V.setCookie( 'welcome-modal', 1 );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
         Join.draw( 'initialize join' );

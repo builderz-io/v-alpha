@@ -2,7 +2,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   /**
    * V Plugin driving the profile pages,
-   * including the logged in user profile
    *
    */
 
@@ -13,6 +12,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   async function presenter( which ) {
 
     const fullId = V.castPathOrId( which );
+
+    // const aE = V.getState( 'activeEntity' );
+    // if ( aE && fullId == aE.fullId ) {
+    //   V.setBrowserHistory( { path: '/me/profile' } );
+    //   User.draw();
+    //   return {
+    //     success: false,
+    //     status: 'diverted to User.draw'
+    //   };
+    // }
+
     const query = await V.getEntity( fullId );
 
     const mapData = [];
@@ -32,13 +42,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       return {
-        success: false,
-        status: 'cound not retrieve entities',
-        data: [{
-          which: which,
-          entity: {},
-          mapData: [],
-        }]
+        success: null,
+        status: 'cound not retrieve entities'
       };
     }
   }
@@ -48,17 +53,23 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
-      const entity = data.data[0].entity;
+      UserComponents.setData( {
+        entity: data.data[0].entity,
+        editable: false
+      } );
 
-      $topcontent = ProfileComponents.topcontent( entity.fullId );
       $list = CanvasComponents.list( 'narrow' );
-      const $loc = ProfileComponents.locationCard( entity );
-      const $locCard = CanvasComponents.card( $loc );
-      const $onboardingCard = Join.onboardingCard();
+      $topcontent = ProfileComponents.topcontent();
 
-      V.setNode( $list, [ $onboardingCard, $locCard ] );
+      V.setNode( $list, [
+        UserComponents.entityCard(),
+        UserComponents.locationCard(),
+        UserComponents.introCard(),
+        UserComponents.financialCard(),
+        UserComponents.socialCard(),
+      ] );
 
-      Navigation.draw( entity );
+      Navigation.draw( data.data[0].entity );
 
       Page.draw( {
         topcontent: $topcontent,
@@ -66,7 +77,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
       } );
 
-      VMap.draw( data.mapData );
+      Chat.drawMessageForm( 'clear' );
+
+      VMap.draw( data.data[0].mapData );
     }
     else {
       Page.draw( {
@@ -75,59 +88,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  // function addToNavItems( entity ) {
-  //   const slug = V.castSlugOrId( entity.fullId );
-  //
-  //   const clone = JSON.parse( JSON.stringify( V.getState() ) );
-  //   console.log( 'before add', clone );
-  //
-  //   V.setNavItem( 'entityNav', {
-  //     cid: '1003',
-  //     f: entity.fullId,
-  //     title: V.castInitials( entity.profile.title ),
-  //     path: '/profile/' + slug,
-  //     use: {
-  //       button: 'none',
-  //     },
-  //     draw: function( path ) {
-  //       Profile.draw( path );
-  //     }
-  //   } );
-  //   console.log( 'after add', V.getState() );
-  // }
-
   /* ============ public methods and exports ============ */
-
-  function launch() {
-
-    /*
-    V.setNavItem( 'entityNav', [
-      // c = count  d = display Name  l = latest position (menu index)   s = short name   o = online
-      // {
-      //   cid: '1001',
-      //   f: 'Me',
-      //   title: 'Me',
-      //   path: '/profile/me',
-      //   draw: function() {
-      //     Profile.draw( 'me' );
-      //   }
-      // },
-      {
-        cid: '1002',
-        f: 'Profile',
-        title: 'Profile',
-        path: '/profile',
-        use: {
-          button: 'none',
-        },
-        draw: function() {
-          Profile.draw( 'profile' );
-        }
-      },
-    ] );
-    */
-
-  }
 
   function draw( which ) {
     presenter( which ).then( data => { view( data ) } );
@@ -135,7 +96,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     draw: draw,
-    launch: launch
   };
 
 } )();

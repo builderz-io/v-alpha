@@ -9,23 +9,14 @@ const ProfileComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent( fullId ) {
     return V.sN( {
-      t: 'h2',
+      t: 'h1',
       c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
-      h: `Profile<br>${ fullId }`
-    } );
-  }
-
-  function locationCard( entity ) {
-    return V.castNode( {
-      tag: 'div',
-      c: 'contents',
-      html: `${entity.properties.location}`
+      h: `Entity Profile<br>${ fullId }`
     } );
   }
 
   return {
     topcontent: topcontent,
-    locationCard: locationCard,
   };
 
 } )();

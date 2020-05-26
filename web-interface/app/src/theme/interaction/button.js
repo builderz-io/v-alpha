@@ -70,6 +70,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
             Form.draw( 'all', { fade: 'out' } );
             Button.draw( 'all', { fade: 'out' } );
             Button.draw( 'plus search', { delay: 1 } );
+            console.log( res );
+            VMap.draw( { type: 'Feature', geometry: res.data[0].geometry } );
             console.log( res.status );
           }
           else {

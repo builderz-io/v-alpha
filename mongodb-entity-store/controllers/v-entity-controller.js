@@ -161,41 +161,60 @@ exports.register = function( req, res ) {
 
 };
 
-exports.setEvmAddress = function( req, cb ) {
+exports.update = function( req, cb ) {
 
-  EntityDB.findOne( { fullId: req.fullId }, { evmCredentials: true } ).exec( ( err, res ) => {
-    if ( err ) {
-      return cb( {
-        success: false,
-        status: 'error in find (set entity evm address)',
-        message: err
-      } );
-    }
-    if ( res === null ) {
-      return cb( {
-        success: false,
-        status: 'could not find entity to set evm address',
-      } );
-    }
-    res.evmCredentials.address = req.address;
-
-    res.save( ( err ) => {
-      if ( err ) {
-        return cb( {
-          success: false,
-          status: 'error in save (set entity evm address)',
-          message: err
-        } );
+  if ( req.field == 'properties.location' ) {
+    EntityDB.findOneAndUpdate(
+      { 'private.uPhrase': req.auth },
+      {
+        $set: {
+          'properties.location': req.data.value,
+          'geometry.type': 'Point',
+          'geometry.coordinates': [Number( req.data.lng ), Number( req.data.lat )],
+        },
+      },
+      ( err ) => {
+        if ( err ) {
+          return cb( {
+            success: false,
+            status: 'error in updating',
+            message: err
+          } );
+        }
+        else {
+          return cb( {
+            success: true,
+            status: 'entity updated',
+          } );
+        }
       }
-      else {
-        return cb( {
-          success: true,
-          status: 'entity evm address set',
-        } );
-      }
-    } );
-  } );
+    );
+  }
+  else {
+    const updateWhat = {};
+    updateWhat[req.field] = req.data;
+    const how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
 
+    EntityDB.findOneAndUpdate(
+      { 'private.uPhrase': req.auth },
+      how,
+      ( err ) => {
+        if ( err ) {
+          return cb( {
+            success: false,
+            status: 'error in updating',
+            message: err
+          } );
+        }
+        else {
+          return cb( {
+            success: true,
+            status: 'entity updated',
+          } );
+        }
+      }
+    );
+  }
 };
 
 exports.verify = function( req, cb ) {

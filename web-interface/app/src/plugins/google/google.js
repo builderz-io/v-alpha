@@ -21,15 +21,19 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function initAutocomplete( component ) {
-    if ( document.getElementById( component + '__loc' ) ) {
-      const autocomplete = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */( document.getElementById( component + '__loc' ) ),
-        { types: ['geocode'] } );
+
+    /** $elem must be of type {!HTMLInputElement} */
+    const $elem = document.getElementById( component + '__loc' );
+    if ( $elem ) {
+      const autocomplete = new google.maps.places.Autocomplete( $elem, { types: ['geocode'] } );
 
       autocomplete.addListener( 'place_changed', function() {
         var place = autocomplete.getPlace();
-        document.getElementById( component + '__loc' ).setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
-        document.getElementById( component + '__loc' ).setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
+        $elem.setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
+        $elem.setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
+        // focus and blur to trigger saving in user profile
+        $elem.focus();
+        $elem.blur();
       } );
     }
   }

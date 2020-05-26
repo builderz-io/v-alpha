@@ -51,6 +51,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return moment( which ).format( whichFormat || 'D MMM YYYY h:mm a' );
   }
 
+  function castRandLatLng() {
+    return {
+      lat: ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 ),
+      lng: ( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1
+    };
+  }
+
   function castInitials( which ) {
     const initials = which.split( ' ' ).filter( item => { return isNaN( item ) } );
     const first = initials[0].charAt( 0 );
@@ -304,6 +311,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   ( () => {
     V.castLinks = castLinks;
     V.castTime = castTime;
+    V.castRandLatLng = castRandLatLng;
     V.castInitials = castInitials;
     V.castCamelCase = castCamelCase;
     V.castSlugOrId = castSlugOrId;
@@ -320,6 +328,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   return {
     castLinks: castLinks,
     castTime: castTime,
+    castRandLatLng: castRandLatLng,
     castInitials: castInitials,
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
