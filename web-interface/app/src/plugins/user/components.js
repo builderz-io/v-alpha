@@ -9,11 +9,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   let entity, editable;
 
-  // function handleViewAccount( e ) {
-  //   e.stopPropagation();
-  //   V.setBrowserHistory( { path: '/me/account' } );
-  //   Account.draw();
-  // }
   const DOM = {};
 
   /* ================== event handlers ================== */
@@ -56,20 +51,37 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       else {
         this.innerHTML = entry;
       }
-      const aE = V.getState( 'activeEntity' );
-      V.setEntity( aE.fullId, {
-        field: db + '.' + title,
-        data: entry,
-        auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
-      } );
+      setEntity( db + '.' + title, entry );
     }
+  }
+
+  function handleLocationFocus() {
+    DOM.location = this.value;
   }
 
   function handleLocation() {
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
     const value = this.value;
-    console.log( lat, lng, value );
+
+    if ( DOM.location.length && value == '' ) {
+      const gen = V.castRandLatLng();
+      setEntity( 'properties.location', {
+        lat: gen.lat,
+        lng: gen.lng,
+        value: undefined
+      } );
+    }
+    else if ( lat ) {
+      setEntity( 'properties.location', {
+        lat: lat,
+        lng: lng,
+        value: value
+      } );
+      // delete lat and lng in order for "if" to work
+      this.removeAttribute( 'lat' );
+      this.removeAttribute( 'lng' );
+    }
   }
 
   /* ================== private methods ================= */
@@ -104,25 +116,29 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setEditable( obj ) {
-    if ( editable ) {
-      obj.e = {
-        focus: handleEntryFocus,
-        blur: handleEntry
-      };
-      if ( obj.a ) {
-        Object.assign( obj.a, { contenteditable: 'true' } );
-      }
-      else {
-        obj.a = { contenteditable: 'true' };
-      }
-      if ( !obj.h ) {
-        obj.h = 'edit';
-      }
-      return obj;
+    obj.e = {
+      focus: handleEntryFocus,
+      blur: handleEntry
+    };
+    if ( obj.a ) {
+      Object.assign( obj.a, { contenteditable: 'true' } );
     }
     else {
-      return obj;
+      obj.a = { contenteditable: 'true' };
     }
+    if ( !obj.h ) {
+      obj.h = 'edit';
+    }
+    return obj;
+  }
+
+  function setEntity( field, data ) {
+    const aE = V.getState( 'activeEntity' );
+    V.setEntity( aE.fullId, {
+      field: field,
+      data: data,
+      auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+    } );
   }
 
   /* ================== public methods ================== */
@@ -146,46 +162,76 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function introCard() {
-    const $innerContent = V.castNode( setEditable( {
-      t: 'p',
-      c: 'pxy',
-      a: { title: 'description', db: 'properties' },
-      h: entity.properties.description,
-    } ) );
-    return castCard( $innerContent, 'Description' );
+    const descr = entity.properties.description;
+    if( descr || ( !descr && editable ) ) {
+      const $innerContent = V.castNode( editable ? setEditable( {
+        t: 'p',
+        c: 'pxy',
+        a: { title: 'description', db: 'properties' },
+        h: descr,
+      } ) : {
+        t: 'p',
+        c: 'pxy',
+        h: descr,
+      } );
+      return castCard( $innerContent, 'Description' );
+    }
+    else {
+      return '';
+    }
   }
 
   function locationCard() {
-    const $innerContent = V.castNode( {
-      tag: 'input',
-      i: 'user__loc',
-      c: 'pxy w-full',
-      html: entity.properties.location,
-      e: {
-        input: handleLocation
-      }
-    } );
-    return castCard( $innerContent, 'Location' );
+    const loc = entity.properties.location;
+
+    if( loc || ( !loc && editable ) ) {
+      const $innerContent = V.castNode( editable ? {
+        tag: 'input',
+        i: 'user__loc',
+        c: 'pxy w-full',
+        a: {
+          value: loc
+        },
+        e: {
+          focus: handleLocationFocus,
+          blur: handleLocation
+        }
+      } : {
+        t: 'p',
+        c: 'pxy',
+        h: loc
+      } );
+      return castCard( $innerContent, 'Location' );
+    }
+    else {
+      return '';
+    }
   }
 
   function entityCard() {
-    const titles = ['title', 'tag', 'role', 'creator', 'creatorTag'];
+    const titles = ['title', 'tag', 'role'];
     const db = 'profile';
     const $innerContent = castTableNode( titles, db );
     return castCard( $innerContent, 'Entity' );
   }
 
   function financialCard() {
-    const titles = ['target', 'unit'];
-    const db = 'properties';
-    const $innerContent = castTableNode( titles, db, 'editable' );
-    return castCard( $innerContent, 'Financial' );
+    const target = entity.properties.target;
+    if( target || ( !target && editable ) ) {
+      const titles = ['target', 'unit'];
+      const db = 'properties';
+      const $innerContent = castTableNode( titles, db, editable );
+      return castCard( $innerContent, 'Financial' );
+    }
+    else {
+      return '';
+    }
   }
 
   function socialCard() {
     const titles = ['facebook', 'twitter', 'telegram', 'website', 'email'];
     const db = 'social';
-    const $innerContent = castTableNode( titles, db, 'editable' );
+    const $innerContent = castTableNode( titles, db, editable );
     return castCard( $innerContent, 'Social' );
   }
 

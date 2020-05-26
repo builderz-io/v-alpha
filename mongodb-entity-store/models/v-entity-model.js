@@ -21,6 +21,7 @@ var entitySchema = mongoose.Schema( {
       date: String,
       unix: Number,
       network: {
+        host: String,
         block: Number,
         rpc: String,
         contract: String,

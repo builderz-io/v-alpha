@@ -29,7 +29,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       return {
         success: true,
-        status: 'entities retrieved',
+        status: 'user retrieved',
         data: [{
           which: which,
           entity: query.data[0],
@@ -40,7 +40,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     else {
       return {
         success: null,
-        status: 'cound not retrieve entities'
+        status: 'cound not retrieve user'
       };
     }
   }

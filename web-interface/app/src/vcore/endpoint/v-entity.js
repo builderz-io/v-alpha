@@ -57,7 +57,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-    const activeAddress = V.getState( 'activeAddress' ) || 'none';
+    const activeAddress = V.getState( 'activeAddress' );
 
     const d = new Date();
     const date = d.toString();
@@ -72,9 +72,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
+      const gen = V.castRandLatLng();
       geometry = {
         type: 'Point',
-        coordinates: [( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1, ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 )],
+        coordinates: [ gen.lng, gen.lat ],
       };
     }
 
@@ -115,6 +116,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       contract = 'none';
     }
 
+    const host = window.location.host;
+
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       const newSymbolAddress = await V.setActiveAddress();
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
@@ -143,6 +146,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           date: date,
           unix: unix,
           network: {
+            host: host,
             block: block,
             rpc: rpc,
             contract: contract,
@@ -152,9 +156,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         creatorTag: creatorTag,
       },
       evmCredentials: {
-        address: entityData.evmAddress || activeAddress || 'none'
+        address: entityData.evmAddress || activeAddress || undefined
       },
-      symbolCredentials: entityData.symbolCredentials || { address: 'none' },
+      symbolCredentials: entityData.symbolCredentials || { address: undefined },
       owners: [{
         ownerName: creator,
         ownerTag: creatorTag,
@@ -164,10 +168,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         adminTag: creatorTag,
       }],
       properties: {
-        location: entityData.location || 'none',
-        description: entityData.description || 'none',
-        target: entityData.target || 'none',
-        unit: entityData.unit || 'none',
+        location: entityData.location || undefined,
+        description: entityData.description || undefined,
+        target: entityData.target || undefined,
+        unit: entityData.unit || undefined,
         creator: creator,
         creatorTag: creatorTag,
       },
@@ -393,24 +397,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) );
     }
 
-    // if ( whichEndpoint.includes( 'address' ) ) {
-    //   return V.setData( entityData, whichEndpoint, V.getSetting( 'entityLedger' ) );
-    // }
-
     // if ( whichEndpoint == 'verification' ) {
     //   return V.setData( entityData, whichEndpoint, V.getSetting( 'transactionLedger' ) );
     // }
-    // else {
-    //
-    //   const entityCast = await castEntity( entityData );
-    //
-    //   if ( entityCast.success ) {
-    //     return V.setData( entityCast.data[0], whichEndpoint, V.getSetting( 'entityLedger' ) );
-    //   }
-    //   else {
-    //     return Promise.resolve( entityCast );
-    //   }
-    // }
+
   }
 
   /* ====================== export ====================== */

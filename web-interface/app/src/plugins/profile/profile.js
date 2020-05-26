@@ -13,15 +13,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     const fullId = V.castPathOrId( which );
 
-    const aE = V.getState( 'activeEntity' );
-    if ( aE && fullId == aE.fullId ) {
-      V.setBrowserHistory( { path: '/me/profile' } );
-      User.draw();
-      return {
-        success: false,
-        status: 'diverted to User.draw'
-      };
-    }
+    // const aE = V.getState( 'activeEntity' );
+    // if ( aE && fullId == aE.fullId ) {
+    //   V.setBrowserHistory( { path: '/me/profile' } );
+    //   User.draw();
+    //   return {
+    //     success: false,
+    //     status: 'diverted to User.draw'
+    //   };
+    // }
 
     const query = await V.getEntity( fullId );
 
@@ -53,16 +53,23 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
-      const entity = data.data[0].entity;
+      UserComponents.setData( {
+        entity: data.data[0].entity,
+        editable: false
+      } );
 
-      $topcontent = ProfileComponents.topcontent( entity.fullId );
       $list = CanvasComponents.list( 'narrow' );
-      const $loc = ProfileComponents.locationCard( entity );
-      const $locCard = CanvasComponents.card( $loc );
+      $topcontent = UserComponents.topcontent();
 
-      V.setNode( $list, [ $locCard ] );
+      V.setNode( $list, [
+        UserComponents.entityCard(),
+        UserComponents.locationCard(),
+        UserComponents.introCard(),
+        UserComponents.financialCard(),
+        UserComponents.socialCard(),
+      ] );
 
-      Navigation.draw( entity );
+      Navigation.draw( data.data[0].entity );
 
       Page.draw( {
         topcontent: $topcontent,
@@ -70,9 +77,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
       } );
 
+      Chat.drawMessageForm( 'clear' );
+
       VMap.draw( data.mapData );
     }
-    else if ( data.success === null ) {
+    else {
       Page.draw( {
         topcontent: CanvasComponents.notFound( 'entity' ),
       } );

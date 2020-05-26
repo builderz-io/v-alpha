@@ -163,29 +163,58 @@ exports.register = function( req, res ) {
 
 exports.update = function( req, cb ) {
 
-  const updateWhat = {};
-  updateWhat[req.field] = req.data;
-  const how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
+  if ( req.field == 'properties.location' ) {
+    EntityDB.findOneAndUpdate(
+      { 'private.uPhrase': req.auth },
+      {
+        $set: {
+          'properties.location': req.data.value,
+          'geometry.type': 'Point',
+          'geometry.coordinates': [Number( req.data.lng ), Number( req.data.lat )],
+        },
+      },
+      ( err ) => {
+        if ( err ) {
+          return cb( {
+            success: false,
+            status: 'error in updating',
+            message: err
+          } );
+        }
+        else {
+          return cb( {
+            success: true,
+            status: 'entity updated',
+          } );
+        }
+      }
+    );
+  }
+  else {
+    const updateWhat = {};
+    updateWhat[req.field] = req.data;
+    const how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
 
-  EntityDB.findOneAndUpdate(
-    { 'private.uPhrase': req.auth },
-    how,
-    ( err ) => {
-      if ( err ) {
-        return cb( {
-          success: false,
-          status: 'error in updating',
-          message: err
-        } );
+    EntityDB.findOneAndUpdate(
+      { 'private.uPhrase': req.auth },
+      how,
+      ( err ) => {
+        if ( err ) {
+          return cb( {
+            success: false,
+            status: 'error in updating',
+            message: err
+          } );
+        }
+        else {
+          return cb( {
+            success: true,
+            status: 'entity updated',
+          } );
+        }
       }
-      else {
-        return cb( {
-          success: true,
-          status: 'entity updated',
-        } );
-      }
-    }
-  );
+    );
+  }
 };
 
 exports.setEvmAddress = function( req, cb ) {

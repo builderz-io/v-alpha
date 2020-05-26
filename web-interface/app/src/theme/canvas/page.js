@@ -131,7 +131,6 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     }
     pageData.position ? slide( pageData.position, pageData.scroll ) : null;
     pageData.pos ? slide( pageData.pos, pageData.scroll ) : null;
-    console.log( 1 );
   }
 
   function getPageHeight( pagePos ) {
