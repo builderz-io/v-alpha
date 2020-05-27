@@ -15,7 +15,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleEntryFocus() {
     DOM.entry = this.innerHTML;
-    if ( this.innerHTML == 'edit' ) {
+    if ( ['edit', 'not valid'].includes( this.innerHTML )  ) {
       this.innerHTML = '';
     }
   }
@@ -37,6 +37,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       else if ( title == 'website' ) {
         entry = str.includes( '.' ) ? str : 'not valid';
       }
+      else if ( title == 'evm-address' ) {
+        entry = str.includes( '0x' ) && str.length == 42 ? str : 'not valid';
+      }
+      else if ( title == 'currentUTC' ) {
+        entry = isNaN( str ) ? 'not valid' : str;
+      }
       else {
         entry = str;
       }
@@ -55,28 +61,30 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function handleLocationFocus() {
+  function handleBaseLocationFocus() {
     DOM.location = this.value;
   }
 
-  function handleLocation() {
+  function handleBaseLocation() {
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
     const value = this.value;
 
     if ( DOM.location.length && value == '' ) {
       const gen = V.castRandLatLng();
-      setEntity( 'properties.location', {
+      setEntity( 'properties.baseLocation', {
         lat: gen.lat,
         lng: gen.lng,
-        value: undefined
+        value: undefined,
+        rand: true
       } );
     }
     else if ( lat ) {
-      setEntity( 'properties.location', {
+      setEntity( 'properties.baseLocation', {
         lat: lat,
         lng: lng,
-        value: value
+        value: value,
+        rand: false
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );
@@ -101,7 +109,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             V.cN( { t: 'td', c: 'capitalize', h: title } ),
             V.cN( editable ? setEditable( {
               t: 'td',
-              c: 'txt-right txt-brand',
+              c: 'txt-right',
               a: { title: title, db: db },
               h: entity[db] ? entity[db][title] : undefined
             } ) : {
@@ -162,7 +170,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function introCard() {
-    const descr = entity.properties.description;
+    const descr = entity.properties ? entity.properties.description : undefined;
+
     if( descr || ( !descr && editable ) ) {
       const $innerContent = V.castNode( editable ? setEditable( {
         t: 'p',
@@ -181,25 +190,114 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function locationCard() {
-    const loc = entity.properties.location;
+  function preferredLangsCard() {
+    const langs = entity.properties ? entity.properties.preferredLangs : undefined;
 
-    if( loc || ( !loc && editable ) ) {
-      const $innerContent = V.castNode( editable ? {
-        tag: 'input',
-        i: 'user__loc',
-        c: 'pxy w-full',
-        a: {
-          value: loc
-        },
-        e: {
-          focus: handleLocationFocus,
-          blur: handleLocation
-        }
-      } : {
+    if( langs || ( !langs && editable ) ) {
+      const $innerContent = V.castNode( editable ? setEditable( {
         t: 'p',
         c: 'pxy',
-        h: loc
+        a: { title: 'preferredLangs', db: 'properties' },
+        h: langs,
+      } ) : {
+        t: 'p',
+        c: 'pxy',
+        h: langs,
+      } );
+      return castCard( $innerContent, 'Preferred Languages' );
+    }
+    else {
+      return '';
+    }
+  }
+
+  function evmAddressCard() {
+    const address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
+    if( address || ( !address && editable ) ) {
+      const $innerContent = V.castNode( editable ? setEditable( {
+        t: 'p',
+        c: 'pxy fs-rr',
+        a: { title: 'evm-address', db: 'evmCredentials' },
+        h: address,
+      } ) : {
+        t: 'p',
+        c: 'pxy fs-rr',
+        h: address,
+      } );
+      return castCard( $innerContent, 'Ethereum address' );
+    }
+    else {
+      return '';
+    }
+  }
+
+  function locationCard() {
+    const loc = entity.properties ? entity.properties.baseLocation || entity.properties.currentLocation : undefined;
+
+    if( loc || ( !loc && editable ) ) {
+      const $innerContent = V.cN( {
+        t: 'table',
+        c: 'w-full pxy',
+        h: [V.cN( {
+          t: 'tr',
+          h: [
+            V.cN( { t: 'td', c: 'capitalize', h: 'base location' } ),
+            V.castNode( editable ? {
+              tag: 'input',
+              i: 'user__loc',
+              c: 'location__base pxy w-full txt-right',
+              a: {
+                value: loc
+              },
+              e: {
+                focus: handleBaseLocationFocus,
+                blur: handleBaseLocation
+              }
+            } : {
+              t: 'p',
+              c: 'location__base pxy txt-right',
+              h: loc
+            } ),
+          ]
+        } ),
+        V.cN( {
+          t: 'tr',
+          h: [
+            V.cN( { t: 'td', c: 'capitalize', h: 'current location' } ),
+            V.castNode( editable ? {
+              tag: 'input',
+              c: 'location__curr pxy w-full txt-right',
+              a: {
+                value: loc
+              },
+              e: {
+                focus: handleBaseLocationFocus,
+                // blur: handleBaseLocation
+              }
+            } : {
+              t: 'p',
+              c: 'location__curr pxy txt-right',
+              h: loc
+            } ),
+          ]
+        } ),
+        V.cN( {
+          t: 'tr',
+          h: [
+            V.cN( { t: 'td', c: 'capitalize', h: 'current UTC offset' } ),
+            V.cN( editable ? setEditable( {
+              t: 'td',
+              c: 'txt-right',
+              a: { title: 'currentUTC', db: 'properties' },
+              h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+            } ) : {
+              t: 'td',
+              c: 'txt-right',
+              h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+            } ),
+          ]
+        } )
+        ]
       } );
       return castCard( $innerContent, 'Location' );
     }
@@ -216,7 +314,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function financialCard() {
-    const target = entity.properties.target;
+    const target = entity.properties ? entity.properties.target : undefined;
+
     if( target || ( !target && editable ) ) {
       const titles = ['target', 'unit'];
       const db = 'properties';
@@ -235,16 +334,49 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return castCard( $innerContent, 'Social' );
   }
 
+  function entityListCard( entity ) {
+    const $innerContent = V.castNode( {
+      t: 'p',
+      c: 'pxy',
+      h: entity.private.uPhrase,
+    } );
+    return castCard( $innerContent, entity.fullId );
+  }
+
+  function appLanguageCard() {
+    const lang = entity.profile.lang;
+    if( lang || ( !lang && editable ) ) {
+      const $innerContent = V.castNode( editable ? setEditable( {
+        t: 'p',
+        c: 'pxy',
+        a: { title: 'lang', db: 'profile' },
+        h: lang,
+      } ) : {
+        t: 'p',
+        c: 'pxy',
+        h: lang,
+      } );
+      return castCard( $innerContent, 'App Language' );
+    }
+    else {
+      return '';
+    }
+  }
+
   /* ====================== export ====================== */
 
   return {
     setData: setData,
     topcontent: topcontent,
     introCard: introCard,
+    evmAddressCard: evmAddressCard,
     locationCard: locationCard,
     entityCard: entityCard,
+    entityListCard: entityListCard,
     financialCard: financialCard,
     socialCard: socialCard,
+    preferredLangsCard: preferredLangsCard,
+    appLanguageCard: appLanguageCard,
   };
 
 } )();

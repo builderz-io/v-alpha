@@ -69,7 +69,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function cardContent( cardData ) {
-
+    cardData.properties ? null : cardData.properties = {};
     const $cardContentFrame = V.castNode( {
       tag: 'div',
       c: 'contents'

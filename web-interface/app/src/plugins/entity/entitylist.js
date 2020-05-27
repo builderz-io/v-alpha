@@ -1,7 +1,7 @@
-const Profile = ( function() { // eslint-disable-line no-unused-vars
+const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Plugin driving the profile pages,
+   * V Plugin driving the entity list page
    *
    */
 
@@ -11,31 +11,35 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const fullId = V.castPathOrId( which );
+    // const fullId = V.getState( 'activeEntity' ).fullId;
+    // const query = await V.getEntity( fullId ); // query again for changes
 
-    // const aE = V.getState( 'activeEntity' );
-    // if ( aE && fullId == aE.fullId ) {
-    //   V.setBrowserHistory( { path: '/me/profile' } );
-    //   User.draw();
-    //   return {
-    //     success: false,
-    //     status: 'diverted to User.draw'
-    //   };
-    // }
+    if ( !V.getState( 'activeEntity' ) ) {
+      return {
+        success: false,
+        status: ''
+      };
+    }
 
-    const query = await V.getEntity( fullId );
+    const adminOf = V.getState( 'activeEntity' ).adminOf; // query.data[0].adminOf;
 
+    const entitiesAdmined = [];
     const mapData = [];
 
-    if ( query.success ) {
+    for ( let i = 0; i < adminOf.length; i++ ) {
+      const query = await V.getEntity( adminOf[i] );
+      entitiesAdmined.push( query );
       mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
+    }
 
+    if ( entitiesAdmined[0] && entitiesAdmined[0].success ) {
       return {
         success: true,
         status: 'entities retrieved',
         data: [{
           which: which,
-          entity: query.data[0],
+          entity: V.getState( 'activeEntity' ),
+          entitiesAdmined: entitiesAdmined,
           mapData: mapData,
         }]
       };
@@ -53,23 +57,22 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
+
       UserComponents.setData( {
         entity: data.data[0].entity,
-        editable: false
+        editable: true
       } );
 
       $list = CanvasComponents.list( 'narrow' );
-      $topcontent = ProfileComponents.topcontent();
+      $topcontent = UserComponents.topcontent();
 
-      V.setNode( $list, [
-        UserComponents.entityCard(),
-        UserComponents.locationCard(),
-        UserComponents.introCard(),
-        UserComponents.financialCard(),
-        UserComponents.socialCard(),
-      ] );
+      for ( let i = 0; i < data.data[0].entitiesAdmined.length; i++ ) {
+        V.setNode( $list, [
+          UserComponents.entityListCard( data.data[0].entitiesAdmined[i].data[0] )
+        ] );
+      }
 
-      Navigation.draw( data.data[0].entity );
+      Navigation.draw( data.data[0].which );
 
       Page.draw( {
         topcontent: $topcontent,
@@ -79,7 +82,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       Chat.drawMessageForm( 'clear' );
 
-      VMap.draw( data.data[0].mapData );
+      // VMap.draw( data.data[0].mapData );
     }
     else {
       Page.draw( {

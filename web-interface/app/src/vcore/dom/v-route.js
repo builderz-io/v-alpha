@@ -102,6 +102,24 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
               data: [ '/me/profile' ]
             };
           }
+        },
+        {
+          path: '/settings',
+          action: () => {
+            return {
+              status: 'user settings',
+              data: [ '/me/settings' ]
+            };
+          }
+        },
+        {
+          path: '/entities',
+          action: () => {
+            return {
+              status: 'user entities',
+              data: [ '/me/entities' ]
+            };
+          }
         }
       ]
     },

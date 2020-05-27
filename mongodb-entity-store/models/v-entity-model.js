@@ -10,13 +10,13 @@ var entitySchema = mongoose.Schema( {
   },
   profile: {
     fullId: String, // name + tag, e.g. 'Jane Wood #2121'
-    slug: String, // name + tag in slug format, e.g. 'jane-wood-2121'
+    // slug: String, // name + tag in slug format, e.g. 'jane-wood-2121'
     path: String, // name + tag in path format, e.g. '/profile/jane-wood-2121'
     title: String,
     tag: String,
+    creator: String,
+    creatorTag: String,
     role: String,
-    status: String,
-    verified: Boolean,
     joined: {
       date: String,
       unix: Number,
@@ -26,9 +26,11 @@ var entitySchema = mongoose.Schema( {
         rpc: String,
         contract: String,
       }
-    },
-    creator: String,
-    creatorTag: String,
+    }
+  },
+  status: {
+    active: Boolean,
+    verified: Boolean,
   },
   evmCredentials: {
     address: String,
@@ -40,6 +42,7 @@ var entitySchema = mongoose.Schema( {
     privateKey: String,
   },
   geometry: {
+    rand: Boolean,
     type: { type: String },
     coordinates: [Number],
   },
@@ -57,15 +60,16 @@ var entitySchema = mongoose.Schema( {
     adminName: String,
     adminTag: String,
   }],
+  adminOf: [String],
   properties: {
-    location: String,
+    baseLocation: String,
+    currentLocation: String,
+    currentUTC: String,
     introduction: String,
     description: String,
+    preferredLangs: String,
     target: String,
     unit: String,
-    creator: String,
-    creatorTag: String,
-    created: Date,
     fillUntil: Date,
     expires: Date,
     languages: String,

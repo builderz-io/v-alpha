@@ -67,6 +67,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
+        rand: false,
         type: 'Point',
         coordinates: [entityData.lng, entityData.lat],
       };
@@ -74,6 +75,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     else {
       const gen = V.castRandLatLng();
       geometry = {
+        rand: true,
         type: 'Point',
         coordinates: [ gen.lng, gen.lat ],
       };
@@ -125,6 +127,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const uuid = V.castUUID();
 
+    const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
+
     const newEntity = {
       fullId: fullId,
       path: path,
@@ -135,13 +139,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       },
       profile: {
         fullId: fullId,
-        slug: slug,
+        // slug: slug,
         path: path,
         title: title.data[0],
         tag: tag,
-        role: entityData.role ? entityData.role : 'network',
-        status: 'active',
-        verified: false,
+        creator: creator,
+        creatorTag: creatorTag,
+        role: entityData.role || 'member',
         joined: {
           date: date,
           unix: unix,
@@ -151,9 +155,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
             rpc: rpc,
             contract: contract,
           }
-        },
-        creator: creator,
-        creatorTag: creatorTag,
+        }
+      },
+      status: {
+        active: true,
+        verified: false
       },
       evmCredentials: {
         address: entityData.evmAddress || activeAddress || undefined
@@ -167,15 +173,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         adminName: creator,
         adminTag: creatorTag,
       }],
+      adminOf: [ fullId ],
       properties: {
-        location: entityData.location || undefined,
+        baseLocation: entityData.location || undefined,
         description: entityData.description || undefined,
         target: entityData.target || undefined,
         unit: entityData.unit || undefined,
-        creator: creator,
-        creatorTag: creatorTag,
       },
       geometry: geometry,
+      social: {
+        email: email,
+      }
     };
 
     return {
@@ -235,8 +243,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
          title.indexOf( '2121' ) != -1 ||
          // title.replace( /[0-9]/g, '' ).length < title.length ||
          checkLength > entitySetup.capWordLength ||
-         ( ['member', 'network'].includes( role ) && checkLength > entitySetup.maxHumanWords ) ||
-         ( ['member', 'network'].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
+         ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ||
+         ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
          wordLengthExeeded.includes( true )
     ) {
       return {
@@ -394,7 +402,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       Object.assign( data, { entity: whichEntity } );
-      return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) );
+      return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
+        V.setState( 'activeEntity', 'clear' );
+        V.setState( 'activeEntity', res.data[0] );
+        return res;
+      } );
     }
 
     // if ( whichEndpoint == 'verification' ) {

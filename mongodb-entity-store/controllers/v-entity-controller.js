@@ -162,59 +162,53 @@ exports.register = function( req, res ) {
 };
 
 exports.update = function( req, cb ) {
-
-  if ( req.field == 'properties.location' ) {
-    EntityDB.findOneAndUpdate(
-      { 'private.uPhrase': req.auth },
-      {
-        $set: {
-          'properties.location': req.data.value,
-          'geometry.type': 'Point',
-          'geometry.coordinates': [Number( req.data.lng ), Number( req.data.lat )],
-        },
+  let how;
+  if ( req.field == 'properties.baseLocation' ) {
+    how = {
+      $set: {
+        'properties.baseLocation': req.data.value,
+        'properties.currentLocation': req.data.value,
+        'geometry.rand': req.data.rand,
+        'geometry.type': 'Point',
+        'geometry.coordinates': [Number( req.data.lng ), Number( req.data.lat )],
       },
-      ( err ) => {
-        if ( err ) {
-          return cb( {
-            success: false,
-            status: 'error in updating',
-            message: err
-          } );
-        }
-        else {
-          return cb( {
-            success: true,
-            status: 'entity updated',
-          } );
-        }
-      }
-    );
+    };
+  }
+  else if ( req.field == 'adminOf' ) {
+    how = {
+      $push: {
+        adminOf: req.data,
+      },
+    };
   }
   else {
     const updateWhat = {};
     updateWhat[req.field] = req.data;
-    const how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
+    how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
 
-    EntityDB.findOneAndUpdate(
-      { 'private.uPhrase': req.auth },
-      how,
-      ( err ) => {
-        if ( err ) {
-          return cb( {
-            success: false,
-            status: 'error in updating',
-            message: err
-          } );
-        }
-        else {
-          return cb( {
-            success: true,
-            status: 'entity updated',
-          } );
-        }
-      }
-    );
   }
+
+  EntityDB.findOneAndUpdate(
+    { 'private.uPhrase': req.auth },
+    how,
+    { new: true },
+    ( err, res ) => {
+      if ( err ) {
+        return cb( {
+          success: false,
+          status: 'error in updating',
+          message: err
+        } );
+      }
+      else {
+        return cb( {
+          success: true,
+          status: 'entity updated',
+          data: [ res ]
+        } );
+      }
+    }
+  );
 };
 
 exports.verify = function( req, cb ) {
@@ -240,9 +234,8 @@ exports.verify = function( req, cb ) {
         status: 'could not find entity to verify',
       } );
     }
-    res.profile.role = 'member';
-    res.profile.status = 'active';
-    res.profile.verified = true;
+    res.status.active = true;
+    res.status.verified = true;
     // res.profile.loginExpires = new Date().setMonth( new Date().getMonth() + 12 );
 
     res.save( ( err ) => {

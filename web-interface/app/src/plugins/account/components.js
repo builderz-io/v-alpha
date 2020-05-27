@@ -15,6 +15,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       Marketplace.draw();
     }
     else {
+      Button.draw( 'all', { fade: 'out' } );
       V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
       V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
       V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
@@ -44,7 +45,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       },
       html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="#1b1aff" stroke-width="2.7"></circle>
               <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ balance }</text>`,
-      click: handleDrawUserNav // handleDrawTxHistory
+      click: handleDrawUserNav
 
     } );
   }

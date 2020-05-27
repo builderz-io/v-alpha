@@ -1,7 +1,7 @@
 const User = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Plugin driving the user profile/edit page
+   * V Plugin driving the entity edit page
    *
    */
 
@@ -17,32 +17,43 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         status: ''
       };
     }
-
-    const fullId = V.getState( 'activeEntity' ).fullId;
-    const query = await V.getEntity( fullId );
-
-    const mapData = [];
-
-    if ( query.success ) {
-
-      mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
-
+    else {
       return {
         success: true,
-        status: 'user retrieved',
+        status: 'active entity retrieved',
         data: [{
           which: which,
-          entity: query.data[0],
-          mapData: mapData,
+          entity: V.getState( 'activeEntity' ),
+          mapData: [{ type: 'Feature', geometry: V.getState( 'activeEntity' ).geometry }],
         }]
       };
     }
-    else {
-      return {
-        success: null,
-        status: 'cound not retrieve user'
-      };
-    }
+    //
+    // const fullId = V.getState( 'activeEntity' ).fullId;
+    // const query = await V.getEntity( fullId ); // query again for changes
+    //
+    // const mapData = [];
+    //
+    // if ( query.success ) {
+    //
+    //   mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
+    //
+    //   return {
+    //     success: true,
+    //     status: 'user retrieved',
+    //     data: [{
+    //       which: which,
+    //       entity: query.data[0],
+    //       mapData: mapData,
+    //     }]
+    //   };
+    // }
+    // else {
+    //   return {
+    //     success: null,
+    //     status: 'cound not retrieve user'
+    //   };
+    // }
   }
 
   function view( data ) {
@@ -63,8 +74,10 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.entityCard(),
         UserComponents.locationCard(),
         UserComponents.introCard(),
+        UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),
+        UserComponents.evmAddressCard(),
       ] );
 
       Navigation.draw( data.data[0].which );
@@ -134,7 +147,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
           button: 'plus search',
         },
         draw: function( path ) {
-          Entities.draw( path );
+          EntityList.draw( path );
         }
       }
     ] );

@@ -91,7 +91,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
-      role: 'network',
     };
 
     V.setState( 'activeEntity', 'clear' );
