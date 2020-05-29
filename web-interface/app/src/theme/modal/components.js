@@ -126,7 +126,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( aE.fullId, {
         field: 'evmCredentials.address',
         data: aA,
-        auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+        auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
       } ).then( () => {
         Join.draw( 'authenticate' );
       } );
@@ -136,6 +136,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleGetMetaMask( e ) {
     e.stopPropagation();
     window.open( 'https://metamask.io/download.html', '_blank' );
+  }
+
+  function handleDisconnect() {
+    V.setCookie( 'last-active-address', 'clear' );
+    V.setCookie( 'last-active-uphrase', 'clear' );
+    window.location.href = '/';
   }
 
   /* ================== private methods ================= */
@@ -282,6 +288,18 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
+  function disconnect() {
+    const $content = modalContent();
+    const $disc = V.cN( {
+      t: 'div',
+      c: buttonClasses + ' modal-pos-1',
+      k: handleDisconnect,
+      h: V.i18n( 'Confirm Disconnect', 'modal' )
+    } );
+    V.setNode( $content, $disc );
+    return $content;
+  }
+
   function mapAddress() {
     const $content = modalContent();
     const $current = V.cN( {
@@ -380,6 +398,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     confirmTransaction: confirmTransaction,
     web3Join: web3Join,
     web2Join: web2Join,
+    disconnect: disconnect,
     mapAddress: mapAddress,
     entityFound: entityFound,
     entityNotFound: entityNotFound,

@@ -135,7 +135,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
           return V.setEntity( entityToVerify, {
             field: 'profile.verified',
             data: true,
-            auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+            auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
           } );
         }
         // else if ( caseArray[0] === 'makeadmin' ) {

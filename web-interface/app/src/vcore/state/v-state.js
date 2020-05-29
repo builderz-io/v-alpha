@@ -39,10 +39,10 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( which == 'activeAddress' ) {
-      setCookie( 'lastActiveAddress', data );
+      setCookie( 'last-active-address', data );
     }
     else if ( which == 'activeEntity' && data && data.private ) {
-      setCookie( 'lastActiveUphrase', data.private.uPhrase );
+      setCookie( 'last-active-uphrase', data.private.uPhrase );
     }
 
   }

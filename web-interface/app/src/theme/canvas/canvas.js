@@ -259,8 +259,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function returningUser() {
     if( !V.getState( 'activeEntity' ) ) {
-      const returningWallet = V.getCookie( 'lastActiveAddress' );
-      const returningUphrase = V.getCookie( 'lastActiveUphrase' );
+      const returningWallet = V.getCookie( 'last-active-address' );
+      const returningUphrase = V.getCookie( 'last-active-uphrase' );
 
       if ( returningWallet ) {
         Join.draw( 'authenticate' );

@@ -145,7 +145,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setEntity( aE.fullId, {
       field: field,
       data: data,
-      auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+      auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
     } );
   }
 

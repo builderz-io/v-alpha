@@ -11,6 +11,10 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
+    if ( which == '/me/disconnect' ) {
+      return which;
+    }
+
     if ( !V.getState( 'activeEntity' ) ) {
       return {
         success: false,
@@ -28,35 +32,14 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         }]
       };
     }
-    //
-    // const fullId = V.getState( 'activeEntity' ).fullId;
-    // const query = await V.getEntity( fullId ); // query again for changes
-    //
-    // const mapData = [];
-    //
-    // if ( query.success ) {
-    //
-    //   mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
-    //
-    //   return {
-    //     success: true,
-    //     status: 'user retrieved',
-    //     data: [{
-    //       which: which,
-    //       entity: query.data[0],
-    //       mapData: mapData,
-    //     }]
-    //   };
-    // }
-    // else {
-    //   return {
-    //     success: null,
-    //     status: 'cound not retrieve user'
-    //   };
-    // }
   }
 
   function view( data ) {
+
+    if ( data == '/me/disconnect' ) {
+      Modal.draw( 'disconnect' );
+      return;
+    }
 
     let $topcontent, $list;
 
@@ -148,6 +131,13 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           EntityList.draw( path );
+        }
+      },
+      {
+        title: 'Disconnect',
+        path: '/me/disconnect',
+        draw: function( path ) {
+          User.draw( path );
         }
       }
     ] );

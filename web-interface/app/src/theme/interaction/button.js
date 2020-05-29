@@ -52,7 +52,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           V.setEntity( V.getState( 'activeEntity' ).fullId, {
             field: 'adminOf',
             data: res.data[0].fullId,
-            auth: V.getCookie( 'lastActiveUphrase' ).replace( /"/g, '' )
+            auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
           } );
 
         }
