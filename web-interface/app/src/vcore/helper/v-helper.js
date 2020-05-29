@@ -7,6 +7,15 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ================== private methods ================= */
+
+  function castTranslations( which, whichContext, whichPart ) {
+    const obj = {};
+    obj[whichContext] = {};
+    obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
+
+  }
+
   /* ================== public methods ================== */
 
   function castLinks( which ) {
@@ -298,31 +307,19 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getTranslation( which, whichContext, whichPart ) {
-    // TODO
-    setTranslation( which, whichContext, whichPart );
-    return which;
-  }
 
-  function setTranslation( which, whichContext, whichPart ) {
-    const obj = {};
-    obj[whichContext] = {};
-    obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
-    const translations = Translations;
+    // castTranslations( which, whichContext, whichPart );
+    const aE = V.getState( 'activeEntity' );
+    const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
+    const exists = VTranslations[whichContext][which] ?
+      VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
 
-    for ( const key in obj ) {
-      if ( !translations[key] ) {
-        translations[key] = {};
-      }
-      for ( const innerKey in obj[key] ) {
-        if ( innerKey != '' ) {
-          translations[key] = {};
-        }
-        Object.assign( translations[key], obj[key] );
-      }
-      Object.assign( translations[key], obj[key] );
+    if ( exists ) {
+      return exists;
     }
-
-    console.log( JSON.stringify( translations, null, 4 ) );
+    else {
+      return which;
+    }
   }
 
   function i18n( which, whichContext, whichPart ) {

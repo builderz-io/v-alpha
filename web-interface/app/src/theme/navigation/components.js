@@ -62,7 +62,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       attributes: {
         path: item.path || '/',
       },
-      html: pillOnline + V.i18n( item.title, 'navigation', 'nav item title' )
+      html: pillOnline + V.i18n( item.title, 'navigation', 'nav item' )
     } );
   }
 

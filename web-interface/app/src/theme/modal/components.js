@@ -342,8 +342,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           color: 'red'
         }
       },
-      h: `<p class="pxy">${V.i18n( 'Take note of the key' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${activeEntity.private.uPhrase}</p>
-      <p class="pxy"> ${V.i18n( 'You\'ll need this key to manage the' ) + ' ' + activeEntity.fullId + ' ' + V.i18n( 'entity' )}</p>`
+      h: `<p class="pxy">${ V.i18n( 'Take note of the key', 'modal' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${ activeEntity.private.uPhrase }</p>
+      <p class="pxy"> ${ V.i18n( 'You\'ll need this key to manage this entity', 'modal' ) }</p>`
     } );
 
     let $balance;
@@ -380,8 +380,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $descr = V.cN( {
       t: 'p',
       c: 'modal-pos-2 relative txt-center',
-      h: V.i18n( 'Naming your account creates a new entity for your address. ' +
-                  'An entity can be anything you want to make visible in the network.', 'modal' )
+      h: V.i18n( 'Naming your account creates a new entity for your address. An entity can be anything you want to make visible in the network.', 'modal' )
     } );
 
     V.setNode( $content, [$new, $descr] );

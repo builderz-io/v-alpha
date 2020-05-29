@@ -121,55 +121,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
-  function onboardingCard() {
-
-    const aE = V.getState( 'activeEntity' );
-    const ledger = V.getSetting( 'transactionLedger' );
-
-    if ( aE && ledger == 'EVM' ) {
-      let $cardContent;
-      const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
-
-      if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
-        $cardContent = V.castNode( {
-          tag: 'div',
-          c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'join', 'onboarding call to action' ) + '</p>'
-        } );
-        $cardContent.addEventListener( 'click', function handleAddWallet() {
-          if ( window.Web3Obj ) {
-            Join.draw( 'authenticate existing entity' );
-          }
-          else {
-            Join.draw( 'install metamask' );
-          }
-        } );
-      }
-      else if ( !balanceCheck ) { // wallet balance is 0
-        $cardContent = V.castNode( {
-          tag: 'div',
-          c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'join', 'onboarding call to action' ) + '</p>'
-        } );
-      }
-      else if ( balanceCheck ) { // no brightID connected
-        $cardContent = V.castNode( {
-          tag: 'div',
-          c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'join', 'onboarding call to action' ) + '</p>'
-          // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
-        } );
-      }
-
-      const $onboardingCard = CanvasComponents.card( $cardContent );
-
-      return $onboardingCard;
-    }
-    else {
-      return '';
-    }
-  }
-
   function launch() {
     // sets the view on launch (the header "Join" button)
     if ( !V.getNode( 'join' ) ) {
@@ -191,7 +142,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   return {
-    onboardingCard: onboardingCard,
     launch: launch,
     draw: draw,
   };

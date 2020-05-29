@@ -30,8 +30,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     const messageParts = data.slice(),
       date = Date.now(),
       timeSecondsUNIX = Number( Math.floor( date / 1000 ) ),
-      forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger' ) ),
-      toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger' ) );
+      forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger', 'key word' ) ),
+      toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger', 'key word' ) );
 
     let reference = '', recipient = '', currency,
       amount = 0, feeAmount = 0, contribution = 0, txTotal = 0;

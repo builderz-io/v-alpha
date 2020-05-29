@@ -375,28 +375,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function appLanguageCard() {
-    const appLang = entity.properties.appLang;
+    const appLang = entity.properties ? entity.properties.appLang ? entity.properties.appLang : 'en_US' : 'en_US';
     if( appLang || ( !appLang && editable ) ) {
       const $innerContent = V.cN( {
         t: 'div',
         c: 'app-lang-selector',
         h: [
-          V.cN( {
-            t: 'input',
-            a: {
-              type: 'radio',
-              name: 'app-lang',
-              value: 'de_DE',
-              title: 'appLang',
-              db: 'properties',
-              checked: appLang == 'de_DE' ? true : false
-            },
-            k: handleRadioEntry
-          } ),
-          V.cN( {
-            t: 'span',
-            h: '🇩🇪'
-          } ),
           V.cN( {
             t: 'input',
             a: {
@@ -412,6 +396,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           V.cN( {
             t: 'span',
             h: '🇬🇧'
+          } ),
+          V.cN( {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'de_DE',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'de_DE' ? true : false
+            },
+            k: handleRadioEntry
+          } ),
+          V.cN( {
+            t: 'span',
+            h: '🇩🇪'
           } ),
         ]
       } );

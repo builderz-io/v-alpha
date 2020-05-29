@@ -44,7 +44,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'p',
       c: 'pxy',
-      h: V.i18n( 'No ' + which + ' found', 'theme' )
+      h: V.i18n( 'No ' + which + ' found', 'app', 'not found' )
     } );
   }
 

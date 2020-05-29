@@ -53,7 +53,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
-        Join.onboardingCard(),
+        InteractionComponents.onboardingCard(),
         UserComponents.entityCard(),
         UserComponents.locationCard(),
         UserComponents.introCard(),

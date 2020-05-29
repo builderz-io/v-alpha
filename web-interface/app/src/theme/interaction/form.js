@@ -73,13 +73,13 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( formData.status == 'invalid title' ) {
       const $formtitle = V.getNode( '#plusform__title' );
-      $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
+      $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder', 'form error' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';
     }
     else if ( formData.status == 'could not attach geo data' ) {
       const $formtitle = V.getNode( '#plusform__loc' );
-      $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder' ) );
+      $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder', 'form error' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';
     }

@@ -41,11 +41,15 @@ const V = {
     console.log( '*** vcore dependency-scripts loaded ***' );
 
     await Promise.all( [
+      setScript( '/src/vcore/v/v-translations.js' )
+    ] );
+    console.log( '*** translations loaded ***' );
+
+    await Promise.all( [
       setScript( '/src/vcore/dom/v-dom.js' ),
       setScript( '/src/vcore/state/v-state.js' ),
       setScript( '/src/vcore/v/v-key.js' ),
       setScript( '/src/vcore/v/v-setup.js' ),
-      setScript( '/src/vcore/v/v-translations.js' ),
       setScript( '/src/vcore/dom/v-route.js' ),
       setScript( '/src/vcore/helper/v-debugger.js' ),
       setScript( '/src/vcore/helper/v-helper.js' )

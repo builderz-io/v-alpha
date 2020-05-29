@@ -118,7 +118,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.sN( {
       t: 'input',
       c: 'searchform__search ' + formClasses,
-      a: { placeholder: V.i18n( 'Search', 'placeholder' ) }
+      a: { placeholder: V.i18n( 'Search', 'placeholder', 'search' ) }
     } );
   }
 
@@ -251,7 +251,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  // join and temp
+  // join
 
   function joinBtn() {
     const sc = V.getState( 'screen' );
@@ -300,24 +300,54 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  // function tempBtn() {
-  //   return V.sN( {
-  //     t: 'temp',
-  //     c: 'balance fixed cursor-pointer txt-anchor-mid',
-  //     h: V.setNode( {
-  //       tag: 'a',
-  //       href: '#modal',
-  //       html: `<svg width="54px" viewBox="0 0 36 36">
-  //               <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
-  //                      stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white"
-  //                      stroke="#1b1aff" stroke-width="2.7">
-  //               </circle>
-  //               <text class="font-medium fs-xs txt-green" x="50%" y="59%">Temp</text>
-  //             </svg>`
-  //
-  //     } )
-  //   } );
-  // }
+  function onboardingCard() {
+
+    const aE = V.getState( 'activeEntity' );
+    const ledger = V.getSetting( 'transactionLedger' );
+
+    if ( aE && ledger == 'EVM' ) {
+      let $cardContent;
+      const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
+
+      if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'join', 'onboarding call to action' ) + '</p>'
+        } );
+        $cardContent.addEventListener( 'click', function handleAddWallet() {
+          if ( window.Web3Obj ) {
+            Join.draw( 'authenticate existing entity' );
+          }
+          else {
+            Join.draw( 'install metamask' );
+          }
+        } );
+      }
+      else if ( !balanceCheck ) { // wallet balance is 0
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'join', 'onboarding call to action' ) + '</p>'
+        } );
+      }
+      else if ( balanceCheck ) { // no brightID connected
+        $cardContent = V.castNode( {
+          tag: 'div',
+          c: 'flex w-full items-center justify-evenly',
+          html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'join', 'onboarding call to action' ) + '</p>'
+          // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
+        } );
+      }
+
+      const $onboardingCard = CanvasComponents.card( $cardContent );
+
+      return $onboardingCard;
+    }
+    else {
+      return '';
+    }
+  }
 
   return {
     filter: filter,
@@ -331,6 +361,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     searchForm: searchForm,
     formField: formField,
     joinBtn: joinBtn,
+    onboardingCard: onboardingCard,
     // tempBtn: tempBtn,
   };
 
