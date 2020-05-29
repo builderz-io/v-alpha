@@ -45,6 +45,7 @@ const V = {
       setScript( '/src/vcore/state/v-state.js' ),
       setScript( '/src/vcore/v/v-key.js' ),
       setScript( '/src/vcore/v/v-setup.js' ),
+      setScript( '/src/vcore/v/v-translations.js' ),
       setScript( '/src/vcore/dom/v-route.js' ),
       setScript( '/src/vcore/helper/v-debugger.js' ),
       setScript( '/src/vcore/helper/v-helper.js' )

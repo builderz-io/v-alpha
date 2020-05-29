@@ -134,7 +134,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'join', 'onboarding call to action' ) + '</p>'
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -149,14 +149,14 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'join', 'onboarding call to action' ) + '</p>'
         } );
       }
       else if ( balanceCheck ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'onboading' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'join', 'onboarding call to action' ) + '</p>'
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
       }

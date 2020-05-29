@@ -27,8 +27,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         else {
           $form.value = '';
         }
-        // $form.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-        // console.log( res.status );
       }
       else {
         $response.append( V.sN( {

@@ -28,7 +28,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       h: V.cN( {
         tag: 'h1',
         class: 'font-bold txt-center pxy',
-        html: /* V.i18n( 'Account of', 'account' ) + ' ' + */ fullId
+        html: fullId
       } )
 
     } );

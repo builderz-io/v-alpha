@@ -73,6 +73,7 @@ var entitySchema = mongoose.Schema( {
     fillUntil: Date,
     expires: Date,
     languages: String,
+    appLang: String,
   },
   social: {
     facebook: String,

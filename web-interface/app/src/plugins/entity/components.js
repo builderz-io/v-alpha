@@ -11,6 +11,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   const DOM = {};
 
+  V.setStyle( {
+    'app-lang-selector': {
+      'display': 'flex',
+      'justify-content': 'space-evenly',
+      'width': '190px',
+      'padding': '25px 0'
+    }
+  } );
+
   /* ================== event handlers ================== */
 
   function handleEntryFocus() {
@@ -92,6 +101,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function handleRadioEntry() {
+    const title = this.getAttribute( 'title' );
+    const db = this.getAttribute( 'db' );
+    const entry = this.getAttribute( 'value' );
+    setEntity( db + '.' + title, entry );
+  }
+
   /* ================== private methods ================= */
 
   function castCard( $innerContent, whichTitle ) {
@@ -103,19 +119,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'table',
       c: 'w-full pxy',
       h: titles.map( title => {
+        const inner = entity[db] ? entity[db][title] : undefined;
         return V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: title } ),
+            V.cN( {
+              t: 'td',
+              c: 'capitalize',
+              h: V.i18n( title, 'user-profile', 'card entry' )
+            } ),
             V.cN( editable ? setEditable( {
               t: 'td',
               c: 'txt-right',
               a: { title: title, db: db },
-              h: entity[db] ? entity[db][title] : undefined
+              h: inner
             } ) : {
               t: 'td',
               c: 'txt-right',
-              h: entity[db] ? entity[db][title] : undefined
+              h: inner
             } ),
           ]
         } );
@@ -163,7 +184,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         V.cN( {
           tag: 'h1',
           class: 'font-bold txt-center pxy',
-          html: /* V.i18n( 'Your Profile', 'account' ) + '<br>' + */ entity.fullId,
+          html: entity.fullId,
         } )
       ]
     } );
@@ -241,7 +262,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: 'base location' } ),
+            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'base location', 'user-profile', 'card entry' ) } ),
             V.castNode( editable ? {
               tag: 'input',
               i: 'user__loc',
@@ -263,7 +284,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: 'current location' } ),
+            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current location', 'user-profile', 'card entry' ) } ),
             V.castNode( editable ? {
               tag: 'input',
               c: 'location__curr pxy w-full txt-right',
@@ -284,7 +305,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: 'current UTC offset' } ),
+            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current UTC offset', 'user-profile', 'card entry' ) } ),
             V.cN( editable ? setEditable( {
               t: 'td',
               c: 'txt-right',
@@ -335,26 +356,64 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityListCard( entity ) {
-    const $innerContent = V.castNode( {
-      t: 'p',
-      c: 'pxy',
-      h: entity.private.uPhrase,
+    const $innerContent = V.cN( {
+      t: 'div',
+      h: [
+        V.cN( {
+          t: 'h2',
+          c: 'pxy font-bold fs-l',
+          h: entity.fullId,
+        } ),
+        V.cN( {
+          t: 'p',
+          c: 'pxy',
+          h: entity.private.uPhrase,
+        } )
+      ],
     } );
-    return castCard( $innerContent, entity.fullId );
+    return castCard( $innerContent, '' );
   }
 
   function appLanguageCard() {
-    const lang = entity.profile.lang;
-    if( lang || ( !lang && editable ) ) {
-      const $innerContent = V.castNode( editable ? setEditable( {
-        t: 'p',
-        c: 'pxy',
-        a: { title: 'lang', db: 'profile' },
-        h: lang,
-      } ) : {
-        t: 'p',
-        c: 'pxy',
-        h: lang,
+    const appLang = entity.properties.appLang;
+    if( appLang || ( !appLang && editable ) ) {
+      const $innerContent = V.cN( {
+        t: 'div',
+        c: 'app-lang-selector',
+        h: [
+          V.cN( {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'de_DE',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'de_DE' ? true : false
+            },
+            k: handleRadioEntry
+          } ),
+          V.cN( {
+            t: 'span',
+            h: '🇩🇪'
+          } ),
+          V.cN( {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'en_US',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'en_US' ? true : false
+            },
+            k: handleRadioEntry
+          } ),
+          V.cN( {
+            t: 'span',
+            h: '🇬🇧'
+          } ),
+        ]
       } );
       return castCard( $innerContent, 'App Language' );
     }

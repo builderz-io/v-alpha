@@ -184,7 +184,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          V.cN( { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'card-title' ) } ),
+          V.cN( { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'user-profile', 'card title' ) } ),
           $cardContent
         ] : $cardContent
       } )

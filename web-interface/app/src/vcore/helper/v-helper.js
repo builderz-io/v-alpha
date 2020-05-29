@@ -297,13 +297,36 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
   }
 
-  function getTranslation( which ) {
+  function getTranslation( which, whichContext, whichPart ) {
     // TODO
+    setTranslation( which, whichContext, whichPart );
     return which;
   }
 
-  function i18n( which ) {
-    return getTranslation( which );
+  function setTranslation( which, whichContext, whichPart ) {
+    const obj = {};
+    obj[whichContext] = {};
+    obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
+    const translations = Translations;
+
+    for ( const key in obj ) {
+      if ( !translations[key] ) {
+        translations[key] = {};
+      }
+      for ( const innerKey in obj[key] ) {
+        if ( innerKey != '' ) {
+          translations[key] = {};
+        }
+        Object.assign( translations[key], obj[key] );
+      }
+      Object.assign( translations[key], obj[key] );
+    }
+
+    console.log( JSON.stringify( translations, null, 4 ) );
+  }
+
+  function i18n( which, whichContext, whichPart ) {
+    return getTranslation( which, whichContext, whichPart );
   }
 
   /* ====================== export ====================== */

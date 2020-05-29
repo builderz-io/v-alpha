@@ -116,7 +116,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $bottomRight = V.cN( {
       t: 'div',
       c: 'card__bottom-right pxy',
-      h: `<p>${cardData.properties.description}</p><p>in ${cardData.properties.location}</p>`
+      h: `<p>${cardData.properties.description}</p><p>in ${cardData.properties.baseLocation}</p>`
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
