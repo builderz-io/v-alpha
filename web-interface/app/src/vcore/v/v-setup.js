@@ -18,6 +18,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     // socketPort: 443,
 
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
+    defaultVerification: true,
     update3BoxEntityStore: false,
     loadMap: true,
 

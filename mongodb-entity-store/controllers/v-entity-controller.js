@@ -79,7 +79,7 @@ exports.findByQuery = async function( req, res ) {
 
   const find = {
     $and: [
-      req.role == 'al' ? {} : { 'profile.role': req.role },
+      req.role == 'all' ? {} : { 'profile.role': req.role },
       { $or: [
         { 'profile.title': regex },
         { 'properties.baseLocation': regex }
@@ -108,9 +108,6 @@ exports.register = function( req, res ) {
     lastMove: Number( Math.floor( date / 1000 ) ),
     timeToZero: baseTimeToZero
   };
-
-  // force verification to be false
-  req.profile.verified = false;
 
   const newEntity = new EntityDB( req );
 

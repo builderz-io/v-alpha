@@ -17,6 +17,30 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'justify-content': 'space-evenly',
       'width': '190px',
       'padding': '25px 0'
+    },
+    'pool__funding-pie': {
+      'stroke-width': '50',
+      'fill': '#ddd',
+      'stroke': 'rgb(65, 183, 135)'
+    },
+    'pool__funding-chart': {
+      'margin': '23px 0 0 4px',
+      'transform': 'rotate(-90deg)',
+      'border-radius': '50%',
+      'display': 'block',
+      'background': '#ddd',
+    },
+    'pool__spending-pie': {
+      'stroke-width': '50',
+      'fill': '#ddd',
+      'stroke': 'rgb(99, 82, 185)'
+    },
+    'pool__spending-chart': {
+      'margin': '23px 0 0 4px',
+      'transform': 'rotate(-90deg)',
+      'border-radius': '50%',
+      'display': 'block',
+      'background': '#ddd',
     }
   } );
 
@@ -78,6 +102,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
     const value = this.value;
+    V.getNode( '.location__curr' ).value = this.value;
 
     if ( DOM.location.length && value == '' ) {
       const gen = V.castRandLatLng();
@@ -422,6 +447,81 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function fundingStatusCard() {
+
+    /**
+     * this component has been ported from the first alpha version
+     *
+     */
+
+    if ( !entity.stats ) {
+      Object.assign( entity, { stats: {
+        receiveVolume: 0,
+        sendVolume: 0
+      } } );
+    }
+
+    if ( entity.profile.role == 'pool' ) {
+
+      const i18n = {
+        // strPfPg431: V.i18n( 'Funding Target', 'user-profile', 'pools' ),
+        strPfPg432: V.i18n( 'Not yet successfully funded', 'user-profile', 'pools' ),
+        strPfPg433: V.i18n( 'Successfully funded', 'user-profile', 'pools' ),
+        strPfPg434: V.i18n( 'None yet spent', 'user-profile', 'pools' ),
+        strPfPg435: V.i18n( 'Budget spent', 'user-profile', 'pools' ),
+      };
+
+      let svgFunded = '';
+      let svgSpent = '';
+      let fundSuccess = i18n.strPfPg432;
+      let budgetPercent = '', budgetUsed = i18n.strPfPg434;
+
+      const funded = entity.stats.receiveVolume > 0 ? Math.floor( entity.stats.receiveVolume / entity.properties.target * 100 ) : 0;
+      const spent = entity.stats.receiveVolume > 0 ? Math.ceil( ( entity.stats.sendVolume * ( 1 + V.getSetting( 'transactionFee' )/100**2 ) ) / entity.stats.receiveVolume * 100 ) : 0;
+
+      if ( funded >= 0 ) {
+        svgFunded = '<svg width="100" height="100" class="pool__funding-chart">\
+               <circle r="25" cx="50" cy="50" class="pool__funding-pie" stroke-dasharray="' + Math.floor( 158 * ( funded / 100 ) ) + ' ' + ( 158 ) + '"/>\
+             </svg>';
+      }
+
+      if ( funded > 66 ) {
+        fundSuccess = '<span class="">' + i18n.strPfPg433 + '</span>';
+      }
+
+      if ( spent >= 0 ) {
+        svgSpent = '<svg width="100" height="100" class="pool__spending-chart">\
+      <circle r="25" cx="50" cy="50" class="pool__spending-pie" stroke-dasharray="' + Math.floor( 158 * ( spent / 100 ) ) + ' ' + ( 158 ) + '"/>\
+      </svg>';
+      }
+
+      if ( spent > 0 ) {
+        budgetUsed = '<span class="">' + i18n.strPfPg435 + '</span>';
+        budgetPercent = '<span class="">' + spent + ' %</span>';
+      }
+
+      const $innerContent = V.cN( {
+        t: 'table',
+        c: 'w-full pxy',
+        h: [
+          V.cN( {
+            t: 'tr',
+            h: [ V.cN( { t: 'td', h: svgFunded } ), V.cN( { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ) ]
+          } ),
+          V.cN( {
+            t: 'tr',
+            h: [ V.cN( { t: 'td', h: svgSpent } ), V.cN( { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ) ]
+          } )
+        ]
+      } );
+
+      return castCard( $innerContent, 'Funding Status' );
+    }
+    else {
+      return '';
+    }
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -436,6 +536,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     socialCard: socialCard,
     preferredLangsCard: preferredLangsCard,
     appLanguageCard: appLanguageCard,
+    fundingStatusCard: fundingStatusCard,
   };
 
 } )();

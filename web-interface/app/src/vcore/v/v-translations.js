@@ -76,7 +76,7 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: ''
     },
     'current UTC offset': {
-      en_US: 'Aktueller UTC Unterschied',
+      en_US: 'Aktuelle UTC Zeitdifferenz',
       de_DE: ''
     },
     'Location': {

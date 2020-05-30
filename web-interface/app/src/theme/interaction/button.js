@@ -69,15 +69,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   function handleQuery() {
     const query = V.getNode( '#search-input' ).value;
     if ( query.length < 2 ) { return }
-    const split = V.getState( 'active' ).navItem.split( '/' );
-    const active = split.pop();
-    const removePlural = active.slice( 0, -1 ); // TODO improve this, as 'all' becomes 'al'
-    Search.draw( {
-      role: removePlural,
+    const data = {
       query: query,
       // filterCity: V.getNode( '#search-filter__city' ).getAttribute( 'value' ),
       // filterTitle: V.getNode( '#search-filter__title' ).getAttribute( 'value' )
-    } );
+    };
+    Marketplace.draw( V.getState( 'active' ).navItem, data );
   }
 
   function handleCloseForms() {

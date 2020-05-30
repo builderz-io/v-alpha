@@ -50,7 +50,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setScript( '/src/plugins/entity/components.js' ),
       V.setScript( '/src/plugins/entity/editable.js' ),
       V.setScript( '/src/plugins/entity/display.js' ),
-      V.setScript( '/src/plugins/entity/search.js' ),
       V.setScript( '/src/plugins/entity/settings.js' ),
       V.setScript( '/src/plugins/entity/entitylist.js' ),
       V.setScript( '/src/plugins/chat/components.js' ),

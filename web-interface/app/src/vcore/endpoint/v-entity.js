@@ -159,7 +159,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       },
       status: {
         active: true,
-        verified: false
+        verified: V.getSetting( 'defaultVerification' )
       },
       evmCredentials: {
         address: entityData.evmAddress || activeAddress || undefined

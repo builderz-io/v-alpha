@@ -99,17 +99,16 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     let recipientAddress, signature;
 
     const tL = V.getSetting( 'transactionLedger' );
+    const aA = V.getState( 'activeAddress' );
 
-    if ( tL == 'EVM' ) {
+    if ( tL == 'EVM' && aA ) {
       recipientAddress = recipientData.data[0].evmCredentials.address;
       signature = initiator.evmCredentials.privateKey;
     }
-    else if ( tL == 'Symbol' ) {
+    else if ( tL == 'Symbol' && aA ) {
       recipientAddress = recipientData.data[0].symbolCredentials.address;
       signature = initiator.symbolCredentials.privateKey;
     }
-
-    const aA = V.getState( 'activeAddress' );
 
     return {
       success: true,

@@ -53,6 +53,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
+      Button.draw( 'all', { fade: 'out' } );
+
       UserComponents.setData( {
         entity: data.data[0].entity,
         editable: false
@@ -63,11 +65,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         UserComponents.entityCard(),
-        UserComponents.locationCard(),
+        UserComponents.fundingStatusCard(),
         UserComponents.introCard(),
-        UserComponents.preferredLangsCard(),
+        UserComponents.locationCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),
+        UserComponents.preferredLangsCard(),
         UserComponents.evmAddressCard(),
       ] );
 
