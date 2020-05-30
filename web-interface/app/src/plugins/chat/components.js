@@ -8,10 +8,26 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   function topcontent() {
-    return V.sN( {
-      t: 'h2',
-      c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
-      h: 'Chat with Everyone'
+    return V.cN( {
+      t: 'div',
+      c: 'w-full',
+      h: [
+        V.cN( {
+          t: 'h2',
+          c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
+          h: V.i18n( 'Chat with Everyone', 'app', 'chat title' )
+        } ),
+        V.cN( {
+          t: 'span',
+          c: 'block h-4 fs-s txt-center',
+          i: 'typing_on_1'
+        } ),
+        V.cN( {
+          t: 'span',
+          c: 'block h-4 fs-s txt-center',
+          i: 'typing_on_2'
+        } ),
+      ]
     } );
   }
 

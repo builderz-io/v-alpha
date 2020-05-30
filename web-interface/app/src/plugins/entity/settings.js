@@ -77,7 +77,7 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
       } );
 
-      Chat.drawMessageForm( 'clear' );
+      // Chat.drawMessageForm( 'clear' );
 
       // VMap.draw( data.data[0].mapData );
     }

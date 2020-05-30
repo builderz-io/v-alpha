@@ -213,6 +213,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function itemClickHandler( e ) {
 
+    Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
+
     e.stopPropagation(); // no need to bubble any further
 
     const $itemClicked = ( ( e ) => {
@@ -222,6 +224,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       else if ( t.localName == 'svg' ) { return t.parentNode }
       else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
     } )( e );
+
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       V.setState( 'active', { navItem: path } );

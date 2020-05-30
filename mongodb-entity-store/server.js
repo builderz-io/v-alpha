@@ -67,4 +67,7 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get transaction', handleTransaction.findTransaction );
 
+  client.on( 'user is typing', function( callback ) {
+    exports.sio.emit( 'a user is typing', callback );
+  } );
 } );

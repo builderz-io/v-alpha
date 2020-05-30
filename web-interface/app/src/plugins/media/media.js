@@ -53,13 +53,13 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     if ( pageData.which ) {
       Navigation.draw( pageData.which );
     }
-    Page.draw( pageData );
     if ( pageData.feature ) {
       Feature.draw( pageData.feature );
     }
     // else {
     //   Navigation.draw();
     // }
+    Page.draw( pageData );
     VMap.draw();
   }
 

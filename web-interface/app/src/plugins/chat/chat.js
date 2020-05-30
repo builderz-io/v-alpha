@@ -12,6 +12,12 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $response.innerHTML = '';
   }
 
+  function handleInputTyping() {
+    if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
+      window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+    }
+  }
+
   function handleSetMessageBot() {
     const $form = V.getNode( '.messageform__input' );
     const $response = V.getNode( '.messageform__response' );
@@ -153,6 +159,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     // } );
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
+    $input.addEventListener( 'input', handleInputTyping );
 
     V.setNode( $form, [ $response, $input, $send ] );
     V.setNode( 'body', $form );

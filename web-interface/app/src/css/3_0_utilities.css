@@ -178,7 +178,7 @@
 .mr-auto {
   margin-right: auto;
 }
-.h-r {
+.h-r, .h-4 {
   height: 1rem;
 }
 .h-m {
@@ -219,6 +219,10 @@
 
 .flex {
   display:flex;
+}
+
+.block {
+  display:block;
 }
 
 .flex-wrap {

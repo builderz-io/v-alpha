@@ -75,7 +75,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         } );
       } );
 
-      Chat.drawMessageForm( 'clear' );
+      // Chat.drawMessageForm( 'clear' );
 
       VMap.draw( data.data[0].mapData );
     }
