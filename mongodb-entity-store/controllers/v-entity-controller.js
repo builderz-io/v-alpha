@@ -73,6 +73,24 @@ exports.findByUPhrase = async function( req, res ) {
 
 };
 
+exports.findByQuery = async function( req, res ) {
+
+  const regex = { $regex: new RegExp( req.query, 'i' ) };
+
+  const find = {
+    $and: [
+      req.role == 'al' ? {} : { 'profile.role': req.role },
+      { $or: [
+        { 'profile.title': regex },
+        { 'properties.baseLocation': regex }
+      ] }
+    ]
+  };
+
+  res( await findEntity( find ) );
+
+};
+
 exports.register = function( req, res ) {
 
   /**

@@ -67,10 +67,17 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleQuery() {
-    const form = V.getNode( 'form' );
-    const query = form.getNode( '#search-input' ).value;
-    console.log( query );
-
+    const query = V.getNode( '#search-input' ).value;
+    if ( query.length < 2 ) { return }
+    const split = V.getState( 'active' ).navItem.split( '/' );
+    const active = split.pop();
+    const removePlural = active.slice( 0, -1 ); // TODO improve this, as 'all' becomes 'al'
+    Search.draw( {
+      role: removePlural,
+      query: query,
+      // filterCity: V.getNode( '#search-filter__city' ).getAttribute( 'value' ),
+      // filterTitle: V.getNode( '#search-filter__title' ).getAttribute( 'value' )
+    } );
   }
 
   function handleCloseForms() {

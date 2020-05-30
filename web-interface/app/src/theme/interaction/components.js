@@ -8,14 +8,26 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   'use strict';
 
   const btnClasses = 'cursor-pointer hidden pr-s';
-  const formClasses = 'w-full m-2 pxy rounded border-blackalpha';
+  const formClasses = 'w-full m-2 pxy rounded border-shadow';
+
+  function handleSetFilter() {
+    if ( this.getAttribute( 'value' ) == '1' ) {
+      this.setAttribute( 'value', '0' );
+      this.classList.remove( 'filter-select', 'txt-brand' );
+    }
+    else {
+      this.setAttribute( 'value', '1' );
+      this.classList.add( 'filter-select', 'txt-brand' );
+    }
+
+  }
 
   /* ================== private methods ================= */
 
   function img( icon ) {
     return V.sN( {
       t: 'div',
-      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white transition',
+      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition',
       h: V.getIcon( icon )
     } );
   }
@@ -81,7 +93,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function sendBtn() {
     return V.sN( {
       t: 'button',
-      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
       h: V.cN( {
         t: 'span',
         c: 'sendbtn',
@@ -103,22 +115,14 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function form() {
     return V.setNode( {
       tag: 'form',
-      classes: 'plusform fixed w-screen hidden bkg-white pxy',
+      classes: 'form fixed w-screen hidden bkg-white pxy',
       setStyle: {
-        plusform: {
+        form: {
           'padding-top': 'calc(var(--page-position-top-selected) + 5px) !important',
           'height': '100%',
           'z-index': -1
         }
       }
-    } );
-  }
-
-  function searchForm() {
-    return V.sN( {
-      t: 'input',
-      c: 'searchform__search ' + formClasses,
-      a: { placeholder: V.i18n( 'Search', 'placeholder', 'search' ) }
     } );
   }
 
@@ -251,6 +255,49 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function formSearchFilter() {
+    return V.cN( {
+      t: 'div',
+      h: [
+        V.cN( {
+          t: 'p',
+          c: 'pxy',
+          h: V.i18n( 'Enter a title or city name', 'app' )
+        } ),
+        // V.cN( {
+        //   t: 'search-filter-nav',
+        //   c: 'nav search-filter-nav fixed w-screen overflow-x-scroll pxy',
+        //   h: V.cN( {
+        //     t: 'ul',
+        //     c: 'search-filter-nav__ul flex items-center font-medium',
+        //     s: {
+        //       'filter-select': {
+        //         'background': 'azure !important',
+        //         'box-shadow': '0px 0px 0px 1px azure !important',
+        //       }
+        //     },
+        //     h: [
+        //       V.cN( {
+        //         t: 'li',
+        //         i: 'search-filter__city',
+        //         classes: 'pill flex fs-rr justify-center items-center rounded-full bkg-white border-shadow cursor-pointer no-txt-select whitespace-no-wrap',
+        //         h: 'City',
+        //         k: handleSetFilter
+        //       } ),
+        //       V.cN( {
+        //         t: 'li',
+        //         i: 'search-filter__title',
+        //         classes: 'pill flex fs-rr justify-center items-center rounded-full bkg-white border-shadow cursor-pointer no-txt-select whitespace-no-wrap',
+        //         h: 'Title',
+        //         k: handleSetFilter
+        //       } ),
+        //     ]
+        //   } )
+        // } )
+      ]
+    } );
+  }
+
   // join
 
   function joinBtn() {
@@ -358,8 +405,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     sendNav: sendNav,
     sendBtn: sendBtn,
     form: form,
-    searchForm: searchForm,
     formField: formField,
+    formSearchFilter: formSearchFilter,
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,
     // tempBtn: tempBtn,

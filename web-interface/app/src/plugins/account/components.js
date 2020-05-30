@@ -68,7 +68,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       classes: 'pxy txt-center',
       html: `<div class="smallcard__container font-medium pxy">
               <p class="font-medium pb-xs">${variable}</p>
-              <div class="flex justify-center items-center circle-2 rounded-full border-blackalpha font-medium no-txt-select">
+              <div class="flex justify-center items-center circle-2 rounded-full border-shadow font-medium no-txt-select">
                 ${accountData[variable]}
               </div>
             </div>`

@@ -30,6 +30,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'text-decoration': 'none',
       'color': 'white'
     },
+    'modal__uphrase': {
+      color: 'red'
+    },
     'modal-pos-1': {
       top: '5vh',
     },
@@ -337,11 +340,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $uPhrase = V.cN( {
       t: 'div',
       c: 'txt-center',
-      s: {
-        modal__uphrase: {
-          color: 'red'
-        }
-      },
       h: `<p class="pxy">${ V.i18n( 'Take note of the key', 'modal' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${ activeEntity.private.uPhrase }</p>
       <p class="pxy"> ${ V.i18n( 'You\'ll need this key to manage this entity', 'modal' ) }</p>`
     } );

@@ -49,6 +49,17 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     },
     'user-nav__ul': {
       'padding-left': '3px' /* needed for selected shadow */
+    },
+
+    /* Gain scrollable space adding invisible last pill to navs */
+    'entity-nav__ul > *:last-child': {
+      visibility: 'hidden'
+    },
+    'service-nav__ul > *:last-child': {
+      visibility: 'hidden'
+    },
+    'user-nav__ul > *:last-child': {
+      visibility: 'hidden'
     }
   } );
 

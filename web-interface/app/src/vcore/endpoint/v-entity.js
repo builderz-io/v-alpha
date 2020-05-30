@@ -415,6 +415,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function getQuery( data ) {
+    return V.getData( data, 'entity by query', V.getSetting( 'entityLedger' ) );
+  }
+
   /* ====================== export ====================== */
 
   ( () => {
@@ -422,13 +426,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     V.getEntity = getEntity;
     V.setEntity = setEntity;
     V.getEntityBalance = getEntityBalance;
+    V.getQuery = getQuery;
   } )();
 
   return {
     castEntityTitle: castEntityTitle,
     getEntity: getEntity,
     setEntity: setEntity,
-    getEntityBalance: getEntityBalance
+    getEntityBalance: getEntityBalance,
+    getQuery: getQuery
   };
 
 } )();

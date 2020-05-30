@@ -49,12 +49,18 @@ body {
   background-color: rgba(var(--orange), 1);
 }
 
-.border-blackalpha {
+/* .border-shadow {
   border: 1px solid rgba(var(--black), .15);
-}
+} */
 
 .border-error {
   border: 1px solid red;
+}
+
+.border-shadow {
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.20);
+  -moz-box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.20);
+  box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.20);
 }
 
 .pill-shadow {
@@ -71,5 +77,5 @@ input:focus, textarea:focus {
 }
 
 .circle-1:hover {
-  border: 2px solid rgba(var(--brand), 1);
+  border: 1px solid rgba(var(--brand), 1);
 }

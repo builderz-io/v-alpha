@@ -49,8 +49,10 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       ] );
     }
     else if ( which == 'search' ) {
-      V.setNode( $form, InteractionComponents.formField( 'search' ) );
-      // V.setNode( $form, InteractionComponents.searchForm() );
+      V.setNode( $form, [
+        InteractionComponents.formField( 'search' ),
+        InteractionComponents.formSearchFilter(),
+      ] );
     }
     else {
       V.setNode( $form, [ InteractionComponents.title(), InteractionComponents.desc() ] );

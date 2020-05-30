@@ -109,7 +109,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $bottomLeft = V.cN( {
       t: 'div',
       c: 'card__bottom-left items-center pxy',
-      h: `<div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
+      h: `<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
       <p class="card__unit fs-xxs"> V per ${( cardData.properties.unit == 'free' ? '' : cardData.properties.unit )}</p>`
     } );
 

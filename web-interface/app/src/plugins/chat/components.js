@@ -77,7 +77,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function messageSend() {
     return V.sN( {
       t: 'button',
-      c: 'circle-1 flex justify-center items-center rounded-full border-blackalpha bkg-white',
+      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
       h: V.getIcon( 'send' )
     } );
   }
