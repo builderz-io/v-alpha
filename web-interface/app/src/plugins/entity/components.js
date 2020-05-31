@@ -11,8 +11,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   const DOM = {};
 
-  const urlCreator = window.URL || window.webkitURL;
-
   V.setStyle( {
     'app-lang-selector': {
       'display': 'flex',
@@ -133,6 +131,34 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const db = this.getAttribute( 'db' );
     const entry = this.getAttribute( 'value' );
     setEntity( db + '.' + title, entry );
+  }
+
+  function handleImageUpload( e ) {
+    V.castImageUpload( e ).then( res => {
+      console.log( res );
+      if ( res.success ) {
+        const aE = V.getState( 'activeEntity' );
+        const imageUpload = V.getState( 'imageUpload' );
+        Object.assign( imageUpload, {
+          entity: aE.fullId
+        } );
+        V.setEntity( aE.fullId, {
+          field: 'thumbnail',
+          data: imageUpload,
+          auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+        } ).then( () => {
+          console.log( 'updated in database' );
+          V.setNode( '#img-upload-profile__preview', '' );
+          V.setNode( '#img-upload-profile__preview', V.cN( {
+            t: 'img',
+            y: {
+              'max-width': '100%'
+            },
+            src: res.src
+          } ) );
+        } );
+      }
+    } );
   }
 
   /* ================== private methods ================= */
@@ -526,20 +552,97 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function thumbnailCard() {
     if ( entity.thumbnail ) {
-      const arrayBufferView = new Uint8Array( entity.thumbnail.blob.data );
-      const blob = new Blob( [ arrayBufferView ], { type: entity.thumbnail.contentType } );
-      const $innerContent = V.cN( {
-        t: 'img',
-        a: {
-          src: urlCreator.createObjectURL( blob ),
-          onload: function() { URL.revokeObjectURL( this.src ) }
-        }
+      const $img = V.castEntityThumbnail( entity.thumbnail ).img;
+      return V.cN( {
+        t: 'li',
+        h: $img
       } );
-      return castCard( $innerContent, 'Thumbnail' );
+      // return castCard( $img, '' );
     }
     else {
       return '';
     }
+  }
+
+  function addOrChangeImage() {
+    let $innerContent;
+    const thumbnail = entity.thumbnail ? entity.thumbnail : undefined;
+
+    if( thumbnail ) {
+      const img = V.castEntityThumbnail( thumbnail ).img;
+      $innerContent = V.castNode( {
+        t: 'div',
+        c: 'pxy',
+        h: [
+          V.cN( {
+            t: 'div',
+            c: 'pxy',
+            h: [
+              V.cN( {
+                t: 'label',
+                i: 'img-upload-profile__label',
+                a: {
+                  for: 'img-upload-profile__file',
+                },
+                h: V.i18n( 'Change this image', 'user-profile', 'card entry' )
+              } ),
+              V.cN( {
+                t: 'input',
+                i: 'img-upload-profile__file',
+                c: 'hidden',
+                a: {
+                  type: 'file',
+                  accept: 'image/*'
+                },
+                e: {
+                  change: handleImageUpload
+                }
+              } )
+            ]
+          } ),
+          V.cN( {
+            t: 'div',
+            i: 'img-upload-profile__preview',
+            h: img
+          } )
+        ],
+      } );
+    }
+    else {
+      $innerContent = V.cN( {
+        t: 'div',
+        c: 'pxy',
+        h: [
+          V.cN( {
+            t: 'label',
+            i: 'img-upload-profile__label',
+            a: {
+              for: 'img-upload-profile__file',
+            },
+            h: V.i18n( 'edit', 'user-profile', 'placeholder' )
+          } ),
+          V.cN( {
+            t: 'input',
+            i: 'img-upload-profile__file',
+            c: 'hidden',
+            a: {
+              type: 'file',
+              accept: 'image/*'
+            },
+            e: {
+              change: handleImageUpload
+            }
+          } ),
+          V.cN( {
+            t: 'div',
+            i: 'img-upload-profile__preview',
+          } )
+        ]
+      } );
+    }
+
+    return castCard( $innerContent, 'Image' );
+
   }
 
   /* ====================== export ====================== */
@@ -557,7 +660,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     preferredLangsCard: preferredLangsCard,
     appLanguageCard: appLanguageCard,
     fundingStatusCard: fundingStatusCard,
-    thumbnailCard: thumbnailCard
+    thumbnailCard: thumbnailCard,
+    addOrChangeImage: addOrChangeImage
   };
 
 } )();

@@ -159,6 +159,9 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'app': {
 
   },
+  'form field': {
+
+  },
   'modal': {
 
   },

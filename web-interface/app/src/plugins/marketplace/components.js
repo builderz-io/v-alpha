@@ -14,24 +14,25 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Profile.draw( path );
   }
 
-  // const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc']; // https://colorhunt.co/palette/167860
-  const palette = ['#d1d2da', '#3a0088', '#930077', '#e61c5d', '#ffbd39']; // https://colorhunt.co/palette/108152
+  const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc']; // https://colorhunt.co/palette/167860
+  // const palette = ['#d1d2da', '#3a0088', '#930077', '#e61c5d', '#ffbd39']; // https://colorhunt.co/palette/108152
 
   const background = ( cardData ) => {
-    if ( cardData.image != undefined ) {
-      return 'url(\'' + cardData.image + '\')';
+    if ( cardData.thumbnail ) {
+      const url = V.castEntityThumbnail( cardData.thumbnail ).src;
+      return 'url(\'' + url + '\')';
     }
 
     switch ( cardData.profile.tag.charAt( 1 ) ) {
     // case '1': return palette[0];
     case '2': return palette[0];
-    case '3': return palette[0];
+    case '3': return palette[1];
     // case '4': return palette[1];
     case '5': return palette[0];
-    case '6': return palette[0];
+    case '6': return palette[2];
     // case '7': return palette[2];
     case '8': return palette[0];
-    case '9': return palette[0];
+    case '9': return palette[3];
     }
   };
 
@@ -43,7 +44,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   };
 
   function entitiesSmallCard( cardData ) {
-    console.log( cardData );
     return V.cN( {
       t: 'li',
       c: 'pxy',
@@ -59,8 +59,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
             },
             h: V.cN( {
               t: 'div',
-              c: 'card__initials font-bold fs-xxl txt-white',
-              h: initials( cardData )
+              c: 'card__initials font-bold fs-xl txt-white', // txt-shadow
+              h: background( cardData ).includes( 'url' ) ? '' : initials( cardData )
             } ),
             e: {
               click: handleProfileDraw.bind( cardData.path )
@@ -94,8 +94,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         },
         h: V.cN( {
           t: 'div',
-          c: 'card__initials font-bold fs-xxl txt-white',
-          h: initials( cardData )
+          c: 'card__initials font-bold fs-xl txt-white',
+          h: background( cardData ).includes( 'url' ) ? '' : initials( cardData )
         } ),
         e: {
           click: handleProfileDraw.bind( cardData.path )

@@ -93,8 +93,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( imageUpload ) {
       thumbnail = {
         blob: imageUpload.blob,
-        contentType: imageUpload.blob.type,
-        originalName: imageUpload.originalName
+        contentType: imageUpload.contentType,
+        originalName: imageUpload.originalName,
+        entity: fullId
       };
     }
 

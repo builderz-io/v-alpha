@@ -60,6 +60,11 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
           $elem.setAttribute( 'href', data[key] );
         }
       }
+      else if ( ['r', 'src'].includes( key ) ) {
+        if ( data[key] ) {
+          $elem.setAttribute( 'src', data[key] );
+        }
+      }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in data[key] ) {
           if ( data[key][attr] ) {
@@ -117,8 +122,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
 
-    if ( data == '' ) {
-      document.querySelector( targetNode ).innerHTML = '';
+    if ( typeof data == 'string' ) {
+      document.querySelector( targetNode ).innerHTML = data;
       return;
     }
 

@@ -7,6 +7,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const urlCreator = window.URL || window.webkitURL;
+
   /* ================== private methods ================= */
 
   function castTranslations( which, whichContext, whichPart ) {
@@ -17,6 +19,75 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ================== public methods ================== */
+
+  function castImageUpload( e ) {
+    // credit to https://zocada.com/compress-resize-images-javascript-browser/
+
+    return new Promise( ( resolve, reject ) => {
+      const width = V.getSetting( 'thumbnailWidth' );
+
+      const reader = new FileReader();
+      reader.readAsDataURL( e.target.files[0] );
+
+      reader.onload = event => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          // img.width and img.height will contain the original dimensions
+          const elem = document.createElement( 'canvas' );
+          elem.width = width; // img.width * ( height / img.height );
+          elem.height = img.height * ( width / img.width ); // height;
+          const ctx = elem.getContext( '2d' );
+          ctx.drawImage( img, 0, 0, elem.width, elem.height );
+
+          ctx.canvas.toBlob( ( blob ) => {
+            const imageData = {
+              blob: blob,
+              contentType: blob.type,
+              originalName: e.target.files[0].name
+            };
+            V.setState( 'imageUpload', imageData );
+            resolve( {
+              success: true,
+              status: 'image prepared for upload',
+              src: img.src,
+            } );
+          }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
+
+        };
+      };
+
+      reader.onerror = error => {
+        reject( {
+          success: false,
+          status: 'could not prepare image for upload',
+          message: error
+        } );
+      };
+    } );
+
+  }
+
+  function castEntityThumbnail( thumbnailData ) {
+    const arrayBufferView = new Uint8Array( thumbnailData.blob.data );
+    const blob = new Blob( [ arrayBufferView ], { type: thumbnailData.contentType } );
+    const src = urlCreator.createObjectURL( blob );
+
+    const $img = V.cN( {
+      t: 'img',
+      c: 'max-w-full',
+      a: {
+        src: src,
+        onload: function clearURL() { URL.revokeObjectURL( this.src ) },
+        alt: thumbnailData.entity + ' thumbnail - ' + thumbnailData.originalName
+      }
+    } );
+
+    return {
+      img: $img,
+      src: src
+    };
+  }
 
   function castLinks( which ) {
 
@@ -329,6 +400,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   ( () => {
+    V.castImageUpload = castImageUpload;
+    V.castEntityThumbnail = castEntityThumbnail;
     V.castLinks = castLinks;
     V.castTime = castTime;
     V.castRandLatLng = castRandLatLng;
@@ -346,6 +419,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   } )();
 
   return {
+    castImageUpload: castImageUpload,
+    castEntityThumbnail: castEntityThumbnail,
     castLinks: castLinks,
     castTime: castTime,
     castRandLatLng: castRandLatLng,

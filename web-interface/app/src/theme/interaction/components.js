@@ -23,72 +23,25 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function handleImageUpload( e ) {
-    compress( e );
+    V.setNode( '#img-upload__label', V.i18n( 'uploading...', 'form field', 'placeholder' ) );
+    // castImageUpload( e );
+    V.castImageUpload( e ).then( res => {
+      console.log( res );
+      V.setNode( '#img-upload__label', V.i18n( 'Change', 'form field', 'placeholder' ) );
+      V.setNode( '#img-upload__preview', '' );
+      V.setNode( '#img-upload__preview', V.cN( {
+        t: 'img',
+        y: {
+          'max-width': '25px',
+          'max-height': '20px',
+          'margin-left': '10px'
+        },
+        src: res.src
+      } ) );
+    } );
   }
 
   /* ================== private methods ================= */
-
-  function compress( e ) {
-    // const width = 150;
-    const height = V.getSetting( 'thumbnailHeight' );
-
-    const reader = new FileReader();
-    reader.readAsDataURL( e.target.files[0] );
-
-    reader.onload = event => {
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = () => {
-        // img.width and img.height will contain the original dimensions
-        const elem = document.createElement( 'canvas' );
-        elem.width = img.width * ( height / img.height );
-        elem.height = height;
-        const ctx = elem.getContext( '2d' );
-        ctx.drawImage( img, 0, 0, elem.width, elem.height );
-
-        ctx.canvas.toBlob( ( blob ) => {
-          imageData = {
-            blob: blob,
-            originalName: e.target.files[0].name
-          };
-          V.setState( 'imageUpload', imageData );
-        }, 'image/jpeg', 0.9 );
-
-      };
-    };
-
-    reader.onerror = error => {return console.log( error )};
-  }
-
-  function castImage( e ) {
-    const width = 200;
-    const scaleFactor = width / img.width;
-
-    const fileName = e.target.files[0].name;
-    const reader = new FileReader();
-    reader.readAsDataURL( e.target.files[0] );
-    reader.onload = event => {
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = () => {
-        const elem = document.createElement( 'canvas' );
-        elem.width = width;
-        elem.height = img.height * scaleFactor;
-        const ctx = elem.getContext( '2d' );
-        // img.width and img.height will contain the original dimensions
-        ctx.drawImage( img, 0, 0, width, img.height * scaleFactor );
-        ctx.canvas.toBlob( ( blob ) => {
-          const file = new File( [blob], fileName, {
-            type: 'image/jpeg',
-            lastModified: Date.now()
-          } );
-          console.log( blob );
-          V.setState( 'imageUpload', { blob: file } );
-        }, 'image/jpeg', 1 );
-      };
-      reader.onerror = error => {return console.log( error )};
-    };
-  }
 
   function img( icon ) {
     return V.sN( {
@@ -323,14 +276,45 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function formUploadImage() {
     return V.cN( {
-      t: 'input',
-      a: {
-        type: 'file',
-        accept: 'image/*'
+      t: 'div',
+      y: {
+        'padding': '16px',
+        'margin-left': '6px',
+        'display': 'inline-flex',
+        'align-items': 'center',
+        'position': 'relative'
       },
-      e: {
-        change: handleImageUpload
-      }
+      c: 'field pxy w-30% border-shadow',
+      h: [
+        V.cN( {
+          t: 'label',
+          i: 'img-upload__label',
+          a: {
+            for: 'img-upload__file',
+          },
+          h: V.i18n( 'Image', 'form field', 'placeholder' )
+        } ),
+        V.cN( {
+          t: 'input',
+          i: 'img-upload__file',
+          c: 'hidden',
+          a: {
+            type: 'file',
+            accept: 'image/*'
+          },
+          e: {
+            change: handleImageUpload
+          }
+        } ),
+        V.cN( {
+          t: 'div',
+          i: 'img-upload__preview',
+          y: {
+            position: 'absolute',
+            right: '10px'
+          },
+        } ),
+      ]
     } );
   }
 
