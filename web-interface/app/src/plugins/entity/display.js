@@ -64,6 +64,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
+        UserComponents.thumbnailCard(),
         UserComponents.entityCard(),
         UserComponents.fundingStatusCard(),
         UserComponents.introCard(),

@@ -22,7 +22,73 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   }
 
+  function handleImageUpload( e ) {
+    compress( e );
+  }
+
   /* ================== private methods ================= */
+
+  function compress( e ) {
+    // const width = 150;
+    const height = V.getSetting( 'thumbnailHeight' );
+
+    const reader = new FileReader();
+    reader.readAsDataURL( e.target.files[0] );
+
+    reader.onload = event => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        // img.width and img.height will contain the original dimensions
+        const elem = document.createElement( 'canvas' );
+        elem.width = img.width * ( height / img.height );
+        elem.height = height;
+        const ctx = elem.getContext( '2d' );
+        ctx.drawImage( img, 0, 0, elem.width, elem.height );
+
+        ctx.canvas.toBlob( ( blob ) => {
+          imageData = {
+            blob: blob,
+            originalName: e.target.files[0].name
+          };
+          V.setState( 'imageUpload', imageData );
+        }, 'image/jpeg', 0.9 );
+
+      };
+    };
+
+    reader.onerror = error => {return console.log( error )};
+  }
+
+  function castImage( e ) {
+    const width = 200;
+    const scaleFactor = width / img.width;
+
+    const fileName = e.target.files[0].name;
+    const reader = new FileReader();
+    reader.readAsDataURL( e.target.files[0] );
+    reader.onload = event => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const elem = document.createElement( 'canvas' );
+        elem.width = width;
+        elem.height = img.height * scaleFactor;
+        const ctx = elem.getContext( '2d' );
+        // img.width and img.height will contain the original dimensions
+        ctx.drawImage( img, 0, 0, width, img.height * scaleFactor );
+        ctx.canvas.toBlob( ( blob ) => {
+          const file = new File( [blob], fileName, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          } );
+          console.log( blob );
+          V.setState( 'imageUpload', { blob: file } );
+        }, 'image/jpeg', 1 );
+      };
+      reader.onerror = error => {return console.log( error )};
+    };
+  }
 
   function img( icon ) {
     return V.sN( {
@@ -255,6 +321,19 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function formUploadImage() {
+    return V.cN( {
+      t: 'input',
+      a: {
+        type: 'file',
+        accept: 'image/*'
+      },
+      e: {
+        change: handleImageUpload
+      }
+    } );
+  }
+
   function formSearchFilter() {
     return V.cN( {
       t: 'div',
@@ -406,6 +485,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     sendBtn: sendBtn,
     form: form,
     formField: formField,
+    formUploadImage: formUploadImage,
     formSearchFilter: formSearchFilter,
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,

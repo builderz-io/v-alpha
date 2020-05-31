@@ -43,27 +43,35 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   };
 
   function entitiesSmallCard( cardData ) {
+    console.log( cardData );
     return V.cN( {
       t: 'li',
       c: 'pxy',
       h: V.cN( {
         t: 'smallcard',
-        c: 'smallcard__container flex rounded bkg-white',
-        h: V.cN( {
-          t: 'div',
-          c: 'circle-3 rounded-full flex justify-center items-center cursor-pointer',
-          a: {
-            style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
-          },
-          h: V.cN( {
+        c: 'smallcard__container txt-center rounded bkg-white',
+        h: [
+          V.cN( {
             t: 'div',
-            c: 'card__initials font-bold fs-xxl txt-white',
-            h: initials( cardData )
+            c: 'circle-3 rounded-full flex justify-center items-center cursor-pointer',
+            a: {
+              style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
+            },
+            h: V.cN( {
+              t: 'div',
+              c: 'card__initials font-bold fs-xxl txt-white',
+              h: initials( cardData )
+            } ),
+            e: {
+              click: handleProfileDraw.bind( cardData.path )
+            }
           } ),
-          e: {
-            click: handleProfileDraw.bind( cardData.path )
-          }
-        } )
+          // V.cN( {
+          //   t: 'p',
+          //   c: 'fs-s',
+          //   h: cardData.profile.title
+          // } )
+        ]
       } )
     } );
   }

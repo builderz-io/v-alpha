@@ -58,12 +58,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const activeEntity = V.getState( 'activeEntity' );
     const activeAddress = V.getState( 'activeAddress' );
+    const imageUpload = V.getState( 'imageUpload' );
 
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract;
+    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, thumbnail;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -87,6 +88,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     else {
       const gen = V.castUUID();
       uPhrase = 'vx' + gen.base64Url.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
+    }
+
+    if ( imageUpload ) {
+      thumbnail = {
+        blob: imageUpload.blob,
+        contentType: imageUpload.blob.type,
+        originalName: imageUpload.originalName
+      };
     }
 
     if ( activeEntity ) {
@@ -180,11 +189,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: entityData.target || undefined,
         unit: entityData.unit || undefined,
       },
+      thumbnail: thumbnail,
       geometry: geometry,
       social: {
         email: email,
       }
     };
+
+    V.setState( 'imageUpload', 'clear' );
 
     return {
       success: true,

@@ -11,6 +11,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   const DOM = {};
 
+  const urlCreator = window.URL || window.webkitURL;
+
   V.setStyle( {
     'app-lang-selector': {
       'display': 'flex',
@@ -522,6 +524,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function thumbnailCard() {
+    if ( entity.thumbnail ) {
+      const arrayBufferView = new Uint8Array( entity.thumbnail.blob.data );
+      const blob = new Blob( [ arrayBufferView ], { type: entity.thumbnail.contentType } );
+      const $innerContent = V.cN( {
+        t: 'img',
+        a: {
+          src: urlCreator.createObjectURL( blob ),
+          onload: function() { URL.revokeObjectURL( this.src ) }
+        }
+      } );
+      return castCard( $innerContent, 'Thumbnail' );
+    }
+    else {
+      return '';
+    }
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -537,6 +557,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     preferredLangsCard: preferredLangsCard,
     appLanguageCard: appLanguageCard,
     fundingStatusCard: fundingStatusCard,
+    thumbnailCard: thumbnailCard
   };
 
 } )();

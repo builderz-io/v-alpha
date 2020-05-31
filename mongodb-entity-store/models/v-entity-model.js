@@ -75,6 +75,11 @@ var entitySchema = mongoose.Schema( {
     languages: String,
     appLang: String,
   },
+  thumbnail: {
+    blob: Buffer,
+    contentType: String,
+    // originalName: String
+  },
   social: {
     facebook: String,
     twitter: String,

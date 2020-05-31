@@ -22,6 +22,8 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     update3BoxEntityStore: false,
     loadMap: true,
 
+    thumbnailHeight: 150,
+
     coinTicker: 'ETH',
     tokenTicker: 'V',
 

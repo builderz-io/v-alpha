@@ -54,6 +54,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         InteractionComponents.onboardingCard(),
+        UserComponents.thumbnailCard(),
         UserComponents.entityCard(),
         UserComponents.locationCard(),
         UserComponents.introCard(),

@@ -45,7 +45,8 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
         InteractionComponents.formField( 'description', values.description ),
         InteractionComponents.formField( 'target', values.target ),
-        InteractionComponents.formField( 'unit', values.unit )
+        InteractionComponents.formField( 'unit', values.unit ),
+        InteractionComponents.formUploadImage()
       ] );
     }
     else if ( which == 'search' ) {
