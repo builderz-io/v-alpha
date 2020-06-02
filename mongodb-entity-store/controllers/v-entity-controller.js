@@ -196,10 +196,6 @@ exports.update = function( req, cb ) {
       },
     };
   }
-  else if ( req.field == 'status.verified' ) {
-
-    return;
-  }
   else {
     const updateWhat = {};
     updateWhat[req.field] = req.data;
@@ -207,7 +203,7 @@ exports.update = function( req, cb ) {
   }
 
   EntityDB.findOneAndUpdate(
-    { 'private.uPhrase': req.auth },
+    { fullId: req.entity },
     how,
     { new: true },
     ( err, res ) => {
@@ -228,49 +224,49 @@ exports.update = function( req, cb ) {
     }
   );
 };
-
-exports.verify = function( req, cb ) {
-  console.log( req );
-  if ( req.adminPass != systemInit.communityGovernance.commuPhrase ) {
-    return cb( {
-      success: false,
-      status: 'invalid password',
-    } );
-  }
-
-  EntityDB.findOne( { fullId: req.fullId }, { profile: true } ).exec( ( err, res ) => {
-    if ( err ) {
-      return cb( {
-        success: false,
-        status: 'error in find (verify entity)',
-        message: err
-      } );
-    }
-    if ( res === null ) {
-      return cb( {
-        success: false,
-        status: 'could not find entity to verify',
-      } );
-    }
-    res.status.active = true;
-    res.status.verified = true;
-    // res.profile.loginExpires = new Date().setMonth( new Date().getMonth() + 12 );
-
-    res.save( ( err ) => {
-      if ( err ) {
-        return cb( {
-          success: false,
-          status: 'error in save (verify entity)',
-          message: err
-        } );
-      }
-      else {
-        return cb( {
-          success: true,
-          status: 'entity verified',
-        } );
-      }
-    } );
-  } );
-
-};
+//
+// exports.verify = function( req, cb ) {
+//   console.log( req );
+//   if ( req.adminPass != systemInit.communityGovernance.commuPhrase ) {
+//     return cb( {
+//       success: false,
+//       status: 'invalid password',
+//     } );
+//   }
+//
+//   EntityDB.findOne( { fullId: req.fullId }, { profile: true } ).exec( ( err, res ) => {
+//     if ( err ) {
+//       return cb( {
+//         success: false,
+//         status: 'error in find (verify entity)',
+//         message: err
+//       } );
+//     }
+//     if ( res === null ) {
+//       return cb( {
+//         success: false,
+//         status: 'could not find entity to verify',
+//       } );
+//     }
+//     res.status.active = true;
+//     res.status.verified = true;
+//     // res.profile.loginExpires = new Date().setMonth( new Date().getMonth() + 12 );
+//
+//     res.save( ( err ) => {
+//       if ( err ) {
+//         return cb( {
+//           success: false,
+//           status: 'error in save (verify entity)',
+//           message: err
+//         } );
+//       }
+//       else {
+//         return cb( {
+//           success: true,
+//           status: 'entity verified',
+//         } );
+//       }
+//     } );
+//   } );
+//
+// };

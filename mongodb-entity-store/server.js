@@ -55,7 +55,7 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get entity by query', handleEntity.findByQuery );
 
-  client.on( 'set verification', handleEntity.verify );
+  // client.on( 'set verification', handleEntity.verify );
 
   // client.on( 'tags', handleEntity.getTags );
 

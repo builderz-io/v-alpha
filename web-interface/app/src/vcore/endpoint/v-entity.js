@@ -413,6 +413,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return Promise.resolve( entityCast );
       }
     }
+    else if ( data == 'verification' ) {
+      return V.setData( whichEntity, 'verification', V.getSetting( 'transactionLedger' ) );
+    }
     else {
       Object.assign( data, { entity: whichEntity } );
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
@@ -421,10 +424,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return res;
       } );
     }
-
-    // if ( whichEndpoint == 'verification' ) {
-    //   return V.setData( entityData, whichEndpoint, V.getSetting( 'transactionLedger' ) );
-    // }
 
   }
 

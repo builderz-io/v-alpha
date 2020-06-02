@@ -114,20 +114,19 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
         // }
         else if ( caseArray[0] === 'verify' ) {
 
-          let entityToVerify;
-
           caseArray.shift();
 
-          const adminPass = caseArray.pop();
-          entityToVerify = { fullId: caseArray.join( ' ' ), adminPass: adminPass };
+          // const adminPass = caseArray.pop();
+          // entityToVerify = { fullId: caseArray.join( ' ' ), adminPass: adminPass };
 
-          V.setEntity( entityToVerify, {
+          V.setEntity( caseArray.join( ' ' ), {
             field: 'status.verified',
             data: true,
             auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
           } );
 
           if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+            let entityToVerify;
             if ( caseArray[0].substr( 0, 2 ) == '0x' ) {
               entityToVerify = caseArray[0];
             }
@@ -141,6 +140,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
                 };
               }
             }
+            V.setEntity( entityToVerify, 'verification' );
           }
 
           return {
