@@ -10,8 +10,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleDrawUserNav() {
     if ( V.getVisibility( 'user-nav' ) ) {
       V.setState( 'active', { navItem: false } );
-      // Navigation.draw();
-      // Page.draw( { reset: false } );
       Chat.drawMessageForm( 'clear' );
       Marketplace.draw();
     }

@@ -196,11 +196,14 @@ exports.update = function( req, cb ) {
       },
     };
   }
+  else if ( req.field == 'status.verified' ) {
+
+    return;
+  }
   else {
     const updateWhat = {};
     updateWhat[req.field] = req.data;
     how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
-
   }
 
   EntityDB.findOneAndUpdate(

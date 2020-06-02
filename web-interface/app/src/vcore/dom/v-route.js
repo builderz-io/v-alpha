@@ -86,11 +86,11 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       path: '/me',
       children: [
         {
-          path: '/account',
+          path: '/transfers',
           action: () => {
             return {
               status: 'user account',
-              data: [ '/me/account' ]
+              data: [ '/me/transfers' ]
             };
           }
         },

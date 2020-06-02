@@ -72,7 +72,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'textarea',
       // h: 'send 100 to Community #2121',
       // h: 'send Peter Smith #2121 100',
-      h: 'send Superpool #3181 100',
+      // h: 'send Superpool #3181 100',
+      h: 'verify Acc One #2989',
       // h: 'send Community Contribution #2121 100 for corona masks funding',
       // h: 'verify 0x3107b077b7745994cd93d85092db034ca1984d46',
       a: {

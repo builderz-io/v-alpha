@@ -32,6 +32,9 @@ var entitySchema = mongoose.Schema( {
     active: Boolean,
     verified: Boolean,
   },
+  receivingAddresses: {
+    evm: String,
+  },
   evmCredentials: {
     address: String,
     privateKey: String,

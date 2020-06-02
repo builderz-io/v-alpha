@@ -47,21 +47,30 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleEntryFocus() {
-    DOM.entry = this.innerHTML;
-    if ( ['edit', 'not valid'].includes( this.innerHTML )  ) {
+    DOM.entry = this.value ? this.value : this.innerHTML;
+    if ( ['edit', 'not valid'].includes( DOM.entry )  ) {
       this.innerHTML = '';
+      this.value = '';
     }
   }
 
   function handleEntry() {
-    let str = this.innerHTML, entry;
+    let str, entry;
+    this.value ? str = this.value : str = this.innerHTML;
+    str = V.stripHtml( str );
     const title = this.getAttribute( 'title' );
     const db = this.getAttribute( 'db' );
 
     if ( str != DOM.entry ) {
+      if ( str == '' ) {
+        this.innerHTML = 'edit';
+        setEntity( db + '.' + title, '' );
+        return;
+      }
+
       if ( ['facebook', 'twitter', 'telegram'].includes( title ) ) {
         str = str.endsWith( '/' ) ? str.slice( 0, -1 ) : str;
-        const split = str.replace( /(<([^>]+)>)/ig, '' ).split( '/' );
+        const split = str.split( '/' );
         entry = split.pop().replace( '@', '' );
       }
       else if ( title == 'email' ) {
@@ -70,7 +79,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       else if ( title == 'website' ) {
         entry = str.includes( '.' ) ? str : 'not valid';
       }
-      else if ( title == 'evm-address' ) {
+      else if ( ['address', 'evm'].includes( title ) ) {
         entry = str.includes( '0x' ) && str.length == 42 ? str : 'not valid';
       }
       else if ( title == 'currentUTC' ) {
@@ -80,10 +89,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = str;
       }
 
-      if ( entry == '' ) {
-        this.innerHTML = 'edit';
-      }
-      else if ( entry == 'not valid' ) {
+      if ( entry == 'not valid' ) {
         this.innerHTML = 'not valid';
         return;
       }
@@ -135,7 +141,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
-      console.log( res );
       if ( res.success ) {
         const aE = V.getState( 'activeEntity' );
         const imageUpload = V.getState( 'imageUpload' );
@@ -147,7 +152,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           data: imageUpload,
           auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
         } ).then( () => {
-          console.log( 'updated in database' );
+          V.setNode( '#img-upload-profile__label', V.i18n( 'Change this image', 'user profile', 'card entry' ) );
           V.setNode( '#img-upload-profile__preview', '' );
           V.setNode( '#img-upload-profile__preview', V.cN( {
             t: 'img',
@@ -179,7 +184,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             V.cN( {
               t: 'td',
               c: 'capitalize',
-              h: V.i18n( title, 'user-profile', 'card entry' )
+              h: V.i18n( title, 'user profile', 'card entry' )
             } ),
             V.cN( editable ? setEditable( {
               t: 'td',
@@ -247,15 +252,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const descr = entity.properties ? entity.properties.description : undefined;
 
     if( descr || ( !descr && editable ) ) {
-      const $innerContent = V.castNode( editable ? setEditable( {
+      const $innerContent = V.castNode( editable ? {
+        t: 'textarea',
+        c: 'w-full pxy',
+        a: { rows: '6', title: 'description', db: 'properties' },
+        e: {
+          focus: handleEntryFocus,
+          blur: handleEntry
+        },
+        h: descr ? descr : 'edit',
+      } : {
         t: 'p',
         c: 'pxy',
-        a: { title: 'description', db: 'properties' },
-        h: descr,
-      } ) : {
-        t: 'p',
-        c: 'pxy',
-        h: descr,
+        h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ),
       } );
       return castCard( $innerContent, 'Description' );
     }
@@ -287,18 +296,35 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function evmAddressCard() {
     const address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
+    if( address ) {
+      const $innerContent = V.castNode( {
+        t: 'p',
+        c: 'pxy fs-rr',
+        h: address,
+      } );
+      return castCard( $innerContent, 'Entity Ethereum Address' );
+    }
+    else {
+      return '';
+    }
+  }
+
+  function evmReceiverAddressCard() {
+    let address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
+    entity.receivingAddresses ? entity.receivingAddresses.evm ? address = entity.receivingAddresses.evm : undefined : undefined;
+
     if( address || ( !address && editable ) ) {
       const $innerContent = V.castNode( editable ? setEditable( {
         t: 'p',
         c: 'pxy fs-rr',
-        a: { title: 'evm-address', db: 'evmCredentials' },
+        a: { title: 'evm', db: 'receivingAddresses' },
         h: address,
       } ) : {
         t: 'p',
         c: 'pxy fs-rr',
         h: address,
       } );
-      return castCard( $innerContent, 'Ethereum address' );
+      return castCard( $innerContent, 'Receiving Ethereum Address' );
     }
     else {
       return '';
@@ -315,7 +341,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'base location', 'user-profile', 'card entry' ) } ),
+            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'base location', 'user profile', 'card entry' ) } ),
             V.castNode( editable ? {
               tag: 'input',
               i: 'user__loc',
@@ -337,7 +363,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current location', 'user-profile', 'card entry' ) } ),
+            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current location', 'user profile', 'card entry' ) } ),
             V.castNode( editable ? {
               tag: 'input',
               c: 'location__curr pxy w-full txt-right',
@@ -358,7 +384,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         V.cN( {
           t: 'tr',
           h: [
-            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current UTC offset', 'user-profile', 'card entry' ) } ),
+            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current UTC offset', 'user profile', 'card entry' ) } ),
             V.cN( editable ? setEditable( {
               t: 'td',
               c: 'txt-right',
@@ -492,11 +518,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( entity.profile.role == 'pool' ) {
 
       const i18n = {
-        // strPfPg431: V.i18n( 'Funding Target', 'user-profile', 'pools' ),
-        strPfPg432: V.i18n( 'Not yet successfully funded', 'user-profile', 'pools' ),
-        strPfPg433: V.i18n( 'Successfully funded', 'user-profile', 'pools' ),
-        strPfPg434: V.i18n( 'None yet spent', 'user-profile', 'pools' ),
-        strPfPg435: V.i18n( 'Budget spent', 'user-profile', 'pools' ),
+        // strPfPg431: V.i18n( 'Funding Target', 'user profile', 'pools' ),
+        strPfPg432: V.i18n( 'Not yet successfully funded', 'user profile', 'pools' ),
+        strPfPg433: V.i18n( 'Successfully funded', 'user profile', 'pools' ),
+        strPfPg434: V.i18n( 'None yet spent', 'user profile', 'pools' ),
+        strPfPg435: V.i18n( 'Budget spent', 'user profile', 'pools' ),
       };
 
       let svgFunded = '';
@@ -584,7 +610,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   for: 'img-upload-profile__file',
                 },
-                h: V.i18n( 'Change this image', 'user-profile', 'card entry' )
+                h: V.i18n( 'Change this image', 'user profile', 'card entry' )
               } ),
               V.cN( {
                 t: 'input',
@@ -619,7 +645,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               for: 'img-upload-profile__file',
             },
-            h: V.i18n( 'edit', 'user-profile', 'placeholder' )
+            h: V.i18n( 'edit', 'user profile', 'placeholder' )
           } ),
           V.cN( {
             t: 'input',
@@ -652,6 +678,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     topcontent: topcontent,
     introCard: introCard,
     evmAddressCard: evmAddressCard,
+    evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,
     entityCard: entityCard,
     entityListCard: entityListCard,

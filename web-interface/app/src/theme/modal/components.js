@@ -82,7 +82,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntity,
-      h: V.i18n( 'Name account', 'modal' )
+      h: V.i18n( 'Name your profile', 'modal' )
     } );
 
     V.sN( '.modal__content', '' );
@@ -94,6 +94,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
+      evmAddress: V.getState( 'activeAddress' ),
     };
 
     V.setState( 'activeEntity', 'clear' );
@@ -266,13 +267,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: V.i18n( 'Name account only', 'modal' )
+      h: V.i18n( 'Create a profile only', 'modal' )
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
       k: handleGetEntityForm,
-      h: V.i18n( 'Login with key', 'modal' )
+      h: V.i18n( 'Manage exsting profile', 'modal' )
     } );
     V.setNode( $content, [$new, $newName, $key] );
     return $content;
@@ -378,15 +379,21 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: V.i18n( 'Name your account', 'modal' )
+      h: V.i18n( 'Create new profile', 'modal' )
+    } );
+    const $current = V.cN( {
+      t: 'p',
+      c: altButtonClasses + ' modal-pos-2',
+      k: handleAddressMapping,
+      h: V.i18n( 'Use active profile', 'modal' )
     } );
     const $descr = V.cN( {
       t: 'p',
-      c: 'modal-pos-2 relative txt-center',
-      h: V.i18n( 'Naming your account creates a new entity for your address. An entity can be anything you want to make visible in the network.', 'modal' )
+      c: 'modal-pos-3 relative txt-center',
+      h: V.i18n( 'Naming your profile creates a new entity for your address. An entity can be anything you want to make visible in the network.', 'modal' )
     } );
 
-    V.setNode( $content, [$new, $descr] );
+    V.setNode( $content, [$new, $current, $descr] );
     return $content;
   }
 

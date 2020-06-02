@@ -50,7 +50,7 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: 'Abmelden'
     }
   },
-  'user-profile': {
+  'user profile': {
     'title': {
       en_US: 'title',
       de_DE: 'titel'
@@ -68,16 +68,16 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: 'Konto'
     },
     'base location': {
-      en_US: 'Hauptstandort',
-      de_DE: 'Ort'
+      en_US: 'base location',
+      de_DE: 'Hauptstandort'
     },
     'current location': {
-      en_US: 'Aktueller Standort',
-      de_DE: ''
+      en_US: 'current location',
+      de_DE: 'Aktueller Standort'
     },
     'current UTC offset': {
-      en_US: 'Aktuelle UTC Zeitdifferenz',
-      de_DE: ''
+      en_US: 'current UTC offset',
+      de_DE: 'Aktuelle UTC Zeitdifferenz'
     },
     'Location': {
       en_US: 'Location',
@@ -127,9 +127,13 @@ const VTranslations = // eslint-disable-line no-unused-vars
       en_US: 'Social',
       de_DE: 'Kontakt'
     },
-    'Ethereum address': {
-      en_US: 'Ethereum address',
-      de_DE: 'Ethereum Addresse'
+    'Entity Ethereum Address': {
+      en_US: 'Entity Ethereum Address',
+      de_DE: 'Ethereum Addresse (Ausgang)'
+    },
+    'Receiving Ethereum Address': {
+      en_US: 'Receiving Ethereum Address',
+      de_DE: 'Ethereum Addresse (Eingang)'
     },
     'App Language': {
       en_US: 'App Language',

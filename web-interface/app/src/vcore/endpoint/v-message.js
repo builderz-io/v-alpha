@@ -118,25 +118,35 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
           caseArray.shift();
 
-          if ( V.getSetting( 'transactionLedger' ) == 'MongoDB' ) {
-            const adminPass = caseArray.pop();
-            entityToVerify = { fullId: caseArray.join( ' ' ), adminPass: adminPass };
-          }
-          else if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+          const adminPass = caseArray.pop();
+          entityToVerify = { fullId: caseArray.join( ' ' ), adminPass: adminPass };
+
+          V.setEntity( entityToVerify, {
+            field: 'status.verified',
+            data: true,
+            auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+          } );
+
+          if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
             if ( caseArray[0].substr( 0, 2 ) == '0x' ) {
               entityToVerify = caseArray[0];
             }
             else {
               const entity = await V.getEntity( caseArray.join( ' ' ) );
-              entityToVerify = entity.data[0].evmCredentials.address;
+              entityToVerify = entity.data[0].evmCredentials ? entity.data[0].evmCredentials.address : undefined;
+              if ( !entityToVerify ) {
+                return {
+                  success: false,
+                  status: 'could not find address of entity'
+                };
+              }
             }
           }
 
-          return V.setEntity( entityToVerify, {
-            field: 'profile.verified',
-            data: true,
-            auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
-          } );
+          return {
+            success: true,
+            status: 'entity verified'
+          };
         }
         // else if ( caseArray[0] === 'makeadmin' ) {
         //   socket.emit( 'makeadmin', [caseArray, Cookies.get( 'uPhrase' )] );

@@ -213,8 +213,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function itemClickHandler( e ) {
 
-    Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
-
     e.stopPropagation(); // no need to bubble any further
 
     const $itemClicked = ( ( e ) => {
@@ -229,6 +227,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       const path = $itemClicked.getAttribute( 'path' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( { path: path } );
+
+      Navigation.draw( path );
+
       V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
     }
 
@@ -319,6 +320,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const width = window.innerWidth;
 
     deselect();
+
+    Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
     // (previous version) also reset path if not account or profile path
     // if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {

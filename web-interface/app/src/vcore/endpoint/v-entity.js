@@ -172,7 +172,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         verified: V.getSetting( 'defaultVerification' )
       },
       evmCredentials: {
-        address: entityData.evmAddress || activeAddress || undefined
+        address: entityData.evmAddress // || activeAddress || undefined
       },
       symbolCredentials: entityData.symbolCredentials || { address: undefined },
       owners: [{

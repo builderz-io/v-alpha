@@ -57,11 +57,12 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.entityCard(),
         UserComponents.locationCard(),
         UserComponents.introCard(),
+        UserComponents.addOrChangeImage(),
         UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),
         UserComponents.evmAddressCard(),
-        UserComponents.addOrChangeImage(),
+        UserComponents.evmReceiverAddressCard(),
       ] );
 
       Navigation.draw( data.data[0].which );
@@ -95,8 +96,8 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'userNav', [
       {
-        title: 'Account',
-        path: '/me/account',
+        title: 'Transfers',
+        path: '/me/transfers',
         use: {
           button: 'search',
         },

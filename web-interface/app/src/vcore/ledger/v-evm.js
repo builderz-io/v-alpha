@@ -20,6 +20,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     if ( currentActiveAddress == null ) {
       V.setState( 'activeEntity', 'clear' );
       V.setState( 'activeAddress', 'clear' );
+      V.setCookie( 'last-active-address', 'clear' );
+      V.setCookie( 'last-active-uphrase', 'clear' );
       Join.draw( 'logged out' );
     }
     else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {

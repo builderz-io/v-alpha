@@ -102,12 +102,31 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     const aA = V.getState( 'activeAddress' );
 
     if ( tL == 'EVM' && aA ) {
-      recipientAddress = recipientData.data[0].evmCredentials.address;
-      signature = initiator.evmCredentials.privateKey;
+      const rD = recipientData.data[0];
+
+      rD.evmCredentials ? rD.evmCredentials.address ?
+        recipientAddress = rD.evmCredentials.address : undefined : undefined;
+
+      /**
+       * Overwrite recipientAddress if another has been defined by user
+       */
+
+      rD.receivingAddresses ? rD.receivingAddresses.evm ?
+        recipientAddress = rD.receivingAddresses.evm : undefined : undefined;
+
+      // signature = initiator.evmCredentials.privateKey;
     }
     else if ( tL == 'Symbol' && aA ) {
       recipientAddress = recipientData.data[0].symbolCredentials.address;
       signature = initiator.symbolCredentials.privateKey;
+    }
+
+    if ( aA && !recipientAddress ) {
+      return {
+        success: false,
+        endpoint: 'transaction',
+        status: 'recipient address not found'
+      };
     }
 
     return {

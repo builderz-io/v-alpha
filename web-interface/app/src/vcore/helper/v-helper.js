@@ -11,7 +11,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function castTranslations( which, whichContext, whichPart ) {
+  function castTranslationFile( which, whichContext, whichPart ) {
     const obj = {};
     obj[whichContext] = {};
     obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
@@ -78,15 +78,25 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       c: 'max-w-full',
       a: {
         src: src,
-        onload: function clearURL() { URL.revokeObjectURL( this.src ) },
-        alt: thumbnailData.entity + ' thumbnail - ' + thumbnailData.originalName
-      }
+        alt: thumbnailData.entity + ' ' + V.i18n( 'Title Image', 'user profile', 'image alt text' ) + ' - ' + thumbnailData.originalName
+      },
+      // TODO: revokeObjectURL
+      // e: {
+      //   onload: setSrc.bind( { src: src, clear: true } ),
+      // },
     } );
 
     return {
       img: $img,
       src: src
     };
+  }
+
+  function setSrc() {
+    const urlCreator = window.URL || window.webkitURL;
+    if ( this.clear ) {
+      urlCreator.revokeObjectURL( this.src );
+    }
   }
 
   function castLinks( which ) {
@@ -367,6 +377,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
   }
 
+  function stripHtml( which ) {
+    return which.replace( /(<([^>]+)>)/ig, '' );
+  }
+
   function setPipe( ...functions ) {
 
     /**
@@ -402,6 +416,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   ( () => {
     V.castImageUpload = castImageUpload;
     V.castEntityThumbnail = castEntityThumbnail;
+    V.setSrc = setSrc;
     V.castLinks = castLinks;
     V.castTime = castTime;
     V.castRandLatLng = castRandLatLng;
@@ -413,6 +428,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     V.castShortAddress = castShortAddress;
     V.castUUID = castUUID;
     V.getIcon = getIcon;
+    V.stripHtml = stripHtml;
     V.setPipe = setPipe;
     V.getTranslation = getTranslation;
     V.i18n = i18n;
@@ -421,6 +437,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   return {
     castImageUpload: castImageUpload,
     castEntityThumbnail: castEntityThumbnail,
+    setSrc: setSrc,
     castLinks: castLinks,
     castTime: castTime,
     castRandLatLng: castRandLatLng,
@@ -432,6 +449,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castShortAddress: castShortAddress,
     castUUID: castUUID,
     getIcon: getIcon,
+    stripHtml: stripHtml,
     setPipe: setPipe,
     getTranslation: getTranslation,
     i18n: i18n,
