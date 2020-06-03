@@ -181,12 +181,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         return V.cN( {
           t: 'tr',
           h: [
-            V.cN( {
+            {
               t: 'td',
               c: 'capitalize',
               h: V.i18n( title, 'user profile', 'card entry' )
-            } ),
-            V.cN( editable ? setEditable( {
+            },
+            editable ? setEditable( {
               t: 'td',
               c: 'txt-right',
               a: { title: title, db: db },
@@ -195,7 +195,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'td',
               c: 'txt-right',
               h: inner
-            } ),
+            },
           ]
         } );
       } )
@@ -238,13 +238,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function topcontent() {
     return V.cN( {
       t: 'div',
-      h: [
-        V.cN( {
-          tag: 'h1',
-          class: 'font-bold txt-center pxy',
-          html: entity.fullId,
-        } )
-      ]
+      h: {
+        tag: 'h1',
+        class: 'font-bold txt-center pxy',
+        html: entity.fullId,
+      }
     } );
   }
 
@@ -252,7 +250,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const descr = entity.properties ? entity.properties.description : undefined;
 
     if( descr || ( !descr && editable ) ) {
-      const $innerContent = V.castNode( editable ? {
+      const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
         a: { rows: '6', title: 'description', db: 'properties' },
@@ -277,7 +275,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const langs = entity.properties ? entity.properties.preferredLangs : undefined;
 
     if( langs || ( !langs && editable ) ) {
-      const $innerContent = V.castNode( editable ? setEditable( {
+      const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
         c: 'pxy',
         a: { title: 'preferredLangs', db: 'properties' },
@@ -294,10 +292,25 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function uPhraseCard() {
+    const uPhrase = entity.private.uPhrase;
+    if( uPhrase ) {
+      const $innerContent = V.cN( {
+        t: 'p',
+        c: 'pxy',
+        h: uPhrase,
+      } );
+      return castCard( $innerContent, 'Entity Management Key' );
+    }
+    else {
+      return '';
+    }
+  }
+
   function evmAddressCard() {
     const address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
     if( address ) {
-      const $innerContent = V.castNode( {
+      const $innerContent = V.cN( {
         t: 'p',
         c: 'pxy fs-rr',
         h: address,
@@ -314,7 +327,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     entity.receivingAddresses ? entity.receivingAddresses.evm ? address = entity.receivingAddresses.evm : undefined : undefined;
 
     if( address || ( !address && editable ) ) {
-      const $innerContent = V.castNode( editable ? setEditable( {
+      const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
         c: 'pxy fs-rr',
         a: { title: 'evm', db: 'receivingAddresses' },
@@ -338,65 +351,64 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const $innerContent = V.cN( {
         t: 'table',
         c: 'w-full pxy',
-        h: [V.cN( {
-          t: 'tr',
-          h: [
-            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'base location', 'user profile', 'card entry' ) } ),
-            V.castNode( editable ? {
-              tag: 'input',
-              i: 'user__loc',
-              c: 'location__base pxy w-full txt-right',
-              a: {
-                value: loc
+        h: [
+          {
+            t: 'tr',
+            h: [
+              { t: 'td', c: 'capitalize', h: V.i18n( 'base location', 'user profile', 'card entry' ) },
+              editable ? {
+                t: 'input',
+                i: 'user__loc',
+                c: 'location__base pxy w-full txt-right',
+                a: { value: loc },
+                e: {
+                  focus: handleBaseLocationFocus,
+                  blur: handleBaseLocation
+                }
+              } : {
+                t: 'p',
+                c: 'location__base pxy txt-right',
+                h: loc
               },
-              e: {
-                focus: handleBaseLocationFocus,
-                blur: handleBaseLocation
-              }
-            } : {
-              t: 'p',
-              c: 'location__base pxy txt-right',
-              h: loc
-            } ),
-          ]
-        } ),
-        V.cN( {
-          t: 'tr',
-          h: [
-            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current location', 'user profile', 'card entry' ) } ),
-            V.castNode( editable ? {
-              tag: 'input',
-              c: 'location__curr pxy w-full txt-right',
-              a: {
-                value: loc
-              },
-              e: {
-                focus: handleBaseLocationFocus,
+            ]
+          },
+          {
+            t: 'tr',
+            h: [
+              { t: 'td', c: 'capitalize', h: V.i18n( 'current location', 'user profile', 'card entry' ) },
+              editable ? {
+                t: 'input',
+                c: 'location__curr pxy w-full txt-right',
+                a: {
+                  value: loc
+                },
+                e: {
+                  focus: handleBaseLocationFocus,
                 // blur: handleBaseLocation
-              }
-            } : {
-              t: 'p',
-              c: 'location__curr pxy txt-right',
-              h: loc
-            } ),
-          ]
-        } ),
-        V.cN( {
-          t: 'tr',
-          h: [
-            V.cN( { t: 'td', c: 'capitalize', h: V.i18n( 'current UTC offset', 'user profile', 'card entry' ) } ),
-            V.cN( editable ? setEditable( {
-              t: 'td',
-              c: 'txt-right',
-              a: { title: 'currentUTC', db: 'properties' },
-              h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-            } ) : {
-              t: 'td',
-              c: 'txt-right',
-              h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-            } ),
-          ]
-        } )
+                }
+              } : {
+                t: 'p',
+                c: 'location__curr pxy txt-right',
+                h: loc
+              },
+            ]
+          },
+          {
+            t: 'tr',
+            h: [
+              { t: 'td', c: 'capitalize', h: V.i18n( 'current UTC offset', 'user profile', 'card entry' ) },
+              editable ? setEditable( {
+                t: 'td',
+                c: 'txt-right',
+                a: { title: 'currentUTC', db: 'properties' },
+                h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+              } ) : {
+                t: 'td',
+                c: 'txt-right',
+                h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+              },
+            ]
+          }
         ]
       } );
       return castCard( $innerContent, 'Location' );
@@ -438,16 +450,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const $innerContent = V.cN( {
       t: 'div',
       h: [
-        V.cN( {
+        {
           t: 'h2',
           c: 'pxy font-bold fs-l',
           h: entity.fullId,
-        } ),
-        V.cN( {
+        },
+        {
           t: 'p',
           c: 'pxy',
           h: entity.private.uPhrase,
-        } )
+        }
       ],
     } );
     return castCard( $innerContent, '' );
@@ -460,7 +472,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'div',
         c: 'app-lang-selector',
         h: [
-          V.cN( {
+          {
             t: 'input',
             a: {
               type: 'radio',
@@ -471,12 +483,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               checked: appLang == 'en_US' ? true : false
             },
             k: handleRadioEntry
-          } ),
-          V.cN( {
+          },
+          {
             t: 'span',
             h: '🇬🇧'
-          } ),
-          V.cN( {
+          },
+          {
             t: 'input',
             a: {
               type: 'radio',
@@ -487,11 +499,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               checked: appLang == 'de_DE' ? true : false
             },
             k: handleRadioEntry
-          } ),
-          V.cN( {
+          },
+          {
             t: 'span',
             h: '🇩🇪'
-          } ),
+          },
         ]
       } );
       return castCard( $innerContent, 'App Language' );
@@ -558,14 +570,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'table',
         c: 'w-full pxy',
         h: [
-          V.cN( {
+          {
             t: 'tr',
-            h: [ V.cN( { t: 'td', h: svgFunded } ), V.cN( { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ) ]
-          } ),
-          V.cN( {
+            h: [ { t: 'td', h: svgFunded }, { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ]
+          },
+          {
             t: 'tr',
-            h: [ V.cN( { t: 'td', h: svgSpent } ), V.cN( { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ) ]
-          } )
+            h: [ { t: 'td', h: svgSpent }, { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ]
+          }
         ]
       } );
 
@@ -600,19 +612,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'div',
         c: 'pxy',
         h: [
-          V.cN( {
+          {
             t: 'div',
             c: 'pxy',
             h: [
-              V.cN( {
+              {
                 t: 'label',
                 i: 'img-upload-profile__label',
                 a: {
                   for: 'img-upload-profile__file',
                 },
                 h: V.i18n( 'Change this image', 'user profile', 'card entry' )
-              } ),
-              V.cN( {
+              },
+              {
                 t: 'input',
                 i: 'img-upload-profile__file',
                 c: 'hidden',
@@ -623,14 +635,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 e: {
                   change: handleImageUpload
                 }
-              } )
+              }
             ]
-          } ),
-          V.cN( {
+          },
+          {
             t: 'div',
             i: 'img-upload-profile__preview',
             h: img
-          } )
+          }
         ],
       } );
     }
@@ -639,15 +651,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'div',
         c: 'pxy',
         h: [
-          V.cN( {
+          {
             t: 'label',
             i: 'img-upload-profile__label',
             a: {
               for: 'img-upload-profile__file',
             },
             h: V.i18n( 'edit', 'user profile', 'placeholder' )
-          } ),
-          V.cN( {
+          },
+          {
             t: 'input',
             i: 'img-upload-profile__file',
             c: 'hidden',
@@ -658,11 +670,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             e: {
               change: handleImageUpload
             }
-          } ),
-          V.cN( {
+          },
+          {
             t: 'div',
             i: 'img-upload-profile__preview',
-          } )
+          }
         ]
       } );
     }
@@ -677,6 +689,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     setData: setData,
     topcontent: topcontent,
     introCard: introCard,
+    uPhraseCard: uPhraseCard,
     evmAddressCard: evmAddressCard,
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,

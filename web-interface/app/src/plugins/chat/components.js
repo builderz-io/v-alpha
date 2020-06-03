@@ -12,21 +12,21 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'w-full',
       h: [
-        V.cN( {
+        {
           t: 'h2',
           c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
           h: V.i18n( 'Chat with Everyone', 'app', 'chat title' )
-        } ),
-        V.cN( {
+        },
+        {
           t: 'span',
           c: 'block h-4 fs-s txt-center',
           i: 'typing_on_1'
-        } ),
-        V.cN( {
+        },
+        {
           t: 'span',
           c: 'block h-4 fs-s txt-center',
           i: 'typing_on_2'
-        } ),
+        },
       ]
     } );
   }

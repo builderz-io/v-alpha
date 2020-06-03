@@ -61,6 +61,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),
+        UserComponents.uPhraseCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
       ] );

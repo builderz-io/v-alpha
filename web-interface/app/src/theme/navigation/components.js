@@ -67,55 +67,55 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function pill( item ) {
     const pillOnline = item.o ? userOnlineIcon : '';
-    return V.setNode( {
-      tag: 'li',
-      classes: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
-      attributes: {
+    return V.cN( {
+      t: 'li',
+      c: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
+      a: {
         path: item.path || '/',
       },
-      html: pillOnline + V.i18n( item.title, 'navigation', 'nav item' )
+      h: pillOnline + V.i18n( item.title, 'navigation', 'nav item' )
     } );
   }
 
   function entityNav() {
-    return V.setNode( {
-      tag: 'entity-nav',
-      classes: 'nav entity-nav fixed w-screen overflow-x-scroll',
+    return V.cN( {
+      t: 'entity-nav',
+      c: 'nav entity-nav fixed w-screen overflow-x-scroll',
     } );
   }
 
   function userNav() {
-    return V.setNode( {
-      tag: 'user-nav',
-      classes: 'nav user-nav fixed w-screen overflow-x-scroll',
+    return V.cN( {
+      t: 'user-nav',
+      c: 'nav user-nav fixed w-screen overflow-x-scroll',
     } );
   }
 
   function serviceNav() {
-    return V.setNode( {
-      tag: 'service-nav',
-      classes: 'nav service-nav fixed w-screen overflow-x-scroll',
+    return V.cN( {
+      t: 'service-nav',
+      c: 'nav service-nav fixed w-screen overflow-x-scroll',
     } );
   }
 
   function entityNavUl() {
-    return V.setNode( {
-      tag: 'ul',
-      classes: 'entity-nav__ul flex items-center font-medium fs-rr',
+    return V.cN( {
+      t: 'ul',
+      c: 'entity-nav__ul flex items-center font-medium fs-rr',
     } );
   }
 
   function serviceNavUl() {
-    return V.setNode( {
-      tag: 'ul',
-      classes: 'service-nav__ul flex items-center font-medium',
+    return V.cN( {
+      t: 'ul',
+      c: 'service-nav__ul flex items-center font-medium',
     } );
   }
 
   function userNavUl() {
-    return V.setNode( {
-      tag: 'ul',
-      classes: 'user-nav__ul flex items-center font-medium',
+    return V.cN( {
+      t: 'ul',
+      c: 'user-nav__ul flex items-center font-medium',
     } );
   }
 

@@ -73,17 +73,25 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {
-        if ( Array.isArray( data[key] ) ) {
+
+        if ( data[key] && typeof data[key] == 'string' ) {
+          $elem.innerHTML = data[key];
+        }
+        else if ( Array.isArray( data[key] ) ) {
           for ( let i = 0; i < data[key].length; i++ ) {
+            if ( !data[key][i].localName ) {
+              data[key][i] = castNode( data[key][i] );
+            }
             $elem.appendChild( data[key][i] );
           }
         }
-        else if ( data[key] && typeof data[key] == 'object' ) {
+        else if ( data[key] ) {
+          if ( !data[key].localName ) {
+            data[key] = castNode( data[key] );
+          }
           $elem.appendChild( data[key] );
         }
-        else if ( data[key] && typeof data[key] == 'string' ) {
-          $elem.innerHTML = data[key];
-        }
+
       }
     }
     return $elem;

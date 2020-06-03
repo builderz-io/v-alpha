@@ -44,7 +44,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   /* ================== private methods ================= */
 
   function img( icon ) {
-    return V.sN( {
+    return V.cN( {
       t: 'div',
       c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition',
       h: V.getIcon( icon )
@@ -56,7 +56,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   // btns
 
   function filter() {
-    return V.sN( {
+    return V.cN( {
       t: 'li',
       id: 'filter',
       c: btnClasses,
@@ -65,7 +65,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function searchBtn() {
-    return V.sN( {
+    return V.cN( {
       t: 'li',
       id: 'search',
       c: btnClasses,
@@ -74,7 +74,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function query() {
-    return V.sN( {
+    return V.cN( {
       t: 'li',
       id: 'query',
       c: btnClasses,
@@ -83,7 +83,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function plus() {
-    return V.sN( {
+    return V.cN( {
       t: 'li',
       id: 'plus',
       c: btnClasses,
@@ -92,7 +92,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function close() {
-    return V.sN( {
+    return V.cN( {
       t: 'li',
       id: 'close',
       c: btnClasses,
@@ -101,7 +101,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function sendNav() {
-    return V.sN( {
+    return V.cN( {
       t: 'li',
       id: 'send',
       c: btnClasses,
@@ -110,7 +110,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function sendBtn() {
-    return V.sN( {
+    return V.cN( {
       t: 'button',
       c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
       h: V.cN( {
@@ -212,15 +212,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const $labelNode = V.cN( {
       t: 'div',
       c: 'field__label-wrapper',
-      h: V.cN( {
+      h: {
         t: 'label',
         c: 'field__label label-primary',
-        h: V.cN( {
+        h: {
           t: 'span',
           c: 'label__content',
           h: fields[whichField].label
-        } )
-      } )
+        }
+      }
     } );
 
     const $input = V.cN( {
@@ -262,15 +262,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.cN( {
       t: 'div',
       c: 'field pxy ' + fieldClasses + hasValue,
-      h: V.cN( {
+      h: {
         t: 'div',
         c: 'field__border',
-        h: V.cN( {
+        h: {
           t: 'div',
           c: 'field__internal',
           h: $inputContainer
-        } )
-      } )
+        }
+      }
     } );
   }
 
@@ -286,15 +286,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       },
       c: 'field pxy w-30% border-shadow',
       h: [
-        V.cN( {
+        {
           t: 'label',
           i: 'img-upload__label',
           a: {
             for: 'img-upload__file',
           },
           h: V.i18n( 'Image', 'form field', 'placeholder' )
-        } ),
-        V.cN( {
+        },
+        {
           t: 'input',
           i: 'img-upload__file',
           c: 'hidden',
@@ -305,15 +305,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           e: {
             change: handleImageUpload
           }
-        } ),
-        V.cN( {
+        },
+        {
           t: 'div',
           i: 'img-upload__preview',
           y: {
             position: 'absolute',
             right: '10px'
           },
-        } ),
+        },
       ]
     } );
   }
@@ -322,11 +322,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.cN( {
       t: 'div',
       h: [
-        V.cN( {
+        {
           t: 'p',
           c: 'pxy',
           h: V.i18n( 'Enter a title or city name', 'app' )
-        } ),
+        },
         // V.cN( {
         //   t: 'search-filter-nav',
         //   c: 'nav search-filter-nav fixed w-screen overflow-x-scroll pxy',
@@ -366,11 +366,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function joinBtn() {
     const sc = V.getState( 'screen' );
 
-    return V.sN( {
+    return V.cN( {
       t: 'join',
       c: 'fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
-      h: V.setNode( {
+      h: {
         tag: 'svg',
         a: {
           width: sc.width > 800 ? '66px' : '54px',
@@ -406,7 +406,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
                 </circle>
                 <text class="font-medium fs-xs" x="50%" y="59%">Join</text>`
 
-      } )
+      }
     } );
   }
 

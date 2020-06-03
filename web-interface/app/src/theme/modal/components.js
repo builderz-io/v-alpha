@@ -173,12 +173,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'modal',
       c: 'modal fixed',
-      h: V.cN( {
+      h: {
         t: 'div',
         c: 'modal__close',
         h: V.i18n( 'Close', 'modal' ),
         k: handleModalClose
-      } ),
+      },
       k: handleModalClose
     } );
   }
@@ -215,12 +215,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       y: {
         width: '108px'
       },
-      h: V.cN( {
+      h: {
         t: 'img',
-        a: {
-          src: '/assets/img/metamask-fox.png'
-        }
-      } )
+        src: '/assets/img/metamask-fox.png'
+      }
     } );
     const $metaMask = V.cN( {
       t: 'div',
@@ -334,12 +332,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'txt-center pxy',
       h: [
-        V.cN( { t: 'p', h: V.i18n( 'Welcome', 'modal' ) } ),
-        V.cN( {
+        { t: 'p', h: V.i18n( 'Welcome', 'modal' ) },
+        {
           t: 'p',
           c: 'font-medium fs-l pxy',
           h: activeEntity.fullId
-        } )
+        }
       ]
     } );
 
