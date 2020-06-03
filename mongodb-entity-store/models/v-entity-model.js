@@ -1,17 +1,14 @@
 var mongoose = require( 'mongoose' );
 
 var entitySchema = mongoose.Schema( {
+  docVersion: String,
   fullId: String,
   path: String,
   private: {
     uPhrase: String,
-    uuidV4: String,
-    base64Url: String,
   },
   profile: {
     fullId: String, // name + tag, e.g. 'Jane Wood #2121'
-    // slug: String, // name + tag in slug format, e.g. 'jane-wood-2121'
-    path: String, // name + tag in path format, e.g. '/profile/jane-wood-2121'
     title: String,
     tag: String,
     creator: String,
@@ -26,7 +23,12 @@ var entitySchema = mongoose.Schema( {
         rpc: String,
         contract: String,
       }
-    }
+    },
+    uuidV4: String
+  },
+  paths: {
+    entity: String, // name + tag in path format, e.g. '/profile/jane-wood-2121'
+    base64: String // shall be immutable, the uuidV4 encoded as base64, e.g. '/eBp0cCNDT1aBZqTu4mFeFQ'
   },
   status: {
     active: Boolean,

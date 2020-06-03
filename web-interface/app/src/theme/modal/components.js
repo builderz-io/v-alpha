@@ -82,7 +82,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntity,
-      h: V.i18n( 'Name your profile', 'modal' )
+      h: V.i18n( 'Name profile', 'modal' )
     } );
 
     V.sN( '.modal__content', '' );
@@ -267,13 +267,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: V.i18n( 'Create a profile only', 'modal' )
+      h: V.i18n( 'Name new profile only', 'modal' )
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
       k: handleGetEntityForm,
-      h: V.i18n( 'Manage exsting profile', 'modal' )
+      h: V.i18n( 'Join with key', 'modal' )
     } );
     V.setNode( $content, [$new, $newName, $key] );
     return $content;
@@ -285,7 +285,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: V.i18n( 'Create new account', 'modal' )
+      h: V.i18n( 'Name new profile', 'modal' )
     } );
     const $key = V.cN( {
       t: 'p',
@@ -321,7 +321,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: V.i18n( 'Create new name', 'modal' )
+      h: V.i18n( 'Change name', 'modal' )
     } );
     V.setNode( $content, [$current, $new] );
     return $content;
@@ -379,7 +379,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: V.i18n( 'Create new profile', 'modal' )
+      h: V.i18n( 'Name new profile', 'modal' )
     } );
     const $current = V.cN( {
       t: 'p',
@@ -392,8 +392,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'modal-pos-3 relative txt-center',
       h: V.i18n( 'Naming your profile creates a new entity for your address. An entity can be anything you want to make visible in the network.', 'modal' )
     } );
-
-    V.setNode( $content, [$new, $current, $descr] );
+    if ( V.getState( 'activeEntity' ) ) {
+      V.setNode( $content, [$new, $current, $descr] );
+    }
+    else {
+      V.setNode( $content, [$new, $descr] );
+    }
     return $content;
   }
 

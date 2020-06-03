@@ -38,7 +38,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     // cast tag and fullId
-    const tag = castTag();
+    const tag = V.castTag();
     const fullId = title.data[0] + ' ' + tag;
     const slug = V.castSlugOrId( fullId );
     const path = '/profile/' + slug;
@@ -57,7 +57,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-    const activeAddress = V.getState( 'activeAddress' );
     const imageUpload = V.getState( 'imageUpload' );
 
     const d = new Date();
@@ -87,7 +86,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       const gen = V.castUUID();
-      uPhrase = 'vx' + gen.base64Url.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
+      uPhrase = 'vx' + gen.base64Url.slice( 0, 16 );
     }
 
     if ( imageUpload ) {
@@ -140,17 +139,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
 
     const newEntity = {
+      docVersion: V.getSetting( 'entityDocVersion' ),
       fullId: fullId,
       path: path,
       private: {
         uPhrase: uPhrase,
-        uuidV4: uuid.v4,
-        base64Url: uuid.base64Url
       },
       profile: {
         fullId: fullId,
-        // slug: slug,
-        path: path,
         title: title.data[0],
         tag: tag,
         creator: creator,
@@ -165,7 +161,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
             rpc: rpc,
             contract: contract,
           }
-        }
+        },
+        uuidV4: uuid.v4,
+      },
+      paths: {
+        entity: path,
+        base64: '/' + uuid.base64Url
       },
       status: {
         active: true,
@@ -205,39 +206,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       status: 'cast entity',
       data: [ newEntity ]
     };
-  }
-
-  function castTag() {
-
-    // for demo content creation
-    if ( V.getSetting( 'demoContent' ) ) {
-      return '#2121';
-    }
-
-    let continueDice = true;
-
-    while ( continueDice ) { // 334 combinations in the format of #5626
-      const number1 = String( Math.floor( Math.random() * ( 9 - 2 + 1 ) ) + 2 );
-      const number2 = String( Math.floor( Math.random() * ( 9 - 1 + 1 ) ) + 1 );
-      const number3 = String( Math.floor( Math.random() * ( 9 - 2 + 1 ) ) + 2 );
-
-      if (
-        number2 != number1 &&
-        number3 != number1 &&
-        number3 != number2 &&
-        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
-        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
-        number1 + number2 != '69' && // sexual reference
-        number3 + number2 != '69' &&
-        number1 + number2 != '13' && // bad luck in Germany
-        number3 + number2 != '13' &&
-        number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21'
-      ) {
-        continueDice = false;
-        return '#' + number1 + number2 + number3 + number2;
-      }
-    }
   }
 
   /* ================== public methods ================== */

@@ -228,7 +228,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( { path: path } );
 
-      Navigation.draw( path );
+      if ( path != '/me/disconnect' ) {
+        Navigation.draw( path );
+      }
 
       V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
     }
