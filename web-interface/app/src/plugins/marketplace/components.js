@@ -117,14 +117,27 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $bottomLeft = V.cN( {
       t: 'div',
       c: 'card__bottom-left items-center pxy',
-      h: `<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">${( cardData.properties.target == 0 ? 'free' : cardData.properties.target )}</div>
-      <p class="card__unit fs-xxs"> V per ${( cardData.properties.unit == 'free' ? '' : cardData.properties.unit )}</p>`
+      h: cardData.properties && cardData.properties.target ? [
+        {
+          t: 'div',
+          c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
+          h: cardData.properties && cardData.properties.target ? cardData.properties.target : '',
+        },
+        {
+          t: 'p',
+          c: 'card__unit fs-xxs',
+          h: cardData.properties && cardData.properties.unit ? cardData.properties.unit : '',
+        }
+      ] : ''
     } );
 
     const $bottomRight = V.cN( {
       t: 'div',
       c: 'card__bottom-right pxy',
-      h: `<p>${cardData.properties.description}</p><p>in ${cardData.properties.baseLocation}</p>`
+      h: [
+        { t: 'p', h: cardData.properties && cardData.properties.description ? cardData.properties.description : '' },
+        { t: 'p', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
+      ]
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );

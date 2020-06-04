@@ -37,6 +37,10 @@ body {
   fill: rgba(var(--green), 1);
 }
 
+.txt-red {
+  color: rgba(var(--red), 1);
+}
+
 .txt-brand {
   color: rgba(var(--brand), 1);
 }

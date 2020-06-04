@@ -143,8 +143,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   function castRandLatLng() {
     return {
-      lat: ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 ),
-      lng: ( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1
+      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ),
+      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1
     };
   }
 
@@ -400,6 +400,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTag() {
+    // debug
+    // return '#2121';
 
     // for demo content creation
     // if ( V.getSetting( 'demoContent' ) ) {

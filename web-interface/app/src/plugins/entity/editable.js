@@ -55,15 +55,15 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, [
         InteractionComponents.onboardingCard(),
         UserComponents.entityCard(),
-        UserComponents.locationCard(),
-        UserComponents.introCard(),
+        UserComponents.socialCard(),
         UserComponents.addOrChangeImage(),
+        UserComponents.descriptionCard(),
+        UserComponents.locationCard(),
         UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
-        UserComponents.socialCard(),
-        UserComponents.uPhraseCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
+        UserComponents.uPhraseCard(),
       ] );
 
       Navigation.draw( data.data[0].which );

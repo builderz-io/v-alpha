@@ -67,7 +67,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.thumbnailCard(),
         UserComponents.entityCard(),
         UserComponents.fundingStatusCard(),
-        UserComponents.introCard(),
+        UserComponents.descriptionCard(),
         UserComponents.locationCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),

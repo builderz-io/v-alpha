@@ -47,12 +47,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const exists = await getEntity( fullId );
 
     if ( exists.success ) { // success is not a good thing here ;)
-      console.log( 'entity already exists:', exists.data[0].fullId );
-      castEntity( entityData );
       return {
         success: false,
         endpoint: 'entity',
-        status: 'entity exists'
+        status: 'entity exists',
+        data: [fullId]
       };
     }
 
@@ -86,7 +85,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       const gen = V.castUUID();
-      uPhrase = 'vx' + gen.base64Url.slice( 0, 16 );
+      uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
     }
 
     if ( imageUpload ) {
@@ -372,7 +371,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function setEntity( whichEntity, data ) {
     if ( typeof whichEntity == 'object' ) {
-      const entityCast = await castEntity( whichEntity );
+      let entityCast = await castEntity( whichEntity );
+
+      while ( entityCast.status == 'entity exists' ) {
+        console.log( 'entity exists (while loop):', entityCast.data[0].fullId );
+        entityCast = await castEntity( whichEntity );
+      }
 
       if ( entityCast.success ) {
         return V.setData( entityCast.data[0], 'entity', V.getSetting( 'entityLedger' ) );

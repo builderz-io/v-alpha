@@ -172,34 +172,56 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return CanvasComponents.card( $innerContent, whichTitle );
   }
 
-  function castTableNode( titles, db, editable ) {
-    return V.cN( {
+  function castTableNode( titles, db, editable, css ) {
+    const $table = V.cN( {
       t: 'table',
       c: 'w-full pxy',
       h: titles.map( title => {
         const inner = entity[db] ? entity[db][title] : undefined;
-        return V.cN( {
+
+        const leftTd = {
+          t: 'td',
+          c: 'capitalize',
+          h: V.i18n( title, 'user profile', 'card entry' )
+        };
+
+        const editTd = setEditable( {
+          t: 'td',
+          c: 'txt-right',
+          a: { title: title, db: db },
+          h: inner
+        } );
+
+        const noEditTd = {
+          t: 'td',
+          c: 'txt-right' + ( css ? ' ' + css : '' ),
+          h: inner
+        };
+
+        let $row = V.cN( {
           t: 'tr',
           h: [
-            {
-              t: 'td',
-              c: 'capitalize',
-              h: V.i18n( title, 'user profile', 'card entry' )
-            },
-            editable ? setEditable( {
-              t: 'td',
-              c: 'txt-right',
-              a: { title: title, db: db },
-              h: inner
-            } ) : {
-              t: 'td',
-              c: 'txt-right',
-              h: inner
-            },
+            leftTd,
+            editable ? editTd : noEditTd,
           ]
         } );
-      } )
+
+        if ( !inner ) {
+          $row = editable ? V.cN( {
+            t: 'tr',
+            h: [
+              leftTd,
+              editTd
+            ]
+          } ) : '';
+        }
+
+        return $row;
+
+      } ).filter( item => {return item != ''} )
     } );
+
+    return $table.firstChild ? $table : null;
   }
 
   function setEditable( obj ) {
@@ -230,6 +252,49 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
+  function handleViewKeyFocus( e ) {
+    if ( this.type === 'password' ) {
+      this.type = 'text';
+      this.previousSibling.innerHTML = '';
+      setTimeout( function() {
+        e.target.setSelectionRange( 0, 9999 );
+      }, 50 );
+    }
+    else {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      this.previousSibling.innerHTML = 'vx';
+      this.type = 'password';
+    }
+  }
+
+  function caseUphraseNode( uPhrase, css = '' ) {
+    return V.cN( {
+      t: 'div',
+      c: 'pxy ' + css,
+      h: [
+        { t: 'span', h: 'vx' },
+        {
+          t: 'input',
+          c: css,
+          a: {
+            value: uPhrase,
+            type: 'password',
+          },
+          y: {
+            width: '190px',
+            padding: 0
+          },
+          e: {
+            focus: handleViewKeyFocus,
+            blur: handleViewKeyFocus,
+          }
+        }
+      ]
+    } );
+
+  }
+
   function setData( data ) {
     entity = data.entity;
     editable = data.editable ? true : false;
@@ -246,7 +311,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function introCard() {
+  function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
 
     if( descr || ( !descr && editable ) ) {
@@ -295,11 +360,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function uPhraseCard() {
     const uPhrase = entity.private.uPhrase;
     if( uPhrase ) {
-      const $innerContent = V.cN( {
-        t: 'p',
-        c: 'pxy',
-        h: uPhrase,
-      } );
+      const $innerContent = caseUphraseNode( uPhrase );
       return castCard( $innerContent, 'Entity Management Key' );
     }
     else {
@@ -421,7 +482,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function entityCard() {
     const titles = ['title', 'tag', 'role'];
     const db = 'profile';
-    const $innerContent = castTableNode( titles, db );
+    const $innerContent = castTableNode( titles, db, false, 'capitalize' );
     return castCard( $innerContent, 'Entity' );
   }
 
@@ -443,7 +504,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const titles = ['facebook', 'twitter', 'telegram', 'website', 'email'];
     const db = 'social';
     const $innerContent = castTableNode( titles, db, editable );
-    return castCard( $innerContent, 'Social' );
+    return $innerContent ? castCard( $innerContent, 'Social' ) : '';
   }
 
   function entityListCard( entity ) {
@@ -455,11 +516,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           c: 'pxy font-bold fs-l',
           h: entity.fullId,
         },
-        {
-          t: 'p',
-          c: 'pxy',
-          h: entity.private.uPhrase,
-        }
+        caseUphraseNode( entity.private.uPhrase )
       ],
     } );
     return castCard( $innerContent, '' );
@@ -618,6 +675,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             h: [
               {
                 t: 'label',
+                c: 'pxy',
                 i: 'img-upload-profile__label',
                 a: {
                   for: 'img-upload-profile__file',
@@ -686,9 +744,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   return {
+    handleViewKeyFocus: handleViewKeyFocus,
+    caseUphraseNode: caseUphraseNode,
     setData: setData,
     topcontent: topcontent,
-    introCard: introCard,
+    descriptionCard: descriptionCard,
     uPhraseCard: uPhraseCard,
     evmAddressCard: evmAddressCard,
     evmReceiverAddressCard: evmReceiverAddressCard,

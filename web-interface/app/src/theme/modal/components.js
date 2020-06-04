@@ -344,8 +344,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $uPhrase = V.cN( {
       t: 'div',
       c: 'txt-center',
-      h: `<p class="pxy">${ V.i18n( 'Take note of the key', 'modal' ) }</p><p class="modal__uphrase font-medium fs-l pxy">${ activeEntity.private.uPhrase }</p>
-      <p class="pxy"> ${ V.i18n( 'You\'ll need this key to manage this entity', 'modal' ) }</p>`
+      h: [
+        { t: 'p', c: 'pxy', h: V.i18n( 'Take note of the key', 'modal' ) },
+        UserComponents.caseUphraseNode( activeEntity.private.uPhrase, 'txt-red fs-l' ),
+        { t: 'p', c: 'pxy', h: V.i18n( 'You\'ll need this key to manage this entity', 'modal' ) }
+      ]
     } );
 
     let $balance;
