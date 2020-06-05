@@ -70,20 +70,24 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     for ( const item in entityNavOrder ) {
       if ( !entityNav[item] ) {
-        V.setNavItem( 'entityNav', {
+        const obj = {
           title: entityNavOrder[item].title,
           path: entityNavOrder[item].path,
-          draw: function( path ) { Profile.draw( path ) }
-        } );
+          draw: function( path ) { Profile.draw( path ) },
+        };
+        entityNavOrder[item].tinyImage ? obj.tinyImage = entityNavOrder[item].tinyImage : null;
+        V.setNavItem( 'entityNav', obj );
       }
     }
 
     if ( data && data.fullId && !entityNav[data.path] ) {
-      V.setNavItem( 'entityNav', {
+      const obj = {
         title: V.castInitials( data.profile.title ),
         path: data.path,
-        draw: function( path ) { Profile.draw( path ) }
-      } );
+        draw: function( path ) { Profile.draw( path ) },
+      };
+      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+      V.setNavItem( 'entityNav', obj );
     }
 
     syncNavOrder( entityNavOrder, entityNav );
@@ -202,11 +206,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     for ( const newKey in b ) {
       if( !a.hasOwnProperty( newKey ) ) {
         a[b[newKey].path] = {
-          // c: 0,
-          // l: -1,
           title: b[newKey].title,
           path: b[newKey].path
         };
+
+        b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
+
       }
     }
   }
@@ -214,14 +219,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function itemClickHandler( e ) {
 
     e.stopPropagation(); // no need to bubble any further
+    const $itemClicked = e.target.closest( 'li' );
 
-    const $itemClicked = ( ( e ) => {
-      // in case svg is used in the pill, return the correct li clicked
-      const t = e.target;
-      if ( t.localName == 'li' ) { return t }
-      else if ( t.localName == 'svg' ) { return t.parentNode }
-      else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
-    } )( e );
+    // const $itemClicked = ( ( e ) => {
+    //   // in case svg is used in the pill, return the correct li clicked
+    //   const t = e.target;
+    //   if ( t.localName == 'li' ) { return t }
+    //   else if ( t.localName == 'svg' ) { return t.parentNode }
+    //   else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
+    // } )( e );
 
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );

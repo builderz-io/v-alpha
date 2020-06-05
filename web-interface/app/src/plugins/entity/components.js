@@ -708,14 +708,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             i: 'img-upload-profile__preview',
             h: img
           },
-          {
-            t: 'p',
-            h: 'Navigation Image Preview'
-          },
-          {
-            t: 'div',
-            h: V.castEntityThumbnail( tinyImage ).img
-          }
+          // {
+          //   t: 'p',
+          //   h: 'Navigation Image Preview'
+          // },
+          // {
+          //   t: 'div',
+          //   h: V.castEntityThumbnail( tinyImage ).img
+          // }
         ],
       } );
     }
