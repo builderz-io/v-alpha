@@ -15,6 +15,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   ) {
 
     const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
+
     if (
       doesNodeExist &&
       doesNodeExist.closest( 'header' )
@@ -66,12 +67,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      */
 
     const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    V.getState( 'entityNav' ) ? null : V.setState( 'entityNav', {} ); // ensure entityNav-state exists
     const entityNav = V.getState( 'entityNav' );
 
     for ( const item in entityNavOrder ) {
       if ( !entityNav[item] ) {
         const obj = {
           title: entityNavOrder[item].title,
+          tag: entityNavOrder[item].tag,
+          initials: entityNavOrder[item].initials,
           path: entityNavOrder[item].path,
           draw: function( path ) { Profile.draw( path ) },
         };
@@ -82,14 +86,16 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
-        title: V.castInitials( data.profile.title ),
+        title: data.profile.title,
+        tag: data.profile.tag,
+        initials: V.castInitials( data.profile.title ),
         path: data.path,
         draw: function( path ) { Profile.draw( path ) },
       };
       data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
       V.setNavItem( 'entityNav', obj );
     }
-
+    console.log( entityNav );
     syncNavOrder( entityNavOrder, entityNav );
 
     V.setCookie( 'entity-nav-order', entityNavOrder );
@@ -144,7 +150,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       const entityRow = castNavDrawingOrder( viewData.data[0].entityNav, 3 );
 
       for ( let i = 0; i < entityRow.length; i++ ) {
-        const $pill = NavComponents.pill( entityRow[i] );
+        const $pill = NavComponents.entityPill( entityRow[i] );
         V.setNode( $entityNavUl, $pill );
       }
 
@@ -207,6 +213,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       if( !a.hasOwnProperty( newKey ) ) {
         a[b[newKey].path] = {
           title: b[newKey].title,
+          tag: b[newKey].tag,
+          initials: b[newKey].initials,
           path: b[newKey].path
         };
 
@@ -269,8 +277,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj ) {
     // adjusted from LukePH https://stackoverflow.com/questions/907279/jquery-animate-moving-dom-element-to-new-parent
-    deselect();
-    select( $itemToAnimate );
+    // deselect();
+    // select( $itemToAnimate );
 
     let classes = ' absolute font-medium';
     if ( nav == 'entity-nav' ) {
@@ -301,16 +309,24 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function select( $item ) {
+    const span = $item.getElementsByClassName( 'pill__initials' )[0];
+    if ( span ) {
+      span.innerHTML = $item.getAttribute( 'fullId' );
+    }
     $item.className += ' pill--selected';
     $item.addEventListener( 'click', resetOnClick, { once: true } );
   }
 
   function deselect() {
-    const $itemSelected = document.getElementsByClassName( 'pill--selected' ); // $( 'header' ).find( '.pill--selected:first' );
+    const $itemSelected = document.getElementsByClassName( 'pill--selected' );
     if ( $itemSelected.length ) {
       for ( let i = 0; i < $itemSelected.length; i++ ) {
+        const span = $itemSelected[i].getElementsByClassName( 'pill__initials' )[0];
+        if ( span ) {
+          span.innerHTML = $itemSelected[i].getAttribute( 'initials' );
+        }
         $itemSelected[i].removeEventListener( 'click', resetOnClick );
-        $itemSelected[i].classList.remove( 'pill--selected' ); // .removeClass( 'pill--selected' );
+        $itemSelected[i].classList.remove( 'pill--selected' );
       }
     }
   }
@@ -392,8 +408,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const menuStateObj = V.getState( 'header' );
-    const itemClickedRect = $itemToAnimate.getBoundingClientRect();
 
+    deselect();
+    select( $itemToAnimate );
+
+    const itemClickedRect = $itemToAnimate.getBoundingClientRect();
+    console.log( itemClickedRect );
     movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj );
 
     setCountAndLastIndex( nav ); // updates nav status in cookies after movingPillAnimation
@@ -405,7 +425,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
 
     V.setAnimation( nav, {
-      width: itemClickedRect.width + 13,
+      width: itemClickedRect.width + 11,
       top: menuStateObj.entityNavTop,
       left: menuStateObj.entityNavLeft
     }, { duration: 1 } );

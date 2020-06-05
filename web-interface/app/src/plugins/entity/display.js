@@ -78,7 +78,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       Navigation.draw( data.data[0].entity );
 
       Page.draw( {
-        topcontent: $topcontent,
+        // topcontent: $topcontent,
         listings: $list,
         position: 'top',
       } );

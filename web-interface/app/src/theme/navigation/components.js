@@ -28,11 +28,9 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       left: '-3px'
     },
     'pill__img': {
-      'background-position': 'center center',
-      'background-size': 'cover',
-      'position': 'relative',
-      'left': '-10px',
-      'border': '2px solid white'
+      position: 'relative',
+      left: '-10px',
+      border: '2px solid white'
     },
     'pill__initials': {
       position: 'relative',
@@ -91,22 +89,40 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
   function pill( item ) {
     return V.cN( {
       t: 'li',
+      c: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
+      a: {
+        path: item.path || '/',
+      },
+      h: [
+        {
+          t: 'span',
+          h: V.i18n( item.title, 'navigation', 'nav item' )
+        }
+      ]
+    } );
+  }
+
+  function entityPill( item ) {
+    return V.cN( {
+      t: 'li',
       c: ( item.tinyImage ? 'pill__entity' : 'pill' ) + ' flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
       a: {
         path: item.path || '/',
+        fullId: item.title + ' ' + item.tag,
+        initials: item.initials
       },
       h: [
         item.tinyImage ? {
           t: 'div',
           c: 'pill__img circle-0 rounded-full flex justify-center items-center cursor-pointer',
           a: {
-            style: `background:${background( item )}`
+            style: `background:${background( item )}; background-position: center center; background-size: cover;`
           },
         } : '',
         {
           t: 'span',
           c: item.tinyImage ? 'pill__initials' : '',
-          h: V.i18n( item.title, 'navigation', 'nav item' )
+          h: V.i18n( item.initials, 'navigation', 'nav item' )
         }
       ]
     } );
@@ -156,6 +172,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     pill: pill,
+    entityPill: entityPill,
     entityNav: entityNav,
     userNav: userNav,
     serviceNav: serviceNav,

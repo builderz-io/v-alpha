@@ -41,7 +41,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
           ctx.drawImage( img, 0, 0, elem.width, elem.height );
 
           const elem2 = document.createElement( 'canvas' );
-          elem2.width = 40;
+          elem2.width = 32;
           elem2.height = elem2.width;
           const ctx2 = elem2.getContext( '2d' );
           ctx2.drawImage( img, 0, 0, elem2.width, elem2.height );

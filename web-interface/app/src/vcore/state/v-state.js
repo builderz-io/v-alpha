@@ -98,15 +98,23 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getCookie( which ) {
-    return Cookies.get( which );
+    // return Cookies.get( which );
+    return localStorage.getItem( which );
+
   }
 
   function setCookie( which, data ) {
+    // if ( data == 'clear' ) {
+    //   Cookies.remove( which );
+    //   return;
+    // }
+    // Cookies.set( which, JSON.stringify( data ) );
+
     if ( data == 'clear' ) {
-      Cookies.remove( which );
+      localStorage.removeItem( which );
       return;
     }
-    Cookies.set( which, JSON.stringify( data ) );
+    localStorage.setItem( which, JSON.stringify( data ) );
   }
 
   /* ====================== export ====================== */

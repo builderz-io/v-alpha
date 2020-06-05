@@ -128,7 +128,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
 
-    V.setNavItem( 'entityNav', [
+    V.setNavItem( 'serviceNav', [
       {
         title: 'Chat',
         path: '/chat/everyone',
