@@ -37,7 +37,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['h', 'html'].includes( key ) ) {
 
-        if ( data[key] && typeof data[key] == 'string' ) {
+        if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
           $elem.innerHTML = data[key];
         }
         else if ( Array.isArray( data[key] ) ) {

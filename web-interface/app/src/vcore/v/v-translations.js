@@ -169,7 +169,31 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'modal': {
 
   },
+  'modal components': {
+    close: {
+      en_US: 'close',
+      de_DE: 'schließen'
+    },
+  },
   'trigger': {
 
+  },
+  'account components': {
+    from: {
+      en_US: 'From',
+      de_DE: 'Von'
+    },
+    to: {
+      en_US: 'To',
+      de_DE: 'An'
+    },
+    date: {
+      en_US: 'Date',
+      de_DE: 'Datum'
+    },
+    block: {
+      en_US: 'Block',
+      de_DE: 'Block'
+    }
   }
 };

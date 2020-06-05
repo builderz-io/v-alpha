@@ -7,6 +7,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ====================== strings ===================== */
+
+  const
+    strClose = 'close';
+
+  /* ====================== styles ====================== */
+
   V.setStyle( {
     'modal': {
       top: '0',
@@ -155,6 +162,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  function str( string, scope ) {
+    return V.i18n( string, 'modal components', scope || 'modal content' ) + ' ';
+  }
+
   function setActiveEntityState( res ) {
     if ( res.success ) {
       V.setState( 'activeEntity', res.data[0] );
@@ -176,7 +187,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'div',
         c: 'modal__close',
-        h: V.i18n( 'Close', 'modal' ),
+        h: str( strClose ),
         k: handleModalClose
       },
       k: handleModalClose
