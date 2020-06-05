@@ -24,9 +24,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function handleImageUpload( e ) {
     V.setNode( '#img-upload__label', V.i18n( 'uploading...', 'form field', 'placeholder' ) );
-    // castImageUpload( e );
     V.castImageUpload( e ).then( res => {
-      console.log( res );
       V.setNode( '#img-upload__label', V.i18n( 'Change', 'form field', 'placeholder' ) );
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {

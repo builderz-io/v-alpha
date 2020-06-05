@@ -80,6 +80,12 @@ var entitySchema = mongoose.Schema( {
     languages: String,
     appLang: String,
   },
+  tinyImage: {
+    blob: Buffer,
+    contentType: String,
+    originalName: String,
+    entity: String
+  },
   thumbnail: {
     blob: Buffer,
     contentType: String,

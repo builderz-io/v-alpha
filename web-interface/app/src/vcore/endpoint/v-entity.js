@@ -57,12 +57,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const activeEntity = V.getState( 'activeEntity' );
     const imageUpload = V.getState( 'imageUpload' );
+    const tinyImageUpload= V.getState( 'tinyImageUpload' );
 
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, thumbnail;
+    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, thumbnail, tinyImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -93,6 +94,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         blob: imageUpload.blob,
         contentType: imageUpload.contentType,
         originalName: imageUpload.originalName,
+        entity: fullId
+      };
+    }
+
+    if ( tinyImageUpload ) {
+      tinyImage = {
+        blob: tinyImageUpload.blob,
+        contentType: tinyImageUpload.contentType,
+        originalName: tinyImageUpload.originalName,
         entity: fullId
       };
     }
@@ -190,6 +200,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: entityData.target || undefined,
         unit: entityData.unit || undefined,
       },
+      tinyImage: tinyImage,
       thumbnail: thumbnail,
       geometry: geometry,
       social: {
