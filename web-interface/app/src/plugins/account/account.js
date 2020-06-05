@@ -29,7 +29,9 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     const transactions = await V.getTransaction();
 
-    V.setNode( $list, Join.onboardingCard() );
+    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+      V.setNode( $list, InteractionComponents.onboardingCard() );
+    }
 
     if( !transactions.success || !transactions.data[0].length ) {
       // V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );

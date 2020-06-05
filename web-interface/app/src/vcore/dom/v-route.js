@@ -86,11 +86,11 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       path: '/me',
       children: [
         {
-          path: '/account',
+          path: '/transfers',
           action: () => {
             return {
               status: 'user account',
-              data: [ '/me/account' ]
+              data: [ '/me/transfers' ]
             };
           }
         },
@@ -100,6 +100,24 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
             return {
               status: 'user profile',
               data: [ '/me/profile' ]
+            };
+          }
+        },
+        {
+          path: '/settings',
+          action: () => {
+            return {
+              status: 'user settings',
+              data: [ '/me/settings' ]
+            };
+          }
+        },
+        {
+          path: '/entities',
+          action: () => {
+            return {
+              status: 'user entities',
+              data: [ '/me/entities' ]
             };
           }
         }

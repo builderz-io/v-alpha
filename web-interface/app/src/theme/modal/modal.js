@@ -49,6 +49,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'You are logged out' ) );
     }
+    else if ( which == 'disconnect' ) {
+      V.setNode( $modal, ModalComponents.disconnect() );
+    }
     else if ( which == 'install metamask' ) {
       V.setNode( $modal, ModalComponents.getMetaMask() );
     }

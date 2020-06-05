@@ -47,10 +47,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       V.setScript( '/src/plugins/account/components.js' ),
       V.setScript( '/src/plugins/account/account.js' ),
-      V.setScript( '/src/plugins/user/components.js' ),
-      V.setScript( '/src/plugins/user/user.js' ),
-      V.setScript( '/src/plugins/profile/components.js' ),
-      V.setScript( '/src/plugins/profile/profile.js' ),
+      V.setScript( '/src/plugins/entity/components.js' ),
+      V.setScript( '/src/plugins/entity/editable.js' ),
+      V.setScript( '/src/plugins/entity/display.js' ),
+      V.setScript( '/src/plugins/entity/settings.js' ),
+      V.setScript( '/src/plugins/entity/entitylist.js' ),
       V.setScript( '/src/plugins/chat/components.js' ),
       V.setScript( '/src/plugins/chat/chat.js' ),
       V.setScript( '/src/plugins/map/map.js' ),
@@ -208,6 +209,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if ( ['user account'].includes( status ) ) {
           Account.draw( which );
         }
+        else if ( ['user entities'].includes( status ) ) {
+          EntityList.draw( which );
+        }
+        else if ( ['user settings'].includes( status ) ) {
+          Settings.draw( which );
+        }
         else if ( ['chat everyone'].includes( status ) ) {
           Chat.draw( which );
         }
@@ -252,8 +259,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function returningUser() {
     if( !V.getState( 'activeEntity' ) ) {
-      const returningWallet = V.getCookie( 'lastActiveAddress' );
-      const returningUphrase = V.getCookie( 'lastActiveUphrase' );
+      const returningWallet = V.getCookie( 'last-active-address' );
+      const returningUphrase = V.getCookie( 'last-active-uphrase' );
 
       if ( returningWallet ) {
         Join.draw( 'authenticate' );

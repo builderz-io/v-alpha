@@ -45,18 +45,17 @@ exports.updateEntities = function( req, res ) {
 
   findEntities.findAllEntities( txData )
     .then( entities => {
-
       // const txRoleEntities = addTxRole.addTxRole( messageParts, entities );
       const txRoleEntities = addRolesSimplified( entities );
 
       const checkValidity = checkValid.checkTxValidity( txRoleEntities, txData.amount, txData.timeSecondsUNIX, txData.reference, txData.command );
 
-      if ( checkValidity != true ) {
+      if ( checkValidity !== true ) {
         res( {
           success: false,
           status: 'invalid transaction',
           ledger: 'MongoDB',
-          message: 'Could not validate MongoDB transaction: ' + checkValidity } );
+          message: 'MongoDB tx error: ' + checkValidity } );
       }
       else {
         // Updating MongoDB Accounts

@@ -17,20 +17,56 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   function castNode( data ) {
+
+    function setAttr( attr, data ) {
+      if ( data ) {
+        $elem.setAttribute( attr, data );
+      }
+    }
+
     const tag = data.t ? data.t : data.tag;
 
     let $elem = document.createElement( tag );
     tag == 'svg' || data.type == 'svg' ? $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' ) : null;
 
     for ( const key in data ) {
-      if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
-        if ( data[key] ) {
-          setStyle( data[key] );
-        }
-      }
-      else if ( ['c', 'class', 'classes'].includes( key ) ) {
+      if ( ['c', 'class', 'classes'].includes( key ) ) {
         if ( data[key] ) {
           $elem.className = data[key];
+        }
+      }
+      else if ( ['h', 'html'].includes( key ) ) {
+
+        if ( data[key] && typeof data[key] == 'string' ) {
+          $elem.innerHTML = data[key];
+        }
+        else if ( Array.isArray( data[key] ) ) {
+          for ( let i = 0; i < data[key].length; i++ ) {
+            if ( !data[key][i].localName ) {
+              data[key][i] = castNode( data[key][i] );
+            }
+            $elem.appendChild( data[key][i] );
+          }
+        }
+        else if ( data[key] ) {
+          if ( !data[key].localName ) {
+            data[key] = castNode( data[key] );
+          }
+          $elem.appendChild( data[key] );
+        }
+
+      }
+      else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
+        for ( const attr in data[key] ) {
+          // if ( data[key][attr] ) {
+          //   $elem.setAttribute( attr, data[key][attr] );
+          // }
+          setAttr( attr, data[key][attr] );
+        }
+      }
+      else if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
+        if ( data[key] ) {
+          setStyle( data[key] );
         }
       }
       else if ( ['k', 'click'].includes( key ) ) {
@@ -51,34 +87,29 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if ( ['i', 'id'].includes( key ) ) {
-        if ( data[key] ) {
-          $elem.setAttribute( 'id', data[key] );
-        }
+        // if ( data[key] ) {
+        //   $elem.setAttribute( 'id', data[key] );
+        // }
+        setAttr( 'id', data[key] );
       }
       else if ( ['f', 'href'].includes( key ) ) {
-        if ( data[key] ) {
-          $elem.setAttribute( 'href', data[key] );
-        }
+        // if ( data[key] ) {
+        //   $elem.setAttribute( 'href', data[key] );
+        // }
+        setAttr( 'href', data[key] );
+
       }
-      else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
-        for ( const attr in data[key] ) {
-          if ( data[key][attr] ) {
-            $elem.setAttribute( attr, data[key][attr] );
-          }
-        }
+      else if ( ['r', 'src'].includes( key ) ) {
+        // if ( data[key] ) {
+        //   $elem.setAttribute( 'src', data[key] );
+        // }
+        setAttr( 'src', data[key] );
       }
-      else if ( ['h', 'html'].includes( key ) ) {
-        if ( Array.isArray( data[key] ) ) {
-          for ( let i = 0; i < data[key].length; i++ ) {
-            $elem.appendChild( data[key][i] );
-          }
-        }
-        else if ( data[key] && typeof data[key] == 'object' ) {
-          $elem.appendChild( data[key] );
-        }
-        else if ( data[key] && typeof data[key] == 'string' ) {
-          $elem.innerHTML = data[key];
-        }
+      else if ( ['v', 'value'].includes( key ) ) {
+        // if ( data[key] ) {
+        //   $elem.setAttribute( 'value', data[key] );
+        // }
+        setAttr( 'value', data[key] );
       }
     }
     return $elem;
@@ -117,8 +148,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
 
-    if ( data == '' ) {
-      document.querySelector( targetNode ).innerHTML = '';
+    if ( typeof data == 'string' ) {
+      document.querySelector( targetNode ).innerHTML = data;
       return;
     }
 

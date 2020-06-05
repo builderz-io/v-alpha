@@ -30,8 +30,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     const messageParts = data.slice(),
       date = Date.now(),
       timeSecondsUNIX = Number( Math.floor( date / 1000 ) ),
-      forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger' ) ),
-      toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger' ) );
+      forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger', 'key word' ) ),
+      toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger', 'key word' ) );
 
     let reference = '', recipient = '', currency,
       amount = 0, feeAmount = 0, contribution = 0, txTotal = 0;
@@ -99,17 +99,35 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     let recipientAddress, signature;
 
     const tL = V.getSetting( 'transactionLedger' );
+    const aA = V.getState( 'activeAddress' );
 
-    if ( tL == 'EVM' ) {
-      recipientAddress = recipientData.data[0].evmCredentials.address;
-      signature = initiator.evmCredentials.privateKey;
+    if ( tL == 'EVM' && aA ) {
+      const rD = recipientData.data[0];
+
+      rD.evmCredentials ? rD.evmCredentials.address ?
+        recipientAddress = rD.evmCredentials.address : undefined : undefined;
+
+      /**
+       * Overwrite recipientAddress if another has been defined by user
+       */
+
+      rD.receivingAddresses ? rD.receivingAddresses.evm ?
+        recipientAddress = rD.receivingAddresses.evm : undefined : undefined;
+
+      // signature = initiator.evmCredentials.privateKey;
     }
-    else if ( tL == 'Symbol' ) {
+    else if ( tL == 'Symbol' && aA ) {
       recipientAddress = recipientData.data[0].symbolCredentials.address;
       signature = initiator.symbolCredentials.privateKey;
     }
 
-    const aA = V.getState( 'activeAddress' );
+    if ( aA && !recipientAddress ) {
+      return {
+        success: false,
+        endpoint: 'transaction',
+        status: 'recipient address not found'
+      };
+    }
 
     return {
       success: true,

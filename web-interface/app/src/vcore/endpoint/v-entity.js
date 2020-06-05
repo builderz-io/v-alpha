@@ -38,7 +38,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     // cast tag and fullId
-    const tag = castTag();
+    const tag = V.castTag();
     const fullId = title.data[0] + ' ' + tag;
     const slug = V.castSlugOrId( fullId );
     const path = '/profile/' + slug;
@@ -47,26 +47,26 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const exists = await getEntity( fullId );
 
     if ( exists.success ) { // success is not a good thing here ;)
-      console.log( 'entity already exists:', exists.data[0].fullId );
-      castEntity( entityData );
       return {
         success: false,
         endpoint: 'entity',
-        status: 'entity exists'
+        status: 'entity exists',
+        data: [fullId]
       };
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-    const activeAddress = V.getState( 'activeAddress' );
+    const imageUpload = V.getState( 'imageUpload' );
 
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract;
+    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, thumbnail;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
+        rand: false,
         type: 'Point',
         coordinates: [entityData.lng, entityData.lat],
       };
@@ -74,6 +74,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     else {
       const gen = V.castRandLatLng();
       geometry = {
+        rand: true,
         type: 'Point',
         coordinates: [ gen.lng, gen.lat ],
       };
@@ -84,7 +85,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       const gen = V.castUUID();
-      uPhrase = 'vx' + gen.base64Url.replace( /_/g, 'a' ).replace( /-/g, '2' ).slice( 0, 16 );
+      uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
+    }
+
+    if ( imageUpload ) {
+      thumbnail = {
+        blob: imageUpload.blob,
+        contentType: imageUpload.contentType,
+        originalName: imageUpload.originalName,
+        entity: fullId
+      };
     }
 
     if ( activeEntity ) {
@@ -125,23 +135,22 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const uuid = V.castUUID();
 
+    const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
+
     const newEntity = {
+      docVersion: V.getSetting( 'entityDocVersion' ),
       fullId: fullId,
       path: path,
       private: {
         uPhrase: uPhrase,
-        uuidV4: uuid.v4,
-        base64Url: uuid.base64Url
       },
       profile: {
         fullId: fullId,
-        slug: slug,
-        path: path,
         title: title.data[0],
         tag: tag,
-        role: entityData.role ? entityData.role : 'network',
-        status: 'active',
-        verified: false,
+        creator: creator,
+        creatorTag: creatorTag,
+        role: entityData.role || 'member',
         joined: {
           date: date,
           unix: unix,
@@ -152,11 +161,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
             contract: contract,
           }
         },
-        creator: creator,
-        creatorTag: creatorTag,
+        uuidV4: uuid.v4,
+      },
+      paths: {
+        entity: path,
+        base64: '/' + uuid.base64Url
+      },
+      status: {
+        active: true,
+        verified: V.getSetting( 'defaultVerification' )
       },
       evmCredentials: {
-        address: entityData.evmAddress || activeAddress || undefined
+        address: entityData.evmAddress // || activeAddress || undefined
       },
       symbolCredentials: entityData.symbolCredentials || { address: undefined },
       owners: [{
@@ -167,16 +183,21 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         adminName: creator,
         adminTag: creatorTag,
       }],
+      adminOf: [ fullId ],
       properties: {
-        location: entityData.location || undefined,
+        baseLocation: entityData.location || undefined,
         description: entityData.description || undefined,
         target: entityData.target || undefined,
         unit: entityData.unit || undefined,
-        creator: creator,
-        creatorTag: creatorTag,
       },
+      thumbnail: thumbnail,
       geometry: geometry,
+      social: {
+        email: email,
+      }
     };
+
+    V.setState( 'imageUpload', 'clear' );
 
     return {
       success: true,
@@ -184,39 +205,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       status: 'cast entity',
       data: [ newEntity ]
     };
-  }
-
-  function castTag() {
-
-    // for demo content creation
-    if ( V.getSetting( 'demoContent' ) ) {
-      return '#2121';
-    }
-
-    let continueDice = true;
-
-    while ( continueDice ) { // 334 combinations in the format of #5626
-      const number1 = String( Math.floor( Math.random() * ( 9 - 2 + 1 ) ) + 2 );
-      const number2 = String( Math.floor( Math.random() * ( 9 - 1 + 1 ) ) + 1 );
-      const number3 = String( Math.floor( Math.random() * ( 9 - 2 + 1 ) ) + 2 );
-
-      if (
-        number2 != number1 &&
-        number3 != number1 &&
-        number3 != number2 &&
-        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
-        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
-        number1 + number2 != '69' && // sexual reference
-        number3 + number2 != '69' &&
-        number1 + number2 != '13' && // bad luck in Germany
-        number3 + number2 != '13' &&
-        number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21'
-      ) {
-        continueDice = false;
-        return '#' + number1 + number2 + number3 + number2;
-      }
-    }
   }
 
   /* ================== public methods ================== */
@@ -235,8 +223,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
          title.indexOf( '2121' ) != -1 ||
          // title.replace( /[0-9]/g, '' ).length < title.length ||
          checkLength > entitySetup.capWordLength ||
-         ( ['member', 'network'].includes( role ) && checkLength > entitySetup.maxHumanWords ) ||
-         ( ['member', 'network'].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
+         ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ||
+         ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
          wordLengthExeeded.includes( true )
     ) {
       return {
@@ -383,7 +371,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function setEntity( whichEntity, data ) {
     if ( typeof whichEntity == 'object' ) {
-      const entityCast = await castEntity( whichEntity );
+      let entityCast = await castEntity( whichEntity );
+
+      while ( entityCast.status == 'entity exists' ) {
+        console.log( 'entity exists (while loop):', entityCast.data[0].fullId );
+        entityCast = await castEntity( whichEntity );
+      }
 
       if ( entityCast.success ) {
         return V.setData( entityCast.data[0], 'entity', V.getSetting( 'entityLedger' ) );
@@ -392,15 +385,22 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return Promise.resolve( entityCast );
       }
     }
+    else if ( data == 'verification' ) {
+      return V.setData( whichEntity, 'verification', V.getSetting( 'transactionLedger' ) );
+    }
     else {
       Object.assign( data, { entity: whichEntity } );
-      return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) );
+      return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
+        V.setState( 'activeEntity', 'clear' );
+        V.setState( 'activeEntity', res.data[0] );
+        return res;
+      } );
     }
 
-    // if ( whichEndpoint == 'verification' ) {
-    //   return V.setData( entityData, whichEndpoint, V.getSetting( 'transactionLedger' ) );
-    // }
+  }
 
+  function getQuery( data ) {
+    return V.getData( data, 'entity by query', V.getSetting( 'entityLedger' ) );
   }
 
   /* ====================== export ====================== */
@@ -410,13 +410,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     V.getEntity = getEntity;
     V.setEntity = setEntity;
     V.getEntityBalance = getEntityBalance;
+    V.getQuery = getQuery;
   } )();
 
   return {
     castEntityTitle: castEntityTitle,
     getEntity: getEntity,
     setEntity: setEntity,
-    getEntityBalance: getEntityBalance
+    getEntityBalance: getEntityBalance,
+    getQuery: getQuery
   };
 
 } )();

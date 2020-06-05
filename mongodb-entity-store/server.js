@@ -53,7 +53,9 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get entity by uPhrase', handleEntity.findByUPhrase );
 
-  client.on( 'set verification', handleEntity.verify );
+  client.on( 'get entity by query', handleEntity.findByQuery );
+
+  // client.on( 'set verification', handleEntity.verify );
 
   // client.on( 'tags', handleEntity.getTags );
 
@@ -65,4 +67,7 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get transaction', handleTransaction.findTransaction );
 
+  client.on( 'user is typing', function( callback ) {
+    exports.sio.emit( 'a user is typing', callback );
+  } );
 } );

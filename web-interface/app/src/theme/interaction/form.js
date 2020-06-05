@@ -45,12 +45,15 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
         InteractionComponents.formField( 'description', values.description ),
         InteractionComponents.formField( 'target', values.target ),
-        InteractionComponents.formField( 'unit', values.unit )
+        InteractionComponents.formField( 'unit', values.unit ),
+        InteractionComponents.formUploadImage()
       ] );
     }
     else if ( which == 'search' ) {
-      V.setNode( $form, InteractionComponents.formField( 'search' ) );
-      // V.setNode( $form, InteractionComponents.searchForm() );
+      V.setNode( $form, [
+        InteractionComponents.formField( 'search' ),
+        InteractionComponents.formSearchFilter(),
+      ] );
     }
     else {
       V.setNode( $form, [ InteractionComponents.title(), InteractionComponents.desc() ] );
@@ -73,13 +76,13 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( formData.status == 'invalid title' ) {
       const $formtitle = V.getNode( '#plusform__title' );
-      $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder' ) );
+      $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder', 'form error' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';
     }
     else if ( formData.status == 'could not attach geo data' ) {
       const $formtitle = V.getNode( '#plusform__loc' );
-      $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder' ) );
+      $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder', 'form error' ) );
       $formtitle.value = '';
       $formtitle.className += ' border-error';
     }

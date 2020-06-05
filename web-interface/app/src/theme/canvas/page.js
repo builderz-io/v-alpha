@@ -179,7 +179,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       // }
     } );
 
-    Chat.drawMessageForm( 'clear' );
+    // Chat.drawMessageForm( 'clear' );
 
     if ( pagePos == 'top' ) {
       Haze.draw();

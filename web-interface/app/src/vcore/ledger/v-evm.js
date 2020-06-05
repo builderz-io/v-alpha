@@ -20,9 +20,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     if ( currentActiveAddress == null ) {
       V.setState( 'activeEntity', 'clear' );
       V.setState( 'activeAddress', 'clear' );
+      V.setCookie( 'last-active-address', 'clear' );
+      V.setCookie( 'last-active-uphrase', 'clear' );
+      V.setCookie( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
     else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
+      V.setCookie( 'welcome-modal', 1 );
       V.setState( 'activeEntity', 'clear' );
       V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
       Join.draw( 'new entity was set up' );

@@ -1,4 +1,10 @@
+td {
+  height: 26px;
+}
 
+list a {
+  color: rgba(var(--brand), 1);
+}
 
 .circle-1 {
 	width: 2.5rem;

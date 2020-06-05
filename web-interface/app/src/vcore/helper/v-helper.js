@@ -7,7 +7,97 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const urlCreator = window.URL || window.webkitURL;
+
+  /* ================== private methods ================= */
+
+  function castTranslationFile( which, whichContext, whichPart ) {
+    const obj = {};
+    obj[whichContext] = {};
+    obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
+
+  }
+
   /* ================== public methods ================== */
+
+  function castImageUpload( e ) {
+    // credit to https://zocada.com/compress-resize-images-javascript-browser/
+
+    return new Promise( ( resolve, reject ) => {
+      const width = V.getSetting( 'thumbnailWidth' );
+
+      const reader = new FileReader();
+      reader.readAsDataURL( e.target.files[0] );
+
+      reader.onload = event => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          // img.width and img.height will contain the original dimensions
+          const elem = document.createElement( 'canvas' );
+          elem.width = width; // img.width * ( height / img.height );
+          elem.height = img.height * ( width / img.width ); // height;
+          const ctx = elem.getContext( '2d' );
+          ctx.drawImage( img, 0, 0, elem.width, elem.height );
+
+          ctx.canvas.toBlob( ( blob ) => {
+            const imageData = {
+              blob: blob,
+              contentType: blob.type,
+              originalName: e.target.files[0].name
+            };
+            V.setState( 'imageUpload', imageData );
+            resolve( {
+              success: true,
+              status: 'image prepared for upload',
+              src: img.src,
+            } );
+          }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
+
+        };
+      };
+
+      reader.onerror = error => {
+        reject( {
+          success: false,
+          status: 'could not prepare image for upload',
+          message: error
+        } );
+      };
+    } );
+
+  }
+
+  function castEntityThumbnail( thumbnailData ) {
+    const arrayBufferView = new Uint8Array( thumbnailData.blob.data );
+    const blob = new Blob( [ arrayBufferView ], { type: thumbnailData.contentType } );
+    const src = urlCreator.createObjectURL( blob );
+
+    const $img = V.cN( {
+      t: 'img',
+      c: 'max-w-full',
+      a: {
+        src: src,
+        alt: thumbnailData.entity + ' ' + V.i18n( 'Title Image', 'user profile', 'image alt text' ) + ' - ' + thumbnailData.originalName
+      },
+      // TODO: revokeObjectURL
+      // e: {
+      //   onload: setSrc.bind( { src: src, clear: true } ),
+      // },
+    } );
+
+    return {
+      img: $img,
+      src: src
+    };
+  }
+
+  function setSrc() {
+    const urlCreator = window.URL || window.webkitURL;
+    if ( this.clear ) {
+      urlCreator.revokeObjectURL( this.src );
+    }
+  }
 
   function castLinks( which ) {
 
@@ -53,8 +143,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   function castRandLatLng() {
     return {
-      lat: ( Math.random() * ( 35 - 25 + 1 ) + 25 ).toFixed( 5 ),
-      lng: ( Math.random() * ( 54 - 32 + 1 ) + 32 ).toFixed( 5 ) * -1
+      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ),
+      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1
     };
   }
 
@@ -131,6 +221,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castUUID( input ) {
+    // creation adapted from https://github.com/uuidjs/uuid
+    // encode/decode adapted from https://gist.github.com/brianboyko/1b652a1bf85c48bc982ab1f2352246c8
+    // on 6th May 2020
 
     // converts a UUID to a URL-safe version of base 64.
     const encode = uuid => {
@@ -174,9 +267,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     };
 
     if ( !input ) {
-      // creation adapted from https://github.com/uuidjs/uuid
-      // encode/decode adapted from https://gist.github.com/brianboyko/1b652a1bf85c48bc982ab1f2352246c8
-      // on 6th May 2020
+      let uuidV4, encoded;
 
       const bytesToUuid = ( buf, offset ) => {
         const i = offset || 0;
@@ -267,11 +358,26 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         return buf || bytesToUuid( rnds );
       };
 
-      const uuidV4 = v4();
+      uuidV4 = v4();
+      encoded = encode( uuidV4 );
+
+      while ( uuidV4.charAt( 0 ) == '0' ||
+              encoded.includes( '-' ) ||
+              encoded.includes( '_' ) ||
+              encoded.includes( 'O' ) ||
+              ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
+              ['x', 'X'].includes( encoded.charAt( 1 ) ) ||
+              // !encoded.charAt( 0 ).match( /[0-9]/ ) ||
+              !encoded.charAt( 0 ).match( /[A-Z]/ ) ||
+              !encoded.charAt( 1 ).match( /[A-Z]/ )
+      ) {
+        uuidV4 = v4();
+        encoded = encode( uuidV4 );
+      }
 
       return {
         v4: uuidV4,
-        base64Url: encode( uuidV4 ),
+        base64Url: encoded,
       };
     }
     else if ( input.length == 22 ) {
@@ -283,8 +389,59 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function castRandomInt( min, max ) {
+    min = Math.ceil( min );
+    max = Math.floor( max );
+
+    // min and max inclusive
+    const incMinMax = Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+
+    return incMinMax;
+  }
+
+  function castTag() {
+    // debug
+    // return '#2121';
+
+    // for demo content creation
+    // if ( V.getSetting( 'demoContent' ) ) {
+    //   return '#2121';
+    // }
+
+    let continueDice = true;
+
+    while ( continueDice ) {
+      const number1 = String( castRandomInt( 2, 9 ) );
+      const number2 = String( castRandomInt( 1, 9 ) );
+      const number3 = String( castRandomInt( 2, 9 ) );
+
+      if (
+        number2 != number1 &&
+        number3 != number1 &&
+        number3 != number2 &&
+        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
+        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
+        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
+        number1 + number2 != '69' && // sexual reference
+        number3 + number2 != '69' &&
+        number1 + number2 != '13' && // bad luck in Germany
+        number3 + number2 != '13' &&
+        number1 + number2 != '21' && // special VI tag
+        number3 + number2 != '21'
+      ) {
+        continueDice = false;
+        const tag = '#' + number1 + number2 + number3 + number2;
+        return tag;
+      }
+    }
+  }
+
   function getIcon( which ) {
     return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+  }
+
+  function stripHtml( which ) {
+    return which.replace( /(<([^>]+)>)/ig, '' );
   }
 
   function setPipe( ...functions ) {
@@ -297,18 +454,32 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
   }
 
-  function getTranslation( which ) {
-    // TODO
-    return which;
+  function getTranslation( which, whichContext, whichPart ) {
+
+    // castTranslations( which, whichContext, whichPart );
+    const aE = V.getState( 'activeEntity' );
+    const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
+    const exists = VTranslations[whichContext][which] ?
+      VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
+
+    if ( exists ) {
+      return exists;
+    }
+    else {
+      return which;
+    }
   }
 
-  function i18n( which ) {
-    return getTranslation( which );
+  function i18n( which, whichContext, whichPart ) {
+    return getTranslation( which, whichContext, whichPart );
   }
 
   /* ====================== export ====================== */
 
   ( () => {
+    V.castImageUpload = castImageUpload;
+    V.castEntityThumbnail = castEntityThumbnail;
+    V.setSrc = setSrc;
     V.castLinks = castLinks;
     V.castTime = castTime;
     V.castRandLatLng = castRandLatLng;
@@ -319,13 +490,19 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     V.castJson = castJson;
     V.castShortAddress = castShortAddress;
     V.castUUID = castUUID;
+    V.castRandomInt = castRandomInt;
+    V.castTag = castTag;
     V.getIcon = getIcon;
+    V.stripHtml = stripHtml;
     V.setPipe = setPipe;
     V.getTranslation = getTranslation;
     V.i18n = i18n;
   } )();
 
   return {
+    castImageUpload: castImageUpload,
+    castEntityThumbnail: castEntityThumbnail,
+    setSrc: setSrc,
     castLinks: castLinks,
     castTime: castTime,
     castRandLatLng: castRandLatLng,
@@ -336,7 +513,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castJson: castJson,
     castShortAddress: castShortAddress,
     castUUID: castUUID,
+    castRandomInt: castRandomInt,
+    castTag: castTag,
     getIcon: getIcon,
+    stripHtml: stripHtml,
     setPipe: setPipe,
     getTranslation: getTranslation,
     i18n: i18n,

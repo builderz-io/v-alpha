@@ -44,7 +44,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'p',
       c: 'pxy',
-      h: V.i18n( 'No ' + which + ' found', 'theme' )
+      h: V.i18n( 'No ' + which + ' found', 'app', 'not found' )
     } );
   }
 
@@ -110,10 +110,10 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
           width: '45%'
         }
       },
-      html: V.setNode( {
+      html: {
         tag: 'ul',
         classes: 'flex items-center justify-end'
-      } )
+      }
     } );
   }
   function handle() {
@@ -127,7 +127,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
           'display': 'block'
         }
       },
-      html: V.setNode( {
+      html: {
         tag: 'div',
         classes: 'handle__bar rounded-full bkg-offblack',
         setStyle: {
@@ -138,7 +138,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
             'width': '5%'
           }
         },
-      } )
+      }
     } );
   }
   function topSlider() {
@@ -180,14 +180,14 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'li',
       c: 'pxy min-w-360',
-      h: V.setNode( {
+      h: {
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          V.cN( { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'card-title' ) } ),
+          { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'user profile', 'card title' ) },
           $cardContent
         ] : $cardContent
-      } )
+      }
     } );
   }
 

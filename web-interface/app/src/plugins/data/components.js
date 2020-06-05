@@ -35,7 +35,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
                 '<h2 class="font-bold fs-l leading-snug">' + cardData.place + '</h2>' +
               '</div>' +
               '<div class="card__bottom-left items-center">' +
-                '<div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">' + cardData.tempC + '</div>' +
+                '<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">' + cardData.tempC + '</div>' +
                 '<p class="card__unit fs-xxs">' + 'Now' + '</p>' +
               '</div>' +
               '<div class="card__bottom-right pxy">' +
@@ -140,7 +140,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
                 '<h2 class="font-bold fs-l leading-snug">' + cardData.city + '</h2>' +
               '</div>' +
               '<div class="card__bottom-left items-center">' +
-                '<div class="circle-2 flex justify-center items-center rounded-full border-blackalpha font-medium no-txt-select">' + cardData.pollution.aqius + '</div>' +
+                '<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">' + cardData.pollution.aqius + '</div>' +
                 '<p class="card__unit fs-xxs">' + 'US AQI' + '</p>' +
               '</div>' +
               '<div class="card__bottom-right pxy">' +

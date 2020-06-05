@@ -1,7 +1,7 @@
 const User = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Plugin driving the user profile/edit page
+   * V Plugin driving the entity edit page
    *
    */
 
@@ -11,41 +11,35 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
+    if ( which == '/me/disconnect' ) {
+      return which;
+    }
+
     if ( !V.getState( 'activeEntity' ) ) {
       return {
         success: false,
         status: ''
       };
     }
-
-    const fullId = V.getState( 'activeEntity' ).fullId;
-    const query = await V.getEntity( fullId );
-
-    const mapData = [];
-
-    if ( query.success ) {
-
-      mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
-
-      return {
-        success: true,
-        status: 'user retrieved',
-        data: [{
-          which: which,
-          entity: query.data[0],
-          mapData: mapData,
-        }]
-      };
-    }
     else {
       return {
-        success: null,
-        status: 'cound not retrieve user'
+        success: true,
+        status: 'active entity retrieved',
+        data: [{
+          which: which,
+          entity: V.getState( 'activeEntity' ),
+          mapData: [{ type: 'Feature', geometry: V.getState( 'activeEntity' ).geometry }],
+        }]
       };
     }
   }
 
   function view( data ) {
+
+    if ( data == '/me/disconnect' ) {
+      Modal.draw( 'disconnect' );
+      return;
+    }
 
     let $topcontent, $list;
 
@@ -59,12 +53,17 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
-        Join.onboardingCard(),
+        InteractionComponents.onboardingCard(),
         UserComponents.entityCard(),
-        UserComponents.locationCard(),
-        UserComponents.introCard(),
-        UserComponents.financialCard(),
         UserComponents.socialCard(),
+        UserComponents.addOrChangeImage(),
+        UserComponents.descriptionCard(),
+        UserComponents.locationCard(),
+        UserComponents.preferredLangsCard(),
+        UserComponents.financialCard(),
+        UserComponents.evmAddressCard(),
+        UserComponents.evmReceiverAddressCard(),
+        UserComponents.uPhraseCard(),
       ] );
 
       Navigation.draw( data.data[0].which );
@@ -79,7 +78,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         } );
       } );
 
-      Chat.drawMessageForm( 'clear' );
+      // Chat.drawMessageForm( 'clear' );
 
       VMap.draw( data.data[0].mapData );
     }
@@ -98,8 +97,8 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'userNav', [
       {
-        title: 'Account',
-        path: '/me/account',
+        title: 'Transfers',
+        path: '/me/transfers',
         use: {
           button: 'search',
         },
@@ -134,7 +133,14 @@ const User = ( function() { // eslint-disable-line no-unused-vars
           button: 'plus search',
         },
         draw: function( path ) {
-          Entities.draw( path );
+          EntityList.draw( path );
+        }
+      },
+      {
+        title: 'Disconnect',
+        path: '/me/disconnect',
+        draw: function( path ) {
+          User.draw( path );
         }
       }
     ] );

@@ -1,7 +1,7 @@
 const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Plugin driving the profile pages,
+   * V Plugin driving the entity display page
    *
    */
 
@@ -53,20 +53,26 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
+      Button.draw( 'all', { fade: 'out' } );
+
       UserComponents.setData( {
         entity: data.data[0].entity,
         editable: false
       } );
 
       $list = CanvasComponents.list( 'narrow' );
-      $topcontent = ProfileComponents.topcontent();
+      $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
+        UserComponents.thumbnailCard(),
         UserComponents.entityCard(),
+        UserComponents.fundingStatusCard(),
+        UserComponents.descriptionCard(),
         UserComponents.locationCard(),
-        UserComponents.introCard(),
         UserComponents.financialCard(),
         UserComponents.socialCard(),
+        UserComponents.preferredLangsCard(),
+        UserComponents.evmAddressCard(),
       ] );
 
       Navigation.draw( data.data[0].entity );
@@ -77,7 +83,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
       } );
 
-      Chat.drawMessageForm( 'clear' );
+      // Chat.drawMessageForm( 'clear' );
 
       VMap.draw( data.data[0].mapData );
     }

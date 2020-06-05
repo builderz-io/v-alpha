@@ -7,25 +7,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  V.setStyle( {
-
-    /* Gain scrollable space adding invisible last pill to navs */
-    'entity-nav__ul > *:last-child': {
-      visibility: 'hidden'
-    },
-    'service-nav__ul > *:last-child': {
-      visibility: 'hidden'
-    },
-    'user-nav__ul > *:last-child': {
-      visibility: 'hidden'
-    }
-  } );
-
   /* ================== private methods ================= */
 
   function presenter(
     data,
-    whichPath = typeof data == 'object' ? data.profile.path : data
+    whichPath = typeof data == 'object' ? data.paths.entity : data
   ) {
 
     const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
@@ -236,10 +222,16 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       else if ( t.localName == 'svg' ) { return t.parentNode }
       else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
     } )( e );
+
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( { path: path } );
+
+      if ( path != '/me/disconnect' ) {
+        Navigation.draw( path );
+      }
+
       V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
     }
 
@@ -330,6 +322,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const width = window.innerWidth;
 
     deselect();
+
+    Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
     // (previous version) also reset path if not account or profile path
     // if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {

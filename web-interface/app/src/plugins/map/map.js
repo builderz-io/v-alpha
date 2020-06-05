@@ -92,7 +92,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( features ) {
-    console.log( features );
+
     if ( featureLayer ) {
       featureLayer.remove();
     }

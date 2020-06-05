@@ -9,18 +9,33 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  async function presenter( whichPath, search ) {
 
-    let whichRole;
-    const mapData = [];
+    // let whichRole;
+    //
+    // if ( whichPath && whichPath != '/market/all' ) {
+    //   // remove the plural from slug
+    //   whichRole = whichPath.substring( 0, whichPath.length - 1 ).replace( '/market/', '' );
+    //
+    // }
 
-    if ( which && which != '/market/all' ) {
-      // remove the plural from slug
-      whichRole = which.substring( 0, which.length - 1 ).replace( '/market/', '' );
-
+    const split = whichPath ? whichPath.split( '/' ) : ['all']; // default to 'all'
+    let whichRole = split.pop();
+    if ( whichRole != 'all' ) {
+      whichRole = whichRole.slice( 0, -1 ); // remove plural
     }
 
-    const query = await V.getEntity( whichRole );
+    let query, isSearch = false;
+    if ( search && search.query ) {
+      Object.assign( search, { role: whichRole } );
+      isSearch = true;
+      query = await V.getQuery( search );
+    }
+    else {
+      query = await V.getEntity( whichRole );
+    }
+
+    const mapData = [];
 
     if ( query.success ) {
       query.data.forEach( entity => {
@@ -29,8 +44,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: true,
         status: 'entities retrieved',
+        isSearch: isSearch,
         data: [{
-          which: which,
+          whichPath: whichPath,
           entities: query.data,
           mapData: mapData,
         }]
@@ -40,8 +56,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         status: 'cound not retrieve any entities',
+        isSearch: isSearch,
         data: [{
-          which: which,
+          whichPath: whichPath,
           entities: query.data,
           mapData: mapData,
         }]
@@ -58,6 +75,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     const viewData = data.data[0];
 
     if ( data.success ) {
+      if ( data.isSearch ) {
+        Form.draw( 'all', { fade: 'out' } );
+        Button.draw( 'all', { fade: 'out' } );
+      }
       viewData.entities.reverse().forEach( cardData => {
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
         const $cardContent = MarketplaceComponents.cardContent( cardData );
@@ -70,8 +91,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
     }
 
-    if ( viewData.which ) {
-      Navigation.draw( viewData.which );
+    if ( viewData.whichPath ) {
+      Navigation.draw( viewData.whichPath );
       Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
       // Button.draw( 'plus search', { delay: 2 } );
       // if ( V.getState( 'activeEntity' ) ) {
@@ -131,35 +152,35 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         }
       },
-      // {
-      //   title: 'Events',
-      //   path: '/market/events',
-      //   use: {
-      //     button: 'plus search',
-      //     form: 'new entity',
-      //     role: 'event',
-      //   },
-      //   draw: function( path ) {
-      //     Marketplace.draw( path );
-      //   }
-      // },
-      // {
-      //   title: 'Concerts',
-      //   path: '/market/concerts',
-      //   use: {
-      //     button: 'plus search',
-      //     form: 'new entity',
-      //     role: 'concert',
-      //   },
-      //   draw: function( path ) {
-      //     Marketplace.draw( path );
-      //   }
-      // }
+      {
+        title: 'Events',
+        path: '/events',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'event',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Crowdfunding',
+        path: '/pools',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'pool',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      }
     ] );
   }
 
-  function draw( which ) {
-    presenter( which ).then( data => { view( data ) } );
+  function draw( whichPath, search ) {
+    presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
 
   return {
