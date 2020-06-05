@@ -10,23 +10,33 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
   V.setStyle( {
     'pill': {
       'height': '2.5rem',
+      'padding': '0 1.2rem',
+      'margin-right': '0.7rem'
+    },
+    'pill__entity': {
+      'height': '2.5rem',
       'padding': '0 1rem',
       'margin-right': '0.7rem'
     },
     'pill--selected': {
-      'color': 'rgba(var(--brand), 1)',
-      'border': '2px solid rgba(var(--brand), 1)',
-      'box-shadow': '0px -1px 3px 0px rgba(var(--brand),.50), 0px 1px 3px 0px rgba(var(--brand),.55)'
+      color: 'rgba(var(--brand), 1)',
+      border: '2px solid rgba(var(--brand), 1)',
+      // 'box-shadow': '0px -1px 3px 0px rgba(var(--brand),.50), 0px 1px 3px 0px rgba(var(--brand),.55) !important'
     },
     'pill--user-online': {
       position: 'relative',
       left: '-3px'
     },
-    'tiny-img': {
+    'pill__img': {
       'background-position': 'center center',
       'background-size': 'cover',
       'position': 'relative',
-      'left': '-11px'
+      'left': '-10px',
+      'border': '2px solid white'
+    },
+    'pill__initials': {
+      position: 'relative',
+      right: '3px',
     },
     'entity-nav': {
       'padding-top': '4px',
@@ -83,20 +93,21 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( {
       t: 'li',
-      c: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
+      c: ( item.tinyImage ? 'pill__entity' : 'pill' ) + ' flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
       a: {
         path: item.path || '/',
       },
       h: [
         item.tinyImage ? {
           t: 'div',
-          c: 'tiny-img circle-0 rounded-full flex justify-center items-center cursor-pointer',
+          c: 'pill__img circle-0 rounded-full flex justify-center items-center cursor-pointer',
           a: {
             style: `background:${background( item )}`
           },
         } : '',
         {
           t: 'span',
+          c: item.tinyImage ? 'pill__initials' : '',
           h: V.i18n( item.title, 'navigation', 'nav item' )
         }
       ]
