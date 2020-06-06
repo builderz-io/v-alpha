@@ -74,7 +74,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     Array.isArray( data ) ? null : data = [ data ];
     data.forEach( item => {
       try {
-        const maxLength = 20;
+        const maxLength = 25;
         if ( item.title.length <= maxLength ) {
           const state = getState( whichNav );
           // const key = item.path;

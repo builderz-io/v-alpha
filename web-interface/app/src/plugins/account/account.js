@@ -91,6 +91,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData ) {
+      Button.draw( 'all', { fade: 'out' } );
       Navigation.draw( pageData.path );
       Page.draw( pageData );
       Chat.drawMessageForm();

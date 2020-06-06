@@ -148,8 +148,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.messageform', 'clear' );
     if ( options == 'clear' ) { return }
 
+    const prefill = V.getState( 'active' ).lastViewed;
+
     const $form = ChatComponents.messageForm();
-    const $input = ChatComponents.messageInput();
+    const $input = ChatComponents.messageInput( prefill );
     const $response = ChatComponents.messageResponse();
 
     const $send = InteractionComponents.sendBtn();
@@ -160,6 +162,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
     $input.addEventListener( 'input', handleInputTyping );
+
+    V.setState( 'active', { lastViewed: undefined } );
 
     V.setNode( $form, [ $response, $input, $send ] );
     V.setNode( 'body', $form );

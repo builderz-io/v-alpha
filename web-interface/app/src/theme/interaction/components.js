@@ -98,6 +98,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function set() {
+    return V.cN( {
+      t: 'li',
+      id: 'set',
+      c: btnClasses,
+      h: img( 'send' )
+    } );
+  }
+
   function sendNav() {
     return V.cN( {
       t: 'li',
@@ -463,6 +472,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     query: query,
     plus: plus,
     close: close,
+    set: set,
     sendNav: sendNav,
     sendBtn: sendBtn,
     form: form,

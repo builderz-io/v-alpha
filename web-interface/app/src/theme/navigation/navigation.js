@@ -95,7 +95,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
       V.setNavItem( 'entityNav', obj );
     }
-    console.log( entityNav );
+
     syncNavOrder( entityNavOrder, entityNav );
 
     V.setCookie( 'entity-nav-order', entityNavOrder );
@@ -312,6 +312,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const span = $item.getElementsByClassName( 'pill__initials' )[0];
     if ( span ) {
       span.innerHTML = $item.getAttribute( 'fullId' );
+      span.previousSibling.style.display = 'none';
+      span.classList.add( 'pill__replace' );
+      span.classList.remove( 'pill__initials' );
     }
     $item.className += ' pill--selected';
     $item.addEventListener( 'click', resetOnClick, { once: true } );
@@ -321,9 +324,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const $itemSelected = document.getElementsByClassName( 'pill--selected' );
     if ( $itemSelected.length ) {
       for ( let i = 0; i < $itemSelected.length; i++ ) {
-        const span = $itemSelected[i].getElementsByClassName( 'pill__initials' )[0];
+        const span = $itemSelected[i].getElementsByClassName( 'pill__replace' )[0];
         if ( span ) {
           span.innerHTML = $itemSelected[i].getAttribute( 'initials' );
+          span.previousSibling.style.display = 'inline';
+          span.classList.add( 'pill__initials' );
+          span.classList.remove( 'pill__replace' );
         }
         $itemSelected[i].removeEventListener( 'click', resetOnClick );
         $itemSelected[i].classList.remove( 'pill--selected' );
@@ -413,7 +419,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     select( $itemToAnimate );
 
     const itemClickedRect = $itemToAnimate.getBoundingClientRect();
-    console.log( itemClickedRect );
+
     movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj );
 
     setCountAndLastIndex( nav ); // updates nav status in cookies after movingPillAnimation

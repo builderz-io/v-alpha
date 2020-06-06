@@ -23,7 +23,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       return 'url(\'' + url + '\')';
     }
 
-    switch ( cardData.profile.tag.charAt( 1 ) ) {
+    switch ( '2' /* cardData.profile.tag.charAt( 1 ) */ ) {
     // case '1': return palette[0];
     case '2': return palette[0];
     case '3': return palette[1];
