@@ -14,7 +14,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function handleInputTyping() {
     if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
-      window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+      if ( V.getState( 'activeEntity' ) ) {
+        window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+      }
     }
   }
 

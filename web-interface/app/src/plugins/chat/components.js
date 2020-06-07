@@ -70,14 +70,14 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const aE = V.getState( 'activeEntity' );
     return V.sN( {
       t: 'textarea',
-      h: ( 'send ' + prefill + ' 10' ) || '',
+      h: prefill ? 'send ' + prefill + ' 10' : '',
       // h: 'send 100 to Community #2121',
       // h: 'send Peter Smith #2121 100',
       // h: 'verify Acc One #2989',
       // h: 'send Community Contribution #2121 100 for corona masks funding',
       // h: 'verify 0x3107b077b7745994cd93d85092db034ca1984d46',
       a: {
-        placeholder: aE ? V.i18n( 'Send message or funds', 'placeholder', 'message input' ) : V.i18n( 'Join first', 'placeholder', 'message input' )
+        placeholder: aE ? V.i18n( 'Send message or funds', 'placeholder', 'message input' ) : V.i18n( 'Join first to send a message or funds', 'placeholder', 'message input' )
       },
       s: {
         messageform__input: {

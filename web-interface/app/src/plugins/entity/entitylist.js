@@ -29,7 +29,13 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
     for ( let i = 0; i < adminOf.length; i++ ) {
       const query = await V.getEntity( adminOf[i] );
       entitiesAdmined.push( query );
-      mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
+      mapData.push( {
+        type: 'Feature',
+        geometry: query.data[0].geometry,
+        profile: query.data[0].profile,
+        thumbnail: query.data[0].thumbnail,
+        path: query.data[0].path
+      } );
     }
 
     if ( entitiesAdmined[0] && entitiesAdmined[0].success ) {

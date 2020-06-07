@@ -9,6 +9,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  function castRecipient( messageParts ) {
+    const tag = messageParts.pop();
+    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
+  }
+
   async function castTransaction( data ) {
 
     /**
@@ -47,14 +52,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     if ( toIndex != -1 && !isNaN( messageParts[ toIndex -1 ] ) ) {
       const firstPart = messageParts.splice( 0, toIndex + 1 );
       amount = reduceNumbers( firstPart );
-      recipient = messageParts.join( ' ' ).trim();
+      recipient = castRecipient( messageParts );
     }
     else {
       messageParts.shift();
 
       for ( let i = messageParts.length - 1; i >= 0; i-- ) {
         if ( messageParts[i].charAt( 0 ) === '#' ) {
-          recipient = messageParts.join( ' ' ).trim();
+          recipient = castRecipient( messageParts );
           break;
         }
         if ( !isNaN( Number( messageParts[i] ) ) ) {

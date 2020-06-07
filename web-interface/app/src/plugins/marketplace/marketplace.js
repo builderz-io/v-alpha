@@ -39,7 +39,13 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     if ( query.success ) {
       query.data.forEach( entity => {
-        mapData.push( { type: 'Feature', geometry: entity.geometry } );
+        mapData.push( {
+          type: 'Feature',
+          geometry: entity.geometry,
+          profile: entity.profile,
+          thumbnail: entity.thumbnail,
+          path: entity.path
+        } );
       } );
       return {
         success: true,
@@ -154,7 +160,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         title: 'Events',
-        path: '/events',
+        path: '/market/events',
         use: {
           button: 'plus search',
           form: 'new entity',

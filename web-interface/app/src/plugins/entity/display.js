@@ -28,7 +28,14 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     const mapData = [];
 
     if ( query.success ) {
-      mapData.push( { type: 'Feature', geometry: query.data[0].geometry } );
+      console.log( 1 );
+      mapData.push( {
+        type: 'Feature',
+        geometry: query.data[0].geometry,
+        profile: query.data[0].profile,
+        thumbnail: query.data[0].thumbnail,
+        path: query.data[0].path
+      } );
 
       return {
         success: true,
@@ -67,9 +74,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.thumbnailCard(),
         UserComponents.entityCard(),
         UserComponents.fundingStatusCard(),
+        UserComponents.financialCard(),
         UserComponents.descriptionCard(),
         UserComponents.locationCard(),
-        UserComponents.financialCard(),
         UserComponents.socialCard(),
         UserComponents.preferredLangsCard(),
         UserComponents.evmAddressCard(),
@@ -82,7 +89,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       Page.draw( {
         // topcontent: $topcontent,
         listings: $list,
-        position: 'top',
+        position: 'top', // could optionally be 'feature', if map flies to entity
+        haze: false
       } );
 
       // Chat.drawMessageForm( 'clear' );

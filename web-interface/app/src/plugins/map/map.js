@@ -27,6 +27,14 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     fillOpacity: 0.8
   };
 
+  const popUpSettings = {
+    maxWidth: 150,
+    closeButton: false,
+    autoPanPaddingTopLeft: [100, 140],
+    keepInView: true,
+    className: 'map__popup'
+  };
+
   const mapSettings = {
     // map center with arcgisonline.com tiles
     lat: 43.776, // lesser numbers = move map south
@@ -37,6 +45,30 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   };
 
   /* ================== private methods ================= */
+
+  function castPopup( feature ) {
+    return V.cN( {
+      t: 'div',
+      c: '',
+      h: [
+        {
+          t: 'p',
+          c: 'font-bold txt-center',
+          h: feature.profile.fullId
+        },
+        MarketplaceComponents.castCircle( {
+          thumbnail: feature.thumbnail,
+          profile: { title: feature.profile.title },
+          path: feature.path
+        } ),
+        {
+          t: 'p',
+          c: 'fs-s capitalize txt-center',
+          h: feature.profile.role
+        },
+      ]
+    } );
+  }
 
   function presenter( features ) {
     if ( V.getSetting( 'loadMap' ) ) {
@@ -100,6 +132,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     featureLayer = L.geoJSON( features, {
       pointToLayer: function( feature, latlng ) {
         return L.circleMarker( latlng, geojsonMarkerSettings );
+      },
+      onEachFeature: function( feature, layer ) {
+        layer.bindPopup( L.popup( popUpSettings ).setContent( castPopup( feature ) ) );
       }
     } );
 
