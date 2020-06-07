@@ -41,10 +41,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   /* ================== private methods ================= */
 
-  function img( icon ) {
+  function img( icon, css ) {
     return V.cN( {
       t: 'div',
-      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition',
+      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition' + ( css ? ' ' + css : '' ),
       h: V.getIcon( icon )
     } );
   }
@@ -119,6 +119,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function sendBtn() {
     return V.cN( {
       t: 'button',
+      i: 'send-message',
       c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
       h: V.cN( {
         t: 'span',

@@ -163,7 +163,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     // } );
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
-    $input.addEventListener( 'input', handleInputTyping );
+    // $input.addEventListener( 'input', handleInputTyping );
 
     V.setState( 'active', { lastViewed: undefined } );
 

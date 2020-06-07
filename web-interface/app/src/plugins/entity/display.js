@@ -28,7 +28,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     const mapData = [];
 
     if ( query.success ) {
-      console.log( 1 );
       mapData.push( {
         type: 'Feature',
         geometry: query.data[0].geometry,
