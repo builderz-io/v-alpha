@@ -138,18 +138,23 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       let next;
 
       if ( !sel ) {
-        next = ( key == 40 ) ? sc.querySelector( '.ac-suggestion' ) : sc.childNodes[sc.childNodes.length - 1]; // first : last
-        next.className += ' selected';
+        const sgs = sc.querySelectorAll( '.ac-suggestion' );
+        next = ( key == 40 ) ? sgs[0] : sgs[sgs.length - 1]; // first : last
+        next.classList.add( 'selected' );
         considerSelection( next.getAttribute( 'data-val' ), permanentString, this );
       }
       else {
         next = ( key == 40 ) ? sel.nextSibling : sel.previousSibling;
         if ( next ) {
-          sel.className = sel.className.replace( 'selected', '' );
-          next.className += ' selected';
+          sel.classList.remove( 'selected' );
+          next.classList.add( 'selected' );
           considerSelection( next.getAttribute( 'data-val' ), permanentString, this );
         }
-        else { sel.className = sel.className.replace( 'selected', '' ); this.value = permanentString + ' '; next = 0 } // loop through list using keyboard
+        else {
+          sel.classList.remove( 'selected' );
+          this.value = permanentString + ' ';
+          next = 0;
+        } // loop through list using keyboard
       }
     }
     // all other keys
