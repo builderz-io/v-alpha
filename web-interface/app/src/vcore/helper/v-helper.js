@@ -473,7 +473,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
   }
 
-  function getTranslation( which, whichContext, whichPart ) {
+  function getTranslation( which, whichContext, whichDescr = '' ) {
 
     // castTranslations( which, whichContext, whichPart );
     const aE = V.getState( 'activeEntity' );
@@ -489,8 +489,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function i18n( which, whichContext, whichPart ) {
-    return getTranslation( which, whichContext, whichPart );
+  function i18n( which, whichContext, whichDescr ) {
+    return getTranslation( which, whichContext, whichDescr );
   }
 
   /* ====================== export ====================== */

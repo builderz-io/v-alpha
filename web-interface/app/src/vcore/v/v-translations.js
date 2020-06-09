@@ -195,5 +195,8 @@ const VTranslations = // eslint-disable-line no-unused-vars
       en_US: 'Block',
       de_DE: 'Block'
     }
+  },
+  'chat components': {
+
   }
 };

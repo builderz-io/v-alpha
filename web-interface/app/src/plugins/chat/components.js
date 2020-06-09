@@ -7,11 +7,30 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  let autoCompleteActive = false;
+  let stringToComplete = false;
+  let permanentString = '';
+  let dbEntries, sc, sel;
+
   document.addEventListener( 'click', function( e ) {
     revertAutoComplete( e.target );
-    // document.getElementById( 'textarea-text' ).focus();
-    // $( '#confirm-tx' ).remove();
   } );
+
+  /* ============== user interface strings ============== */
+
+  const
+    strNotFound     = 'not found',
+    strChatTitle    = 'Chat with Everyone',
+    strPlaceholder  = 'Send message or funds',
+    strPlaceholder2 = 'Join first to send a message or funds';
+
+  function uiStr( string, description ) {
+    return V.i18n( string, 'chat components', description );
+  }
+
+  /* ================= component styles ================= */
+
+  // TODO: transfer styles to utilities
 
   V.setStyle( {
     'messageform': {
@@ -69,26 +88,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   } );
 
-  let autoCompleteActive = false;
-  let stringToComplete = false;
-  let permanentString = '';
-  let dbEntries, sc, sel;
-
   /* ================== event handlers ================== */
 
   function handleKeyUp( e ) {
     const key = window.event ? e.keyCode : e.which;
-    // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
-    // // let sel;
-    //
-    // if ( sc ) {
-    //   sel = sc.querySelector( '.ac-suggestion.selected' );
-    // }
-
     // enter (to search)
     if ( key == 13 && V.i18n( 'search', 'trigger' ) == permanentString.split( ' ' )[0] ) {
-      // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
-      // const sel = sc.querySelector( '.ac-suggestion.selected' );
       if ( sc.childElementCount == 1 ) {
         this.value = permanentString.split( ' ' )[0] + ' ' + sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' );
         document.getElementById( 'send-message' ).click();
@@ -105,10 +110,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     // enter, tab or right (to place selection)
     else if ( ( key == 13 || key == 9 || key == 39 ) && autoCompleteActive ) {
-      // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
-      // const sel = sc.querySelector( '.ac-suggestion.selected' );
       e.preventDefault();
-
       if ( sc.childElementCount == 1 ) {
         placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
       }
@@ -121,19 +123,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       revertAutoComplete();
       e.stopPropagation();
     }
-    // esc
-    // else if ( key == 27 ) {
-    //   $( '#textarea-text' ).val( '' );
-    // }
     // backspace
     else if ( key == 8 && stringToComplete.length < 3 ) {
       revertAutoComplete();
     }
     // down (40), up (38)
+    // loop through list using keyboard
     else if ( ( key == 40 || key == 38 ) && autoCompleteActive ) {
-
-      // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
-      // const sel = sc.querySelector( '.ac-suggestion.selected' );
 
       let next;
 
@@ -154,7 +150,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           sel.classList.remove( 'selected' );
           this.value = permanentString + ' ';
           next = 0;
-        } // loop through list using keyboard
+        }
       }
     }
     // all other keys
@@ -203,25 +199,25 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
           V.getQuery( { query: stringToComplete, role: 'all' } ).then( res => {
             dbEntries = res.data;
-            renderFirstAutocompleteElement( dbEntries, stringToComplete, permanentString, this );
+            setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
           } );
 
           // socket.emit( 'get all entities', [stringToComplete, $( '#header-svg' ).attr( 'fullid' )], function( callback ) {
           //   dbEntries = callback.sort();
-          //   renderFirstAutocompleteElement( dbEntries, stringToComplete, permanentString );
+          //   setFirstSuggestions( dbEntries, stringToComplete, permanentString );
           // } );
         }
         if ( stringToComplete.length == 4 && stringToComplete.substr( 0, 2 ) == V.i18n( 'for', 'trigger' ) ) {
 
           // socket.emit( 'get all entities', stringToComplete, function( callback ) {
           //   dbEntries = callback;
-          //   renderFirstAutocompleteElement( dbEntries, [stringToComplete, $( '#header-svg' ).attr( 'fullid' )], permanentString );
+          //   setFirstSuggestions( dbEntries, [stringToComplete, $( '#header-svg' ).attr( 'fullid' )], permanentString );
           // } );
         }
       } // close if stringToComplete
 
       if ( stringToComplete && autoCompleteActive && !( key == 40 || key == 38 ) ) {
-        renderNewAutocompleteElement( dbEntries, stringToComplete );
+        setNewSuggestions( dbEntries, stringToComplete );
       }
 
     } // close else of key pressed checking
@@ -233,9 +229,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( sc ) {
       sel = sc.getNode( '.ac-suggestion.selected' );
-    }
-    else {
-      return;
     }
 
     const key = window.event ? e.keyCode : e.which;
@@ -275,41 +268,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  /* =============== autocomplete methods =============== */
+  /* ========= private methods (autocomplete) =========== */
 
-  function renderFirstAutocompleteElement( dbEntries, stringToComplete, permanentString, $elem ) {
+  function setFirstSuggestions( dbEntries, stringToComplete, permanentString, $textarea ) {
 
     autoCompleteActive = true;
 
-    const rect = $elem.getBoundingClientRect();
-
-    // create suggestions container "sc"
-    // const sc = document.createElement( 'div' );
-    // sc.className = 'ac-suggestions card-shadow';
-    //
-    // sc.style.position = 'absolute';
-    // sc.style.left = rect.left + 'px'; //  Math.round( rect.left + ( window.pageXOffset || document.documentElement.scrollLeft ) - 40 ) + 'px';
-    // sc.style.bottom = rect.height + 20 + 'px';
-    // sc.style.width = rect.width + 'px'; // Math.round( rect.right - rect.left + 80 ) + 'px'; // outerWidth
-    //
-    // let s = '';
-    // if ( !dbEntries.length ) { s += '<div class="ac-suggestion">"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' ) }
-    // for ( let i=0; i<dbEntries.length; i++ ) { s += renderItem( dbEntries[i], stringToComplete ) }
-    // sc.innerHTML = s;
-
-    const sc = V.cN( {
-      t: 'div',
-      c: 'ac-suggestions absolute card-shadow',
-      y: {
-        left: rect.left + 'px',
-        bottom: rect.height + 20 + 'px',
-        width: rect.width + 'px'
-      },
-      h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
-        t: 'div',
-        h: dbEntries.map( entry => { return renderItem( entry, stringToComplete ) } )
-      } )
-    } );
+    const sc = castFirstSuggestions( $textarea, dbEntries, stringToComplete ); // suggestions container
 
     live( 'ac-suggestion', 'mouseout', function() {
       const sel = sc.querySelector( '.ac-suggestion.selected' );
@@ -325,7 +290,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     live( 'ac-suggestion', 'mousedown', function() {
       if ( hasAutoCompleteClass( this, 'ac-suggestion' ) ) { // else outside click
-        placeSelection( this.getAttribute( 'data-val' ), permanentString, $elem );
+        placeSelection( this.getAttribute( 'data-val' ), permanentString, $textarea );
       }
     }, sc );
 
@@ -334,25 +299,19 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function renderNewAutocompleteElement( dbEntries, stringToComplete ) {
+  function setNewSuggestions( dbEntries, stringToComplete ) {
 
-    // var s = '';
     V.setNode( '.ac-suggestions', '' );
 
     for ( let i=0; i<dbEntries.length; i++ ) {
       if ( dbEntries[i].fullId.toLowerCase().includes( stringToComplete ) ) {
-        // s += renderItem( dbEntries[i], stringToComplete );
-        V.setNode( '.ac-suggestions', renderItem( dbEntries[i], stringToComplete ) );
+        V.setNode( '.ac-suggestions', castSuggestion( dbEntries[i], stringToComplete ) );
       }
       else {
         V.setNode( '.ac-suggestions', notFound( stringToComplete ) );
         break;
       }
     }
-
-    // if ( !s.length ) {s += '<div class="ac-suggestion">"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' )}
-
-    // document.getElementsByClassName( 'ac-suggestions' )[0].innerHTML = s;
 
   }
 
@@ -370,27 +329,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     window.setTimeout( function() { $elem.focus() }, 10 );
   }
 
-  function renderItem( entity, stringToComplete ) {
-    const search = stringToComplete.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
-    const re = new RegExp( '(' + search.split( ' ' ).join( '|' ) + ')', 'gi' );
-    const name = entity.profile.title; // item.slice( 0, -5 );
-    const tag = entity.profile.tag; // item.substr( item.length-5 );
-    // return '<div class="ac-suggestion" data-val="' + entity.profile.fullId + '">' + name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>' + '</div>';
-
-    return V.cN( {
-      t: 'div',
-      c: 'ac-suggestion',
-      a: {
-        'data-val': entity.profile.fullId
-      },
-      h: name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>'
-    } );
-
-  }
-
   function revertAutoComplete() {
-
-    // $( '#textarea-text' ).css( 'border-color', '#151414' );
 
     autoCompleteActive = false;
     stringToComplete = false;
@@ -399,17 +338,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( '.ac-suggestions', 'clear' );
 
-    /*close all autocomplete lists in the document*/
-    // const x = document.getElementsByClassName( 'ac-suggestions' );
-    // for ( let i = 0; i < x.length; i++ ) {
-    //
-    //   let that = x[i];
-    //   // removeEvent( that, 'keydown', that.keydownHandler );
-    //   // removeEvent( that, 'keyup', that.keyupHandler );
-    //
-    //   that.parentNode.removeChild( that );
-    //   that = null;
-    // }
   }
 
   function hasAutoCompleteClass( el, className ) { return el.classList ? el.classList.contains( className ) : new RegExp( '\\b'+ className+'\\b' ).test( el.className ) }
@@ -433,17 +361,56 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  /* ================== private methods ================= */
+  /* ================== public methods ================== */
+
+  // currently none
+
+  /* ================= private components =============== */
+
+  // autocomplete
+
+  function castFirstSuggestions( $textarea, dbEntries, stringToComplete ) {
+    const rect = $textarea.getBoundingClientRect();
+
+    return V.cN( {
+      t: 'div',
+      c: 'ac-suggestions absolute card-shadow',
+      y: {
+        left: rect.left + 'px',
+        bottom: rect.height + 20 + 'px',
+        width: rect.width + 'px'
+      },
+      h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
+        t: 'div',
+        h: dbEntries.map( entry => { return castSuggestion( entry, stringToComplete ) } )
+      } )
+    } );
+  }
+
+  function castSuggestion( entity, stringToComplete ) {
+    const search = stringToComplete.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
+    const re = new RegExp( '(' + search.split( ' ' ).join( '|' ) + ')', 'gi' );
+    const name = entity.profile.title;
+    const tag = entity.profile.tag;
+
+    return V.cN( {
+      t: 'div',
+      c: 'ac-suggestion',
+      a: {
+        'data-val': name + ' ' + tag
+      },
+      h: name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>'
+    } );
+
+  }
 
   function notFound( stringToComplete ) {
     return V.cN( {
       t: 'div',
       c: 'ac-suggestion',
-      h: '"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' )
+      h: '"' + stringToComplete + '" ' + uiStr( strNotFound )
     } );
   }
-
-  /* ================== public methods ================== */
 
   /* ================  public components ================ */
 
@@ -455,7 +422,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'h2',
           c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
-          h: V.i18n( 'Chat with Everyone', 'app', 'chat title' )
+          h: uiStr( strChatTitle, 'chat title' )
         },
         {
           t: 'span',
@@ -504,13 +471,9 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'textarea',
       c: 'messageform__input mr-2',
       h: prefill ? 'send ' + prefill + ' 10' : '',
-      // h: 'send 100 to Community #2121',
-      // h: 'send Peter Smith #2121 100',
-      // h: 'verify Acc One #2989',
-      // h: 'send Community Contribution #2121 100 for corona masks funding',
-      // h: 'verify 0x3107b077b7745994cd93d85092db034ca1984d46',
       a: {
-        placeholder: aE ? V.i18n( 'Send message or funds', 'placeholder', 'message input' ) : V.i18n( 'Join first to send a message or funds', 'placeholder', 'message input' )
+        placeholder: aE ? uiStr( strPlaceholder, 'message textarea placeholder' )
+          : uiStr( strPlaceholder2, 'message textarea placeholder' )
       },
       e: {
         keyup: handleKeyUp,

@@ -7,15 +7,19 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ============== user interface strings ============== */
+
   const
     strFrom  = 'from',
     strTo    = 'to',
     strBlock = 'block',
     strDate  = 'date';
 
-  function str( string, scope ) {
-    return V.i18n( string, 'account components', scope || 'transaction details' ) + ' ';
+  function uiStr( string, description ) {
+    return V.i18n( string, 'account components', description || 'transaction details' ) + ' ';
   }
+
+  /* ================== event handlers ================== */
 
   function handleDrawUserNav() {
     if ( V.getVisibility( 'user-nav' ) ) {
@@ -30,6 +34,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
     }
   }
+
+  /* ================  public components ================ */
 
   function topcontent( fullId ) {
     return V.cN( {
@@ -147,9 +153,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'card__bottom-right pxy',
       h: [
-        txData.fromAddress != 'none' ? { t: 'p', h: str( strFrom ) + txData.fromAddress } : { t: 'p', h: str( strFrom ) + txData.from + ' ' + txData.fromTag },
-        txData.toAddress != 'none' ? { t: 'p', h: str( strTo ) + txData.toAddress } : { t: 'p', h: str( strTo ) + txData.to + ' ' + txData.toTag },
-        txData.block ? { t: 'p', h: str( strBlock ) + txData.block } : { t: 'p', h: str( strDate ) + txData.date },
+        txData.fromAddress != 'none' ? { t: 'p', h: uiStr( strFrom ) + txData.fromAddress } : { t: 'p', h: uiStr( strFrom ) + txData.from + ' ' + txData.fromTag },
+        txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + txData.toAddress } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
+        txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
       ]
     } );
 
