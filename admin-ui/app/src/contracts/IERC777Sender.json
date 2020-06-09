@@ -1,0 +1,523 @@
+{
+  "contractName": "IERC777Sender",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "userData",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "operatorData",
+          "type": "bytes"
+        }
+      ],
+      "name": "tokensToSend",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"userData\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"operatorData\",\"type\":\"bytes\"}],\"name\":\"tokensToSend\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"See https://eips.ethereum.org/EIPS/eip-777\",\"methods\":{},\"title\":\"ERC777 token sender interface\"},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/ERC777/IERC777Sender.sol\":\"IERC777Sender\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/ERC777/IERC777Sender.sol\":{\"keccak256\":\"0xa7e2d4e02196460e5854af5e9422aeffe0a4b2ca9bcf1998e6957dfa89b91447\",\"urls\":[\"bzz-raw://b2492b49c89acb01f0378d640ee86ef784eb89ac079d353d71d4f3193c08ae2e\",\"dweb:/ipfs/QmTrHvQqaGVu8woArCWJ1eQMNKC7g6YfueWYZu5edLGAVC\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.5.0;\n\n/**\n * @title ERC777 token sender interface\n * @dev See https://eips.ethereum.org/EIPS/eip-777\n */\ninterface IERC777Sender {\n    function tokensToSend(\n        address operator,\n        address from,\n        address to,\n        uint amount,\n        bytes calldata userData,\n        bytes calldata operatorData\n    ) external;\n}\n",
+  "sourcePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/ERC777/IERC777Sender.sol",
+  "ast": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/ERC777/IERC777Sender.sol",
+    "exportedSymbols": {
+      "IERC777Sender": [
+        5452
+      ]
+    },
+    "id": 5453,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5436,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:35"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title ERC777 token sender interface\n@dev See https://eips.ethereum.org/EIPS/eip-777",
+        "fullyImplemented": false,
+        "id": 5452,
+        "linearizedBaseContracts": [
+          5452
+        ],
+        "name": "IERC777Sender",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5451,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "tokensToSend",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5449,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5438,
+                  "name": "operator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "185:16:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5437,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "185:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5440,
+                  "name": "from",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "211:12:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5439,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "211:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5442,
+                  "name": "to",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "233:10:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5441,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "233:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5444,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "253:11:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5443,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "253:4:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5446,
+                  "name": "userData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "274:23:35",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5445,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "274:5:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5448,
+                  "name": "operatorData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "307:27:35",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5447,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "307:5:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "175:165:35"
+            },
+            "returnParameters": {
+              "id": 5450,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "349:0:35"
+            },
+            "scope": 5452,
+            "src": "154:196:35",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5453,
+        "src": "124:228:35"
+      }
+    ],
+    "src": "0:353:35"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/ERC777/IERC777Sender.sol",
+    "exportedSymbols": {
+      "IERC777Sender": [
+        5452
+      ]
+    },
+    "id": 5453,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5436,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:35"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title ERC777 token sender interface\n@dev See https://eips.ethereum.org/EIPS/eip-777",
+        "fullyImplemented": false,
+        "id": 5452,
+        "linearizedBaseContracts": [
+          5452
+        ],
+        "name": "IERC777Sender",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5451,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "tokensToSend",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5449,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5438,
+                  "name": "operator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "185:16:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5437,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "185:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5440,
+                  "name": "from",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "211:12:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5439,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "211:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5442,
+                  "name": "to",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "233:10:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5441,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "233:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5444,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "253:11:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5443,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "253:4:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5446,
+                  "name": "userData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "274:23:35",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5445,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "274:5:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5448,
+                  "name": "operatorData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5451,
+                  "src": "307:27:35",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5447,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "307:5:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "175:165:35"
+            },
+            "returnParameters": {
+              "id": 5450,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "349:0:35"
+            },
+            "scope": 5452,
+            "src": "154:196:35",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5453,
+        "src": "124:228:35"
+      }
+    ],
+    "src": "0:353:35"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2020-06-09T20:14:57.797Z",
+  "devdoc": {
+    "details": "See https://eips.ethereum.org/EIPS/eip-777",
+    "methods": {},
+    "title": "ERC777 token sender interface"
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

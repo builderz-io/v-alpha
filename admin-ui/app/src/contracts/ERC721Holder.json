@@ -1,0 +1,645 @@
+{
+  "contractName": "ERC721Holder",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "name": "onERC721Received",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/ERC721Holder.sol\":\"ERC721Holder\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/ERC721Holder.sol\":{\"keccak256\":\"0xb2b0c5d6c6d25af576c67ab17c17b60dc98510a9869689b0d077fa69922c3c67\",\"urls\":[\"bzz-raw://d329cb951e4cc69b2406d90b80989e15bc2355eb100ee85cdcad5eb48ac09550\",\"dweb:/ipfs/QmYZfr7xQtZhNouP87Ef1keyPE1dVrYHpTebfN2z2H33a5\"]},\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0xadbfb7028fb0f851dc848a48b9e54e7c89ffd2c2edc12fa4ba9bb383dfaa83d9\",\"urls\":[\"bzz-raw://90dceab42713246639100b87d6650037d68e4a2ab2dd4b5768c3ed35d6b3a4a0\",\"dweb:/ipfs/QmQ42UW5nchMoYP9bU9F1AJga5chG8j92fCPkURpiDKsCu\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506101d0806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063150b7a0214610030575b600080fd5b6101336004803603608081101561004657600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190803590602001906401000000008111156100ad57600080fd5b8201836020820111156100bf57600080fd5b803590602001918460018302840111640100000000831117156100e157600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050509192919290505050610187565b60405180827bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200191505060405180910390f35b600063150b7a0260e01b905094935050505056fea265627a7a723158203027a849a9adea6bf05497b5eda43e9298f1d3a303a39602300f6f4e7825200464736f6c63430005100032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063150b7a0214610030575b600080fd5b6101336004803603608081101561004657600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190803590602001906401000000008111156100ad57600080fd5b8201836020820111156100bf57600080fd5b803590602001918460018302840111640100000000831117156100e157600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050509192919290505050610187565b60405180827bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200191505060405180910390f35b600063150b7a0260e01b905094935050505056fea265627a7a723158203027a849a9adea6bf05497b5eda43e9298f1d3a303a39602300f6f4e7825200464736f6c63430005100032",
+  "sourceMap": "58:194:126:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;58:194:126;;;;;;;",
+  "deployedSourceMap": "58:194:126:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;58:194:126;;;;;;;;;;;;;;;;;;;105:145;;;;;;13:3:-1;8;5:12;2:2;;;30:1;27;20:12;2:2;105:145:126;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;21:11:-1;8;5:28;2:2;;;46:1;43;36:12;2:2;105:145:126;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;105:145:126;;;;;;100:9:-1;95:1;81:12;77:20;67:8;63:35;60:50;39:11;25:12;22:29;11:107;8:2;;;131:1;128;121:12;8:2;105:145:126;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;93:3;85:6;81:16;74:27;137:4;133:9;126:4;121:3;117:14;113:30;106:37;;169:3;161:6;157:16;147:26;;105:145:126;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;188:6;213:30;;;206:37;;105:145;;;;;;:::o",
+  "source": "pragma solidity ^0.5.0;\n\nimport \"./IERC721Receiver.sol\";\n\ncontract ERC721Holder is IERC721Receiver {\n    function onERC721Received(address, address, uint256, bytes memory) public returns (bytes4) {\n        return this.onERC721Received.selector;\n    }\n}\n",
+  "sourcePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/ERC721Holder.sol",
+  "ast": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/ERC721Holder.sol",
+    "exportedSymbols": {
+      "ERC721Holder": [
+        12492
+      ]
+    },
+    "id": 12493,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 12470,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:126"
+      },
+      {
+        "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol",
+        "file": "./IERC721Receiver.sol",
+        "id": 12471,
+        "nodeType": "ImportDirective",
+        "scope": 12493,
+        "sourceUnit": 12931,
+        "src": "25:31:126",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 12472,
+              "name": "IERC721Receiver",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 12930,
+              "src": "83:15:126",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_IERC721Receiver_$12930",
+                "typeString": "contract IERC721Receiver"
+              }
+            },
+            "id": 12473,
+            "nodeType": "InheritanceSpecifier",
+            "src": "83:15:126"
+          }
+        ],
+        "contractDependencies": [
+          12930
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 12492,
+        "linearizedBaseContracts": [
+          12492,
+          12930
+        ],
+        "name": "ERC721Holder",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 12490,
+              "nodeType": "Block",
+              "src": "196:54:126",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "expression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 12486,
+                        "name": "this",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 13379,
+                        "src": "213:4:126",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ERC721Holder_$12492",
+                          "typeString": "contract ERC721Holder"
+                        }
+                      },
+                      "id": 12487,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "onERC721Received",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 12491,
+                      "src": "213:21:126",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_address_$_t_uint256_$_t_bytes_memory_ptr_$returns$_t_bytes4_$",
+                        "typeString": "function (address,address,uint256,bytes memory) external returns (bytes4)"
+                      }
+                    },
+                    "id": 12488,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "selector",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": null,
+                    "src": "213:30:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "functionReturnParameters": 12485,
+                  "id": 12489,
+                  "nodeType": "Return",
+                  "src": "206:37:126"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 12491,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onERC721Received",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12482,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12475,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "131:7:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12474,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "131:7:126",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12477,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "140:7:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12476,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "140:7:126",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12479,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "149:7:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12478,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "149:7:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12481,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "158:12:126",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 12480,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "158:5:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "130:41:126"
+            },
+            "returnParameters": {
+              "id": 12485,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12484,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "188:6:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 12483,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "188:6:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "187:8:126"
+            },
+            "scope": 12492,
+            "src": "105:145:126",
+            "stateMutability": "nonpayable",
+            "superFunction": 12929,
+            "visibility": "public"
+          }
+        ],
+        "scope": 12493,
+        "src": "58:194:126"
+      }
+    ],
+    "src": "0:253:126"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/ERC721Holder.sol",
+    "exportedSymbols": {
+      "ERC721Holder": [
+        12492
+      ]
+    },
+    "id": 12493,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 12470,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:126"
+      },
+      {
+        "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol",
+        "file": "./IERC721Receiver.sol",
+        "id": 12471,
+        "nodeType": "ImportDirective",
+        "scope": 12493,
+        "sourceUnit": 12931,
+        "src": "25:31:126",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 12472,
+              "name": "IERC721Receiver",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 12930,
+              "src": "83:15:126",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_IERC721Receiver_$12930",
+                "typeString": "contract IERC721Receiver"
+              }
+            },
+            "id": 12473,
+            "nodeType": "InheritanceSpecifier",
+            "src": "83:15:126"
+          }
+        ],
+        "contractDependencies": [
+          12930
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 12492,
+        "linearizedBaseContracts": [
+          12492,
+          12930
+        ],
+        "name": "ERC721Holder",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 12490,
+              "nodeType": "Block",
+              "src": "196:54:126",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "expression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 12486,
+                        "name": "this",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 13379,
+                        "src": "213:4:126",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_ERC721Holder_$12492",
+                          "typeString": "contract ERC721Holder"
+                        }
+                      },
+                      "id": 12487,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "onERC721Received",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 12491,
+                      "src": "213:21:126",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_address_$_t_uint256_$_t_bytes_memory_ptr_$returns$_t_bytes4_$",
+                        "typeString": "function (address,address,uint256,bytes memory) external returns (bytes4)"
+                      }
+                    },
+                    "id": 12488,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "selector",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": null,
+                    "src": "213:30:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "functionReturnParameters": 12485,
+                  "id": 12489,
+                  "nodeType": "Return",
+                  "src": "206:37:126"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 12491,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onERC721Received",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12482,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12475,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "131:7:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12474,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "131:7:126",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12477,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "140:7:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12476,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "140:7:126",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12479,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "149:7:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12478,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "149:7:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12481,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "158:12:126",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 12480,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "158:5:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "130:41:126"
+            },
+            "returnParameters": {
+              "id": 12485,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12484,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12491,
+                  "src": "188:6:126",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 12483,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "188:6:126",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "187:8:126"
+            },
+            "scope": 12492,
+            "src": "105:145:126",
+            "stateMutability": "nonpayable",
+            "superFunction": 12929,
+            "visibility": "public"
+          }
+        ],
+        "scope": 12493,
+        "src": "58:194:126"
+      }
+    ],
+    "src": "0:253:126"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2020-06-09T20:14:58.033Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

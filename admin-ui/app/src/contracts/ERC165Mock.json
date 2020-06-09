@@ -1,0 +1,445 @@
+{
+  "contractName": "ERC165Mock",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "registerInterface",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"registerInterface\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"supportsInterface(bytes4)\":{\"details\":\"Implement supportsInterface(bytes4) using a lookup table.\"}}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/ERC165Mock.sol\":\"ERC165Mock\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/introspection/ERC165.sol\":{\"keccak256\":\"0x70cff7709ab565e4e1c7e534d4a138cd3a64e3dbb34f041d8bbbc291783a7a14\",\"urls\":[\"bzz-raw://ac4036aac6882fb05fc15c6990166562d134ea968acffb1a001c0ceced9425b0\",\"dweb:/ipfs/QmPiRLUR7zUPi5ewN5sRJ6vVzZgnY6x3xRBLBJ9N34WNxo\"]},\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/introspection/IERC165.sol\":{\"keccak256\":\"0x98beeb4f742d2d397fad75dcb126520d0eafad58fd2a33f9a8970cb8fe4960a0\",\"urls\":[\"bzz-raw://1b1fdafc71e88223e3d147ceb340dc6b7fb923afcbecc6b7df617be845a8d7f7\",\"dweb:/ipfs/QmXazdrZjHuafkn5svePD4kqePmvKuf3zTUtVVa4NGg7we\"]},\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/ERC165Mock.sol\":{\"keccak256\":\"0x0089fcbe6226979ac905e036bcfe4dde2368585a506f1977255dfad03dd986bd\",\"urls\":[\"bzz-raw://88aaf5a0ae652fa7008d3991a4be523db7c96dbe08dbea96c0da220104ce4ccb\",\"dweb:/ipfs/QmNi5bB4AS91p28tcAGhfh1FDgzAGcGD15hehViE2WsbPp\"]}},\"version\":1}",
+  "bytecode": "0x608060405261001a6301ffc9a760e01b61001f60201b60201c565b610127565b63ffffffff60e01b817bffffffffffffffffffffffffffffffffffffffffffffffffffffffff191614156100bb576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252601c8152602001807f4552433136353a20696e76616c696420696e746572666163652069640000000081525060200191505060405180910390fd5b6001600080837bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200190815260200160002060006101000a81548160ff02191690831515021790555050565b61029d806101366000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806301ffc9a71461003b578063214cdb80146100a0575b600080fd5b6100866004803603602081101561005157600080fd5b8101908080357bffffffffffffffffffffffffffffffffffffffffffffffffffffffff191690602001909291905050506100ed565b604051808215151515815260200191505060405180910390f35b6100eb600480360360208110156100b657600080fd5b8101908080357bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19169060200190929190505050610154565b005b6000806000837bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200190815260200160002060009054906101000a900460ff169050919050565b61015d81610160565b50565b63ffffffff60e01b817bffffffffffffffffffffffffffffffffffffffffffffffffffffffff191614156101fc576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252601c8152602001807f4552433136353a20696e76616c696420696e746572666163652069640000000081525060200191505060405180910390fd5b6001600080837bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200190815260200160002060006101000a81548160ff0219169083151502179055505056fea265627a7a723158206db1bec026e0f96203c5d5438824c1d9f45256ecf53a04cede4e999c434d01e364736f6c63430005100032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100365760003560e01c806301ffc9a71461003b578063214cdb80146100a0575b600080fd5b6100866004803603602081101561005157600080fd5b8101908080357bffffffffffffffffffffffffffffffffffffffffffffffffffffffff191690602001909291905050506100ed565b604051808215151515815260200191505060405180910390f35b6100eb600480360360208110156100b657600080fd5b8101908080357bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19169060200190929190505050610154565b005b6000806000837bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200190815260200160002060009054906101000a900460ff169050919050565b61015d81610160565b50565b63ffffffff60e01b817bffffffffffffffffffffffffffffffffffffffffffffffffffffffff191614156101fc576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252601c8152602001807f4552433136353a20696e76616c696420696e746572666163652069640000000081525060200191505060405180910390fd5b6001600080837bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200190815260200160002060006101000a81548160ff0219169083151502179055505056fea265627a7a723158206db1bec026e0f96203c5d5438824c1d9f45256ecf53a04cede4e999c434d01e364736f6c63430005100032",
+  "sourceMap": "64:140:61:-;;;629:40:43;319:10;648:20;;629:18;;;:40;;:::i;:::-;64:140:61;;981:190:43;1071:10;1056:25;;:11;:25;;;;;1048:66;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1160:4;1124:20;:33;1145:11;1124:33;;;;;;;;;;;;;;;;;;:40;;;;;;;;;;;;;;;;;;981:190;:::o;64:140:61:-;;;;;;;",
+  "deployedSourceMap": "64:140:61:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;64:140:61;;;;;;;;;;;;;;;;;;;;;;;;768:133:43;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;768:133:43;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;100:102:61;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;100:102:61;;;;;;;;;;;;;;;;;;;;:::i;:::-;;768:133:43;838:4;861:20;:33;882:11;861:33;;;;;;;;;;;;;;;;;;;;;;;;;;;854:40;;768:133;;;:::o;100:102:61:-;164:31;183:11;164:18;:31::i;:::-;100:102;:::o;981:190:43:-;1071:10;1056:25;;:11;:25;;;;;1048:66;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1160:4;1124:20;:33;1145:11;1124:33;;;;;;;;;;;;;;;;;;:40;;;;;;;;;;;;;;;;;;981:190;:::o",
+  "source": "pragma solidity ^0.5.0;\n\nimport \"../introspection/ERC165.sol\";\n\ncontract ERC165Mock is ERC165 {\n    function registerInterface(bytes4 interfaceId) public {\n        _registerInterface(interfaceId);\n    }\n}\n",
+  "sourcePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/ERC165Mock.sol",
+  "ast": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/ERC165Mock.sol",
+    "exportedSymbols": {
+      "ERC165Mock": [
+        7341
+      ]
+    },
+    "id": 7342,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7327,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:61"
+      },
+      {
+        "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/introspection/ERC165.sol",
+        "file": "../introspection/ERC165.sol",
+        "id": 7328,
+        "nodeType": "ImportDirective",
+        "scope": 7342,
+        "sourceUnit": 6490,
+        "src": "25:37:61",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 7329,
+              "name": "ERC165",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 6489,
+              "src": "87:6:61",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERC165_$6489",
+                "typeString": "contract ERC165"
+              }
+            },
+            "id": 7330,
+            "nodeType": "InheritanceSpecifier",
+            "src": "87:6:61"
+          }
+        ],
+        "contractDependencies": [
+          6489,
+          6636
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 7341,
+        "linearizedBaseContracts": [
+          7341,
+          6489,
+          6636
+        ],
+        "name": "ERC165Mock",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 7339,
+              "nodeType": "Block",
+              "src": "154:48:61",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 7336,
+                        "name": "interfaceId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 7332,
+                        "src": "183:11:61",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      ],
+                      "id": 7335,
+                      "name": "_registerInterface",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 6488,
+                      "src": "164:18:61",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_bytes4_$returns$__$",
+                        "typeString": "function (bytes4)"
+                      }
+                    },
+                    "id": 7337,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "164:31:61",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 7338,
+                  "nodeType": "ExpressionStatement",
+                  "src": "164:31:61"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 7340,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "registerInterface",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7333,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7332,
+                  "name": "interfaceId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7340,
+                  "src": "127:18:61",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 7331,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "127:6:61",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "126:20:61"
+            },
+            "returnParameters": {
+              "id": 7334,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "154:0:61"
+            },
+            "scope": 7341,
+            "src": "100:102:61",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 7342,
+        "src": "64:140:61"
+      }
+    ],
+    "src": "0:205:61"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/ERC165Mock.sol",
+    "exportedSymbols": {
+      "ERC165Mock": [
+        7341
+      ]
+    },
+    "id": 7342,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7327,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:61"
+      },
+      {
+        "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/introspection/ERC165.sol",
+        "file": "../introspection/ERC165.sol",
+        "id": 7328,
+        "nodeType": "ImportDirective",
+        "scope": 7342,
+        "sourceUnit": 6490,
+        "src": "25:37:61",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 7329,
+              "name": "ERC165",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 6489,
+              "src": "87:6:61",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ERC165_$6489",
+                "typeString": "contract ERC165"
+              }
+            },
+            "id": 7330,
+            "nodeType": "InheritanceSpecifier",
+            "src": "87:6:61"
+          }
+        ],
+        "contractDependencies": [
+          6489,
+          6636
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 7341,
+        "linearizedBaseContracts": [
+          7341,
+          6489,
+          6636
+        ],
+        "name": "ERC165Mock",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 7339,
+              "nodeType": "Block",
+              "src": "154:48:61",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 7336,
+                        "name": "interfaceId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 7332,
+                        "src": "183:11:61",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      ],
+                      "id": 7335,
+                      "name": "_registerInterface",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 6488,
+                      "src": "164:18:61",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_bytes4_$returns$__$",
+                        "typeString": "function (bytes4)"
+                      }
+                    },
+                    "id": 7337,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "164:31:61",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 7338,
+                  "nodeType": "ExpressionStatement",
+                  "src": "164:31:61"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 7340,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "registerInterface",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7333,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7332,
+                  "name": "interfaceId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7340,
+                  "src": "127:18:61",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 7331,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "127:6:61",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "126:20:61"
+            },
+            "returnParameters": {
+              "id": 7334,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "154:0:61"
+            },
+            "scope": 7341,
+            "src": "100:102:61",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 7342,
+        "src": "64:140:61"
+      }
+    ],
+    "src": "0:205:61"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2020-06-09T20:14:57.847Z",
+  "devdoc": {
+    "methods": {
+      "supportsInterface(bytes4)": {
+        "details": "Implement supportsInterface(bytes4) using a lookup table."
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

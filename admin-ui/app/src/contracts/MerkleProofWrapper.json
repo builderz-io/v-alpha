@@ -1,0 +1,678 @@
+{
+  "contractName": "MerkleProofWrapper",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "proof",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "root",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "leaf",
+          "type": "bytes32"
+        }
+      ],
+      "name": "verify",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"proof\",\"type\":\"bytes32[]\"},{\"internalType\":\"bytes32\",\"name\":\"root\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"leaf\",\"type\":\"bytes32\"}],\"name\":\"verify\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/MerkleProofWrapper.sol\":\"MerkleProofWrapper\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/cryptography/MerkleProof.sol\":{\"keccak256\":\"0x8969d31b5c449e57ce7c23052f8721a8b32f4aa542c6239f31e896902aba0d64\",\"urls\":[\"bzz-raw://759b08eff9d4995578147e2458f9741f5fddf8b9d6955609a739eab9244cbb98\",\"dweb:/ipfs/QmSiKBacnTwU9WDXiMBqe8ey93z4kg7wMQDbZNkGKkU6w2\"]},\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/MerkleProofWrapper.sol\":{\"keccak256\":\"0xccd381f279dd327e2f5728f859a0689263b402b0cbce92a77623aa4631bffe7c\",\"urls\":[\"bzz-raw://2123947dd6bf86641ad959f37b4f21ef4dbfbc42af32c1cb8a24d3ab500621eb\",\"dweb:/ipfs/QmSRjhXzh2jQALQfxvxL4QT3U8TcXyx2GpkEFrPrEaYSrs\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610218806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c80635a9a49c714610030575b600080fd5b6100fa6004803603606081101561004657600080fd5b810190808035906020019064010000000081111561006357600080fd5b82018360208201111561007557600080fd5b8035906020019184602083028401116401000000008311171561009757600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600081840152601f19601f8201169050808301925050505050505091929192908035906020019092919080359060200190929190505050610114565b604051808215151515815260200191505060405180910390f35b600061012184848461012a565b90509392505050565b60008082905060008090505b85518110156101d557600086828151811061014d57fe5b602002602001015190508083101561019557828160405160200180838152602001828152602001925050506040516020818303038152906040528051906020012092506101c7565b808360405160200180838152602001828152602001925050506040516020818303038152906040528051906020012092505b508080600101915050610136565b50838114915050939250505056fea265627a7a7231582018b5fb526fcd7dc9135cdc242824a9d8471c5d26cb47f8eb6048ade80f721c1f64736f6c63430005100032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c80635a9a49c714610030575b600080fd5b6100fa6004803603606081101561004657600080fd5b810190808035906020019064010000000081111561006357600080fd5b82018360208201111561007557600080fd5b8035906020019184602083028401116401000000008311171561009757600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600081840152601f19601f8201169050808301925050505050505091929192908035906020019092919080359060200190929190505050610114565b604051808215151515815260200191505060405180910390f35b600061012184848461012a565b90509392505050565b60008082905060008090505b85518110156101d557600086828151811061014d57fe5b602002602001015190508083101561019557828160405160200180838152602001828152602001925050506040516020818303038152906040528051906020012092506101c7565b808360405160200180838152602001828152602001925050506040516020818303038152906040528051906020012092505b508080600101915050610136565b50838114915050939250505056fea265627a7a7231582018b5fb526fcd7dc9135cdc242824a9d8471c5d26cb47f8eb6048ade80f721c1f64736f6c63430005100032",
+  "sourceMap": "89:192:81:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;89:192:81;;;;;;;",
+  "deployedSourceMap": "89:192:81:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;89:192:81;;;;;;;;;;;;;;;;;;;123:156;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;123:156:81;;;;;;;;;;21:11:-1;8;5:28;2:2;;;46:1;43;36:12;2:2;123:156:81;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;123:156:81;;;;;;101:9:-1;95:2;81:12;77:21;67:8;63:36;60:51;39:11;25:12;22:29;11:108;8:2;;;132:1;129;122:12;8:2;123:156:81;;;;;;;;;;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;93:3;85:6;81:16;74:27;137:4;133:9;126:4;121:3;117:14;113:30;106:37;;169:3;161:6;157:16;147:26;;123:156:81;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;212:4;235:37;254:5;261:4;267;235:18;:37::i;:::-;228:44;;123:156;;;;;:::o;578:778:26:-;669:4;685:20;708:4;685:27;;728:9;740:1;728:13;;723:514;747:5;:12;743:1;:16;723:514;;;780:20;803:5;809:1;803:8;;;;;;;;;;;;;;780:31;;845:12;830;:27;826:401;;;997:12;1011;980:44;;;;;;;;;;;;;;;;;;;;;49:4:-1;39:7;30;26:21;22:32;13:7;6:49;980:44:26;;;970:55;;;;;;955:70;;826:401;;;1184:12;1198;1167:44;;;;;;;;;;;;;;;;;;;;;49:4:-1;39:7;30;26:21;22:32;13:7;6:49;1167:44:26;;;1157:55;;;;;;1142:70;;826:401;723:514;761:3;;;;;;;723:514;;;;1345:4;1329:12;:20;1322:27;;;578:778;;;;;:::o",
+  "source": "pragma solidity ^0.5.0;\n\nimport { MerkleProof } from \"../cryptography/MerkleProof.sol\";\n\ncontract MerkleProofWrapper {\n    function verify(bytes32[] memory proof, bytes32 root, bytes32 leaf) public pure returns (bool) {\n        return MerkleProof.verify(proof, root, leaf);\n    }\n}\n",
+  "sourcePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/MerkleProofWrapper.sol",
+  "ast": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/MerkleProofWrapper.sol",
+    "exportedSymbols": {
+      "MerkleProofWrapper": [
+        8386
+      ]
+    },
+    "id": 8387,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8363,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:81"
+      },
+      {
+        "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/cryptography/MerkleProof.sol",
+        "file": "../cryptography/MerkleProof.sol",
+        "id": 8365,
+        "nodeType": "ImportDirective",
+        "scope": 8387,
+        "sourceUnit": 3961,
+        "src": "25:62:81",
+        "symbolAliases": [
+          {
+            "foreign": 8364,
+            "local": null
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 8386,
+        "linearizedBaseContracts": [
+          8386
+        ],
+        "name": "MerkleProofWrapper",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 8384,
+              "nodeType": "Block",
+              "src": "218:61:81",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 8379,
+                        "name": "proof",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 8368,
+                        "src": "254:5:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                          "typeString": "bytes32[] memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 8380,
+                        "name": "root",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 8370,
+                        "src": "261:4:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 8381,
+                        "name": "leaf",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 8372,
+                        "src": "267:4:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                          "typeString": "bytes32[] memory"
+                        },
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 8377,
+                        "name": "MerkleProof",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3960,
+                        "src": "235:11:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_MerkleProof_$3960_$",
+                          "typeString": "type(library MerkleProof)"
+                        }
+                      },
+                      "id": 8378,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "verify",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3959,
+                      "src": "235:18:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_array$_t_bytes32_$dyn_memory_ptr_$_t_bytes32_$_t_bytes32_$returns$_t_bool_$",
+                        "typeString": "function (bytes32[] memory,bytes32,bytes32) pure returns (bool)"
+                      }
+                    },
+                    "id": 8382,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "235:37:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 8376,
+                  "id": 8383,
+                  "nodeType": "Return",
+                  "src": "228:44:81"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 8385,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "verify",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8373,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8368,
+                  "name": "proof",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "139:22:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 8366,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "139:7:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 8367,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "139:9:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 8370,
+                  "name": "root",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "163:12:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 8369,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "163:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 8372,
+                  "name": "leaf",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "177:12:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 8371,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "177:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "138:52:81"
+            },
+            "returnParameters": {
+              "id": 8376,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8375,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "212:4:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 8374,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "212:4:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "211:6:81"
+            },
+            "scope": 8386,
+            "src": "123:156:81",
+            "stateMutability": "pure",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 8387,
+        "src": "89:192:81"
+      }
+    ],
+    "src": "0:282:81"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/mocks/MerkleProofWrapper.sol",
+    "exportedSymbols": {
+      "MerkleProofWrapper": [
+        8386
+      ]
+    },
+    "id": 8387,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8363,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:81"
+      },
+      {
+        "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/cryptography/MerkleProof.sol",
+        "file": "../cryptography/MerkleProof.sol",
+        "id": 8365,
+        "nodeType": "ImportDirective",
+        "scope": 8387,
+        "sourceUnit": 3961,
+        "src": "25:62:81",
+        "symbolAliases": [
+          {
+            "foreign": 8364,
+            "local": null
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 8386,
+        "linearizedBaseContracts": [
+          8386
+        ],
+        "name": "MerkleProofWrapper",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 8384,
+              "nodeType": "Block",
+              "src": "218:61:81",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 8379,
+                        "name": "proof",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 8368,
+                        "src": "254:5:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                          "typeString": "bytes32[] memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 8380,
+                        "name": "root",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 8370,
+                        "src": "261:4:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 8381,
+                        "name": "leaf",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 8372,
+                        "src": "267:4:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                          "typeString": "bytes32[] memory"
+                        },
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 8377,
+                        "name": "MerkleProof",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 3960,
+                        "src": "235:11:81",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_MerkleProof_$3960_$",
+                          "typeString": "type(library MerkleProof)"
+                        }
+                      },
+                      "id": 8378,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "verify",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 3959,
+                      "src": "235:18:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_array$_t_bytes32_$dyn_memory_ptr_$_t_bytes32_$_t_bytes32_$returns$_t_bool_$",
+                        "typeString": "function (bytes32[] memory,bytes32,bytes32) pure returns (bool)"
+                      }
+                    },
+                    "id": 8382,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "235:37:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 8376,
+                  "id": 8383,
+                  "nodeType": "Return",
+                  "src": "228:44:81"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 8385,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "verify",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 8373,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8368,
+                  "name": "proof",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "139:22:81",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 8366,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "139:7:81",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 8367,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "139:9:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 8370,
+                  "name": "root",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "163:12:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 8369,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "163:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 8372,
+                  "name": "leaf",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "177:12:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 8371,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "177:7:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "138:52:81"
+            },
+            "returnParameters": {
+              "id": 8376,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8375,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 8385,
+                  "src": "212:4:81",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 8374,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "212:4:81",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "211:6:81"
+            },
+            "scope": 8386,
+            "src": "123:156:81",
+            "stateMutability": "pure",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 8387,
+        "src": "89:192:81"
+      }
+    ],
+    "src": "0:282:81"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2020-06-09T20:14:57.884Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
