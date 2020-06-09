@@ -637,8 +637,9 @@ contract VICoin is
         onlyController
         fused(4)
     {
-        generationPeriod = _generationPeriod;
         //TODO: delete/update lastGenerationBlock to prevent calculation errors
+        require(1==2, "Currently not possible to change generation period after deploy.")
+        generationPeriod = _generationPeriod;
         emit UpdateGenerationPeriod(_generationPeriod);
     }
 
