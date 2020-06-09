@@ -170,35 +170,3 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 .field--focus .field__internal .label-primary {
     color: rgba(var(--brand), 1);
 }
-
-
-.ac-suggestions {
-  text-align: left;
-  cursor: default;
-  /* border: 1px solid rgba(0,0,0,.1); */
-  /* display: block; */
-  /* z-index: 300; */
-  max-height: 254px;
-  overflow: hidden;
-  overflow-y: auto;
-  /* box-sizing: border-box; */
-  border-radius: 6px;
-  padding: 9px 4px;
-  font-size: 0.9em;
-}
-.ac-suggestion {
-  position: relative;
-  padding: 0 .6em;
-  line-height: 23px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1.02em;
-  color: #333;
-}
-
-.ac-suggestion.selected {
-  /* background: #f0f0f0; */
-  color: rgba(var(--brand), 1);
-  font-size: 1.05em;
- }

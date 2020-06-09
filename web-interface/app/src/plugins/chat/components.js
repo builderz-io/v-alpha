@@ -7,14 +7,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  document.addEventListener( 'click', function( e ) {
+    revertAutoComplete( e.target );
+    // document.getElementById( 'textarea-text' ).focus();
+    // $( '#confirm-tx' ).remove();
+  } );
+
   V.setStyle( {
-    messageform: {
+    'messageform': {
       'bottom': '0',
       'border-top': '1px solid #e8e8ec',
       'background': '#d1d2da',
       'padding': '8px 5px'
     },
-    messageform__input: {
+    'messageform__input': {
       'height': '36px',
       'padding': '9px 15px',
       'min-width': '302px',
@@ -22,30 +28,62 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       'resize': 'none',
       'border-radius': '30px'
     },
-    messageform__response: {
+    'messageform__response': {
       position: 'absolute',
       top: '-24px',
       // color: 'red',
       // background: 'white',
       // padding: '2px 8px'
+    },
+    'ac-suggestions': {
+      'text-align': 'left',
+      'cursor': 'default',
+
+      /* border: 1px solid rgba(0,0,0,.1), */
+      /* display: block, */
+      /* z-index: 300, */
+      'max-height': '254px',
+      'overflow': 'hidden',
+      'overflow-y': 'auto',
+
+      /* box-sizing: border-box, */
+      'border-radius': '6px',
+      'padding': '9px 4px',
+      'font-size': '0.9em',
+    },
+    'ac-suggestion': {
+      'position': 'relative',
+      'padding': '0 .6em',
+      'line-height': '23px',
+      'white-space': 'nowrap',
+      'overflow': 'hidden',
+      'text-overflow': 'ellipsis',
+      'font-size': '1.02em',
+      'color': '#333',
+    },
+    'ac-suggestion.selected': {
+
+      /* background: #f0f0f0, */
+      'color': 'rgba(var(--brand), 1)',
+      'font-size': '1.05em',
     }
   } );
 
   let autoCompleteActive = false;
   let stringToComplete = false;
   let permanentString = '';
-  let dbEntries;
+  let dbEntries, sc, sel;
 
   /* ================== event handlers ================== */
 
   function handleKeyUp( e ) {
     const key = window.event ? e.keyCode : e.which;
-    const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
-    let sel;
-
-    if ( sc ) {
-      sel = sc.querySelector( '.ac-suggestion.selected' );
-    }
+    // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
+    // // let sel;
+    //
+    // if ( sc ) {
+    //   sel = sc.querySelector( '.ac-suggestion.selected' );
+    // }
 
     // enter (to search)
     if ( key == 13 && V.i18n( 'search', 'trigger' ) == permanentString.split( ' ' )[0] ) {
@@ -62,12 +100,15 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     // enter (to submit form)
     else if ( key == 13 && !autoCompleteActive ) {
+      e.preventDefault();
       document.getElementById( 'send-message' ).click();
     }
     // enter, tab or right (to place selection)
     else if ( ( key == 13 || key == 9 || key == 39 ) && autoCompleteActive ) {
       // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
       // const sel = sc.querySelector( '.ac-suggestion.selected' );
+      e.preventDefault();
+
       if ( sc.childElementCount == 1 ) {
         placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
       }
@@ -183,6 +224,15 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleKeyDown( e ) {
+    sc = V.getNode( '.ac-suggestions' );
+
+    if ( sc ) {
+      sel = sc.getNode( '.ac-suggestion.selected' );
+    }
+    else {
+      return;
+    }
+
     const key = window.event ? e.keyCode : e.which;
 
     if ( key != 13 ) {
@@ -205,8 +255,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       revertAutoComplete();
     }
     else if ( key > 48 && key < 58 && autoCompleteActive ) {
-      const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
-      const sel = sc.querySelector( '.ac-suggestion.selected' );
+      // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
+      // const sel = sc.querySelector( '.ac-suggestion.selected' );
       if ( sc.childElementCount == 1 ) {
         placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
       }
@@ -226,20 +276,35 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     autoCompleteActive = true;
 
-    // create suggestions container "sc"
-    const sc = document.createElement( 'div' );
-    sc.className = 'ac-suggestions card-shadow';
-
     const rect = $elem.getBoundingClientRect();
-    sc.style.position = 'absolute';
-    sc.style.left = rect.left + 'px'; //  Math.round( rect.left + ( window.pageXOffset || document.documentElement.scrollLeft ) - 40 ) + 'px';
-    sc.style.bottom = rect.height + 20 + 'px';
-    sc.style.width = rect.width + 'px'; // Math.round( rect.right - rect.left + 80 ) + 'px'; // outerWidth
 
-    let s = '';
-    if ( !dbEntries.length ) { s += '<div class="ac-suggestion">"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' ) }
-    for ( let i=0; i<dbEntries.length; i++ ) { s += renderItem( dbEntries[i], stringToComplete ) }
-    sc.innerHTML = s;
+    // create suggestions container "sc"
+    // const sc = document.createElement( 'div' );
+    // sc.className = 'ac-suggestions card-shadow';
+    //
+    // sc.style.position = 'absolute';
+    // sc.style.left = rect.left + 'px'; //  Math.round( rect.left + ( window.pageXOffset || document.documentElement.scrollLeft ) - 40 ) + 'px';
+    // sc.style.bottom = rect.height + 20 + 'px';
+    // sc.style.width = rect.width + 'px'; // Math.round( rect.right - rect.left + 80 ) + 'px'; // outerWidth
+    //
+    // let s = '';
+    // if ( !dbEntries.length ) { s += '<div class="ac-suggestion">"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' ) }
+    // for ( let i=0; i<dbEntries.length; i++ ) { s += renderItem( dbEntries[i], stringToComplete ) }
+    // sc.innerHTML = s;
+
+    const sc = V.cN( {
+      t: 'div',
+      c: 'ac-suggestions absolute card-shadow',
+      y: {
+        left: rect.left + 'px',
+        bottom: rect.height + 20 + 'px',
+        width: rect.width + 'px'
+      },
+      h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
+        t: 'div',
+        h: dbEntries.map( entry => { return renderItem( entry, stringToComplete ) } )
+      } )
+    } );
 
     live( 'ac-suggestion', 'mouseout', function() {
       const sel = sc.querySelector( '.ac-suggestion.selected' );
@@ -259,23 +324,30 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     }, sc );
 
-    document.body.appendChild( sc );
+    V.setNode( 'body', sc );
+    // document.body.appendChild( sc );
 
   }
 
   function renderNewAutocompleteElement( dbEntries, stringToComplete ) {
 
-    var s = '';
+    // var s = '';
+    V.setNode( '.ac-suggestions', '' );
 
     for ( let i=0; i<dbEntries.length; i++ ) {
       if ( dbEntries[i].fullId.toLowerCase().includes( stringToComplete ) ) {
-        s += renderItem( dbEntries[i], stringToComplete );
+        // s += renderItem( dbEntries[i], stringToComplete );
+        V.setNode( '.ac-suggestions', renderItem( dbEntries[i], stringToComplete ) );
+      }
+      else {
+        V.setNode( '.ac-suggestions', notFound( stringToComplete ) );
+        break;
       }
     }
 
-    if ( !s.length ) {s += '<div class="ac-suggestion">"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' )}
+    // if ( !s.length ) {s += '<div class="ac-suggestion">"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' )}
 
-    document.getElementsByClassName( 'ac-suggestions' )[0].innerHTML = s;
+    // document.getElementsByClassName( 'ac-suggestions' )[0].innerHTML = s;
 
   }
 
@@ -298,7 +370,17 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const re = new RegExp( '(' + search.split( ' ' ).join( '|' ) + ')', 'gi' );
     const name = entity.profile.title; // item.slice( 0, -5 );
     const tag = entity.profile.tag; // item.substr( item.length-5 );
-    return '<div class="ac-suggestion" data-val="' + entity.profile.fullId + '">' + name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>' + '</div>';
+    // return '<div class="ac-suggestion" data-val="' + entity.profile.fullId + '">' + name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>' + '</div>';
+
+    return V.cN( {
+      t: 'div',
+      c: 'ac-suggestion',
+      a: {
+        'data-val': entity.profile.fullId
+      },
+      h: name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>'
+    } );
+
   }
 
   function revertAutoComplete() {
@@ -310,17 +392,19 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     permanentString = '';
     dbEntries = [];
 
+    V.setNode( '.ac-suggestions', 'clear' );
+
     /*close all autocomplete lists in the document*/
-    const x = document.getElementsByClassName( 'ac-suggestions' );
-    for ( let i = 0; i < x.length; i++ ) {
-
-      let that = x[i];
-      // removeEvent( that, 'keydown', that.keydownHandler );
-      // removeEvent( that, 'keyup', that.keyupHandler );
-
-      that.parentNode.removeChild( that );
-      that = null;
-    }
+    // const x = document.getElementsByClassName( 'ac-suggestions' );
+    // for ( let i = 0; i < x.length; i++ ) {
+    //
+    //   let that = x[i];
+    //   // removeEvent( that, 'keydown', that.keydownHandler );
+    //   // removeEvent( that, 'keyup', that.keyupHandler );
+    //
+    //   that.parentNode.removeChild( that );
+    //   that = null;
+    // }
   }
 
   function hasAutoCompleteClass( el, className ) { return el.classList ? el.classList.contains( className ) : new RegExp( '\\b'+ className+'\\b' ).test( el.className ) }
@@ -345,6 +429,14 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ================== private methods ================= */
+
+  function notFound( stringToComplete ) {
+    return V.cN( {
+      t: 'div',
+      c: 'ac-suggestion',
+      h: '"' + stringToComplete + '" ' + V.i18n( 'not found', 'app' )
+    } );
+  }
 
   /* ================== public methods ================== */
 

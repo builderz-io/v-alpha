@@ -327,7 +327,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         const span = $itemSelected[i].getElementsByClassName( 'pill__replace' )[0];
         if ( span ) {
           span.innerHTML = $itemSelected[i].getAttribute( 'initials' );
-          span.previousSibling.style.display = 'inline';
+          span.previousSibling.style.display = 'flex';
           span.classList.add( 'pill__initials' );
           span.classList.remove( 'pill__replace' );
         }
