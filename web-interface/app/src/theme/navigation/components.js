@@ -13,14 +13,32 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       'padding': '0 1.2rem',
       'margin-right': '0.7rem'
     },
+    'pill__entity': {
+      'height': '2.5rem',
+      'padding': '0 1rem',
+      'margin-right': '0.7rem'
+    },
     'pill--selected': {
-      'color': 'rgba(var(--brand), 1)',
-      'border': '2px solid rgba(var(--brand), 1)',
-      'box-shadow': '0px -1px 3px 0px rgba(var(--brand),.50), 0px 1px 3px 0px rgba(var(--brand),.55)'
+      color: 'rgba(var(--brand), 1)',
+      border: '2px solid rgba(var(--brand), 1)',
+      // 'box-shadow': '0px -1px 3px 0px rgba(var(--brand),.50), 0px 1px 3px 0px rgba(var(--brand),.55) !important'
     },
     'pill--user-online': {
       position: 'relative',
       left: '-3px'
+    },
+    'pill__placeholderimage': {
+      position: 'relative',
+      bottom: '-3px'
+    },
+    'pill__img': {
+      position: 'relative',
+      left: '-10px',
+      border: '2px solid white'
+    },
+    'pill__initials': {
+      position: 'relative',
+      right: '3px',
     },
     'entity-nav': {
       'padding-top': '4px',
@@ -64,16 +82,75 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
   } );
 
   const userOnlineIcon = '<svg class="pill--user-online txt-green" xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z"/></svg>'; // '<img class="filter-green" src="assets/icon/person-24px.svg" height="16px">';
+  const placeholderImage = '<svg class="pill__placeholderimage txt-white" xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z"/></svg>'; // '<img class="filter-green" src="assets/icon/person-24px.svg" height="16px">';
+
+  const palette = ['beige'];
+  // const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc'];
+
+  const background = ( item ) => {
+    if ( item.tinyImage ) {
+      const url = V.castEntityThumbnail( JSON.parse( item.tinyImage ) ).src;
+      return 'url(\'' + url + '\')';
+    }
+
+    switch ( '2' ) {
+    // case '1': return palette[0];
+    case '2': return palette[0];
+    case '3': return palette[1];
+    // case '4': return palette[1];
+    case '5': return palette[0];
+    case '6': return palette[2];
+    // case '7': return palette[2];
+    case '8': return palette[0];
+    case '9': return palette[3];
+    }
+  };
 
   function pill( item ) {
-    const pillOnline = item.o ? userOnlineIcon : '';
     return V.cN( {
       t: 'li',
       c: 'pill flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
       a: {
         path: item.path || '/',
       },
-      h: pillOnline + V.i18n( item.title, 'navigation', 'nav item' )
+      h: [
+        {
+          t: 'span',
+          h: V.i18n( item.title, 'navigation', 'nav item' )
+        }
+      ]
+    } );
+  }
+
+  function entityPill( item ) {
+    const backgr = background( item );
+    return V.cN( {
+      t: 'li',
+      c: ( item.tinyImage ? 'pill__entity' : 'pill' ) + ' flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
+      a: {
+        path: item.path || '/',
+        fullId: item.title + ' ' + item.tag,
+        initials: item.initials
+      },
+      h: [
+        {
+          t: 'div',
+          c: 'pill__img circle-0 rounded-full flex justify-center items-center cursor-pointer',
+          a: {
+            style: `background:${backgr}; background-position: center center; background-size: cover;`
+          },
+          h: {
+            t: 'div',
+            c: 'card__initials font-bold fs-s txt-white',
+            h: backgr.includes( 'url' ) ? '' : placeholderImage // item.initials
+          },
+        },
+        {
+          t: 'span',
+          c: 'pill__initials',
+          h: V.i18n( item.initials, 'navigation', 'nav item' )
+        }
+      ]
     } );
   }
 
@@ -121,6 +198,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     pill: pill,
+    entityPill: entityPill,
     entityNav: entityNav,
     userNav: userNav,
     serviceNav: serviceNav,

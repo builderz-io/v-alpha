@@ -40,18 +40,37 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
           const ctx = elem.getContext( '2d' );
           ctx.drawImage( img, 0, 0, elem.width, elem.height );
 
-          ctx.canvas.toBlob( ( blob ) => {
+          const elem2 = document.createElement( 'canvas' );
+          elem2.width = 32;
+          elem2.height = elem2.width;
+          const ctx2 = elem2.getContext( '2d' );
+          ctx2.drawImage( img, 0, 0, elem2.width, elem2.height );
+
+          ctx.canvas.toBlob( blob => {
+
             const imageData = {
               blob: blob,
               contentType: blob.type,
               originalName: e.target.files[0].name
             };
             V.setState( 'imageUpload', imageData );
-            resolve( {
-              success: true,
-              status: 'image prepared for upload',
-              src: img.src,
-            } );
+
+            ctx2.canvas.toBlob( blob => {
+              const imageData = {
+                blob: blob,
+                contentType: blob.type,
+                originalName: e.target.files[0].name
+              };
+              V.setState( 'tinyImageUpload', imageData );
+
+              resolve( {
+                success: true,
+                status: 'image prepared for upload',
+                src: img.src,
+              } );
+
+            }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
+
           }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
 
         };
@@ -454,7 +473,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
   }
 
-  function getTranslation( which, whichContext, whichPart ) {
+  function getTranslation( which, whichContext, whichDescr = '' ) {
 
     // castTranslations( which, whichContext, whichPart );
     const aE = V.getState( 'activeEntity' );
@@ -470,8 +489,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function i18n( which, whichContext, whichPart ) {
-    return getTranslation( which, whichContext, whichPart );
+  function i18n( which, whichContext, whichDescr ) {
+    return getTranslation( which, whichContext, whichDescr );
   }
 
   /* ====================== export ====================== */

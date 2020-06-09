@@ -28,7 +28,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function checkForTriggers( text, triggers ) {
+  function checkForTriggers( text ) {
     const triggersConcat = triggers.commands.concat( triggers.commandsHelp, triggers.commandsSearch, triggers.commandsEN, triggers.commandsDE, triggers.commandsKO );
 
     const checkParts = text.trim().split( ' ' );
@@ -76,7 +76,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
        * does message include trigger words?
        */
 
-      const caseArray = checkForTriggers( text, triggers );
+      const caseArray = checkForTriggers( text );
 
       if ( !caseArray ) {
 
@@ -204,12 +204,14 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   ( () => {
+    V.checkForTriggers = checkForTriggers;
     V.getMessage = getMessage;
     V.setMessage = setMessage;
     V.setMessageBot = setMessageBot;
   } )();
 
   return {
+    checkForTriggers: checkForTriggers,
     getMessage: getMessage,
     setMessage: setMessage,
     setMessageBot: setMessageBot,

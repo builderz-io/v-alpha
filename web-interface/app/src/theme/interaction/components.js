@@ -24,9 +24,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function handleImageUpload( e ) {
     V.setNode( '#img-upload__label', V.i18n( 'uploading...', 'form field', 'placeholder' ) );
-    // castImageUpload( e );
     V.castImageUpload( e ).then( res => {
-      console.log( res );
       V.setNode( '#img-upload__label', V.i18n( 'Change', 'form field', 'placeholder' ) );
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
@@ -43,10 +41,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   /* ================== private methods ================= */
 
-  function img( icon ) {
+  function img( icon, css ) {
     return V.cN( {
       t: 'div',
-      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition',
+      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition' + ( css ? ' ' + css : '' ),
       h: V.getIcon( icon )
     } );
   }
@@ -100,6 +98,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function set() {
+    return V.cN( {
+      t: 'li',
+      id: 'set',
+      c: btnClasses,
+      h: img( 'send' )
+    } );
+  }
+
   function sendNav() {
     return V.cN( {
       t: 'li',
@@ -112,6 +119,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function sendBtn() {
     return V.cN( {
       t: 'button',
+      i: 'send-message',
       c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
       h: V.cN( {
         t: 'span',
@@ -465,6 +473,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     query: query,
     plus: plus,
     close: close,
+    set: set,
     sendNav: sendNav,
     sendBtn: sendBtn,
     form: form,

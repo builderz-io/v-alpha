@@ -14,7 +14,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function handleInputTyping() {
     if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
-      window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+      if ( V.getState( 'activeEntity' ) ) {
+        window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+      }
     }
   }
 
@@ -128,7 +130,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
 
-    V.setNavItem( 'entityNav', [
+    V.setNavItem( 'serviceNav', [
       {
         title: 'Chat',
         path: '/chat/everyone',
@@ -148,8 +150,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.messageform', 'clear' );
     if ( options == 'clear' ) { return }
 
+    const prefill = V.getState( 'active' ).lastViewed;
+
     const $form = ChatComponents.messageForm();
-    const $input = ChatComponents.messageInput();
+    const $input = ChatComponents.messageInput( prefill );
     const $response = ChatComponents.messageResponse();
 
     const $send = InteractionComponents.sendBtn();
@@ -159,7 +163,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     // } );
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
-    $input.addEventListener( 'input', handleInputTyping );
+    // $input.addEventListener( 'input', handleInputTyping );
+
+    V.setState( 'active', { lastViewed: undefined } );
 
     V.setNode( $form, [ $response, $input, $send ] );
     V.setNode( 'body', $form );

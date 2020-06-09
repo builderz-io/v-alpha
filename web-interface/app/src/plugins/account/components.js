@@ -7,6 +7,20 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ============== user interface strings ============== */
+
+  const
+    strFrom  = 'from',
+    strTo    = 'to',
+    strBlock = 'block',
+    strDate  = 'date';
+
+  function uiStr( string, description ) {
+    return V.i18n( string, 'account components', description || 'transaction details' ) + ' ';
+  }
+
+  /* ================== event handlers ================== */
+
   function handleDrawUserNav() {
     if ( V.getVisibility( 'user-nav' ) ) {
       V.setState( 'active', { navItem: false } );
@@ -20,6 +34,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
     }
   }
+
+  /* ================  public components ================ */
 
   function topcontent( fullId ) {
     return V.cN( {
@@ -95,19 +111,58 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       background = 'gray';
     }
 
-    return V.castNode( {
-      tag: 'div',
-      c: 'contents',
-      html: `<div class="circle-3 pxy rounded-full flex justify-center items-center" style="background:${background};">
-                  <div class="card__initials font-medium fs-xl txt-white">${txData.amount}</div>
-                </div>
-              <div class="pxy">
-                <h2 class="font-bold fs-l leading-snug">${txData.title}</h2>
-                <p>From ${V.castShortAddress( txData.fromAddress )}</p>
-                 <p>To ${V.castShortAddress( txData.toAddress )}</p>
-                 <p>Block ${txData.block}</p>
-              </div>`
+    const $cardContentFrame = V.cN( {
+      t: 'div',
+      c: 'contents'
     } );
+
+    const $topLeft = V.cN( {
+      t: 'div',
+      c: 'card__top-left flex justify-center items-center pxy',
+      h: {
+        t: 'div',
+        c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
+        a: {
+          style: `background:${background}`
+        },
+        h: {
+          t: 'div',
+          c: 'card__initials font-medium fs-xl txt-white',
+          h: txData.amount
+        }
+      }
+    } );
+
+    const $topRight = V.cN( {
+      t: 'div',
+      c: 'card__top-right flex items-center pxy',
+      h: {
+        t: 'h2',
+        c: 'font-bold fs-l leading-snug cursor-pointer',
+        h: txData.title
+      }
+    } );
+
+    const $bottomLeft = V.cN( {
+      t: 'div',
+      c: 'card__bottom-left items-center pxy',
+      h: ''
+    } );
+
+    const $bottomRight = V.cN( {
+      t: 'div',
+      c: 'card__bottom-right pxy',
+      h: [
+        txData.fromAddress != 'none' ? { t: 'p', h: uiStr( strFrom ) + txData.fromAddress } : { t: 'p', h: uiStr( strFrom ) + txData.from + ' ' + txData.fromTag },
+        txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + txData.toAddress } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
+        txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
+      ]
+    } );
+
+    V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
+
+    return $cardContentFrame;
+
   }
 
   return {

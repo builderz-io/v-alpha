@@ -95,7 +95,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       // Page.draw( { pos: 'closed', reset: false } );
       // Button.draw( ( formData.layout == 'search' ? 'plus' : 'plus search' ), { fade: 'out' } );
       Button.draw( 'all', { fade: 'out' } );
-      Button.draw( formData.layout == 'search' ? 'close query' : 'close send', { delay: 1 } );
+      Button.draw( formData.layout == 'search' ? 'close query' : 'close set', { delay: 1 } );
     }
   }
 

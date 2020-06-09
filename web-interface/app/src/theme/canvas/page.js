@@ -129,8 +129,8 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( pageData.listings ) {
       V.setNode( DOM.$listings, pageData.listings );
     }
-    pageData.position ? slide( pageData.position, pageData.scroll ) : null;
-    pageData.pos ? slide( pageData.pos, pageData.scroll ) : null;
+    pageData.position ? slide( pageData.position, pageData.scroll, pageData.haze ) : null;
+    pageData.pos ? slide( pageData.pos, pageData.scroll, pageData.haze ) : null;
   }
 
   function getPageHeight( pagePos ) {
@@ -158,7 +158,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( 'handle', { height: h + 'px' } );
   }
 
-  function slide( pagePos, pageScroll ) {
+  function slide( pagePos, pageScroll, showHaze ) {
     const $list = V.getNode( 'list' );
     // if ( !pageScroll ) {
     //   $list.scrollTop = 0;
@@ -187,7 +187,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
-      Haze.draw();
+      if ( showHaze ) {
+        Haze.draw();
+      }
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'closed' ) {

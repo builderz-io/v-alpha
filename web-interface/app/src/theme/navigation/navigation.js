@@ -15,6 +15,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   ) {
 
     const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
+
     if (
       doesNodeExist &&
       doesNodeExist.closest( 'header' )
@@ -66,24 +67,33 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      */
 
     const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    V.getState( 'entityNav' ) ? null : V.setState( 'entityNav', {} ); // ensure entityNav-state exists
     const entityNav = V.getState( 'entityNav' );
 
     for ( const item in entityNavOrder ) {
       if ( !entityNav[item] ) {
-        V.setNavItem( 'entityNav', {
+        const obj = {
           title: entityNavOrder[item].title,
+          tag: entityNavOrder[item].tag,
+          initials: entityNavOrder[item].initials,
           path: entityNavOrder[item].path,
-          draw: function( path ) { Profile.draw( path ) }
-        } );
+          draw: function( path ) { Profile.draw( path ) },
+        };
+        entityNavOrder[item].tinyImage ? obj.tinyImage = entityNavOrder[item].tinyImage : null;
+        V.setNavItem( 'entityNav', obj );
       }
     }
 
     if ( data && data.fullId && !entityNav[data.path] ) {
-      V.setNavItem( 'entityNav', {
-        title: V.castInitials( data.profile.title ),
+      const obj = {
+        title: data.profile.title,
+        tag: data.profile.tag,
+        initials: V.castInitials( data.profile.title ),
         path: data.path,
-        draw: function( path ) { Profile.draw( path ) }
-      } );
+        draw: function( path ) { Profile.draw( path ) },
+      };
+      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+      V.setNavItem( 'entityNav', obj );
     }
 
     syncNavOrder( entityNavOrder, entityNav );
@@ -140,7 +150,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       const entityRow = castNavDrawingOrder( viewData.data[0].entityNav, 3 );
 
       for ( let i = 0; i < entityRow.length; i++ ) {
-        const $pill = NavComponents.pill( entityRow[i] );
+        const $pill = NavComponents.entityPill( entityRow[i] );
         V.setNode( $entityNavUl, $pill );
       }
 
@@ -202,11 +212,14 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     for ( const newKey in b ) {
       if( !a.hasOwnProperty( newKey ) ) {
         a[b[newKey].path] = {
-          // c: 0,
-          // l: -1,
           title: b[newKey].title,
+          tag: b[newKey].tag,
+          initials: b[newKey].initials,
           path: b[newKey].path
         };
+
+        b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
+
       }
     }
   }
@@ -214,14 +227,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function itemClickHandler( e ) {
 
     e.stopPropagation(); // no need to bubble any further
+    const $itemClicked = e.target.closest( 'li' );
 
-    const $itemClicked = ( ( e ) => {
-      // in case svg is used in the pill, return the correct li clicked
-      const t = e.target;
-      if ( t.localName == 'li' ) { return t }
-      else if ( t.localName == 'svg' ) { return t.parentNode }
-      else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
-    } )( e );
+    // const $itemClicked = ( ( e ) => {
+    //   // in case svg is used in the pill, return the correct li clicked
+    //   const t = e.target;
+    //   if ( t.localName == 'li' ) { return t }
+    //   else if ( t.localName == 'svg' ) { return t.parentNode }
+    //   else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
+    // } )( e );
 
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
@@ -263,8 +277,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj ) {
     // adjusted from LukePH https://stackoverflow.com/questions/907279/jquery-animate-moving-dom-element-to-new-parent
-    deselect();
-    select( $itemToAnimate );
+    // deselect();
+    // select( $itemToAnimate );
 
     let classes = ' absolute font-medium';
     if ( nav == 'entity-nav' ) {
@@ -295,16 +309,30 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function select( $item ) {
+    const span = $item.getElementsByClassName( 'pill__initials' )[0];
+    if ( span ) {
+      span.innerHTML = $item.getAttribute( 'fullId' );
+      span.previousSibling.style.display = 'none';
+      span.classList.add( 'pill__replace' );
+      span.classList.remove( 'pill__initials' );
+    }
     $item.className += ' pill--selected';
     $item.addEventListener( 'click', resetOnClick, { once: true } );
   }
 
   function deselect() {
-    const $itemSelected = document.getElementsByClassName( 'pill--selected' ); // $( 'header' ).find( '.pill--selected:first' );
+    const $itemSelected = document.getElementsByClassName( 'pill--selected' );
     if ( $itemSelected.length ) {
       for ( let i = 0; i < $itemSelected.length; i++ ) {
+        const span = $itemSelected[i].getElementsByClassName( 'pill__replace' )[0];
+        if ( span ) {
+          span.innerHTML = $itemSelected[i].getAttribute( 'initials' );
+          span.previousSibling.style.display = 'flex';
+          span.classList.add( 'pill__initials' );
+          span.classList.remove( 'pill__replace' );
+        }
         $itemSelected[i].removeEventListener( 'click', resetOnClick );
-        $itemSelected[i].classList.remove( 'pill--selected' ); // .removeClass( 'pill--selected' );
+        $itemSelected[i].classList.remove( 'pill--selected' );
       }
     }
   }
@@ -386,6 +414,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const menuStateObj = V.getState( 'header' );
+
+    deselect();
+    select( $itemToAnimate );
+
     const itemClickedRect = $itemToAnimate.getBoundingClientRect();
 
     movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj );
@@ -399,7 +431,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
 
     V.setAnimation( nav, {
-      width: itemClickedRect.width + 13,
+      width: itemClickedRect.width + 11,
       top: menuStateObj.entityNavTop,
       left: menuStateObj.entityNavLeft
     }, { duration: 1 } );

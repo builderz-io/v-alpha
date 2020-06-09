@@ -10,6 +10,8 @@ body {
 
 .txt-white {
   color: rgba(var(--white), 1);
+  fill: rgba(var(--white), 1);
+
 }
 
 .bkg-white {

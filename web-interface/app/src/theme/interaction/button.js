@@ -94,6 +94,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
   }
 
+  function handleSend() {
+    V.setBrowserHistory( { path: '/me/transfers' } );
+    V.setState( 'active', { lastViewed: V.getNode( '.pill__replace' ).innerHTML } );
+    Canvas.draw( { path: '/me/transfers' } );
+  }
+
   /* ================== private methods ================= */
 
   function castButtons() {
@@ -102,6 +108,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     const $search = InteractionComponents.searchBtn();
     const $query = InteractionComponents.query();
     const $plus = InteractionComponents.plus();
+    const $set = InteractionComponents.set();
     const $send = InteractionComponents.sendNav();
     const $close = InteractionComponents.close();
 
@@ -109,14 +116,15 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     $search.addEventListener( 'click', handleDrawSearchForm );
     $close.addEventListener( 'click', handleCloseForms );
     $query.addEventListener( 'click', handleQuery );
-    $send.addEventListener( 'click', handleSetEntity );
+    $set.addEventListener( 'click', handleSetEntity );
+    $send.addEventListener( 'click', handleSend );
 
     // V.setNode( DOM.$backUL, $back );
-    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $query, $send ] );
+    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $query, $set, $send ] );
   }
 
   function presenter( which, options ) {
-    const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'send', 'query'] : which.split( ' ' );
+    const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'set', 'send', 'query'] : which.split( ' ' );
     return {
       btnArr: btnArr,
       options: options
@@ -128,7 +136,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     set.options && set.options.fade == 'out' ? fade = 'fadeOut' : null;
     set.options && set.options.delay ? delay = set.options.delay : null;
     set.btnArr.forEach( btn => {
-      V.setAnimation( '#' + btn, fade, { delay: delay, duration: 1 } );
+      V.setAnimation( '#' + btn, fade, { delay: delay, duration: 0.5 } );
     } );
   }
 

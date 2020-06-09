@@ -154,7 +154,16 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           data: [ '/data' ]
         };
       }
-    }
+    },
+    // {
+    //   path: '/events',
+    //   action: () => {
+    //     return {
+    //       status: 'events',
+    //       data: [ '/events' ]
+    //     };
+    //   }
+    // }
   ];
 
   const Router = new UniversalRouter( routes );

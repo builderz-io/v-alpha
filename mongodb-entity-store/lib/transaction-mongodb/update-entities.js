@@ -138,8 +138,8 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               amount: amount,
               txType: 'in',
               title: sender.profile.title + ' ' + sender.profile.tag,
-              fromAddress: 'address unaval',
-              toAddress: 'address unaval'
+              fromAddress: 'none',
+              toAddress: 'none'
             } } },
             ( err ) => {
               if ( err ) { console.log( err ); return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }
@@ -169,8 +169,8 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               amount: feeAmount,
               txType: 'fee',
               title: 'Transaction Fee', // entity.profile.title + ' ' + entity.profile.tag,
-              fromAddress: 'address unaval',
-              toAddress: 'address unaval'
+              fromAddress: 'none',
+              toAddress: 'none'
             } } },
             ( err ) => {
               if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
@@ -195,8 +195,8 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                   amount: contribution,
                   txType: 'out',
                   title: 'Community Contribution', // entity.profile.title + ' ' + entity.profile.tag,
-                  fromAddress: 'address unaval',
-                  toAddress: 'address unaval'
+                  fromAddress: 'none',
+                  toAddress: 'none'
                 } } },
                 ( err ) => {
                   if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
@@ -221,8 +221,8 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                       amount: amount,
                       txType: 'out',
                       title: entity.profile.title + ' ' + entity.profile.tag,
-                      fromAddress: 'address unaval',
-                      toAddress: 'address unaval'
+                      fromAddress: 'none',
+                      toAddress: 'none'
                     } } },
                     ( err ) => {
                       if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
@@ -326,8 +326,8 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               amount: taxAmount,
               txType: 'in',
               title: sender.profile.title + ' ' + sender.profile.tag,
-              fromAddress: 'address unaval',
-              toAddress: 'address unaval'
+              fromAddress: 'none',
+              toAddress: 'none'
             } } },
             ( err ) => {
               if ( err ) { return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }

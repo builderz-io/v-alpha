@@ -143,15 +143,21 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
         const aE = V.getState( 'activeEntity' );
+        const auth = V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' );
         const imageUpload = V.getState( 'imageUpload' );
-        Object.assign( imageUpload, {
-          entity: aE.fullId
-        } );
+        const tinyImageUpload = V.getState( 'tinyImageUpload' );
+        Object.assign( imageUpload, { entity: aE.fullId } );
+        Object.assign( tinyImageUpload, { entity: aE.fullId } );
         V.setEntity( aE.fullId, {
           field: 'thumbnail',
           data: imageUpload,
-          auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+          auth: auth
         } ).then( () => {
+          V.setEntity( aE.fullId, {
+            field: 'tinyImage',
+            data: tinyImageUpload,
+            auth: auth
+          } );
           V.setNode( '#img-upload-profile__label', V.i18n( 'Change this image', 'user profile', 'card entry' ) );
           V.setNode( '#img-upload-profile__preview', '' );
           V.setNode( '#img-upload-profile__preview', V.cN( {
@@ -661,7 +667,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function addOrChangeImage() {
     let $innerContent;
-    const thumbnail = entity.thumbnail ? entity.thumbnail : undefined;
+    const tinyImage = entity.tinyImage;
+    const thumbnail = entity.thumbnail;
 
     if( thumbnail ) {
       const img = V.castEntityThumbnail( thumbnail ).img;
@@ -700,7 +707,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             t: 'div',
             i: 'img-upload-profile__preview',
             h: img
-          }
+          },
+          // {
+          //   t: 'p',
+          //   h: 'Navigation Image Preview'
+          // },
+          // {
+          //   t: 'div',
+          //   h: V.castEntityThumbnail( tinyImage ).img
+          // }
         ],
       } );
     }

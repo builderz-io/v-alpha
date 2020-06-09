@@ -14,7 +14,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Profile.draw( path );
   }
 
-  const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc']; // https://colorhunt.co/palette/167860
+  const palette = ['darkseagreen'];
+  // const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc']; // https://colorhunt.co/palette/167860
   // const palette = ['#d1d2da', '#3a0088', '#930077', '#e61c5d', '#ffbd39']; // https://colorhunt.co/palette/108152
 
   const background = ( cardData ) => {
@@ -23,7 +24,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       return 'url(\'' + url + '\')';
     }
 
-    switch ( cardData.profile.tag.charAt( 1 ) ) {
+    switch ( '2' /* cardData.profile.tag.charAt( 1 ) */ ) {
     // case '1': return palette[0];
     case '2': return palette[0];
     case '3': return palette[1];
@@ -36,12 +37,24 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     }
   };
 
-  const initials = ( cardData ) => {
-    if ( cardData.image != undefined ) {
-      return '';
-    }
-    return V.castInitials( cardData.profile.title );
-  };
+  function castCircle( circleData ) {
+    const backgr = background( circleData );
+    return V.cN( {
+      t: 'div',
+      c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
+      a: {
+        style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
+      },
+      h: {
+        t: 'div',
+        c: 'card__initials font-bold fs-xl txt-white',
+        h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.profile.title )
+      },
+      e: {
+        click: handleProfileDraw.bind( circleData.path )
+      }
+    } );
+  }
 
   function entitiesSmallCard( cardData ) {
     return V.cN( {
@@ -50,28 +63,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       h: {
         t: 'smallcard',
         c: 'smallcard__container txt-center rounded bkg-white',
-        h: [
-          {
-            t: 'div',
-            c: 'circle-3 rounded-full flex justify-center items-center cursor-pointer',
-            a: {
-              style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
-            },
-            h: {
-              t: 'div',
-              c: 'card__initials font-bold fs-xl txt-white', // txt-shadow
-              h: background( cardData ).includes( 'url' ) ? '' : initials( cardData )
-            },
-            e: {
-              click: handleProfileDraw.bind( cardData.path )
-            }
-          },
-          // V.cN( {
-          //   t: 'p',
-          //   c: 'fs-s',
-          //   h: cardData.profile.title
-          // } )
-        ]
+        h: castCircle( cardData )
       }
     } );
   }
@@ -86,21 +78,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $topLeft = V.cN( {
       t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
-      h: {
-        t: 'div',
-        c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
-        a: {
-          style: `background:${background( cardData )}; background-position: center center; background-size: cover;`
-        },
-        h: {
-          t: 'div',
-          c: 'card__initials font-bold fs-xl txt-white',
-          h: background( cardData ).includes( 'url' ) ? '' : initials( cardData )
-        },
-        e: {
-          click: handleProfileDraw.bind( cardData.path )
-        }
-      }
+      h: castCircle( cardData )
     } );
 
     const $topRight = V.cN( {
@@ -147,6 +125,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   return {
+    castCircle: castCircle,
     entitiesSmallCard: entitiesSmallCard,
     cardContent: cardContent,
   };
