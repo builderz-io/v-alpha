@@ -135,7 +135,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
             'margin-left': 'auto',
             'margin-right': 'auto',
             'height': '4px',
-            'width': '5%'
+            'width': '5%',
+            'max-width': '40px'
           }
         },
       }

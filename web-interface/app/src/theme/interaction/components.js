@@ -44,7 +44,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function img( icon, css ) {
     return V.cN( {
       t: 'div',
-      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white transition' + ( css ? ' ' + css : '' ),
+      c: 'circle-1 flex justify-center items-center rounded-full bkg-white transition' + ( css ? ' ' + css : '' ),
       h: V.getIcon( icon )
     } );
   }
@@ -120,7 +120,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.cN( {
       t: 'button',
       i: 'send-message',
-      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
+      c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
       h: V.cN( {
         t: 'span',
         c: 'sendbtn',
@@ -441,26 +441,28 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             Join.draw( 'install metamask' );
           }
         } );
+        return CanvasComponents.card( $cardContent );
       }
-      else if ( !balanceCheck ) { // wallet balance is 0
+      else if ( !balanceCheck && aE.profile.role == 'member' ) { // wallet balance is 0
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
           html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'join', 'onboarding call to action' ) + '</p>'
         } );
+        return CanvasComponents.card( $cardContent );
       }
-      else if ( balanceCheck ) { // no brightID connected
+      else if ( balanceCheck && aE.profile.role == 'member' ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
           html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'join', 'onboarding call to action' ) + '</p>'
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
+        return CanvasComponents.card( $cardContent );
       }
-
-      const $onboardingCard = CanvasComponents.card( $cardContent );
-
-      return $onboardingCard;
+      else {
+        return '';
+      }
     }
     else {
       return '';

@@ -26,8 +26,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': 'white',
       'width': '75vw',
       'max-width': '500px',
-      'height': '60vh',
-      'margin': '18vh auto',
+      'height': '46vh',
+      'margin': '14vh auto',
       'padding': '0.5rem',
     },
     'modal__close': {
@@ -70,7 +70,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntity,
-      h: V.i18n( 'Join with key', 'modal' )
+      h: V.i18n( 'Use key', 'modal' )
     } );
 
     V.sN( '.modal__content', '' );
@@ -101,6 +101,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
+      role: 'member',
       evmAddress: V.getState( 'activeAddress' ),
     };
 
@@ -282,7 +283,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
       k: handleGetEntityForm,
-      h: V.i18n( 'Join with key', 'modal' )
+      h: V.i18n( 'Manage profile with key', 'modal' )
     } );
     V.setNode( $content, [$new, $newName, $key] );
     return $content;
@@ -300,7 +301,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleGetEntityForm,
-      h: V.i18n( 'Join with key', 'modal' )
+      h: V.i18n( 'Manage profile with key', 'modal' )
     } );
     V.setNode( $content, [$new, $key] );
     return $content;

@@ -267,6 +267,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
                 data.to.toLowerCase() == which;
 
     } ).map( tx => {
+      console.log( tx );
       const txData = {};
 
       txData.amount = ( tx.returnValues.value / 10**6 ).toFixed( 0 );

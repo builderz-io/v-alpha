@@ -55,6 +55,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleEntry() {
+    console.log( this.value );
+    console.log( this.innerHTML );
     let str, entry;
     this.value ? str = this.value : str = this.innerHTML;
     str = V.stripHtml( str );
@@ -84,6 +86,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( title == 'currentUTC' ) {
         entry = isNaN( str ) ? 'not valid' : str;
+      }
+      else if ( title == 'description' ) {
+        entry = str.length > 2000 ? 'not valid' : str;
       }
       else {
         entry = str;
