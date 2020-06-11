@@ -404,13 +404,18 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const $navToAnimate = $itemToAnimate.closest( '.nav' );
     const nav = $navToAnimate.localName;
 
-    if ( nav == 'user-nav' ) {
-      if ( !V.getVisibility( 'user-nav' ) ) {
-        $navToAnimate.style.display = 'block';
-        V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
-        V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
-        V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
-      }
+    if ( nav != 'user-nav' && !V.getVisibility( 'entity-nav' ) ) {
+      $navToAnimate.style.display = 'block';
+      V.setAnimation( 'user-nav', 'fadeOut', { duration: 0.1 } );
+      V.setAnimation( 'entity-nav', 'fadeIn', { duration: 0.2 } );
+      V.setAnimation( 'service-nav', 'fadeIn', { duration: 0.6 } );
+    }
+
+    if ( nav == 'user-nav' && !V.getVisibility( 'user-nav' ) ) {
+      $navToAnimate.style.display = 'block';
+      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
+      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
+      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
     }
 
     const menuStateObj = V.getState( 'header' );

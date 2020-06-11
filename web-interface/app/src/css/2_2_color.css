@@ -87,5 +87,5 @@ input:focus, textarea:focus {
 }
 
 .circle-1:hover {
-  border: 1px solid rgba(var(--brand), 1);
+  /* border: 1px solid rgba(var(--brand), 1); */
 }

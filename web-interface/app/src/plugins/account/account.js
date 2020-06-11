@@ -30,7 +30,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const transactions = await V.getTransaction();
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      V.setNode( $list, InteractionComponents.onboardingCard() );
+      V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
     }
 
     if( !transactions.success || !transactions.data[0].length ) {

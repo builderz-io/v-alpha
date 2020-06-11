@@ -9,7 +9,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
-    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
     socketHost: 'http://localhost',

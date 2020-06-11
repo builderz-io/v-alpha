@@ -15,7 +15,9 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       return which;
     }
 
-    if ( !V.getState( 'activeEntity' ) ) {
+    const aE = V.getState( 'activeEntity' );
+
+    if ( !aE ) {
       return {
         success: false,
         status: ''
@@ -28,7 +30,15 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           which: which,
           entity: V.getState( 'activeEntity' ),
-          mapData: [{ type: 'Feature', geometry: V.getState( 'activeEntity' ).geometry }],
+          mapData: [
+            {
+              type: 'Feature',
+              geometry: aE.geometry,
+              profile: aE.profile,
+              thumbnail: aE.thumbnail,
+              path: aE.path
+            }
+          ]
         }]
       };
     }

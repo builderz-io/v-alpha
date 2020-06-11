@@ -42,7 +42,15 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           Form.draw( 'all', { fade: 'out' } );
           Button.draw( 'all', { fade: 'out' } );
           Button.draw( 'plus search', { delay: 1 } );
-          VMap.draw( { type: 'Feature', geometry: res.data[0].geometry } );
+          VMap.draw(
+            {
+              type: 'Feature',
+              geometry: res.data[0].geometry,
+              profile: res.data[0].profile,
+              thumbnail: res.data[0].thumbnail,
+              path: res.data[0].path
+            }
+          );
 
           /**
            * Update "adminOf" Array of activeEntity in database

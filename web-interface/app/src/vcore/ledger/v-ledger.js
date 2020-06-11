@@ -89,6 +89,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       window.socket.on( 'a user is typing', function( user ) {
 
         const t1 = V.getNode( '#typing_on_1' );
+        if ( !t1 ) { return }
         const t2 = V.getNode( '#typing_on_2' );
 
         const a = t1.innerHTML.split( ' ' )[0];

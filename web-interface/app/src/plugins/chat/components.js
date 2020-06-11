@@ -199,7 +199,9 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
           V.getQuery( { query: stringToComplete, role: 'all' } ).then( res => {
             dbEntries = res.data;
-            setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
+            if ( res.success ) {
+              setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
+            }
           } );
 
           // socket.emit( 'get all entities', [stringToComplete, $( '#header-svg' ).attr( 'fullid' )], function( callback ) {
@@ -300,19 +302,17 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setNewSuggestions( dbEntries, stringToComplete ) {
-
     V.setNode( '.ac-suggestions', '' );
-
+    let count = 0;
     for ( let i=0; i<dbEntries.length; i++ ) {
       if ( dbEntries[i].fullId.toLowerCase().includes( stringToComplete ) ) {
         V.setNode( '.ac-suggestions', castSuggestion( dbEntries[i], stringToComplete ) );
-      }
-      else {
-        V.setNode( '.ac-suggestions', notFound( stringToComplete ) );
-        break;
+        count += 1;
       }
     }
-
+    if ( !count ) {
+      V.setNode( '.ac-suggestions', notFound( stringToComplete ) );
+    }
   }
 
   function considerSelection( selectedEntity, permanentString, $elem ) {
@@ -374,7 +374,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( {
       t: 'div',
-      c: 'ac-suggestions absolute card-shadow',
+      c: 'ac-suggestions absolute card-shadow bkg-white',
       y: {
         left: rect.left + 'px',
         bottom: rect.height + 20 + 'px',
@@ -485,7 +485,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function messageSend() {
     return V.sN( {
       t: 'button',
-      c: 'circle-1 flex justify-center items-center rounded-full border-shadow bkg-white',
+      c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
       h: V.getIcon( 'send' )
     } );
   }

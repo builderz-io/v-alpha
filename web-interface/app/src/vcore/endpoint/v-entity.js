@@ -8,11 +8,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const entitySetup = {
-    capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
+    useWhitelist: true, // allow only chars in whitelist
+    // capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
     maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength
     maxHumanWords: 3,  // max allowed words in human entity names // MUST be less or equal to capWordLength
     maxWordLength: 12,  // max allowed length of each word in name
   };
+
+  const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
+  const charWhitelist = /[^0-9^a-z^A-Z^\s]/g;
 
   /* ================== private methods ================= */
 
@@ -160,7 +164,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         tag: tag,
         creator: creator,
         creatorTag: creatorTag,
-        role: entityData.role || 'member',
+        role: entityData.role,
         joined: {
           date: date,
           unix: unix,
@@ -222,18 +226,23 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   function castEntityTitle( title, role ) {
 
-    var checkLength = title.split( ' ' ).length;
-    var wordLengthExeeded = title.split( ' ' ).map( item => { return item.length > entitySetup.maxWordLength } );
+    const titleArray = title.trim().toLowerCase().split( ' ' );
+
+    var checkLength = titleArray.length;
+    var wordLengthExeeded = titleArray.map( item => { return item.length > entitySetup.maxWordLength } );
 
     if (
       ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ||
          // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) ) ||
+         title.match( charBlacklist ) ||
+         entitySetup.useWhitelist && title.match( charWhitelist ) ||
+         !title.match( /[a-z]{2}|[A-Z]{2}/g ) ||
          title.length > 200 ||
          title.length < 2 ||
          title.indexOf( '#' ) != -1 ||
          title.indexOf( '2121' ) != -1 ||
-         // title.replace( /[0-9]/g, '' ).length < title.length ||
-         checkLength > entitySetup.capWordLength ||
+         // title.replace( /[0-9]/g, '' ).length < title.length || // exclude numbers
+         // checkLength > entitySetup.capWordLength ||
          ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ||
          ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
          wordLengthExeeded.includes( true )
@@ -245,8 +254,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-
-      const titleArray = title.trim().toLowerCase().split( ' ' );
 
       const formattedTitle = titleArray.map( function( string ) {
         if ( string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {

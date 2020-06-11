@@ -153,8 +153,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'card__bottom-right pxy',
       h: [
-        txData.fromAddress != 'none' ? { t: 'p', h: uiStr( strFrom ) + txData.fromAddress } : { t: 'p', h: uiStr( strFrom ) + txData.from + ' ' + txData.fromTag },
-        txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + txData.toAddress } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
+        txData.fromAddress != 'none' ? { t: 'p', h: uiStr( strFrom ) + V.castShortAddress( txData.fromAddress ) } : { t: 'p', h: uiStr( strFrom ) + txData.from + ' ' + txData.fromTag },
+        txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + V.castShortAddress( txData.toAddress ) } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
         txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
       ]
     } );

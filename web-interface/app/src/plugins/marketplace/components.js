@@ -113,7 +113,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'div',
       c: 'card__bottom-right pxy',
       h: [
-        { t: 'p', h: cardData.properties && cardData.properties.description ? cardData.properties.description : '' },
+        { t: 'p', c: 'capitalize', h: cardData.profile.role },
+        { t: 'p', h: cardData.properties && cardData.properties.description ? cardData.properties.description.substr( 0, 160 ) : '' },
         { t: 'p', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
       ]
     } );

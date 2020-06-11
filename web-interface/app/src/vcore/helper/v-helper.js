@@ -169,10 +169,15 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   function castInitials( which ) {
     const initials = which.split( ' ' ).filter( item => { return isNaN( item ) } );
-    const first = initials[0].charAt( 0 );
-    const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => { return ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 } )[0];
-    const second = initials[1] ? initials[1].charAt( 0 ) : firstConsonant ? firstConsonant.toUpperCase() : '';
-    return first + second;
+    if ( initials.length ) {
+      const first = initials[0].charAt( 0 );
+      const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => { return ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 } )[0];
+      const second = initials[1] ? initials[1].charAt( 0 ) : firstConsonant ? firstConsonant.toUpperCase() : '';
+      return first + second;
+    }
+    else {
+      return which.charAt( 0 );
+    }
   }
 
   function castCamelCase( which ) {
