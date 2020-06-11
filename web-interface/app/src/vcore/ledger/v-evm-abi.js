@@ -584,6 +584,48 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
       inputs: [
         {
           indexed: true,
+          name: 'from',
+          type: 'address'
+        },
+        {
+          indexed: true,
+          name: 'to',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'value',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'feesBurned',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'contribution',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'payoutSender',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'payoutRecipient',
+          type: 'uint256'
+        }
+      ],
+      name: 'TransferSummary',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
           name: '_account',
           type: 'address'
         },
@@ -657,40 +699,6 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         }
       ],
       name: 'Burn',
-      type: 'event'
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          name: 'to',
-          type: 'address'
-        },
-        {
-          indexed: false,
-          name: 'value',
-          type: 'uint256'
-        }
-      ],
-      name: 'PaidContribution',
-      type: 'event'
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          name: 'to',
-          type: 'address'
-        },
-        {
-          indexed: false,
-          name: 'value',
-          type: 'uint256'
-        }
-      ],
-      name: 'BurnedFees',
       type: 'event'
     },
     {
@@ -964,7 +972,12 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         }
       ],
       name: 'triggerOnchainBalanceUpdate',
-      outputs: [],
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function'

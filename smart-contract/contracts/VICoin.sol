@@ -78,11 +78,13 @@ contract VICoin is
 
     // Events:
     event TransferSummary(
-        address indexed _from,
-        address indexed _to,
-        uint256 _amount,
-        uint256 _feesBurned,
-        uint256 _contribution
+        address indexed from,
+        address indexed to,
+        uint256 value,
+        uint256 feesBurned,
+        uint256 contribution,
+        uint256 payoutSender,
+        uint256 payoutRecipient
     );
     event IncomeReceived(address indexed _account, uint256 _income);
     event Decay(address indexed _account, uint256 _decay);
@@ -150,7 +152,7 @@ contract VICoin is
     }
 
     /// @notice Manually trigger an onchain update of the live balance
-    function triggerOnchainBalanceUpdate(address _account) public {
+    function triggerOnchainBalanceUpdate(address _account) public returns (uint256) {
         // 1. Decay the balance
         uint256 decay = calcDecay(
             lastTransactionBlock[_account],
@@ -206,6 +208,7 @@ contract VICoin is
         if (decay > 0 || generationAccrued > 0) {
             lastTransactionBlock[_account] = block.number;
         }
+        return generationAccrued;
     }
 
     /** @notice Calculate the generation accrued since the last generation
@@ -291,12 +294,12 @@ contract VICoin is
         uint256 contribution;
         // Process generation and decay for sender
         emit Log("Sender balance before update", balanceOf(msg.sender));
-        triggerOnchainBalanceUpdate(msg.sender);
+        uint256 generationAccruedSender = triggerOnchainBalanceUpdate(msg.sender);
         emit Log("Sender balance after update", balanceOf(msg.sender));
 
         // Process generation and decay for recipient
         emit Log("Recipient balance before update", balanceOf(_to));
-        triggerOnchainBalanceUpdate(_to);
+        uint256 generationAccruedRecipient = triggerOnchainBalanceUpdate(_to);
         emit Log("Recipient balance after update", balanceOf(_to));
 
         require(
@@ -341,7 +344,9 @@ contract VICoin is
             _to,
             valueAfterFees,
             feesBurned,
-            contribution
+            contribution,
+            generationAccruedSender,
+            generationAccruedRecipient
         );
         return true;
     }
@@ -638,7 +643,7 @@ contract VICoin is
         fused(4)
     {
         //TODO: delete/update lastGenerationBlock to prevent calculation errors
-        require(1==2, "Currently not possible to change generation period after deploy.")
+        require(1==2, "Currently not possible to change generation period after deploy.");
         generationPeriod = _generationPeriod;
         emit UpdateGenerationPeriod(_generationPeriod);
     }
