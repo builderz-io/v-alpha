@@ -1,0 +1,363 @@
+{
+  "contractName": "IERC1820Implementer",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "interfaceHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "canImplementInterfaceForAddress",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"interfaceHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"canImplementInterfaceForAddress\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"canImplementInterfaceForAddress(bytes32,address)\":{\"params\":{\"account\":\"Address for which the contract will implement the interface\",\"interfaceHash\":\"keccak256 hash of the name of the interface\"},\"return\":\"ERC1820_ACCEPT_MAGIC only if the contract implements `interfaceHash` for the address `account`.\"}},\"title\":\"IERC1820Implementer Interface for contracts that will be registered as implementers in the ERC1820 registry.\"},\"userdoc\":{\"methods\":{\"canImplementInterfaceForAddress(bytes32,address)\":{\"notice\":\"Indicates whether the contract implements the interface `interfaceHash` for the address `account` or not.\"}},\"notice\":\"For more details, see https://eips.ethereum.org/EIPS/eip-1820\"}},\"settings\":{\"compilationTarget\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/IERC1820Implementer.sol\":\"IERC1820Implementer\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/IERC1820Implementer.sol\":{\"keccak256\":\"0x95dcc63bb95e0a56d6d3ee37a678be25355a0a9763dbe044e5bbaf7b3b205184\",\"urls\":[\"bzz-raw://ce44816b7cf4b2f14676c852eab8886c41afa0a5cddcefef43d1228b0cc2ad34\",\"dweb:/ipfs/QmZ7cUFX1WrToyqRH3WSK89KwBAoeXvaYhp5VVQAndmni3\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.5.0;\n\n/**\n * @title IERC1820Implementer\n * Interface for contracts that will be registered as implementers in the ERC1820 registry.\n * @notice For more details, see https://eips.ethereum.org/EIPS/eip-1820\n */\ninterface IERC1820Implementer {\n    /**\n     * @notice Indicates whether the contract implements the interface `interfaceHash` for the address `account` or\n     * not.\n     * @param interfaceHash keccak256 hash of the name of the interface\n     * @param account Address for which the contract will implement the interface\n     * @return ERC1820_ACCEPT_MAGIC only if the contract implements `interfaceHash` for the address `account`.\n     */\n    function canImplementInterfaceForAddress(bytes32 interfaceHash, address account) external view returns (bytes32);\n}\n",
+  "sourcePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/IERC1820Implementer.sol",
+  "ast": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/IERC1820Implementer.sol",
+    "exportedSymbols": {
+      "IERC1820Implementer": [
+        5464
+      ]
+    },
+    "id": 5465,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5454,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:36"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title IERC1820Implementer\nInterface for contracts that will be registered as implementers in the ERC1820 registry.\n@notice For more details, see https://eips.ethereum.org/EIPS/eip-1820",
+        "fullyImplemented": false,
+        "id": 5464,
+        "linearizedBaseContracts": [
+          5464
+        ],
+        "name": "IERC1820Implementer",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": "@notice Indicates whether the contract implements the interface `interfaceHash` for the address `account` or\nnot.\n@param interfaceHash keccak256 hash of the name of the interface\n@param account Address for which the contract will implement the interface\n@return ERC1820_ACCEPT_MAGIC only if the contract implements `interfaceHash` for the address `account`.",
+            "id": 5463,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "canImplementInterfaceForAddress",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5459,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5456,
+                  "name": "interfaceHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5463,
+                  "src": "714:21:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 5455,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "714:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5458,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5463,
+                  "src": "737:15:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5457,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "737:7:36",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "713:40:36"
+            },
+            "returnParameters": {
+              "id": 5462,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5461,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5463,
+                  "src": "777:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 5460,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "777:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "776:9:36"
+            },
+            "scope": 5464,
+            "src": "673:113:36",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5465,
+        "src": "228:560:36"
+      }
+    ],
+    "src": "0:789:36"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/grifma/Code/vi-fresh/v-alpha-2/smart-contract/contracts/lib/openzeppelin-solidity/contracts/drafts/IERC1820Implementer.sol",
+    "exportedSymbols": {
+      "IERC1820Implementer": [
+        5464
+      ]
+    },
+    "id": 5465,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5454,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:36"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": "@title IERC1820Implementer\nInterface for contracts that will be registered as implementers in the ERC1820 registry.\n@notice For more details, see https://eips.ethereum.org/EIPS/eip-1820",
+        "fullyImplemented": false,
+        "id": 5464,
+        "linearizedBaseContracts": [
+          5464
+        ],
+        "name": "IERC1820Implementer",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": "@notice Indicates whether the contract implements the interface `interfaceHash` for the address `account` or\nnot.\n@param interfaceHash keccak256 hash of the name of the interface\n@param account Address for which the contract will implement the interface\n@return ERC1820_ACCEPT_MAGIC only if the contract implements `interfaceHash` for the address `account`.",
+            "id": 5463,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "canImplementInterfaceForAddress",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5459,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5456,
+                  "name": "interfaceHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5463,
+                  "src": "714:21:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 5455,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "714:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5458,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5463,
+                  "src": "737:15:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5457,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "737:7:36",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "713:40:36"
+            },
+            "returnParameters": {
+              "id": 5462,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5461,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5463,
+                  "src": "777:7:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 5460,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "777:7:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "776:9:36"
+            },
+            "scope": 5464,
+            "src": "673:113:36",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5465,
+        "src": "228:560:36"
+      }
+    ],
+    "src": "0:789:36"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2020-06-09T20:14:57.798Z",
+  "devdoc": {
+    "methods": {
+      "canImplementInterfaceForAddress(bytes32,address)": {
+        "params": {
+          "account": "Address for which the contract will implement the interface",
+          "interfaceHash": "keccak256 hash of the name of the interface"
+        },
+        "return": "ERC1820_ACCEPT_MAGIC only if the contract implements `interfaceHash` for the address `account`."
+      }
+    },
+    "title": "IERC1820Implementer Interface for contracts that will be registered as implementers in the ERC1820 registry."
+  },
+  "userdoc": {
+    "methods": {
+      "canImplementInterfaceForAddress(bytes32,address)": {
+        "notice": "Indicates whether the contract implements the interface `interfaceHash` for the address `account` or not."
+      }
+    },
+    "notice": "For more details, see https://eips.ethereum.org/EIPS/eip-1820"
+  }
+}

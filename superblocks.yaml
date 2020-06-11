@@ -18,7 +18,7 @@ jobs:
       - npm install truffle-assertions
       - npm install truffle-hdwallet-provider
       - npm install chalk
-      - npx truffle test
+      - npx truffle test --network development
 stages:
   - pipeline:
       jobs:
