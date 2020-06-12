@@ -187,7 +187,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
-      if ( showHaze ) {
+      if ( showHaze == undefined || showHaze != false ) {
         Haze.draw();
       }
       handlebar( 7, 22 );

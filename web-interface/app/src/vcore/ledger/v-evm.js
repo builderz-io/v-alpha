@@ -263,7 +263,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const filteredTransfers = transfers.filter( tx => {
-      console.log( tx );
       const data = tx.returnValues;
       return data.from.toLowerCase() == which ||
                 data.to.toLowerCase() == which;

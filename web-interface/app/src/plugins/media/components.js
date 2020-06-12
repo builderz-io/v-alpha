@@ -7,25 +7,25 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  V.setStyle( {
+    'feature__video-wrapper': {
+      'position': 'relative',
+      'padding-bottom': '56.25%'
+    },
+    'feature__video-wrapper iframe': {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%'
+    }
+  } );
+
   function videoFeature( link ) {
-    const $feature = V.castLinks( link );
     return V.castNode( {
-      tag: 'div',
-      classes: 'feature__video-wrapper w-full',
-      setStyle: {
-        'feature__video-wrapper': {
-          'position': 'relative',
-          'padding-bottom': '56.25%'
-        },
-        'feature__video-wrapper iframe': {
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          width: '100%',
-          height: '100%'
-        }
-      },
-      html: $feature
+      t: 'div',
+      c: 'feature__video-wrapper w-full',
+      h: V.castLinks( link ).iframes
     } );
   }
 
@@ -42,7 +42,10 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
       h: cardData.fullId
     } );
 
-    const $video = videoFeature( cardData.properties.description );
+    const $video = V.castNode( {
+      t: 'div',
+      h: V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) ).iframes
+    } );
 
     V.setNode( $cardContent, [$title, $video] );
 

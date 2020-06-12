@@ -152,11 +152,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       location.reload();
     }
 
-    window.onresize = function() {
-      V.setNode( 'body', 'clear' );
-      clearTimeout( V.getState( 'throttle' ) );
-      V.setState( 'throttle', setTimeout( refresh, 200 ) );
-    };
+    // window.onresize = function() {
+    //   V.setNode( 'body', 'clear' );
+    //   clearTimeout( V.getState( 'throttle' ) );
+    //   V.setState( 'throttle', setTimeout( refresh, 200 ) );
+    // };
 
     document.onkeyup = function( e ) {
       if ( e.ctrlKey && e.which == 83 ) {

@@ -164,6 +164,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         { t: 'p', h: uiStr( strFees ) + txData.feesBurned },
         { t: 'p', h: uiStr( strContr ) + txData.contribution },
         txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
+        txData.blockDate ? { t: 'p', h: uiStr( strDate ) + new Date( txData.blockDate * 1000 ) } : { t: 'p' },
       ]
     } );
 

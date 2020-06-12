@@ -55,8 +55,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleEntry() {
-    console.log( this.value );
-    console.log( this.innerHTML );
     let str, entry;
     this.value ? str = this.value : str = this.innerHTML;
     str = V.stripHtml( str );
@@ -336,9 +334,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         h: descr ? descr : 'edit',
       } : {
-        t: 'p',
+        t: 'div',
         c: 'pxy',
-        h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ),
+        h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ).iframes,
       } );
       return castCard( $innerContent, 'Description' );
     }

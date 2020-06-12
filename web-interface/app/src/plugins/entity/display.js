@@ -89,7 +89,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         // topcontent: $topcontent,
         listings: $list,
         position: 'top', // could optionally be 'feature', if map flies to entity
-        haze: false
+        // haze: false
       } );
 
       // Chat.drawMessageForm( 'clear' );

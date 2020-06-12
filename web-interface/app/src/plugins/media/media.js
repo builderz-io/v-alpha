@@ -52,6 +52,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   function view( pageData ) {
     if ( pageData.which ) {
       Navigation.draw( pageData.which );
+      Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
     }
     if ( pageData.feature ) {
       Feature.draw( pageData.feature );

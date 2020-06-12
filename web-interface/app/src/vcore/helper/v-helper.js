@@ -123,9 +123,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     // test text:
     // normal link www.apple.com and youtube link https://youtu.be/D5f78SK6EnI and vimeo link https://vimeo.com/319038756
 
-    var text = which.replace( /www./gi, 'www.' ).replace( /http/gi, 'http' ).replace( /https/gi, 'https' ),
-      linksFound = text.match( /(?:www|https?)[^\s]+/g ),
-      aLink = [];
+    const text = which.replace( /www./gi, 'www.' ).replace( /http/gi, 'http' ).replace( /https/gi, 'https' );
+    const linksFound = text.match( /(?:www|https?)[^\s]+/g );
+    const iframeLinks = [], noIframeLinks = [];
+
+    let links = ( ' ' + text ).slice( 1 );
+    let iframes = ( ' ' + text ).slice( 1 );
 
     if ( linksFound != null ) {
 
@@ -134,21 +137,31 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         if ( !( linksFound[i].match( /(http(s?)):\/\// ) ) ) { replace = 'http://' + linksFound[i] }
         let linkText = replace.split( '/' )[2];
         if ( linkText.substring( 0, 3 ) == 'www' ) { linkText = linkText.replace( 'www.', '' ) }
+        noIframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+
         if ( linkText.match( /youtu/ ) ) {
           // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
           const youtubeID = replace.split( '/' ).slice( -1 )[0];
-          aLink.push( '<iframe src="https://www.youtube.com/embed/' + youtubeID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' );
+          const iframe = '<iframe src="https://www.youtube.com/embed/' + youtubeID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+          iframeLinks.push( iframe );
         }
         else if ( linkText.match( /vimeo/ ) ) {
           const vimeoID = replace.split( '/' ).slice( -1 )[0];
-          aLink.push( '<iframe src="https://player.vimeo.com/video/' + vimeoID + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>' );
+          const iframe = '<iframe src="https://player.vimeo.com/video/' + vimeoID + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+          iframeLinks.push( iframe );
         }
         else {
-          aLink.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+          iframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
         }
-        text = text.split( linksFound[i] ).map( item => { return aLink[i].includes( 'iframe' ) ? item.trim() : item } ).join( aLink[i] );
+        iframes = iframes.split( linksFound[i] ).map( item => { return iframeLinks[i].includes( 'iframe' ) ? item.trim() : item } ).join( iframeLinks[i] );
+        links = links.split( linksFound[i] ).join( noIframeLinks[i] );
       }
-      return text;
+
+      return {
+        original: which,
+        links: links,
+        iframes: iframes
+      };
 
     }
     else {

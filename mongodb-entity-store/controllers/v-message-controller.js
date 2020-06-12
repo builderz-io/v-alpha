@@ -1,5 +1,5 @@
 const ChatDB = require( '../models/v-message-model' );
-const sio = require( '../server' ).sio;
+const sio = require( '../server-es' ).sio;
 
 exports.set = function( req, res ) {
 
