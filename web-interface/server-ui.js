@@ -1,5 +1,5 @@
 const settings = {
-  port: 6029
+  port: 3021
 };
 
 const http = require( 'http' );

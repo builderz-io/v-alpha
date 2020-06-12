@@ -46,6 +46,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     for ( const txData of transactions.data[0].reverse() ) {
       if ( V.getState( 'activeAddress' ) ) {
+
+        const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
+        txData.blockDate = blockDetails.timestamp;
+        console.log( txData.blockDate );
         if ( txData.txType == 'in' ) {
           txData.title = await castEntityName( txData.fromAddress );
         }

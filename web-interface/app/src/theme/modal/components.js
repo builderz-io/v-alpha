@@ -7,10 +7,16 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  window.addEventListener( 'keyup', handleTransactionEnterKey );
+
   /* ====================== strings ===================== */
 
   const
     strClose = 'close';
+
+  function str( string, scope ) {
+    return V.i18n( string, 'modal components', scope || 'modal content' ) + ' ';
+  }
 
   /* ====================== styles ====================== */
 
@@ -119,7 +125,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleTransaction( e ) {
     e.stopPropagation();
-    V.setTransaction( this )
+    const aTx = V.getState( 'active' ).transaction;
+
+    V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
           Modal.draw( 'transaction successful' );
@@ -134,6 +142,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         console.error( err );
         Modal.draw();
       } );
+  }
+
+  function handleTransactionEnterKey( e ) {
+    const key = window.event ? e.keyCode : e.which;
+    // enter (to submit transaction)
+    if ( key == 13 && V.getNode( '#sign-transaction' ) ) {
+      handleTransaction( e );
+    }
   }
 
   function handleAddressMapping() {
@@ -162,10 +178,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ================== private methods ================= */
-
-  function str( string, scope ) {
-    return V.i18n( string, 'modal components', scope || 'modal content' ) + ' ';
-  }
 
   function setActiveEntityState( res ) {
     if ( res.success ) {
@@ -257,8 +269,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
     const $confirm = V.cN( {
       t: 'div',
+      i: 'sign-transaction',
       c: buttonClasses + ' modal-pos-1',
-      k: handleTransaction.bind( txData ),
+      k: handleTransaction,
       h: V.i18n( 'Sign Transaction', 'modal' )
     } );
     V.setNode( $content, [$txDetails, $confirm]  );

@@ -40,7 +40,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return Number( balance / 10**18 ).toFixed( 1 );
   }
 
-  function castTokenBalance( balance ) {
+  function castTokenFloat( balance ) {
     const divisibility = V.getState( 'contract' ).divisibility;
     return Number( balance / 10**( divisibility ) ).toFixed( 0 );
   }
@@ -218,8 +218,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         ledger: 'EVM',
         data: [{
           coinBalance: castEthBalance( all[0] ),
-          liveBalance: castTokenBalance( all[1] ),
-          tokenBalance: castTokenBalance( all[2]._balance ),
+          liveBalance: castTokenFloat( all[1] ),
+          tokenBalance: castTokenFloat( all[2]._balance ),
           lastBlock: all[2]._lastBlock,
           zeroBlock: all[2]._zeroBlock,
         }]
@@ -237,12 +237,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   async function getAddressHistory(
     which = V.getState( 'activeAddress' ),
-    data = { fromBlock: 0, toBlock: 'latest' }
+    data = { fromBlock: 0, toBlock: 'latest' },
+    whichEvent = 'TransferSummary'
   ) {
 
     const burnA = '0x0000000000000000000000000000000000000000';
 
-    const transfers = await contract.getPastEvents( 'Transfer', {
+    const transfers = await contract.getPastEvents( whichEvent, {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
       fromBlock: data.fromBlock,
       toBlock: data.toBlock
@@ -267,10 +268,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
                 data.to.toLowerCase() == which;
 
     } ).map( tx => {
-      console.log( tx );
       const txData = {};
-
-      txData.amount = ( tx.returnValues.value / 10**6 ).toFixed( 0 );
 
       txData.fromAddress = tx.returnValues.from.toLowerCase();
       txData.toAddress = tx.returnValues.to.toLowerCase();
@@ -280,11 +278,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       txData.toAddress == burnA ? txData.txType = 'fee' : null;
       txData.fromAddress == burnA ? txData.txType = 'generated' : null;
 
-      txData.block = tx.blockNumber;
-      txData.logIndex = tx.logIndex;
-      txData.hash = tx.transactionHash;
+      txData.amount = castTokenFloat( tx.returnValues.value );
+
+      txData.feesBurned = castTokenFloat( tx.returnValues.feesBurned || 0 );
+      txData.contribution = castTokenFloat( tx.returnValues.contribution || 0 );
+
+      txData.payout = txData.fromAddress == which
+        ? castTokenFloat( tx.returnValues.payoutSender || 0 )
+        : castTokenFloat( tx.returnValues.payoutRecipient || 0 );
 
       txData.message = 'n/a';
+
+      txData.hash = tx.transactionHash;
+      txData.logIndex = tx.logIndex;
+      txData.block = tx.blockNumber;
 
       return txData;
 

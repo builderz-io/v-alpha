@@ -12,6 +12,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   const
     strFrom  = 'from',
     strTo    = 'to',
+    strFees    = 'fees',
+    strContr    = 'contribution',
+    strAmount    = 'amount',
+    strPayout    = 'payout',
     strBlock = 'block',
     strDate  = 'date';
 
@@ -151,11 +155,16 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $bottomRight = V.cN( {
       t: 'div',
-      c: 'card__bottom-right pxy',
+      c: 'card__bottom-right pxy capitalize',
       h: [
         txData.fromAddress != 'none' ? { t: 'p', h: uiStr( strFrom ) + V.castShortAddress( txData.fromAddress ) } : { t: 'p', h: uiStr( strFrom ) + txData.from + ' ' + txData.fromTag },
         txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + V.castShortAddress( txData.toAddress ) } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
+        { t: 'p', h: uiStr( strAmount ) + txData.amount },
+        { t: 'p', h: uiStr( strPayout ) + txData.payout },
+        { t: 'p', h: uiStr( strFees ) + txData.feesBurned },
+        { t: 'p', h: uiStr( strContr ) + txData.contribution },
         txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
+        txData.blockDate ? { t: 'p', h: uiStr( strDate ) + new Date( txData.blockDate * 1000 ) } : { t: 'p' },
       ]
     } );
 
