@@ -67,6 +67,24 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function entitiesPlaceholder() {
+    return V.cN( {
+      t: 'li',
+      c: 'pxy',
+      h: {
+        t: 'smallcard',
+        c: 'smallcard__container txt-center rounded bkg-white',
+        h: V.cN( {
+          t: 'div',
+          c: 'circle-3 rounded-full animated-background',
+          // a: {
+          //   style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
+          // },
+        } )
+      }
+    } );
+  }
+
   function cardContent( cardData ) {
     cardData.properties ? null : cardData.properties = {};
     const $cardContentFrame = V.cN( {
@@ -130,6 +148,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   return {
     castCircle: castCircle,
     entitiesSmallCard: entitiesSmallCard,
+    entitiesPlaceholder: entitiesPlaceholder,
     cardContent: cardContent,
   };
 

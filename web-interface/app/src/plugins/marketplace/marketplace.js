@@ -11,14 +11,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( whichPath, search ) {
 
-    // let whichRole;
-    //
-    // if ( whichPath && whichPath != '/market/all' ) {
-    //   // remove the plural from slug
-    //   whichRole = whichPath.substring( 0, whichPath.length - 1 ).replace( '/market/', '' );
-    //
-    // }
-
     const split = whichPath ? whichPath.split( '/' ) : ['all']; // default to 'all'
     let whichRole = split.pop();
     if ( !['all', 'media'].includes( whichRole ) ) {
@@ -27,7 +19,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let query, isSearch = false;
     if ( search && search.query ) {
-      console.log( whichRole );
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search );
@@ -98,27 +89,31 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
     }
 
-    if ( viewData.whichPath ) {
-      Navigation.draw( viewData.whichPath );
+    Page.draw( {
+      topslider: $slider,
+      listings: $list,
+    } );
+
+    VMap.draw( viewData.mapData );
+  }
+
+  function preview( whichPath ) {
+    const $slider = CanvasComponents.slider();
+    for ( let i = 0; i < 20; i++ ) {
+      const $ph = MarketplaceComponents.entitiesPlaceholder();
+      V.setNode( $slider, $ph );
+    }
+    if ( whichPath ) {
+      Navigation.draw( whichPath );
       Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
-      // Button.draw( 'plus search', { delay: 2 } );
-      // if ( V.getState( 'activeEntity' ) ) {
-      // }
-      // else {
-      //   Button.draw( 'search', { delay: 2 } );
-      // }
     }
     else {
       Navigation.draw();
     }
-
     Page.draw( {
       topslider: $slider,
-      listings: $list,
       position: 'peek',
     } );
-
-    VMap.draw( viewData.mapData );
   }
 
   /* ============ public methods and exports ============ */
@@ -199,6 +194,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( whichPath, search ) {
+    preview( whichPath );
     presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
 

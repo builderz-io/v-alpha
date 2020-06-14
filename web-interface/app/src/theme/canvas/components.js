@@ -55,7 +55,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       classes: 'background fixed w-screen',
       setStyle: {
         background: {
-          'background': 'rgba(115,182,230,1)',
+          'background': 'rgba(211,232,235,1)',
+          // 'background': 'rgba(115,182,230,1)',
           'height': 'calc(var(--screen-height) - var(--page-position-closed))',
           'z-index': -2
         }
