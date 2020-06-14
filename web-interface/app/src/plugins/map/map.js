@@ -4,52 +4,39 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   * V Plugin driving the Map
   *
   * List of tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
-  * Locations: Map Center [ 41.576, 4.63 ], Berlin [ 52.522, 13.383 ]
+  * Locations: Map Center [ 43.776, 4.63 ], Berlin [ 52.522, 13.383 ], Geneva [ 46.205, 6.141 ]
   *
   */
 
   'use strict';
 
-  // esri world physical (max zoom 8)
+  /* esri world physical (max zoom 8) */
   // const tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}';
   // const attribution = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>';
 
-  // mapbox
+  /* mapbox */
   // const tiles = 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=' + V.getApiKey( 'mapBox' );
   // const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
 
-  // esri world image
+  /* esri world image */
   // const tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
   // const attribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 
-  // cartodb voyager no lables (max zoom 19)
-  const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png';
+  /* cartodb voyager no lables (max zoom 19) */
+  // const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png';
+  // const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+  /* cartodb voyager with lables (max zoom 19) */
+  const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
   let viMap, featureLayer;
 
-  const geojsonMarkerSettings = {
-    radius: 7,
-    fillColor: '#1b1aff',
-    // color: '#000',
-    weight: 0,
-    opacity: 1,
-    fillOpacity: 0.8
-  };
-
-  const popUpSettings = {
-    maxWidth: 150,
-    closeButton: false,
-    autoPanPaddingTopLeft: [100, 140],
-    keepInView: true,
-    className: 'map__popup'
-  };
-
   const mapSettings = {
     // map center with arcgisonline.com tiles
-    lat: 43.776, // lesser numbers = move map south
-    lng: 4.63, // lesser numbers = moce map west
-    zoom: 4,
+    lat: 46.205, // lesser numbers = move map south
+    lng: 6.141, // lesser numbers = move map west
+    zoom: 13,
     maxZoom: 16,
     minZoom: 2,
   };
@@ -134,6 +121,23 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( features ) {
+    const sc = V.getState( 'screen' );
+
+    const geojsonMarkerSettings = {
+      radius: 8,
+      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
+      weight: 0,
+      opacity: 1,
+      fillOpacity: 0.8
+    };
+
+    const popUpSettings = {
+      maxWidth: 150,
+      closeButton: false,
+      autoPanPaddingTopLeft: [100, 140],
+      keepInView: true,
+      className: 'map__popup'
+    };
 
     if ( featureLayer ) {
       featureLayer.remove();

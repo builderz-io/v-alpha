@@ -34,12 +34,13 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if( !transactions.success || !transactions.data[0].length ) {
-      // V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
+      V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
 
       const pageData = {
         topcontent: $topcontent,
         listings: $list,
-        position: 'top'
+        position: 'top',
+        path: path
       };
       return pageData;
     }
@@ -49,7 +50,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
         const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
         txData.blockDate = blockDetails.timestamp;
-        console.log( txData.blockDate );
+
         if ( txData.txType == 'in' ) {
           txData.title = await castEntityName( txData.fromAddress );
         }

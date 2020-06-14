@@ -12,10 +12,10 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: 'http://localhost',
-    socketPort: 6021,
-    // socketHost: 'https://mongodb.valueinstrument.org',
-    // socketPort: 443,
+    // socketHost: 'http://localhost',
+    // socketPort: 6021,
+    socketHost: 'https://mongodb.valueinstrument.org',
+    socketPort: 443,
 
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
@@ -38,11 +38,19 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
 
   const networks = {
 
-    choice: 'truffle',
+    choice: 'kovan2',
 
     truffle: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
       rpc: 'http://127.0.0.1:9545'
+    },
+    kovan1: {
+      contractAddress: '0x793315F6E7dAA99d6000fb2B4347F5301E20dB09',
+      rpc: 'https://kovan.infura.io/v3/199ad2592bb243e2b00118d4c6de0641'
+    },
+    kovan2: {
+      contractAddress: '0xA4788b5EB689fd886AD4Ee27119D89DC587c084E', // daily rice coin
+      rpc: 'https://kovan.infura.io/v3/199ad2592bb243e2b00118d4c6de0641'
     },
     symbol1: {
       type: 'TEST_NET',

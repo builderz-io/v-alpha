@@ -108,7 +108,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     V.setState( 'screen', {
       height: Number( window.innerHeight ),
-      width: Number( window.innerWidth )
+      width: Number( window.innerWidth ),
+      brandPrimary: V.getCss( '--brandPrimary' ),
+      brandSecondary: V.getCss( '--brandSecondary' ),
+      buttonBkg: V.getCss( '--buttonBkg' ),
     } );
     V.setState( 'active', {} );
     V.setState( 'page', {
@@ -120,7 +123,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     /* calculate page size for the feature and top position according to screen dimensions */
-    const state = V.getState( 'all' );
+    const state = V.getState();
     V.setState( 'page', { topCalc: state.screen.height - state.page.top } );
     V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected } );
     V.setState( 'page', { featureCalc: Math.floor( state.screen.height - state.page.topSelected - state.screen.width * 9/16 ) } );
@@ -130,10 +133,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       isHazed: false,
 
       serviceNavTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--service-nav-top' ),
-      serviceNavLeft: V.setPipe( V.getCss, Number )( '--service-nav-left' ),
+      serviceNavLeft: V.getCss( '--service-nav-left' ),
 
-      entityNavTop: V.setPipe( V.getCss, Number )( '--entity-nav-top' ),
-      entityNavLeft: V.setPipe( V.getCss, Number )( '--entity-nav-left' ),
+      entityNavTop: V.getCss( '--entity-nav-top' ),
+      entityNavLeft: V.getCss( '--entity-nav-left' ),
 
     } );
   }

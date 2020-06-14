@@ -42,7 +42,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     'messageform__input': {
       'height': '36px',
       'padding': '9px 15px',
-      'min-width': '302px',
+      'min-width': '82vw',
       'border': '1px solid #e8e8ec',
       'resize': 'none',
       'border-radius': '30px'
@@ -83,7 +83,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     'ac-suggestion.selected': {
 
       /* background: #f0f0f0, */
-      'color': 'rgba(var(--brand), 1)',
+      'color': 'rgba(var(--brandPrimary), 1)',
       'font-size': '1.05em',
     }
   } );

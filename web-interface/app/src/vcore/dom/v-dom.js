@@ -332,7 +332,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getCss( which ) {
-    return Number( getComputedStyle( document.documentElement ).getPropertyValue( which ).replace( 'px', '' ).replace( 'rem', '' ) );
+    const cssVar = getComputedStyle( document.documentElement ).getPropertyValue( which ).replace( 'px', '' ).replace( 'rem', '' );
+    if ( isNaN( cssVar ) ) {
+      return cssVar.trim();
+    }
+    else {
+      return Number( cssVar );
+    }
   }
 
   function getVisibility( which ) {

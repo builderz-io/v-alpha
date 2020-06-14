@@ -180,7 +180,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.setNode( {
       t: 'li',
-      c: 'pxy min-w-360',
+      c: 'pxy w-screen max-w-380',
       h: {
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',

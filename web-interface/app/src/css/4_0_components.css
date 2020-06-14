@@ -3,7 +3,7 @@ td {
 }
 
 list a {
-  color: rgba(var(--brand), 1);
+  color: rgba(var(--brandPrimary), 1);
 }
 
 .circle-0 {
@@ -159,7 +159,7 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 
 .field--focus .field__border,
 .field--focus .field__border:hover {
-    background: rgba(var(--brand), 1);
+    background: rgba(var(--brandPrimary), 1);
     padding: 2px
 }
 
@@ -168,5 +168,5 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 }
 
 .field--focus .field__internal .label-primary {
-    color: rgba(var(--brand), 1);
+    color: rgba(var(--brandPrimary), 1);
 }

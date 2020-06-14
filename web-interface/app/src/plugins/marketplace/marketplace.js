@@ -21,12 +21,13 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     const split = whichPath ? whichPath.split( '/' ) : ['all']; // default to 'all'
     let whichRole = split.pop();
-    if ( whichRole != 'all' ) {
+    if ( !['all', 'media'].includes( whichRole ) ) {
       whichRole = whichRole.slice( 0, -1 ); // remove plural
     }
 
     let query, isSearch = false;
     if ( search && search.query ) {
+      console.log( whichRole );
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search );
@@ -129,6 +130,18 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         path: '/market/all',
         use: {
           button: 'search',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Places',
+        path: '/market/places',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'place',
         },
         draw: function( path ) {
           Marketplace.draw( path );

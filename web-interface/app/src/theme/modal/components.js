@@ -57,7 +57,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     },
   } );
 
-  const buttonClasses = 'relative bkg-button font-medium cursor-pointer txt-center pxy-1';
+  const buttonClasses = 'relative bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
   const altButtonClasses = 'relative cursor-pointer txt-center';
 
   /* ================== event handlers ================== */

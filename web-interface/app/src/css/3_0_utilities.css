@@ -26,8 +26,8 @@
   width: 30%;
 }
 
-.min-w-360 {
-  min-width: 360px;
+.max-w-380 {
+  max-width: 380px;
 }
 .max-w-full {
   max-width: 100%;

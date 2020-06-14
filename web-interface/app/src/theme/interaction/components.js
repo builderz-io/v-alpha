@@ -158,11 +158,18 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const fields = {
       uPhrase: {
         label: 'Key',
-        inputId: 'loginform__uphrase'
+        inputId: 'loginform__uphrase',
+        attributes: {
+          type: 'password',
+          autocomplete: 'off'
+        }
       },
       title: {
         label: 'Title',
-        inputId: 'plusform__title'
+        inputId: 'plusform__title',
+        attributes: {
+          autocomplete: 'off'
+        }
       },
       location: {
         label: 'Location',
@@ -170,7 +177,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         attributes: {
           value: whichValue,
           lat: lat,
-          lng: lng
+          lng: lng,
+          autocomplete: 'off'
         }
       },
       description: {
@@ -373,8 +381,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function joinBtn() {
     const sc = V.getState( 'screen' );
+    const colorBkg = 'rgba(' + sc.buttonBkg + ', 1)';
 
-    return V.cN( {
+    return V.cN( { // #ffa41b
       t: 'join',
       c: 'fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
@@ -409,10 +418,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         //   } )
         // ]
         h: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
-                       stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="#ffa41b"
-                       stroke="#ffa41b" stroke-width="2.7">
+                       stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="${colorBkg}"
+                       stroke="${colorBkg}" stroke-width="2.7">
                 </circle>
-                <text class="font-medium fs-xs" x="50%" y="59%">Join</text>`
+                <text class="font-medium fs-xs txt-button" x="50%" y="59%">Join</text>`
 
       }
     } );

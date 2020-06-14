@@ -14,11 +14,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Profile.draw( path );
   }
 
-  const palette = ['darkseagreen'];
-  // const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc']; // https://colorhunt.co/palette/167860
-  // const palette = ['#d1d2da', '#3a0088', '#930077', '#e61c5d', '#ffbd39']; // https://colorhunt.co/palette/108152
-
   const background = ( cardData ) => {
+    const sc = V.getState( 'screen' );
+    const palette = ['rgba(' + sc.brandSecondary + ', 1)'];
+
     if ( cardData.thumbnail ) {
       const url = V.castEntityThumbnail( cardData.thumbnail ).src;
       return 'url(\'' + url + '\')';
@@ -78,7 +77,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $topLeft = V.cN( {
       t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
-      h: castCircle( cardData )
+      h: castCircle( cardData ),
+      k: handleProfileDraw.bind( cardData.path )
     } );
 
     const $topRight = V.cN( {
@@ -100,6 +100,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
           h: cardData.properties && cardData.properties.target ? cardData.properties.target : '',
+          k: handleProfileDraw.bind( cardData.path )
         },
         {
           t: 'p',
@@ -116,7 +117,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         { t: 'p', c: 'capitalize', h: cardData.profile.role },
         { t: 'p', h: cardData.properties && cardData.properties.description ? cardData.properties.description.substr( 0, 160 ) : '' },
         { t: 'p', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
-      ]
+      ],
+      k: handleProfileDraw.bind( cardData.path )
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );

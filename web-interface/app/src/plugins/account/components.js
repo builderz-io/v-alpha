@@ -55,14 +55,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function headerBalance( balance ) {
     const sc = V.getState( 'screen' );
+    const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
 
-    return V.castNode( {
+    return V.castNode( { // #1b1aff
       tag: 'svg',
       a: {
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36'
       },
-      html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="#1b1aff" stroke-width="2.7"></circle>
+      html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
               <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ balance }</text>`,
       click: handleDrawUserNav
 
@@ -70,11 +71,13 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function accountBalance() {
+    const sc = V.getState( 'screen' );
+    const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
     return V.castNode( {
       tag: 'li',
       class: 'txt-anchor-mid',
       html: `<svg width="74px" viewBox="0 0 36 36"> +
-              <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="#1b1aff" stroke-width="2.7"></circle>
+              <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
               <text class="font-medium fs-xxs txt-green" x="50%" y="59%">3129</text>
             </svg>`
 
@@ -161,8 +164,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + V.castShortAddress( txData.toAddress ) } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
         { t: 'p', h: uiStr( strAmount ) + txData.amount },
         { t: 'p', h: uiStr( strPayout ) + txData.payout },
-        { t: 'p', h: uiStr( strFees ) + txData.feesBurned },
-        { t: 'p', h: uiStr( strContr ) + txData.contribution },
+        txData.txType == 'out' ? { t: 'p', h: uiStr( strFees ) + txData.feesBurned } : { t: 'p' },
+        txData.txType == 'out' ? { t: 'p', h: uiStr( strContr ) + txData.contribution } : { t: 'p' },
         txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
         txData.blockDate ? { t: 'p', h: uiStr( strDate ) + new Date( txData.blockDate * 1000 ) } : { t: 'p' },
       ]
