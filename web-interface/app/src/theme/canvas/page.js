@@ -163,6 +163,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     // if ( !pageScroll ) {
     //   $list.scrollTop = 0;
     // }
+
     if ( pageScroll == 'bottom' ) {
       $list.scrollTop = $list.scrollHeight;
     }

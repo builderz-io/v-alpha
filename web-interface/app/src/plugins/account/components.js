@@ -177,12 +177,51 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function accountPlaceholderCard() {
+
+    const $cardContentFrame = V.cN( {
+      t: 'div',
+      c: 'contents'
+    } );
+
+    const $topLeft = V.cN( {
+      t: 'div',
+      c: 'card__top-left flex justify-center items-center pxy',
+      h: V.cN( {
+        t: 'div',
+        c: 'circle-3 rounded-full animated-background',
+      } ),
+    } );
+
+    const $topRight = V.cN( {
+      t: 'div',
+      c: 'relative animated-background',
+      y: {
+        height: '20px',
+        width: '200px',
+        top: '25px',
+        left: '8px'
+      },
+      // h: {
+      //   t: 'h2',
+      //   c: 'font-bold fs-l leading-snug cursor-pointer',
+      //   h: 'Aname Bname #1234'
+      // }
+    } );
+
+    V.setNode( $cardContentFrame, [ $topLeft, $topRight ] );
+
+    return $cardContentFrame;
+
+  }
+
   return {
     topcontent: topcontent,
     headerBalance: headerBalance,
     accountBalance: accountBalance,
     accountSmallCard: accountSmallCard,
     accountCard: accountCard,
+    accountPlaceholderCard: accountPlaceholderCard
   };
 
 } )();

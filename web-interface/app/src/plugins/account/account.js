@@ -97,7 +97,6 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   function view( pageData ) {
     if ( pageData ) {
       Page.draw( pageData );
-      Chat.drawMessageForm();
     }
     else {
       Marketplace.draw();
@@ -105,10 +104,23 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( path ) {
+    const aE = V.getState( 'activeEntity' );
+    const $list = CanvasComponents.list();
+
+    for ( let i = 0; i < 12; i++ ) {
+      const $ph = AccountComponents.accountPlaceholderCard();
+      const $card = CanvasComponents.card( $ph );
+
+      V.setNode( $list, $card );
+    }
+
     Button.draw( 'all', { fade: 'out' } );
     Navigation.draw( path );
+    Chat.drawMessageForm();
 
     Page.draw( {
+      topcontent: aE ? AccountComponents.topcontent( aE.fullId ) : '',
+      listings: $list,
       position: 'top',
     } );
   }

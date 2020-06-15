@@ -12,13 +12,13 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $response.innerHTML = '';
   }
 
-  function handleInputTyping() {
-    if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
-      if ( V.getState( 'activeEntity' ) ) {
-        window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
-      }
-    }
-  }
+  // function handleInputTyping() {
+  //   if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
+  //     if ( V.getState( 'activeEntity' ) ) {
+  //       window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+  //     }
+  //   }
+  // }
 
   function handleSetMessageBot() {
     const $form = V.getNode( '.messageform__input' );
@@ -111,7 +111,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,
-      // position: 'top',
+      position: 'top', // set again to trigger scroll
       scroll: 'bottom'
     } );
     Chat.drawMessageForm();
@@ -127,12 +127,14 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawMessage( cardData ) {
-    const $list = V.getNode( 'list' );
-    const activeEntity = V.getState( 'activeEntity' );
-    activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
-    const $messageCard = ChatComponents.message( cardData );
-    V.setNode( $list, $messageCard );
-    $list.scrollTop = $list.scrollHeight + 75;
+    if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
+      const $list = V.getNode( 'list' );
+      const activeEntity = V.getState( 'activeEntity' );
+      activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+      const $messageCard = ChatComponents.message( cardData );
+      V.setNode( $list, $messageCard );
+      $list.scrollTop = $list.scrollHeight + 75;
+    }
   }
 
   /* ============ public methods and exports ============ */

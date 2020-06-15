@@ -204,8 +204,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       classes: 'page fixed w-screen bkg-white',
       setStyle: {
         page: {
-          bottom: 0,
-          height: 'var(--page-position-peek)'
+          'bottom': 0,
+          'height': 'var(--page-position-peek)',
+          'max-height': 'calc(100vh - var(--page-position-top-selected))'
         }
       },
     } );
