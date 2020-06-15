@@ -108,10 +108,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     if ( window.Web3Obj ) {
 
-      window.Web3Obj.currentProvider.publicConfigStore.on( 'update', setNewActiveAddress );
+      const activeAddress = await window.Web3Obj.eth.getAccounts();
+      // const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+      V.setState( 'activeAddress', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
 
-      const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-      V.setState( 'activeAddress', activeAddress ? activeAddress.toLowerCase() : false );
+      /* listen to change of address in MetaMask */
+      if ( window.Web3Obj.currentProvider.publicConfigStore ) {
+        window.Web3Obj.currentProvider.publicConfigStore.on( 'update', setNewActiveAddress );
+      }
 
       return {
         success: true,
