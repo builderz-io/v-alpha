@@ -86,6 +86,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
+      if ( data.isSearch ) {
+        Button.draw( 'all', { fade: 'out' } );
+        Button.draw( 'close query' );
+      }
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
     }
 

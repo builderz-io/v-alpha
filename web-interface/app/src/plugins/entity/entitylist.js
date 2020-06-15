@@ -78,12 +78,12 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         ] );
       }
 
-      Navigation.draw( data.data[0].which );
+      // Navigation.draw( data.data[0].which );
 
       Page.draw( {
         topcontent: $topcontent,
         listings: $list,
-        position: 'top',
+        // position: 'top',
       } );
 
       // Chat.drawMessageForm( 'clear' );
@@ -96,10 +96,18 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
   }
+  function preview( path ) {
+    Navigation.draw( path );
+
+    Page.draw( {
+      position: 'top',
+    } );
+  }
 
   /* ============ public methods and exports ============ */
 
   function draw( which ) {
+    preview( which );
     presenter( which ).then( data => { view( data ) } );
   }
 

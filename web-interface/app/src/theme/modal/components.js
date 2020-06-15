@@ -370,9 +370,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'txt-center',
       h: [
-        { t: 'p', c: 'pxy', h: V.i18n( 'Take note of the key', 'modal' ) },
+        { t: 'p', c: 'pxy', h: V.i18n( 'Click to copy the key and store it safely elsewhere', 'modal' ) },
         UserComponents.caseUphraseNode( activeEntity.private.uPhrase, 'txt-red fs-l' ),
-        { t: 'p', c: 'pxy', h: V.i18n( 'You\'ll need this key to manage this entity', 'modal' ) }
+        { t: 'p', c: 'pxy', h: V.i18n( 'You\'ll need this key to manage this profile', 'modal' ) }
       ]
     } );
 
@@ -395,7 +395,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         h: V.i18n( 'Sorry, account details could not be retrieved', 'modal' )
       } );
     }
-    V.setNode( $content, [$welcome, $uPhrase, $balance] );
+    V.setNode( $content, [$welcome, $uPhrase /*, $balance */] );
     return $content;
   }
 

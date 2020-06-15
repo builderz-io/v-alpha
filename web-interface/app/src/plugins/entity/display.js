@@ -59,7 +59,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $topcontent, $list;
 
     if ( data.success ) {
-      Button.draw( 'all', { fade: 'out' } );
 
       UserComponents.setData( {
         entity: data.data[0].entity,
@@ -88,7 +87,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       Page.draw( {
         // topcontent: $topcontent,
         listings: $list,
-        position: 'top', // could optionally be 'feature', if map flies to entity
+        // position: 'top', // could optionally be 'feature', if map flies to entity
         // haze: false
       } );
 
@@ -103,9 +102,18 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function preview() {
+    Button.draw( 'all', { fade: 'out' } );
+
+    Page.draw( {
+      position: 'top',
+    } );
+  }
+
   /* ============ public methods and exports ============ */
 
   function draw( which ) {
+    preview();
     presenter( which ).then( data => { view( data ) } );
   }
 

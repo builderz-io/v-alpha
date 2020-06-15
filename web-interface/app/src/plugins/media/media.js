@@ -51,7 +51,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData.which ) {
-      Navigation.draw( pageData.which );
+      // Navigation.draw( pageData.which );
       Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
     }
     if ( pageData.feature ) {
@@ -62,6 +62,15 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     // }
     Page.draw( pageData );
     VMap.draw();
+  }
+
+  function preview( path ) {
+    // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+    Navigation.draw( path );
+
+    // Page.draw( {
+    //   position: 'feature',
+    // } );
   }
 
   function delayContentLoad( which ) {
@@ -100,6 +109,8 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which, options ) {
+    preview( which );
+
     featurePresenter( options ).then( viewData => { view( viewData ) } );
 
     setTimeout( delayContentLoad, 2000, which );

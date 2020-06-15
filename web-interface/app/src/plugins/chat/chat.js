@@ -107,14 +107,23 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
     }
 
-    Navigation.draw( viewData.data[0].which );
+    // Navigation.draw( viewData.data[0].which );
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,
-      position: 'top',
+      // position: 'top',
       scroll: 'bottom'
     } );
     Chat.drawMessageForm();
+  }
+
+  function preview( path ) {
+    Navigation.draw( path );
+
+    Page.draw( {
+      position: 'top',
+      // scroll: 'bottom'
+    } );
   }
 
   function drawMessage( cardData ) {
@@ -173,6 +182,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which ) {
+    preview( which );
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 

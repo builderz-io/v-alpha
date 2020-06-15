@@ -27,7 +27,12 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     const tag = data.t ? data.t : data.tag;
 
     let $elem = document.createElement( tag );
-    tag == 'svg' || data.type == 'svg' ? $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' ) : null;
+
+    if ( tag == 'svg' || data.type == 'svg' ) {
+      $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+      $elem.setAttribute( 'xmlns', 'http://www.w3.org/2000/svg' );
+      $elem.setAttribute( 'version', '1.1' );
+    }
 
     for ( const key in data ) {
       if ( ['c', 'class', 'classes'].includes( key ) ) {

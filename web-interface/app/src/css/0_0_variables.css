@@ -55,7 +55,8 @@
   --viorange: 255, 164, 27;
   --viblue: 27, 26, 255;
 
-  --brandPrimary: 241, 59, 64; /* Geneva Hackathon Red */
+  /* --brandPrimary: 241, 59, 64; */ /* Geneva Hackathon Red */
+  --brandPrimary: 83, 96, 101; /* Geneva Hackathon Red */
   --brandSecondary: 255, 210, 85; /* Geneva Hackathon Yellow */
 
   --buttonBkg: var(--brandPrimary);

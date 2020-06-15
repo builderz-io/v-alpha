@@ -86,8 +86,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       // topslider: $topsliderUl,
       topcontent: $topcontent,
       listings: $list,
-      position: 'top',
-      path: path
+      // position: 'top',
+      // path: path
     };
 
     return pageData;
@@ -96,14 +96,21 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function view( pageData ) {
     if ( pageData ) {
-      Button.draw( 'all', { fade: 'out' } );
-      Navigation.draw( pageData.path );
       Page.draw( pageData );
       Chat.drawMessageForm();
     }
     else {
       Marketplace.draw();
     }
+  }
+
+  function preview( path ) {
+    Button.draw( 'all', { fade: 'out' } );
+    Navigation.draw( path );
+
+    Page.draw( {
+      position: 'top',
+    } );
   }
 
   /* ============ public methods and exports ============ */
@@ -121,6 +128,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( path ) {
+    preview( path );
     presenter( path ).then( viewData => { view( viewData ) } );
   }
 

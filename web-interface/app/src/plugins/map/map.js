@@ -124,7 +124,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
 
     const geojsonMarkerSettings = {
-      radius: 8,
+      radius: 9,
       fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
       weight: 0,
       opacity: 1,
