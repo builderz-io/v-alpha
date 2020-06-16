@@ -190,3 +190,17 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 .field--focus .field__internal .label-primary {
     color: rgba(var(--brandPrimary), 1);
 }
+
+@media screen and (min-width: 800px) {
+    page {
+      bottom: var(--desktop-page-detach) !important;
+      left: var(--desktop-page-detach) !important;
+      width: 495px !important;
+      border-radius: 20px;
+    }
+    feature {
+      left: var(--desktop-page-detach);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+}

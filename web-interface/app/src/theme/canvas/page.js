@@ -160,48 +160,52 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   function slide( pagePos, pageScroll, showHaze ) {
     const $list = V.getNode( 'list' );
-    // if ( !pageScroll ) {
-    //   $list.scrollTop = 0;
-    // }
+    const $page = V.getNode( 'page' );
+    const p = V.getState( 'page' );
+    const s = V.getState( 'screen' );
 
     if ( pageScroll == 'bottom' ) {
       $list.scrollTop = $list.scrollHeight;
     }
-    const p = V.getState( 'page' );
     const newHeight = getPageHeight( pagePos );
     if ( newHeight == p.height ) { return }
     V.setAnimation( DOM.$page, { height: newHeight + 'px' }, { duration: 3 } ).then( () => {
-      // const $list = V.getNode( 'list' );
       if ( $list && !pageScroll ) {
         $list.scrollTop = 0;
       }
-      // else if ( pageScroll == 'bottom' ) {
-      //   $list.scrollTop = $list.scrollHeight;
-      // }
     } );
 
-    // Chat.drawMessageForm( 'clear' );
-
     if ( pagePos == 'top' ) {
-      Haze.draw();
+      if ( s.width < 800 ) {
+        Haze.draw();
+        $page.classList.remove( 'pill-shadow' );
+      }
       Feature.draw( { fade: 'out' } );
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
-      if ( showHaze == undefined || showHaze != false ) {
+      if ( s.width < 800 ) {
+        $page.classList.remove( 'pill-shadow' );
+      }
+      if ( s.width < 800 && ( showHaze == undefined || showHaze != false ) ) {
         Haze.draw();
       }
       handlebar( 7, 22 );
+      $page.classList.remove( 'pill-shadow' );
     }
     else if ( pagePos == 'closed' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
+      $page.classList.add( 'pill-shadow' );
+
     }
     else if ( pagePos == 'peek' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 25 );
+      $page.classList.add( 'pill-shadow' );
+
     }
     V.setState( 'page', { height: newHeight } );
   }

@@ -65,6 +65,8 @@
   /* Spacing */
   --global-padding: 5px;
 
+  --desktop-page-detach: 0;
+
   /* Helper Calculations */
   /* --listings-ul-height: calc(var(--card-height) + 2 * var(--global-padding)); */
 
@@ -87,5 +89,7 @@
 
       --page-position-top: 9rem;
       --page-position-top-selected: 5.5rem;
+
+      --desktop-page-detach: 2rem;
     }
 }

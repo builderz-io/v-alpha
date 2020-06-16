@@ -29,7 +29,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     },
     'pill__placeholderimage': {
       position: 'relative',
-      bottom: '-3px'
+      bottom: '-5px'
     },
     'pill__img': {
       position: 'relative',

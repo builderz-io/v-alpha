@@ -280,6 +280,9 @@
 .overflow-y-scroll {
   overflow-y: scroll;
 }
+.overflow-hidden {
+  overflow: hidden;
+}
 
 .rounded {
   border-radius: var(--corners);

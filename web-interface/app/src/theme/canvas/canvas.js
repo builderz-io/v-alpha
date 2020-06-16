@@ -120,13 +120,28 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       topSelected: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top-selected' ),
       peek: V.getCss( '--page-position-peek' ),
       closed: V.getCss( '--page-position-closed' ),
+      detach: V.setPipe( V.getCss, V.castRemToPixel )( '--desktop-page-detach' )
     } );
 
     /* calculate page size for the feature and top position according to screen dimensions */
     const state = V.getState();
-    V.setState( 'page', { topCalc: state.screen.height - state.page.top } );
-    V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected } );
-    V.setState( 'page', { featureCalc: Math.floor( state.screen.height - state.page.topSelected - state.screen.width * 9/16 ) } );
+    V.setState( 'page', { topCalc: state.screen.height - state.page.top - state.page.detach * 1.5 } );
+    V.setState( 'page', { topSelectedCalc: state.screen.height - state.page.topSelected - state.page.detach * 1.5 } );
+    V.setState( 'page', { featureCalc:
+      Math.floor(
+        state.screen.height
+      - state.page.topSelected
+      // - state.page.detach
+      - ( state.screen.width < 600 ? state.screen.width : 600 ) * 9/16
+      )
+    } );
+    V.setState( 'page', { featureDimensions: {
+      width: state.screen.width < 600 ? state.screen.width : 495,
+      height: Math.floor(
+        ( state.screen.width < 600 ? state.screen.width : 495 ) * 9/16
+      )
+    }
+    } );
 
     V.setState( 'header', {
 

@@ -57,7 +57,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         background: {
           'background': 'rgba(211,232,235,1)',
           // 'background': 'rgba(115,182,230,1)',
-          'height': 'calc(var(--screen-height) - var(--page-position-closed))',
+          'height': '100vh', // 'calc(var(--screen-height) - var(--page-position-closed))',
           'z-index': -2
         }
       }
@@ -77,13 +77,15 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
   function feature() {
+    const dimensions = V.getState( 'page' ).featureDimensions;
     return V.setNode( {
       tag: 'feature',
-      classes: 'feature fixed w-screen hidden',
+      classes: 'feature fixed hidden',
       setStyle: {
         feature: {
           top: 'var(--page-position-top-selected)',
-          height: 'calc(var(--screen-width) * (9 / 16))'
+          height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
+          width: dimensions.width + 'px'
         }
       }
     } );
@@ -201,12 +203,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function page() {
     return V.setNode( {
       tag: 'page',
-      classes: 'page fixed w-screen bkg-white',
+      classes: 'page fixed w-screen bkg-white pill-shadow overflow-hidden',
       setStyle: {
         page: {
-          'bottom': 0,
-          'height': 'var(--page-position-peek)',
-          'max-height': 'calc(100vh - var(--page-position-top-selected))'
+          bottom: 0,
+          height: 'var(--page-position-peek)',
+          // 'max-height': 'calc(100vh - var(--page-position-top-selected))'
         }
       },
     } );
