@@ -9,6 +9,12 @@ module.exports = {
       network_id: "*",
       websockets: true
     },
+    idchain: {
+      provider: function() {
+        return new HDWalletProvider( private.mnemonic, 'https://idchain.one/rpc/' );
+      },
+      network_id: 74
+    },
     kovan: {
       provider: function() {
         return new HDWalletProvider( private.mnemonic, private.kovanEndpoint );

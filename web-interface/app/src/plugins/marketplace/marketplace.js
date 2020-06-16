@@ -18,18 +18,42 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
 
     let query, isSearch = false;
-    if ( search && search.query ) {
+
+    const cache = V.getCache( 'market' );
+
+    const now = Date.now();
+
+    if (
+      whichRole == 'all' &&
+      cache &&
+      ( now - cache.timestamp ) < ( V.getSetting( 'marketCacheDuration' ) * 60 * 1000 )
+    ) {
+      query = {
+        success: true,
+        status: 'cache used',
+        elapsed: now - cache.timestamp,
+        data: V.castJson( cache.data, 'clone' ).reverse()
+      };
+    }
+    else if ( search && search.query ) {
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search );
+      if ( whichRole == 'all' ) {
+        V.setCache( 'market', query.data );
+      }
     }
     else {
       query = await V.getEntity( whichRole );
+      if ( whichRole == 'all' ) {
+        V.setCache( 'market', query.data );
+      }
     }
-
+    console.log( query );
     const mapData = [];
 
     if ( query.success ) {
+
       query.data.forEach( entity => {
         mapData.push( {
           type: 'Feature',

@@ -338,13 +338,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleAddressMapping,
-      h: V.i18n( 'Use current name', 'modal' )
+      h: V.i18n( 'Use current profile', 'modal' )
     } );
     const $new = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: V.i18n( 'Change name', 'modal' )
+      h: V.i18n( 'Name new profile', 'modal' )
     } );
     V.setNode( $content, [$current, $new] );
     return $content;

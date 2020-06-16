@@ -44,7 +44,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, ModalComponents.simpleMessage( 'Authorization denied' ) );
     }
     else if ( which == 'wallet locked' ) {
-      V.setNode( $modal, ModalComponents.simpleMessage( 'Please connect your wallet' ) );
+      V.setNode( $modal, ModalComponents.simpleMessage( 'Connecting your wallet ... Seeing this message for long? You may have to unlock it manually.' ) );
     }
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'You are logged out' ) );

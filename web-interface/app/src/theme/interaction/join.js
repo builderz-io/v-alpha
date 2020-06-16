@@ -72,7 +72,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function view( which ) {
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
-      // Navigation.draw();
+      V.setNode( '.modal', 'clear' );
       if ( V.getCookie( 'welcome-modal' ) == 1 ) {
         Modal.draw( which );
         V.setCookie( 'welcome-modal', 0 );

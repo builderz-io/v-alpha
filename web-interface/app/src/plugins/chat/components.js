@@ -236,7 +236,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const key = window.event ? e.keyCode : e.which;
 
     if ( key != 13 ) {
-      if ( this.value.substring( 0, 4 ) != 'send' ) {
+      if ( V.getState( 'activeEntity' ) && this.value.substring( 0, 4 ) != 'send' ) {
         window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
       }
     }

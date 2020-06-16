@@ -33,10 +33,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   let viMap, featureLayer;
 
   const mapSettings = {
-    // map center with arcgisonline.com tiles
-    lat: 46.205, // lesser numbers = move map south
-    lng: 6.141, // lesser numbers = move map west
-    zoom: 13,
+    lat: 6.9728, // lesser numbers = move map south
+    lng: -22.685, // lesser numbers = move map west
+    zoom: 2,
     maxZoom: 16,
     minZoom: 2,
   };

@@ -21,6 +21,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     defaultVerification: false,
     update3BoxEntityStore: false,
     loadMap: true,
+    marketCacheDuration: 3, // in minutes
 
     thumbnailWidth: 420, // Number in px
     thumbnailQuality: 0.85, // Number from 0 to 1
@@ -43,6 +44,10 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     truffle: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
       rpc: 'http://127.0.0.1:9545'
+    },
+    idchain: {
+      contractAddress: '',
+      rpc: 'https://idchain.one/rpc/'
     },
     kovan1: {
       contractAddress: '0x793315F6E7dAA99d6000fb2B4347F5301E20dB09',

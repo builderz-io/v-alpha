@@ -7,7 +7,18 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  document.onkeyup = function( e ) {
+    if ( e.ctrlKey && e.which == 83 ) {
+      console.log( V.getState() );
+    }
+    else if ( e.ctrlKey && e.which == 65 ) {
+      console.log( V.getCache() );
+    }
+  };
+
   const state = {};
+
+  const cache = {};
 
   /* ================== public methods ================== */
 
@@ -45,6 +56,36 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
       setCookie( 'last-active-uphrase', data.private.uPhrase );
     }
 
+  }
+
+  function getCache( which = 'all' ) {
+    return which == 'all' ? cache : cache[which];
+  }
+
+  function setCache( which, data ) {
+    if ( data == 'clear' ) {
+      delete cache[which];
+      return;
+    }
+
+    if ( !cache[which] ) {
+      cache[which] = {};
+    }
+
+    if ( Array.isArray( data ) ) {
+      const obj = {
+        timestamp: Date.now(),
+        date: new Date(),
+        data: data
+      };
+      Object.assign( cache[which], obj );
+    }
+    else if ( typeof data == 'object' ) {
+      Object.assign( cache[which], data );
+    }
+    else {
+      cache[which] = data;
+    }
   }
 
   function getNavItem( whichItem, whichNav ) {
@@ -122,6 +163,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   ( () => {
     V.getState = getState;
     V.setState = setState;
+    V.getCache = getCache;
+    V.setCache = setCache;
     V.getNavItem = getNavItem;
     V.setNavItem = setNavItem;
     V.getCookie = getCookie;
@@ -131,6 +174,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   return {
     getState: getState,
     setState: setState,
+    getCache: getCache,
+    setCache: setCache,
     getNavItem: getNavItem,
     setNavItem: setNavItem,
     getCookie: getCookie,
