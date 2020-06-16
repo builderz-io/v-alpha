@@ -58,8 +58,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function getCache( which = 'all' ) {
-    return which == 'all' ? cache : cache[which];
+  function getCache( which ) {
+    return which ? cache[which] : cache;
   }
 
   function setCache( which, data ) {

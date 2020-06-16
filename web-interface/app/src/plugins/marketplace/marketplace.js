@@ -19,12 +19,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let query, isSearch = false;
 
-    const cache = V.getCache( 'market' );
-
+    const cache = V.getCache( whichRole );
     const now = Date.now();
 
     if (
-      whichRole == 'all' &&
       cache &&
       ( now - cache.timestamp ) < ( V.getSetting( 'marketCacheDuration' ) * 60 * 1000 )
     ) {
@@ -39,17 +37,13 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search );
-      if ( whichRole == 'all' ) {
-        V.setCache( 'market', query.data );
-      }
+      V.setCache( whichRole, query.data );
     }
     else {
       query = await V.getEntity( whichRole );
-      if ( whichRole == 'all' ) {
-        V.setCache( 'market', query.data );
-      }
+      V.setCache( whichRole, query.data );
     }
-    console.log( query );
+
     const mapData = [];
 
     if ( query.success ) {
