@@ -14,11 +14,67 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     whichPath = typeof data == 'object' ? data.paths.entity : data
   ) {
 
+    /**
+     * Always update entityNavOrder
+     * Plugins have already registered their entity nav items at this stage
+     *
+     * AND
+     *
+     * Update entityNav in app state from entityNavOrder, as well as
+     * newly viewed profile (data parameter)
+     *
+     */
+
+    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    V.getState( 'entityNav' ) ? null : V.setState( 'entityNav', {} ); // ensure entityNav-state exists
+    const entityNav = V.getState( 'entityNav' );
+
+    if ( data && data.tinyImage && entityNavOrder[data.path] ) { // update the clicked entity tinyImage if available
+      entityNavOrder[data.path].tinyImage = JSON.stringify( data.tinyImage );
+    }
+
+    for ( const item in entityNavOrder ) {
+
+      if ( !entityNav[item] ) {
+        const obj = {
+          title: entityNavOrder[item].title,
+          tag: entityNavOrder[item].tag,
+          initials: entityNavOrder[item].initials,
+          path: entityNavOrder[item].path,
+          draw: function( path ) { Profile.draw( path ) },
+        };
+        entityNavOrder[item].tinyImage ? obj.tinyImage = entityNavOrder[item].tinyImage : null;
+        V.setNavItem( 'entityNav', obj );
+      }
+    }
+
+    if ( data && data.fullId && !entityNav[data.path] ) {
+      const obj = {
+        title: data.profile.title,
+        tag: data.profile.tag,
+        initials: V.castInitials( data.profile.title ),
+        path: data.path,
+        draw: function( path ) { Profile.draw( path ) },
+      };
+      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+      V.setNavItem( 'entityNav', obj );
+    }
+
+    syncNavOrder( entityNavOrder, entityNav );
+
+    V.setCookie( 'entity-nav-order', entityNavOrder );
+
+    /**
+     * Check whether we have to also update the other navs
+     *
+     */
+
     const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
 
     if (
       doesNodeExist &&
-      doesNodeExist.closest( 'header' )
+      doesNodeExist.closest( 'header' ) &&
+      !data.fullId
     ) {
       return {
         success: false,
@@ -54,51 +110,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     syncNavOrder( userNavOrder, userNav );
 
     V.setCookie( 'user-nav-order', userNavOrder );
-
-    /**
-     * Update entityNavOrder
-     * Plugins have already registered their entity nav items at this stage
-     *
-     * AND
-     *
-     * Update entityNav in app state from entityNavOrder, as well as
-     * newly viewed profile (data parameter)
-     *
-     */
-
-    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
-    V.getState( 'entityNav' ) ? null : V.setState( 'entityNav', {} ); // ensure entityNav-state exists
-    const entityNav = V.getState( 'entityNav' );
-
-    for ( const item in entityNavOrder ) {
-      if ( !entityNav[item] ) {
-        const obj = {
-          title: entityNavOrder[item].title,
-          tag: entityNavOrder[item].tag,
-          initials: entityNavOrder[item].initials,
-          path: entityNavOrder[item].path,
-          draw: function( path ) { Profile.draw( path ) },
-        };
-        entityNavOrder[item].tinyImage ? obj.tinyImage = entityNavOrder[item].tinyImage : null;
-        V.setNavItem( 'entityNav', obj );
-      }
-    }
-
-    if ( data && data.fullId && !entityNav[data.path] ) {
-      const obj = {
-        title: data.profile.title,
-        tag: data.profile.tag,
-        initials: V.castInitials( data.profile.title ),
-        path: data.path,
-        draw: function( path ) { Profile.draw( path ) },
-      };
-      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
-      V.setNavItem( 'entityNav', obj );
-    }
-
-    syncNavOrder( entityNavOrder, entityNav );
-
-    V.setCookie( 'entity-nav-order', entityNavOrder );
 
     return {
       success: true,
@@ -242,9 +253,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( path );
 
-      if ( path != '/me/disconnect' ) {
-        Navigation.draw( path );
-      }
+      // if ( path != '/me/disconnect' ) {
+      //   Navigation.draw( path );
+      // }
 
       V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
     }
