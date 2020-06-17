@@ -151,8 +151,16 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
 
-    featureLayer.addTo( viMap );
+    if ( features && features.length == 1 ) {
+      const offset = sc.width < 800 ? 0 : 0.3;
+      viMap.flyTo( [features[0].geometry.coordinates[1], features[0].geometry.coordinates[0] - offset], 10 );
+      setTimeout( () => {featureLayer.addTo( viMap )}, 2000 );
+    }
+    else {
+      viMap.flyTo( [features[0].geometry.coordinates[1], features[0].geometry.coordinates[0]], 3 );
 
+      featureLayer.addTo( viMap );
+    }
   }
 
   /* ============ public methods and exports ============ */
