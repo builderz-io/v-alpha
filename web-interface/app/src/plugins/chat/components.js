@@ -42,7 +42,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     'messageform__input': {
       'height': '36px',
       'padding': '9px 15px',
-      'min-width': '82vw',
+      'width': '87%',
       'border': '1px solid #e8e8ec',
       'resize': 'none',
       'border-radius': '30px'
@@ -421,7 +421,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'h2',
-          c: 'font-bold fs-l leading-snug txt-center w-screen pxy',
+          c: 'font-bold fs-l leading-snug txt-center w-full pxy',
           h: uiStr( strChatTitle, 'chat title' )
         },
         {
@@ -461,7 +461,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function messageForm() {
     return V.sN( {
       t: 'div',
-      c: 'messageform flex fixed pxy w-full card-shadow',
+      c: 'messageform flex absolute w-full pxy card-shadow',
     } );
   }
 

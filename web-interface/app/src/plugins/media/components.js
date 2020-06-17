@@ -8,23 +8,26 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   V.setStyle( {
-    'feature__video-wrapper': {
+    'iframe-wrapper': {
       'position': 'relative',
       'padding-bottom': '56.25%'
     },
-    'feature__video-wrapper iframe': {
+    'iframe-wrapper iframe': {
       position: 'absolute',
       top: '0',
       left: '0',
       width: '100%',
       height: '100%'
+    },
+    'media-text a': {
+      color: 'rgba(var(--link), 1)'
     }
   } );
 
   function videoFeature( link ) {
     return V.castNode( {
       t: 'div',
-      c: 'feature__video-wrapper w-full',
+      // c: 'feature__video-wrapper w-full',
       h: V.castLinks( link ).iframes
     } );
   }
@@ -44,10 +47,17 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $video = V.castNode( {
       t: 'div',
-      h: V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) ).iframes
+      c: 'w-full',
+      h: V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) ).firstIframe
     } );
 
-    V.setNode( $cardContent, [$title, $video] );
+    const $text = V.castNode( {
+      t: 'div',
+      c: 'media-text pt-r',
+      h: V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) ).links
+    } );
+
+    V.setNode( $cardContent, [$title, $video, $text] );
 
     return $cardContent;
   }

@@ -10,7 +10,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   function handleProfileDraw() {
     const path = this;
     V.setState( 'active', { navItem: path } );
-    V.setBrowserHistory( { path: path } );
+    V.setBrowserHistory( path );
     Profile.draw( path );
   }
 

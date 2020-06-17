@@ -71,7 +71,7 @@ body {
 }
 
 .pill-shadow {
-  box-shadow: 0px -1px 1px 0px rgba(var(--black), .11), 0px 2px 1px 0px rgba(var(--black), .15);
+  box-shadow: 0px -1px 1px 0px rgba(var(--black), .15), 0px 2px 1px 0px rgba(var(--black), .19);
 }
 
 .card-shadow {

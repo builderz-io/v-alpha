@@ -182,7 +182,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       description: {
-        label: 'Description',
+        label: 'Description and Links',
         inputId: 'plusform__descr',
         multiline: true
       },

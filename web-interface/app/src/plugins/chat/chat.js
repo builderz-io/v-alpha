@@ -107,7 +107,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
     }
 
-    // Navigation.draw( viewData.data[0].which );
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,
@@ -122,8 +121,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     Page.draw( {
       position: 'top',
-      // scroll: 'bottom'
     } );
+
+    VMap.draw();
   }
 
   function drawMessage( cardData ) {
@@ -179,7 +179,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setState( 'active', { lastViewed: undefined } );
 
     V.setNode( $form, [ $response, $input, $send ] );
-    V.setNode( 'body', $form );
+    V.setNode( 'page', $form );
 
   }
 

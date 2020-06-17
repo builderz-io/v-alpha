@@ -39,6 +39,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
           console.log( res.status );
+          V.setCache( 'all', 'clear' );
+          V.setCache( res.data[0].profile.role, 'clear' );
+          V.setBrowserHistory( res.data[0].path );
+          Profile.draw( res.data[0].path );
           Form.draw( 'all', { fade: 'out' } );
           Button.draw( 'all', { fade: 'out' } );
           Button.draw( 'plus search', { delay: 1 } );
@@ -103,7 +107,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleSend() {
-    V.setBrowserHistory( { path: '/me/transfers' } );
+    V.setBrowserHistory( '/me/transfers' );
     V.setState( 'active', { lastViewed: V.getNode( '.pill__replace' ).innerHTML } );
     Canvas.draw( { path: '/me/transfers' } );
   }

@@ -13,7 +13,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* Cross-browser bottom list padding */
     'list > *:last-child': {
-      'padding-bottom': '137px'
+      'padding-bottom': '160px'
     },
     'card__top-left': {
       width: cardLeftWidth + '%',

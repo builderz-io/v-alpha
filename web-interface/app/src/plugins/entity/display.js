@@ -15,7 +15,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     // const aE = V.getState( 'activeEntity' );
     // if ( aE && fullId == aE.fullId ) {
-    //   V.setBrowserHistory( { path: '/me/profile' } );
+    //   V.setBrowserHistory( '/me/profile' );
     //   User.draw();
     //   return {
     //     success: false,

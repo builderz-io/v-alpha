@@ -142,12 +142,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         if ( linkText.match( /youtu/ ) ) {
           // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
           const youtubeID = replace.split( '/' ).slice( -1 )[0];
-          const iframe = '<iframe src="https://www.youtube.com/embed/' + youtubeID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+          const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://www.youtube.com/embed/' + youtubeID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
         }
         else if ( linkText.match( /vimeo/ ) ) {
           const vimeoID = replace.split( '/' ).slice( -1 )[0];
-          const iframe = '<iframe src="https://player.vimeo.com/video/' + vimeoID + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+          const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://player.vimeo.com/video/' + vimeoID + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
         }
         else {
@@ -160,7 +160,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return {
         original: which,
         links: links,
-        iframes: iframes
+        iframes: iframes,
+        firstIframe: iframeLinks[0]
       };
 
     }

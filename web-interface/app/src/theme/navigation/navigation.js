@@ -240,7 +240,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       V.setState( 'active', { navItem: path } );
-      V.setBrowserHistory( { path: path } );
+      V.setBrowserHistory( path );
 
       if ( path != '/me/disconnect' ) {
         Navigation.draw( path );
@@ -355,7 +355,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     // (previous version) also reset path if not account or profile path
     // if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {
-    V.setBrowserHistory( { path: '/' } );
+    V.setBrowserHistory( '/' );
     // }
 
     if ( V.getVisibility( 'user-nav' ) ) {

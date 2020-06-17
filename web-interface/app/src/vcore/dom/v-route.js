@@ -178,7 +178,9 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
     // todo
   }
 
-  function setBrowserHistory( data ) {
+  function setBrowserHistory( path ) {
+
+    const data = { path: path };
     // console.log( data );
     // console.log( V.castJson( V.getState( 'active' ), 'clone' ) );
     if( V.getState( 'active' ).path != data.path ) {
