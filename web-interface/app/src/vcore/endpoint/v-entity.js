@@ -121,7 +121,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+
       await V.getContractState().then( res => {
+
         if ( res.success ) {
           block = res.data[0].currentBlock;
           rpc = res.data[0].network.rpc;

@@ -41,10 +41,10 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, ModalComponents.web2Join() );
     }
     else if ( which == 'user denied auth' ) {
-      V.setNode( $modal, ModalComponents.simpleMessage( 'Authorization denied' ) );
+      V.setNode( $modal, ModalComponents.simpleMessage( 'Could not unlock wallet' ) );
     }
     else if ( which == 'wallet locked' ) {
-      V.setNode( $modal, ModalComponents.simpleMessage( 'Connecting your wallet ... Seeing this message for long? You may have to unlock it manually.' ) );
+      V.setNode( $modal, ModalComponents.simpleMessage( 'Connecting your wallet ... Seeing this message for long? You may have to unlock it manually. For example when using the MetaMask wallet.' ) );
     }
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'You are logged out' ) );

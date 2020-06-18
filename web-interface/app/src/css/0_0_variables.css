@@ -76,7 +76,7 @@
 
 @media screen and (min-height: 920px) {
     :root {
-      --page-position-peek: 308px;
+      /* --page-position-peek: 308px; */
     }
 }
 

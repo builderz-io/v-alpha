@@ -77,7 +77,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
 
     V.getContractState().then( res => {
-      V.setState( 'contract', res.data[0] );
+      if ( res.succcess ) {
+        V.setState( 'contract', res.data[0] );
+      }
     } );
 
     return {
@@ -139,27 +141,29 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const contribution = contract.methods.communityContribution.call().call();
       const divisibility = contract.methods.decimals.call().call();
 
-      const allEvents = contract.getPastEvents( 'allEvents', {
-      // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
-        fromBlock: 0,
-        toBlock: 'latest'
-      }, ( error ) => {return error ? console.error( error ) : null} )
-        .then( res => {
-          return res.map( item => {
-            return {
-              b: item.blockNumber,
-              e: item.event,
-              val: item.returnValues.value/( 10**6 ),
-              to: item.returnValues.to,
-              from: item.returnValues.from,
-              all: item
-            };
-          } ).reverse();
-        } );
+      // const allEvents = contract.getPastEvents( 'allEvents', {
+      // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
+      //   fromBlock: 0,
+      //   toBlock: 'latest'
+      // }, ( error ) => {return error ? console.error( error ) : null} )
+      //   .then( res => {
+      //     return res.map( item => {
+      //       return {
+      //         b: item.blockNumber,
+      //         e: item.event,
+      //         val: item.returnValues.value/( 10**6 ),
+      //         to: item.returnValues.to,
+      //         from: item.returnValues.from,
+      //         all: item
+      //       };
+      //     } ).reverse();
+      //   } );
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] );
+      const allEvents = {};
 
-      if ( all[0] ) {
+      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] ).catch( err => {return console.log( err )} );
+
+      if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATUS ***' );
         console.log( 'Current Block: ', all[0] );

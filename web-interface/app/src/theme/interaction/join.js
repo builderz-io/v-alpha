@@ -70,6 +70,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which ) {
+    console.log( which );
     if ( which == 'entity found' ) {
       Account.drawHeaderBalance();
       V.setNode( '.modal', 'clear' );
@@ -84,6 +85,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Modal.draw( which );
     }
     else if ( which == 'logged out' ) {
+      Join.launch();
+      Navigation.draw();
+      Modal.draw( which );
+    }
+    else if ( which == 'user denied auth' ) {
       Join.launch();
       Navigation.draw();
       Modal.draw( which );
