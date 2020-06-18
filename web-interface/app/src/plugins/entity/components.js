@@ -402,17 +402,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function evmReceiverAddressCard() {
     let address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
+
+    /**
+     * Overwrite address if another receivingAddress has been defined by user
+     */
+
     entity.receivingAddresses ? entity.receivingAddresses.evm ? address = entity.receivingAddresses.evm : undefined : undefined;
 
     if( address || ( !address && editable ) ) {
       const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
-        c: 'pxy fs-rr',
+        c: 'pxy fs-s',
         a: { title: 'evm', db: 'receivingAddresses' },
         h: address,
       } ) : {
         t: 'p',
-        c: 'pxy fs-rr',
+        c: 'pxy fs-s',
         h: address,
       } );
       return castCard( $innerContent, 'Receiving Ethereum Address' );

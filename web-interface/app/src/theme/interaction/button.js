@@ -24,6 +24,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       target: form.getNode( '#plusform__target' ).value
     };
 
+    if ( V.getState( 'activeAddress' ) ) {
+      Object.assign( entityData, { receivingAddress: V.getState( 'activeAddress' ) } );
+    }
+
     if ( !V.getState( 'activeEntity' ) ) {
 
       /**
@@ -45,7 +49,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           Profile.draw( res.data[0].path );
           Form.draw( 'all', { fade: 'out' } );
           Button.draw( 'all', { fade: 'out' } );
-          Button.draw( 'plus search', { delay: 1 } );
+          // Button.draw( 'plus search', { delay: 1 } );
           VMap.draw(
             {
               type: 'Feature',
