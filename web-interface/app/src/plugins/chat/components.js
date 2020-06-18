@@ -36,14 +36,16 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     'messageform': {
       'bottom': '0',
       'border-top': '1px solid #e8e8ec',
-      'background': '#d1d2da',
-      'padding': '8px 5px'
+      // 'background': '#d1d2da',
+      'background': 'rgba(var(--brandPrimary),1)',
+      'padding': '8px 5px',
+      'border-radius': '3px 3px 0 0'
     },
     'messageform__input': {
-      'height': '36px',
-      'padding': '9px 15px',
+      'height': '37px',
+      'padding': '10px 15px',
       'width': '87%',
-      'border': '1px solid #e8e8ec',
+      // 'border': '1px solid #e8e8ec',
       'resize': 'none',
       'border-radius': '30px'
     },
@@ -461,7 +463,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function messageForm() {
     return V.sN( {
       t: 'div',
-      c: 'messageform flex absolute w-full pxy card-shadow',
+      c: 'messageform flex items-center absolute w-full pxy card-shadow',
     } );
   }
 

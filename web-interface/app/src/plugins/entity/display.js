@@ -28,6 +28,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     const mapData = [];
 
     if ( query.success ) {
+
+      V.setState( 'active', { lastViewed: query.data[0].fullId } );
+
       mapData.push( {
         type: 'Feature',
         geometry: query.data[0].geometry,
@@ -82,7 +85,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       Navigation.draw( data.data[0].entity );
 
-      Button.draw( 'send' );
+      // Button.draw( 'send' );
+
+      Chat.drawMessageForm();
 
       Page.draw( {
         // topcontent: $topcontent,

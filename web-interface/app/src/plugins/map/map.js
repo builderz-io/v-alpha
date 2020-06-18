@@ -120,6 +120,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( features ) {
+
+    if ( !features || !features.length ) {
+      return;
+    }
+
     const sc = V.getState( 'screen' );
 
     const geojsonMarkerSettings = {
@@ -151,13 +156,20 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
 
-    if ( features && features.length == 1 ) {
-      const offset = sc.width < 800 ? 0 : 0.3;
-      viMap.flyTo( [features[0].geometry.coordinates[1], features[0].geometry.coordinates[0] - offset], 10 );
-      setTimeout( () => {featureLayer.addTo( viMap )}, 2000 );
+    const geo = features[0].geometry.coordinates;
+
+    if ( features.length == 1 ) {
+      const rand = features[0].geometry.rand;
+      const offset = sc.width < 800 ? 0 : rand ? 45 : 0.35;
+      const zoom = rand ? 3 : 10;
+
+      viMap.setView( [geo[1], geo[0] - offset], zoom );
+      setTimeout( () => {featureLayer.addTo( viMap )}, 1000 );
     }
     else {
-      viMap.flyTo( [features[0].geometry.coordinates[1], features[0].geometry.coordinates[0]], 3 );
+      // if( !viMap.getZoom() == 3 ) {
+      viMap.setView( [geo[1] - 9, geo[0]], 3 );
+      // }
 
       featureLayer.addTo( viMap );
     }

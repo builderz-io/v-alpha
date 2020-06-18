@@ -380,11 +380,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function evmAddressCard() {
     const address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
     if( address ) {
+      // const $innerContent = V.cN( {
+      //   t: 'svg',
+      //   a: {
+      //     viewBox: '0 0 56 18'
+      //   },
+      //   h: `<text x="0" y="15">${address}</text>`,
+      // } );
       const $innerContent = V.cN( {
         t: 'p',
-        c: 'pxy fs-rr',
+        c: 'pxy fs-s',
         h: address,
       } );
+
       return castCard( $innerContent, 'Entity Ethereum Address' );
     }
     else {
