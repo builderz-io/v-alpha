@@ -105,6 +105,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleSetEntity( e ) {
     e.stopPropagation();
 
+    e.target.removeEventListener( 'click', handleSetEntity, false );
+
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
       role: 'member',
