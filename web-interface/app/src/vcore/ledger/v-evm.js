@@ -77,9 +77,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
 
     V.getContractState().then( res => {
-      if ( res.succcess ) {
-        V.setState( 'contract', res.data[0] );
-      }
+      // if ( res.succcess ) {
+      V.setState( 'contract', res.data[0] );
+      // }
     } );
 
     return {

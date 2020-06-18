@@ -401,7 +401,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       a: {
         'data-val': name + ' ' + tag
       },
-      h: name.replace( re, '<span class="txt-brand font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>'
+      h: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>'
     } );
 
   }

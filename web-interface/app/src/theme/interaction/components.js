@@ -13,11 +13,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function handleSetFilter() {
     if ( this.getAttribute( 'value' ) == '1' ) {
       this.setAttribute( 'value', '0' );
-      this.classList.remove( 'filter-select', 'txt-brand' );
+      this.classList.remove( 'filter-select', 'txt-brand-primary' );
     }
     else {
       this.setAttribute( 'value', '1' );
-      this.classList.add( 'filter-select', 'txt-brand' );
+      this.classList.add( 'filter-select', 'txt-brand-primary' );
     }
 
   }

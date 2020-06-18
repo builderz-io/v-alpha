@@ -48,7 +48,7 @@ body {
   color: rgba(var(--red), 1);
 }
 
-.txt-brand {
+.txt-brand-primary {
   color: rgba(var(--brandPrimary), 1);
 }
 

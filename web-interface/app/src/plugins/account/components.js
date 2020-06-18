@@ -55,7 +55,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function headerBalance( balance ) {
     const sc = V.getState( 'screen' );
+    const aE = V.getState( 'activeAddress' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
+
+    const textColor = aE ? 'txt-green' : 'txt-brand-primary';
 
     return V.castNode( { // #1b1aff
       tag: 'svg',
@@ -64,7 +67,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         viewBox: '0 0 36 36'
       },
       html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
-              <text class="font-medium fs-xxs txt-green" x="50%" y="59%">${ balance }</text>`,
+              <text class="font-medium fs-xxs ${ textColor }" x="50%" y="59%">${ balance }</text>`,
       click: handleDrawUserNav
 
     } );
