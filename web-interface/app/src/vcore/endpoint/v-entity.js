@@ -313,6 +313,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           endpoint: 'entity',
           ledger: tL,
           status: 'could not retrieve entity balance',
+          message: bal,
           data: []
         };
       }

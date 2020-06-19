@@ -18,7 +18,9 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         // Modal.draw( 'please wait' );
         await V.setActiveAddress().then( async res => {
           if ( res.success ) {
+
             const check = await ckeckEntityStoreByAddress();
+
             // if ( check == 'entity found' ) {
             //   which = check;
             // }
@@ -70,13 +72,29 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which ) {
-    console.log( which );
+
     if ( which == 'entity found' ) {
-      Account.drawHeaderBalance();
-      V.setNode( '.modal', 'clear' );
-      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
-        Modal.draw( which );
-        V.setCookie( 'welcome-modal', 0 );
+      V.setNode( 'join', 'clear' );
+      V.setNode( 'balance > svg', 'clear' );
+      const bal = V.getState( 'activeEntity' ).balance;
+      if ( !bal ) { // web2 signup
+        Account.drawHeaderBalance();
+        V.setNode( '.modal', 'clear' );
+        if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+          Modal.draw( which );
+          V.setCookie( 'welcome-modal', 0 );
+        }
+      }
+      else if ( bal && bal.success ) { // web3 signup
+        Account.drawHeaderBalance( bal.balance.balance );
+        V.setNode( '.modal', 'clear' );
+        if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+          Modal.draw( which );
+          V.setCookie( 'welcome-modal', 0 );
+        }
+      }
+      else { // web3 signup, balance not found (e.g. wrong network)
+        Modal.draw( 'could not get balance' );
       }
     }
     else if ( which == 'entity not found' ) {
@@ -115,7 +133,18 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
         const eB = await V.getEntityBalance( res.data[0] );
 
-        V.setState( 'activeEntity', { balance: eB.data[0] } );
+        if ( eB.success ) {
+          V.setState( 'activeEntity', { balance: {
+            success: true,
+            balance: eB.data[0]
+          } } );
+        }
+        else {
+          V.setState( 'activeEntity', { balance: {
+            success: false,
+            message: eB.message.message.message
+          } } );
+        }
 
         return 'entity found';
       }

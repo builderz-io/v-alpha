@@ -116,6 +116,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setState( 'activeEntity', 'clear' );
 
     V.setEntity( entityData ).then( res => {
+      // Profile.draw( res.data[0].path );
+      V.setCache( 'all', 'clear' );
       setActiveEntityState( res );
     } );
   }

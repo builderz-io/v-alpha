@@ -137,7 +137,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       position: 'peek',
     } );
 
-    VMap.draw();
+    // VMap.draw();
 
   }
 

@@ -43,6 +43,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'user denied auth' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'Could not unlock wallet' ) );
     }
+    else if ( which == 'could not get balance' ) {
+      V.setNode( $modal, ModalComponents.simpleMessage( 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to KOVAN.' ) );
+    }
     else if ( which == 'wallet locked' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'Connecting your wallet ... Seeing this message for long? You may have to unlock it manually. For example when using the MetaMask wallet.' ) );
     }

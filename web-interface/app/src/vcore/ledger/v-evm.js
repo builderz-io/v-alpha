@@ -78,7 +78,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     V.getContractState().then( res => {
       // if ( res.succcess ) {
-      V.setState( 'contract', res.data[0] );
+      V.setState( 'contract', res.data ? res.data[0] : {} );
       // }
     } );
 
@@ -161,11 +161,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       const allEvents = {};
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] ).catch( err => {return console.log( err )} );
+      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] )
+        .catch( err => { return err } );
 
       if ( all && all[0] ) {
 
-        console.log( '*** CONTRACT STATUS ***' );
+        console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
         console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
         console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
@@ -173,7 +174,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         console.log( 'Contract: ', contract._address );
         console.log( 'Network: ', V.getNetwork() );
         console.log( 'All Events:', all[4] );
-        console.log( '*** CONTRACT STATUS END ***' );
+        console.log( '*** CONTRACT STATE END ***' );
 
         const data = {
           currentBlock: Number( all[0] ),
@@ -193,13 +194,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
 
-        console.log( '*** CONTRACT STATUS ***' );
-        console.log( 'Could not get contract status' );
-        console.log( '*** CONTRACT STATUS END ***' );
+        console.warn( 'Could not get contract state' );
 
         return {
           success: false,
           status: 'contract state not retrieved',
+          message: all
         };
       }
     }
@@ -217,9 +217,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       window.Web3Obj.eth.getBalance( which ),
       contract.methods.liveBalanceOf( which ).call(),
       contract.methods.getDetails( which ).call()
-    ] );
+    ] ).catch( err => {
+      console.warn( 'Could not get address state' );
+      return err;
+    } );
 
-    if ( all[0] && all[1] && all[2] ) {
+    if ( all && all[0] && all[1] && all[2] ) {
       return {
         success: true,
         status: 'address state retrieved',
@@ -237,6 +240,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         status: 'could not retrieve address state',
+        message: all,
         ledger: 'EVM'
       };
     }

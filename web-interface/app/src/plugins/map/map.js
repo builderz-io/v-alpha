@@ -68,7 +68,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   function presenter( features ) {
     if ( V.getSetting( 'loadMap' ) ) {
-      if ( V.getNode( '.leaflet-pane' ) ) {
+      if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
         return Promise.resolve( features );
       }
       else {
@@ -82,9 +82,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function launch() {
+    // if ( !V.getNode( '[src="/dist/leaflet.js"]' ) ) {
     await V.setScript( '/dist/leaflet.js' );
     console.log( '*** map scripts loaded ***' );
-
+    // }
   }
 
   function setMap() {
