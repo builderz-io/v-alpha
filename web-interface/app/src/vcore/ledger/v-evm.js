@@ -352,7 +352,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     };
 
     return window.Web3Obj.eth.sendTransaction( txObject )
-      .once( 'transactionHash', function( hash ) { console.log( 'Hash: ' + hash ) } )
+      .once( 'transactionHash', function( hash ) {
+        console.log( 'Hash: ' + hash );
+        Modal.draw( 'transaction sent' );
+      } )
       .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
       .on( 'confirmation', function( confNumber, receipt ) {
         console.log( 'Confirmation Number: ' + JSON.stringify( confNumber ) );
@@ -361,11 +364,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       .on( 'error', function( error ) { console.log( 'Error: ' + error ) } )
       .then( function( receipt ) {
         console.log( 'Success: ' + JSON.stringify( receipt ) );
-        Account.drawHeaderBalance();
 
         return {
           success: true,
           status: 'last eth transaction successful',
+          data: [ receipt ]
+
         };
 
       } );
@@ -378,9 +382,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const amount = data.txTotal * 10**6;
     const txFunction = await new Promise( ( resolve, reject ) => {
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
-        .once( 'transactionHash', function( hash ) { console.log( 'Hash: ' + hash ) } )
-      // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
-      // .on( 'confirmation', function( confNumber, receipt ) {
+        .once( 'transactionHash', function( hash ) {
+          console.log( 'Hash: ' + hash );
+          Modal.draw( 'transaction sent' );
+        } )
+        // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
+        // .on( 'confirmation', function( confNumber, receipt ) {
         //   console.log( 'Confirmation Number: ' + JSON.stringify( confNumber ) );
         //   console.log( 'Receipt B: ' + JSON.stringify( receipt ) );
         // } )

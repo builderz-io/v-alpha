@@ -683,7 +683,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function addOrChangeImage() {
     let $innerContent;
-    const tinyImage = entity.tinyImage;
+    // const tinyImage = entity.tinyImage;
     const thumbnail = entity.thumbnail;
 
     if( thumbnail ) {

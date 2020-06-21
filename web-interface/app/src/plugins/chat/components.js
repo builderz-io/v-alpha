@@ -92,6 +92,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
+  function handleTextareaInput() {
+    // console.log( this.getBoundingClientRect().width / 9 );
+    // console.log( this.value.length );
+    this.style.height = '0px';
+    this.style.height = ( this.scrollHeight ) + 'px';
+  }
+
   function handleKeyUp( e ) {
     const key = window.event ? e.keyCode : e.which;
     // enter (to search)
@@ -298,7 +305,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     }, sc );
 
-    V.setNode( 'body', sc );
+    V.setNode( 'page', sc );
     // document.body.appendChild( sc );
 
   }
@@ -474,12 +481,14 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'messageform__input mr-2',
       h: prefill ? 'send ' + prefill + ' 10' : '',
       a: {
+        // style: 'height:10px;overflow-y:hidden;',
         placeholder: aE ? uiStr( strPlaceholder, 'message textarea placeholder' )
           : uiStr( strPlaceholder2, 'message textarea placeholder' )
       },
       e: {
         keyup: handleKeyUp,
-        keydown: handleKeyDown
+        keydown: handleKeyDown,
+        input: handleTextareaInput
       }
     } );
   }

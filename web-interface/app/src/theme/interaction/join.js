@@ -75,7 +75,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
     if ( which == 'entity found' ) {
       V.setNode( 'join', 'clear' );
-      V.setNode( 'balance > svg', 'clear' );
       const bal = V.getState( 'activeEntity' ).balance;
       if ( !bal ) { // web2 signup
         Account.drawHeaderBalance();

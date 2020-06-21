@@ -434,7 +434,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     if ( aE && ledger == 'EVM' ) {
       let $cardContent;
-      const balanceCheck = aE.balance && aE.balance.liveBalance > 0 ? true : false;
+      const balanceCheck = aE.balance && aE.balance.balance.liveBalance > 0 ? true : false;
 
       if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
         $cardContent = V.castNode( {

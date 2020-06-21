@@ -128,6 +128,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function drawHeaderBalance( balance, which ) {
+    V.setNode( 'balance', '' );
     if ( balance ) {
       const $navBal = AccountComponents.headerBalance( balance );
       V.setNode( 'balance', $navBal );

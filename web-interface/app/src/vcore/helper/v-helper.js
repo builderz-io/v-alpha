@@ -166,7 +166,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
     }
     else {
-      return which;
+      return {
+        original: which,
+        links: which,
+        iframes: which,
+        firstIframe: iframeLinks[0]
+      };
     }
   }
 
