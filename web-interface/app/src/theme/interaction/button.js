@@ -9,7 +9,9 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
-  function handleSetEntity() {
+  function handleSetEntity( e ) {
+    e.target.removeEventListener( 'click', handleSetEntity, false );
+
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
 
