@@ -198,5 +198,8 @@ const VTranslations = // eslint-disable-line no-unused-vars
   },
   'chat components': {
 
+  },
+  'entity creation': {
+
   }
 };

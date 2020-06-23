@@ -18,6 +18,22 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
   const charWhitelist = /[^0-9^a-z^A-Z^\s]/g;
 
+  /* ============== user interface strings ============== */
+
+  const
+    strInvalid  = 'invalid title',
+    strMaxLength  = 'max 12 characters in a word',
+    strMin2Adjecent = 'min 2 adjecent letters',
+    strInvalidChar = 'invalid character',
+    strMaxHuman  = 'max 3 words',
+    strMaxEntity  = 'max 7 words',
+    strTooLong  = 'max 200 characters',
+    strTooShort  = 'min 2 characters';
+
+  function uiStr( string, description ) {
+    return V.i18n( string, 'entity creation', description || 'error message' ) + ' ';
+  }
+
   /* ================== private methods ================= */
 
   async function castEntity( entityData ) {
@@ -34,11 +50,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const title = castEntityTitle( entityData.title, entityData.role );
 
     if ( !title.success ) {
-      return {
-        success: false,
-        endpoint: 'entity',
-        status: 'invalid title'
-      };
+      return title; // error object
     }
 
     // cast tag and fullId
@@ -236,26 +248,29 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     var checkLength = titleArray.length;
     var wordLengthExeeded = titleArray.map( item => { return item.length > entitySetup.maxWordLength } );
 
-    if (
-      ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ||
-         // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) ) ||
-         title.match( charBlacklist ) ||
-         entitySetup.useWhitelist && title.match( charWhitelist ) ||
-         !title.match( /[a-z]{2}|[A-Z]{2}/g ) ||
-         title.length > 200 ||
-         title.length < 2 ||
-         title.indexOf( '#' ) != -1 ||
-         title.indexOf( '2121' ) != -1 ||
-         // title.replace( /[0-9]/g, '' ).length < title.length || // exclude numbers
-         // checkLength > entitySetup.capWordLength ||
-         ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ||
-         ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ||
-         wordLengthExeeded.includes( true )
-    ) {
+    let error;
+
+    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = uiStr( strInvalid + ' "' + 'vx' + '"' ) : null;
+    // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) )  ? error = uiStr( strInvalid ) : null;
+    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = uiStr( strInvalid ) : null;
+    title.match( charBlacklist ) ? error = uiStr( strInvalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
+    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = uiStr( strMin2Adjecent ) : null;
+    title.length > 200  ? error = uiStr( strTooLong ) : null;
+    title.length < 2 ? error = uiStr( strTooShort ) : null;
+    // title.indexOf( '#' ) != -1 ? error = uiStr( strInvalid ) : null;
+    title.indexOf( '2121' ) != -1 ? error = uiStr( strInvalid + ' "' + '2121' + '"'  ) : null;
+    // title.replace( /[0-9]/g, '' ).length < title.length ? error = uiStr( strInvalid ) : null;
+    // checkLength > entitySetup.capWordLength ? error = uiStr( strInvalid ) : null;
+    ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = uiStr( strMaxHuman ) : null;
+    ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = uiStr( strMaxEntity ) : null;
+    wordLengthExeeded.includes( true ) ? error = uiStr( strMaxLength ) : null;
+
+    if ( error ) {
       return {
         success: false,
         endpoint: 'entity',
-        status: 'invalid title'
+        status: 'invalid title',
+        message: error
       };
     }
     else {

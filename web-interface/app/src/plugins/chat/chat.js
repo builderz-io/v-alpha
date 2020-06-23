@@ -137,6 +137,42 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function drawUserIsTyping( user ) {
+
+    const t1 = V.getNode( '#typing_on_1' );
+    if ( !t1 ) { return }
+    const t2 = V.getNode( '#typing_on_2' );
+
+    const a = t1.innerHTML.split( ' ' )[0];
+
+    if ( user === false ) {
+      resetTyping1();
+      resetTyping2();
+    }
+    else if ( !a ) {
+      t1.innerHTML = user + ' is typing ...';
+      setTimeout( resetTyping1, 4000 );
+      resetTyping2();
+    }
+    else if ( user == a ) {
+      t1.innerHTML = user + ' is typing ...';
+      setTimeout( resetTyping1, 4000 );
+    }
+    else {
+      t2.innerHTML = user + ' is typing ...';
+      setTimeout( resetTyping2, 4000 );
+    }
+
+    function resetTyping1() {
+      t1.innerHTML = '';
+    }
+
+    function resetTyping2() {
+      t2.innerHTML = '';
+    }
+
+  }
+
   /* ============ public methods and exports ============ */
 
   function launch() {
@@ -153,6 +189,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'chatLedger' ) == 'MongoDB' ) {
       window.socket.on( 'community message', drawMessage );
+
+      window.socket.on( 'a user is typing', drawUserIsTyping );
     }
 
   }

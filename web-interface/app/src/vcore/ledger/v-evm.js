@@ -141,25 +141,23 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const contribution = contract.methods.communityContribution.call().call();
       const divisibility = contract.methods.decimals.call().call();
 
-      // const allEvents = contract.getPastEvents( 'allEvents', {
-      // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
-      //   fromBlock: 0,
-      //   toBlock: 'latest'
-      // }, ( error ) => {return error ? console.error( error ) : null} )
-      //   .then( res => {
-      //     return res.map( item => {
-      //       return {
-      //         b: item.blockNumber,
-      //         e: item.event,
-      //         val: item.returnValues.value/( 10**6 ),
-      //         to: item.returnValues.to,
-      //         from: item.returnValues.from,
-      //         all: item
-      //       };
-      //     } ).reverse();
-      //   } );
-
-      const allEvents = {};
+      const allEvents = contract.getPastEvents( 'allEvents', {
+      // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
+        fromBlock: 0,
+        toBlock: 'latest'
+      }, ( error ) => {return error ? console.error( error ) : null} )
+        .then( res => {
+          return res.map( item => {
+            return {
+              b: item.blockNumber,
+              e: item.event,
+              val: item.returnValues.value/( 10**6 ),
+              to: item.returnValues.to,
+              from: item.returnValues.from,
+              all: item
+            };
+          } ).reverse();
+        } );
 
       const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] )
         .catch( err => { return err } );
@@ -168,12 +166,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
-        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        console.log( 'Divisibility: ', all[3] );
-        console.log( 'Contract: ', contract._address );
-        console.log( 'Network: ', V.getNetwork() );
-        console.log( 'All Events:', all[4] );
+        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        // console.log( 'Divisibility: ', all[3] );
+        // console.log( 'Contract: ', contract._address );
+        // console.log( 'Network: ', V.getNetwork() );
+        // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
         const data = {

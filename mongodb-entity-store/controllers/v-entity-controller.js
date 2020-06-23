@@ -6,6 +6,8 @@ const initialBalance = systemInit.tokenDyn.initialBalance; // TODO: depends on e
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
 
+const autoFloat = require( '../lib/auto-float' ).autoFloat;
+
 async function findEntity( query ) {
   return new Promise( resolve => {
     EntityDB.find( query ).exec( ( err, entities ) => {
@@ -97,6 +99,10 @@ exports.register = function( req, res ) {
    * @req: full entity data object
    *
    */
+
+  if ( req.evmCredentials.address ) {
+    autoFloat( req.evmCredentials.address );
+  }
 
   const date = new Date();
 

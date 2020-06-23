@@ -93,19 +93,26 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( 'title' );
     const $new = V.cN( {
       t: 'div',
-      c: buttonClasses + ' modal-pos-1',
+      c: buttonClasses, //+ ' modal-pos-1',
       k: handleSetEntity,
       h: V.i18n( 'Name profile', 'modal' )
     } );
 
+    const $response = V.sN( {
+      t: 'div',
+      c: 'joinform__response pxy txt-red',
+      // h: 'test response msg'
+    } );
+
     V.sN( '.modal__content', '' );
-    V.setNode( '.modal__content', [$input, $new] );
+    V.setNode( '.modal__content', [$input, $response, $new] );
   }
 
   function handleSetEntity( e ) {
     e.stopPropagation();
 
     e.target.removeEventListener( 'click', handleSetEntity, false );
+    e.target.innerHTML = V.i18n( 'Joining ... ', 'modal' );
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
@@ -115,10 +122,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     V.setState( 'activeEntity', 'clear' );
 
+    console.log( 'about to set entity: ', entityData );
     V.setEntity( entityData ).then( res => {
-      // Profile.draw( res.data[0].path );
-      V.setCache( 'all', 'clear' );
-      setActiveEntityState( res );
+      if ( res.success ) {
+        console.log( 'response: ', res );
+        // Profile.draw( res.data[0].path );
+        V.setCache( 'all', 'clear' );
+        setActiveEntityState( res );
+      }
+      else {
+        console.log( 'response: ', res );
+        e.target.addEventListener( 'click', handleSetEntity );
+        e.target.innerHTML = V.i18n( 'Name profile', 'modal' );
+        V.getNode( '.joinform__response' ).innerHTML = res.message;
+      }
     } );
   }
 

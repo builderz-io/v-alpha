@@ -1,4 +1,34 @@
 
+( function() { // eslint-disable-line no-unused-vars
+
+  /**
+   * Send console logs to server for debugging
+   *
+   */
+
+  // Object.assign( window.console, {
+  //   log: handleConsoleMessage,
+  //   error: handleConsoleMessage,
+  //   warn: handleConsoleMessage,
+  // } );
+
+  const sessionNr = Date.now();
+
+  console.log( '============ NEW SESSION ============' );
+  console.log( '===== ', new Date() );
+
+  function handleConsoleMessage( msg, data ) {
+    fetch( /* 'http://localhost:6021/logs' */ 'https://mongodb.valueinstrument.org/logs', {
+      method: 'POST', // or 'PUT'
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify( sessionNr + ' // ' + String( new Date() ).substr( 16, 8 ) + ' // '+ msg + ( data ? ' ' + JSON.stringify( data ) : '' )  ),
+    } );
+  }
+} )();
+
 const V = {
 
   /**

@@ -72,7 +72,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which ) {
-
+    console.log( which, new Date() );
     if ( which == 'entity found' ) {
       V.setNode( 'join', 'clear' );
       const bal = V.getState( 'activeEntity' ).balance;
