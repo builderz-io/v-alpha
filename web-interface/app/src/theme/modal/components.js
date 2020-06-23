@@ -113,6 +113,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     e.target.removeEventListener( 'click', handleSetEntity, false );
     e.target.innerHTML = V.i18n( 'Joining ... ', 'modal' );
+    V.getNode( '.joinform__response' ).innerHTML = '';
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,

@@ -3,10 +3,11 @@
  *
  */
 
-var gulp = require( 'gulp' ),
+const gulp = require( 'gulp' ),
   concat = require( 'gulp-concat' ),
   terser = require( 'gulp-terser-js' ),
   cleanCSS = require( 'gulp-clean-css' ),
+  gzip = require( 'gulp-gzip' ),
   browsersync = require( 'browser-sync' ).create();
 
 // BrowserSync
@@ -52,15 +53,31 @@ function styles() {
 function scripts() {
   return gulp.src( [
     './app/src/vcore/**/*.js',
-    './app/src/theme/**/*.js',
-    './app/src/plugins/**/*.js',
+  //  './app/src/theme/**/*.js',
+  //  './app/src/plugins/**/*.js',
   ] )
-    .pipe( concat( 'v.min.js' ) )
+    .pipe( concat( 'vcore.min.js' ) )
     .pipe( terser( {
       mangle: {
         toplevel: false
       }
     } ) )
+    .pipe( gzip() )
+    .pipe( gulp.dest( './app/dist' ) )
+    .pipe( browsersync.stream() );
+}
+
+function vcore() {
+  return gulp.src( [
+    './app/src/vcore/**/*.js',
+  ] )
+    .pipe( concat( 'vcore2.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    .pipe( gzip() )
     .pipe( gulp.dest( './app/dist' ) )
     .pipe( browsersync.stream() );
 }
@@ -73,3 +90,4 @@ function watchFiles() {
 }
 
 gulp.task( 'default', gulp.series( scripts, styles, /* watchFiles */ ) );
+gulp.task( 'vcore', gulp.series( vcore ) );

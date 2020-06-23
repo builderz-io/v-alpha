@@ -6,16 +6,17 @@
    *
    */
 
-  // Object.assign( window.console, {
-  //   log: handleConsoleMessage,
-  //   error: handleConsoleMessage,
-  //   warn: handleConsoleMessage,
-  // } );
+  Object.assign( window.console, {
+    log: handleConsoleMessage,
+    error: handleConsoleMessage,
+    warn: handleConsoleMessage,
+  } );
 
   const sessionNr = Date.now();
 
   console.log( '============ NEW SESSION ============' );
-  console.log( '===== ', new Date() );
+  console.log( '===== App  ', 'v2.1' );
+  console.log( '===== Date ', new Date() );
 
   function handleConsoleMessage( msg, data ) {
     fetch( /* 'http://localhost:6021/logs' */ 'https://mongodb.valueinstrument.org/logs', {
@@ -64,11 +65,11 @@ const V = {
   async function launchScripts() {
     await Promise.all( [
       setScript( '/dist/velocity.min.js' ),
-      setScript( '/dist/moment.min.js' ),
+      // setScript( '/dist/moment.min.js' ),
       setScript( '/dist/js.cookie.min.js' ),
       setScript( '/dist/universal-router.js' )
     ] );
-    console.log( '*** vcore dependency-scripts loaded ***' );
+    console.log( '*** vcore dependencies loaded ***' );
 
     await Promise.all( [
       setScript( '/src/vcore/v/v-translations.js' )

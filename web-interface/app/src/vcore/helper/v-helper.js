@@ -176,7 +176,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTime( which, whichFormat ) {
-    return moment( which ).format( whichFormat || 'D MMM YYYY h:mm a' );
+    return String( new Date( which ) ).substr( 4, 6 );
+    // return moment( which ).format( whichFormat || 'D MMM YYYY h:mm a' );
   }
 
   function castRandLatLng() {
