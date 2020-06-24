@@ -1,7 +1,7 @@
-const VSetup = ( function() { // eslint-disable-line no-unused-vars
+const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Core Setup Module
+   * V Core Configuration Module
    *
    */
 
@@ -9,14 +9,16 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
-    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    // socketHost: 'http://localhost',
-    // socketPort: 6021,
-    socketHost: 'https://mongodb.valueinstrument.org',
-    socketPort: 443,
+    socketHost: 'http://localhost',
+    socketPort: 6021,
+    // socketHost: 'https://mongodb.valueinstrument.org',
+    // socketPort: 443,
 
+    useEvmBuild: true,
+    sendLogsToServer: false,
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
@@ -33,6 +35,7 @@ const VSetup = ( function() { // eslint-disable-line no-unused-vars
     transactionFee: 3333, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
+    appVersion: 'v2.1',
     entityDocVersion: 'v0.20 - valueinstrument.org',
 
   };

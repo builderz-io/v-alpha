@@ -15,45 +15,53 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     V.setData = setData;
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      await Promise.all( [
-        V.setScript( '/dist/web3.min.js' ),
-        V.setScript( '/src/vcore/ledger/v-evm-abi.js' ),
-        V.setScript( '/src/vcore/ledger/v-evm.js' )
-      ] );
+      if ( V.getSetting( 'useEvmBuild' ) ) {
+        await Promise.all( [
+          V.setScript( '/vcore/builds/vevm.min.js' )
+        ] );
+        console.log( '*** vevm build loaded ***' );
+      }
+      else {
+        await Promise.all( [
+          V.setScript( '/vcore/dependencies/secondary/web3.min.js' ),
+          V.setScript( '/vcore/src/ledger/secondary/v-evm-abi.js' ),
+          V.setScript( '/vcore/src/ledger/secondary/v-evm.js' )
+        ] );
+        console.log( '*** web3 and evm source scripts loaded ***' );
+      }
 
       V.getWeb3Provider();
 
-      console.log( '*** web3 and evm scripts loaded ***' );
     }
 
     if ( V.getSetting( 'transactionLedger' ) == 'EOS' ) {
       await Promise.all( [
-        V.setScript( '/dist/eosjs-api.js' ),
-        V.setScript( '/dist/eosjs-jsonrpc.js' ),
-        V.setScript( '/dist/eosjs-jssig.js' ),
-        V.setScript( '/dist/eosjs-numeric.js' )
+        V.setScript( '/vcore/dependencies/eosjs-api.js' ),
+        V.setScript( '/vcore/dependencies/eosjs-jsonrpc.js' ),
+        V.setScript( '/vcore/dependencies/eosjs-jssig.js' ),
+        V.setScript( '/vcore/dependencies/eosjs-numeric.js' )
       ] );
 
       console.log( '*** eos scripts loaded ***' );
     }
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-      await V.setScript( '/dist/symbol-sdk-0.17.5-alpha.js' );
-      await V.setScript( '/src/vcore/ledger/v-symbol.js' );
+      await V.setScript( '/vcore/dependencies/symbol-sdk-0.17.5-alpha.js' );
+      await V.setScript( '/vcore/src/ledger/v-symbol.js' );
       console.log( '*** symbol scripts loaded ***' );
     }
 
     if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
       await Promise.all( [
-        V.setScript( '/dist/3box.min.js' ),
-        V.setScript( '/src/vcore/ledger/v-3box.js' )
+        V.setScript( '/vcore/dependencies/3box.min.js' ),
+        V.setScript( '/vcore/src/ledger/v-3box.js' )
       ] );
       console.log( '*** 3Box scripts loaded ***' );
     }
 
     if ( [ V.getSetting( 'entityLedger' ), V.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
       await Promise.all( [
-        V.setScript( '/dist/socket.io.min.js' ),
+        V.setScript( '/vcore/dependencies/secondary/socket.io.min.js' ),
       ] );
       console.log( '*** socket scripts loaded ***' );
       await setSocket().then( res => {
@@ -65,8 +73,8 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   async function setSocket() {
     return new Promise( ( resolve, reject ) => {
-      const host = VSetup.getSetting( 'socketHost' );
-      const port = VSetup.getSetting( 'socketPort' );
+      const host = V.getSetting( 'socketHost' );
+      const port = V.getSetting( 'socketPort' );
 
       const connection = host + ( port ? ':' + port : '' );
 

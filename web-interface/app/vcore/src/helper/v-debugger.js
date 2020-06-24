@@ -7,7 +7,37 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const $debug = V.setNode( {
+  /**
+   * Send console logs to server for debugging
+   *
+   */
+
+  if ( VConfig.getSetting( 'sendLogsToServer' ) ) {
+    Object.assign( window.console, {
+      log: handleConsoleMessage,
+      error: handleConsoleMessage,
+      warn: handleConsoleMessage,
+    } );
+  }
+
+  const sessionNr = Date.now();
+
+  console.log( '============ NEW SESSION ============' );
+  console.log( '===== App  ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '===== Date ', new Date() );
+
+  function handleConsoleMessage( msg, data ) {
+    fetch( /* 'http://localhost:6021/logs' */ 'https://mongodb.valueinstrument.org/logs', {
+      method: 'POST', // or 'PUT'
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify( sessionNr + ' // ' + String( new Date() ).substr( 16, 8 ) + ' // '+ msg + ( data ? ' ' + JSON.stringify( data ) : '' )  ),
+    } );
+  }
+
+  const $debug = VDom.setNode( {
     tag: 'debug',
     classes: 'debug',
     setStyle: {
@@ -27,7 +57,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
         'overflow-y': 'scroll'
       }
     },
-    html: V.setNode( {
+    html: VDom.setNode( {
       tag: 'ul'
     } )
   } );

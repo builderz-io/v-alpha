@@ -69,16 +69,43 @@ function scripts() {
 
 function vcore() {
   return gulp.src( [
-    './app/src/vcore/**/*.js',
+    './app/vcore/dependencies/primary/*.js',
+    './app/vcore/src/v/v.js',
+    './app/vcore/v-config.js',
+    './app/vcore/src/dom/*.js',
+    './app/vcore/src/helper/*.js',
+    './app/vcore/src/state/*.js',
+    './app/vcore/src/v/v-key.js',
+    './app/vcore/src/v/v-translations.js',
+    './app/vcore/src/endpoint/*.js',
+    './app/vcore/src/ledger/primary/*.js',
+    './app/vcore/src/v/v-launch.js',
   ] )
-    .pipe( concat( 'vcore2.min.js' ) )
+    .pipe( concat( 'vcore.min.js' ) )
     .pipe( terser( {
       mangle: {
         toplevel: false
       }
     } ) )
-    .pipe( gzip() )
-    .pipe( gulp.dest( './app/dist' ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/vcore/builds' ) )
+    .pipe( browsersync.stream() );
+}
+
+function vevm() {
+  return gulp.src( [
+    './app/vcore/dependencies/secondary/web3.min.js',
+    './app/vcore/src/ledger/secondary/v-evm.js',
+    './app/vcore/src/ledger/secondary/v-evm-abi.js',
+  ] )
+    .pipe( concat( 'vevm.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/vcore/builds' ) )
     .pipe( browsersync.stream() );
 }
 
@@ -89,5 +116,11 @@ function watchFiles() {
   gulp.watch( './app/src/css/*.css', styles );
 }
 
+function watchVCore() {
+  gulp.watch( './app/vcore/src/*.js', vcore );
+  gulp.watch( './app/vcore/v-config.js', vcore );
+}
+
 gulp.task( 'default', gulp.series( scripts, styles, /* watchFiles */ ) );
-gulp.task( 'vcore', gulp.series( vcore ) );
+gulp.task( 'vcore', gulp.series( vcore, watchVCore ) );
+gulp.task( 'vevm', gulp.series( vevm ) );

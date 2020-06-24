@@ -361,6 +361,30 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     return Number( remValue ) * parseFloat( getComputedStyle( document.documentElement ).fontSize );
   }
 
+  function setScript( src, id ) {
+    // console.log( src );
+    return new Promise( function( resolve, reject ) {
+      const s = document.createElement( 'script' );
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      id ? s.id = id : null;
+      document.head.appendChild( s );
+    } );
+  }
+
+  function setStylesheet( src ) {
+    return new Promise( function( resolve, reject ) {
+      const l = document.createElement( 'link' );
+      l.type = 'text/css';
+      l.rel = 'stylesheet';
+      l.href = src;
+      l.onload = resolve;
+      l.onerror = reject;
+      document.head.appendChild( l );
+    } );
+  }
+
   /* ====================== export ====================== */
 
   ( () => {
@@ -377,6 +401,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     V.getCss = getCss;
     V.getVisibility = getVisibility;
     V.castRemToPixel = castRemToPixel;
+    V.setScript = setScript;
+    V.setStylesheet = setStylesheet;
   } )();
 
   return {
@@ -392,7 +418,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     setClick: setClick,
     getCss: getCss,
     getVisibility: getVisibility,
-    castRemToPixel: castRemToPixel
+    castRemToPixel: castRemToPixel,
+    setScript: setScript,
+    setStylesheet: setStylesheet
   };
 
 } )();
