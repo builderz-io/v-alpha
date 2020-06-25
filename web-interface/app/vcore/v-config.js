@@ -9,7 +9,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
-    transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
     socketHost: 'http://localhost',
@@ -17,7 +17,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     // socketHost: 'https://mongodb.valueinstrument.org',
     // socketPort: 443,
 
-    useEvmBuild: true,
+    useBuilds: true,
+
     sendLogsToServer: false,
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,

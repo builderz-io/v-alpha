@@ -83,8 +83,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   async function launch() {
     // if ( !V.getNode( '[src="/dist/leaflet.js"]' ) ) {
-    await V.setScript( '/dist/leaflet.js' );
-    console.log( '*** map scripts loaded ***' );
+    await V.setScript( '/plugins/dependencies/leaflet.js' );
+    console.log( '*** leaflet library loaded ***' );
     // }
   }
 

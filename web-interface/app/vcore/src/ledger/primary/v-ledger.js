@@ -15,11 +15,11 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     V.setData = setData;
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      if ( V.getSetting( 'useEvmBuild' ) ) {
+      if ( V.getSetting( 'useBuilds' ) ) {
         await Promise.all( [
           V.setScript( '/vcore/builds/vevm.min.js' )
         ] );
-        console.log( '*** vevm build loaded ***' );
+        console.log( '*** vevm builds loaded ***' );
       }
       else {
         await Promise.all( [
@@ -27,7 +27,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           V.setScript( '/vcore/src/ledger/secondary/v-evm-abi.js' ),
           V.setScript( '/vcore/src/ledger/secondary/v-evm.js' )
         ] );
-        console.log( '*** web3 and evm source scripts loaded ***' );
+        console.log( '*** vcore source web3 and evm scripts loaded ***' );
       }
 
       V.getWeb3Provider();
@@ -63,7 +63,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       await Promise.all( [
         V.setScript( '/vcore/dependencies/secondary/socket.io.min.js' ),
       ] );
-      console.log( '*** socket scripts loaded ***' );
+      console.log( '*** vcore source socket scripts loaded ***' );
       await setSocket().then( res => {
         console.log( res );
       } );

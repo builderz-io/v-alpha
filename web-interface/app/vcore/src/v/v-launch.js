@@ -17,10 +17,17 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  await Promise.all( [
-    V.setScript( '/theme/canvas/canvas.js' ),
-  ] );
-  console.log( '*** canvas script loaded ***' );
+  if( V.getSetting( 'useBuilds' ) ) {
+    await Promise.all( [
+      V.setScript( '/theme/builds/vtheme.min.js' )
+    ] );
+    console.log( '*** theme builds loaded ***' );
+  }
+  else {
+    await Promise.all( [
+      V.setScript( '/theme/src/canvas/canvas.js' ),
+    ] );
+  }
 
   /**
     * Launch the Canvas

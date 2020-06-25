@@ -12,59 +12,85 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function launchStylesheets() {
-    await Promise.all( [
-      V.setStylesheet( '/css/0_0_variables.css' ),
-      V.setStylesheet( '/css/1_0_reset-normalize.css' ),
-      V.setStylesheet( '/css/1_1_reset.css' ),
-      V.setStylesheet( '/css/2_0_typography.css' ),
-      V.setStylesheet( '/css/2_2_color.css' ),
-      V.setStylesheet( '/css/3_0_utilities.css' ),
-      V.setStylesheet( '/css/4_0_components.css' ),
-      V.setStylesheet( '/css/8_0_overrides.css' ),
-      V.setStylesheet( '/css/9_0_leaflet.css' )
-    ] );
+    if ( V.getSetting( 'useBuilds' ) ) {
+      await Promise.all( [
+        V.setStylesheet( '/css/builds/v.min.css' )
+      ] );
+      console.log( '*** css builds loaded ***' );
+    }
+    else {
+      await Promise.all( [
+        V.setStylesheet( '/css/src/0_0_variables.css' ),
+        V.setStylesheet( '/css/src/1_0_reset-normalize.css' ),
+        V.setStylesheet( '/css/src/1_1_reset.css' ),
+        V.setStylesheet( '/css/src/2_0_typography.css' ),
+        V.setStylesheet( '/css/src/2_2_color.css' ),
+        V.setStylesheet( '/css/src/3_0_utilities.css' ),
+        V.setStylesheet( '/css/src/4_0_components.css' ),
+        V.setStylesheet( '/css/src/8_0_overrides.css' ),
+        V.setStylesheet( '/css/src/9_0_leaflet.css' )
+      ] );
+      console.log( '*** css source files loaded ***' );
+    }
   }
 
   async function launchScripts() {
-    await Promise.all( [
 
-      V.setScript( '/assets/demo-content/demo-content.js' ),
+    if( !V.getSetting( 'useBuilds' ) ) {
+      await Promise.all( [
+        V.setScript( '/theme/src/canvas/components.js' ),
+        V.setScript( '/theme/src/canvas/background.js' ),
+        V.setScript( '/theme/src/canvas/haze.js' ),
+        V.setScript( '/theme/src/canvas/feature.js' ),
+        V.setScript( '/theme/src/canvas/header.js' ),
+        V.setScript( '/theme/src/canvas/page.js' ),
+        V.setScript( '/theme/src/modal/components.js' ),
+        V.setScript( '/theme/src/modal/modal.js' ),
+        V.setScript( '/theme/src/interaction/components.js' ),
+        V.setScript( '/theme/src/interaction/button.js' ),
+        V.setScript( '/theme/src/interaction/form.js' ),
+        V.setScript( '/theme/src/interaction/join.js' ),
+        V.setScript( '/theme/src/navigation/components.js' ),
+        V.setScript( '/theme/src/navigation/navigation.js' ),
+      ] );
+      console.log( '*** theme source scripts loaded ***' );
+    }
 
-      V.setScript( '/theme/canvas/components.js' ),
-      V.setScript( '/theme/canvas/background.js' ),
-      V.setScript( '/theme/canvas/haze.js' ),
-      V.setScript( '/theme/canvas/feature.js' ),
-      V.setScript( '/theme/canvas/header.js' ),
-      V.setScript( '/theme/canvas/page.js' ),
-      V.setScript( '/theme/modal/components.js' ),
-      V.setScript( '/theme/modal/modal.js' ),
-      V.setScript( '/theme/interaction/components.js' ),
-      V.setScript( '/theme/interaction/button.js' ),
-      V.setScript( '/theme/interaction/form.js' ),
-      V.setScript( '/theme/interaction/join.js' ),
-      V.setScript( '/theme/navigation/components.js' ),
-      V.setScript( '/theme/navigation/navigation.js' ),
+    if( V.getSetting( 'useBuilds' ) ) {
+      await Promise.all( [
+        V.setScript( '/plugins/builds/vplugins.min.js' ),
+      ] );
+      console.log( '*** plugins builds loaded ***' );
+    }
+    else {
+      await Promise.all( [
+        V.setScript( '/plugins/src/account/components.js' ),
+        V.setScript( '/plugins/src/account/account.js' ),
+        V.setScript( '/plugins/src/entity/components.js' ),
+        V.setScript( '/plugins/src/entity/editable.js' ),
+        V.setScript( '/plugins/src/entity/display.js' ),
+        V.setScript( '/plugins/src/entity/settings.js' ),
+        V.setScript( '/plugins/src/entity/entitylist.js' ),
+        V.setScript( '/plugins/src/chat/components.js' ),
+        V.setScript( '/plugins/src/chat/chat.js' ),
+        V.setScript( '/plugins/src/map/map.js' ),
+        V.setScript( '/plugins/src/google/google.js' ),
+        V.setScript( '/plugins/src/data/components.js' ),
+        V.setScript( '/plugins/src/data/data.js' ),
+        V.setScript( '/plugins/src/marketplace/components.js' ),
+        V.setScript( '/plugins/src/marketplace/marketplace.js' ),
+        V.setScript( '/plugins/src/media/components.js' ),
+        V.setScript( '/plugins/src/media/media.js' ),
+      ] );
+      console.log( '*** plugins source scripts loaded ***' );
+    }
 
-      V.setScript( '/plugins/account/components.js' ),
-      V.setScript( '/plugins/account/account.js' ),
-      V.setScript( '/plugins/entity/components.js' ),
-      V.setScript( '/plugins/entity/editable.js' ),
-      V.setScript( '/plugins/entity/display.js' ),
-      V.setScript( '/plugins/entity/settings.js' ),
-      V.setScript( '/plugins/entity/entitylist.js' ),
-      V.setScript( '/plugins/chat/components.js' ),
-      V.setScript( '/plugins/chat/chat.js' ),
-      V.setScript( '/plugins/map/map.js' ),
-      V.setScript( '/plugins/google/google.js' ),
-      V.setScript( '/plugins/data/components.js' ),
-      V.setScript( '/plugins/data/data.js' ),
-      V.setScript( '/plugins/marketplace/components.js' ),
-      V.setScript( '/plugins/marketplace/marketplace.js' ),
-      V.setScript( '/plugins/media/components.js' ),
-      V.setScript( '/plugins/media/media.js' ),
-    ] );
-    console.log( '*** canvas scripts loaded ***' );
-
+    if( V.getSetting( 'demoContent' ) ) {
+      await Promise.all( [
+        V.setScript( '/assets/demo-content/demo-content.js' )
+      ] );
+      console.log( '*** demo content loaded ***' );
+    }
   }
 
   function setFont() {
