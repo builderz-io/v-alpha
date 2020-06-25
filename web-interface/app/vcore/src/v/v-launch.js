@@ -9,6 +9,8 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     *
     */
 
+  V.setNode( 'loader', V.i18n( 'Connecting to ledger', 'app' ) );
+
   await VLedger.launch();
 
   /**
@@ -16,6 +18,8 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
    * to enable theme-initialization
    *
    */
+
+  V.setNode( 'loader', V.i18n( 'Setting up the theme', 'app' ) );
 
   if( V.getSetting( 'useBuilds' ) ) {
     await Promise.all( [
@@ -33,6 +37,8 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     * Launch the Canvas
     *
     */
+
+  V.setNode( 'loader', V.i18n( 'Initializing network\'s plugins', 'app' ) );
 
   await Canvas.launch();
 

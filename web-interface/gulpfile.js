@@ -27,46 +27,6 @@ const gulp = require( 'gulp' ),
 //   done();
 // }
 
-function css() {
-  return gulp.src( [
-
-    './app/css/src/*.css',
-
-    // './src/css/0_0_variables.css',
-    // './src/css/1_0_reset-normalize.css',
-    // './src/css/1_1_reset.css',
-    // './src/css/2_0_typography.css',
-    // './src/css/2_1_spacing.css',
-    // './src/css/2_2_color.css',
-    // './src/css/3_0_utilities.css',
-    // './src/css/4_0_components.css',
-    // './src/css/5_0_overrides.css',
-    // './src/css/9_0_leaflet.css',
-
-  ] )
-    .pipe( concat( 'v.min.css' ) )
-    .pipe( cleanCSS() )
-    .pipe( gulp.dest( './app/css/builds' ) );
-  // .pipe( browsersync.stream() );
-}
-
-// function scripts() {
-//   return gulp.src( [
-//     './app/src/vcore/**/*.js',
-//   //  './app/src/theme/**/*.js',
-//   //  './app/src/plugins/**/*.js',
-//   ] )
-//     .pipe( concat( 'vcore.min.js' ) )
-//     .pipe( terser( {
-//       mangle: {
-//         toplevel: false
-//       }
-//     } ) )
-//     .pipe( gzip() )
-//     .pipe( gulp.dest( './app/dist' ) )
-//     .pipe( browsersync.stream() );
-// }
-
 function vcore() {
   return gulp.src( [
     './app/vcore/dependencies/primary/*.js',
@@ -75,9 +35,28 @@ function vcore() {
     './app/vcore/src/helper/*.js',
     './app/vcore/src/ledger/primary/*.js',
     './app/vcore/src/state/*.js',
-    './app/vcore/src/v/*.js',
+    './app/vcore/src/v/v-key.js',
+    './app/vcore/src/v/v-translations.js',
+    './app/vcore/src/v/v-launch.js',
   ] )
     .pipe( concat( 'vcore.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/vcore/builds' ) );
+  // .pipe( browsersync.stream() );
+}
+
+function vevm() {
+  return gulp.src( [
+    './app/vcore/dependencies/secondary/web3.min.js',
+    './app/vcore/src/ledger/secondary/v-evm-abi.js',
+    './app/vcore/src/ledger/secondary/v-evm.js',
+  ] )
+    .pipe( concat( 'vevm.min.js' ) )
     .pipe( terser( {
       mangle: {
         toplevel: false
@@ -118,36 +97,35 @@ function vplugins() {
   // .pipe( browsersync.stream() );
 }
 
-function vevm() {
+function css() {
   return gulp.src( [
-    './app/vcore/dependencies/secondary/web3.min.js',
-    './app/vcore/src/ledger/secondary/v-evm.js',
-    './app/vcore/src/ledger/secondary/v-evm-abi.js',
+
+    './app/css/src/*.css',
+
+    // './src/css/0_0_variables.css',
+    // './src/css/1_0_reset-normalize.css',
+    // './src/css/1_1_reset.css',
+    // './src/css/2_0_typography.css',
+    // './src/css/2_1_spacing.css',
+    // './src/css/2_2_color.css',
+    // './src/css/3_0_utilities.css',
+    // './src/css/4_0_components.css',
+    // './src/css/5_0_overrides.css',
+    // './src/css/9_0_leaflet.css',
+
   ] )
-    .pipe( concat( 'vevm.min.js' ) )
-    .pipe( terser( {
-      mangle: {
-        toplevel: false
-      }
-    } ) )
-    // .pipe( gzip() )
-    .pipe( gulp.dest( './app/vcore/builds' ) );
+    .pipe( concat( 'v.min.css' ) )
+    .pipe( cleanCSS() )
+    .pipe( gulp.dest( './app/css/builds' ) );
   // .pipe( browsersync.stream() );
 }
-
-// function watchFiles() {
-//   gulp.watch( './app/src/vcore/**/*.js', scripts );
-//   gulp.watch( './app/src/plugins/**/*.js', scripts );
-//   gulp.watch( './app/src/theme/**/*.js', scripts );
-//   gulp.watch( './app/src/css/*.css', css );
-// }
 
 function watchVCore() {
   gulp.watch( './app/vcore/src/**/*.js', vcore );
 }
 
 function watchVEvm() {
-  gulp.watch( './app/vcore/src/ledger/**/*.js', vtheme );
+  gulp.watch( './app/vcore/src/ledger/secondary/*.js', vtheme );
 }
 
 function watchVTheme() {
@@ -170,8 +148,8 @@ gulp.task( 'default', gulp.parallel(
   gulp.series( css, watchCss ),
 ) );
 
-gulp.task( 'css', gulp.series( css, watchCss ) );
 gulp.task( 'vcore', gulp.series( vcore, watchVCore ) );
+gulp.task( 'vevm', gulp.series( vevm, watchVEvm ) );
 gulp.task( 'vtheme', gulp.series( vtheme, watchVTheme ) );
 gulp.task( 'vplugins', gulp.series( vplugins, watchVPlugins ) );
-gulp.task( 'vevm', gulp.series( vevm, watchVEvm ) );
+gulp.task( 'css', gulp.series( css, watchCss ) );

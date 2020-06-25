@@ -60,7 +60,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
           'height': '100vh', // 'calc(var(--screen-height) - var(--page-position-closed))',
           'z-index': -2
         }
-      }
+      },
+      // h: `<div class="preloader">
+      //       <div class="preloader__ring"></div>
+      //       <loader class="preloader__text">Loading Map<loader>
+      //     </div>`
     } );
   }
   function haze() {

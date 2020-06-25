@@ -23,6 +23,59 @@ list a {
 	height: 4.5rem
 }
 
+.preloader {
+  display:block;
+  margin: 0 auto;
+  padding: 35% 0;
+  width: 80%
+}
+.preloader__ring {
+  /* padding: 5% 0 5% 0; */ */
+  display: block;
+  margin: 0 auto;
+  width: 80px;
+  height: 80px;
+}
+.preloader__ring:after {
+  content: " ";
+  display: block;
+  width: 54px;
+  height: 54px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,210,85, 1);
+  border-color: rgba(255,210,85, 1) transparent rgba(255,210,85, 1) transparent;
+  animation: preloader__ring 1.2s linear infinite;
+}
+.preloader__text {
+  color: lightgray /* rgba(83, 96, 101, 1) */;
+  display:block;
+  margin:20px auto;
+  /* padding:40%0; */
+  width:100%;
+  text-align:center;
+  /* font-size: 18px; */
+}
+@keyframes preloader__ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animated-background {
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  background-size: 800px;
+}
+
 @keyframes placeHolderShimmer{
     0%{
         background-position: -468px 0
@@ -30,17 +83,6 @@ list a {
     100%{
         background-position: 468px 0
     }
-}
-
-.animated-background {
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: placeHolderShimmer;
-    animation-timing-function: linear;
-    background: #f6f7f8;
-    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
-    background-size: 800px;
 }
 
 

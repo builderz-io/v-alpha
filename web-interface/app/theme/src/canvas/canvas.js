@@ -12,6 +12,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function launchStylesheets() {
+
     if ( V.getSetting( 'useBuilds' ) ) {
       await Promise.all( [
         V.setStylesheet( '/css/builds/v.min.css' )
@@ -84,6 +85,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       ] );
       console.log( '*** plugins source scripts loaded ***' );
     }
+
+    V.setNode( 'body', '' );
 
     if( V.getSetting( 'demoContent' ) ) {
       await Promise.all( [
@@ -285,14 +288,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function initCanvas() {
     if( !V.getNode( 'background' ) ) {
-
       Background.launch(); // sets node
       Haze.launch(); // sets node
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
       Button.launch(); // sets nodes: hidden buttons
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
-
     }
   }
 

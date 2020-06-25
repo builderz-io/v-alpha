@@ -43,15 +43,15 @@ const VInit = ( async function() { // eslint-disable-line no-unused-vars
     await Promise.all( [
       setScript( '/vcore/src/dom/v-dom.js' ),
       setScript( '/vcore/src/dom/v-route.js' ),
-      setScript( '/vcore/src/state/v-state.js' ),
-      setScript( '/vcore/src/helper/v-debugger.js' ),
-      setScript( '/vcore/src/helper/v-helper.js' ),
-      setScript( '/vcore/src/v/v-key.js' ),
-      setScript( '/vcore/src/v/v-translations.js' ),
-      setScript( '/vcore/src/ledger/primary/v-ledger.js' ),
       setScript( '/vcore/src/endpoint/v-entity.js' ),
       setScript( '/vcore/src/endpoint/v-message.js' ),
       setScript( '/vcore/src/endpoint/v-transaction.js' ),
+      setScript( '/vcore/src/helper/v-debugger.js' ),
+      setScript( '/vcore/src/helper/v-helper.js' ),
+      setScript( '/vcore/src/ledger/primary/v-ledger.js' ),
+      setScript( '/vcore/src/state/v-state.js' ),
+      setScript( '/vcore/src/v/v-key.js' ),
+      setScript( '/vcore/src/v/v-translations.js' ),
     ] );
     console.log( '*** vcore source scripts loaded ***' );
 

@@ -464,7 +464,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       html: '<message style="background:' + background + '" class="message__container flex card-shadow rounded bkg-white pxy">' +
                   '<div class="font-medium pxy">' +
                     ( msg.sender == 'Me' ? '' : '<p onclick="Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')" >' + msg.sender + '</p>' ) +
-                    '<p class="chat-link">' + linkedMsg + '</p>' +
+                    '<p class="chat-link">' + linkedMsg.iframes + '</p>' +
                   '</div>' +
               '</message>'
     } );
