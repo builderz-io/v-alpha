@@ -1,3 +1,11 @@
+
+/*
+ * NOTE: This configuration file has been ported from Alpha Version One and is out of date.
+ * Only a few settings are actually needed in Ajpha Version Two.
+ *
+ */
+
+
 // Initialization
 
 exports.production = false;  // resets or keeps database when restarting app // Type Boolean // 'false' to reset

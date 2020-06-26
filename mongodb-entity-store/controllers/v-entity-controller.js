@@ -184,6 +184,11 @@ exports.register = function( req, res ) {
 
 exports.update = function( req, cb ) {
   let how;
+
+  if ( req.field == 'evmCredentials.address' && req.role == 'member' ) {
+    autoFloat( req.data );
+  }
+
   if ( req.field == 'properties.baseLocation' ) {
     how = {
       $set: {

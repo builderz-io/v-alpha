@@ -181,6 +181,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( aE.fullId, {
         field: 'evmCredentials.address',
         data: aA,
+        role: aE.profile.role,
         auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
       } ).then( () => {
         V.setEntity( aE.fullId, {
