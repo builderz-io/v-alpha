@@ -33,7 +33,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
     }
 
-    if( !transactions.success || !transactions.data[0].length ) {
+    if( !transactions.success || !transactions.data.length ) {
       V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
 
       const pageData = {
@@ -45,7 +45,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       return pageData;
     }
 
-    for ( const txData of transactions.data[0].reverse() ) {
+    for ( const txData of transactions.data.reverse() ) {
       if ( V.getState( 'activeAddress' ) ) {
 
         const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );

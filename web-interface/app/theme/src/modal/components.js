@@ -183,7 +183,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         data: aA,
         auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
       } ).then( () => {
-        Join.draw( 'authenticate' );
+        V.setEntity( aE.fullId, {
+          field: 'receivingAddresses.evm',
+          data: aA,
+          auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+        } ).then( () => {
+          Join.draw( 'authenticate' );
+        } );
       } );
     }
   }

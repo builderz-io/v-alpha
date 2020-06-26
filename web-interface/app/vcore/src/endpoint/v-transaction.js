@@ -171,7 +171,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function getTransaction(
-    which = V.getState( 'activeEntity' ).fullId
+    which = V.getState( 'activeEntity' ).fullId // for MongoDB
   ) {
     const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
     return V.getData( which, 'transaction', V.getSetting( choice ) );

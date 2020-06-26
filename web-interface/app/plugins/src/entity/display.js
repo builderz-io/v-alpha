@@ -31,6 +31,45 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       V.setState( 'active', { lastViewed: query.data[0].fullId } );
 
+      /*
+       * Pool data
+       *
+       */
+
+      let txHistory, sendVolume = 0, receiveVolume = 0;
+
+      if ( query.data[0].profile.role == 'pool' ) {
+        if ( V.getState( 'activeAddress' ) || !V.getState( 'activeEntity' ) ) {
+          if ( query.data[0].evmCredentials ) {
+            txHistory = await V.getAddressHistory( query.data[0].evmCredentials.address );
+            if ( txHistory.success && txHistory.data.length ) {
+              txHistory.data.forEach( tx => {
+                tx.txType == 'out'? sendVolume += Number( tx.amount ) : null;
+                tx.txType == 'in'? receiveVolume += Number( tx.amount ) : null;
+              } );
+            }
+          }
+          else {
+          // TODO: other ledgers ...
+          }
+        }
+        else {
+          if ( !query.data[0].stats ) {
+            Object.assign( query.data[0], { stats: {
+              sendVolume: 0,
+              receiveVolume: 0,
+            } } );
+          }
+          sendVolume = query.data[0].stats.sendVolume;
+          receiveVolume = query.data[0].stats.receiveVolume;
+        }
+      }
+
+      /*
+       * Map data
+       *
+       */
+
       mapData.push( {
         type: 'Feature',
         geometry: query.data[0].geometry,
@@ -45,6 +84,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           which: which,
           entity: query.data[0],
+          sendVolume: sendVolume,
+          receiveVolume: receiveVolume,
           mapData: mapData,
         }]
       };
@@ -74,7 +115,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, [
         UserComponents.thumbnailCard(),
         UserComponents.entityCard(),
-        UserComponents.fundingStatusCard(),
+        UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.financialCard(),
         UserComponents.descriptionCard(),
         UserComponents.locationCard(),

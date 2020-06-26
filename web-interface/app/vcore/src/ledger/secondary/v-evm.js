@@ -311,7 +311,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       status: 'transactions retrieved',
       ledger: 'EVM',
-      data: [ filteredTransfers ]
+      data: filteredTransfers
     };
 
   }

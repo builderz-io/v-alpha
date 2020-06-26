@@ -43,10 +43,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const networks = {
 
-    choice: 'kovan2',
+    choice: 'trufflePAV2',
 
-    truffle: {
+    trufflePAV1: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
+      rpc: 'http://127.0.0.1:9545'
+    },
+    trufflePAV2: {
+      contractAddress: '0x7F4c6BA99864fCF201f6cb07B0DF8dA0ffD0b818',
       rpc: 'http://127.0.0.1:9545'
     },
     idchain: {

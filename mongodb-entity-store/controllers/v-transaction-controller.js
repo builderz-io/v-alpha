@@ -96,7 +96,7 @@ exports.findTransaction = function( req, res ) {
       res( {
         success: true,
         status: 'transactions retrieved from MongoDB',
-        data: [entities[0].txHistory]
+        data: entities[0].txHistory
       } );
     }
   } );

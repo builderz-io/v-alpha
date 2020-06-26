@@ -592,19 +592,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function fundingStatusCard() {
+  function fundingStatusCard( sendVolume, receiveVolume ) {
 
     /**
      * this component has been ported from the first alpha version
      *
      */
-
-    if ( !entity.stats ) {
-      Object.assign( entity, { stats: {
-        receiveVolume: 0,
-        sendVolume: 0
-      } } );
-    }
 
     if ( entity.profile.role == 'pool' ) {
 
@@ -621,8 +614,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       let fundSuccess = i18n.strPfPg432;
       let budgetPercent = '', budgetUsed = i18n.strPfPg434;
 
-      const funded = entity.stats.receiveVolume > 0 ? Math.floor( entity.stats.receiveVolume / entity.properties.target * 100 ) : 0;
-      const spent = entity.stats.receiveVolume > 0 ? Math.ceil( ( entity.stats.sendVolume * ( 1 + V.getSetting( 'transactionFee' )/100**2 ) ) / entity.stats.receiveVolume * 100 ) : 0;
+      const funded = receiveVolume > 0 ? Math.floor( receiveVolume / entity.properties.target * 100 ) : 0;
+      const spent = receiveVolume > 0 ? Math.ceil( ( sendVolume * ( 1 + V.getSetting( 'transactionFee' )/100**2 ) ) / receiveVolume * 100 ) : 0;
 
       if ( funded >= 0 ) {
         svgFunded = '<svg width="100" height="100" class="pool__funding-chart">\
