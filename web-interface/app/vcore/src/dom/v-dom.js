@@ -148,13 +148,14 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
      */
 
     if ( data && ( data == 'clear' || data.clear == true ) ) {
-      const elem = document.querySelector( targetNode );
-      elem ? elem.parentNode.removeChild( elem ) : null;
+      const $elem = document.querySelector( targetNode );
+      $elem ? $elem.parentNode.removeChild( $elem ) : null;
       return;
     }
 
     if ( typeof data == 'string' ) {
-      document.querySelector( targetNode ).innerHTML = data;
+      const $elem = document.querySelector( targetNode );
+      $elem ? $elem.innerHTML = data : null;
       return;
     }
 

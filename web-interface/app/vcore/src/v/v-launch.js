@@ -40,6 +40,8 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   V.setNode( 'loader', V.i18n( 'Initializing network\'s plugins', 'app' ) );
 
+  clearTimeout( preloaderTimeout );
+
   await Canvas.launch();
 
   /**

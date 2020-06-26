@@ -9,7 +9,11 @@
 
   </head>
   <body>
-    <style>
+
+    <script>
+    const preloaderTimeout = setTimeout(preloader, 1500);
+    function preloader() {
+      document.getElementsByTagName('body')[0].innerHTML = `<style>
       .preloader {
         display:block;
         margin: 0 auto;
@@ -17,7 +21,6 @@
         width: 80%
       }
       .preloader__ring {
-        /* padding: 5% 0 5% 0; */ */
         display: block;
         margin: 0 auto;
         width: 80px;
@@ -35,10 +38,9 @@
         animation: preloader__ring 1.2s linear infinite;
       }
       .preloader__text {
-        color: lightgray /* rgba(83, 96, 101, 1) */;
+        color: rgba(83, 96, 101, 0.6);
         display:block;
         margin:20px auto;
-        /* padding:40%0; */
         width:100%;
         text-align:center;
         font-size: 18px;
@@ -51,10 +53,16 @@
           transform: rotate(360deg);
         }
       }
-    </style>
-    <div class="preloader">
-      <div class="preloader__ring"></div>
-      <loader class="preloader__text">Loading VCore<loader>
-    </div>
+      </style>
+      <div class="preloader">
+        <div class="preloader__ring"></div>
+        <loader class="preloader__text">Loading VCore<loader>
+      </div>`
+
+    }
+
+
+
+    </script>
   </body>
 </html>
