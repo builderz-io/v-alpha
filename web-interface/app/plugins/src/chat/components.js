@@ -90,6 +90,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       /* background: #f0f0f0, */
       'color': 'rgba(var(--brandPrimary), 1)',
       'font-size': '1.05em',
+      'font-family': 'IBM Plex Bold'
     }
   } );
 

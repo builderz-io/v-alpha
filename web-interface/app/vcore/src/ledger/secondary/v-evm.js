@@ -433,9 +433,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setTokenTransaction( data ) {
+    const div = Number( V.getState( 'contract' ).divisibility );
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const sender = data.initiatorAddress;
-    const amount = data.txTotal * 10**6;
+    const amount = data.txTotal * 10**div;
     const txFunction = await new Promise( ( resolve, reject ) => {
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
         .once( 'transactionHash', function( hash ) {
@@ -491,6 +492,40 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     subscribedEvents[whichEvent] = subscription;
   }
 
+  function setNetVAmount( amount ) {
+    const fee = V.getSetting( 'transactionFee' );
+    const contr = V.getSetting( 'communityContribution' );
+    const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+    const totalFee = Math.floor( amount * ( ( contractState.fee / 100**2 ) ) );
+    const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+    const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+    const net = amount - totalFee;
+
+    return  {
+      net: net,
+      gross: amount,
+      contribution: contribution,
+      feeAmount: feeAmount
+    };
+  }
+
+  function setGrossVAmount( amount ) {
+    const fee = V.getSetting( 'transactionFee' );
+    const contr = V.getSetting( 'communityContribution' );
+    const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+    const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
+    const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+    const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+    const gross = amount + feeAmount + contribution;
+
+    return  {
+      net: amount,
+      gross: gross,
+      contribution: contribution,
+      feeAmount: feeAmount
+    };
+  }
+
   /* ====================== export  ===================== */
 
   ( () => {
@@ -502,6 +537,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     V.setAddressVerification = setAddressVerification;
     V.setCoinTransaction = setCoinTransaction;
     V.setTokenTransaction = setTokenTransaction;
+    V.setNetVAmount = setNetVAmount;
+    V.setGrossVAmount = setGrossVAmount;
   } )();
 
   return {
@@ -512,6 +549,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     setAddressVerification: setAddressVerification,
     setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
+    setNetVAmount: setNetVAmount,
+    setGrossVAmount: setGrossVAmount
   };
 
 } )();

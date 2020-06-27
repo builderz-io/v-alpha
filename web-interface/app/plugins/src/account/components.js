@@ -18,7 +18,11 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     strPayout    = 'payout',
     strBlock = 'block',
     strDate  = 'date',
-    strTime  = 'time';
+    strTime  = 'time',
+    strNet  = 'Spendable',
+    strGross  = 'Gross',
+    strETH  = 'ETH',
+    strChain = 'On Chain';
 
   function uiStr( string, description ) {
     return V.i18n( string, 'account components', description || 'transaction details' ) + ' ';
@@ -44,6 +48,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setToggle( this.closest( 'li' ).querySelector( '.card__bottom-right' ) );
   }
 
+  function handleOpenTokenAccountDetails() {
+    V.setToggle( this.closest( 'div' ).querySelector( 'table' ) );
+  }
+
   function handleProfileDraw() {
     const path = V.castPathOrId( this.innerHTML );
     V.setState( 'active', { navItem: path } );
@@ -54,23 +62,54 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================  public components ================ */
 
   function topcontent( fullId ) {
+    const bal = V.getState( 'activeEntity' ).balance.balance;
     return V.cN( {
       t: 'div',
-      h: V.cN( {
-        tag: 'h1',
-        class: 'font-bold txt-center pxy',
-        html: fullId
-      } )
+      h: [
+        {
+          t: 'h1',
+          c: 'font-bold txt-center pxy',
+          k: handleOpenTokenAccountDetails,
+          h: fullId
+        },
+        {
+          t: 'table',
+          i: 'v-token-account-details',
+          c: 'hidden fs-s',
+          h: [
+            [ uiStr( strNet ), V.setNetVAmount( bal.liveBalance ).net ],
+            [ uiStr( strGross ), bal.liveBalance ],
+            [ uiStr( strChain ), bal.tokenBalance ],
+            [ uiStr( strETH ), bal.coinBalance ],
+          ].filter( index => { return Array.isArray( index ) } ).map( row => {
+            return V.cN( {
+              t: 'tr',
+              h: [
+                {
+                  t: 'td',
+                  h: row[0]
+                },
+                {
+                  t: 'td',
+                  c: 'txt-right',
+                  h: row[1]
+                }
+              ]
+            } );
+          } )
+        }
+      ]
 
     } );
   }
 
   function headerBalance( balance ) {
+    balance = V.setNetVAmount( balance ).net;
     const sc = V.getState( 'screen' );
-    const aE = V.getState( 'activeAddress' );
+    const aA = V.getState( 'activeAddress' );
+    // const initials = V.castInitials( V.getState( 'activeEntity' ).profile.title );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-
-    const textColor = aE ? 'txt-green' : 'txt-brand-primary';
+    const textColor = aA ? 'txt-green' : 'txt-brand-primary';
 
     return V.castNode( { // #1b1aff
       tag: 'svg',
@@ -83,6 +122,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       click: handleDrawUserNav
 
     } );
+
+    // <text class="font-medium fs-nano txt-brand-primary" x="50%" y="85%">${ initials }</text>
   }
 
   function accountBalance() {

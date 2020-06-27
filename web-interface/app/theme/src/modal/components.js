@@ -7,7 +7,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  window.addEventListener( 'keyup', handleTransactionEnterKey );
+  window.addEventListener( 'keydown', handleTransactionEnterKey );
 
   /* ====================== strings ===================== */
 
@@ -147,6 +147,16 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleTransaction( e ) {
     e.stopPropagation();
+
+    e.target.removeEventListener( 'click', handleTransaction, false );
+
+    if ( V.getState( 'activeAddress' ) ) {
+      const $btn = V.getNode( '#sign-transaction' );
+      $btn.style.background = 'white';
+      $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
+      $btn.innerHTML = V.i18n( 'Confirm in wallet ... ', 'modal' );
+    }
+
     const aTx = V.getState( 'active' ).transaction;
 
     V.setTransaction( aTx )
@@ -170,7 +180,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleTransactionEnterKey( e ) {
     const key = window.event ? e.keyCode : e.which;
     // enter (to submit transaction)
-    if ( key == 13 && V.getNode( '#sign-transaction' ) ) {
+    if ( V.getNode( '#sign-transaction' ) && key == 13 ) {
       handleTransaction( e );
     }
   }

@@ -84,11 +84,11 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
         const $card = CanvasComponents.card( $cardContent );
         V.setNode( $list, $card );
       }
-      Chat.drawMessageForm();
     }
     else {
       V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
     }
+    Chat.drawMessageForm();
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,

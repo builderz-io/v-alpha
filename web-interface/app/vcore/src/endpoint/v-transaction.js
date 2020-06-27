@@ -91,15 +91,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     currency = 'V'; // eslint-disable-line prefer-const
 
     if ( currency == 'V' ) {
-      const fee = V.getSetting( 'transactionFee' );
-      const contr = V.getSetting( 'communityContribution' );
-      const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-      const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
-      contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
-      feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+      const convert = V.setGrossVAmount( amount );
+      contribution = convert.contribution;
+      feeAmount = convert.feeAmount;
+      txTotal =convert.gross;
     }
-
-    txTotal = amount + feeAmount + contribution;
+    else {
+      txTotal = amount;
+    }
 
     let recipientAddress, signature;
 

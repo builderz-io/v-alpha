@@ -32,14 +32,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   let viMap, featureLayer;
 
-  const mapSettings = {
-    lat: 6.9728, // lesser numbers = move map south
-    lng: -22.685, // lesser numbers = move map west
-    zoom: 3,
-    maxZoom: 16,
-    minZoom: 3,
-  };
-
   /* ================== private methods ================= */
 
   function castPopup( feature ) {
@@ -89,6 +81,16 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setMap() {
+
+    const sc = V.getState( 'screen' );
+
+    const mapSettings = {
+      lat: 6.9728, // lesser numbers = move map south
+      lng: -22.685, // lesser numbers = move map west
+      zoom: sc.height > 1200 ? 3 : 2,
+      maxZoom: 16,
+      minZoom: sc.height > 1200 ? 3 : 2,
+    };
 
     featureLayer = L.geoJSON();
 
