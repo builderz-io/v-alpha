@@ -184,7 +184,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $cardContentFrame = V.cN( {
       t: 'div',
-      c: 'contents'
+      c: 'contents placeholder'
     } );
 
     const $topLeft = V.cN( {

@@ -67,6 +67,12 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'transaction sent' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'Transaction has been sent to the network' ) );
+      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 1800 );
+      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+        const $ph = AccountComponents.accountPlaceholderCard();
+        const $card = CanvasComponents.card( $ph );
+        V.setNode( 'list', $card, 'prepend' );
+      }
     }
     else if ( which == 'transaction successful' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'Transaction successful' ) );

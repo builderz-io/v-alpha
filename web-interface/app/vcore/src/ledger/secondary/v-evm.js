@@ -11,6 +11,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   const subscribedEvents = {};
 
+  const burnAddress = '0x0000000000000000000000000000000000000000';
+
   /* ================== event handlers ================== */
 
   function setNewActiveAddress() {
@@ -47,10 +49,87 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return Number( balance / 10**( divisibility ) ).toFixed( 0 );
   }
 
-  function handleTransferSummaryEvent( eventData ) {
-    console.log( 'New TransferSummary Event:' );
-    console.log( eventData );
-    Account.drawHeaderBalance();
+  async function castEntityName( address ) {
+    const entity = await V.getEntity( address );
+    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
+  }
+
+  async function castTransfers( transfers, which ) {
+    return transfers.filter( tx => {
+      const data = tx.returnValues;
+      return data.from.toLowerCase() == which ||
+            data.to.toLowerCase() == which;
+
+    } ).map( async tx => {
+      const txData = {};
+
+      txData.fromAddress = tx.returnValues.from.toLowerCase();
+      txData.toAddress = tx.returnValues.to.toLowerCase();
+
+      txData.fromAddress == which ? txData.txType = 'out' : null;
+      txData.toAddress == which ? txData.txType = 'in' : null;
+      txData.toAddress == burnAddress ? txData.txType = 'fee' : null;
+      txData.fromAddress == burnAddress ? txData.txType = 'generated' : null;
+
+      txData.amount = castTokenFloat( tx.returnValues.value );
+
+      txData.feesBurned = castTokenFloat( tx.returnValues.feesBurned || 0 );
+      txData.contribution = castTokenFloat( tx.returnValues.contribution || 0 );
+
+      txData.payout = txData.fromAddress == which
+        ? castTokenFloat( tx.returnValues.payoutSender || 0 )
+        : castTokenFloat( tx.returnValues.payoutRecipient || 0 );
+
+      txData.message = 'n/a';
+
+      txData.hash = tx.transactionHash;
+      txData.logIndex = tx.logIndex;
+      txData.block = tx.blockNumber;
+
+      const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
+      txData.blockDate = blockDetails.timestamp;
+
+      if ( txData.txType == 'in' ) {
+        txData.title = await castEntityName( txData.fromAddress );
+      }
+      else if ( txData.txType == 'out' ) {
+        txData.title = await castEntityName( txData.toAddress );
+      }
+      else if ( txData.txType == 'fee' ) {
+        txData.title = 'Transaction Fee';
+      }
+      else if ( txData.txType == 'generated' ) {
+        txData.title = 'Community Payout';
+      }
+
+      return txData;
+
+    } );
+  }
+
+  async function handleTransferSummaryEvent( eventData ) {
+    const aA = V.getState( 'activeAddress' );
+    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+      Account.drawHeaderBalance();
+      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+        const promiseTransfers = await castTransfers( [ { returnValues: eventData } ], aA );
+        const enhancedTransfers = await Promise.all( promiseTransfers );
+
+        // if ( tx.txType == 'in' ) {
+        //   tx.title = await castEntityName( tx.fromAddress );
+        // }
+        // else if ( tx.txType == 'out' ) {
+        //   tx.title = await castEntityName( tx.toAddress );
+        // }
+
+        const $cardContent = AccountComponents.accountCard( enhancedTransfers[0] );
+        const $card = CanvasComponents.card( $cardContent );
+
+        const $ph = V.getNode( '.placeholder' );
+        $ph ? V.setNode(  $ph.closest( 'li' ), 'clear' ) : null;
+        V.setNode( 'list', $card, 'prepend' );
+      }
+    }
   }
 
   /* ================== public methods  ================= */
@@ -261,8 +340,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     whichEvent = 'TransferSummary'
   ) {
 
-    const burnA = '0x0000000000000000000000000000000000000000';
-
     const transfers = await contract.getPastEvents( whichEvent, {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
       fromBlock: data.fromBlock,
@@ -282,46 +359,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const filteredTransfers = transfers.filter( tx => {
-      const data = tx.returnValues;
-      return data.from.toLowerCase() == which ||
-                data.to.toLowerCase() == which;
-
-    } ).map( tx => {
-      const txData = {};
-
-      txData.fromAddress = tx.returnValues.from.toLowerCase();
-      txData.toAddress = tx.returnValues.to.toLowerCase();
-
-      txData.fromAddress == which ? txData.txType = 'out' : null;
-      txData.toAddress == which ? txData.txType = 'in' : null;
-      txData.toAddress == burnA ? txData.txType = 'fee' : null;
-      txData.fromAddress == burnA ? txData.txType = 'generated' : null;
-
-      txData.amount = castTokenFloat( tx.returnValues.value );
-
-      txData.feesBurned = castTokenFloat( tx.returnValues.feesBurned || 0 );
-      txData.contribution = castTokenFloat( tx.returnValues.contribution || 0 );
-
-      txData.payout = txData.fromAddress == which
-        ? castTokenFloat( tx.returnValues.payoutSender || 0 )
-        : castTokenFloat( tx.returnValues.payoutRecipient || 0 );
-
-      txData.message = 'n/a';
-
-      txData.hash = tx.transactionHash;
-      txData.logIndex = tx.logIndex;
-      txData.block = tx.blockNumber;
-
-      return txData;
-
-    } );
+    const promiseTransfers = await castTransfers( transfers, which );
+    const enhancedTransfers = await Promise.all( promiseTransfers );
 
     return {
       success: true,
       status: 'transactions retrieved',
       ledger: 'EVM',
-      data: filteredTransfers
+      data: enhancedTransfers
     };
 
   }
@@ -391,7 +436,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const txFunction = await new Promise( ( resolve, reject ) => {
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
         .once( 'transactionHash', function( hash ) {
-          console.log( 'Hash: ' + hash );
+          console.log( 'Transaction Hash: ' + hash );
           Modal.draw( 'transaction sent' );
         } )
         // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
@@ -400,7 +445,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         //   console.log( 'Receipt B: ' + JSON.stringify( receipt ) );
         // } )
         .on( 'error', function( error ) {
-          console.log( 'Error: ' + JSON.stringify( error ) );
+          console.log( 'Transaction Error: ' + JSON.stringify( error ) );
 
           reject( {
             success: false,
@@ -411,7 +456,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
         } )
         .then( function( receipt ) {
-          console.log( 'Success: ' + JSON.stringify( receipt ) );
+          console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
 
           resolve( {
             success: true,

@@ -31,7 +31,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
   let viMap, featureLayer;
-  console.log( V.getState() );
+
   const mapSettings = {
     lat: 6.9728, // lesser numbers = move map south
     lng: -22.685, // lesser numbers = move map west

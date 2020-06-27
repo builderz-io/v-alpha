@@ -9,85 +9,90 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function castEntityName( address ) {
-    const entity = await V.getEntity( address );
-    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
-  }
+  // async function castEntityName( address ) {
+  //   const entity = await V.getEntity( address );
+  //   return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
+  // }
 
   async function presenter( path ) {
 
     const aE = V.getState( 'activeEntity' );
 
     if ( !aE ) {
+      // TODO: draw on entering through link
+      // Marketplace.draw();
       return;
     }
 
-    const $topcontent = AccountComponents.topcontent( aE.fullId );
-    const $list = CanvasComponents.list( 'narrow' );
-
     const transactions = await V.getTransaction();
 
-    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
-    }
-
     if( !transactions.success || !transactions.data.length ) {
-      V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
-
-      const pageData = {
-        topcontent: $topcontent,
-        listings: $list,
-        position: 'top',
-        path: path
+      return {
+        success: false,
+        aE: aE
       };
-      return pageData;
     }
+
+    const enhancedTx = [];
 
     for ( const txData of transactions.data.reverse() ) {
-      if ( V.getState( 'activeAddress' ) ) {
-
-        const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
-        txData.blockDate = blockDetails.timestamp;
-
-        if ( txData.txType == 'in' ) {
-          txData.title = await castEntityName( txData.fromAddress );
+      // if ( V.getState( 'activeAddress' ) ) {
+      //
+      //   const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
+      //   txData.blockDate = blockDetails.timestamp;
+      //
+      //   if ( txData.txType == 'in' ) {
+      //     txData.title = await castEntityName( txData.fromAddress );
+      //   }
+      //   else if ( txData.txType == 'out' ) {
+      //     txData.title = await castEntityName( txData.toAddress );
+      //   }
+      // }
+      if ( !V.getState( 'activeAddress' ) ) { // in case of MongoDB transfers
+        if ( txData.txType == 'fee' ) {
+          txData.title = 'Transaction Fee';
         }
-        else if ( txData.txType == 'out' ) {
-          txData.title = await castEntityName( txData.toAddress );
+        else if ( txData.txType == 'generated' ) {
+          txData.title = 'Community Payout';
         }
       }
-      if ( txData.txType == 'fee' ) {
-        txData.title = 'Transaction Fee';
-      }
-      else if ( txData.txType == 'generated' ) {
-        txData.title = 'Community Payout';
-      }
 
-      const $cardContent = AccountComponents.accountCard( txData );
-      const $card = CanvasComponents.card( $cardContent );
-      V.setNode( $list, $card );
+      enhancedTx.push( txData );
     }
 
-    const pageData = {
-      // topslider: $topsliderUl,
-      topcontent: $topcontent,
-      listings: $list,
-      // position: 'top',
-      // path: path
+    return {
+      success: true,
+      aE: aE,
+      data: enhancedTx
     };
 
-    return pageData;
-    // }
   }
 
-  function view( pageData ) {
-    if ( pageData ) {
-      Page.draw( pageData );
+  function view( txData ) {
+
+    const $list = CanvasComponents.list( 'narrow' );
+
+    const $topcontent = AccountComponents.topcontent( txData.aE.fullId );
+
+    // if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+    //   V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
+    // }
+
+    if ( txData.success ) {
+      for ( const tx of txData.data /*.reverse() */ ) {
+        const $cardContent = AccountComponents.accountCard( tx );
+        const $card = CanvasComponents.card( $cardContent );
+        V.setNode( $list, $card );
+      }
       Chat.drawMessageForm();
     }
     else {
-      Marketplace.draw();
+      V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
     }
+    Page.draw( {
+      topcontent: $topcontent,
+      listings: $list,
+    } );
   }
 
   function preview( path ) {

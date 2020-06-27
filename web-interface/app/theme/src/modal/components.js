@@ -152,7 +152,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
-          console.log( res );
+          // console.log( res );
           // Modal.draw( 'transaction successful' );
           // Account.drawHeaderBalance();
         }
