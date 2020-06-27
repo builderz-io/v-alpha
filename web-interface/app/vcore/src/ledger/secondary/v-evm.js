@@ -9,6 +9,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   let contract;
 
+  const subscribedEvents = {};
+
   /* ================== event handlers ================== */
 
   function setNewActiveAddress() {
@@ -43,6 +45,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   function castTokenFloat( balance ) {
     const divisibility = V.getState( 'contract' ).divisibility;
     return Number( balance / 10**( divisibility ) ).toFixed( 0 );
+  }
+
+  function handleTransferSummaryEvent( eventData ) {
+    console.log( 'New TransferSummary Event:' );
+    console.log( eventData );
+    Account.drawHeaderBalance();
   }
 
   /* ================== public methods  ================= */
@@ -118,6 +126,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       if ( window.Web3Obj.currentProvider.publicConfigStore ) {
         window.Web3Obj.currentProvider.publicConfigStore.on( 'update', setNewActiveAddress );
       }
+
+      setEventSubscription( 'TransferSummary' );
 
       return {
         success: true,
@@ -413,6 +423,24 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     return txFunction;
+  }
+
+  function setEventSubscription( whichEvent ) {
+    // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
+    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
+    const subscription = window.Web3Obj.eth.subscribe( 'logs', {
+      address: contract.options.address,
+      topics: [eventJsonInterface.signature]  },
+    ( error, result ) => {
+      if ( !error ) {
+        const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
+        if ( whichEvent == 'TransferSummary' ) {
+          handleTransferSummaryEvent( eventData );
+        }
+      }
+    } );
+
+    subscribedEvents[whichEvent] = subscription;
   }
 
   /* ====================== export  ===================== */

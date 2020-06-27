@@ -15,14 +15,12 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function presenter( path ) {
-    // const pageState = V.getState( 'page' );
+
     const aE = V.getState( 'activeEntity' );
 
     if ( !aE ) {
       return;
     }
-
-    // if ( true /* V.getState( 'active' ).path != '/me/account' /* pageState.height != pageState.topCalc */ ) {
 
     const $topcontent = AccountComponents.topcontent( aE.fullId );
     const $list = CanvasComponents.list( 'narrow' );
@@ -69,18 +67,6 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       const $card = CanvasComponents.card( $cardContent );
       V.setNode( $list, $card );
     }
-
-    // DemoContent.transactionsArr.forEach( cardData => {
-    //   const $card = AccountComponents.accountCard( cardData );
-    //   V.setNode( $list, $card );
-    // } );
-
-    // const $topsliderUl = AccountComponents.topSliderUl();
-    // V.setNode( $topsliderUl, AccountComponents.accountBalance() );
-    // for ( const variable in DemoContent.accountData ) {
-    //   const $accountData = AccountComponents.accountSmallCard( variable, DemoContent.accountData );
-    //   V.setNode( $topsliderUl, $accountData );
-    // }
 
     const pageData = {
       // topslider: $topsliderUl,
