@@ -40,8 +40,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function handleOpenDetails() {
+  function handleOpenTxDetails() {
     V.setToggle( this.closest( 'li' ).querySelector( '.card__bottom-right' ) );
+  }
+
+  function handleProfileDraw() {
+    const path = V.castPathOrId( this.innerHTML );
+    V.setState( 'active', { navItem: path } );
+    V.setBrowserHistory( path );
+    Profile.draw( path );
   }
 
   /* ================  public components ================ */
@@ -140,7 +147,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         a: {
           style: `background:${background}`
         },
-        k: handleOpenDetails,
+        k: handleOpenTxDetails,
         h: {
           t: 'div',
           c: 'card__initials font-medium fs-xl txt-white no-txt-select',
@@ -155,13 +162,14 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
+        k: handleProfileDraw,
         h: txData.title
       }
     } );
 
     const $bottomLeft = V.cN( {
       t: 'div',
-      c: 'card__bottom-left items-center pxy',
+      c: 'card__bottom-left items-center',
       h: ''
     } );
 
