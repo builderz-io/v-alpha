@@ -17,7 +17,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     strAmount    = 'amount',
     strPayout    = 'payout',
     strBlock = 'block',
-    strDate  = 'date';
+    strDate  = 'date',
+    strTime  = 'time';
 
   function uiStr( string, description ) {
     return V.i18n( string, 'account components', description || 'transaction details' ) + ' ';
@@ -37,6 +38,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
       V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
     }
+  }
+
+  function handleOpenDetails() {
+    V.setToggle( this.closest( 'li' ).querySelector( '.card__bottom-right' ) );
   }
 
   /* ================  public components ================ */
@@ -135,9 +140,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         a: {
           style: `background:${background}`
         },
+        k: handleOpenDetails,
         h: {
           t: 'div',
-          c: 'card__initials font-medium fs-xl txt-white',
+          c: 'card__initials font-medium fs-xl txt-white no-txt-select',
           h: txData.amount
         }
       }
@@ -161,17 +167,36 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $bottomRight = V.cN( {
       t: 'div',
-      c: 'card__bottom-right pxy capitalize',
-      h: [
-        txData.fromAddress != 'none' ? { t: 'p', h: uiStr( strFrom ) + V.castShortAddress( txData.fromAddress ) } : { t: 'p', h: uiStr( strFrom ) + txData.from + ' ' + txData.fromTag },
-        txData.toAddress != 'none' ? { t: 'p', h: uiStr( strTo ) + V.castShortAddress( txData.toAddress ) } : { t: 'p', h: uiStr( strTo ) + txData.to + ' ' + txData.toTag },
-        { t: 'p', h: uiStr( strAmount ) + txData.amount },
-        { t: 'p', h: uiStr( strPayout ) + txData.payout },
-        txData.txType == 'out' ? { t: 'p', h: uiStr( strFees ) + txData.feesBurned } : { t: 'p' },
-        txData.txType == 'out' ? { t: 'p', h: uiStr( strContr ) + txData.contribution } : { t: 'p' },
-        txData.block ? { t: 'p', h: uiStr( strBlock ) + txData.block } : { t: 'p', h: uiStr( strDate ) + txData.date },
-        txData.blockDate ? { t: 'p', h: uiStr( strDate ) + new Date( txData.blockDate * 1000 ) } : { t: 'p' },
-      ]
+      c: 'card__bottom-right hidden fs-s pxy capitalize',
+      h: {
+        t: 'table',
+        h: [
+          txData.blockDate ? [ uiStr( strDate ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
+          txData.blockDate ? [ uiStr( strTime ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
+          [ uiStr( strAmount ), txData.amount ],
+          txData.txType == 'out' ? [ uiStr( strFees ), txData.feesBurned ] : [ uiStr( strFees ), '0' ],
+          txData.txType == 'out' ?  [ uiStr( strContr ), txData.contribution ] : [ uiStr( strContr ), '0' ],
+          txData.block ? [ uiStr( strBlock ), txData.block ] : [ uiStr( strDate ), txData.date ],
+          [ uiStr( strFrom ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag ],
+          [ uiStr( strTo ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag ],
+          [ uiStr( strPayout ), txData.payout ],
+        ].filter( index => { return Array.isArray( index ) } ).map( row => {
+          return V.cN( {
+            t: 'tr',
+            h: [
+              {
+                t: 'td',
+                h: row[0]
+              },
+              {
+                t: 'td',
+                c: 'txt-right',
+                h: row[1]
+              }
+            ]
+          } );
+        } )
+      }
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );

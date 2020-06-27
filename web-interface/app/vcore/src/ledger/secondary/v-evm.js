@@ -55,7 +55,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function castTransfers( transfers, which ) {
-    return transfers.filter( tx => {
+    const filteredAndEnhanced = await transfers.filter( tx => {
       const data = tx.returnValues;
       return data.from.toLowerCase() == which ||
             data.to.toLowerCase() == which;
@@ -89,11 +89,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
       txData.blockDate = blockDetails.timestamp;
 
+      txData.fromEntity = await castEntityName( txData.fromAddress );
+      txData.toEntity = await castEntityName( txData.toAddress );
+
       if ( txData.txType == 'in' ) {
-        txData.title = await castEntityName( txData.fromAddress );
+        txData.title = txData.fromEntity;
       }
       else if ( txData.txType == 'out' ) {
-        txData.title = await castEntityName( txData.toAddress );
+        txData.title = txData.toEntity;
       }
       else if ( txData.txType == 'fee' ) {
         txData.title = 'Transaction Fee';
@@ -105,6 +108,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       return txData;
 
     } );
+
+    return Promise.all( filteredAndEnhanced );
   }
 
   async function handleTransferSummaryEvent( eventData ) {
@@ -112,8 +117,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
       Account.drawHeaderBalance();
       if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        const promiseTransfers = await castTransfers( [ { returnValues: eventData } ], aA );
-        const enhancedTransfers = await Promise.all( promiseTransfers );
+        const filteredAndEnhanced = await castTransfers( [ { returnValues: eventData } ], aA );
 
         // if ( tx.txType == 'in' ) {
         //   tx.title = await castEntityName( tx.fromAddress );
@@ -122,7 +126,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         //   tx.title = await castEntityName( tx.toAddress );
         // }
 
-        const $cardContent = AccountComponents.accountCard( enhancedTransfers[0] );
+        const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
         const $card = CanvasComponents.card( $cardContent );
 
         const $ph = V.getNode( '.placeholder' );
@@ -359,14 +363,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const promiseTransfers = await castTransfers( transfers, which );
-    const enhancedTransfers = await Promise.all( promiseTransfers );
+    const filteredAndEnhanced = await castTransfers( transfers, which );
 
     return {
       success: true,
       status: 'transactions retrieved',
       ledger: 'EVM',
-      data: enhancedTransfers
+      data: filteredAndEnhanced
     };
 
   }

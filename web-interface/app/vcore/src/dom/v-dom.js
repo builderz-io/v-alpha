@@ -349,9 +349,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   function getVisibility( which ) {
     // ;) from https://github.com/jquery/jquery/blob/master/src/css/hiddenVisibleSelectors.js
-    const elem = getNode( which );
-    if ( elem ) {
-      return !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
+    const $elem = typeof which == 'string' ? getNode( which ) : which;
+    if ( $elem ) {
+      return !!( $elem.offsetWidth || $elem.offsetHeight || $elem.getClientRects().length );
     }
     else {
       return undefined;
@@ -386,6 +386,15 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function setToggle( element ) {
+    if ( getVisibility( element ) ) {
+      element.style.display = 'none';
+    }
+    else {
+      element.style.display = 'block';
+    }
+  }
+
   /* ====================== export ====================== */
 
   ( () => {
@@ -404,6 +413,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     V.castRemToPixel = castRemToPixel;
     V.setScript = setScript;
     V.setStylesheet = setStylesheet;
+    V.setToggle = setToggle;
   } )();
 
   return {
@@ -421,7 +431,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     getVisibility: getVisibility,
     castRemToPixel: castRemToPixel,
     setScript: setScript,
-    setStylesheet: setStylesheet
+    setStylesheet: setStylesheet,
+    setToggle: setToggle
   };
 
 } )();
