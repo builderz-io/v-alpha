@@ -125,7 +125,7 @@ function watchVCore() {
 }
 
 function watchVEvm() {
-  gulp.watch( './app/vcore/src/ledger/secondary/*.js', vtheme );
+  gulp.watch( './app/vcore/src/ledger/secondary/*.js', vevm );
 }
 
 function watchVTheme() {

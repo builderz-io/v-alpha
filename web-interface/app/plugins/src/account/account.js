@@ -29,9 +29,12 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     if( !transactions.success || !transactions.data.length ) {
       return {
         success: false,
-        aE: aE
+        aE: aE,
+        entityBalance: null,
       };
     }
+
+    const bal = await V.getEntityBalance();
 
     const enhancedTx = [];
 
@@ -63,6 +66,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     return {
       success: true,
       aE: aE,
+      entityBalance: bal,
       data: enhancedTx
     };
 
@@ -72,7 +76,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = CanvasComponents.list( 'narrow' );
 
-    const $topcontent = AccountComponents.topcontent( txData.aE.fullId );
+    const $topcontent = AccountComponents.topcontent( txData.aE.fullId, txData.entityBalance );
 
     // if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
     //   V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here

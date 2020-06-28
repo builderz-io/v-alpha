@@ -55,6 +55,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function castTransfers( transfers, which ) {
+    const aA = V.getState( 'activeAddress' );
+    const aE = V.getState( 'activeEntity' );
     const filteredAndEnhanced = await transfers.filter( tx => {
       const data = tx.returnValues;
       return data.from.toLowerCase() == which ||
@@ -89,8 +91,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
       txData.blockDate = blockDetails.timestamp;
 
-      txData.fromEntity = await castEntityName( txData.fromAddress );
-      txData.toEntity = await castEntityName( txData.toAddress );
+      txData.fromEntity = txData.fromAddress == aA ? aE.fullId : await castEntityName( txData.fromAddress );
+      txData.toEntity = txData.toAddress == aA ? aE.fullId : await castEntityName( txData.toAddress );
 
       if ( txData.txType == 'in' ) {
         txData.title = txData.fromEntity;
@@ -112,21 +114,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return Promise.all( filteredAndEnhanced );
   }
 
-  async function handleTransferSummaryEvent( eventData ) {
-    if ( V.getSetting( 'subscribeToChainEvents' ) ) {
-      const aA = V.getState( 'activeAddress' );
-      if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
-        Account.drawHeaderBalance();
-        if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-          const filteredAndEnhanced = await castTransfers( [ { returnValues: eventData } ], aA );
-
-          const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
-          const $card = CanvasComponents.card( $cardContent );
-
-          const $ph = V.getNode( '.placeholder' );
-          $ph ? V.setNode(  $ph.closest( 'li' ), 'clear' ) : null;
-          V.setNode( 'list', $card, 'prepend' );
-        }
+  function handleTransferSummaryEvent( eventData ) {
+    const aA = V.getState( 'activeAddress' );
+    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+      Account.drawHeaderBalance();
+      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+        setNewTxNode( { returnValues: eventData } );
       }
     }
   }
@@ -135,26 +128,31 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     Modal.draw( 'transaction sent', hash );
     if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
       const $ph = AccountComponents.accountPlaceholderCard();
-      const $card = CanvasComponents.card( $ph, hash );
+      const $card = CanvasComponents.card( $ph, undefined, 'ph' + hash.substr( 2, 8 ) );
       V.setNode( 'list', $card, 'prepend' );
+      let test;
     }
   }
 
-  async function handleTxConfirmation( receipt ) {
+  function handleTxConfirmation( receipt ) {
     if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
       Account.drawHeaderBalance();
       if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        const aA = V.getState( 'activeAddress' );
-        const filteredAndEnhanced = await castTransfers( [ receipt.events.TransferSummary ], aA );
-
-        const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
-        const $card = CanvasComponents.card( $cardContent );
-
-        const $ph = V.getNode( '.placeholder' );
-        $ph ? V.setNode(  $ph.closest( 'li' ), 'clear' ) : null;
-        V.setNode( 'list', $card, 'prepend' );
+        setNewTxNode( receipt.events.TransferSummary, 'ph' + receipt.transactionHash.substr( 2, 8 ) );
       }
     }
+  }
+
+  async function setNewTxNode( txSummary, id ) {
+    const aA = V.getState( 'activeAddress' );
+    const filteredAndEnhanced = await castTransfers( [ txSummary ], aA );
+
+    const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
+    const $card = CanvasComponents.card( $cardContent );
+
+    const $ph = V.getNode( '#' + id );
+    $ph ? V.setNode(  $ph, 'clear' ) : null;
+    V.setNode( 'list', $card, 'prepend' );
   }
 
   /* ================== public methods  ================= */
@@ -504,7 +502,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     ( error, result ) => {
       if ( !error ) {
         const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
-        if ( whichEvent == 'TransferSummary' ) {
+        if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
           handleTransferSummaryEvent( eventData );
         }
       }

@@ -296,7 +296,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  async function getEntityBalance( entity ) {
+  async function getEntityBalance( entity = V.getState( 'activeEntity' ) ) {
 
     const tL = V.getSetting( 'transactionLedger' );
     const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );

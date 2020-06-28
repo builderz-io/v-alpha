@@ -183,11 +183,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return $list;
   }
 
-  function card( $cardContent, cardTitle ) {
+  function card( $cardContent, cardTitle, id ) {
 
     return V.setNode( {
       t: 'li',
       c: 'pxy w-screen max-w-380',
+      i: id,
       h: {
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',

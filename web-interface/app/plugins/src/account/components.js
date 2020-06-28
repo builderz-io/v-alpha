@@ -61,8 +61,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================  public components ================ */
 
-  function topcontent( fullId ) {
-    const bal = V.getState( 'activeEntity' ).balance.balance;
+  function topcontent( fullId, bal ) {
+    console.log( bal );
     return V.cN( {
       t: 'div',
       h: [
@@ -72,15 +72,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           k: handleOpenTokenAccountDetails,
           h: fullId
         },
-        {
+        !bal ? { t: 'p', c: 'hidden', h: V.i18n( 'no balance details', 'app' ) } : {
           t: 'table',
           i: 'v-token-account-details',
           c: 'hidden fs-s',
           h: [
-            [ uiStr( strNet ), V.setNetVAmount( bal.liveBalance ).net ],
-            [ uiStr( strGross ), bal.liveBalance ],
-            [ uiStr( strChain ), bal.tokenBalance ],
-            [ uiStr( strETH ), bal.coinBalance ],
+            [ uiStr( strNet ), V.setNetVAmount( bal.data[0].liveBalance ).net ],
+            [ uiStr( strGross ), bal.data[0].liveBalance ],
+            [ uiStr( strChain ), bal.data[0].tokenBalance ],
+            [ uiStr( strETH ), bal.data[0].coinBalance ],
           ].filter( index => { return Array.isArray( index ) } ).map( row => {
             return V.cN( {
               t: 'tr',
