@@ -88,7 +88,6 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     else {
       V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
     }
-    Chat.drawMessageForm();
     Page.draw( {
       topcontent: $topcontent,
       listings: $list,
@@ -109,6 +108,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     Button.draw( 'all', { fade: 'out' } );
     Navigation.draw( path );
 
+    Chat.drawMessageForm();
     Page.draw( {
       topcontent: aE ? AccountComponents.topcontent( aE.fullId ) : '',
       listings: $list,

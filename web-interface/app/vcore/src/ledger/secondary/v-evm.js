@@ -113,18 +113,39 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function handleTransferSummaryEvent( eventData ) {
-    const aA = V.getState( 'activeAddress' );
-    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+    if ( V.getSetting( 'subscribeToChainEvents' ) ) {
+      const aA = V.getState( 'activeAddress' );
+      if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+        Account.drawHeaderBalance();
+        if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+          const filteredAndEnhanced = await castTransfers( [ { returnValues: eventData } ], aA );
+
+          const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
+          const $card = CanvasComponents.card( $cardContent );
+
+          const $ph = V.getNode( '.placeholder' );
+          $ph ? V.setNode(  $ph.closest( 'li' ), 'clear' ) : null;
+          V.setNode( 'list', $card, 'prepend' );
+        }
+      }
+    }
+  }
+
+  function handleHashConfirmation( hash ) {
+    Modal.draw( 'transaction sent', hash );
+    if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+      const $ph = AccountComponents.accountPlaceholderCard();
+      const $card = CanvasComponents.card( $ph, hash );
+      V.setNode( 'list', $card, 'prepend' );
+    }
+  }
+
+  async function handleTxConfirmation( receipt ) {
+    if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
       Account.drawHeaderBalance();
       if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        const filteredAndEnhanced = await castTransfers( [ { returnValues: eventData } ], aA );
-
-        // if ( tx.txType == 'in' ) {
-        //   tx.title = await castEntityName( tx.fromAddress );
-        // }
-        // else if ( tx.txType == 'out' ) {
-        //   tx.title = await castEntityName( tx.toAddress );
-        // }
+        const aA = V.getState( 'activeAddress' );
+        const filteredAndEnhanced = await castTransfers( [ receipt.events.TransferSummary ], aA );
 
         const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
         const $card = CanvasComponents.card( $cardContent );
@@ -441,7 +462,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
         .once( 'transactionHash', function( hash ) {
           console.log( 'Transaction Hash: ' + hash );
-          Modal.draw( 'transaction sent' );
+          handleHashConfirmation( hash );
         } )
         // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
         // .on( 'confirmation', function( confNumber, receipt ) {
@@ -461,7 +482,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         } )
         .then( function( receipt ) {
           console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
-
+          handleTxConfirmation( receipt );
           resolve( {
             success: true,
             status: 'last token transaction successful',
