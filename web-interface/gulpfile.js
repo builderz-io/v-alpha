@@ -3,11 +3,12 @@
  *
  */
 
-var gulp = require( 'gulp' ),
+const gulp = require( 'gulp' ),
   concat = require( 'gulp-concat' ),
   terser = require( 'gulp-terser-js' ),
-  cleanCSS = require( 'gulp-clean-css' ),
-  browsersync = require( 'browser-sync' ).create();
+  cleanCSS = require( 'gulp-clean-css' );
+// const gzip = require( 'gulp-gzip' ),
+// const browsersync = require( 'browser-sync' ).create();
 
 // BrowserSync
 // function browserSync( done ) {
@@ -26,10 +27,80 @@ var gulp = require( 'gulp' ),
 //   done();
 // }
 
-function styles() {
+function vcore() {
+  return gulp.src( [
+    './app/vcore/dependencies/primary/*.js',
+    './app/vcore/src/dom/*.js',
+    './app/vcore/src/endpoint/*.js',
+    './app/vcore/src/helper/*.js',
+    './app/vcore/src/ledger/primary/*.js',
+    './app/vcore/src/state/*.js',
+    './app/vcore/src/v/v-key.js',
+    './app/vcore/src/v/v-translations.js',
+    './app/vcore/src/v/v-launch.js',
+  ] )
+    .pipe( concat( 'vcore.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/vcore/builds' ) );
+  // .pipe( browsersync.stream() );
+}
+
+function vevm() {
+  return gulp.src( [
+    './app/vcore/dependencies/secondary/web3.min.js',
+    './app/vcore/src/ledger/secondary/v-evm-abi.js',
+    './app/vcore/src/ledger/secondary/v-evm.js',
+  ] )
+    .pipe( concat( 'vevm.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/vcore/builds' ) );
+  // .pipe( browsersync.stream() );
+}
+
+function vtheme() {
+  return gulp.src( [
+    './app/theme/src/**/*.js',
+  ] )
+    .pipe( concat( 'vtheme.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/theme/builds' ) );
+  // .pipe( browsersync.stream() );
+}
+
+function vplugins() {
+  return gulp.src( [
+    './app/plugins/src/**/*.js',
+  ] )
+    .pipe( concat( 'vplugins.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false
+      }
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/plugins/builds' ) );
+  // .pipe( browsersync.stream() );
+}
+
+function css() {
   return gulp.src( [
 
-    './app/src/css/*.css',
+    './app/css/src/*.css',
 
     // './src/css/0_0_variables.css',
     // './src/css/1_0_reset-normalize.css',
@@ -45,31 +116,40 @@ function styles() {
   ] )
     .pipe( concat( 'v.min.css' ) )
     .pipe( cleanCSS() )
-    .pipe( gulp.dest( './app/dist' ) )
-    .pipe( browsersync.stream() );
+    .pipe( gulp.dest( './app/css/builds' ) );
+  // .pipe( browsersync.stream() );
 }
 
-function scripts() {
-  return gulp.src( [
-    './app/src/vcore/**/*.js',
-    './app/src/theme/**/*.js',
-    './app/src/plugins/**/*.js',
-  ] )
-    .pipe( concat( 'v.min.js' ) )
-    .pipe( terser( {
-      mangle: {
-        toplevel: false
-      }
-    } ) )
-    .pipe( gulp.dest( './app/dist' ) )
-    .pipe( browsersync.stream() );
+function watchVCore() {
+  gulp.watch( './app/vcore/src/**/*.js', vcore );
 }
 
-function watchFiles() {
-  gulp.watch( './app/src/vcore/**/*.js', scripts );
-  gulp.watch( './app/src/plugins/**/*.js', scripts );
-  gulp.watch( './app/src/theme/**/*.js', scripts );
-  gulp.watch( './app/src/css/*.css', styles );
+function watchVEvm() {
+  gulp.watch( './app/vcore/src/ledger/secondary/*.js', vevm );
 }
 
-gulp.task( 'default', gulp.series( scripts, styles, /* watchFiles */ ) );
+function watchVTheme() {
+  gulp.watch( './app/theme/src/**/*.js', vtheme );
+}
+
+function watchVPlugins() {
+  gulp.watch( './app/plugins/src/**/*.js', vplugins );
+}
+
+function watchCss() {
+  gulp.watch( './app/css/src/*.css', css );
+}
+
+gulp.task( 'default', gulp.parallel(
+  gulp.series( vcore, watchVCore ),
+  gulp.series( vevm, watchVEvm ),
+  gulp.series( vtheme, watchVTheme ),
+  gulp.series( vplugins, watchVPlugins ),
+  gulp.series( css, watchCss ),
+) );
+
+gulp.task( 'vcore', gulp.series( vcore, watchVCore ) );
+gulp.task( 'vevm', gulp.series( vevm, watchVEvm ) );
+gulp.task( 'vtheme', gulp.series( vtheme, watchVTheme ) );
+gulp.task( 'vplugins', gulp.series( vplugins, watchVPlugins ) );
+gulp.task( 'css', gulp.series( css, watchCss ) );

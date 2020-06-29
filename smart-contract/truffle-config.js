@@ -1,5 +1,6 @@
-var HDWalletProvider = require( 'truffle-hdwallet-provider' );
-var mnemonic = 'park image awkward badge lift scheme leave useless opera prefer soon bag';
+const HDWalletProvider = require( 'truffle-hdwallet-provider' );
+const private = require('./private');
+
 module.exports = {
   networks: {
     development: {
@@ -8,20 +9,27 @@ module.exports = {
       network_id: "*",
       websockets: true
     },
-    valueprivatechain: {
-      host: '209.250.246.195',
-      port: 8450,
-      network_id: '*'
+    idchain: {
+      provider: function() {
+        return new HDWalletProvider( private.mnemonic, 'https://idchain.one/rpc/' );
+      },
+      network_id: 74
+    },
+    kovan: {
+      provider: function() {
+        return new HDWalletProvider( private.mnemonic, private.kovanEndpoint );
+      },
+      network_id: 42
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider( mnemonic, 'https://ropsten.infura.io/v3/625537f6d9c8478980570cd3c99f5623' );
+        return new HDWalletProvider( private.mnemonic, private.ropstenEndpoint );
       },
       network_id: 3
     },
     development9545: {
       provider: function() {
-        return new HDWalletProvider( mnemonic, 'http://127.0.0.1:9545/' );
+        return new HDWalletProvider( private.mnemonic, 'http://127.0.0.1:9545/' );
       },
       network_id: '*',
     },

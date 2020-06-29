@@ -1,0 +1,92 @@
+body {
+  color: rgba(var(--offblack), 1);
+}
+
+.filter-green {
+  /* https://stackoverflow.com/questions/22252472/how-to-change-the-color-of-an-svg-element */
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(61%) sepia(19%) saturate(1231%) hue-rotate(104deg) brightness(99%) contrast(85%);
+}
+
+.txt-white {
+  color: rgba(var(--white), 1);
+  fill: rgba(var(--white), 1);
+
+}
+
+.txt-button {
+  color: rgba(var(--buttonTxt), 1);
+  fill: rgba(var(--buttonTxt), 1);
+}
+
+.bkg-white {
+  background-color: rgba(var(--white), 1);
+}
+
+.bkg-black {
+  background-color: rgba(var(--black), 1);
+}
+
+.bkg-button {
+  background-color: rgba(var(--buttonBkg), 1);
+}
+
+.txt-offblack {
+  color: rgba(var(--offblack), 1);
+}
+
+.bkg-offblack {
+  background-color: rgba(var(--offblack), 1);
+}
+
+.txt-green {
+  color: rgba(var(--green), 1);
+  fill: rgba(var(--green), 1);
+}
+
+.txt-red {
+  color: rgba(var(--red), 1);
+}
+
+.txt-brand-primary {
+  color: rgba(var(--brandPrimary), 1);
+}
+
+.bkg-brand {
+  background-color: rgba(var(--brandPrimary), 1);
+}
+
+/* .border-shadow {
+  border: 1px solid rgba(var(--black), .15);
+} */
+
+.border-error {
+  border: 1px solid red;
+}
+
+.border-shadow {
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.20);
+  -moz-box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.20);
+  box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.20);
+}
+
+.pill-shadow {
+  box-shadow: 0px -1px 1px 0px rgba(var(--black), .15), 0px 2px 1px 0px rgba(var(--black), .19);
+}
+
+.card-shadow {
+  box-shadow: 0 1px 1px 0 rgba(var(--black), .11), 0 1px 3px 1px rgba(var(--black), .15);
+}
+
+.txt-shadow {
+    text-shadow: 1px 1px 3px #000;
+}
+
+input:focus, textarea:focus {
+  box-shadow: 0px -1px 1px 0px rgba(var(--black), .11), 0px 2px 1px 0px rgba(var(--black), .15);
+  /* border: 2px solid rgba(var(--brandPrimary), 1); */
+}
+
+.circle-1:hover {
+  /* border: 1px solid rgba(var(--brandPrimary), 1); */
+}

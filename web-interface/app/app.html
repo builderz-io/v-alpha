@@ -2,10 +2,67 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
 
-    <script src="/src/vcore/v/v.js"></script>
+    <!-- <script src="/vcore/builds/vcore.min.js"></script> -->
+    <script src="/vcore/v.js"></script>
 
   </head>
-  <body></body>
+  <body>
+
+    <script>
+    const preloaderTimeout = setTimeout(preloader, 1500);
+    function preloader() {
+      document.getElementsByTagName('body')[0].innerHTML = `<style>
+      .preloader {
+        display:block;
+        margin: 0 auto;
+        padding: 35% 0;
+        width: 80%
+      }
+      .preloader__ring {
+        display: block;
+        margin: 0 auto;
+        width: 80px;
+        height: 80px;
+      }
+      .preloader__ring:after {
+        content: " ";
+        display: block;
+        width: 54px;
+        height: 54px;
+        margin: 8px;
+        border-radius: 50%;
+        border: 4px solid rgba(255,210,85, 1);
+        border-color: rgba(255,210,85, 1) transparent rgba(255,210,85, 1) transparent;
+        animation: preloader__ring 1.2s linear infinite;
+      }
+      .preloader__text {
+        color: rgba(83, 96, 101, 0.6);
+        display:block;
+        margin:20px auto;
+        width:100%;
+        text-align:center;
+        font-size: 18px;
+      }
+      @keyframes preloader__ring {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      </style>
+      <div class="preloader">
+        <div class="preloader__ring"></div>
+        <loader class="preloader__text">Loading VCore<loader>
+      </div>`
+
+    }
+
+
+
+    </script>
+  </body>
 </html>

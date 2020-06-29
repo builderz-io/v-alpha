@@ -17,24 +17,42 @@ module.exports = function (deployer) {
    */
 
   /**
-   * settings for running an installation
+   * VI Berlin Test Token
+   * settings for running a local truffle test installation
    *
    */
 
   const name = 'VI Berlin',
     symbol = 'VALUE',
     decimals = 6,
-    lifetimeInBlocks = 100000000,
     generationAmount = 100 * (10**decimals),
     generationPeriod = 1,
+    lifetimeInBlocks = 100000000,
     transactionFeePercentage = 33.33 * (10**2),
     communityContributionPercentage = 10 * (10**2),
     initialBalance = 200 * (10**decimals),
-    communityContributionAccount = '0x3107b077b7745994cd93d85092db034ca1984d46',
+    communityContributionAccount = '0xdfb69ffdfe70fd00698891b753c2b029bceb3807', // trufflePAV2 2nd Account
     controller = '0x0000000000000000000000000000000000000000';
 
   /**
-   * settings for running a test
+   * Daily Rice Token
+   *
+   */
+
+  // const name = 'Rice Token',
+  //   symbol = 'RTKN',
+  //   decimals = 6,
+  //   generationAmount = 10 * (10**decimals),
+  //   generationPeriod = 180, // every 15 min on Kovan Testnet
+  //   lifetimeInBlocks = 720 * 24, // 1 day on Kovan Testnet
+  //   transactionFeePercentage = 33.33 * (10**2),
+  //   communityContributionPercentage = 10 * (10**2),
+  //   initialBalance = 100 * (10**decimals),
+  //   communityContributionAccount = '0x0000000000000000000000000000000000000000',
+  //   controller = '0x0000000000000000000000000000000000000000';
+
+  /**
+   * settings for running code tests
    *
    */
 

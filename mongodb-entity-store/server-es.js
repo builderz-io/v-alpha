@@ -6,6 +6,9 @@ const http = require( 'http' );
 const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 
+const cors = require( 'cors' );
+const whitelist = ['http://localhost:3021', 'https://alpha.valueinstrument.org'];
+
 mongoose.connect( 'mongodb://localhost/ui2020', { useNewUrlParser: true, useUnifiedTopology: true } );
 
 const app = express();
@@ -16,8 +19,32 @@ server.listen( settings.port, function( err ) {
   console.log( 'MongoDB Entity Store listening on port', settings.port );
 } );
 
+app.use( cors( {
+  origin: function( origin, callback ) {
+    // allow requests with no origin
+    if( !origin ) {return callback( null, true )}
+    if( whitelist.indexOf( origin ) === -1 ) {
+      var message = origin + ' - ' + 'The CORS policy for this origin does not ' +
+                'allow access from the particular origin.';
+      return callback( new Error( message ), false );
+    }
+    return callback( null, true );
+  }
+} ) );
+
 app.get( '/', function( req, res ) {
   res.send( 'MongoDB connector is live' );
+} );
+
+app.post( '/logs', function( req, res ) {
+  let body = '';
+  req.on( 'data', chunk => {
+    body += chunk.toString(); // convert Buffer to string
+  } );
+  req.on( 'end', () => {
+    console.log( body );
+    res.end( 'ok' );
+  } );
 } );
 
 exports.sio = require( 'socket.io' )( server, {

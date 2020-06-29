@@ -1,3 +1,11 @@
+
+/*
+ * NOTE: This configuration file has been ported from Alpha Version One and is out of date.
+ * Only a few settings are actually needed in Ajpha Version Two.
+ *
+ */
+
+
 // Initialization
 
 exports.production = false;  // resets or keeps database when restarting app // Type Boolean // 'false' to reset
@@ -246,7 +254,7 @@ exports.tokenDyn = {
                       daysToZero: 120,  // multiplier for token-lifetime in days // this can ALSO be seconds, if baseTimeToZero is set to 1 // Type Number (integer)
                       payout: 140,  // regular payout amount // expressed in tokens // Type Number (integer)
                       payoutInterval: 60 * 60 * 24,  // regular payout interval // expressed in sec // Maximum delay value is 24 days // Type Number (integer)
-                      initialBalance: 1000, // 24 * 40,  // initial balance on new accounts // expressed in tokens // Type Number (integer)
+                      initialBalance: 100, // 24 * 40,  // initial balance on new accounts // expressed in tokens // Type Number (integer)
                       updateVisFreq: 60 * 60,  // how often the user interface updates // expressed in sec // Type Number (integer)
                       setTxFee: 0.5,  // transaction fee // e.g. 0.5 for 50%, can also be 0 // Type Number (decimal)
 
