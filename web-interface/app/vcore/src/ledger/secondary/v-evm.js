@@ -106,12 +106,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       else if ( txData.txType == 'generated' ) {
         txData.title = 'Community Payout';
       }
-
+      console.log( 'mapped txData: ', JSON.stringify( txData ) );
       return txData;
 
     } );
 
-    return Promise.all( filteredAndEnhanced );
+    const a = await Promise.all( filteredAndEnhanced );
+    console.log( a );
+    return a;
   }
 
   function handleTransferSummaryEvent( eventData ) {
@@ -128,9 +130,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     Modal.draw( 'transaction sent', hash );
     if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
       const $ph = AccountComponents.accountPlaceholderCard();
-      const $card = CanvasComponents.card( $ph, undefined, 'ph' + hash.substr( 2, 8 ) );
+      const $card = CanvasComponents.card( $ph, undefined, 'phS' + hash.substr( 3, 6 ) + 'E' );
       V.setNode( 'list', $card, 'prepend' );
-      let test;
     }
   }
 
@@ -138,20 +139,22 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
       Account.drawHeaderBalance();
       if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        setNewTxNode( receipt.events.TransferSummary, 'ph' + receipt.transactionHash.substr( 2, 8 ) );
+        setNewTxNode( receipt.events.TransferSummary, 'phS' + receipt.transactionHash.substr( 3, 6 ) + 'E' );
       }
     }
   }
 
   async function setNewTxNode( txSummary, id ) {
     const aA = V.getState( 'activeAddress' );
+    console.log( 'txSummary: ', txSummary.returnValues );
     const filteredAndEnhanced = await castTransfers( [ txSummary ], aA );
-
+    console.log( 'cast txData: ', JSON.stringify( filteredAndEnhanced ) );
     const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
     const $card = CanvasComponents.card( $cardContent );
 
     const $ph = V.getNode( '#' + id );
     $ph ? V.setNode(  $ph, 'clear' ) : null;
+    V.setNode(  'modal', 'clear' );
     V.setNode( 'list', $card, 'prepend' );
   }
 

@@ -10,7 +10,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleSetEntity( e ) {
-    e.target.removeEventListener( 'click', handleSetEntity, false );
+    e.target.removeEventListener( 'click', handleSetEntity );
+    Button.draw( 'all', { fade: 'out' } );
 
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
@@ -50,7 +51,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           V.setBrowserHistory( res.data[0].path );
           Profile.draw( res.data[0].path );
           Form.draw( 'all', { fade: 'out' } );
-          Button.draw( 'all', { fade: 'out' } );
           // Button.draw( 'plus search', { delay: 1 } );
           VMap.draw(
             {

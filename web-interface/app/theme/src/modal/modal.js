@@ -66,8 +66,8 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, ModalComponents.confirmTransaction( aTx ) );
     }
     else if ( which == 'transaction sent' ) {
-      V.setNode( $modal, ModalComponents.simpleMessage( 'Transaction has been sent to the network' ) );
-      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 1800 );
+      V.setNode( $modal, ModalComponents.simpleMessage( '✅ Sent to network' ) );
+      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 2500 );
     }
     else if ( which == 'transaction successful' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'Transaction successful' ) );
