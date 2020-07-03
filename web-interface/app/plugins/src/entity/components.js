@@ -44,6 +44,23 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   } );
 
+  /* ============== user interface strings ============== */
+
+  const
+    strEdit = 'edit',
+    strChgImg  = 'Change this image',
+    strBaseLoc  = 'base location',
+    strCurrLoc  = 'current location',
+    strUTCOffset  = 'current UTC offset',
+    strNotFunded = 'Not yet successfully funded',
+    strSuccessFunded = 'Successfully funded',
+    strNoneSpent = 'None yet spent',
+    strSpent = 'Budget spent';
+
+  function uiStr( string, description ) {
+    return V.i18n( string, 'user components', description || 'card entry' ) + ' ';
+  }
+
   /* ================== event handlers ================== */
 
   function handleEntryFocus() {
@@ -161,7 +178,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             data: tinyImageUpload,
             auth: auth
           } );
-          V.setNode( '#img-upload-profile__label', V.i18n( 'Change this image', 'user profile', 'card entry' ) );
+          V.setNode( '#img-upload-profile__label', uiStr( strChgImg ) );
           V.setNode( '#img-upload-profile__preview', '' );
           V.setNode( '#img-upload-profile__preview', V.cN( {
             t: 'img',
@@ -191,7 +208,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         const leftTd = {
           t: 'td',
           c: 'capitalize',
-          h: V.i18n( title, 'user profile', 'card entry' )
+          h: uiStr( title )
         };
 
         const editTd = setEditable( {
@@ -438,7 +455,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: V.i18n( 'base location', 'user profile', 'card entry' ) },
+              { t: 'td', c: 'capitalize', h: uiStr( strBaseLoc ) },
               editable ? {
                 t: 'input',
                 i: 'user__loc',
@@ -458,7 +475,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: V.i18n( 'current location', 'user profile', 'card entry' ) },
+              { t: 'td', c: 'capitalize', h: uiStr( strCurrLoc ) },
               editable ? {
                 t: 'input',
                 c: 'location__curr pxy w-full txt-right',
@@ -479,7 +496,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: V.i18n( 'current UTC offset', 'user profile', 'card entry' ) },
+              { t: 'td', c: 'capitalize', h: uiStr( strUTCOffset ) },
               editable ? setEditable( {
                 t: 'td',
                 c: 'txt-right',
@@ -602,11 +619,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( entity.profile.role == 'pool' ) {
 
       const i18n = {
-        // strPfPg431: V.i18n( 'Funding Target', 'user profile', 'pools' ),
-        strPfPg432: V.i18n( 'Not yet successfully funded', 'user profile', 'pools' ),
-        strPfPg433: V.i18n( 'Successfully funded', 'user profile', 'pools' ),
-        strPfPg434: V.i18n( 'None yet spent', 'user profile', 'pools' ),
-        strPfPg435: V.i18n( 'Budget spent', 'user profile', 'pools' ),
+        strPfPg432: uiStr( strNotFunded ),
+        strPfPg433: uiStr( strSuccessFunded ),
+        strPfPg434: uiStr( strNoneSpent ),
+        strPfPg435: uiStr( strSpent ),
       };
 
       let svgFunded = '';
@@ -696,7 +712,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   for: 'img-upload-profile__file',
                 },
-                h: V.i18n( 'Change this image', 'user profile', 'card entry' )
+                h: uiStr( strChgImg )
               },
               {
                 t: 'input',
@@ -739,7 +755,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               for: 'img-upload-profile__file',
             },
-            h: V.i18n( 'edit', 'user profile', 'placeholder' )
+            h: uiStr( strEdit )
           },
           {
             t: 'input',

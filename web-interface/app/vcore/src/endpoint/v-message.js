@@ -119,34 +119,42 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
           // const adminPass = caseArray.pop();
           // entityToVerify = { fullId: caseArray.join( ' ' ), adminPass: adminPass };
 
-          V.setEntity( caseArray.join( ' ' ), {
+          return V.setEntity( caseArray.join( ' ' ), {
             field: 'status.verified',
             data: true,
             auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+          } ).then( res => {
+            console.log( 'verification success:', res );
+            return {
+              success: true,
+              status: 'entity verified'
+            };
           } );
 
-          if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-            let entityToVerify;
-            if ( caseArray[0].substr( 0, 2 ) == '0x' ) {
-              entityToVerify = caseArray[0];
-            }
-            else {
-              const entity = await V.getEntity( caseArray.join( ' ' ) );
-              entityToVerify = entity.data[0].evmCredentials ? entity.data[0].evmCredentials.address : undefined;
-              if ( !entityToVerify ) {
-                return {
-                  success: false,
-                  status: 'could not find address of entity'
-                };
-              }
-            }
-            V.setEntity( entityToVerify, 'verification' );
-          }
+          /*
+           * The above now triggers the autoFloat (and verify) in the entity store,
+           * hence the below is not required
+           *
+           */
 
-          return {
-            success: true,
-            status: 'entity verified'
-          };
+          // if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+          //   let entityToVerify;
+          //   if ( caseArray[0].substr( 0, 2 ) == '0x' ) {
+          //     entityToVerify = caseArray[0];
+          //   }
+          //   else {
+          //     const entity = await V.getEntity( caseArray.join( ' ' ) );
+          //     entityToVerify = entity.data[0].evmCredentials ? entity.data[0].evmCredentials.address : undefined;
+          //     if ( !entityToVerify ) {
+          //       return {
+          //         success: false,
+          //         status: 'could not find address of entity'
+          //       };
+          //     }
+          //   }
+          //   V.setEntity( entityToVerify, 'verification' );
+          // }
+
         }
         // else if ( caseArray[0] === 'makeadmin' ) {
         //   socket.emit( 'makeadmin', [caseArray, Cookies.get( 'uPhrase' )] );

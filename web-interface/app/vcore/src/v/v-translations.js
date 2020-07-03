@@ -199,6 +199,9 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'chat components': {
 
   },
+  'user components': {
+
+  },
   'entity creation': {
 
   }

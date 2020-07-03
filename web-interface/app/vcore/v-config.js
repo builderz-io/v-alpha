@@ -12,15 +12,15 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    // socketHost: 'http://localhost',
-    // socketPort: 6021,
-    socketHost: 'https://mongodb.valueinstrument.org',
-    socketPort: 443,
+    socketHost: 'http://localhost',
+    socketPort: 6021,
+    // socketHost: 'https://mongodb.valueinstrument.org', // omit trailing slash
+    // socketPort: 443,
 
-    useBuilds: true,
+    useBuilds: false,
 
     subscribeToChainEvents: false,
-    sendLogsToServer: true,
+    sendLogsToServer: false,
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
@@ -44,7 +44,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const networks = {
 
-    choice: 'kovan2',
+    choice: 'trufflePAV2',
 
     trufflePAV1: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',

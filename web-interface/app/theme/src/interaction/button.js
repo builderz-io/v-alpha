@@ -76,6 +76,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         }
         else {
           Form.draw( 'error', res );
+          Button.draw( 'close set', { delay: 1 } );
           console.error( res.status );
         }
       } );

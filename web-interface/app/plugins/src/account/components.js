@@ -22,7 +22,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     strNet  = 'Spendable',
     strGross  = 'Gross',
     strETH  = 'ETH',
-    strChain = 'On Chain';
+    strChain = 'On Chain',
+    strNoBal = 'no balance details';
 
   function uiStr( string, description ) {
     return V.i18n( string, 'account components', description || 'transaction details' ) + ' ';
@@ -62,7 +63,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================  public components ================ */
 
   function topcontent( fullId, bal ) {
-    console.log( bal );
     return V.cN( {
       t: 'div',
       h: [
@@ -72,7 +72,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           k: handleOpenTokenAccountDetails,
           h: fullId
         },
-        !bal ? { t: 'p', c: 'hidden', h: V.i18n( 'no balance details', 'app' ) } : {
+        !bal ? { t: 'p', c: 'hidden', h: uiStr( strNoBal ) } : {
           t: 'table',
           i: 'v-token-account-details',
           c: 'hidden fs-s',

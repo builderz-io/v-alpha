@@ -97,7 +97,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       c: 'max-w-full',
       a: {
         src: src,
-        alt: thumbnailData.entity + ' ' + V.i18n( 'Title Image', 'user profile', 'image alt text' ) + ' - ' + thumbnailData.originalName
+        alt: thumbnailData.entity + ' ' + V.i18n( 'Title Image', 'user components', 'image alt text' ) + ' - ' + thumbnailData.originalName
       },
       // TODO: revokeObjectURL
       // e: {

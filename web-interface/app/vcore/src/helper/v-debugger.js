@@ -25,9 +25,10 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   console.log( '============ NEW SESSION ============' );
   console.log( '===== App  ', VConfig.getSetting( 'appVersion' ) );
   console.log( '===== Date ', new Date() );
+  console.log( '===== Date ', window.location.href );
 
   function handleConsoleMessage( msg, data ) {
-    fetch( /* 'http://localhost:6021/logs' */ 'https://mongodb.valueinstrument.org/logs', {
+    fetch( V.getSetting( 'socketHost' ) + '/logs', {
       method: 'POST', // or 'PUT'
       mode: 'cors',
       headers: {

@@ -101,7 +101,7 @@ exports.register = function( req, res ) {
    */
 
   if ( req.evmCredentials.address ) {
-    autoFloat( req.evmCredentials.address );
+  //  autoFloat( req.evmCredentials.address );
   }
 
   const date = new Date();
@@ -182,11 +182,17 @@ exports.register = function( req, res ) {
 
 };
 
-exports.update = function( req, cb ) {
+exports.update = async function( req, cb ) {
   let how;
 
   if ( req.field == 'evmCredentials.address' && req.role == 'member' ) {
     autoFloat( req.data );
+  }
+
+  if ( req.field == 'status.verified' && req.data == true ) {
+    const entity = await findEntity( { fullId: req.entity } );
+    console.log( 'trigger float manually for:', entity.data[0].evmCredentials.address );
+    autoFloat( entity.data[0].evmCredentials.address );
   }
 
   if ( req.field == 'properties.baseLocation' ) {
