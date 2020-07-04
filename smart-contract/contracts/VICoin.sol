@@ -24,7 +24,6 @@ import "./lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
 import "./lib/openzeppelin-solidity/contracts/math/Math.sol";
 import "./FusedController.sol";
 
-
 /// @notice One contract is deployed for each community
 /// @dev Based on openzeppelin's burnable and mintable ERC20 tokens
 contract VICoin is
@@ -152,7 +151,10 @@ contract VICoin is
     }
 
     /// @notice Manually trigger an onchain update of the live balance
-    function triggerOnchainBalanceUpdate(address _account) public returns (uint256) {
+    function triggerOnchainBalanceUpdate(address _account)
+        public
+        returns (uint256)
+    {
         // 1. Decay the balance
         uint256 decay = calcDecay(
             lastTransactionBlock[_account],
@@ -258,13 +260,16 @@ contract VICoin is
         if (lastGenerationBlock[_account] == 0) {
             return (decayedBalance);
         }
-        uint256 generationAccrued = calcGeneration(
-            block.number,
-            lastGenerationBlock[_account],
-            lifetime,
-            generationAmount,
-            generationPeriod
-        );
+        uint256 generationAccrued = 0;
+        if (accountApproved[_account]) {
+            generationAccrued = calcGeneration(
+                block.number,
+                lastGenerationBlock[_account],
+                lifetime,
+                generationAmount,
+                generationPeriod
+            );
+        }
         return decayedBalance.add(generationAccrued);
     }
 
@@ -294,7 +299,9 @@ contract VICoin is
         uint256 contribution;
         // Process generation and decay for sender
         emit Log("Sender balance before update", balanceOf(msg.sender));
-        uint256 generationAccruedSender = triggerOnchainBalanceUpdate(msg.sender);
+        uint256 generationAccruedSender = triggerOnchainBalanceUpdate(
+            msg.sender
+        );
         emit Log("Sender balance after update", balanceOf(msg.sender));
 
         // Process generation and decay for recipient
@@ -643,7 +650,10 @@ contract VICoin is
         fused(4)
     {
         //TODO: delete/update lastGenerationBlock to prevent calculation errors
-        require(1==2, "Currently not possible to change generation period after deploy.");
+        require(
+            1 == 2,
+            "Currently not possible to change generation period after deploy."
+        );
         generationPeriod = _generationPeriod;
         emit UpdateGenerationPeriod(_generationPeriod);
     }
