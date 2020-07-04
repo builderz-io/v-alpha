@@ -1,3 +1,4 @@
+
 const VKey = ( function() { // eslint-disable-line no-unused-vars
 
   /**
@@ -6,8 +7,8 @@ const VKey = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const apiKeys = {
-    googlePlaces: 'AIzaSyD2MU7foORS25ayBrpV28DoZiHfXoCQvts',
-    mapBox: 'pk.eyJ1IjoidmFsdWVpbnN0cnVtZW50IiwiYSI6ImNqbGw3aWYxejB1aTUzcHMxZ2o4ejVuMm8ifQ.9nokF78xbuqVF09cKCvpIw',
+    googlePlaces: 'YOUR API KEY HERE',
+    mapBox: 'YOUR API KEY HERE',
   };
 
   /* ================== public methods ================== */
