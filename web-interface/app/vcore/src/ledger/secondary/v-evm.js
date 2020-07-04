@@ -41,7 +41,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function castEthBalance( balance ) {
-    return Number( balance / 10**18 ).toFixed( 1 );
+    return Number( balance / 10**18 ).toFixed( 4 );
   }
 
   function castTokenFloat( balance ) {

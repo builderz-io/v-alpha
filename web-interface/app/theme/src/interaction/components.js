@@ -149,6 +149,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           'height': '100%',
           'z-index': -1
         }
+      },
+      h: {
+        t: 'div',
+        c: 'form__response pxy txt-red',
+        // h: 'test response msg'
       }
     } );
   }
@@ -440,7 +445,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Connect a crypto wallet', 'join', 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + V.i18n( 'Connect a new crypto wallet', 'join', 'onboarding call to action' ) + '</p>'
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {

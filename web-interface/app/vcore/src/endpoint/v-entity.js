@@ -28,7 +28,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     strMaxHuman  = 'max 3 words',
     strMaxEntity  = 'max 7 words',
     strTooLong  = 'max 200 characters',
-    strTooShort  = 'min 2 characters';
+    strTooShort  = 'min 2 characters',
+    strFree  = 'free',
+    strTargetRange  = 'target must be within 0 - 9999',
+    strIsNaN  = 'target must be a number',
+    strNoUnit  = 'please add a unit, such as "hour"',
+    strNoTarget  = 'please add a target';
 
   function uiStr( string, description ) {
     return V.i18n( string, 'entity creation', description || 'error message' ) + ' ';
@@ -42,7 +47,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'entity',
-        status: 'could not attach geo data'
+        status: 'no geo data',
+        message: 'could not attach geo data'
       };
     }
 
@@ -51,6 +57,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( !title.success ) {
       return title; // error object
+    }
+
+    const target = castTarget( entityData );
+
+    if ( !target.success ) {
+      return target; // error object
     }
 
     // cast tag and fullId
@@ -72,6 +84,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const activeEntity = V.getState( 'activeEntity' );
+    const activeAddress = V.getState( 'activeAddress' );
     const imageUpload = V.getState( 'imageUpload' );
     const tinyImageUpload= V.getState( 'tinyImageUpload' );
 
@@ -134,6 +147,20 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
 
+      if ( !entityData.evmAddress ) {
+        const newEvmAccount = window.Web3Obj.eth.accounts.create();
+        entityData.evmAddress = newEvmAccount.address.toLowerCase();
+        entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
+      }
+      else {
+        entityData.evmPrivateKey = undefined;
+        entityData.evmReceivingAddress = undefined;
+      }
+
+      if ( activeAddress && ['skill', 'job'].includes( entityData.role ) ) {
+        Object.assign( entityData, { evmReceivingAddress: activeAddress } );
+      }
+
       await V.getContractState().then( res => {
 
         if ( res.success ) {
@@ -157,6 +184,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const host = window.location.host;
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
+
+      // TODO: sync with EVM
+
       const newSymbolAddress = await V.setActiveAddress();
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
@@ -200,10 +230,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         verified: V.getSetting( 'defaultVerification' )
       },
       evmCredentials: {
-        address: entityData.evmAddress
+        address: entityData.evmAddress,
+        privateKey: entityData.evmPrivateKey
       },
       receivingAddresses: {
-        evm: entityData.receivingAddress
+        evm: entityData.evmReceivingAddress
       },
       symbolCredentials: entityData.symbolCredentials || { address: undefined },
       owners: [{
@@ -218,7 +249,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       properties: {
         baseLocation: entityData.location || undefined,
         description: entityData.description || undefined,
-        target: entityData.target || undefined,
+        target: target.data[0],
         unit: entityData.unit || undefined,
       },
       tinyImage: tinyImage,
@@ -237,6 +268,43 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       status: 'cast entity',
       data: [ newEntity ]
     };
+  }
+
+  function castTarget( entityData ) {
+    let error;
+
+    entityData.target == '' ? entityData.target = undefined : null;
+
+    if (  entityData.target ) {
+      entityData.unit == '' ? error = uiStr( strNoUnit ) : null;
+      isNaN( entityData.target ) ? error = uiStr( strIsNaN ) : null;
+    }
+
+    if ( ['pool'].includes( entityData.role ) ) {
+      entityData.unit == '' ? error = undefined : null;
+      !entityData.target ? error = uiStr( strNoTarget ) : null;
+      // entityData.target.toLowerCase().trim() == uiStr( strFree ).trim() ? entityData.target = 0 : null;
+    }
+
+    Number( entityData.target ) > 9999 || Number( entityData.target ) < 0 ? error = uiStr( strTargetRange ) : null;
+
+    if ( error ) {
+      return {
+        success: false,
+        endpoint: 'entity',
+        status: 'invalid target',
+        message: error
+      };
+    }
+    else {
+      return {
+        success: true,
+        endpoint: 'entity',
+        status: 'cast entity target',
+        data: [ entityData.target ]
+      };
+    }
+
   }
 
   /* ================== public methods ================== */

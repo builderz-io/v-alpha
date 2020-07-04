@@ -60,6 +60,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
     }
 
     return {
+      success: true,
       layout: which,
       $form: $form
     };
@@ -74,18 +75,26 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         } );
       }
     }
-    else if ( formData.status == 'invalid title' ) {
-      const $formtitle = V.getNode( '#plusform__title' );
-      $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder', 'form error' ) );
-      $formtitle.value = '';
-      $formtitle.className += ' border-error';
+    else if ( !formData.success ) {
+      // console.log( formData );
+      // const $formtitle = V.getNode( '#plusform__title' );
+      // $formtitle.setAttribute( 'placeholder', V.i18n( formData.message, 'placeholder', 'form error' ) );
+      // $formtitle.value = '';
+      // $formtitle.className += ' border-error';
+      V.getNode( '.form__response' ).innerHTML = formData.message;
     }
-    else if ( formData.status == 'could not attach geo data' ) {
-      const $formtitle = V.getNode( '#plusform__loc' );
-      $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder', 'form error' ) );
-      $formtitle.value = '';
-      $formtitle.className += ' border-error';
-    }
+    // else if ( formData.status == 'invalid title' ) {
+    //   const $formtitle = V.getNode( '#plusform__title' );
+    //   $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder', 'form error' ) );
+    //   $formtitle.value = '';
+    //   $formtitle.className += ' border-error';
+    // }
+    // else if ( formData.status == 'could not attach geo data' ) {
+    //   const $formtitle = V.getNode( '#plusform__loc' );
+    //   $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder', 'form error' ) );
+    //   $formtitle.value = '';
+    //   $formtitle.className += ' border-error';
+    // }
     else {
       V.setNode( 'body', formData.$form );
       V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );

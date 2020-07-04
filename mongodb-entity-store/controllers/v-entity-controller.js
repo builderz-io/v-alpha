@@ -100,8 +100,8 @@ exports.register = function( req, res ) {
    *
    */
 
-  if ( req.evmCredentials.address ) {
-  //  autoFloat( req.evmCredentials.address );
+  if ( req.profile.role == 'member' ) {
+    autoFloat( req.evmCredentials.address );
   }
 
   const date = new Date();
@@ -204,6 +204,15 @@ exports.update = async function( req, cb ) {
         'geometry.type': 'Point',
         'geometry.coordinates': [Number( req.data.lng ), Number( req.data.lat )],
       },
+    };
+  }
+  else if ( req.field == 'evmCredentials.address' ) {
+    how = {
+      $set: {
+        'evmCredentials.address': req.data,
+        'evmCredentials.privateKey': undefined,
+        'receivingAddresses.evm': undefined
+      }
     };
   }
   else if ( req.field == 'adminOf' ) {

@@ -118,7 +118,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
       role: 'member',
-      evmAddress: V.getState( 'activeAddress' ),
+      evmAddress: V.getState( 'activeAddress' ), // TODO: allow for other chains
     };
 
     V.setState( 'activeEntity', 'clear' );
@@ -195,13 +195,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         role: aE.profile.role,
         auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
       } ).then( () => {
-        V.setEntity( aE.fullId, {
-          field: 'receivingAddresses.evm',
-          data: aA,
-          auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
-        } ).then( () => {
-          Join.draw( 'authenticate' );
-        } );
+        Join.draw( 'authenticate' );
+        // V.setEntity( aE.fullId, {
+        //   field: 'receivingAddresses.evm',
+        //   data: aA,
+        //   auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+        // } ).then( () => {
+        //   Join.draw( 'authenticate' );
+        // } );
       } );
     }
   }

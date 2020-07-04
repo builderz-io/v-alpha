@@ -27,10 +27,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       target: form.getNode( '#plusform__target' ).value
     };
 
-    if ( V.getState( 'activeAddress' ) ) {
-      Object.assign( entityData, { receivingAddress: V.getState( 'activeAddress' ) } );
-    }
-
     if ( !V.getState( 'activeEntity' ) ) {
 
       /**
