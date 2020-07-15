@@ -1,8 +1,7 @@
 import React from "react";
 import { newContextComponents } from "@drizzle/react-components";
-import styled from "styled-components";
 
-const { AccountData, ContractData, ContractForm } = newContextComponents;
+const { ContractData, ContractForm } = newContextComponents;
 
 const ContributionAndFees = ({ drizzle, drizzleState }) => {
   return (
