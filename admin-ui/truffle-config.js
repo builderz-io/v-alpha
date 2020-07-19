@@ -3,7 +3,7 @@ const mnemonic = require("./mnemonic");
 const HDWalletProvider = require("truffle-hdwallet-provider");
 
 module.exports = {
-  // contracts_directory: "./contracts",
+  contracts_directory: "../smart-contract/contracts",
   contracts_build_directory: path.join(__dirname, "app/src/contracts"),
   networks: {
     develop: {
