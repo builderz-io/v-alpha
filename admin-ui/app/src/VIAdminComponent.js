@@ -73,7 +73,7 @@ export default ({ drizzle, drizzleState }) => {
 
         <Header>
           <Img src={viLogo} alt="value-instrument-logo" />
-          <Title>VI Currency Admin</Title>
+          <Title>VI Currency Admin Panel</Title>
           <Subtitle>
             Easily adjust the parameters of your Value Instrument currency
           </Subtitle>

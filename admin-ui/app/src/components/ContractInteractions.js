@@ -10,6 +10,27 @@ const ContractInteractions = ({ drizzle, drizzleState }) => {
       <div class="description">
         <p><i>Trigger useful contract actions manually</i></p>
       </div>
+      <div class="attention">
+        <p>
+          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+           <ContractData
+            drizzle={drizzle}
+            drizzleState={drizzleState}
+            contract="VICoin"
+            method="decimals"
+          />
+          &nbsp; decimal places, e.g. 12 is entered as 12000000, and use gross amount in V when transferring funds. </i>
+        </p>
+      </div>
+      <p>
+        <strong>Transfer funds</strong>
+      </p>
+      <ContractForm
+        drizzle={drizzle}
+        contract="VICoin"
+        method="transfer"
+        labels={["Recipient", "Gross amount in V"]}
+      />
       <p>
         <strong>Verify an account</strong>
       </p>
@@ -18,15 +39,6 @@ const ContractInteractions = ({ drizzle, drizzleState }) => {
         contract="VICoin"
         method="verifyAccount"
         sendArgs={{ gas: 600000, gasPrice: 40000000000 }}
-      />
-      <p>
-        <strong>Transfer funds</strong>
-      </p>
-      <ContractForm
-        drizzle={drizzle}
-        contract="VICoin"
-        method="transfer"
-        labels={["Recipient", "Amount in VALUE"]}
       />
       <p>
         <strong>Trigger onchain balance update</strong>

@@ -8,7 +8,7 @@ const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
     <div className="section">
       <h2>Your Account</h2>
       <div class="description">
-        <p><i>View details of the account currently active in MetaMask</i></p>
+        <p><i>View details of the account currently active in MetaMask and connected to this panel</i></p>
       </div>
       <div class="active-account">
       <h3>Active Address</h3>
@@ -51,7 +51,7 @@ const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
           methodArgs={[drizzleState.accounts[0]]}
         />
       </p> */}
-      <h3 class="h3-margin-top">Contract State</h3>
+      <h3 class="h3-margin-top">State</h3>
       <p>
         <strong>Zero block: </strong>
         <ContractData

@@ -12,14 +12,14 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
       </div>
       <div class="attention">
         <p>
-          <span role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
            <ContractData
             drizzle={drizzle}
             drizzleState={drizzleState}
             contract="VICoin"
             method="decimals"
           />
-          &nbsp; decimal places to initial balance and generation amount, e.g. 10 becomes 10000000 </i>
+          &nbsp; decimal places to initial balance and generation amount, e.g. 12 is entered as 12000000 </i>
         </p>
       </div>
       <p>
@@ -29,7 +29,7 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
           drizzleState={drizzleState}
           contract="VICoin"
           method="initialBalance"
-        />
+        /> V
       </p>
       <ContractForm
         drizzle={drizzle}
@@ -43,7 +43,7 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
           drizzleState={drizzleState}
           contract="VICoin"
           method="generationAmount"
-        />
+        /> V
       </p>
       <ContractForm
         drizzle={drizzle}
@@ -57,7 +57,7 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
           drizzleState={drizzleState}
           contract="VICoin"
           method="generationPeriod"
-        />
+        /> Blocks
       </p>
       <ContractForm
         drizzle={drizzle}
@@ -71,7 +71,7 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
           drizzleState={drizzleState}
           contract="VICoin"
           method="lifetime"
-        />
+        /> Blocks
       </p>
       <ContractForm
         drizzle={drizzle}

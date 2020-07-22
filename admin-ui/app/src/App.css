@@ -28,6 +28,7 @@ input {
 
 .description {
   font-size: 0.85rem;
+  line-height: 1.25rem;
     display: block;
     background: gold;
     padding: 1px 35px 1px 15px;
@@ -38,8 +39,10 @@ input {
 
 .attention {
     font-size: 0.85rem;
+    line-height: 1.25rem;
+    color: crimson;
     display: block;
-    min-height: 3rem;
+    min-height: 6rem;
     background: lavenderblush;
     padding: 1px 35px 1px 15px;
     border-radius: 6px;
@@ -48,6 +51,10 @@ input {
 
 .curr-contr-acc {
   font-size: 0.85rem;
+}
+
+.exclamation-mark {
+  font-size: 0.9em;
 }
 
 .mining-input-placeholder {

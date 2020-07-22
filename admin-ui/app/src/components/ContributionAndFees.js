@@ -12,14 +12,14 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
       </div>
       <div class="attention">
         <p>
-          <span role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
           <ContractData
             drizzle={drizzle}
             drizzleState={drizzleState}
             contract="VICoin"
             method="contributionFeeDecimals"
           />
-          &nbsp; decimal places to transaction fee and contribution, e.g. 10 becomes 1000</i></p>
+          &nbsp; decimal places to transaction fee and contribution, e.g. 12 is entered as 1200</i></p>
       </div>
       <p>
         <strong>Transaction Fee: </strong>
@@ -29,7 +29,7 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
           contract="VICoin"
           method="transactionFee"
           precision={2}
-        />
+        /> % of Transaction
       </p>
       <ContractForm
         drizzle={drizzle}
@@ -43,7 +43,7 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
           drizzleState={drizzleState}
           contract="VICoin"
           method="communityContribution"
-        />
+        /> % of Fee
       </p>
       <ContractForm
         drizzle={drizzle}
