@@ -7,12 +7,12 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Economic parameters</h2>
-      <div class="description">
+      <div className="description">
         <p><i>Adjust the economic parameters of your currency</i></p>
       </div>
-      <div class="attention">
+      <div className="attention">
         <p>
-          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+          <span className="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
            <ContractData
             drizzle={drizzle}
             drizzleState={drizzleState}

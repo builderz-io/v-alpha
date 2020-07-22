@@ -1,13 +1,10 @@
 import React from "react";
-import { newContextComponents } from "@drizzle/react-components";
 import viLogo from "./vi-logo.png";
 import styled from "styled-components";
 import EconomicParameters from "./components/EconomicParameters";
 import ContributionAndFees from "./components/ContributionAndFees";
 import ContractInteractions from "./components/ContractInteractions";
 import ActiveAccountDetails from "./components/ActiveAccountDetails";
-
-const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 const Grid = styled.div`
   display: grid;

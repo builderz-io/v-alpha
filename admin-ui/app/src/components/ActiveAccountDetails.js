@@ -1,16 +1,16 @@
 import React from "react";
 import { newContextComponents } from "@drizzle/react-components";
 
-const { AccountData, ContractData, ContractForm } = newContextComponents;
+const { AccountData, ContractData } = newContextComponents;
 
 const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Your Account</h2>
-      <div class="description">
+      <div className="description">
         <p><i>View details of the account currently active in MetaMask and connected to this panel</i></p>
       </div>
-      <div class="active-account">
+      <div className="active-account">
       <h3>Active Address</h3>
       <AccountData
         drizzle={drizzle}
@@ -20,7 +20,7 @@ const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
         precision={3}
       />
       </div>
-      <h3 class="h3-margin-top">Balances</h3>
+      <h3 className="h3-margin-top">Balances</h3>
       <p>
         <strong>V Live Balance: </strong>
         <ContractData
@@ -51,7 +51,7 @@ const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
           methodArgs={[drizzleState.accounts[0]]}
         />
       </p> */}
-      <h3 class="h3-margin-top">State</h3>
+      <h3 className="h3-margin-top">State</h3>
       <p>
         <strong>Zero block: </strong>
         <ContractData

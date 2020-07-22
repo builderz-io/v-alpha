@@ -7,12 +7,12 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Contribution & Fees</h2>
-      <div class="description">
+      <div className="description">
         <p><i>Adjust fees and contribution rate of your currency</i></p>
       </div>
-      <div class="attention">
+      <div className="attention">
         <p>
-          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+          <span className="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
           <ContractData
             drizzle={drizzle}
             drizzleState={drizzleState}
@@ -59,7 +59,7 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
         method="updateCommunityContributionAccount"
       />
       <p>
-        <span class="curr-contr-acc">
+        <span className="curr-contr-acc">
         Current contribution account is: <br/>
         <ContractData
           drizzle={drizzle}

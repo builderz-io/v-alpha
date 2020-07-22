@@ -7,12 +7,12 @@ const ContractInteractions = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Contract Interactions</h2>
-      <div class="description">
+      <div className="description">
         <p><i>Trigger useful contract actions manually</i></p>
       </div>
-      <div class="attention">
+      <div className="attention">
         <p>
-          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+          <span className="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
            <ContractData
             drizzle={drizzle}
             drizzleState={drizzleState}
@@ -53,10 +53,10 @@ const ContractInteractions = ({ drizzle, drizzleState }) => {
       <p>
         <strong>Mine blocks</strong>
       </p>
-      <input type="number" min="1" max="1" value="1" class="mining-input-placeholder"></input>
+      <input type="number" min="1" max="1" defaultValue="1" className="mining-input-placeholder"></input>
       <ContractForm drizzle={drizzle} contract="VICoin" method="mine" />
       <p>
-        <span class="curr-contr-acc">
+        <span className="curr-contr-acc">
         Current block is: <br/>
         <ContractData
           drizzle={drizzle}
