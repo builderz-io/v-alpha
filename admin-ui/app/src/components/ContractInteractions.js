@@ -7,22 +7,30 @@ const ContractInteractions = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Contract Interactions</h2>
-      <p><i>Trigger useful contract actions manually</i></p>
-      <strong>Verify an account: </strong>
+      <div class="description">
+        <p><i>Trigger useful contract actions manually</i></p>
+      </div>
+      <p>
+        <strong>Verify an account</strong>
+      </p>
       <ContractForm
         drizzle={drizzle}
         contract="VICoin"
         method="verifyAccount"
         sendArgs={{ gas: 600000, gasPrice: 40000000000 }}
       />
-      <strong>Transfer Value: </strong>
+      <p>
+        <strong>Transfer funds</strong>
+      </p>
       <ContractForm
         drizzle={drizzle}
         contract="VICoin"
         method="transfer"
         labels={["Recipient", "Amount in VALUE"]}
       />
-      <strong>Trigger onchain balance update: </strong>
+      <p>
+        <strong>Trigger onchain balance update</strong>
+      </p>
       <ContractForm
         drizzle={drizzle}
         drizzleState={drizzleState}
@@ -30,16 +38,21 @@ const ContractInteractions = ({ drizzle, drizzleState }) => {
         method="triggerOnchainBalanceUpdate"
         methodArgs={[drizzleState.accounts[0]]}
       />
-      <strong>Mine blocks: </strong>
+      <p>
+        <strong>Mine blocks</strong>
+      </p>
+      <input type="number" min="1" max="1" value="1" class="mining-input-placeholder"></input>
       <ContractForm drizzle={drizzle} contract="VICoin" method="mine" />
       <p>
-        <strong>Current block: </strong>
+        <span class="curr-contr-acc">
+        Current block is: <br/>
         <ContractData
           drizzle={drizzle}
           drizzleState={drizzleState}
           contract="VICoin"
           method="getBlockNumber"
         />
+        </span>
       </p>
     </div>
   );

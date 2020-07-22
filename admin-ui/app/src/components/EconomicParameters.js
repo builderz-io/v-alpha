@@ -7,7 +7,49 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Economic parameters</h2>
-      <p><i>Adjust the economic parameters of your currency</i></p>
+      <div class="description">
+        <p><i>Adjust the economic parameters of your currency</i></p>
+      </div>
+      <div class="attention">
+        <p>
+          <span role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+           <ContractData
+            drizzle={drizzle}
+            drizzleState={drizzleState}
+            contract="VICoin"
+            method="decimals"
+          />
+          &nbsp; decimal places to initial balance and generation amount, e.g. 10 becomes 10000000 </i>
+        </p>
+      </div>
+      <p>
+        <strong>Initial Balance: </strong>
+        <ContractData
+          drizzle={drizzle}
+          drizzleState={drizzleState}
+          contract="VICoin"
+          method="initialBalance"
+        />
+      </p>
+      <ContractForm
+        drizzle={drizzle}
+        contract="VICoin"
+        method="updateInitialBalance"
+      />
+      <p>
+        <strong>Generation Amount: </strong>
+        <ContractData
+          drizzle={drizzle}
+          drizzleState={drizzleState}
+          contract="VICoin"
+          method="generationAmount"
+        />
+      </p>
+      <ContractForm
+        drizzle={drizzle}
+        contract="VICoin"
+        method="updateGenerationAmount"
+      />
       <p>
         <strong>Generation Period: </strong>
         <ContractData
@@ -23,20 +65,6 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
         method="updateGenerationPeriod"
       />
       <p>
-        <strong>Generation amount: </strong>
-        <ContractData
-          drizzle={drizzle}
-          drizzleState={drizzleState}
-          contract="VICoin"
-          method="generationAmount"
-        />
-      </p>
-      <ContractForm
-        drizzle={drizzle}
-        contract="VICoin"
-        method="updateGenerationAmount"
-      />
-      <p>
         <strong>Lifetime: </strong>
         <ContractData
           drizzle={drizzle}
@@ -49,20 +77,6 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
         drizzle={drizzle}
         contract="VICoin"
         method="updateLifetime"
-      />
-      <p>
-        <strong>Initial balance: </strong>
-        <ContractData
-          drizzle={drizzle}
-          drizzleState={drizzleState}
-          contract="VICoin"
-          method="initialBalance"
-        />
-      </p>
-      <ContractForm
-        drizzle={drizzle}
-        contract="VICoin"
-        method="updateInitialBalance"
       />
     </div>
   );

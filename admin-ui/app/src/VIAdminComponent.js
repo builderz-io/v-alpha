@@ -96,16 +96,8 @@ export default ({ drizzle, drizzleState }) => {
         </GridItem>
 
         <Footer>
-          <h2>Active address</h2>
-          <AccountData
-            drizzle={drizzle}
-            drizzleState={drizzleState}
-            accountIndex={0}
-            units="ether"
-            precision={3}
-          />
         </Footer>
-        
+
       </Grid>
     </div>
   );

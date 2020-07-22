@@ -1,15 +1,28 @@
 import React from "react";
 import { newContextComponents } from "@drizzle/react-components";
 
-const { ContractData, ContractForm } = newContextComponents;
+const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
-      <h2>Active Account</h2>
-      <p><i>View details of the account currently active in MetaMask</i></p>
+      <h2>Your Account</h2>
+      <div class="description">
+        <p><i>View details of the account currently active in MetaMask</i></p>
+      </div>
+      <div class="active-account">
+      <h3>Active Address</h3>
+      <AccountData
+        drizzle={drizzle}
+        drizzleState={drizzleState}
+        accountIndex={0}
+        units="ether"
+        precision={3}
+      />
+      </div>
+      <h3 class="h3-margin-top">Balances</h3>
       <p>
-        <strong>V Live balance: </strong>
+        <strong>V Live Balance: </strong>
         <ContractData
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -28,7 +41,7 @@ const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
           methodArgs={[drizzleState.accounts[0]]}
         />
       </p>
-      <p>
+      {/* <p>
         <strong>V Decayed balance: </strong>
         <ContractData
           drizzle={drizzle}
@@ -37,7 +50,8 @@ const ActiveAccountDetails = ({ drizzle, drizzleState }) => {
           method="getDecayedBalance"
           methodArgs={[drizzleState.accounts[0]]}
         />
-      </p>
+      </p> */}
+      <h3 class="h3-margin-top">Contract State</h3>
       <p>
         <strong>Zero block: </strong>
         <ContractData

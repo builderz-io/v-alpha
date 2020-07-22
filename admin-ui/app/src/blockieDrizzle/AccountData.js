@@ -50,7 +50,7 @@ class AccountData extends Component {
 
     return (
       <div>
-        <h4>{address}</h4>
+        <p>{address}</p>
         <p>
           {balance} {units}
         </p>
