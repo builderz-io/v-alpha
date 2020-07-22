@@ -4,6 +4,8 @@ import viLogo from "./vi-logo.png";
 import styled from "styled-components";
 import EconomicParameters from "./components/EconomicParameters";
 import ContributionAndFees from "./components/ContributionAndFees";
+import ContractInteractions from "./components/ContractInteractions";
+import ActiveAccountDetails from "./components/ActiveAccountDetails";
 
 const { AccountData, ContractData, ContractForm } = newContextComponents;
 
@@ -68,193 +70,33 @@ export default ({ drizzle, drizzleState }) => {
   return (
     <div className="App">
       <Grid>
+
         <Header>
           <Img src={viLogo} alt="value-instrument-logo" />
           <Title>VI Currency Admin</Title>
           <Subtitle>
-            Admin interface for adjusting parameters of a Value Instrument
-            currency.
+            Easily adjust the parameters of your Value Instrument currency
           </Subtitle>
         </Header>
+
         <GridItem>
-          <div className="section">
-            <h2>Balances</h2>
-            <p>
-              <strong>Decayed balance: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="getDecayedBalance"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Balance of: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="balanceOf"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Live balance of: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="liveBalanceOf"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <strong>Trigger onchain balance update: </strong>
-            <ContractForm
-              drizzle={drizzle}
-              drizzleState={drizzleState}
-              contract="VICoin"
-              method="triggerOnchainBalanceUpdate"
-              methodArgs={[drizzleState.accounts[0]]}
-            />
-          </div>
+          <ActiveAccountDetails drizzle={drizzle} drizzleState={drizzleState} />
         </GridItem>
-        <GridItem>
-          <div className="section">
-            <h2>Simulate passing of time</h2>
-            <p>Mine blocks to simulate the passing of time.</p>
-            <p>
-              <strong>Block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="getBlockNumber"
-              />
-            </p>
-            <ContractForm drizzle={drizzle} contract="VICoin" method="mine" />
-          </div>
-        </GridItem>
+
         <GridItem>
           <EconomicParameters drizzle={drizzle} drizzleState={drizzleState} />
         </GridItem>
-        <GridItem>
-          <div className="section">
-            <h2>Transfer:</h2>
-            <p>Transfer value.</p>
-            <strong>Transfer: </strong>
-            <ContractForm
-              drizzle={drizzle}
-              contract="VICoin"
-              method="transfer"
-              labels={["Recipient", "Amount in VALUE"]}
-            />
-            <p>
-              <strong>Last generation block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="lastGenerationBlock"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-          </div>
-        </GridItem>
+
         <GridItem>
           <ContributionAndFees drizzle={drizzle} drizzleState={drizzleState} />
         </GridItem>
+
         <GridItem>
-          <div className="section">
-            <h2>Verify an account:</h2>
-            <p>Verify a new account.</p>
-            <strong>Account to verify: </strong>
-            <ContractForm
-              drizzle={drizzle}
-              contract="VICoin"
-              method="verifyAccount"
-              sendArgs={{ gas: 600000, gasPrice: 40000000000 }}
-            />
-            <p>
-              <strong>Last generation block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="lastGenerationBlock"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Last incoming transaction block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="lastTransactionBlock"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Account verified: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="accountApproved"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-          </div>
+          <ContractInteractions drizzle={drizzle} drizzleState={drizzleState} />
         </GridItem>
-        <GridItem>
-          <div className="section">
-            <h2>Your account in detail:</h2>
-            <p>Details of your account.</p>
-            <p>
-              <strong>Zero block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="zeroBlock"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Last generation block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="lastGenerationBlock"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Last incoming transaction block: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="lastTransactionBlock"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-            <p>
-              <strong>Account verified: </strong>
-              <ContractData
-                drizzle={drizzle}
-                drizzleState={drizzleState}
-                contract="VICoin"
-                method="accountApproved"
-                methodArgs={[drizzleState.accounts[0]]}
-              />
-            </p>
-          </div>
-        </GridItem>
+
         <Footer>
-          <h2>Active account</h2>
+          <h2>Active address</h2>
           <AccountData
             drizzle={drizzle}
             drizzleState={drizzleState}
@@ -263,6 +105,7 @@ export default ({ drizzle, drizzleState }) => {
             precision={3}
           />
         </Footer>
+        
       </Grid>
     </div>
   );

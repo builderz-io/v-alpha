@@ -7,7 +7,7 @@ const EconomicParameters = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Economic parameters</h2>
-      <p>Adjust the economic parameters of your currency.</p>
+      <p><i>Adjust the economic parameters of your currency</i></p>
       <p>
         <strong>Generation Period: </strong>
         <ContractData

@@ -7,7 +7,7 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
       <h2>Contribution and fees</h2>
-      <p>Adjust fees and contribution rate of your currency.</p>
+      <p><i>Adjust fees and contribution rate of your currency</i></p>
       <p>
         <strong>Contribution rate: </strong>
         <ContractData
