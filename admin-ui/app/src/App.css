@@ -8,3 +8,59 @@
   max-width: 720px;
   margin: 4rem auto auto;
 }
+
+button {
+    padding: 7px 12px;
+    border-radius: 3px;
+    background: cadetblue;
+    border: none;
+    color: white;
+}
+
+input {
+  padding: 6px 12px;
+  border-radius: 3px;
+  border: 1px solid cadetblue;
+  width: 230px;
+    max-width: 100%;
+    margin: 0 5px 5px 0;
+}
+
+.description {
+  font-size: 0.85rem;
+  line-height: 1.25rem;
+    display: block;
+    background: gold;
+    padding: 1px 35px 1px 15px;
+    border-radius: 6px;
+    min-height: 4rem;
+    margin-bottom: 20px;
+}
+
+.attention {
+    font-size: 0.85rem;
+    line-height: 1.25rem;
+    color: crimson;
+    display: block;
+    min-height: 6rem;
+    background: lavenderblush;
+    padding: 1px 35px 1px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.curr-contr-acc {
+  font-size: 0.85rem;
+}
+
+.exclamation-mark {
+  font-size: 0.9em;
+}
+
+.mining-input-placeholder {
+  float: left;
+}
+
+.h3-margin-top {
+  margin-top: 50px;
+}

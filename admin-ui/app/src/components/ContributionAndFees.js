@@ -6,45 +6,30 @@ const { ContractData, ContractForm } = newContextComponents;
 const ContributionAndFees = ({ drizzle, drizzleState }) => {
   return (
     <div className="section">
-      <h2>Contribution and fees</h2>
-      <p>Adjust fees and contribution rate of your currency.</p>
+      <h2>Contribution & Fees</h2>
+      <div class="description">
+        <p><i>Adjust fees and contribution rate of your currency</i></p>
+      </div>
+      <div class="attention">
+        <p>
+          <span class="exclamation-mark" role="img" aria-label="pay attention">❗️&nbsp;</span><i>Add &nbsp;
+          <ContractData
+            drizzle={drizzle}
+            drizzleState={drizzleState}
+            contract="VICoin"
+            method="contributionFeeDecimals"
+          />
+          &nbsp; decimal places to transaction fee and contribution, e.g. 12 is entered as 1200</i></p>
+      </div>
       <p>
-        <strong>Contribution rate: </strong>
-        <ContractData
-          drizzle={drizzle}
-          drizzleState={drizzleState}
-          contract="VICoin"
-          method="communityContribution"
-        />
-      </p>
-      <ContractForm
-        drizzle={drizzle}
-        contract="VICoin"
-        method="updateCommunityContribution"
-      />
-      <p>
-        <strong>Contribution account: </strong>
-        <ContractData
-          drizzle={drizzle}
-          drizzleState={drizzleState}
-          contract="VICoin"
-          method="communityContributionAccount"
-        />
-      </p>
-      <ContractForm
-        drizzle={drizzle}
-        contract="VICoin"
-        method="updateCommunityContributionAccount"
-      />
-      <p>
-        <strong>Transaction fees: </strong>
+        <strong>Transaction Fee: </strong>
         <ContractData
           drizzle={drizzle}
           drizzleState={drizzleState}
           contract="VICoin"
           method="transactionFee"
           precision={2}
-        />
+        /> % of Transaction
       </p>
       <ContractForm
         drizzle={drizzle}
@@ -52,13 +37,37 @@ const ContributionAndFees = ({ drizzle, drizzleState }) => {
         method="updateTransactionFee"
       />
       <p>
-        <strong>Decimal places in contribution fee: </strong>
+        <strong>Contribution: </strong>
         <ContractData
           drizzle={drizzle}
           drizzleState={drizzleState}
           contract="VICoin"
-          method="contributionFeeDecimals"
+          method="communityContribution"
+        /> % of Fee
+      </p>
+      <ContractForm
+        drizzle={drizzle}
+        contract="VICoin"
+        method="updateCommunityContribution"
+      />
+      <p>
+        <strong>Contribution Account</strong>
+      </p>
+      <ContractForm
+        drizzle={drizzle}
+        contract="VICoin"
+        method="updateCommunityContributionAccount"
+      />
+      <p>
+        <span class="curr-contr-acc">
+        Current contribution account is: <br/>
+        <ContractData
+          drizzle={drizzle}
+          drizzleState={drizzleState}
+          contract="VICoin"
+          method="communityContributionAccount"
         />
+        </span>
       </p>
     </div>
   );

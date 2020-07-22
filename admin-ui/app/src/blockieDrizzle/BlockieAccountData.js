@@ -51,7 +51,7 @@ class BlockieAccountData extends Component {
 
     return (
       <div>
-        <h4>{address}</h4>
+        <p>{address}</p>
         <Blockie address={address} />
       </div>
     );
