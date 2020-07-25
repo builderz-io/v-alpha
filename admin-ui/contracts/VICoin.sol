@@ -133,7 +133,7 @@ contract VICoin is
     }
 
     function() external payable {
-        require(false, "Do not send money to the contract");
+        revert("Do not send money to the contract");
     }
 
     /** @notice Calculate the number of generation periods since the last
@@ -650,8 +650,7 @@ contract VICoin is
         fused(4)
     {
         //TODO: delete/update lastGenerationBlock to prevent calculation errors
-        require(
-            false,
+        revert(
             "Currently not possible to change generation period after deploy."
         );
         generationPeriod = _generationPeriod;
