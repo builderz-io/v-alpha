@@ -18,11 +18,11 @@ pragma solidity ^0.5.8;
         minimisation of gas. Performance tweaking can come later.
 */
 
-import './lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol';
-import './lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Burnable.sol';
-import './lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
-import './lib/openzeppelin-solidity/contracts/math/Math.sol';
-import './FusedController.sol';
+import "./lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
+import "./lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Burnable.sol";
+import "./lib/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
+import "./lib/openzeppelin-solidity/contracts/math/Math.sol";
+import "./FusedController.sol";
 
 /// @notice One contract is deployed for each community
 /// @dev Based on openzeppelin's burnable and mintable ERC20 tokens
@@ -32,87 +32,94 @@ contract VICoin is
     ERC20Detailed,
     FusedController
 {
-
-    using SafeMath for uint;
-    using SafeMath for int;
+    using SafeMath for uint256;
+    using SafeMath for int256;
 
     // 1. Limited lifetime (decayed tokens)
 
-    uint public lifetime;
+    uint256 public lifetime;
     // number of blocks until balance decays to zero
-    mapping (address => uint) public lastTransactionBlock;
+    mapping(address => uint256) public lastTransactionBlock;
     // last incoming transaction
-    mapping (address => uint) public lastGenerationBlock;
+    mapping(address => uint256) public lastGenerationBlock;
     // last generation received
-    mapping (address => uint) public zeroBlock;
+    mapping(address => uint256) public zeroBlock;
     // current 0 balance block
 
     // 2. Generation (new tokens)
 
-    mapping (address => bool) public accountApproved;
+    mapping(address => bool) public accountApproved;
     // is the account approved to receive generation
-    uint public generationPeriod;
+    uint256 public generationPeriod;
     // blocks between each generation period
-    uint public generationAmount;
+    uint256 public generationAmount;
     // tokens issued to each account at each generation period
-    uint public initialBalance;
+    uint256 public initialBalance;
     // starting balance for a new account
 
     // 3. Fees and contribution
-    uint public communityContribution;
+    uint256 public communityContribution;
     // contribution % taken from the transaction fee on every transfer
-    uint public transactionFee;
+    uint256 public transactionFee;
     // transaction fee % taken from every transfer
     address public communityContributionAccount;
     // account that receives the contribution payments
 
     // Constants
-    uint constant public multiplier = 10 ** 6;
+    uint256 public constant multiplier = 10**6;
     // accuracy for floating point multiplication
-    uint constant public contributionFeeDecimals = 2;
+    uint256 public constant contributionFeeDecimals = 2;
     // number of decimal places for contribution and fee %
 
-
     // Testing
-    uint public blocksMined;
+    uint256 public blocksMined;
     // blocks mined manually (for testing)
 
     // Events:
-    event IncomeReceived(address indexed _account, uint _income);
-    event Decay(address indexed _account, uint _decay);
-    event Mint(address indexed to, uint value);
+    event TransferSummary(
+        address indexed from,
+        address indexed to,
+        uint256 value,
+        uint256 feesBurned,
+        uint256 contribution,
+        uint256 payoutSender,
+        uint256 payoutRecipient
+    );
+    event IncomeReceived(address indexed _account, uint256 _income);
+    event Decay(address indexed _account, uint256 _decay);
+    event Mint(address indexed to, uint256 value);
     event VerifyAccount(address indexed _account);
-    event Burn(address indexed to, uint value);
-    event PaidContribution(address indexed to, uint value);
-    event BurnedFees(address indexed to, uint value);
+    event Burn(address indexed to, uint256 value);
     event ApproveAccount(address indexed _account);
     event UnapproveAccount(address _account);
-    event UpdateLifetime(uint _lifetime);
-    event UpdateInitialBalance(uint _initialBalance);
-    event UpdateGenerationAmount(uint _generationAmount);
-    event UpdateGenerationPeriod(uint _generationPeriod);
-    event UpdateCommunityContributionAccount(address _newCommunityContributionAccount);
-    event UpdateTransactionFee(uint _transactionFee);
-    event UpdateCommunityContribution(uint _communityContribution);
-    event Mined(uint _block);
-    event Log(string _name, uint _value);
+    event UpdateLifetime(uint256 _lifetime);
+    event UpdateInitialBalance(uint256 _initialBalance);
+    event UpdateGenerationAmount(uint256 _generationAmount);
+    event UpdateGenerationPeriod(uint256 _generationPeriod);
+    event UpdateCommunityContributionAccount(
+        address _newCommunityContributionAccount
+    );
+    event UpdateTransactionFee(uint256 _transactionFee);
+    event UpdateCommunityContribution(uint256 _communityContribution);
+    event Mined(uint256 _block);
+    event Log(string _name, uint256 _value);
 
     constructor(
         string memory _name,
         string memory _symbol,
         uint8 _decimals,
-        uint _lifetime,
-        uint _generationAmount,
-        uint _generationPeriod,
-        uint _communityContribution,
-        uint _transactionFee,
-        uint _initialBalance,
+        uint256 _lifetime,
+        uint256 _generationAmount,
+        uint256 _generationPeriod,
+        uint256 _communityContribution,
+        uint256 _transactionFee,
+        uint256 _initialBalance,
         address _communityContributionAccount,
         address _controller
     )
+        public
         ERC20Detailed(_name, _symbol, _decimals)
         FusedController(_controller)
-        public
     {
         lifetime = _lifetime;
         generationAmount = _generationAmount;
@@ -121,40 +128,41 @@ contract VICoin is
         transactionFee = _transactionFee;
         initialBalance = _initialBalance;
         communityContributionAccount = _communityContributionAccount;
-        if (communityContributionAccount == address(0)) communityContributionAccount = msg.sender;
+        if (communityContributionAccount == address(0))
+            communityContributionAccount = msg.sender;
     }
 
-    function () external payable {
-        require(1 == 2, "Do not send money to the contract");
+    function() external payable {
+        require(false, "Do not send money to the contract");
     }
 
     /** @notice Calculate the number of generation periods since the last
             generation block
         @return The number of completed periods since last generation block*/
     function calcNumCompletedPeriods(
-        uint _blockNumber,
-        uint _lastGenerationBlock,
-        uint _generationPeriod
-    )
-        public
-        pure
-        returns (uint)
-    {
-        uint blocksSinceLastGeneration = _blockNumber.sub(_lastGenerationBlock);
+        uint256 _blockNumber,
+        uint256 _lastGenerationBlock,
+        uint256 _generationPeriod
+    ) public pure returns (uint256) {
+        uint256 blocksSinceLastGeneration = _blockNumber.sub(
+            _lastGenerationBlock
+        );
         return blocksSinceLastGeneration.div(_generationPeriod);
     }
 
     /// @notice Manually trigger an onchain update of the live balance
-    function triggerOnchainBalanceUpdate(address _account) public {
-
+    function triggerOnchainBalanceUpdate(address _account)
+        public
+        returns (uint256)
+    {
         // 1. Decay the balance
-        uint decay = calcDecay(
+        uint256 decay = calcDecay(
             lastTransactionBlock[_account],
             _balances[_account],
             block.number,
             zeroBlock[_account]
         );
-        uint decayedBalance;
+        uint256 decayedBalance;
         if (decay > 0) {
             decayedBalance = burnAt(_account, decay);
             emit Decay(_account, decay);
@@ -163,7 +171,7 @@ contract VICoin is
         }
 
         // 2. Generate tokens
-        uint generationAccrued;
+        uint256 generationAccrued;
         if (accountApproved[_account]) {
             // Calculate the accrued generation, taking into account decay
             generationAccrued = calcGeneration(
@@ -181,10 +189,12 @@ contract VICoin is
 
                 // Record the last generation block
                 lastGenerationBlock[_account] += calcNumCompletedPeriods(
-                    block.number,
+                    block
+                        .number,
                     lastGenerationBlock[_account],
                     generationPeriod
-                ).mul(generationPeriod);
+                )
+                    .mul(generationPeriod);
 
                 // Extend the zero block
                 zeroBlock[_account] = calcZeroBlock(
@@ -194,13 +204,13 @@ contract VICoin is
                     lifetime,
                     zeroBlock[_account]
                 );
-
             }
         }
         // Record the last transaction block
         if (decay > 0 || generationAccrued > 0) {
             lastTransactionBlock[_account] = block.number;
         }
+        return generationAccrued;
     }
 
     /** @notice Calculate the generation accrued since the last generation
@@ -209,65 +219,65 @@ contract VICoin is
             accounts that have been inactive for an extremely long time. These
             accounts will have zero balance anyway. */
     function calcGeneration(
-        uint _blockNumber,
-        uint _lastGenerationBlock,
-        uint _lifetime,
-        uint _generationAmount,
-        uint _generationPeriod
-    )
-        public
-        pure
-        returns (uint)
-    {
-        uint numCompletePeriods = calcNumCompletedPeriods(
+        uint256 _blockNumber,
+        uint256 _lastGenerationBlock,
+        uint256 _lifetime,
+        uint256 _generationAmount,
+        uint256 _generationPeriod
+    ) public pure returns (uint256) {
+        uint256 numCompletePeriods = calcNumCompletedPeriods(
             _blockNumber,
             _lastGenerationBlock,
             _generationPeriod
         );
 
-        uint decayPerBlock = multiplier.div(_lifetime);
-        uint decayPerGenerationPeriod = decayPerBlock.mul(_generationPeriod);
-        uint remainingPerGenerationPeriod = multiplier.sub(
+        uint256 decayPerBlock = multiplier.div(_lifetime);
+        uint256 decayPerGenerationPeriod = decayPerBlock.mul(_generationPeriod);
+        uint256 remainingPerGenerationPeriod = multiplier.sub(
             decayPerGenerationPeriod
         );
 
-        uint generation;
-        for(uint i; i < numCompletePeriods; i++) {
-            generation = generation.mul(
-                remainingPerGenerationPeriod
-            ).div(multiplier).add(_generationAmount);
+        uint256 generation;
+        for (uint256 i; i < numCompletePeriods; i++) {
+            generation = generation
+                .mul(remainingPerGenerationPeriod)
+                .div(multiplier)
+                .add(_generationAmount);
         }
         return generation;
     }
 
     /** @notice Return the real balance of the account, as of this block
         @return Latest balance */
-    function liveBalanceOf(address _account) public view returns (uint) {
-        uint decay = calcDecay(
+    function liveBalanceOf(address _account) public view returns (uint256) {
+        uint256 decay = calcDecay(
             lastTransactionBlock[_account],
             _balances[_account],
             block.number,
             zeroBlock[_account]
         );
-        uint decayedBalance = _balances[_account].sub(decay);
+        uint256 decayedBalance = _balances[_account].sub(decay);
         if (lastGenerationBlock[_account] == 0) {
-            return(decayedBalance);
+            return (decayedBalance);
         }
-        uint generationAccrued = calcGeneration(
-            block.number,
-            lastGenerationBlock[_account],
-            lifetime,
-            generationAmount,
-            generationPeriod
-        );
+        uint256 generationAccrued = 0;
+        if (accountApproved[_account]) {
+            generationAccrued = calcGeneration(
+                block.number,
+                lastGenerationBlock[_account],
+                lifetime,
+                generationAmount,
+                generationPeriod
+            );
+        }
         return decayedBalance.add(generationAccrued);
     }
 
     /** @notice Return the balance including decay up to the current block,
                 but ignoring any accrued generation
         @return Balance after decay */
-    function getDecayedBalance(address _account) public view returns (uint) {
-        uint decay = calcDecay(
+    function getDecayedBalance(address _account) public view returns (uint256) {
+        uint256 decay = calcDecay(
             lastTransactionBlock[_account],
             _balances[_account],
             block.number,
@@ -284,16 +294,19 @@ contract VICoin is
                 updating each account to reflect the time passed, and the
                 effects of the transfer
         @return Success */
-    function transfer(address _to, uint _value) public returns (bool) {
-
+    function transfer(address _to, uint256 _value) public returns (bool) {
+        uint256 feesBurned;
+        uint256 contribution;
         // Process generation and decay for sender
         emit Log("Sender balance before update", balanceOf(msg.sender));
-        triggerOnchainBalanceUpdate(msg.sender);
+        uint256 generationAccruedSender = triggerOnchainBalanceUpdate(
+            msg.sender
+        );
         emit Log("Sender balance after update", balanceOf(msg.sender));
 
         // Process generation and decay for recipient
         emit Log("Recipient balance before update", balanceOf(_to));
-        triggerOnchainBalanceUpdate(_to);
+        uint256 generationAccruedRecipient = triggerOnchainBalanceUpdate(_to);
         emit Log("Recipient balance after update", balanceOf(_to));
 
         require(
@@ -302,12 +315,17 @@ contract VICoin is
         );
 
         // Process fees and contribution
-        uint feesAndContribution = processFeesAndContribution(
+        (feesBurned, contribution) = processFeesAndContribution(
             _value,
             transactionFee,
             communityContribution
         );
-        uint valueAfterFees = _value.sub(feesAndContribution);
+        // uint feesAndContribution = processFeesAndContribution(
+        //     _value,
+        //     transactionFee,
+        //     communityContribution
+        // );
+        uint256 valueAfterFees = _value.sub(feesBurned).sub(contribution);
 
         //Extend zero block based on transfer
         zeroBlock[_to] = calcZeroBlock(
@@ -328,15 +346,24 @@ contract VICoin is
         }
 
         super.transfer(_to, valueAfterFees);
-
+        emit TransferSummary(
+            msg.sender,
+            _to,
+            valueAfterFees,
+            feesBurned,
+            contribution,
+            generationAccruedSender,
+            generationAccruedRecipient
+        );
         return true;
     }
 
     /// @notice transferFrom disabled
-    function transferFrom(address, address, uint256)
-        public
-        returns (bool)
-    {
+    function transferFrom(
+        address,
+        address,
+        uint256
+    ) public returns (bool) {
         revert("transferFrom disabled");
     }
 
@@ -348,32 +375,33 @@ contract VICoin is
         @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
             when contributionFeeDecimals is 2, 1200 is 12.00%
         @return Tokens to pay as contribution */
-    function calcContribution(uint _value, uint _feeRate, uint _contributionRate)
-        public
-        pure
-        returns (uint)
-    {
-        uint contributionFeeMultiplier = (100 * 10**contributionFeeDecimals) ** 2;
-        return _value.mul(_feeRate).mul(_contributionRate).div(contributionFeeMultiplier);
+    function calcContribution(
+        uint256 _value,
+        uint256 _feeRate,
+        uint256 _contributionRate
+    ) public pure returns (uint256) {
+        uint256 contributionFeeMultiplier = (100 *
+            10**contributionFeeDecimals)**2;
+        return
+            _value.mul(_feeRate).mul(_contributionRate).div(
+                contributionFeeMultiplier
+            );
     }
 
     /** @notice Calculate fees to burn. This is the fee % minus the contribution due
         @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
             when contributionFeeDecimals is 2, 1200 is 12.00%
         @return Tokens to burn as fees */
-    function calcFeesToBurn(uint _value, uint _feeRate, uint _contributionRate)
-        public
-        pure
-        returns (uint)
-    {
-        uint contributionFeeMultiplier = 100 * 10**contributionFeeDecimals;
-        return _value.mul(_feeRate).div(contributionFeeMultiplier).sub(
-            calcContribution(
-                _value,
-                _feeRate,
-                _contributionRate
-            )
-        );
+    function calcFeesToBurn(
+        uint256 _value,
+        uint256 _feeRate,
+        uint256 _contributionRate
+    ) public pure returns (uint256) {
+        uint256 contributionFeeMultiplier = 100 * 10**contributionFeeDecimals;
+        return
+            _value.mul(_feeRate).div(contributionFeeMultiplier).sub(
+                calcContribution(_value, _feeRate, _contributionRate)
+            );
     }
 
     /** @notice Calculate the total amount allocated for both fees and contribution
@@ -381,12 +409,12 @@ contract VICoin is
         @dev Percentage to x dp as defined by contributionFeeDecimals e.g.
             when contributionFeeDecimals is 2, 1200 is 12.00%
         @return Tokens to cover fees, inclusive of contribution */
-    function calcFeesIncContribution(uint _value, uint _feeRate)
+    function calcFeesIncContribution(uint256 _value, uint256 _feeRate)
         public
         pure
-        returns (uint)
+        returns (uint256)
     {
-        uint contributionFeeMultiplier = 100 * 10**contributionFeeDecimals;
+        uint256 contributionFeeMultiplier = 100 * 10**contributionFeeDecimals;
         return _value.mul(_feeRate).div(contributionFeeMultiplier);
     }
 
@@ -396,41 +424,38 @@ contract VICoin is
             when contributionFeeDecimals is 2, 1200 is 12.00%
         @return The total amount used for fees and contribution */
     function processFeesAndContribution(
-        uint _value,
-        uint _transactionFee,
-        uint _communityContribution)
-        internal
-        returns (uint)
-    {
-        uint feesIncContribution = calcFeesIncContribution(
+        uint256 _value,
+        uint256 _transactionFee,
+        uint256 _communityContribution
+    ) internal returns (uint256, uint256) {
+        uint256 feesIncContribution = calcFeesIncContribution(
             _value,
             _transactionFee
         );
-        uint contribution = calcContribution(
+        uint256 contribution = calcContribution(
             _value,
             _transactionFee,
             _communityContribution
         );
-        uint feesToBurn = calcFeesToBurn(
+        uint256 feesToBurn = calcFeesToBurn(
             _value,
             _transactionFee,
             _communityContribution
         );
-        require(feesIncContribution == contribution.add(feesToBurn),
+        require(
+            feesIncContribution == contribution.add(feesToBurn),
             "feesIncContribution should equal contribution + feesToBurn"
         );
 
         if (feesToBurn > 0) {
             burn(feesToBurn);
-            emit BurnedFees(msg.sender, feesToBurn);
         }
 
         if (contribution > 0) {
             super.transfer(communityContributionAccount, contribution);
-            emit PaidContribution(msg.sender, contribution);
         }
 
-        return feesIncContribution;
+        return (feesToBurn, contribution);
     }
 
     ///////////////////////
@@ -441,7 +466,11 @@ contract VICoin is
     function getDetails(address _account)
         public
         view
-        returns (uint _lastBlock, uint _balance, uint _zeroBlock)
+        returns (
+            uint256 _lastBlock,
+            uint256 _balance,
+            uint256 _zeroBlock
+        )
     {
         _lastBlock = lastTransactionBlock[_account];
         _balance = _balances[_account];
@@ -456,16 +485,12 @@ contract VICoin is
             be zero
         @return Block at which balance is 0 */
     function calcZeroBlock(
-        uint _value,
-        uint _balance,
-        uint _blockNumber,
-        uint _lifetime,
-        uint _originalZeroBlock
-    )
-        public
-        pure
-        returns (uint)
-    {
+        uint256 _value,
+        uint256 _balance,
+        uint256 _blockNumber,
+        uint256 _lifetime,
+        uint256 _originalZeroBlock
+    ) public pure returns (uint256) {
         if (_balance == 0 || _originalZeroBlock == 0) {
             // No other transaction to consider, so use the full lifetime
             return _blockNumber.add(_lifetime);
@@ -473,13 +498,13 @@ contract VICoin is
 
         /* transactionWeight is the ratio of the transfer value to the total
             balance after the transfer */
-        uint transactionWeight = _value.mul(multiplier).div(
+        uint256 transactionWeight = _value.mul(multiplier).div(
             _balance.add(_value)
         );
 
         /* multiply the full lifetime by this ratio, and add
             the result to the original zero block */
-        uint newZeroBlock = _originalZeroBlock.add(
+        uint256 newZeroBlock = _originalZeroBlock.add(
             _lifetime.mul(transactionWeight).div(multiplier)
         );
 
@@ -493,7 +518,7 @@ contract VICoin is
         @return Balance after the burn */
     function burnAt(address _recipient, uint256 _value)
         internal
-        returns (uint)
+        returns (uint256)
     {
         require(_value <= _balances[_recipient]);
         _balances[_recipient] = _balances[_recipient].sub(_value);
@@ -506,16 +531,13 @@ contract VICoin is
     /** @notice Calculate the number of tokens decayed since the last transaction
         @return Number of tokens decayed since last transaction */
     function calcDecay(
-        uint _lastTransactionBlock,
-        uint _balance,
-        uint _thisBlock,
-        uint _zeroBlock
-    )
-        public
-        pure
-        returns (uint)
-    {
-        require(_thisBlock >= _lastTransactionBlock,
+        uint256 _lastTransactionBlock,
+        uint256 _balance,
+        uint256 _thisBlock,
+        uint256 _zeroBlock
+    ) public pure returns (uint256) {
+        require(
+            _thisBlock >= _lastTransactionBlock,
             "Current block must be >= last transaction block"
         );
 
@@ -530,22 +552,22 @@ contract VICoin is
         }
 
         // If no blocks passed since last transfer, nothing to decay
-        uint blocksSinceLast = _thisBlock.sub(_lastTransactionBlock);
+        uint256 blocksSinceLast = _thisBlock.sub(_lastTransactionBlock);
         if (blocksSinceLast == 0) {
             return 0;
         }
         /* Otherwise linear burn based on 'distance' moved to zeroblock since
             last transaction */
-        uint fullDistance = _zeroBlock.sub(_lastTransactionBlock);
-        uint relativeMovementToZero = blocksSinceLast.mul(
-            multiplier
-        ).div(fullDistance);
+        uint256 fullDistance = _zeroBlock.sub(_lastTransactionBlock);
+        uint256 relativeMovementToZero = blocksSinceLast.mul(multiplier).div(
+            fullDistance
+        );
         return _balance.mul(relativeMovementToZero).div(multiplier);
     }
 
     /** @notice Return the current block number
         @return Current block number */
-    function getBlockNumber() public view returns (uint) {
+    function getBlockNumber() public view returns (uint256) {
         return block.number;
     }
 
@@ -564,11 +586,7 @@ contract VICoin is
     /////////////////
 
     /// @notice Approve the specified account to receive generation
-    function approveAccount(address _account)
-        external
-        onlyController
-        fused(7)
-    {
+    function approveAccount(address _account) external onlyController fused(7) {
         accountApproved[_account] = true;
         lastGenerationBlock[_account] = block.number;
         emit ApproveAccount(_account);
@@ -588,12 +606,7 @@ contract VICoin is
     /** @notice Create a new account with the specified role
         @dev New accounts can always be created.
             This function can't be disabled. */
-    function verifyAccount(
-        address _account
-    )
-        external
-        onlyController
-    {
+    function verifyAccount(address _account) external onlyController {
         accountApproved[_account] = true;
         if (initialBalance > 0 && lastTransactionBlock[_account] == 0) {
             _mint(_account, initialBalance);
@@ -611,7 +624,7 @@ contract VICoin is
 
     /// @notice Update the lifetime for this currency.
     /// (The number of blocks after which a balance decays to zero)
-    function updateLifetime(uint _lifetime)
+    function updateLifetime(uint256 _lifetime)
         external
         onlyController
         fused(5)
@@ -621,7 +634,7 @@ contract VICoin is
     }
 
     /// @notice Update the balance issued to an account on creation
-    function updateInitialBalance(uint _initialBalance)
+    function updateInitialBalance(uint256 _initialBalance)
         external
         onlyController
         fused(8)
@@ -631,19 +644,23 @@ contract VICoin is
     }
 
     /// @notice Update the number of blocks between each generation period
-    function updateGenerationPeriod(uint _generationPeriod)
+    function updateGenerationPeriod(uint256 _generationPeriod)
         external
         onlyController
         fused(4)
     {
-        generationPeriod = _generationPeriod;
         //TODO: delete/update lastGenerationBlock to prevent calculation errors
+        require(
+            false,
+            "Currently not possible to change generation period after deploy."
+        );
+        generationPeriod = _generationPeriod;
         emit UpdateGenerationPeriod(_generationPeriod);
     }
 
     /** @notice Update the number of tokens issued to each account after each
             generation period */
-    function updateGenerationAmount(uint _generationAmount)
+    function updateGenerationAmount(uint256 _generationAmount)
         external
         onlyController
         fused(3)
@@ -652,7 +669,6 @@ contract VICoin is
         emit UpdateGenerationAmount(_generationAmount);
     }
 
-
     /////////////////
     // Getters
     /////////////////
@@ -660,7 +676,7 @@ contract VICoin is
     /** @notice Get the number of tokens issued to each account after each
             generation period
         @return Number of tokens issued during generation */
-    function getGenerationAmount() public view returns (uint) {
+    function getGenerationAmount() public view returns (uint256) {
         return generationAmount;
     }
 
@@ -680,17 +696,17 @@ contract VICoin is
     /////////////////
 
     /// @notice Set the address that the contribution will be sent to
-    function updateCommunityContributionAccount(address _newCommunityContributionAccount)
-        external
-        onlyController
-        fused(0)
-    {
-      	communityContributionAccount = _newCommunityContributionAccount;
-        emit UpdateCommunityContributionAccount(_newCommunityContributionAccount);
+    function updateCommunityContributionAccount(
+        address _newCommunityContributionAccount
+    ) external onlyController fused(0) {
+        communityContributionAccount = _newCommunityContributionAccount;
+        emit UpdateCommunityContributionAccount(
+            _newCommunityContributionAccount
+        );
     }
 
     /// @notice Set the contribution percentage, to be taken from the fee %
-    function updateCommunityContribution(uint _communityContribution)
+    function updateCommunityContribution(uint256 _communityContribution)
         external
         onlyController
         fused(1)
@@ -700,7 +716,7 @@ contract VICoin is
     }
 
     /// @notice Set the fee %, to be taken from every transaction
-    function updateTransactionFee(uint _transactionFee)
+    function updateTransactionFee(uint256 _transactionFee)
         external
         onlyController
         fused(2)
@@ -721,5 +737,4 @@ contract VICoin is
         );
         selfdestruct(_recoverFunds);
     }
-
 }
