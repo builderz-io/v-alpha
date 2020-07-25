@@ -22,17 +22,17 @@ module.exports = function (deployer) {
    *
    */
 
-  const name = 'VI Berlin',
-    symbol = 'VALUE',
-    decimals = 6,
-    generationAmount = 100 * (10**decimals),
-    generationPeriod = 1,
-    lifetimeInBlocks = 100000000,
-    transactionFeePercentage = 33.33 * (10**2),
-    communityContributionPercentage = 10 * (10**2),
-    initialBalance = 200 * (10**decimals),
-    communityContributionAccount = '0xdfb69ffdfe70fd00698891b753c2b029bceb3807', // trufflePAV2 2nd Account
-    controller = '0x0000000000000000000000000000000000000000';
+  // const name = 'VI Berlin',
+  //   symbol = 'VALUE',
+  //   decimals = 6,
+  //   generationAmount = 100 * (10**decimals),
+  //   generationPeriod = 1,
+  //   lifetimeInBlocks = 100000000,
+  //   transactionFeePercentage = 33.33 * (10**2),
+  //   communityContributionPercentage = 10 * (10**2),
+  //   initialBalance = 200 * (10**decimals),
+  //   communityContributionAccount = '0xdfb69ffdfe70fd00698891b753c2b029bceb3807', // trufflePAV2 2nd Account
+  //   controller = '0x0000000000000000000000000000000000000000';
 
   /**
    * Daily Rice Token
@@ -56,17 +56,17 @@ module.exports = function (deployer) {
    *
    */
 
-  // const name = "VI Berlin",
-  //   symbol = "VALUE",
-  //   decimals = 6,
-  //   lifetimeInBlocks = 10,
-  //   generationAmount = 100,
-  //   generationPeriod = 10,
-  //   transactionFeePercentage = 0,
-  //   communityContributionPercentage = 0,
-  //   initialBalance = 200000000,
-  //   communityContributionAccount = "0x0000000000000000000000000000000000000000",
-  //   controller = "0x0000000000000000000000000000000000000000";
+  const name = "VI Berlin",
+    symbol = "VALUE",
+    decimals = 6,
+    lifetimeInBlocks = 10,
+    generationAmount = 100,
+    generationPeriod = 10,
+    transactionFeePercentage = 0,
+    communityContributionPercentage = 0,
+    initialBalance = 200000000,
+    communityContributionAccount = "0x0000000000000000000000000000000000000000",
+    controller = "0x0000000000000000000000000000000000000000";
 
   deployer.deploy(
     VICoin,
