@@ -7,7 +7,7 @@ const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 
 const cors = require( 'cors' );
-const whitelist = ['http://localhost:3021', 'https://alpha.valueinstrument.org'];
+const whitelist = ['http://localhost:3021', 'https://alpha.valueinstrument.org', 'http://vialpha.pagekite.me'];
 
 mongoose.connect( 'mongodb://localhost/ui2020', { useNewUrlParser: true, useUnifiedTopology: true } );
 

@@ -47,7 +47,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, ModalComponents.simpleMessage( 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to KOVAN.' ) );
     }
     else if ( which == 'wallet locked' ) {
-      V.setNode( $modal, ModalComponents.simpleMessage( 'Connecting your wallet ... <br><br>Seeing this message for long? <br>Try<br> - unlocking your wallet manually (MetaMask)<br> - or reloading this site<br> - or deleting cookies for this site' ) );
+      V.setNode( $modal, ModalComponents.connectWallet() );
     }
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'You are logged out' ) );

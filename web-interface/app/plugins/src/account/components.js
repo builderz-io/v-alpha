@@ -117,13 +117,12 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36'
       },
-      html: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
+      html: `<circle cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7" transform="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200"></circle>
               <text class="font-medium fs-xxs ${ textColor }" x="50%" y="59%">${ balance }</text>`,
       click: handleDrawUserNav
 
     } );
-
-    // <text class="font-medium fs-nano txt-brand-primary" x="50%" y="85%">${ initials }</text>
+    // todo   stroke-dasharray   should be in circle for lifetime display
   }
 
   function accountBalance() {

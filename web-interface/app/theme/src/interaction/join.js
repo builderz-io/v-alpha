@@ -72,13 +72,18 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which ) {
-    console.log( which, new Date() );
+    console.log( 'which:', which );
     // Marketplace.draw();
     if ( which == 'entity found' ) {
       V.setNode( 'join', 'clear' );
       const bal = V.getState( 'activeEntity' ).balance;
       if ( !bal ) { // web2 signup
         Account.drawHeaderBalance();
+
+        // TODO: replace setInterval with eventsubscription, when possible
+        // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
+        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+
         V.setNode( '.modal', 'clear' );
         if ( V.getCookie( 'welcome-modal' ) == 1 ) {
           Modal.draw( which );
@@ -87,6 +92,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( bal && bal.success ) { // web3 signup
         Account.drawHeaderBalance( bal.balance.balance );
+
+        // TODO: replace setInterval with eventsubscription, when possible
+        // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
+        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+
         V.setNode( '.modal', 'clear' );
         if ( V.getCookie( 'welcome-modal' ) == 1 ) {
           Modal.draw( which );

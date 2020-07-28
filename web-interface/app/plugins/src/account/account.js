@@ -7,6 +7,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  let cacheBalance;
+
   /* ================== private methods ================= */
 
   // async function castEntityName( address ) {
@@ -120,21 +122,26 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function drawBalance( balance ) {
+    if ( cacheBalance != balance ) {
+      cacheBalance = Number( balance );
+      const $navBal = AccountComponents.headerBalance( balance );
+      V.setNode( 'balance', '' );
+      V.setNode( 'balance', $navBal );
+    }
+  }
+
   /* ============ public methods and exports ============ */
 
   function drawHeaderBalance( balance, which ) {
-    V.setNode( 'balance', '' );
     if ( balance ) {
-      const $navBal = AccountComponents.headerBalance( balance );
-      V.setNode( 'balance', $navBal );
+      drawBalance( balance );
     }
     else {
       const aE = V.getState( 'activeEntity' );
       V.getEntityBalance( aE ).then( accState => {
         const balance = accState.data[0] ? accState.data[0][ which || 'liveBalance' ] : 'n/a';
-        const $navBal = AccountComponents.headerBalance( balance );
-        V.setNode( 'balance', $navBal );
-        // setTimeout( () => {return V.setNode( 'balance', $navBal )}, 100 );
+        drawBalance( balance );
       } );
     }
   }

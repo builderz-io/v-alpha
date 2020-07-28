@@ -9,7 +9,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   let contract;
 
-  const subscribedEvents = {};
+  // const subscribedEvents = {};
 
   const burnAddress = '0x0000000000000000000000000000000000000000';
 
@@ -17,7 +17,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   function setNewActiveAddress() {
 
-    var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+    var currentActiveAddress = window.ethereum.selectedAddress;
+    // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
     // console.log( currentActiveAddress );
     // console.log( V.getState( 'activeAddress' ) );
 
@@ -106,13 +107,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       else if ( txData.txType == 'generated' ) {
         txData.title = 'Community Payout';
       }
-      console.log( 'mapped txData: ', JSON.stringify( txData ) );
+
       return txData;
 
     } );
 
     const a = await Promise.all( filteredAndEnhanced );
-    console.log( a );
+    // console.log( a );
     return a;
   }
 
@@ -160,7 +161,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods  ================= */
 
-  function getWeb3Provider() {
+  async function getWeb3Provider() {
     let provider;
     if ( window.ethereum ) {
       // Modern dapp browsers
@@ -178,7 +179,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
-      // console.log( 'local network is there' );
+      // console.log( 'local network may be there' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
       return {
         success: false,
@@ -189,16 +190,21 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     window.Web3Obj = new Web3( provider );
     contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
 
-    V.getContractState().then( res => {
-      // if ( res.succcess ) {
-      V.setState( 'contract', res.data ? res.data[0] : {} );
-      // }
-    } );
+    const state = await V.getContractState();
 
-    return {
-      success: true,
-      status: 'provider set',
-    };
+    if ( state.success ) {
+      // V.setState( 'contract', state.data ? state.data[0] : {} );
+      return {
+        success: true,
+        status: 'provider set',
+      };
+    }
+    else {
+      return {
+        success: false,
+        status: 'could not set provider',
+      };
+    }
 
   }
 
@@ -208,19 +214,21 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       Join.draw( 'wallet locked' );
 
+      await V.sleep( 1500 );
+
       try {
         // Request account access
         await window.ethereum.enable();
       }
       catch ( error ) {
         // User denied account access...
+        console.log( error );
         return {
           success: false,
           status: 'user denied auth',
         };
       }
     }
-
     if ( window.Web3Obj ) {
 
       const activeAddress = await window.Web3Obj.eth.getAccounts();
@@ -228,12 +236,11 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'activeAddress', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
 
       /* listen to change of address in MetaMask */
-      if ( window.Web3Obj.currentProvider.publicConfigStore ) {
-        window.Web3Obj.currentProvider.publicConfigStore.on( 'update', setNewActiveAddress );
+      if ( window.ethereum && window.ethereum.on ) {
+        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
       }
 
       setEventSubscription( 'TransferSummary' );
-
       return {
         success: true,
         status: 'address set',
@@ -256,36 +263,36 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const contribution = contract.methods.communityContribution.call().call();
       const divisibility = contract.methods.decimals.call().call();
 
-      const allEvents = contract.getPastEvents( 'allEvents', {
-      // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
-        fromBlock: 0,
-        toBlock: 'latest'
-      }, ( error ) => {return error ? console.error( error ) : null} )
-        .then( res => {
-          return res.map( item => {
-            return {
-              b: item.blockNumber,
-              e: item.event,
-              val: item.returnValues.value/( 10**6 ),
-              to: item.returnValues.to,
-              from: item.returnValues.from,
-              all: item
-            };
-          } ).reverse();
-        } );
+      // const allEvents = contract.getPastEvents( 'allEvents', {
+      // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
+      //   fromBlock: 0,
+      //   toBlock: 'latest'
+      // }, ( error ) => {return error ? console.error( error ) : null} )
+      //   .then( res => {
+      //     return res.map( item => {
+      //       return {
+      //         b: item.blockNumber,
+      //         e: item.event,
+      //         val: item.returnValues.value/( 10**6 ),
+      //         to: item.returnValues.to,
+      //         from: item.returnValues.from,
+      //         all: item
+      //       };
+      //     } ).reverse();
+      //   } );
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility, allEvents ] )
+      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility /*, allEvents */ ] )
         .catch( err => { return err } );
 
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
-        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        // console.log( 'Divisibility: ', all[3] );
-        // console.log( 'Contract: ', contract._address );
-        // console.log( 'Network: ', V.getNetwork() );
+        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        console.log( 'Divisibility: ', all[3] );
+        console.log( 'Contract: ', contract._address );
+        console.log( 'Network: ', V.getNetwork().network );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
@@ -298,6 +305,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           network: V.getNetwork(),
           allEvents: all[4],
         };
+
+        V.setState( 'contract', data );
 
         return {
           success: true,
@@ -336,17 +345,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     if ( all && all[0] && all[1] && all[2] ) {
+
+      const data = {
+        coinBalance: castEthBalance( all[0] ),
+        liveBalance: castTokenFloat( all[1] ),
+        tokenBalance: castTokenFloat( all[2]._balance ),
+        lastBlock: all[2]._lastBlock,
+        zeroBlock: all[2]._zeroBlock,
+      };
+
       return {
         success: true,
         status: 'address state retrieved',
         ledger: 'EVM',
-        data: [{
-          coinBalance: castEthBalance( all[0] ),
-          liveBalance: castTokenFloat( all[1] ),
-          tokenBalance: castTokenFloat( all[2]._balance ),
-          lastBlock: all[2]._lastBlock,
-          zeroBlock: all[2]._zeroBlock,
-        }]
+        data: [data]
       };
     }
     else {
@@ -499,19 +511,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   function setEventSubscription( whichEvent ) {
     // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
     const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
-    const subscription = window.Web3Obj.eth.subscribe( 'logs', {
+    /* const subscription = */ window.Web3Obj.eth.subscribe( 'logs', {
       address: contract.options.address,
       topics: [eventJsonInterface.signature]  },
     ( error, result ) => {
-      if ( !error ) {
-        const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
-        if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
-          handleTransferSummaryEvent( eventData );
-        }
+      if ( error ) { console.log( error ); return }
+
+      const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
+      if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
+        handleTransferSummaryEvent( eventData );
       }
+
     } );
 
-    subscribedEvents[whichEvent] = subscription;
+    // subscribedEvents[whichEvent] = subscription;
   }
 
   function setNetVAmount( amount ) {
@@ -564,6 +577,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   } )();
 
   return {
+    getWeb3Provider: getWeb3Provider,
     setActiveAddress: setActiveAddress,
     getContractState: getContractState,
     getAddressState: getAddressState,
