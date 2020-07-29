@@ -616,6 +616,15 @@ contract VICoin is
         lastGenerationBlock[_account] = block.number;
         lastTransactionBlock[_account] = block.number;
         emit VerifyAccount(_account);
+        emit TransferSummary(
+            address(this),
+            _account,
+            initialBalance,
+            0,
+            0,
+            0,
+            0
+        );
     }
 
     /////////////////
