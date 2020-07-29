@@ -44,7 +44,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function img( icon, css ) {
     return V.cN( {
       t: 'div',
-      c: 'circle-1 flex justify-center items-center rounded-full bkg-white transition' + ( css ? ' ' + css : '' ),
+      c: 'circle-1 flex justify-center items-center rounded-full bkg-white transition pill-shadow' + ( css ? ' ' + css : '' ),
       h: V.getIcon( icon )
     } );
   }

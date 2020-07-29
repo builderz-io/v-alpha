@@ -12,6 +12,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== strings ===================== */
 
   const
+    connectingWallet = 'Connecting wallet',
     strClose = 'close';
 
   function str( string, scope ) {
@@ -373,6 +374,27 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
+  function connectWallet() {
+    const $content = modalContent();
+    const $connect = V.cN( {
+      t: 'div',
+      c: 'preloader',
+      h: [
+        {
+          t: 'div',
+          c: 'preloader__ring'
+        },
+        {
+          t: 'loader',
+          c: 'preloader__text',
+          h: str( connectingWallet )
+        }
+      ]
+    } );
+    V.setNode( $content, $connect );
+    return $content;
+  }
+
   function mapAddress() {
     const $content = modalContent();
     const $current = V.cN( {
@@ -479,6 +501,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     web3Join: web3Join,
     web2Join: web2Join,
     disconnect: disconnect,
+    connectWallet: connectWallet,
     mapAddress: mapAddress,
     entityFound: entityFound,
     entityNotFound: entityNotFound,

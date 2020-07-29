@@ -168,8 +168,11 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       $list.scrollTop = $list.scrollHeight;
     }
     const newHeight = getPageHeight( pagePos );
+
     if ( newHeight == p.height ) { return }
+
     V.setAnimation( DOM.$page, { height: newHeight + 'px' }, { duration: 3 } ).then( () => {
+      V.setState( 'page', { height: newHeight } );
       if ( $list && !pageScroll ) {
         $list.scrollTop = 0;
       }
@@ -207,7 +210,6 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       $page.classList.add( 'pill-shadow' );
 
     }
-    V.setState( 'page', { height: newHeight } );
   }
 
   function reset() {

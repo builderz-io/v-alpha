@@ -124,7 +124,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
             data: true,
             auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
           } ).then( res => {
-            console.log( 'verification success:', res );
+            console.log( 'verification success:', res.data[0].fullId );
             return {
               success: true,
               status: 'entity verified'

@@ -518,6 +518,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return getTranslation( which, whichContext, whichDescr );
   }
 
+  function sleep( ms ) {
+    return new Promise( resolve => {return setTimeout( resolve, ms )} );
+  }
+
   /* ====================== export ====================== */
 
   ( () => {
@@ -541,6 +545,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     V.setPipe = setPipe;
     V.getTranslation = getTranslation;
     V.i18n = i18n;
+    V.sleep = sleep;
   } )();
 
   return {
@@ -564,6 +569,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     setPipe: setPipe,
     getTranslation: getTranslation,
     i18n: i18n,
+    sleep: sleep
   };
 
 } )();

@@ -30,7 +30,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         console.log( '*** vcore source web3 and evm scripts loaded ***' );
       }
 
-      V.getWeb3Provider();
+      await V.getWeb3Provider();
 
     }
 
