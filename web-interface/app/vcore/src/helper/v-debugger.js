@@ -24,7 +24,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   const sessionNr = Date.now();
 
-  console.log( 'NEW SESSION LATEST' );
+  console.log( 'NEW SESSION' );
   console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
   console.log( '', new Date().toString() );
   console.log( '', window.location.href );

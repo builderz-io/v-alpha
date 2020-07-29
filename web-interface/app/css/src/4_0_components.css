@@ -13,6 +13,7 @@ list a {
 .circle-1 {
 	width: 2.5rem;
 	height: 2.5rem;
+  border: 1px solid rgba(var(--brandPrimary), 1);
 }
 .circle-2 {
 	width: 3.5rem;

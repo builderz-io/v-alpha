@@ -124,7 +124,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       Navigation.draw();
-      Page.draw( { position: 'closed' } );
+      // Page.draw( { position: 'closed' } );
       Modal.draw( which );
     }
   }
