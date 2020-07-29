@@ -8,9 +8,11 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   /**
-   * Send console logs to server for debugging
-   *
-   */
+    * Send console logs to server for debugging
+    *
+    */
+
+  const queue = [];
 
   if ( VConfig.getSetting( 'sendLogsToServer' ) ) {
     Object.assign( window.console, {
@@ -22,21 +24,28 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   const sessionNr = Date.now();
 
-  console.log( '============ NEW SESSION ============' );
-  console.log( '===== App  ', VConfig.getSetting( 'appVersion' ) );
-  console.log( '===== Date ', new Date() );
-  console.log( '===== Date ', window.location.href );
+  console.log( '======= NEW SESSION =======' );
+  console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '', new Date().toString() );
+  console.log( '', window.location.href );
 
   function handleConsoleMessage( msg, data ) {
+    queue.push( ' ' + msg + ( typeof data == 'string' ? data : data ? JSON.stringify( data ) : '' ) );
+  }
+
+  function postQueue( queue ) {
     fetch( V.getSetting( 'socketHost' ) + '/logs', {
       method: 'POST', // or 'PUT'
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify( sessionNr + ' // ' + String( new Date() ).substr( 16, 8 ) + ' // '+ msg + ( data ? ' ' + JSON.stringify( data ) : '' )  ),
+      body: JSON.stringify( sessionNr + ' - ' + String( new Date() ).substr( 16, 8 ) + ' // ' + queue ),
     } );
+    queue.length = 0;
   }
+
+  setInterval( ( q ) => { if( q.length ) { postQueue( q ) } }, 11000, queue );
 
   const $debug = VDom.setNode( {
     tag: 'debug',
