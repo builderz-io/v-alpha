@@ -72,7 +72,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which ) {
-    console.log( 'which:', which );
+    console.log( 'join: ', which );
     // Marketplace.draw();
     if ( which == 'entity found' ) {
       V.setNode( 'join', 'clear' );

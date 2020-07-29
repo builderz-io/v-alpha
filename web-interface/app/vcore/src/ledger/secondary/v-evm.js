@@ -288,11 +288,11 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
-        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        console.log( 'Divisibility: ', all[3] );
-        console.log( 'Contract: ', contract._address );
-        console.log( 'Network: ', V.getNetwork().network );
+        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        // console.log( 'Divisibility: ', all[3] );
+        // console.log( 'Contract: ', contract._address );
+        // console.log( 'Network: ', V.getNetwork().network );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 

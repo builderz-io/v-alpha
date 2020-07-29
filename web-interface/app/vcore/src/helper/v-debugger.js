@@ -24,10 +24,11 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   const sessionNr = Date.now();
 
-  console.log( '======= NEW SESSION =======' );
+  console.log( 'NEW SESSION LATEST' );
   console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
   console.log( '', new Date().toString() );
   console.log( '', window.location.href );
+  console.log( '', navigator.userAgent );
 
   function handleConsoleMessage( msg, data ) {
     queue.push( ' ' + msg + ( typeof data == 'string' ? data : data ? JSON.stringify( data ) : '' ) );
@@ -45,7 +46,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     queue.length = 0;
   }
 
-  setInterval( ( q ) => { if( q.length ) { postQueue( q ) } }, 11000, queue );
+  setInterval( ( q ) => { if( q.length ) { postQueue( q ) } }, 9000, queue );
 
   const $debug = VDom.setNode( {
     tag: 'debug',
