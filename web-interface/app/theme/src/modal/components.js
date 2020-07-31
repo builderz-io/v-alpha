@@ -94,6 +94,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( 'title' );
     const $new = V.cN( {
       t: 'div',
+      i: 'name-new',
       c: buttonClasses, //+ ' modal-pos-1',
       k: handleSetEntity,
       h: V.i18n( 'Name profile', 'modal' )
@@ -241,6 +242,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'modal fixed',
       h: {
         t: 'div',
+        i: 'modal-close',
         c: 'modal__close',
         h: str( strClose ),
         k: handleModalClose

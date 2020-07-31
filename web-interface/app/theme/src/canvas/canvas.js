@@ -193,17 +193,29 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function setWindow() {
+  function setDocument() {
 
-    function refresh() {
-      location.reload();
-    }
+    // function refresh() {
+    //   location.reload();
+    // }
 
     // window.onresize = function() {
     //   V.setNode( 'body', 'clear' );
     //   clearTimeout( V.getState( 'throttle' ) );
     //   V.setState( 'throttle', setTimeout( refresh, 200 ) );
     // };
+
+    document.addEventListener( 'keydown', function( e ) {
+      const key = window.event ? e.keyCode : e.which;
+      if ( key == 13 ) {
+        e.preventDefault();
+        handleKeyboard( ['plus', 'set', 'name-new', 'query'] );
+      }
+      else if ( key == 27 ) {
+        e.preventDefault();
+        handleKeyboard( ['close', 'modal-close'] );
+      }
+    } );
 
   }
 
@@ -318,6 +330,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function handleKeyboard( array ) {
+    array.some( elem => {
+      if ( V.getVisibility( '#' + elem ) ) {
+        V.getNode( '#' + elem ).click();
+      }
+    } );
+  }
+
   /* ============ public methods and exports ============ */
 
   async function launch() {
@@ -327,7 +347,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     V.setPipe(
       setState,
-      setWindow,
+      setDocument,
       setCss,
       setFont,
     )();

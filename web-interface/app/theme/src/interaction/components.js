@@ -390,6 +390,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     return V.cN( { // #ffa41b
       t: 'join',
+      i: 'join',
       c: 'fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
       h: {
