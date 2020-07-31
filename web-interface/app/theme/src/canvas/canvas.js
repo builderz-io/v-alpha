@@ -205,7 +205,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     //   V.setState( 'throttle', setTimeout( refresh, 200 ) );
     // };
 
-    document.addEventListener( 'keydown', function( e ) {
+    document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
         e.preventDefault();

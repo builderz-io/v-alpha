@@ -152,7 +152,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     e.target.removeEventListener( 'click', handleTransaction, false );
 
-    if ( V.getState( 'activeAddress' ) ) {
+    const aA = V.getState( 'activeAddress' );
+
+    if ( aA ) {
       const $btn = V.getNode( '#sign-transaction' );
       $btn.style.background = 'white';
       $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
@@ -164,9 +166,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
-          // console.log( res );
-          // Modal.draw( 'transaction successful' );
-          // Account.drawHeaderBalance();
+          if ( !aA ) {
+            Modal.draw( 'transaction successful' );
+            Account.drawHeaderBalance();
+          }
         }
         else {
           Modal.draw( 'error' );

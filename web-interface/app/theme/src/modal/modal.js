@@ -70,7 +70,8 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 2500 );
     }
     else if ( which == 'transaction successful' ) {
-      V.setNode( $modal, ModalComponents.simpleMessage( 'Transaction successful' ) );
+      V.setNode( $modal, ModalComponents.simpleMessage( '✅ Transaction successful' ) );
+      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 2500 );
     }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'An error occured' ) );

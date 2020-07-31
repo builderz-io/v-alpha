@@ -147,7 +147,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
 
-      if ( !entityData.evmAddress ) {
+      if ( window.Web3Obj && !entityData.evmAddress ) {
         const newEvmAccount = window.Web3Obj.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();

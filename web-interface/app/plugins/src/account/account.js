@@ -21,9 +21,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     const aE = V.getState( 'activeEntity' );
 
     if ( !aE ) {
-      // TODO: draw on entering through link
-      // Marketplace.draw();
-      return;
+      return {
+        success: false,
+        status: ''
+      };
     }
 
     const transactions = await V.getTransaction();
@@ -75,29 +76,33 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( txData ) {
-
-    const $list = CanvasComponents.list( 'narrow' );
-
-    const $topcontent = AccountComponents.topcontent( txData.aE.fullId, txData.entityBalance );
-
-    // if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-    //   V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
-    // }
-
     if ( txData.success ) {
-      for ( const tx of txData.data /*.reverse() */ ) {
-        const $cardContent = AccountComponents.accountCard( tx );
-        const $card = CanvasComponents.card( $cardContent );
-        V.setNode( $list, $card );
+      const $list = CanvasComponents.list( 'narrow' );
+
+      const $topcontent = AccountComponents.topcontent( txData.aE.fullId, txData.entityBalance );
+
+      // if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+      //   V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
+      // }
+
+      if ( txData.success ) {
+        for ( const tx of txData.data /*.reverse() */ ) {
+          const $cardContent = AccountComponents.accountCard( tx );
+          const $card = CanvasComponents.card( $cardContent );
+          V.setNode( $list, $card );
+        }
       }
+      else {
+        V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
+      }
+      Page.draw( {
+        topcontent: $topcontent,
+        listings: $list,
+      } );
     }
     else {
-      V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
+      Marketplace.draw();
     }
-    Page.draw( {
-      topcontent: $topcontent,
-      listings: $list,
-    } );
   }
 
   function preview( path ) {
