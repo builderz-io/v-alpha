@@ -14,6 +14,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Profile.draw( path );
   }
 
+  function handleDrawPlusForm() {
+    Page.draw( { position: 'closed', reset: false } );
+    Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
+  }
+
   const background = ( cardData ) => {
     const sc = V.getState( 'screen' );
     const palette = ['rgba(' + sc.brandSecondary + ', 1)'];
@@ -51,6 +56,30 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       },
       e: {
         click: handleProfileDraw.bind( circleData.path )
+      }
+    } );
+  }
+
+  function entitiesAddCard() {
+    return V.cN( {
+      t: 'li',
+      c: 'pxy flex items-center',
+      h: {
+        t: 'addcard',
+        c: 'addcard__container txt-center rounded bkg-white',
+        h: {
+          t: 'div',
+          c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
+          a: {
+            style: 'background:white;border: 2px solid rgba(var(--brandPrimary), 1);margin-left: 5px;'
+          },
+          h: {
+            t: 'div',
+            c: 'card__initials font-bold fs-xl txt-brand',
+            h: '+'
+          },
+          k: handleDrawPlusForm
+        }
       }
     } );
   }
@@ -147,6 +176,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   return {
     castCircle: castCircle,
+    entitiesAddCard: entitiesAddCard,
     entitiesSmallCard: entitiesSmallCard,
     entitiesPlaceholder: entitiesPlaceholder,
     cardContent: cardContent,

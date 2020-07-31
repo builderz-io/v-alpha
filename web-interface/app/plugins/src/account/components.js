@@ -114,6 +114,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.castNode( { // #1b1aff
       tag: 'svg',
       a: {
+        style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36'
       },

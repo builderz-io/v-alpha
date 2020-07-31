@@ -41,6 +41,10 @@ Modules to connect to distributed ledger technologies and distributed identity m
 
 The VToken concept cast into a smart contract, which can be setup on Ethereum and EVM-compatible ledgers. This is a special kind of token with several customizable properties, which can be set to the initiators liking.
 
+🔸 **Administration Panel**
+
+The Admin Panel allows the initiators of a VToken smart contract to change any of its settings, conveniently via a web interface.
+
 🔸 **MongoDB Entity Store**
 
 The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used to transact funds but not used for identities. This is helpful for testing and exploring user needs. This module also enables token accounts and transactions in VToken format, if no distributed ledger is used for transactions either (as a simulation of such) and provides a network/community chat-thread.
