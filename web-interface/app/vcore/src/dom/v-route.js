@@ -155,6 +155,15 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
         };
       }
     },
+    {
+      path: '/pools',
+      action: () => {
+        return {
+          status: 'pool',
+          data: [ '/pools' ]
+        };
+      }
+    },
     // {
     //   path: '/events',
     //   action: () => {

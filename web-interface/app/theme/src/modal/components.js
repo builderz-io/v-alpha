@@ -439,7 +439,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'txt-center',
       h: [
         { t: 'p', c: 'pxy', h: V.i18n( 'Click to copy the key and store it safely elsewhere', 'modal' ) },
-        UserComponents.caseUphraseNode( activeEntity.private.uPhrase, 'txt-red fs-l' ),
+        UserComponents.castUphraseNode( activeEntity.private.uPhrase, 'txt-red fs-l' ),
         { t: 'p', c: 'pxy', h: V.i18n( 'You\'ll need this key to manage this profile', 'modal' ) }
       ]
     } );

@@ -90,7 +90,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       window.socket.on( 'connect_error', ( error ) => {
-        VDebugger.debug( error );
+        // V.debug( error );
         reject( 'could not connect socket' );
       } );
 

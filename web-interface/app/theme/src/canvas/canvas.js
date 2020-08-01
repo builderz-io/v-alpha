@@ -248,7 +248,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         if ( ['home'].includes( status ) ) {
           Marketplace.draw();
         }
-        else if ( ['market', 'market category'].includes( status ) ) {
+        else if ( ['market', 'market category', 'pool'].includes( status ) ) {
           Marketplace.draw( which );
         }
         else if ( ['media', 'media category'].includes( status ) ) {

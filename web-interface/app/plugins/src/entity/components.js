@@ -289,22 +289,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     else {
       const selection = window.getSelection();
       selection.removeAllRanges();
-      this.previousSibling.innerHTML = 'vx';
+      this.previousSibling.innerHTML = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
       this.type = 'password';
     }
   }
 
-  function caseUphraseNode( uPhrase, css = '' ) {
+  function castUphraseNode( phrase, css = '' ) {
     return V.cN( {
       t: 'div',
       c: 'pxy ' + css,
       h: [
-        { t: 'span', h: 'vx' },
+        { t: 'span', h: phrase.length > 18 ? '0x' : phrase.length ? 'vx' : '' },
         {
           t: 'input',
           c: css,
           a: {
-            value: uPhrase,
+            value: phrase,
             type: 'password',
           },
           y: {
@@ -386,7 +386,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function uPhraseCard() {
     const uPhrase = entity.private.uPhrase;
     if( uPhrase ) {
-      const $innerContent = caseUphraseNode( uPhrase );
+      const $innerContent = castUphraseNode( uPhrase );
       return castCard( $innerContent, 'Entity Management Key' );
     }
     else {
@@ -547,6 +547,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityListCard( entity ) {
+    const uPhrase = entity.private.uPhrase;
+    const privateKey = entity.evmCredentials ? entity.evmCredentials.privateKey ? entity.evmCredentials.privateKey : '' : '';
     const $innerContent = V.cN( {
       t: 'div',
       h: [
@@ -555,7 +557,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           c: 'pxy font-bold fs-l',
           h: entity.fullId,
         },
-        caseUphraseNode( entity.private.uPhrase )
+        castUphraseNode( uPhrase ),
+        castUphraseNode( privateKey )
       ],
     } );
     return castCard( $innerContent, '' );
@@ -785,7 +788,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     handleViewKeyFocus: handleViewKeyFocus,
-    caseUphraseNode: caseUphraseNode,
+    castUphraseNode: castUphraseNode,
     setData: setData,
     topcontent: topcontent,
     descriptionCard: descriptionCard,

@@ -71,11 +71,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
           a: {
-            style: 'background:white;border: 2px solid rgba(var(--brandPrimary), 1);margin-left: 5px;'
+            style: 'background:rgba(var(--black), 0.08);margin-left: 5px;' // border: 2px solid rgba(var(--brandPrimary), 1)
           },
           h: {
             t: 'div',
-            c: 'card__initials font-bold fs-xl txt-brand',
+            c: 'card__initials font-bold fs-xxl txt-white',
             h: '+'
           },
           k: handleDrawPlusForm

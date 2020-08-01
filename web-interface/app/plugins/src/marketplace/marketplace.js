@@ -95,7 +95,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Form.draw( 'all', { fade: 'out' } );
         Button.draw( 'all', { fade: 'out' } );
       }
-      console.log( viewData.whichPath );
       if ( viewData.whichPath != '/market/all' ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
