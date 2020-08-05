@@ -1,5 +1,5 @@
-const HDWalletProvider = require( 'truffle-hdwallet-provider' );
-const private = require('./private');
+const HDWalletProvider = require("truffle-hdwallet-provider");
+const private = require("./private");
 
 module.exports = {
   networks: {
@@ -7,41 +7,44 @@ module.exports = {
       host: "127.0.0.1",
       port: 8545,
       network_id: "*",
-      websockets: true
+      websockets: true,
     },
     idchain: {
-      provider: function() {
-        return new HDWalletProvider( private.mnemonic, 'https://idchain.one/rpc/' );
+      provider: function () {
+        return new HDWalletProvider(
+          private.mnemonic,
+          "https://idchain.one/rpc/"
+        );
       },
-      network_id: 74
+      network_id: 74,
     },
     kovan: {
-      provider: function() {
-        return new HDWalletProvider( private.mnemonic, private.kovanEndpoint );
+      provider: function () {
+        return new HDWalletProvider(private.mnemonic, private.kovanEndpoint);
       },
-      network_id: 42
+      network_id: 42,
     },
     ropsten: {
-      provider: function() {
-        return new HDWalletProvider( private.mnemonic, private.ropstenEndpoint );
+      provider: function () {
+        return new HDWalletProvider(private.mnemonic, private.ropstenEndpoint);
       },
-      network_id: 3
+      network_id: 3,
     },
     development9545: {
-      provider: function() {
-        return new HDWalletProvider( private.mnemonic, 'http://127.0.0.1:9545/' );
+      provider: function () {
+        return new HDWalletProvider(private.mnemonic, "http://127.0.0.1:9545/");
       },
-      network_id: '*',
+      network_id: "*",
     },
-
   },
   compilers: {
     solc: {
       settings: {
         optimizer: {
-          enabled: true
-        }
-      }
-    }
-  }
+          enabled: true,
+        },
+      },
+      version: "0.5.17",
+    },
+  },
 };
