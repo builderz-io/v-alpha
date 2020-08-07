@@ -24,6 +24,11 @@ module.exports = {
       },
       network_id: 42,
     },
+    rinkeby: {
+      provider: function () {
+        return new HDWalletProvider(private.mnemonic, private.rinkebyEndpoint);
+      },
+    },
     ropsten: {
       provider: function () {
         return new HDWalletProvider(private.mnemonic, private.ropstenEndpoint);
