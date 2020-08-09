@@ -1,4 +1,6 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.6.6;
+
+import "./lib/contracts-ethereum-package/Initializable.sol";
 
 /**
     @title A controllable contract that can incrementally transition to an
@@ -8,8 +10,7 @@ pragma solidity ^0.5.0;
         while allowing those special permissions to be discarded at any time
     @dev This contract was developed for solc 0.5.8 */
 
-contract FusedController {
-
+contract FusedController is Initializable {
     address public controller;
     // address with priviledges to adjust settings, add accounts etc
 
@@ -24,8 +25,8 @@ contract FusedController {
     event BlowAllFuses();
     event ChangeController(address _newController);
 
-    constructor(address _controller) public {
-        if(_controller == address(0)){
+    function initialize(address _controller) public initializer {
+        if (_controller == address(0)) {
             controller = msg.sender;
         } else {
             controller = _controller;
@@ -35,10 +36,7 @@ contract FusedController {
     /// Modifiers
 
     modifier fused(uint8 _fuseID) {
-        require(
-            allFusesBlown == false,
-            "Function fuse has been triggered"
-        );
+        require(allFusesBlown == false, "Function fuse has been triggered");
         require(
             fuseBlown[_fuseID] == false,
             "Function fuse has been triggered"
@@ -46,16 +44,13 @@ contract FusedController {
         _;
     }
     modifier onlyController() {
-      require(msg.sender == controller, "Controller account/contract only");
-      _;
+        require(msg.sender == controller, "Controller account/contract only");
+        _;
     }
 
     /// Functions
 
-    function blowAllFuses(bool _confirm)
-        external
-        onlyController
-    {
+    function blowAllFuses(bool _confirm) external onlyController {
         require(
             _confirm,
             "This will permanently disable function all fused functions, please set _confirm=true to confirm"
@@ -64,10 +59,7 @@ contract FusedController {
         emit BlowAllFuses();
     }
 
-    function blowFuse(uint8 _fuseID, bool _confirm)
-        external
-        onlyController
-    {
+    function blowFuse(uint8 _fuseID, bool _confirm) external onlyController {
         require(
             _confirm == true,
             "This will permanently disable function, please set _confirm=true to confirm"
@@ -76,10 +68,7 @@ contract FusedController {
         emit BlowFuse(_fuseID);
     }
 
-    function changeController(address _newController)
-        external
-        onlyController
-    {
+    function changeController(address _newController) external onlyController {
         controller = _newController;
         emit ChangeController(_newController);
     }
