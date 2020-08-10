@@ -7,8 +7,7 @@ import "./lib/contracts-ethereum-package/Initializable.sol";
         immutable contract
     @author Marc Griffiths, Value Instrument, the enkel collective
     @notice Provides special permisions to a controller account or contract,
-        while allowing those special permissions to be discarded at any time
-    @dev This contract was developed for solc 0.5.8 */
+        while allowing those special permissions to be discarded at any time */
 
 contract FusedController is Initializable {
     address public controller;
@@ -47,8 +46,6 @@ contract FusedController is Initializable {
         require(msg.sender == controller, "Controller account/contract only");
         _;
     }
-
-    /// Functions
 
     function blowAllFuses(bool _confirm) external onlyController {
         require(

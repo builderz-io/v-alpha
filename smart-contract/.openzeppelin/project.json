@@ -1,7 +1,8 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "VICoin": "VICoin"
+    "VICoin": "VICoin",
+    "VIAdjustable": "VIAdjustable"
   },
   "dependencies": {},
   "name": "v-alpha-2-smart-contract",
