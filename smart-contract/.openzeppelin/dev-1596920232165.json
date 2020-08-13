@@ -315,12 +315,12 @@
         ]
       }
     },
-    "VIAdjustable": {
-      "address": "0xD21b1047EFDc3e6243264010864234255897e42E",
-      "constructorCode": "608060405234801561001057600080fd5b50613924806100206000396000f3fe",
-      "bodyBytecodeHash": "8401a3389feaf8339ef68f4677b1a5949a8c501d4bd3c6aec8868e3e64782537",
-      "localBytecodeHash": "082843d1f96d425960966bb160f0acb723f5ac94860b6ed3dc0ce21e685e895b",
-      "deployedBytecodeHash": "9623c5cb86526457f2308d4614cdaedfb235087d6f43ed3d17297299e852b7e5",
+    "VICoinAdjustable": {
+      "address": "0xecBC2AA619f8fFC19826E90c2b1d6FDEA4AeDD24",
+      "constructorCode": "608060405234801561001057600080fd5b50613799806100206000396000f3fe",
+      "bodyBytecodeHash": "2bca846d7049b01455079ff1fcef4c903ba715f7c9a4eb8c800be141bfdd4a15",
+      "localBytecodeHash": "dba7a4992445e1eccc2f54b8e7f929ebac27129f185f1f05d4fca511afed8e75",
+      "deployedBytecodeHash": "7cc9829630d185af5eab620cdf9a0d8945f4d4d5fe6fda5c8455fdeafcca2e3d",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -381,45 +381,45 @@
           "members": [
             {
               "label": "lifetime",
-              "astId": 407,
+              "astId": 645,
               "type": "t_uint256",
-              "src": "1433:16:4"
+              "src": "664:16:5"
             },
             {
               "label": "generationPeriod",
-              "astId": 409,
+              "astId": 647,
               "type": "t_uint256",
-              "src": "1500:24:4"
+              "src": "731:24:5"
             },
             {
               "label": "generationAmount",
-              "astId": 411,
+              "astId": 649,
               "type": "t_uint256",
-              "src": "1593:24:4"
+              "src": "824:24:5"
             },
             {
               "label": "initialBalance",
-              "astId": 413,
+              "astId": 651,
               "type": "t_uint256",
-              "src": "1665:22:4"
+              "src": "896:22:5"
             },
             {
               "label": "communityContribution",
-              "astId": 415,
+              "astId": 653,
               "type": "t_uint256",
-              "src": "1764:29:4"
+              "src": "995:29:5"
             },
             {
               "label": "transactionFee",
-              "astId": 417,
+              "astId": 655,
               "type": "t_uint256",
-              "src": "1850:22:4"
+              "src": "1081:22:5"
             },
             {
               "label": "communityContributionAccount",
-              "astId": 419,
+              "astId": 657,
               "type": "t_address",
-              "src": "1933:36:4"
+              "src": "1164:36:5"
             }
           ]
         },
@@ -435,177 +435,169 @@
           "contract": "Initializable",
           "path": "contracts/lib/contracts-ethereum-package/Initializable.sol",
           "label": "initialized",
-          "astId": 3175,
+          "astId": 2995,
           "type": "t_bool",
-          "src": "757:24:11"
+          "src": "757:24:13"
         },
         {
           "contract": "Initializable",
           "path": "contracts/lib/contracts-ethereum-package/Initializable.sol",
           "label": "initializing",
-          "astId": 3177,
+          "astId": 2997,
           "type": "t_bool",
-          "src": "876:25:11"
+          "src": "876:25:13"
         },
         {
           "contract": "Initializable",
           "path": "contracts/lib/contracts-ethereum-package/Initializable.sol",
           "label": "______gap",
-          "astId": 3242,
+          "astId": 3062,
           "type": "t_array:50<t_uint256>",
-          "src": "1982:29:11"
+          "src": "1982:29:13"
         },
         {
           "contract": "ContextUpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/GSN/Context.sol",
           "label": "__gap",
-          "astId": 1879,
+          "astId": 1699,
           "type": "t_array:50<t_uint256>",
-          "src": "1277:25:5"
+          "src": "1277:25:7"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "_balances",
-          "astId": 4304,
+          "astId": 4124,
           "type": "t_mapping<t_uint256>",
-          "src": "1481:46:19"
+          "src": "1481:46:21"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "_allowances",
-          "astId": 4310,
+          "astId": 4130,
           "type": "t_mapping<t_uint256>",
-          "src": "1534:69:19"
+          "src": "1534:69:21"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "_totalSupply",
-          "astId": 4312,
+          "astId": 4132,
           "type": "t_uint256",
-          "src": "1610:28:19"
+          "src": "1610:28:21"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "_name",
-          "astId": 4314,
+          "astId": 4134,
           "type": "t_string",
-          "src": "1645:20:19"
+          "src": "1645:20:21"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "_symbol",
-          "astId": 4316,
+          "astId": 4136,
           "type": "t_string",
-          "src": "1671:22:19"
+          "src": "1671:22:21"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "_decimals",
-          "astId": 4318,
+          "astId": 4138,
           "type": "t_uint8",
-          "src": "1699:23:19"
+          "src": "1699:23:21"
         },
         {
           "contract": "ERC20UpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20.sol",
           "label": "__gap",
-          "astId": 4813,
+          "astId": 4633,
           "type": "t_array:44<t_uint256>",
-          "src": "11045:25:19"
+          "src": "11045:25:21"
         },
         {
           "contract": "ERC20BurnableUpgradeSafe",
           "path": "contracts/lib/contracts-ethereum-package/token/ERC20/ERC20Burnable.sol",
           "label": "__gap",
-          "astId": 4908,
+          "astId": 4728,
           "type": "t_array:50<t_uint256>",
-          "src": "1807:25:20"
+          "src": "1807:25:22"
         },
         {
           "contract": "FusedController",
           "path": "contracts/FusedController.sol",
           "label": "controller",
-          "astId": 125,
+          "astId": 369,
           "type": "t_address",
-          "src": "518:25:1"
+          "src": "466:25:1"
         },
         {
           "contract": "FusedController",
           "path": "contracts/FusedController.sol",
           "label": "allFusesBlown",
-          "astId": 127,
+          "astId": 371,
           "type": "t_bool",
-          "src": "619:18:1"
+          "src": "567:18:1"
         },
         {
           "contract": "FusedController",
           "path": "contracts/FusedController.sol",
           "label": "fuseBlown",
-          "astId": 131,
+          "astId": 375,
           "type": "t_array:32<t_bool>",
-          "src": "686:18:1"
+          "src": "634:18:1"
         },
         {
           "contract": "VICoin",
           "path": "contracts/VICoin.sol",
           "label": "settings",
-          "astId": 794,
+          "astId": 673,
           "type": "t_struct<Settings>",
-          "src": "8757:17:4"
+          "src": "1475:17:5"
         },
         {
           "contract": "VICoin",
           "path": "contracts/VICoin.sol",
           "label": "lastTransactionBlock",
-          "astId": 798,
+          "astId": 677,
           "type": "t_mapping<t_uint256>",
-          "src": "8781:55:4"
+          "src": "1498:55:5"
         },
         {
           "contract": "VICoin",
           "path": "contracts/VICoin.sol",
           "label": "lastGenerationBlock",
-          "astId": 802,
+          "astId": 681,
           "type": "t_mapping<t_uint256>",
-          "src": "8875:54:4"
+          "src": "1559:54:5"
         },
         {
           "contract": "VICoin",
           "path": "contracts/VICoin.sol",
           "label": "zeroBlock",
-          "astId": 806,
+          "astId": 685,
           "type": "t_mapping<t_uint256>",
-          "src": "8967:44:4"
+          "src": "1619:44:5"
         },
         {
           "contract": "VICoin",
           "path": "contracts/VICoin.sol",
           "label": "accountApproved",
-          "astId": 810,
+          "astId": 689,
           "type": "t_mapping<t_bool>",
-          "src": "9084:47:4"
-        },
-        {
-          "contract": "VICoin",
-          "path": "contracts/VICoin.sol",
-          "label": "numVerifiedAccounts",
-          "astId": 812,
-          "type": "t_uint256",
-          "src": "9191:27:4"
+          "src": "1669:47:5"
         },
         {
           "contract": "VICoin",
           "path": "contracts/VICoin.sol",
           "label": "numAccounts",
-          "astId": 819,
+          "astId": 691,
           "type": "t_uint256",
-          "src": "9466:26:4"
+          "src": "1722:26:5"
         }
       ],
       "warnings": {
@@ -619,37 +611,12 @@
             "contract": "VICoin",
             "path": "contracts/VICoin.sol",
             "label": "settings",
-            "astId": 794,
+            "astId": 673,
             "type": "t_struct<Settings>",
-            "src": "8757:17:4"
+            "src": "1475:17:5"
           }
         ],
-        "storageDiff": [
-          {
-            "action": "append",
-            "updated": {
-              "index": 20,
-              "contract": "VICoin",
-              "path": "contracts/VICoin.sol",
-              "label": "numVerifiedAccounts",
-              "astId": 812,
-              "type": "t_uint256",
-              "src": "9191:27:4"
-            }
-          },
-          {
-            "action": "append",
-            "updated": {
-              "index": 21,
-              "contract": "VICoin",
-              "path": "contracts/VICoin.sol",
-              "label": "numAccounts",
-              "astId": 819,
-              "type": "t_uint256",
-              "src": "9466:26:4"
-            }
-          }
-        ]
+        "storageDiff": []
       }
     }
   },
@@ -680,10 +647,26 @@
         "admin": "0x6E0745b6B18d0233708554049EEAaB0CB81c4Ab0",
         "kind": "Upgradeable"
       }
+    ],
+    "v-alpha-2-smart-contract/VICoinAdjustable": [
+      {
+        "address": "0x15D7AdC7d6283d57D45017512567985e3A768B83",
+        "version": "2.1.0",
+        "implementation": "0x96Cf503CeBF5CFf0ac30dFe93Aea2A21AA8dDA92",
+        "admin": "0x6E0745b6B18d0233708554049EEAaB0CB81c4Ab0",
+        "kind": "Upgradeable"
+      },
+      {
+        "address": "0xf121De9FE385D7b62d2C8cE8954788A674cAAA8B",
+        "version": "2.1.0",
+        "implementation": "0x96Cf503CeBF5CFf0ac30dFe93Aea2A21AA8dDA92",
+        "admin": "0x6E0745b6B18d0233708554049EEAaB0CB81c4Ab0",
+        "kind": "Upgradeable"
+      }
     ]
   },
   "manifestVersion": "2.2",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "proxyAdmin": {
     "address": "0x6E0745b6B18d0233708554049EEAaB0CB81c4Ab0"
   }
