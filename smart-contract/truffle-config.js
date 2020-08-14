@@ -9,6 +9,17 @@ module.exports = {
       network_id: "*",
       websockets: true,
     },
+    devvps: {
+      provider: function() {
+        return new HDWalletProvider(
+          private.devvpsKeys,
+          "http://161.97.97.238:8547",
+          0,
+          1
+        );
+      },
+      network_id: "1337",
+    },
     idchain: {
       provider: function() {
         return new HDWalletProvider(
