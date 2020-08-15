@@ -524,29 +524,27 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castImageUpload = castImageUpload;
-    V.castEntityThumbnail = castEntityThumbnail;
-    V.setSrc = setSrc;
-    V.castLinks = castLinks;
-    V.castTime = castTime;
-    V.castRandLatLng = castRandLatLng;
-    V.castInitials = castInitials;
-    V.castCamelCase = castCamelCase;
-    V.castSlugOrId = castSlugOrId;
-    V.castPathOrId = castPathOrId;
-    V.castJson = castJson;
-    V.castShortAddress = castShortAddress;
-    V.castUUID = castUUID;
-    V.castRandomInt = castRandomInt;
-    V.castTag = castTag;
-    V.getIcon = getIcon;
-    V.stripHtml = stripHtml;
-    V.setPipe = setPipe;
-    V.getTranslation = getTranslation;
-    V.i18n = i18n;
-    V.sleep = sleep;
-  } )();
+  V.castImageUpload = castImageUpload;
+  V.castEntityThumbnail = castEntityThumbnail;
+  V.setSrc = setSrc;
+  V.castLinks = castLinks;
+  V.castTime = castTime;
+  V.castRandLatLng = castRandLatLng;
+  V.castInitials = castInitials;
+  V.castCamelCase = castCamelCase;
+  V.castSlugOrId = castSlugOrId;
+  V.castPathOrId = castPathOrId;
+  V.castJson = castJson;
+  V.castShortAddress = castShortAddress;
+  V.castUUID = castUUID;
+  V.castRandomInt = castRandomInt;
+  V.castTag = castTag;
+  V.getIcon = getIcon;
+  V.stripHtml = stripHtml;
+  V.setPipe = setPipe;
+  V.getTranslation = getTranslation;
+  V.i18n = i18n;
+  V.sleep = sleep;
 
   return {
     castImageUpload: castImageUpload,

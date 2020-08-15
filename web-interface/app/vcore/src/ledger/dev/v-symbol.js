@@ -173,12 +173,10 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export  ===================== */
 
-  ( () => {
-    V.setActiveAddress = setActiveAddress;
-    V.getAddressState = getAddressState;
-    V.setMosaicTransaction = setMosaicTransaction;
-    V.getAddressHistory = getAddressHistory;
-  } )();
+  V.setActiveAddress = setActiveAddress;
+  V.getAddressState = getAddressState;
+  V.setMosaicTransaction = setMosaicTransaction;
+  V.getAddressHistory = getAddressHistory;
 
   return {
     setActiveAddress: setActiveAddress,

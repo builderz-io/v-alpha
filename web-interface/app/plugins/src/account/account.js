@@ -76,8 +76,8 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( txData ) {
+    const $list = CanvasComponents.list( 'narrow' );
     if ( txData.success ) {
-      const $list = CanvasComponents.list( 'narrow' );
 
       const $topcontent = AccountComponents.topcontent( txData.aE.fullId, txData.entityBalance );
 
@@ -85,23 +85,22 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       //   V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
       // }
 
-      if ( txData.success ) {
-        for ( const tx of txData.data /*.reverse() */ ) {
-          const $cardContent = AccountComponents.accountCard( tx );
-          const $card = CanvasComponents.card( $cardContent );
-          V.setNode( $list, $card );
-        }
+      for ( const tx of txData.data /*.reverse() */ ) {
+        const $cardContent = AccountComponents.accountCard( tx );
+        const $card = CanvasComponents.card( $cardContent );
+        V.setNode( $list, $card );
       }
-      else {
-        V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
-      }
+
       Page.draw( {
         topcontent: $topcontent,
         listings: $list,
       } );
     }
     else {
-      Marketplace.draw();
+      V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
+      Page.draw( {
+        listings: $list,
+      } );
     }
   }
 

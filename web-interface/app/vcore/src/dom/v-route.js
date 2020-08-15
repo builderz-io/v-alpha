@@ -204,11 +204,9 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castRoute = castRoute;
-    V.setRoute = setRoute;
-    V.setBrowserHistory = setBrowserHistory;
-  } )();
+  V.castRoute = castRoute;
+  V.setRoute = setRoute;
+  V.setBrowserHistory = setBrowserHistory;
 
   return {
     castRoute: castRoute,

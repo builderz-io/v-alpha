@@ -12,10 +12,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    // socketHost: 'http://localhost',
-    // socketPort: 6021,
-    socketHost: 'https://cocooonmongo.valueinstrument.org', // omit trailing slash
-    socketPort: 443,
+    socketHost: 'http://localhost',
+    socketPort: 6021,
+    // socketHost: 'https://cocooonmongo.valueinstrument.org', // omit trailing slash
+    // socketPort: 443,
 
     useBuilds: false,
 
@@ -45,7 +45,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const networks = {
 
-    choice: 'kovan2',
+    choice: 'ganacheDevelop',
 
     trufflePAV1: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
@@ -58,6 +58,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     idchain: {
       contractAddress: '',
       rpc: 'https://idchain.one/rpc/'
+    },
+    ropstenDevelop: {
+      contractAddress: '0x87a100DFe128616e1e53e499EB0ae99Ff9Cf0d8c', // daily rice coin
+      rpc: 'wss://ropsten.infura.io/v3/199ad2592bb243e2b00118d4c6de0641'
+    },
+    ganacheDevelop: {
+      contractAddress: '0x669e17db2Db2334fDbC9CBC01D117528e5F84488', // '0xC89Ce4735882C9F0f0FE26686c53074E09B0D550',
+      rpc: 'http://161.97.97.238:8547'
     },
     kovan1: {
       contractAddress: '0x793315F6E7dAA99d6000fb2B4347F5301E20dB09',
@@ -108,10 +116,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getSetting = getSetting;
-    V.getNetwork = getNetwork;
-  } )();
+  V.getSetting = getSetting;
+  V.getNetwork = getNetwork;
 
   return {
     getSetting: getSetting,

@@ -153,12 +153,10 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export  ===================== */
 
-  ( () => {
-    V.setActiveAddress = setActiveAddress;
-    V.getAddressState = getAddressState;
-    V.getAddressHistory = getAddressHistory;
-    V.setEOSTransaction = setEOSTransaction;
-  } )();
+  V.setActiveAddress = setActiveAddress;
+  V.getAddressState = getAddressState;
+  V.getAddressHistory = getAddressHistory;
+  V.setEOSTransaction = setEOSTransaction;
 
   return {
     setActiveAddress: setActiveAddress,

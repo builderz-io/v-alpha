@@ -94,9 +94,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.debug = debug;
-  } )();
+  V.debug = debug;
 
   return {
     debug: debug

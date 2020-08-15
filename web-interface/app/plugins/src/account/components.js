@@ -159,10 +159,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     switch ( txData.txType ) {
     case 'in':
-      background = '#B4ECB4';
+      background = '#4bd25b'; // '#B4ECB4';
       break;
     case 'out':
-      background = '#FFAACC';
+      background = '#cc3e58'; // '#FFAACC';
       break;
     case 'fee':
       background = 'lightblue';

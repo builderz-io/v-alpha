@@ -258,10 +258,17 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   async function getContractState() {
     if ( contract ) {
 
+      // kovan2
+      // const blockNumber = contract.methods.getBlockNumber().call();
+      // const fee = contract.methods.transactionFee.call().call();
+      // const contribution = contract.methods.communityContribution.call().call();
+      // const divisibility = contract.methods.decimals.call().call();
+
+      // ganache remote
       const blockNumber = contract.methods.getBlockNumber().call();
-      const fee = contract.methods.transactionFee.call().call();
-      const contribution = contract.methods.communityContribution.call().call();
-      const divisibility = contract.methods.decimals.call().call();
+      const fee = contract.methods.getTransactionFee.call().call();
+      const contribution = contract.methods.getCommunityContribution.call().call();
+      const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
 
       // const allEvents = contract.getPastEvents( 'allEvents', {
       // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -282,17 +289,17 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       //   } );
 
       const all = await Promise.all( [ blockNumber, fee, contribution, divisibility /*, allEvents */ ] )
-        .catch( err => { return err } );
+        .catch( err => { console.log( err ) } );
 
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
-        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        // console.log( 'Divisibility: ', all[3] );
-        // console.log( 'Contract: ', contract._address );
-        // console.log( 'Network: ', V.getNetwork().network );
+        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        console.log( 'Divisibility: ', all[3] );
+        console.log( 'Contract: ', contract._address );
+        console.log( 'Network: ', V.getNetwork().network );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
@@ -467,10 +474,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setTokenTransaction( data ) {
-    const div = Number( V.getState( 'contract' ).divisibility );
+    // const div = Number( V.getState( 'contract' ).divisibility );
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const sender = data.initiatorAddress;
-    const amount = data.txTotal * 10**div;
+    const amount = window.Web3Obj.utils.toWei( String( data.txTotal /* * 10**div */ ) );
     const txFunction = await new Promise( ( resolve, reject ) => {
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
         .once( 'transactionHash', function( hash ) {
@@ -563,18 +570,16 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export  ===================== */
 
-  ( () => {
-    V.getWeb3Provider = getWeb3Provider;
-    V.setActiveAddress = setActiveAddress;
-    V.getContractState = getContractState;
-    V.getAddressState = getAddressState;
-    V.getAddressHistory = getAddressHistory;
-    V.setAddressVerification = setAddressVerification;
-    V.setCoinTransaction = setCoinTransaction;
-    V.setTokenTransaction = setTokenTransaction;
-    V.setNetVAmount = setNetVAmount;
-    V.setGrossVAmount = setGrossVAmount;
-  } )();
+  V.getWeb3Provider = getWeb3Provider;
+  V.setActiveAddress = setActiveAddress;
+  V.getContractState = getContractState;
+  V.getAddressState = getAddressState;
+  V.getAddressHistory = getAddressHistory;
+  V.setAddressVerification = setAddressVerification;
+  V.setCoinTransaction = setCoinTransaction;
+  V.setTokenTransaction = setTokenTransaction;
+  V.setNetVAmount = setNetVAmount;
+  V.setGrossVAmount = setGrossVAmount;
 
   return {
     getWeb3Provider: getWeb3Provider,

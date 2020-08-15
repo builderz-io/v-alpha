@@ -211,12 +211,10 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.checkForTriggers = checkForTriggers;
-    V.getMessage = getMessage;
-    V.setMessage = setMessage;
-    V.setMessageBot = setMessageBot;
-  } )();
+  V.checkForTriggers = checkForTriggers;
+  V.getMessage = getMessage;
+  V.setMessage = setMessage;
+  V.setMessageBot = setMessageBot;
 
   return {
     checkForTriggers: checkForTriggers,

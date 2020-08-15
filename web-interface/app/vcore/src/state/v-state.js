@@ -160,16 +160,14 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getState = getState;
-    V.setState = setState;
-    V.getCache = getCache;
-    V.setCache = setCache;
-    V.getNavItem = getNavItem;
-    V.setNavItem = setNavItem;
-    V.getCookie = getCookie;
-    V.setCookie = setCookie;
-  } )();
+  V.getState = getState;
+  V.setState = setState;
+  V.getCache = getCache;
+  V.setCache = setCache;
+  V.getNavItem = getNavItem;
+  V.setNavItem = setNavItem;
+  V.getCookie = getCookie;
+  V.setCookie = setCookie;
 
   return {
     getState: getState,

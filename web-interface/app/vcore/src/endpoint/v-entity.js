@@ -512,13 +512,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castEntityTitle = castEntityTitle;
-    V.getEntity = getEntity;
-    V.setEntity = setEntity;
-    V.getEntityBalance = getEntityBalance;
-    V.getQuery = getQuery;
-  } )();
+  V.castEntityTitle = castEntityTitle;
+  V.getEntity = getEntity;
+  V.setEntity = setEntity;
+  V.getEntityBalance = getEntityBalance;
+  V.getQuery = getQuery;
 
   return {
     castEntityTitle: castEntityTitle,

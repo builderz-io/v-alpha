@@ -19,9 +19,7 @@ const VKey = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getApiKey = getApiKey;
-  } )();
+  V.getApiKey = getApiKey;
 
   return {
     getApiKey: getApiKey,

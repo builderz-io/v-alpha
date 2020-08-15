@@ -57,7 +57,8 @@
 
   /* --brandPrimary: 241, 59, 64; */ /* Geneva Hackathon Red */
   --brandPrimary: 83, 96, 101; /* Geneva Hackathon Red */
-  --brandSecondary: 255, 210, 85; /* Geneva Hackathon Yellow */
+  /* --brandSecondary: 255, 210, 85; */ /* Geneva Hackathon Yellow */
+  --brandSecondary: 244, 204, 102;
 
   --buttonBkg: var(--brandPrimary);
   --buttonTxt: var(--white);

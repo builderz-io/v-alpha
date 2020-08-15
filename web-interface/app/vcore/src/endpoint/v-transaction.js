@@ -193,11 +193,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getTransaction = getTransaction;
-    V.setTransactionConfirmation = setTransactionConfirmation;
-    V.setTransaction = setTransaction;
-  } )();
+  V.getTransaction = getTransaction;
+  V.setTransactionConfirmation = setTransactionConfirmation;
+  V.setTransaction = setTransaction;
 
   return {
     getTransaction: getTransaction,
