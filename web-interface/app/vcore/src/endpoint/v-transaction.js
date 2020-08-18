@@ -7,12 +7,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  /* ================== private methods ================= */
+  /* ============== user interface strings ============== */
 
-  function castRecipient( messageParts ) {
-    const tag = messageParts.pop();
-    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
+  const ui = {
+    notActive: 'no active entity',
+    invalidAmount: 'invalid amount',
+    noDecimals: 'no decimals',
+    noRecipient: 'recipient not found',
+    noRecipientAddress: 'recipient address not found',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'transaction', scope || 'error message' ) + ' ';
   }
+
+  /* ================== private methods ================= */
 
   async function castTransaction( data ) {
 
@@ -28,7 +37,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'no active entity'
+        status: getString( ui.notActive )
       };
     }
 
@@ -73,7 +82,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'invalid amount'
+        status: getString( ui.invalidAmount )
+      };
+    }
+    else if ( amount % 1 != 0 ) {
+      return {
+        success: false,
+        endpoint: 'transaction',
+        status: getString( ui.noDecimals )
       };
     }
 
@@ -83,7 +99,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'recipient not found'
+        status: getString( ui.noRecipient )
       };
     }
 
@@ -91,7 +107,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     currency = 'V'; // eslint-disable-line prefer-const
 
     if ( currency == 'V' ) {
-      const convert = V.setGrossVAmount( amount );
+      const convert = V.getGrossVAmount( amount );
       contribution = convert.contribution;
       feeAmount = convert.feeAmount;
       txTotal =convert.gross;
@@ -129,7 +145,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'recipient address not found'
+        status: getString( ui.noRecipientAddress )
       };
     }
 
@@ -158,6 +174,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       }]
     };
 
+  }
+
+  function castRecipient( messageParts ) {
+    const tag = messageParts.pop();
+    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
   }
 
   function reduceNumbers( array ) {

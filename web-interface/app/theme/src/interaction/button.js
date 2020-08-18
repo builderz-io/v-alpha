@@ -138,19 +138,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $query, $set, $send ] );
   }
 
-  function presenter( which, options ) {
+  function view( which, options ) {
     const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'set', 'send', 'query'] : which.split( ' ' );
-    return {
-      btnArr: btnArr,
-      options: options
-    };
-  }
-
-  function view( set ) {
     let fade = 'fadeIn', delay = 0.2;
-    set.options && set.options.fade == 'out' ? fade = 'fadeOut' : null;
-    set.options && set.options.delay ? delay = set.options.delay : null;
-    set.btnArr.forEach( btn => {
+    options && options.fade == 'out' ? fade = 'fadeOut' : null;
+    options && options.delay ? delay = options.delay : null;
+    btnArr.forEach( btn => {
       V.setAnimation( '#' + btn, fade, { delay: delay, duration: 0.5 } );
     } );
   }
@@ -162,7 +155,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which, options ) {
-    view( presenter( which, options ) );
+    view( which, options );
   }
 
   return {

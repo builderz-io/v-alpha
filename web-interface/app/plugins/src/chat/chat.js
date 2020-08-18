@@ -7,18 +7,12 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ================== event handlers ================== */
+
   function handleInputFocus() {
     const $response = V.getNode( '.messageform__response' );
     $response.innerHTML = '';
   }
-
-  // function handleInputTyping() {
-  //   if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
-  //     if ( V.getState( 'activeEntity' ) ) {
-  //       window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
-  //     }
-  //   }
-  // }
 
   function handleSetMessageBot() {
     const $form = V.getNode( '.messageform__input' );
@@ -28,6 +22,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     V.setMessageBot( message ).then( res => {
       if ( res.success ) {
+        V.sN( $response, '' );
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
@@ -37,6 +32,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else {
+        V.sN( $response, '' );
         $response.append( V.sN( {
           t: 'div',
           c: 'messageform__respinner',
@@ -55,9 +51,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  async function presenter( path ) {
 
-    const activeEntity = V.getState( 'activeEntity' );
     const messages = await V.getMessage();
 
     if( !messages.success || !messages.data[0].length ) {
@@ -65,13 +60,12 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         status: 'no messages found',
         data: [{
-          which: which,
           messages: [],
-          activeEntity: activeEntity || undefined,
+          aE: V.aE() || undefined,
         }]
       };
     }
-    else if ( !activeEntity && which != '/chat/everyone' ) {
+    else if ( !V.aE() && path != '/chat/everyone' ) {
       return {
         success: false,
         status: 'not logged in',
@@ -83,9 +77,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'ok',
         data: [{
-          which: which,
           messages: messages.data[0],
-          activeEntity: activeEntity || undefined,
+          aE: V.aE() || undefined,
         }]
       };
     }
@@ -98,13 +91,13 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.success ) {
       viewData.data[0].messages.forEach( cardData => {
-        viewData.data[0].activeEntity && viewData.data[0].activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+        viewData.data[0].aE && viewData.data[0].aE.fullId == cardData.sender ? cardData.sender = 'Me' : null;
         const $card = ChatComponents.message( cardData );
         V.setNode( $list, $card );
       } );
     }
     else {
-      V.setNode( $topcontent, CanvasComponents.notFound( 'messages' ) );
+      V.setNode( $topcontent, CanvasComponents.notFound( 'message' ) );
     }
 
     Page.draw( {
@@ -129,8 +122,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   function drawMessage( cardData ) {
     if ( V.getState( 'active' ).navItem == '/chat/everyone' ) {
       const $list = V.getNode( 'list' );
-      const activeEntity = V.getState( 'activeEntity' );
-      activeEntity && activeEntity.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+      V.aE() && V.aE().fullId == cardData.sender ? cardData.sender = 'Me' : null;
       const $messageCard = ChatComponents.message( cardData );
       V.setNode( $list, $messageCard );
       $list.scrollTop = $list.scrollHeight + 75;
@@ -173,7 +165,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   function launch() {
 
@@ -207,12 +199,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     const $send = InteractionComponents.sendBtn();
 
-    // $input.addEventListener( 'focus', function( e ) {
-    //   e.target.placeholder = placeholder;
-    // } );
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
-    // $input.addEventListener( 'input', handleInputTyping );
 
     V.setState( 'active', { lastViewed: undefined } );
 
@@ -221,15 +209,17 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function draw( which ) {
-    preview( which );
-    presenter( which ).then( viewData => { view( viewData ) } );
+  function draw( path ) {
+    preview( path );
+    presenter( path ).then( viewData => { view( viewData ) } );
   }
 
+  /* ====================== export ====================== */
+
   return {
+    launch: launch,
     drawMessageForm: drawMessageForm,
     draw: draw,
-    launch: launch
   };
 
 } )();

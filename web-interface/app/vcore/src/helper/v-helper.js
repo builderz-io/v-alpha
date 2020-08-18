@@ -97,7 +97,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       c: 'max-w-full',
       a: {
         src: src,
-        alt: thumbnailData.entity + ' ' + V.i18n( 'Title Image', 'user components', 'image alt text' ) + ' - ' + thumbnailData.originalName
+        alt: thumbnailData.entity + ' ' + 'Title Image' + ' - ' + thumbnailData.originalName
       },
       // TODO: revokeObjectURL
       // e: {
@@ -501,13 +501,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function getTranslation( which, whichContext, whichDescr = '' ) {
 
     // castTranslations( which, whichContext, whichPart );
-    const aE = V.getState( 'activeEntity' );
+    const aE = V.aE();
     const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
-    const exists = VTranslations[whichContext][which] ?
-      VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
-
-    if ( exists ) {
-      return exists;
+    // console.log( lang, whichContext, which );
+    if ( lang != 'en_US' ) {
+      const exists = VTranslations[whichContext][which] ?
+        VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
+      return exists ? exists : which;
     }
     else {
       return which;

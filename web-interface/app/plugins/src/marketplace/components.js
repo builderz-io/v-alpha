@@ -7,6 +7,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   'use strict';
 
+  /* ================== event handlers ================== */
+
   function handleProfileDraw() {
     const path = this;
     V.setState( 'active', { navItem: path } );
@@ -19,7 +21,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
   }
 
-  const background = ( cardData ) => {
+  /* ================== private methods ================= */
+
+  function castBackground( cardData ) {
     const sc = V.getState( 'screen' );
     const palette = ['rgba(' + sc.brandSecondary + ', 1)'];
 
@@ -39,10 +43,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     case '8': return palette[0];
     case '9': return palette[3];
     }
-  };
+  }
+
+  /* ================  public components ================ */
 
   function castCircle( circleData ) {
-    const backgr = background( circleData );
+    const backgr = castBackground( circleData );
     return V.cN( {
       t: 'div',
       c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
@@ -173,6 +179,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     return $cardContentFrame;
 
   }
+
+  /* ====================== export ====================== */
 
   return {
     castCircle: castCircle,

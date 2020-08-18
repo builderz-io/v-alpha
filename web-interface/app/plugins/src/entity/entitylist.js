@@ -9,19 +9,16 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  async function presenter() {
 
-    // const fullId = V.getState( 'activeEntity' ).fullId;
-    // const query = await V.getEntity( fullId ); // query again for changes
-
-    if ( !V.getState( 'activeEntity' ) ) {
+    if ( !V.aE() ) {
       return {
         success: false,
         status: ''
       };
     }
 
-    const adminOf = V.getState( 'activeEntity' ).adminOf; // query.data[0].adminOf;
+    const adminOf = V.aE().adminOf; // query.data[0].adminOf;
 
     const entitiesAdmined = [];
     const mapData = [];
@@ -43,7 +40,6 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'entities retrieved',
         data: [{
-          which: which,
           entity: V.getState( 'activeEntity' ),
           entitiesAdmined: entitiesAdmined,
           mapData: mapData,
@@ -58,37 +54,32 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function view( data ) {
+  function view( viewData ) {
 
     let $topcontent, $list;
 
-    if ( data.success ) {
+    if ( viewData.success ) {
 
       UserComponents.setData( {
-        entity: data.data[0].entity,
+        entity: viewData.data[0].entity,
         editable: true
       } );
 
       $list = CanvasComponents.list( 'narrow' );
       $topcontent = UserComponents.topcontent();
 
-      for ( let i = 0; i < data.data[0].entitiesAdmined.length; i++ ) {
+      for ( let i = 0; i < viewData.data[0].entitiesAdmined.length; i++ ) {
         V.setNode( $list, [
-          UserComponents.entityListCard( data.data[0].entitiesAdmined[i].data[0] )
+          UserComponents.entityListCard( viewData.data[0].entitiesAdmined[i].data[0] )
         ] );
       }
-
-      // Navigation.draw( data.data[0].which );
 
       Page.draw( {
         topcontent: $topcontent,
         listings: $list,
-        // position: 'top',
       } );
 
-      // Chat.drawMessageForm( 'clear' );
-
-      // VMap.draw( data.data[0].mapData );
+      VMap.draw( viewData.data[0].mapData );
     }
     else {
       Page.draw( {
@@ -96,6 +87,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
   }
+
   function preview( path ) {
     Navigation.draw( path );
 
@@ -106,9 +98,9 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( which ) {
-    preview( which );
-    presenter( which ).then( data => { view( data ) } );
+  function draw( path ) {
+    preview( path );
+    presenter().then( viewData => { view( viewData ) } );
   }
 
   return {

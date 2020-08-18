@@ -114,7 +114,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'all', { fade: 'out' } );
         Button.draw( 'close query' );
       }
-      V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
+      V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
     }
 
     Page.draw( {
@@ -144,8 +144,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       topslider: $slider,
       position: whichPath ? 'peek' : 'closed',
     } );
-
-    // VMap.draw();
 
   }
 

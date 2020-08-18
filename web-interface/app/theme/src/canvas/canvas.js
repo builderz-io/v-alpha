@@ -209,7 +209,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
         e.preventDefault();
-        handleKeyboard( ['plus', 'set', 'name-new', 'query'] );
+        handleKeyboard( ['sign-transaction', 'plus', 'set', 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
@@ -217,10 +217,16 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
 
-  }
+    document.addEventListener( 'keyup', function handleDocumentKeyUp( e ) {
+      const key = window.event ? e.keyCode : e.which;
+      if ( key == 13 ) {
+        e.preventDefault();
+      }
+      else if ( key == 27 ) {
+        e.preventDefault();
+      }
+    } );
 
-  function presenter( historyState ) {
-    return Promise.resolve( historyState );
   }
 
   function view(
@@ -345,17 +351,15 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     await launchStylesheets();
     await launchScripts();
 
-    V.setPipe(
-      setState,
-      setDocument,
-      setCss,
-      setFont,
-    )();
+    setState();
+    setDocument();
+    setCss();
+    setFont();
 
   }
 
   function draw( historyState ) {
-    presenter( historyState ).then( historyState => { view( historyState ) } );
+    view( historyState );
   }
 
   return {

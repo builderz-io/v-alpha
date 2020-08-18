@@ -34,92 +34,18 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function castPopup( feature ) {
-    return V.cN( {
-      t: 'div',
-      c: '',
-      h: [
-        {
-          t: 'p',
-          c: 'font-bold txt-center',
-          h: feature.profile.fullId
-        },
-        MarketplaceComponents.castCircle( {
-          thumbnail: feature.thumbnail,
-          profile: { title: feature.profile.title },
-          path: feature.path
-        } ),
-        {
-          t: 'p',
-          c: 'fs-s capitalize txt-center',
-          h: feature.profile.role
-        },
-      ]
-    } );
-  }
-
   function presenter( features ) {
-    if ( V.getSetting( 'loadMap' ) ) {
-      if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
-        return Promise.resolve( features );
-      }
-      else {
-        return launch()
-          .then( () => {
-            setMap();
-            return features;
-          } );
-      }
-    }
-  }
-
-  async function launch() {
-    // if ( !V.getNode( '[src="/dist/leaflet.js"]' ) ) {
-    await V.setScript( '/plugins/dependencies/leaflet.js' );
-    console.log( '*** leaflet library loaded ***' );
-    // }
-  }
-
-  function setMap() {
-
-    const sc = V.getState( 'screen' );
-
-    const mapSettings = {
-      lat: 6.9728, // lesser numbers = move map south
-      lng: -22.685, // lesser numbers = move map west
-      zoom: sc.height > 1200 ? 3 : 2,
-      maxZoom: 16,
-      minZoom: sc.height > 1200 ? 3 : 2,
-    };
-
-    featureLayer = L.geoJSON();
-
-    const mapData = V.getCookie( 'map-state' );
-
-    if ( mapData ) {
-      const map = JSON.parse( mapData );
-      viMap = L.map( 'background' ).setView( [ map.lat, map.lng ], map.zoom );
-      V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
+    if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
+      return Promise.resolve( features );
     }
     else {
-      viMap = L.map( 'background' ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
-      V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
+      return launch()
+        .then( () => {
+          setMap();
+          return features;
+        } );
     }
 
-    L.tileLayer( tiles, {
-      attribution: attribution,
-      maxZoom: mapSettings.maxZoom,
-      minZoom: mapSettings.minZoom,
-      // id: 'mapbox.streets',
-      // accessToken: 'your.mapbox.access.token'
-    } ).addTo( viMap );
-
-    viMap.on( 'moveend', function() {
-      const map = viMap.getBounds().getCenter();
-      Object.assign( map, { zoom: viMap.getZoom() } );
-      V.setState( 'map', map );
-      V.setCookie( 'map-state', map );
-    } );
   }
 
   function view( features ) {
@@ -178,11 +104,82 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  async function launch() {
+    await V.setScript( '/plugins/dependencies/leaflet.js' );
+    console.log( '*** leaflet library loaded ***' );
+  }
+
+  function setMap() {
+
+    const sc = V.getState( 'screen' );
+
+    const mapSettings = {
+      lat: 6.9728, // lesser numbers = move map south
+      lng: -22.685, // lesser numbers = move map west
+      zoom: sc.height > 1200 ? 3 : 2,
+      maxZoom: 16,
+      minZoom: sc.height > 1200 ? 3 : 2,
+    };
+
+    featureLayer = L.geoJSON();
+
+    const mapData = V.getCookie( 'map-state' );
+
+    if ( mapData ) {
+      const map = JSON.parse( mapData );
+      viMap = L.map( 'background' ).setView( [ map.lat, map.lng ], map.zoom );
+      V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
+    }
+    else {
+      viMap = L.map( 'background' ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
+      V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
+    }
+
+    L.tileLayer( tiles, {
+      attribution: attribution,
+      maxZoom: mapSettings.maxZoom,
+      minZoom: mapSettings.minZoom,
+      // id: 'mapbox.streets',
+      // accessToken: 'your.mapbox.access.token'
+    } ).addTo( viMap );
+
+    viMap.on( 'moveend', function() {
+      const map = viMap.getBounds().getCenter();
+      Object.assign( map, { zoom: viMap.getZoom() } );
+      V.setState( 'map', map );
+      V.setCookie( 'map-state', map );
+    } );
+  }
+
+  function castPopup( feature ) {
+    return V.cN( {
+      t: 'div',
+      c: '',
+      h: [
+        {
+          t: 'p',
+          c: 'font-bold txt-center',
+          h: feature.profile.fullId
+        },
+        MarketplaceComponents.castCircle( {
+          thumbnail: feature.thumbnail,
+          profile: { title: feature.profile.title },
+          path: feature.path
+        } ),
+        {
+          t: 'p',
+          c: 'fs-s capitalize txt-center',
+          h: feature.profile.role
+        },
+      ]
+    } );
+  }
+
   /* ============ public methods and exports ============ */
 
-  function draw( options ) {
-    if ( V.getSetting( 'loadMap' ) ) {
-      presenter( options ).then( viewData => { view( viewData ) } );
+  function draw( features ) {
+    if ( V.getSetting( 'drawMap' ) ) {
+      presenter( features ).then( features => { view( features ) } );
     }
   }
 

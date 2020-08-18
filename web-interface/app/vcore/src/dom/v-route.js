@@ -188,10 +188,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setBrowserHistory( path ) {
-
     const data = { path: path };
-    // console.log( data );
-    // console.log( V.castJson( V.getState( 'active' ), 'clone' ) );
     if( V.getState( 'active' ).path != data.path ) {
       window.history.pushState(
         data,

@@ -46,19 +46,33 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const
-    strEdit = 'edit',
-    strChgImg  = 'Change this image',
-    strBaseLoc  = 'base location',
-    strCurrLoc  = 'current location',
-    strUTCOffset  = 'current UTC offset',
-    strNotFunded = 'Not yet successfully funded',
-    strSuccessFunded = 'Successfully funded',
-    strNoneSpent = 'None yet spent',
-    strSpent = 'Budget spent';
+  const ui = {
+    edit: 'edit',
+    chgImg: 'Change this image',
+    baseLoc: 'base location',
+    currLoc: 'current location',
+    UTCOffset: 'current UTC offset',
+    notFunded: 'Not yet successfully funded',
+    successFunded: 'Successfully funded',
+    noneSpent: 'None yet spent',
+    spent: 'Budget spent',
 
-  function uiStr( string, description ) {
-    return V.i18n( string, 'user components', description || 'card entry' ) + ' ';
+    description: 'Description',
+    prefLang: 'Preferred Languages',
+    lang: 'App Language',
+    uPhrase: 'Entity Management Key',
+    ethAddress: 'Entity Ethereum Address',
+    ethAddressReceiver: 'Receiving Ethereum Address',
+    loc: 'Location',
+    entity: 'Entity',
+    fin: 'Financial',
+    social: 'Social',
+    funding: 'Funding Status',
+    img: 'Image'
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'profile', scope || 'profile cards content' ) + ' ';
   }
 
   /* ================== event handlers ================== */
@@ -68,6 +82,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( ['edit', 'not valid'].includes( DOM.entry )  ) {
       this.innerHTML = '';
       this.value = '';
+    }
+  }
+
+  function handleViewKeyFocus( e ) {
+    if ( this.type === 'password' ) {
+      this.type = 'text';
+      this.previousSibling.innerHTML = '';
+      setTimeout( function() {
+        e.target.setSelectionRange( 0, 9999 );
+      }, 50 );
+    }
+    else {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      this.previousSibling.innerHTML = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
+      this.type = 'password';
     }
   }
 
@@ -178,7 +208,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             data: tinyImageUpload,
             auth: auth
           } );
-          V.setNode( '#img-upload-profile__label', uiStr( strChgImg ) );
+          V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
           V.setNode( '#img-upload-profile__preview', '' );
           V.setNode( '#img-upload-profile__preview', V.cN( {
             t: 'img',
@@ -208,7 +238,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         const leftTd = {
           t: 'td',
           c: 'capitalize',
-          h: uiStr( title )
+          h: getString( title )
         };
 
         const editTd = setEditable( {
@@ -278,20 +308,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
-  function handleViewKeyFocus( e ) {
-    if ( this.type === 'password' ) {
-      this.type = 'text';
-      this.previousSibling.innerHTML = '';
-      setTimeout( function() {
-        e.target.setSelectionRange( 0, 9999 );
-      }, 50 );
-    }
-    else {
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      this.previousSibling.innerHTML = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
-      this.type = 'password';
-    }
+  function setData( data ) {
+    entity = data.entity;
+    editable = data.editable ? true : false;
   }
 
   function castUphraseNode( phrase, css = '' ) {
@@ -319,11 +338,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       ]
     } );
 
-  }
-
-  function setData( data ) {
-    entity = data.entity;
-    editable = data.editable ? true : false;
   }
 
   function topcontent() {
@@ -355,7 +369,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy',
         h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ).iframes,
       } );
-      return castCard( $innerContent, 'Description' );
+      return castCard( $innerContent, getString( ui.description ) );
     }
     else {
       return '';
@@ -376,7 +390,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy',
         h: langs,
       } );
-      return castCard( $innerContent, 'Preferred Languages' );
+      return castCard( $innerContent, getString( ui.prefLang ) );
     }
     else {
       return '';
@@ -387,7 +401,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const uPhrase = entity.private.uPhrase;
     if( uPhrase ) {
       const $innerContent = castUphraseNode( uPhrase );
-      return castCard( $innerContent, 'Entity Management Key' );
+      return castCard( $innerContent, getString( ui.uPhrase ) );
     }
     else {
       return '';
@@ -410,7 +424,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: address,
       } );
 
-      return castCard( $innerContent, 'Entity Ethereum Address' );
+      return castCard( $innerContent, getString( ui.ethAddress ) );
     }
     else {
       return '';
@@ -437,7 +451,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy fs-s',
         h: address,
       } );
-      return castCard( $innerContent, 'Receiving Ethereum Address' );
+      return castCard( $innerContent, getString( ui.ethAddressReceiver ) );
     }
     else {
       return '';
@@ -455,7 +469,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: uiStr( strBaseLoc ) },
+              { t: 'td', c: 'capitalize', h: getString( ui.baseLoc ) },
               editable ? {
                 t: 'input',
                 i: 'user__loc',
@@ -475,7 +489,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: uiStr( strCurrLoc ) },
+              { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
               editable ? {
                 t: 'input',
                 c: 'location__curr pxy w-full txt-right',
@@ -496,7 +510,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: uiStr( strUTCOffset ) },
+              { t: 'td', c: 'capitalize', h: getString( ui.UTCOffset ) },
               editable ? setEditable( {
                 t: 'td',
                 c: 'txt-right',
@@ -511,7 +525,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           }
         ]
       } );
-      return castCard( $innerContent, 'Location' );
+      return castCard( $innerContent, getString( ui.loc ) );
     }
     else {
       return '';
@@ -522,7 +536,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const titles = ['title', 'tag', 'role'];
     const db = 'profile';
     const $innerContent = castTableNode( titles, db, false, 'capitalize' );
-    return castCard( $innerContent, 'Entity' );
+    return castCard( $innerContent, getString( ui.entity ) );
   }
 
   function financialCard() {
@@ -532,7 +546,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const titles = ['target', 'unit'];
       const db = 'properties';
       const $innerContent = castTableNode( titles, db, editable );
-      return castCard( $innerContent, 'Financial' );
+      return castCard( $innerContent, getString( ui.fin ) );
     }
     else {
       return '';
@@ -543,7 +557,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const titles = ['facebook', 'twitter', 'telegram', 'website', 'email'];
     const db = 'social';
     const $innerContent = castTableNode( titles, db, editable );
-    return $innerContent ? castCard( $innerContent, 'Social' ) : '';
+    return $innerContent ? castCard( $innerContent, getString( ui.social ) ) : '';
   }
 
   function entityListCard( entity ) {
@@ -605,7 +619,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           },
         ]
       } );
-      return castCard( $innerContent, 'App Language' );
+      return castCard( $innerContent, getString( ui.lang ) );
     }
     else {
       return '';
@@ -622,10 +636,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( entity.profile.role == 'pool' ) {
 
       const i18n = {
-        strPfPg432: uiStr( strNotFunded ),
-        strPfPg433: uiStr( strSuccessFunded ),
-        strPfPg434: uiStr( strNoneSpent ),
-        strPfPg435: uiStr( strSpent ),
+        strPfPg432: getString( ui.notFunded ),
+        strPfPg433: getString( ui.successFunded ),
+        strPfPg434: getString( ui.noneSpent ),
+        strPfPg435: getString( ui.spent ),
       };
 
       let svgFunded = '';
@@ -672,7 +686,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         ]
       } );
 
-      return castCard( $innerContent, 'Funding Status' );
+      return castCard( $innerContent, getString( ui.funding ) );
     }
     else {
       return '';
@@ -715,7 +729,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   for: 'img-upload-profile__file',
                 },
-                h: uiStr( strChgImg )
+                h: getString( ui.chgImg )
               },
               {
                 t: 'input',
@@ -758,7 +772,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               for: 'img-upload-profile__file',
             },
-            h: uiStr( strEdit )
+            h: getString( ui.edit )
           },
           {
             t: 'input',
@@ -780,16 +794,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
 
-    return castCard( $innerContent, 'Image' );
+    return castCard( $innerContent, getString( ui.img ) );
 
   }
 
   /* ====================== export ====================== */
 
   return {
-    handleViewKeyFocus: handleViewKeyFocus,
-    castUphraseNode: castUphraseNode,
     setData: setData,
+    castUphraseNode: castUphraseNode,
     topcontent: topcontent,
     descriptionCard: descriptionCard,
     uPhraseCard: uPhraseCard,

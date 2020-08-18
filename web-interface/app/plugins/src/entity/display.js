@@ -13,16 +13,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     const fullId = V.castPathOrId( which );
 
-    // const aE = V.getState( 'activeEntity' );
-    // if ( aE && fullId == aE.fullId ) {
-    //   V.setBrowserHistory( '/me/profile' );
-    //   User.draw();
-    //   return {
-    //     success: false,
-    //     status: 'diverted to User.draw'
-    //   };
-    // }
-
     const query = await V.getEntity( fullId );
 
     const mapData = [];
@@ -100,7 +90,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   function view( data ) {
 
-    let $topcontent, $list;
+    let $list;
 
     if ( data.success ) {
 
@@ -110,7 +100,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       $list = CanvasComponents.list( 'narrow' );
-      $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
         UserComponents.thumbnailCard(),
@@ -127,18 +116,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       Navigation.draw( data.data[0].entity );
 
-      // Button.draw( 'send' );
-
       Chat.drawMessageForm();
 
       Page.draw( {
-        // topcontent: $topcontent,
         listings: $list,
-        // position: 'top', // could optionally be 'feature', if map flies to entity
-        // haze: false
       } );
-
-      // Chat.drawMessageForm( 'clear' );
 
       VMap.draw( data.data[0].mapData );
     }

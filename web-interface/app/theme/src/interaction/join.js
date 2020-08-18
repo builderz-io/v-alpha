@@ -21,10 +21,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
             const check = await ckeckEntityStoreByAddress();
 
-            // if ( check == 'entity found' ) {
-            //   which = check;
-            // }
-            // else {
             if ( which.includes( 'existing entity' ) ) {
               V.setCookie( 'welcome-modal', 1 );
               which = 'authenticate existing entity';
@@ -32,7 +28,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
             else {
               which = check;
             }
-            // }
           }
           else {
             which = res.status;
@@ -124,7 +119,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       Navigation.draw();
-      // Page.draw( { position: 'closed' } );
       Modal.draw( which );
     }
   }

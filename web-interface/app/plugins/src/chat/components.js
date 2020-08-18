@@ -16,22 +16,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     revertAutoComplete( e.target );
   } );
 
-  /* ============== user interface strings ============== */
-
-  const
-    strNotFound     = 'not found',
-    strChatTitle    = 'Chat with Everyone',
-    strPlaceholder  = 'Send message or funds',
-    strPlaceholder2 = 'Join first to send a message or funds';
-
-  function uiStr( string, description ) {
-    return V.i18n( string, 'chat components', description );
-  }
-
-  /* ================= component styles ================= */
-
-  // TODO: transfer styles to utilities
-
   V.setStyle( {
     'chat-link a': {
       color: 'rgba(var(--link), 1)'
@@ -93,6 +77,19 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       'font-family': 'IBM Plex Bold'
     }
   } );
+
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    notFound: 'not found',
+    chatTitle: 'Chat with Everyone',
+    placeholder: 'Send message or funds',
+    placeholder2: 'Join first to send a message or funds'
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'chat', scope || 'chat components' );
+  }
 
   /* ================== event handlers ================== */
 
@@ -360,12 +357,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     else {el.addEventListener( type, handler )}
   }
 
-  function removeEvent( el, type, handler ) {
-    // if (el.removeEventListener) not working in IE11
-    if ( el.detachEvent ) {el.detachEvent( 'on'+type, handler )}
-    else {el.removeEventListener( type, handler )}
-  }
-
   function live( elClass, event, cb, context ) {
     addEvent( context || document, event, function( e ) {
       var found, el = e.target || e.srcElement;
@@ -373,10 +364,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       if ( found ) {cb.call( el, e )}
     } );
   }
-
-  /* ================== public methods ================== */
-
-  // currently none
 
   /* ================= private components =============== */
 
@@ -421,7 +408,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'div',
       c: 'ac-suggestion',
-      h: '"' + stringToComplete + '" ' + uiStr( strNotFound )
+      h: '"' + stringToComplete + '" ' + getString( ui.notFound )
     } );
   }
 
@@ -435,7 +422,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'h2',
           c: 'font-bold fs-l leading-snug txt-center w-full pxy',
-          h: uiStr( strChatTitle, 'chat title' )
+          h: getString( ui.chatTitle, 'chat title' )
         },
         {
           t: 'span',
@@ -486,8 +473,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       h: prefill ? 'send ' + prefill + ' 10' : '',
       a: {
         // style: 'height:10px;overflow-y:hidden;',
-        placeholder: aE ? uiStr( strPlaceholder, 'message textarea placeholder' )
-          : uiStr( strPlaceholder2, 'message textarea placeholder' )
+        placeholder: aE ? getString( ui.placeholder, 'message textarea placeholder' )
+          : getString( ui.placeholder2, 'message textarea placeholder' )
       },
       e: {
         keyup: handleKeyUp,

@@ -106,19 +106,10 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function presenter( options ) {
-    return options;
-  }
-
   function view( pageData ) {
     if ( !pageData ) { return }
 
     pageData.reset == false ? null : reset();
-
-    // if ( pageData.active == true ) {
-    //   V.getNavItem( 'active', 'serviceNav' ).draw();
-    //   return;
-    // }
 
     if ( pageData.topcontent ) {
       V.setNode( DOM.$topcontent, pageData.topcontent );
@@ -225,11 +216,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( options ) {
-    return Promise.resolve( view( presenter( options ) ) );
-    // V.setPipe(
-    //   presenter,
-    //   view
-    // )( options );
+    view( options );
   }
 
   return {

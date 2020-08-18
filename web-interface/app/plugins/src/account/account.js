@@ -7,20 +7,15 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  let cacheBalance;
+  const session = {
+    balance: -1,
+  };
 
   /* ================== private methods ================= */
 
-  // async function castEntityName( address ) {
-  //   const entity = await V.getEntity( address );
-  //   return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
-  // }
+  async function presenter() {
 
-  async function presenter( path ) {
-
-    const aE = V.getState( 'activeEntity' );
-
-    if ( !aE ) {
+    if ( !V.aE() ) {
       return {
         success: false,
         status: ''
@@ -32,29 +27,21 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     if( !transactions.success || !transactions.data.length ) {
       return {
         success: false,
-        aE: aE,
+        aE: V.aE(),
         entityBalance: null,
       };
     }
 
     const bal = await V.getEntityBalance();
 
-    const enhancedTx = [];
+    if ( !V.aA() ) {
 
-    for ( const txData of transactions.data.reverse() ) {
-      // if ( V.getState( 'activeAddress' ) ) {
-      //
-      //   const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
-      //   txData.blockDate = blockDetails.timestamp;
-      //
-      //   if ( txData.txType == 'in' ) {
-      //     txData.title = await castEntityName( txData.fromAddress );
-      //   }
-      //   else if ( txData.txType == 'out' ) {
-      //     txData.title = await castEntityName( txData.toAddress );
-      //   }
-      // }
-      if ( !V.getState( 'activeAddress' ) ) { // in case of MongoDB transfers
+      /**
+       * enhance MongoDB transfers
+       *
+       */
+
+      for ( const txData of transactions.data ) {
         if ( txData.txType == 'fee' ) {
           txData.title = 'Transaction Fee';
         }
@@ -62,30 +49,28 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
           txData.title = 'Community Payout';
         }
       }
-
-      enhancedTx.push( txData );
     }
 
     return {
       success: true,
-      aE: aE,
+      aE: V.aE(),
       entityBalance: bal,
-      data: enhancedTx
+      data: transactions.data
     };
 
   }
 
-  function view( txData ) {
+  function view( viewData ) {
     const $list = CanvasComponents.list( 'narrow' );
-    if ( txData.success ) {
+    if ( viewData.success ) {
 
-      const $topcontent = AccountComponents.topcontent( txData.aE.fullId, txData.entityBalance );
+      const $topcontent = AccountComponents.topcontent( viewData.aE.fullId, viewData.entityBalance );
 
       // if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       //   V.setNode( $list, [ InteractionComponents.onboardingCard() ] ); // TODO: should not have to be an Array here
       // }
 
-      for ( const tx of txData.data /*.reverse() */ ) {
+      for ( const tx of viewData.data.reverse() ) {
         const $cardContent = AccountComponents.accountCard( tx );
         const $card = CanvasComponents.card( $cardContent );
         V.setNode( $list, $card );
@@ -97,7 +82,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      V.setNode( $list, CanvasComponents.notFound( 'transactions' ) );
+      V.setNode( $list, CanvasComponents.notFound( 'transaction' ) );
       Page.draw( {
         listings: $list,
       } );
@@ -105,10 +90,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( path ) {
-    const aE = V.getState( 'activeEntity' );
+
     const $list = CanvasComponents.list( 'narrow' );
 
-    for ( let i = 0; i < 12; i++ ) {
+    for ( let i = 0; i < 8; i++ ) {
       const $ph = AccountComponents.accountPlaceholderCard();
       const $card = CanvasComponents.card( $ph );
 
@@ -120,30 +105,29 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     Chat.drawMessageForm();
     Page.draw( {
-      topcontent: aE ? AccountComponents.topcontent( aE.fullId ) : '',
+      topcontent: V.aE() ? AccountComponents.topcontent( V.aE().fullId ) : '',
       listings: $list,
       position: 'top',
     } );
   }
 
   function drawBalance( balance ) {
-    if ( cacheBalance != balance ) {
-      cacheBalance = Number( balance );
+    if ( session.balance != balance ) {
+      session.balance = Number( balance );
       const $navBal = AccountComponents.headerBalance( balance );
       V.setNode( 'balance', '' );
       V.setNode( 'balance', $navBal );
     }
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================== public methods ================== */
 
   function drawHeaderBalance( balance, which ) {
     if ( balance ) {
       drawBalance( balance );
     }
     else {
-      const aE = V.getState( 'activeEntity' );
-      V.getEntityBalance( aE ).then( accState => {
+      V.getEntityBalance( V.aE() ).then( accState => {
         const balance = accState.data[0] ? accState.data[0][ which || 'liveBalance' ] : 'n/a';
         drawBalance( balance );
       } );
@@ -152,8 +136,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function draw( path ) {
     preview( path );
-    presenter( path ).then( viewData => { view( viewData ) } );
+    presenter().then( viewData => { view( viewData ) } );
   }
+
+  /* ====================== export ====================== */
 
   return {
     draw: draw,

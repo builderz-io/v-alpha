@@ -1,15 +1,23 @@
 const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
-  // await kickAss();
-  //
-  // async function kickAss() {
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    ledgerLoad: 'Connecting to ledger',
+    themeLoad: 'Setting up the theme',
+    pluginsLoad: 'Initializing network\'s plugins'
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'launch', scope || 'launch content' ) + ' ';
+  }
 
   /**
     * Launch ledger-specific VCore scripts and methods,
     *
     */
 
-  V.setNode( 'loader', V.i18n( 'Connecting to ledger', 'app' ) );
+  V.setNode( 'loader', getString( ui.ledgerLoad ) );
 
   await VLedger.launch();
 
@@ -19,7 +27,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  V.setNode( 'loader', V.i18n( 'Setting up the theme', 'app' ) );
+  V.setNode( 'loader', getString( ui.themeLoad ) );
 
   if( V.getSetting( 'useBuilds' ) ) {
     await Promise.all( [
@@ -38,7 +46,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     *
     */
 
-  V.setNode( 'loader', V.i18n( 'Initializing network\'s plugins', 'app' ) );
+  V.setNode( 'loader', getString( ui.pluginsLoad ) );
 
   clearTimeout( preloaderTimeout );
 
@@ -52,7 +60,5 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
   Canvas.draw( {
     path: window.location.pathname
   } );
-
-  // }
 
 } )();

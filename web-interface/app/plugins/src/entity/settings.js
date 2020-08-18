@@ -9,9 +9,9 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  async function presenter( path ) {
 
-    if ( !V.getState( 'activeEntity' ) ) {
+    if ( !V.aE() ) {
       return {
         success: false,
         status: ''
@@ -22,43 +22,21 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'active entity retrieved',
         data: [{
-          which: which,
-          entity: V.getState( 'activeEntity' ),
+          path: path,
+          entity: V.aE(),
         }]
       };
     }
-
-    /*
-    const fullId = V.getState( 'activeEntity' ).fullId;
-    const query = await V.getEntity( fullId ); // query again for changes
-
-    if ( query.success ) {
-      return {
-        success: true,
-        status: 'user retrieved',
-        data: [{
-          which: which,
-          entity: query.data[0],
-        }]
-      };
-    }
-    else {
-      return {
-        success: null,
-        status: 'cound not retrieve user'
-      };
-    }
-    */
   }
 
-  function view( data ) {
+  function view( viewData ) {
 
     let $topcontent, $list;
 
-    if ( data.success ) {
+    if ( viewData.success ) {
 
       UserComponents.setData( {
-        entity: data.data[0].entity,
+        entity: viewData.data[0].entity,
         editable: true
       } );
 
@@ -69,7 +47,7 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.appLanguageCard(),
       ] );
 
-      Navigation.draw( data.data[0].which );
+      Navigation.draw( viewData.data[0].path );
 
       Page.draw( {
         topcontent: $topcontent,
@@ -77,9 +55,6 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
       } );
 
-      // Chat.drawMessageForm( 'clear' );
-
-      // VMap.draw( data.data[0].mapData );
     }
     else {
       Page.draw( {
@@ -90,8 +65,8 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( which ) {
-    presenter( which ).then( data => { view( data ) } );
+  function draw( path ) {
+    presenter( path ).then( viewData => { view( viewData ) } );
   }
 
   return {

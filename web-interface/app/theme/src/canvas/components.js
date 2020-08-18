@@ -40,11 +40,27 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   } );
 
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    transaction: 'No transactions found',
+    message: 'No messages found',
+    entity: 'No entities found',
+    marketplace: 'No marketplace items found',
+    media: 'No media items found',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'canvas', scope || 'not found' ) + ' ';
+  }
+
+  /* ================  public components ================ */
+
   function notFound( which ) {
     return V.setNode( {
       t: 'p',
       c: 'pxy',
-      h: V.i18n( 'No ' + which + ' found', 'app', 'not found' )
+      h: getString( ui[which] )
     } );
   }
 
@@ -67,6 +83,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       //     </div>`
     } );
   }
+
   function haze() {
     return V.setNode( {
       tag: 'haze',
@@ -80,6 +97,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
   }
+
   function feature() {
     const dimensions = V.getState( 'page' ).featureDimensions;
     return V.setNode( {
@@ -104,6 +122,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
     } );
   }
+
   function interactions() {
     const sc = V.getState( 'screen' );
 
@@ -123,6 +142,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
   }
+
   function handle() {
     return V.setNode( {
       tag: 'handle',
@@ -149,6 +169,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     } );
   }
+
   function topSlider() {
     return V.setNode( {
       tag: 'topslider'
@@ -193,7 +214,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'user profile', 'card title' ) },
+          { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle },
           $cardContent
         ] : $cardContent
       }
@@ -205,6 +226,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       tag: 'header',
     } );
   }
+
   function page() {
     return V.setNode( {
       tag: 'page',
@@ -218,16 +240,20 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       },
     } );
   }
+
   function content() {
     return V.setNode( {
       tag: 'content'
     } );
   }
+
   function topContent() {
     return V.setNode( {
       tag: 'topcontent'
     } );
   }
+
+  /* ====================== export ====================== */
 
   return {
     notFound: notFound,
