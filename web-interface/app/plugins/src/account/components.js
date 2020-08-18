@@ -107,10 +107,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   function headerBalance( balance ) {
     balance = V.getNetVAmount( balance ).net;
     const sc = V.getState( 'screen' );
-    const aA = V.getState( 'activeAddress' );
-    // const initials = V.castInitials( V.getState( 'activeEntity' ).profile.title );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-    const textColor = aA ? 'txt-green' : 'txt-brand-primary';
+    const textColor = V.aA() ? 'txt-green' : 'txt-brand-primary';
 
     return V.castNode( { // #1b1aff
       tag: 'svg',

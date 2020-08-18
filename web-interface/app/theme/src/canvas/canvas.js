@@ -316,7 +316,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function returningUser() {
-    if( !V.getState( 'activeEntity' ) ) {
+    if( !V.aE() ) {
       const returningWallet = V.getCookie( 'last-active-address' );
       const returningUphrase = V.getCookie( 'last-active-uphrase' );
 

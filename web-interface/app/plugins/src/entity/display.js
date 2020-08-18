@@ -29,7 +29,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
       if ( query.data[0].profile.role == 'pool' ) {
-        if ( V.getState( 'activeAddress' ) || !V.getState( 'activeEntity' ) ) {
+        if ( V.aA() || !V.aE() ) {
           if ( query.data[0].evmCredentials ) {
             txHistory = await V.getAddressHistory( query.data[0].evmCredentials.address );
             if ( txHistory.success && txHistory.data.length ) {

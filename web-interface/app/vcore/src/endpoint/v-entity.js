@@ -85,7 +85,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-    const activeAddress = V.getState( 'activeAddress' );
     const imageUpload = V.getState( 'imageUpload' );
     const tinyImageUpload= V.getState( 'tinyImageUpload' );
 
@@ -158,8 +157,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         entityData.evmReceivingAddress = undefined;
       }
 
-      if ( activeAddress && ['skill', 'job'].includes( entityData.role ) ) {
-        Object.assign( entityData, { evmReceivingAddress: activeAddress } );
+      if ( V.aA() && ['skill', 'job'].includes( entityData.role ) ) {
+        Object.assign( entityData, { evmReceivingAddress: V.aA() } );
       }
 
       await V.getContractState().then( res => {
@@ -365,12 +364,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  async function getEntityBalance( entity = V.getState( 'activeEntity' ) ) {
+  async function getEntityBalance( entity = V.aE() ) {
 
     const tL = V.getSetting( 'transactionLedger' );
     const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
-    if ( ['EVM', 'Symbol'].includes( tL ) && V.getState( 'activeAddress' ) ) {
+    if ( ['EVM', 'Symbol'].includes( tL ) && V.aA() ) {
 
       const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 

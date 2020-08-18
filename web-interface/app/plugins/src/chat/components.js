@@ -246,8 +246,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const key = window.event ? e.keyCode : e.which;
 
     if ( key != 13 ) {
-      if ( V.getState( 'activeEntity' ) && this.value.substring( 0, 4 ) != 'send' ) {
-        window.socket.emit( 'user is typing', V.getState( 'activeEntity' ).fullId.split( ' ' )[0] );
+      if ( V.aE() && this.value.substring( 0, 4 ) != 'send' ) {
+        window.socket.emit( 'user is typing', V.aE().fullId.split( ' ' )[0] );
       }
     }
     if ( key == 13 ) {
@@ -466,14 +466,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageInput( prefill ) {
-    const aE = V.getState( 'activeEntity' );
     return V.sN( {
       t: 'textarea',
       c: 'messageform__input mr-2',
       h: prefill ? 'send ' + prefill + ' 10' : '',
       a: {
         // style: 'height:10px;overflow-y:hidden;',
-        placeholder: aE ? getString( ui.placeholder, 'message textarea placeholder' )
+        placeholder: V.aE() ? getString( ui.placeholder, 'message textarea placeholder' )
           : getString( ui.placeholder2, 'message textarea placeholder' )
       },
       e: {

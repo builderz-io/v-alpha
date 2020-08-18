@@ -37,7 +37,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.getState( 'activeAddress' )
+    which = V.aA()
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );
@@ -72,7 +72,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.getState( 'activeAddress' )
+    which = V.aA()
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );

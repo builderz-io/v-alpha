@@ -452,14 +452,13 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function onboardingCard() {
 
-    const aE = V.getState( 'activeEntity' );
     const ledger = V.getSetting( 'transactionLedger' );
 
-    if ( aE && ledger == 'EVM' ) {
+    if ( V.aE() && ledger == 'EVM' ) {
       let $cardContent;
-      const balanceCheck = aE.balance && aE.balance.balance.liveBalance > 0 ? true : false;
+      const balanceCheck = V.aE().balance && V.aE().balance.balance.liveBalance > 0 ? true : false;
 
-      if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
+      if ( !V.aA() ) { // no wallet in use
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
@@ -475,7 +474,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( !balanceCheck && aE.profile.role == 'member' ) { // wallet balance is 0
+      else if ( !balanceCheck && V.aE().profile.role == 'member' ) { // wallet balance is 0
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
@@ -483,7 +482,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( balanceCheck && aE.profile.role == 'member' ) { // no brightID connected
+      else if ( balanceCheck && V.aE().profile.role == 'member' ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',

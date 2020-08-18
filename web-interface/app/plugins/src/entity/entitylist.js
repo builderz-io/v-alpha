@@ -40,7 +40,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'entities retrieved',
         data: [{
-          entity: V.getState( 'activeEntity' ),
+          entity: V.aE(),
           entitiesAdmined: entitiesAdmined,
           mapData: mapData,
         }]

@@ -36,10 +36,10 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         // Modal.draw( 'please wait' );
-        if ( V.getState( 'activeAddress' ) ) {
+        if ( V.aA() ) {
           which = await ckeckEntityStoreByAddress();
         }
-        else if ( V.getState( 'activeEntity' ).fullId ) {
+        else if ( V.aE().fullId ) {
           which = 'entity found';
         }
       }
@@ -49,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
-        V.setState( 'activeAddress', V.getState( 'activeEntity' ).symbolCredentials.address );
+        V.setState( 'activeAddress', V.aE().symbolCredentials.address );
         which = 'entity found';
       }
     }
@@ -71,7 +71,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     // Marketplace.draw();
     if ( which == 'entity found' ) {
       V.setNode( 'join', 'clear' );
-      const bal = V.getState( 'activeEntity' ).balance;
+      const bal = V.aE().balance;
       if ( !bal ) { // web2 signup
         Account.drawHeaderBalance();
 
@@ -125,9 +125,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    const activeAddress = V.getState( 'activeAddress' );
-
-    return activeAddress ? V.getEntity( activeAddress ).then( async res => {
+    return V.aA() ? V.getEntity( V.aA() ).then( async res => {
       if ( res.reset ) {
         return 'entity not found';
       }

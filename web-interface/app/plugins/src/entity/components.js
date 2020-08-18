@@ -192,18 +192,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        const aE = V.getState( 'activeEntity' );
+        const fullId = V.aE().fullId;
         const auth = V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' );
         const imageUpload = V.getState( 'imageUpload' );
         const tinyImageUpload = V.getState( 'tinyImageUpload' );
-        Object.assign( imageUpload, { entity: aE.fullId } );
-        Object.assign( tinyImageUpload, { entity: aE.fullId } );
-        V.setEntity( aE.fullId, {
+        Object.assign( imageUpload, { entity: fullId } );
+        Object.assign( tinyImageUpload, { entity: fullId } );
+        V.setEntity( fullId, {
           field: 'thumbnail',
           data: imageUpload,
           auth: auth
         } ).then( () => {
-          V.setEntity( aE.fullId, {
+          V.setEntity( fullId, {
             field: 'tinyImage',
             data: tinyImageUpload,
             auth: auth
@@ -298,8 +298,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setEntity( field, data ) {
-    const aE = V.getState( 'activeEntity' );
-    V.setEntity( aE.fullId, {
+    V.setEntity( V.aE().fullId, {
       field: field,
       data: data,
       auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )

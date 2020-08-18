@@ -16,8 +16,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleTransferSummaryEvent( eventData ) {
-    const aA = V.getState( 'activeAddress' );
-    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+    if ( V.aA() && ( eventData.to.toLowerCase() == V.aA() || eventData.from.toLowerCase() == V.aA() ) ) {
       Account.drawHeaderBalance();
       if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
         setNewTxNode( { returnValues: eventData } );
@@ -50,7 +49,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     var currentActiveAddress = window.ethereum.selectedAddress;
     // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
     // console.log( currentActiveAddress );
-    // console.log( V.getState( 'activeAddress' ) );
+    // console.log( V.aA() );
 
     if ( currentActiveAddress == null ) {
       V.setState( 'activeEntity', 'clear' );
@@ -60,7 +59,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       V.setCookie( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
-    else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
+    else if ( currentActiveAddress != V.aA() ) {
       V.setCookie( 'welcome-modal', 1 );
       V.setState( 'activeEntity', 'clear' );
       V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
@@ -103,8 +102,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function castTransfers( transfers, which ) {
-    const aA = V.getState( 'activeAddress' );
-    const aE = V.getState( 'activeEntity' );
+
     const filteredAndEnhanced = await transfers.filter( tx => {
       const data = tx.returnValues;
       return data.from.toLowerCase() == which ||
@@ -139,8 +137,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
       txData.blockDate = blockDetails.timestamp;
 
-      txData.fromEntity = txData.fromAddress == aA ? aE.fullId : await castEntityName( txData.fromAddress );
-      txData.toEntity = txData.toAddress == aA ? aE.fullId : await castEntityName( txData.toAddress );
+      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
+      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
 
       if ( txData.txType == 'in' ) {
         txData.title = txData.fromEntity;
@@ -165,9 +163,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setNewTxNode( txSummary, id ) {
-    const aA = V.getState( 'activeAddress' );
     console.log( 'txSummary: ', txSummary.returnValues );
-    const filteredAndEnhanced = await castTransfers( [ txSummary ], aA );
+    const filteredAndEnhanced = await castTransfers( [ txSummary ], V.aA() );
     console.log( 'cast txData: ', JSON.stringify( filteredAndEnhanced ) );
     const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
     const $card = CanvasComponents.card( $cardContent );
@@ -399,7 +396,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.getState( 'activeAddress' ),
+    which = V.aA(),
     data = { fromBlock: 0, toBlock: 'latest' },
     whichEvent = 'TransferSummary'
   ) {
@@ -436,7 +433,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   function setAddressVerification( which ) {
     console.log( 'verify:', which );
-    return contract.methods.verifyAccount( which ).send( { from: V.getState( 'activeAddress' ), gas: 6001000 } )
+    return contract.methods.verifyAccount( which ).send( { from: V.aA(), gas: 6001000 } )
       .on( 'transactionHash', ( hash ) => {
         console.log( 'Hash: ', hash );
         // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {

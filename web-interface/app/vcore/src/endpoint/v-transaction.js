@@ -33,6 +33,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
      */
 
     const initiator = V.getState( 'activeEntity' );
+
     if ( !initiator ) {
       return {
         success: false,
@@ -119,9 +120,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     let recipientAddress, signature;
 
     const tL = V.getSetting( 'transactionLedger' );
-    const aA = V.getState( 'activeAddress' );
 
-    if ( tL == 'EVM' && aA ) {
+    if ( tL == 'EVM' && V.aA() ) {
       const rD = recipientData.data[0];
 
       rD.evmCredentials ? rD.evmCredentials.address ?
@@ -136,12 +136,12 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
       // signature = initiator.evmCredentials.privateKey;
     }
-    else if ( tL == 'Symbol' && aA ) {
+    else if ( tL == 'Symbol' && V.aA() ) {
       recipientAddress = recipientData.data[0].symbolCredentials.address;
       signature = initiator.symbolCredentials.privateKey;
     }
 
-    if ( aA && !recipientAddress ) {
+    if ( V.aA() && !recipientAddress ) {
       return {
         success: false,
         endpoint: 'transaction',
@@ -162,9 +162,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         currency: currency,
         command: command,
         initiator: initiator.fullId,
-        initiatorAddress: aA,
+        initiatorAddress: V.aA(),
         sender: initiator.fullId, // currently the same as initiator
-        senderAddress: aA, // currently the same as initiator
+        senderAddress: V.aA(), // currently the same as initiator
         recipient: recipient,
         recipientAddress: recipientAddress,
         reference: reference || 'no reference given',
@@ -191,9 +191,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function getTransaction(
-    which = V.getState( 'activeEntity' ).fullId // for MongoDB
+    which = V.aE().fullId // for MongoDB
   ) {
-    const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
+    const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
     return V.getData( which, 'transaction', V.getSetting( choice ) );
   }
 
@@ -204,7 +204,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
+      const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
       return V.setData( txData.data[0], 'transaction', V.getSetting( choice ) );
     }
     else {

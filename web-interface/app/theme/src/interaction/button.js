@@ -27,7 +27,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       target: form.getNode( '#plusform__target' ).value
     };
 
-    if ( !V.getState( 'activeEntity' ) ) {
+    if ( !V.aE() ) {
 
       /**
        * ask user to authenticate first
@@ -63,7 +63,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
            *
            */
 
-          V.setEntity( V.getState( 'activeEntity' ).fullId, {
+          V.setEntity( V.aE().fullId, {
             field: 'adminOf',
             data: res.data[0].fullId,
             auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )

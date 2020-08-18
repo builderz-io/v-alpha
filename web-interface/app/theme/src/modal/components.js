@@ -146,7 +146,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
       role: 'member',
-      evmAddress: V.getState( 'activeAddress' ), // TODO: allow for other chains
+      evmAddress: V.aA(), // TODO: allow for other chains
     };
 
     V.setState( 'activeEntity', 'clear' );
@@ -177,9 +177,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     e.target.removeEventListener( 'click', handleTransaction, false );
 
-    const aA = V.getState( 'activeAddress' );
-
-    if ( aA ) {
+    if ( V.aA() ) {
       const $btn = V.getNode( '#sign-transaction' );
       $btn.style.background = 'white';
       $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
@@ -191,7 +189,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
-          if ( !aA ) {
+          if ( !V.aA() ) {
             Modal.draw( 'transaction successful' );
             Account.drawHeaderBalance();
           }
@@ -208,13 +206,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleAddressMapping() {
-    const aE = V.getState( 'activeEntity' );
-    const aA = V.getState( 'activeAddress' );
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
-      V.setEntity( aE.fullId, {
+      V.setEntity( V.aE().fullId, {
         field: 'evmCredentials.address',
-        data: aA,
-        role: aE.profile.role,
+        data: V.aA(),
+        role: V.aE().profile.role,
         auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
       } ).then( () => {
         Join.draw( 'authenticate' );
@@ -508,7 +504,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'modal-pos-3 relative txt-center',
       h: getString( ui.newNameExplain )
     } );
-    if ( V.getState( 'activeEntity' ) ) {
+    if ( V.aE() ) {
       V.setNode( $content, [$new, $current, $descr] );
     }
     else {
