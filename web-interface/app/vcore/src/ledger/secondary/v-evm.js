@@ -15,6 +15,36 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
+  function handleTransferSummaryEvent( eventData ) {
+    const aA = V.getState( 'activeAddress' );
+    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+      Account.drawHeaderBalance();
+      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+        setNewTxNode( { returnValues: eventData } );
+      }
+    }
+  }
+
+  function handleHashConfirmation( hash ) {
+    Modal.draw( 'transaction sent', hash );
+    if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+      const $ph = AccountComponents.accountPlaceholderCard();
+      const $card = CanvasComponents.card( $ph, undefined, 'phS' + hash.substr( 3, 6 ) + 'E' );
+      V.setNode( 'list', $card, 'prepend' );
+    }
+  }
+
+  function handleTxConfirmation( receipt ) {
+    if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
+      Account.drawHeaderBalance();
+      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+        setNewTxNode( receipt.events.TransferSummary, 'phS' + receipt.transactionHash.substr( 3, 6 ) + 'E' );
+      }
+    }
+  }
+
+  /* ================== private methods ================= */
+
   function setNewActiveAddress() {
 
     var currentActiveAddress = window.ethereum.selectedAddress;
@@ -39,15 +69,32 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  /* ================== private methods ================= */
+  function setEventSubscription( whichEvent ) {
+    // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
+    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
+    /* const subscription = */ window.Web3Obj.eth.subscribe( 'logs', {
+      address: contract.options.address,
+      topics: [eventJsonInterface.signature]  },
+    ( error, result ) => {
+      if ( error ) { console.log( error ); return }
+
+      const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
+      if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
+        handleTransferSummaryEvent( eventData );
+      }
+
+    } );
+
+    // subscribedEvents[whichEvent] = subscription;
+  }
 
   function castEthBalance( balance ) {
     return Number( balance / 10**18 ).toFixed( 4 );
   }
 
-  function castTokenFloat( balance ) {
+  function castTokenBalance( balance, decimals ) {
     const divisibility = V.getState( 'contract' ).divisibility;
-    return Number( balance / 10**( divisibility ) ).toFixed( 0 );
+    return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
   async function castEntityName( address ) {
@@ -74,14 +121,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       txData.toAddress == burnAddress ? txData.txType = 'fee' : null;
       txData.fromAddress == burnAddress ? txData.txType = 'generated' : null;
 
-      txData.amount = castTokenFloat( tx.returnValues.value );
+      txData.amount = castTokenBalance( tx.returnValues.value );
 
-      txData.feesBurned = castTokenFloat( tx.returnValues.feesBurned || 0 );
-      txData.contribution = castTokenFloat( tx.returnValues.contribution || 0 );
+      txData.feesBurned = castTokenBalance( tx.returnValues.feesBurned || 0, 6 );
+      txData.contribution = castTokenBalance( tx.returnValues.contribution || 0, 6 );
 
       txData.payout = txData.fromAddress == which
-        ? castTokenFloat( tx.returnValues.payoutSender || 0 )
-        : castTokenFloat( tx.returnValues.payoutRecipient || 0 );
+        ? castTokenBalance( tx.returnValues.payoutSender || 0, 6 )
+        : castTokenBalance( tx.returnValues.payoutRecipient || 0, 6 );
 
       txData.message = 'n/a';
 
@@ -115,34 +162,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const a = await Promise.all( filteredAndEnhanced );
     // console.log( a );
     return a;
-  }
-
-  function handleTransferSummaryEvent( eventData ) {
-    const aA = V.getState( 'activeAddress' );
-    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
-      Account.drawHeaderBalance();
-      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        setNewTxNode( { returnValues: eventData } );
-      }
-    }
-  }
-
-  function handleHashConfirmation( hash ) {
-    Modal.draw( 'transaction sent', hash );
-    if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-      const $ph = AccountComponents.accountPlaceholderCard();
-      const $card = CanvasComponents.card( $ph, undefined, 'phS' + hash.substr( 3, 6 ) + 'E' );
-      V.setNode( 'list', $card, 'prepend' );
-    }
-  }
-
-  function handleTxConfirmation( receipt ) {
-    if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
-      Account.drawHeaderBalance();
-      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        setNewTxNode( receipt.events.TransferSummary, 'phS' + receipt.transactionHash.substr( 3, 6 ) + 'E' );
-      }
-    }
   }
 
   async function setNewTxNode( txSummary, id ) {
@@ -355,8 +374,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       const data = {
         coinBalance: castEthBalance( all[0] ),
-        liveBalance: castTokenFloat( all[1] ),
-        tokenBalance: castTokenFloat( all[2]._balance ),
+        liveBalance: castTokenBalance( all[1] ),
+        tokenBalance: castTokenBalance( all[2]._balance ),
         lastBlock: all[2]._lastBlock,
         zeroBlock: all[2]._zeroBlock,
       };
@@ -515,32 +534,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return txFunction;
   }
 
-  function setEventSubscription( whichEvent ) {
-    // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
-    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
-    /* const subscription = */ window.Web3Obj.eth.subscribe( 'logs', {
-      address: contract.options.address,
-      topics: [eventJsonInterface.signature]  },
-    ( error, result ) => {
-      if ( error ) { console.log( error ); return }
-
-      const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
-      if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
-        handleTransferSummaryEvent( eventData );
-      }
-
-    } );
-
-    // subscribedEvents[whichEvent] = subscription;
-  }
-
-  function setNetVAmount( amount ) {
+  function getNetVAmount( amount ) {
     const fee = V.getSetting( 'transactionFee' );
     const contr = V.getSetting( 'communityContribution' );
     const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-    const totalFee = Math.floor( amount * ( ( contractState.fee / 100**2 ) ) );
-    const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
-    const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+    const totalFee = Math.floor( amount * ( contractState.fee / 100**2 ) );
+    const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
+    const feeAmount = totalFee - contribution;
     const net = amount - totalFee;
 
     return  {
@@ -551,22 +551,72 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     };
   }
 
-  function setGrossVAmount( amount ) {
+  function getGrossVAmount( amount ) {
     const fee = V.getSetting( 'transactionFee' );
     const contr = V.getSetting( 'communityContribution' );
     const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-    const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
-    const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
-    const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+
+    /**
+     * 33.33% and 25% are two possible and likely choices for a transaction fee
+     * in the smart contract.
+     * In order to avoid rounding issues, these are specifically setup here
+     *
+     */
+
+    const totalFee =
+      contractState.fee == 3333 ? amount * 0.5 :
+        contractState.fee == 2500 ? Math.round( amount * 0.33333333 * 100 ) / 100 :
+          Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
+
+    const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
+    const feeAmount = totalFee - contribution;
     const gross = amount + feeAmount + contribution;
 
-    return  {
+    const data = {
       net: amount,
       gross: gross,
       contribution: contribution,
       feeAmount: feeAmount
     };
+
+    return data;
   }
+
+  // previous versions
+
+  // function getNetVAmount( amount ) {
+  //   const fee = V.getSetting( 'transactionFee' );
+  //   const contr = V.getSetting( 'communityContribution' );
+  //   const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+  //   const totalFee = Math.floor( amount * ( contractState.fee / 100**2 ) );
+  //   const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+  //   const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+  //   const net = amount - totalFee;
+  //
+  //   return  {
+  //     net: net,
+  //     gross: amount,
+  //     contribution: contribution,
+  //     feeAmount: feeAmount
+  //   };
+  // }
+
+  // function getGrossVAmount( amount ) {
+  //   const fee = V.getSetting( 'transactionFee' );
+  //   const contr = V.getSetting( 'communityContribution' );
+  //   const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+  //   const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
+  //   const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+  //   const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+  //   const gross = amount + feeAmount + contribution;
+  //
+  //   return  {
+  //     net: amount,
+  //     gross: gross,
+  //     contribution: contribution,
+  //     feeAmount: feeAmount
+  //   };
+  // }
 
   /* ====================== export  ===================== */
 
@@ -578,8 +628,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   V.setAddressVerification = setAddressVerification;
   V.setCoinTransaction = setCoinTransaction;
   V.setTokenTransaction = setTokenTransaction;
-  V.setNetVAmount = setNetVAmount;
-  V.setGrossVAmount = setGrossVAmount;
+  V.getNetVAmount = getNetVAmount;
+  V.getGrossVAmount = getGrossVAmount;
 
   return {
     getWeb3Provider: getWeb3Provider,
@@ -590,8 +640,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     setAddressVerification: setAddressVerification,
     setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
-    setNetVAmount: setNetVAmount,
-    setGrossVAmount: setGrossVAmount
+    getNetVAmount: getNetVAmount,
+    getGrossVAmount: getGrossVAmount
   };
 
 } )();
