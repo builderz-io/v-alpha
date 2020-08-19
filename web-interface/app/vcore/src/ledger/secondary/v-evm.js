@@ -13,6 +13,17 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   const burnAddress = '0x0000000000000000000000000000000000000000';
 
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    community: 'Community',
+    fee: 'Transaction Fee',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'evm', scope || 'transaction' ) + ' ';
+  }
+
   /* ================== event handlers ================== */
 
   function handleTransferSummaryEvent( eventData ) {
@@ -140,6 +151,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
       txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
 
+      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
+
       if ( txData.txType == 'in' ) {
         txData.title = txData.fromEntity;
       }
@@ -147,10 +160,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         txData.title = txData.toEntity;
       }
       else if ( txData.txType == 'fee' ) {
-        txData.title = 'Transaction Fee';
+        txData.title = getString( ui.fee );
       }
       else if ( txData.txType == 'generated' ) {
-        txData.title = 'Community Payout';
+        txData.title = getString( ui.community );
       }
 
       return txData;

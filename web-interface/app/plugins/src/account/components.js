@@ -202,7 +202,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
-        k: handleProfileDraw,
+        k: handleOpenTxDetails, // handleProfileDraw,
         h: txData.title
       }
     } );
@@ -219,14 +219,14 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'table',
         h: [
+          txData.txType == 'in' ? [ getString( ui.from ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag, handleProfileDraw ] :
+            [ getString( ui.to ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag, handleProfileDraw ],
           txData.blockDate ? [ getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
           txData.blockDate ? [ getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
+          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date ],
           [ getString( ui.amount ), txData.amount ],
           txData.txType == 'out' ? [ getString( ui.fees ), txData.feesBurned ] : [ getString( ui.fees ), '0' ],
           txData.txType == 'out' ?  [ getString( ui.contr ), txData.contribution ] : [ getString( ui.contr ), '0' ],
-          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date ],
-          [ getString( ui.from ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag ],
-          [ getString( ui.to ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag ],
           [ getString( ui.payout ), txData.payout ],
         ].filter( index => { return Array.isArray( index ) } ).map( row => {
           return V.cN( {
@@ -238,8 +238,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
               },
               {
                 t: 'td',
-                c: 'txt-right',
-                h: row[1]
+                c: 'txt-right' + ( row[2] ? ' cursor-pointer' : '' ),
+                h: row[1],
+                k: row[2]
               }
             ]
           } );

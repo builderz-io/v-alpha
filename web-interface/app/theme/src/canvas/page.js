@@ -216,7 +216,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( options ) {
-    view( options );
+    return Promise.resolve( view( options ) );
   }
 
   return {

@@ -204,5 +204,9 @@ const VTranslations = // eslint-disable-line no-unused-vars
   },
   'transaction': {
 
+  },
+  'evm': {
+
   }
+
 };

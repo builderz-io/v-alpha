@@ -17,6 +17,14 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     image: 'Image',
     titleOrCity: 'Enter a title or city name',
 
+    key: 'Key',
+    title: 'Title',
+    loc: 'Location',
+    descr: 'Description and Links',
+    target: 'Target',
+    unit: 'Unit',
+    search: 'Search',
+
     connectWallet: 'Connect a new crypto wallet',
     progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
     brightId: 'Verify with BrightID to receive VALUE basic income.',
@@ -179,7 +187,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     const fields = {
       uPhrase: {
-        label: 'Key',
+        label: getString( ui.key ),
         inputId: 'loginform__uphrase',
         attributes: {
           type: 'password',
@@ -187,14 +195,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       title: {
-        label: 'Title',
+        label: getString( ui.title ),
         inputId: 'plusform__title',
         attributes: {
+          value: whichValue,
           autocomplete: 'off'
         }
       },
       location: {
-        label: 'Location',
+        label: getString( ui.loc ),
         inputId: 'plusform__loc',
         attributes: {
           value: whichValue,
@@ -204,22 +213,22 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       description: {
-        label: 'Description and Links',
+        label: getString( ui.descr ),
         inputId: 'plusform__descr',
         multiline: true
       },
       target: {
-        label: 'Target',
+        label: getString( ui.target ),
         inputId: 'plusform__target',
         fieldClasses: 'w-1/3 inline-block'
       },
       unit: {
-        label: 'Unit',
+        label: getString( ui.unit ),
         inputId: 'plusform__unit',
         fieldClasses: 'w-1/3 inline-block'
       },
       search: {
-        label: 'Search',
+        label: getString( ui.search ),
         inputId: 'search-input',
       }
     };

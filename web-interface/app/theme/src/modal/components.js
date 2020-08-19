@@ -437,7 +437,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           c: 'font-medium fs-l pxy',
           h: activeEntity.fullId
         },
-        { t: 'p', h: getString( ui.connectedAddress ) },
+        { t: 'p', h: activeAddress ? getString( ui.connectedAddress ) : '' },
         {
           t: 'p',
           c: 'fs-s pxy',

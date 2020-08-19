@@ -9,11 +9,16 @@
 // const privKey = '0xae458e1123dede0b9efb6880f55bc63174b4ea8d76d2e8e59e841083d04aebe3';
 
 // ganache remote
-const rpc = 'http://161.97.97.238:8547/';
-const contractAddress = '0x669e17db2Db2334fDbC9CBC01D117528e5F84488';
+// const rpc = 'http://161.97.97.238:8547/';
+// const contractAddress = '0x669e17db2Db2334fDbC9CBC01D117528e5F84488';
+// const privKey = '0xEE755BDE43408CAC383752931F4D6C41AAE12CEBDAAE69FF4855560548E86D75';
+
+// rinkeby builderz
+const rpc = 'https://rinkeby.infura.io/v3/32ec6f4ab5544ec3a45473458c3a1638';
+const contractAddress = '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1';
 const privKey = '0xEE755BDE43408CAC383752931F4D6C41AAE12CEBDAAE69FF4855560548E86D75';
 
-const amount = 0.01;
+const amount = 0.05;
 
 const Web3 = require( 'web3' );
 const fs = require( 'fs' );

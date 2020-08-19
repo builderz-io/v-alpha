@@ -48,6 +48,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   const ui = {
     edit: 'edit',
+    invalid: 'not valid',
     chgImg: 'Change this image',
     baseLoc: 'base location',
     currLoc: 'current location',
@@ -79,7 +80,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleEntryFocus() {
     DOM.entry = this.value ? this.value : this.innerHTML;
-    if ( ['edit', 'not valid'].includes( DOM.entry )  ) {
+    if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
       this.innerHTML = '';
       this.value = '';
     }
@@ -110,8 +111,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( str != DOM.entry ) {
       if ( str == '' ) {
-        this.innerHTML = 'edit';
-        setEntity( db + '.' + title, '' );
+        this.innerHTML = getString( ui.edit );
+        setField( db + '.' + title, '' );
         return;
       }
 
@@ -121,32 +122,32 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = split.pop().replace( '@', '' );
       }
       else if ( title == 'email' ) {
-        entry = str.includes( '@' ) ? str.includes( '.' ) ? str : 'not valid' : str == '' ? '' : 'not valid';
+        entry = str.includes( '@' ) ? str.includes( '.' ) ? str : getString( ui.invalid ) : str == '' ? '' : getString( ui.invalid );
       }
       else if ( title == 'website' ) {
-        entry = str.includes( '.' ) ? str : 'not valid';
+        entry = str.includes( '.' ) ? str : getString( ui.invalid );
       }
       else if ( ['address', 'evm'].includes( title ) ) {
-        entry = str.includes( '0x' ) && str.length == 42 ? str : 'not valid';
+        entry = str.includes( '0x' ) && str.length == 42 ? str : getString( ui.invalid );
       }
       else if ( title == 'currentUTC' ) {
-        entry = isNaN( str ) ? 'not valid' : str;
+        entry = isNaN( str ) ? getString( ui.invalid ) : str;
       }
       else if ( title == 'description' ) {
-        entry = str.length > 2000 ? 'not valid' : str;
+        entry = str.length > 2000 ? getString( ui.invalid ) : str;
       }
       else {
         entry = str;
       }
 
-      if ( entry == 'not valid' ) {
-        this.innerHTML = 'not valid';
+      if ( entry == getString( ui.invalid ) ) {
+        this.innerHTML = getString( ui.invalid );
         return;
       }
       else {
         this.innerHTML = entry;
       }
-      setEntity( db + '.' + title, entry );
+      setField( db + '.' + title, entry );
     }
   }
 
@@ -162,7 +163,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( DOM.location.length && value == '' ) {
       const gen = V.castRandLatLng();
-      setEntity( 'properties.baseLocation', {
+      setField( 'properties.baseLocation', {
         lat: gen.lat,
         lng: gen.lng,
         value: undefined,
@@ -170,7 +171,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else if ( lat ) {
-      setEntity( 'properties.baseLocation', {
+      setField( 'properties.baseLocation', {
         lat: lat,
         lng: lng,
         value: value,
@@ -186,7 +187,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const title = this.getAttribute( 'title' );
     const db = this.getAttribute( 'db' );
     const entry = this.getAttribute( 'value' );
-    setEntity( db + '.' + title, entry );
+    setField( db + '.' + title, entry );
   }
 
   function handleImageUpload( e ) {
@@ -292,12 +293,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       obj.a = { contenteditable: 'true' };
     }
     if ( !obj.h ) {
-      obj.h = 'edit';
+      obj.h = getString( ui.edit );
     }
     return obj;
   }
 
-  function setEntity( field, data ) {
+  function setField( field, data ) {
     V.setEntity( V.aE().fullId, {
       field: field,
       data: data,
@@ -362,7 +363,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           focus: handleEntryFocus,
           blur: handleEntry
         },
-        h: descr ? descr : 'edit',
+        h: descr ? descr : getString( ui.edit ),
       } : {
         t: 'div',
         c: 'pxy',

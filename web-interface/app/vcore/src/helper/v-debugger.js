@@ -18,7 +18,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     Object.assign( window.console, {
       log: handleConsoleMessage,
       error: handleConsoleMessage,
-      warn: handleConsoleMessage,
+      // warn: handleConsoleMessage,
     } );
   }
 

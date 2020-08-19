@@ -12,16 +12,18 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: 'http://localhost',
-    socketPort: 6021,
+    // socketHost: 'http://localhost',
+    // socketPort: 6021,
     // socketHost: 'https://cocooonmongo.valueinstrument.org', // omit trailing slash
     // socketPort: 443,
+    socketHost: 'https://buildersmongo.valueinstrument.org', // omit trailing slash
+    socketPort: 443,
 
     useBuilds: false,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 20, // in sec
-    sendLogsToServer: false,
+    sendLogsToServer: true,
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
@@ -34,18 +36,18 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     coinTicker: 'ETH',
     tokenTicker: 'V',
 
-    tokenDivisibility: 6,
-    transactionFee: 3333, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
+    tokenDivisibility: 18,
+    transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
-    appVersion: 'v2.2',
+    appVersion: 'v2 0.8.0',
     entityDocVersion: 'v0.20 - valueinstrument.org',
 
   };
 
   const networks = {
 
-    choice: 'ganacheDevelop',
+    choice: 'rinkeby1',
 
     trufflePAV1: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
@@ -58,6 +60,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     idchain: {
       contractAddress: '',
       rpc: 'https://idchain.one/rpc/'
+    },
+    rinkeby1: {
+      contractAddress: '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1', // builderz.io
+      rpc: 'https://rinkeby.infura.io/v3/32ec6f4ab5544ec3a45473458c3a1638'
     },
     ropstenDevelop: {
       contractAddress: '0x87a100DFe128616e1e53e499EB0ae99Ff9Cf0d8c', // daily rice coin
