@@ -68,39 +68,36 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   function view( which ) {
     console.log( 'join: ', which );
-    // Marketplace.draw();
+
+    Marketplace.draw();
+
     if ( which == 'entity found' ) {
+
       V.setNode( 'join', 'clear' );
+
+      V.setNode( '.modal', 'clear' );
+
+      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+        Modal.draw( which );
+        V.setCookie( 'welcome-modal', 0 );
+      }
+
       const bal = V.aE().balance;
+
       if ( !bal ) { // web2 signup
         Account.drawHeaderBalance();
-
-        // TODO: replace setInterval with eventsubscription, when possible
-        // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
-        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
-
-        V.setNode( '.modal', 'clear' );
-        if ( V.getCookie( 'welcome-modal' ) == 1 ) {
-          Modal.draw( which );
-          V.setCookie( 'welcome-modal', 0 );
-        }
       }
       else if ( bal && bal.success ) { // web3 signup
         Account.drawHeaderBalance( bal.balance.balance );
-
-        // TODO: replace setInterval with eventsubscription, when possible
-        // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
-        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
-
-        V.setNode( '.modal', 'clear' );
-        if ( V.getCookie( 'welcome-modal' ) == 1 ) {
-          Modal.draw( which );
-          V.setCookie( 'welcome-modal', 0 );
-        }
       }
       else { // web3 signup, balance not found (e.g. wrong network)
         Modal.draw( 'could not get balance' );
       }
+
+      // TODO: replace setInterval with eventsubscription, when possible
+      // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
+      setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
@@ -109,16 +106,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'logged out' ) {
       Join.launch();
-      Navigation.draw();
       Modal.draw( which );
     }
     else if ( which == 'user denied auth' ) {
       Join.launch();
-      Navigation.draw();
       Modal.draw( which );
     }
     else {
-      Navigation.draw();
       Modal.draw( which );
     }
   }
