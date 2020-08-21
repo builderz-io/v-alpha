@@ -92,12 +92,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     Marketplace.draw( V.getState( 'active' ).navItem, data );
   }
 
-  function handleCloseForms() {
-    Form.draw( 'all', { fade: 'out' } );
-    Button.draw( 'all', { fade: 'out' } );
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
-    Page.draw( { position: 'peek', reset: false } );
-  }
+  // function handleCloseForms() {
+  //   Form.draw( 'all', { fade: 'out' } );
+  //   Button.draw( 'all', { fade: 'out' } );
+  //   Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+  //   Page.draw( { position: 'peek', reset: false } );
+  // }
 
   function handleDrawSearchForm() {
     Page.draw( { position: 'closed', reset: false } );
@@ -125,17 +125,17 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     const $plus = InteractionComponents.plus();
     const $set = InteractionComponents.set();
     const $send = InteractionComponents.sendNav();
-    const $close = InteractionComponents.close();
+    // const $close = InteractionComponents.close();
 
     $plus.addEventListener( 'click', handleDrawPlusForm );
     $search.addEventListener( 'click', handleDrawSearchForm );
-    $close.addEventListener( 'click', handleCloseForms );
+    // $close.addEventListener( 'click', handleCloseForms );
     $query.addEventListener( 'click', handleQuery );
     $set.addEventListener( 'click', handleSetEntity );
     $send.addEventListener( 'click', handleSend );
 
     // V.setNode( DOM.$backUL, $back );
-    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $query, $set, $send ] );
+    V.setNode( 'interactions > ul', [ /* $close, */ $plus, $filter, $search, $query, $set, $send ] );
   }
 
   function view( which, options ) {

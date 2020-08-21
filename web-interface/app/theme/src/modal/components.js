@@ -39,7 +39,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     error: 'An error occured',
     wait: 'Please wait... requesting data',
     walletLocked: 'Could not unlock wallet',
-    noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to KOVAN.',
+    noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
   };
 
   function getString( string, scope ) {

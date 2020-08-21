@@ -92,7 +92,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         Google.initAutocomplete( 'plusform' ); // + __loc, __lng and __lat
       } );
       Button.draw( 'all', { fade: 'out' } );
-      Button.draw( formData.layout == 'search' ? 'close query' : 'close set', { delay: 1 } );
+      Button.draw( formData.layout == 'search' ? /* 'close */ 'query' : /* 'close */ 'set', { delay: 1 } );
     }
   }
 

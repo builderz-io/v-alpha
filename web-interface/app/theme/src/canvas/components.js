@@ -34,9 +34,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       width: '100%'
     },
     'card__container': {
-      // 'height': 'var(--card-height)',
       'max-width': '360px',
       'flex-wrap': 'wrap'
+    },
+    'network-logo': {
+      height: '25px',
     }
   } );
 
@@ -253,6 +255,18 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function networkLogo() {
+    return V.cN( {
+      t: 'logo',
+      c: 'fixed',
+      h: {
+        t: 'img',
+        c: 'network-logo',
+        src: '/assets/img/builderz-logo.png'
+      }
+    } );
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -271,7 +285,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     header: header,
     page: page,
     content: content,
-    topContent: topContent
+    topContent: topContent,
+    networkLogo: networkLogo
   };
 
 } )();

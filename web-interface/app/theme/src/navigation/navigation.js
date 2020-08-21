@@ -313,7 +313,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       span.classList.remove( 'pill__initials' );
     }
     $item.className += ' pill--selected';
-    $item.addEventListener( 'click', resetOnClick, { once: true } );
+    $item.addEventListener( 'click', resetOnClick /*, { once: true } */ );
   }
 
   function deselect() {
@@ -335,9 +335,21 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function resetOnClick( e ) {
     e.stopPropagation();
+
+    if ( V.getNode( 'form' ) ) {
+      handleCloseForms();
+      return;
+    }
+
     reset();
     Page.draw( { position: 'closed', reset: false } );
+  }
 
+  function handleCloseForms() {
+    Form.draw( 'all', { fade: 'out' } );
+    Button.draw( 'all', { fade: 'out' } );
+    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+    Page.draw( { position: 'peek', reset: false } );
   }
 
   function reset() {
