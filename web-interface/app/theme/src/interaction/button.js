@@ -10,8 +10,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleSetEntity( e ) {
-    e.target.removeEventListener( 'click', handleSetEntity );
-    Button.draw( 'all', { fade: 'out' } );
+    // e.target.removeEventListener( 'click', handleSetEntity );
 
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
@@ -46,6 +45,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           V.setCache( res.data[0].profile.role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
           Profile.draw( res.data[0].path );
+          Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
           // Button.draw( 'plus search', { delay: 1 } );
           VMap.draw(
@@ -72,7 +72,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         }
         else {
           Form.draw( 'error', res );
-          Button.draw( 'close set', { delay: 1 } );
+          e.target.addEventListener( 'click', handleSetEntity );
+          // Button.draw( /*'close */ 'set', { delay: 1 } );
           console.error( res.status );
         }
       } );
@@ -131,7 +132,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     $search.addEventListener( 'click', handleDrawSearchForm );
     // $close.addEventListener( 'click', handleCloseForms );
     $query.addEventListener( 'click', handleQuery );
-    $set.addEventListener( 'click', handleSetEntity );
+    $set.addEventListener( 'click', handleSetEntity, { once: true } );
     $send.addEventListener( 'click', handleSend );
 
     // V.setNode( DOM.$backUL, $back );
@@ -139,7 +140,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which, options ) {
-    const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'set', 'send', 'query'] : which.split( ' ' );
+    const btnArr = which == 'all' ? ['filter', 'search', 'plus', /*'close', */ 'set', 'send', 'query'] : which.split( ' ' );
     let fade = 'fadeIn', delay = 0.2;
     options && options.fade == 'out' ? fade = 'fadeOut' : null;
     options && options.delay ? delay = options.delay : null;

@@ -37,6 +37,12 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       'max-width': '360px',
       'flex-wrap': 'wrap'
     },
+    'page': {
+      'bottom': 0,
+      'height': 'var(--page-position-peek)',
+      'z-index': 9999,
+      // 'max-height': 'calc(100vh - var(--page-position-top-selected))'
+    },
     'network-logo': {
       height: '25px',
     }
@@ -232,14 +238,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function page() {
     return V.setNode( {
       tag: 'page',
-      classes: 'page fixed w-screen bkg-white pill-shadow overflow-hidden',
-      setStyle: {
-        page: {
-          bottom: 0,
-          height: 'var(--page-position-peek)',
-          // 'max-height': 'calc(100vh - var(--page-position-top-selected))'
-        }
-      },
+      classes: 'page fixed w-screen bkg-white pill-shadow overflow-hidden'
     } );
   }
 
@@ -258,7 +257,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function networkLogo() {
     return V.cN( {
       t: 'logo',
-      c: 'fixed',
+      c: 'fixed hidden',
       h: {
         t: 'img',
         c: 'network-logo',

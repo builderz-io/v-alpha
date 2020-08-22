@@ -69,8 +69,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   function view( which ) {
     console.log( 'join: ', which );
 
-    Marketplace.draw();
-
     if ( which == 'entity found' ) {
 
       V.setNode( 'join', 'clear' );
@@ -106,13 +104,16 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'logged out' ) {
       Join.launch();
+      Navigation.draw();
       Modal.draw( which );
     }
     else if ( which == 'user denied auth' ) {
       Join.launch();
+      Navigation.draw();
       Modal.draw( which );
     }
     else {
+      Navigation.draw();
       Modal.draw( which );
     }
   }

@@ -75,6 +75,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'activeEntity', 'clear' );
       V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
       Join.draw( 'new entity was set up' );
+      Marketplace.draw();
     }
 
   }

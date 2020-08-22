@@ -6,6 +6,10 @@
   white-space: nowrap;
 }
 
+.underline {
+  	text-decoration: underline;
+}
+
 .w-screen {
   width: 100vw;
 }

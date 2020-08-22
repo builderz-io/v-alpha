@@ -42,6 +42,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( '/theme/src/canvas/components.js' ),
         V.setScript( '/theme/src/canvas/background.js' ),
         V.setScript( '/theme/src/canvas/haze.js' ),
+        V.setScript( '/theme/src/canvas/logo.js' ),
         V.setScript( '/theme/src/canvas/feature.js' ),
         V.setScript( '/theme/src/canvas/header.js' ),
         V.setScript( '/theme/src/canvas/page.js' ),
@@ -308,6 +309,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     if( !V.getNode( 'background' ) ) {
       Background.launch(); // sets node
       Haze.launch(); // sets node
+      Logo.launch(); // sets node
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
       Button.launch(); // sets nodes: hidden buttons

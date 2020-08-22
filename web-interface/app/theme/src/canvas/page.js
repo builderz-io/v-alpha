@@ -97,7 +97,6 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( $content, [$topContent, $topSlider, $listings ] );
     V.setNode( $page, [$handle, $content] );
 
-    V.setNode( 'body', CanvasComponents.networkLogo() );
     V.setNode( 'body', $page );
 
     DOM.$page = V.getNode( 'page' );
@@ -153,7 +152,6 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   function slide( pagePos, pageScroll, showHaze ) {
     const $list = V.getNode( 'list' );
     const $page = V.getNode( 'page' );
-    const $logo = V.getNode( 'logo' );
     const p = V.getState( 'page' );
     const s = V.getState( 'screen' );
 
@@ -193,14 +191,14 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
       $page.classList.add( 'pill-shadow' );
-      V.setAnimation( $logo, s.width < 800 ? { bottom: '40px', left: '4px' } : { bottom: '70px', left: '35px' } );
+      Logo.draw( pagePos );
     }
     else if ( pagePos == 'peek' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 25 );
       $page.classList.add( 'pill-shadow' );
-      V.setAnimation( $logo, s.width < 800 ? { bottom: '110px', left: '4px' } : { bottom: '140px', left: '35px' } );
+      Logo.draw( pagePos );
     }
   }
 
