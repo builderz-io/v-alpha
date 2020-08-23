@@ -309,10 +309,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     if( !V.getNode( 'background' ) ) {
       Background.launch(); // sets node
       Haze.launch(); // sets node
-      Logo.launch(); // sets node
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
       Button.launch(); // sets nodes: hidden buttons
+      Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
     }
   }

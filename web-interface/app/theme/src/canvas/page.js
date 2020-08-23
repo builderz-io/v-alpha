@@ -196,6 +196,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     else if ( pagePos == 'peek' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
+      // Form.draw( 'all', { fade: 'out' } );
       handlebar( 5, 25 );
       $page.classList.add( 'pill-shadow' );
       Logo.draw( pagePos );

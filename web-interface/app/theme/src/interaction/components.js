@@ -25,6 +25,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     unit: 'Unit',
     search: 'Search',
     create: 'create',
+    query: 'search',
 
     connectWallet: 'Connect a new crypto wallet',
     progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
@@ -102,7 +103,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'query',
       c: btnClasses,
-      h: img( 'search' )
+      h: {
+        t: 'div',
+        c: 'create-btn pxy',
+        h: getString( ui.query )
+      } // img( 'search' )
     } );
   }
 
@@ -133,19 +138,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'div',
         c: 'create-btn pxy',
         h: getString( ui.create )
-      }
+      } // img( 'send' )
     } );
   }
-
-  /* alternative set button */
-  // function set() {
-  //   return V.cN( {
-  //     t: 'li',
-  //     id: 'set',
-  //     c: btnClasses,
-  //     h: img( 'send' )
-  //   } );
-  // }
 
   function sendNav() {
     return V.cN( {

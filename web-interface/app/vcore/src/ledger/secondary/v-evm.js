@@ -382,7 +382,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     if ( all && all[0] && all[1] && all[2] ) {
-
       const data = {
         coinBalance: castEthBalance( all[0] ),
         liveBalance: castTokenBalance( all[1] ),

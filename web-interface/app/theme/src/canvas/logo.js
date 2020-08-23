@@ -13,10 +13,10 @@ const Logo = ( function() { // eslint-disable-line no-unused-vars
     positionLogo( options );
   }
 
-  function drawLogo() {
+  function drawNetworkLogo() {
     const pageRect = V.getNode( 'page' ).getBoundingClientRect();
 
-    V.setNode( 'body', CanvasComponents.networkLogo() );
+    V.setNode( 'logo', CanvasComponents.networkLogo() );
 
     positionLogo( pageRect.height > V.getState( 'page' ).closed ? 'peek' : 'closed' );
   }
@@ -38,7 +38,8 @@ const Logo = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    setTimeout( drawLogo, 1500 );
+    V.setNode( 'body', CanvasComponents.logo() );
+    setTimeout( drawNetworkLogo, 2500 );
   }
 
   function draw( options ) {
