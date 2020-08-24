@@ -112,6 +112,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.preferredLangsCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
+        UserComponents.socialShareButtons(),
       ] );
 
       Navigation.draw( data.data[0].entity );
