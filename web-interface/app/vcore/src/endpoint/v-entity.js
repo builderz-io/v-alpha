@@ -369,7 +369,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const tL = V.getSetting( 'transactionLedger' );
     const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
-    if ( ['EVM', 'Symbol'].includes( tL ) && V.aA() ) {
+    const returnFalse = ( tL, bal ) => {
+      return {
+        success: false,
+        endpoint: 'entity',
+        ledger: tL,
+        status: 'could not retrieve entity balance',
+        message: bal,
+        data: []
+      };
+    };
+
+    if ( ['EVM', 'Symbol'].includes( tL ) && V.aA() && V.aE() ) {
 
       const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 
@@ -391,17 +402,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         };
       }
       else {
-        return  {
-          success: false,
-          endpoint: 'entity',
-          ledger: tL,
-          status: 'could not retrieve entity balance',
-          message: bal,
-          data: []
-        };
+        return returnFalse( tL, bal );
       }
     }
-    else if ( tLWeb2 == 'MongoDB' ) {
+    else if ( tLWeb2 == 'MongoDB' && V.aE() ) {
       const bal = await getEntity( entity.fullId );
 
       if ( bal.success ) {
@@ -420,14 +424,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         };
       }
       else {
-        return  {
-          success: false,
-          endpoint: 'entity',
-          ledger: tLWeb2,
-          status: 'could not retrieve entity balance',
-          data: []
-        };
+        return returnFalse( tL, bal );
       }
+    }
+    else {
+      return returnFalse( tL, 'no aA and no aE' );
     }
   }
 

@@ -15,7 +15,7 @@
 
 // rinkeby builderz
 const rpc = 'https://rinkeby.infura.io/v3/32ec6f4ab5544ec3a45473458c3a1638';
-const contractAddress = '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1';
+const contractAddress = '0x23f1d397Bc94439C6159D618855d6D176CEad4E0'; // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1'; builderz.io
 const privKey = '0xEE755BDE43408CAC383752931F4D6C41AAE12CEBDAAE69FF4855560548E86D75';
 
 const amount = 0.05;
