@@ -9,24 +9,25 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const
-    strFrom  = 'from',
-    strTo    = 'to',
-    strFees    = 'fees',
-    strContr    = 'contribution',
-    strAmount    = 'amount',
-    strPayout    = 'payout',
-    strBlock = 'block',
-    strDate  = 'date',
-    strTime  = 'time',
-    strNet  = 'Spendable',
-    strGross  = 'Gross',
-    strETH  = 'ETH',
-    strChain = 'On Chain',
-    strNoBal = 'no balance details';
+  const ui = {
+    from: 'from',
+    to: 'to',
+    fees: 'fee',
+    contr: 'contribution',
+    amount: 'amount',
+    payout: 'payout',
+    block: 'block',
+    date: 'date',
+    time: 'time',
+    net: 'Spendable',
+    gross: 'Gross',
+    eth: 'ETH',
+    chain: 'On Chain',
+    noBal: 'no balance details'
+  };
 
-  function uiStr( string, description ) {
-    return V.i18n( string, 'account components', description || 'transaction details' ) + ' ';
+  function getString( string, scope ) {
+    return V.i18n( string, 'account', scope || 'account components' ) + ' ';
   }
 
   /* ================== event handlers ================== */
@@ -72,15 +73,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           k: handleOpenTokenAccountDetails,
           h: fullId
         },
-        !bal ? { t: 'p', c: 'hidden', h: uiStr( strNoBal ) } : {
+        !bal ? { t: 'p', c: 'hidden', h: getString( ui.noBal ) } : {
           t: 'table',
           i: 'v-token-account-details',
           c: 'hidden fs-s',
           h: [
-            [ uiStr( strNet ), V.setNetVAmount( bal.data[0].liveBalance ).net ],
-            [ uiStr( strGross ), bal.data[0].liveBalance ],
-            [ uiStr( strChain ), bal.data[0].tokenBalance ],
-            [ uiStr( strETH ), bal.data[0].coinBalance ],
+            [ getString( ui.net ), V.getNetVAmount( bal.data[0].liveBalance ).net ],
+            [ getString( ui.gross ), bal.data[0].liveBalance ],
+            [ getString( ui.chain ), bal.data[0].tokenBalance ],
+            [ getString( ui.eth ), bal.data[0].coinBalance ],
           ].filter( index => { return Array.isArray( index ) } ).map( row => {
             return V.cN( {
               t: 'tr',
@@ -104,21 +105,20 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function headerBalance( balance ) {
-    balance = V.setNetVAmount( balance ).net;
+    balance = V.getNetVAmount( balance ).net;
     const sc = V.getState( 'screen' );
-    const aA = V.getState( 'activeAddress' );
-    // const initials = V.castInitials( V.getState( 'activeEntity' ).profile.title );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-    const textColor = aA ? 'txt-green' : 'txt-brand-primary';
+    const textColor = V.aA() ? 'txt-green' : 'txt-brand-primary';
 
     return V.castNode( { // #1b1aff
       tag: 'svg',
       a: {
+        style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36'
       },
       html: `<circle cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7" transform="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200"></circle>
-              <text class="font-medium fs-xxs ${ textColor }" x="50%" y="59%">${ balance }</text>`,
+              <text class="font-medium fs-xxs ${ textColor } no-txt-select" x="50%" y="59%">${ balance }</text>`,
       click: handleDrawUserNav
 
     } );
@@ -133,7 +133,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       class: 'txt-anchor-mid',
       html: `<svg width="74px" viewBox="0 0 36 36"> +
               <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
-              <text class="font-medium fs-xxs txt-green" x="50%" y="59%">3129</text>
+              <text class="font-medium fs-xxs txt-green no-txt-select" x="50%" y="59%">3129</text>
             </svg>`
 
     } );
@@ -158,10 +158,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     switch ( txData.txType ) {
     case 'in':
-      background = '#B4ECB4';
+      background = '#4bd25b'; // '#B4ECB4';
       break;
     case 'out':
-      background = '#FFAACC';
+      background = '#cc3e58'; // '#FFAACC';
       break;
     case 'fee':
       background = 'lightblue';
@@ -202,7 +202,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
-        k: handleProfileDraw,
+        k: handleOpenTxDetails, // handleProfileDraw,
         h: txData.title
       }
     } );
@@ -219,15 +219,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'table',
         h: [
-          txData.blockDate ? [ uiStr( strDate ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
-          txData.blockDate ? [ uiStr( strTime ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
-          [ uiStr( strAmount ), txData.amount ],
-          txData.txType == 'out' ? [ uiStr( strFees ), txData.feesBurned ] : [ uiStr( strFees ), '0' ],
-          txData.txType == 'out' ?  [ uiStr( strContr ), txData.contribution ] : [ uiStr( strContr ), '0' ],
-          txData.block ? [ uiStr( strBlock ), txData.block ] : [ uiStr( strDate ), txData.date ],
-          [ uiStr( strFrom ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag ],
-          [ uiStr( strTo ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag ],
-          [ uiStr( strPayout ), txData.payout ],
+          txData.txType == 'in' ? [ getString( ui.from ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag, handleProfileDraw ] :
+            [ getString( ui.to ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag, handleProfileDraw ],
+          txData.blockDate ? [ getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
+          txData.blockDate ? [ getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
+          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date ],
+          [ getString( ui.amount ), txData.amount ],
+          txData.txType == 'out' ? [ getString( ui.fees ), txData.feesBurned ] : [ getString( ui.fees ), '0' ],
+          txData.txType == 'out' ?  [ getString( ui.contr ), txData.contribution ] : [ getString( ui.contr ), '0' ],
+          [ getString( ui.payout ), txData.payout ],
         ].filter( index => { return Array.isArray( index ) } ).map( row => {
           return V.cN( {
             t: 'tr',
@@ -238,8 +238,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
               },
               {
                 t: 'td',
-                c: 'txt-right',
-                h: row[1]
+                c: 'txt-right' + ( row[2] ? ' cursor-pointer' : '' ),
+                h: row[1],
+                k: row[2]
               }
             ]
           } );
@@ -290,6 +291,8 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     return $cardContentFrame;
 
   }
+
+  /* ====================== export ====================== */
 
   return {
     topcontent: topcontent,

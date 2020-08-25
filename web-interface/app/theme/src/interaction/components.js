@@ -8,24 +8,40 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   'use strict';
 
   const btnClasses = 'cursor-pointer hidden pr-s';
-  const formClasses = 'w-full m-2 pxy rounded border-shadow';
 
-  function handleSetFilter() {
-    if ( this.getAttribute( 'value' ) == '1' ) {
-      this.setAttribute( 'value', '0' );
-      this.classList.remove( 'filter-select', 'txt-brand-primary' );
-    }
-    else {
-      this.setAttribute( 'value', '1' );
-      this.classList.add( 'filter-select', 'txt-brand-primary' );
-    }
+  /* ============== user interface strings ============== */
 
+  const ui = {
+    upload: 'uploading...',
+    change: 'Change',
+    image: 'Image',
+    titleOrCity: 'Enter a title or city name',
+
+    key: 'Key',
+    title: 'Title',
+    loc: 'Location',
+    descr: 'Description and Links',
+    target: 'Target',
+    unit: 'Unit',
+    search: 'Search',
+    create: 'create',
+    query: 'search',
+
+    connectWallet: 'Connect a new crypto wallet',
+    progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
+    brightId: 'Verify with BrightID to receive VALUE basic income.',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'interaction', scope || 'interaction content' ) + ' ';
   }
 
+  /* ================== event handlers ================== */
+
   function handleImageUpload( e ) {
-    V.setNode( '#img-upload__label', V.i18n( 'uploading...', 'form field', 'placeholder' ) );
+    V.setNode( '#img-upload__label', getString( ui.upload ) );
     V.castImageUpload( e ).then( res => {
-      V.setNode( '#img-upload__label', V.i18n( 'Change', 'form field', 'placeholder' ) );
+      V.setNode( '#img-upload__label', getString( ui.change ) );
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
         t: 'img',
@@ -39,6 +55,17 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  // function handleSetFilter() {
+  //   if ( this.getAttribute( 'value' ) == '1' ) {
+  //     this.setAttribute( 'value', '0' );
+  //     this.classList.remove( 'filter-select', 'txt-brand-primary' );
+  //   }
+  //   else {
+  //     this.setAttribute( 'value', '1' );
+  //     this.classList.add( 'filter-select', 'txt-brand-primary' );
+  //   }
+  // }
+
   /* ================== private methods ================= */
 
   function img( icon, css ) {
@@ -49,7 +76,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  /* ============ public methods and exports ============ */
+  /* ================  public components ================ */
 
   // btns
 
@@ -76,7 +103,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'query',
       c: btnClasses,
-      h: img( 'search' )
+      h: {
+        t: 'div',
+        c: 'create-btn pxy',
+        h: getString( ui.query )
+      } // img( 'search' )
     } );
   }
 
@@ -103,7 +134,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'set',
       c: btnClasses,
-      h: img( 'send' )
+      h: {
+        t: 'div',
+        c: 'create-btn pxy',
+        h: getString( ui.create )
+      } // img( 'send' )
     } );
   }
 
@@ -162,7 +197,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     const fields = {
       uPhrase: {
-        label: 'Key',
+        label: getString( ui.key ),
         inputId: 'loginform__uphrase',
         attributes: {
           type: 'password',
@@ -170,14 +205,15 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       title: {
-        label: 'Title',
+        label: getString( ui.title ),
         inputId: 'plusform__title',
         attributes: {
+          value: whichValue,
           autocomplete: 'off'
         }
       },
       location: {
-        label: 'Location',
+        label: getString( ui.loc ),
         inputId: 'plusform__loc',
         attributes: {
           value: whichValue,
@@ -187,22 +223,22 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       description: {
-        label: 'Description and Links',
+        label: getString( ui.descr ),
         inputId: 'plusform__descr',
         multiline: true
       },
       target: {
-        label: 'Target',
+        label: getString( ui.target ),
         inputId: 'plusform__target',
         fieldClasses: 'w-1/3 inline-block'
       },
       unit: {
-        label: 'Unit',
+        label: getString( ui.unit ),
         inputId: 'plusform__unit',
         fieldClasses: 'w-1/3 inline-block'
       },
       search: {
-        label: 'Search',
+        label: getString( ui.search ),
         inputId: 'search-input',
       }
     };
@@ -313,7 +349,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           a: {
             for: 'img-upload__file',
           },
-          h: V.i18n( 'Image', 'form field', 'placeholder' )
+          h: getString( ui.image )
         },
         {
           t: 'input',
@@ -346,7 +382,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         {
           t: 'p',
           c: 'pxy',
-          h: V.i18n( 'Enter a title or city name', 'app' )
+          h: getString( ui.titleOrCity )
         },
         // V.cN( {
         //   t: 'search-filter-nav',
@@ -390,6 +426,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     return V.cN( { // #ffa41b
       t: 'join',
+      i: 'join',
       c: 'fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
       h: {
@@ -434,18 +471,17 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function onboardingCard() {
 
-    const aE = V.getState( 'activeEntity' );
     const ledger = V.getSetting( 'transactionLedger' );
 
-    if ( aE && ledger == 'EVM' ) {
+    if ( V.aE() && ledger == 'EVM' ) {
       let $cardContent;
-      const balanceCheck = aE.balance && aE.balance.balance.liveBalance > 0 ? true : false;
+      const balanceCheck = V.aE().balance && V.aE().balance.balance.liveBalance > 0 ? true : false;
 
-      if ( !V.getState( 'activeAddress' ) ) { // no wallet in use
+      if ( !V.aA() ) { // no wallet in use
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Connect a new crypto wallet', 'join', 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + getString( ui.connectWallet, 'onboarding call to action' ) + '</p>'
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -457,19 +493,19 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( !balanceCheck && aE.profile.role == 'member' ) { // wallet balance is 0
+      else if ( !balanceCheck && V.aE().profile.role == 'member' ) { // wallet balance is 0
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Ask a friend to transfer 1 VALUE to progress your verification.', 'join', 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + getString( ui.progressVerification, 'onboarding call to action' ) + '</p>'
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( balanceCheck && aE.profile.role == 'member' ) { // no brightID connected
+      else if ( balanceCheck && V.aE().profile.role == 'member' ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + V.i18n( 'Verify with BrightID to receive VALUE basic income.', 'join', 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + getString( ui.brightId, 'onboarding call to action' ) + '</p>'
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
         return CanvasComponents.card( $cardContent );
@@ -482,6 +518,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       return '';
     }
   }
+
+  /* ====================== export ====================== */
 
   return {
     filter: filter,
@@ -498,7 +536,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     formSearchFilter: formSearchFilter,
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,
-    // tempBtn: tempBtn,
   };
 
 } )();

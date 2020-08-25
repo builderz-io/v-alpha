@@ -20,23 +20,24 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const
-    strInvalid  = 'invalid title',
-    strMaxLength  = 'max 12 characters in a word',
-    strMin2Adjecent = 'min 2 adjecent letters',
-    strInvalidChar = 'invalid character',
-    strMaxHuman  = 'max 3 words',
-    strMaxEntity  = 'max 7 words',
-    strTooLong  = 'max 200 characters',
-    strTooShort  = 'min 2 characters',
-    strFree  = 'free',
-    strTargetRange  = 'target must be within 0 - 9999',
-    strIsNaN  = 'target must be a number',
-    strNoUnit  = 'please add a unit, such as "hour"',
-    strNoTarget  = 'please add a target';
+  const ui = {
+    invalidTitle: 'invalid title',
+    invalidChar: 'invalid character',
+    maxLength: 'max 12 characters in a word',
+    min2Adjecent: 'min 2 adjecent letters',
+    maxHuman: 'max 3 words',
+    maxEntity: 'max 7 words',
+    tooLong: 'max 200 characters',
+    tooShort: 'min 2 characters',
+    free: 'free',
+    targetRange: 'target must be within 0 - 9999',
+    isNaN: 'target must be a number',
+    noUnit: 'please add a unit, such as "hour"',
+    noTarget: 'please add a target'
+  };
 
-  function uiStr( string, description ) {
-    return V.i18n( string, 'entity creation', description || 'error message' ) + ' ';
+  function getString( string, scope ) {
+    return V.i18n( string, 'entity', scope || 'error message' ) + ' ';
   }
 
   /* ================== private methods ================= */
@@ -84,7 +85,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const activeEntity = V.getState( 'activeEntity' );
-    const activeAddress = V.getState( 'activeAddress' );
     const imageUpload = V.getState( 'imageUpload' );
     const tinyImageUpload= V.getState( 'tinyImageUpload' );
 
@@ -147,7 +147,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
 
-      if ( !entityData.evmAddress ) {
+      if ( window.Web3Obj && !entityData.evmAddress ) {
         const newEvmAccount = window.Web3Obj.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
@@ -157,8 +157,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         entityData.evmReceivingAddress = undefined;
       }
 
-      if ( activeAddress && ['skill', 'job'].includes( entityData.role ) ) {
-        Object.assign( entityData, { evmReceivingAddress: activeAddress } );
+      if ( V.aA() && ['skill', 'job'].includes( entityData.role ) ) {
+        Object.assign( entityData, { evmReceivingAddress: V.aA() } );
       }
 
       await V.getContractState().then( res => {
@@ -276,17 +276,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     entityData.target == '' ? entityData.target = undefined : null;
 
     if (  entityData.target ) {
-      entityData.unit == '' ? error = uiStr( strNoUnit ) : null;
-      isNaN( entityData.target ) ? error = uiStr( strIsNaN ) : null;
+      entityData.unit == '' ? error = getString( ui.noUnit ) : null;
+      isNaN( entityData.target ) ? error = getString( ui.isNaN ) : null;
     }
 
     if ( ['pool'].includes( entityData.role ) ) {
       entityData.unit == '' ? error = undefined : null;
-      !entityData.target ? error = uiStr( strNoTarget ) : null;
-      // entityData.target.toLowerCase().trim() == uiStr( strFree ).trim() ? entityData.target = 0 : null;
+      !entityData.target ? error = getString( ui.noTarget ) : null;
+      // entityData.target.toLowerCase().trim() == getString( ui.free ).trim() ? entityData.target = 0 : null;
     }
 
-    Number( entityData.target ) > 9999 || Number( entityData.target ) < 0 ? error = uiStr( strTargetRange ) : null;
+    Number( entityData.target ) > 9999 || Number( entityData.target ) < 0 ? error = getString( ui.targetRange ) : null;
 
     if ( error ) {
       return {
@@ -318,20 +318,20 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     let error;
 
-    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = uiStr( strInvalid + ' "' + 'vx' + '"' ) : null;
-    // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) )  ? error = uiStr( strInvalid ) : null;
-    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = uiStr( strInvalid ) : null;
-    title.match( charBlacklist ) ? error = uiStr( strInvalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
-    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = uiStr( strMin2Adjecent ) : null;
-    title.length > 200  ? error = uiStr( strTooLong ) : null;
-    title.length < 2 ? error = uiStr( strTooShort ) : null;
-    // title.indexOf( '#' ) != -1 ? error = uiStr( strInvalid ) : null;
-    title.indexOf( '2121' ) != -1 ? error = uiStr( strInvalid + ' "' + '2121' + '"'  ) : null;
-    // title.replace( /[0-9]/g, '' ).length < title.length ? error = uiStr( strInvalid ) : null;
-    // checkLength > entitySetup.capWordLength ? error = uiStr( strInvalid ) : null;
-    ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = uiStr( strMaxHuman ) : null;
-    ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = uiStr( strMaxEntity ) : null;
-    wordLengthExeeded.includes( true ) ? error = uiStr( strMaxLength ) : null;
+    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
+    // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) )  ? error = getString( ui.invalidTitle ) : null;
+    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = getString( ui.invalidTitle ) : null;
+    title.match( charBlacklist ) ? error = getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
+    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = getString( ui.min2Adjecent ) : null;
+    title.length > 200  ? error = getString( ui.tooLong ) : null;
+    title.length < 2 ? error = getString( ui.tooShort ) : null;
+    // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
+    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
+    // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
+    // checkLength > entitySetup.capWordLength ? error = getString( ui.invalidTitle ) : null;
+    ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+    ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
+    wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
     if ( error ) {
       return {
@@ -364,12 +364,23 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  async function getEntityBalance( entity = V.getState( 'activeEntity' ) ) {
+  async function getEntityBalance( entity = V.aE() ) {
 
     const tL = V.getSetting( 'transactionLedger' );
     const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
-    if ( ['EVM', 'Symbol'].includes( tL ) && V.getState( 'activeAddress' ) ) {
+    const returnFalse = ( tL, bal ) => {
+      return {
+        success: false,
+        endpoint: 'entity',
+        ledger: tL,
+        status: 'could not retrieve entity balance',
+        message: bal,
+        data: []
+      };
+    };
+
+    if ( ['EVM', 'Symbol'].includes( tL ) && V.aA() && V.aE() ) {
 
       const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 
@@ -391,17 +402,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         };
       }
       else {
-        return  {
-          success: false,
-          endpoint: 'entity',
-          ledger: tL,
-          status: 'could not retrieve entity balance',
-          message: bal,
-          data: []
-        };
+        return returnFalse( tL, bal );
       }
     }
-    else if ( tLWeb2 == 'MongoDB' ) {
+    else if ( tLWeb2 == 'MongoDB' && V.aE() ) {
       const bal = await getEntity( entity.fullId );
 
       if ( bal.success ) {
@@ -420,14 +424,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         };
       }
       else {
-        return  {
-          success: false,
-          endpoint: 'entity',
-          ledger: tLWeb2,
-          status: 'could not retrieve entity balance',
-          data: []
-        };
+        return returnFalse( tL, bal );
       }
+    }
+    else {
+      return returnFalse( tL, 'no aA and no aE' );
     }
   }
 
@@ -512,13 +513,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castEntityTitle = castEntityTitle;
-    V.getEntity = getEntity;
-    V.setEntity = setEntity;
-    V.getEntityBalance = getEntityBalance;
-    V.getQuery = getQuery;
-  } )();
+  V.castEntityTitle = castEntityTitle;
+  V.getEntity = getEntity;
+  V.setEntity = setEntity;
+  V.getEntityBalance = getEntityBalance;
+  V.getQuery = getQuery;
 
   return {
     castEntityTitle: castEntityTitle,

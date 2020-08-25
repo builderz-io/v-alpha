@@ -42,6 +42,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( '/theme/src/canvas/components.js' ),
         V.setScript( '/theme/src/canvas/background.js' ),
         V.setScript( '/theme/src/canvas/haze.js' ),
+        V.setScript( '/theme/src/canvas/logo.js' ),
         V.setScript( '/theme/src/canvas/feature.js' ),
         V.setScript( '/theme/src/canvas/header.js' ),
         V.setScript( '/theme/src/canvas/page.js' ),
@@ -193,11 +194,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function setWindow() {
+  function setDocument() {
 
-    function refresh() {
-      location.reload();
-    }
+    // function refresh() {
+    //   location.reload();
+    // }
 
     // window.onresize = function() {
     //   V.setNode( 'body', 'clear' );
@@ -205,10 +206,28 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     //   V.setState( 'throttle', setTimeout( refresh, 200 ) );
     // };
 
-  }
+    document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
+      const key = window.event ? e.keyCode : e.which;
+      if ( key == 13 ) {
+        e.preventDefault();
+        handleKeyboard( ['sign-transaction', 'plus', 'set', 'name-new', 'query'] );
+      }
+      else if ( key == 27 ) {
+        e.preventDefault();
+        handleKeyboard( ['close', 'modal-close'] );
+      }
+    } );
 
-  function presenter( historyState ) {
-    return Promise.resolve( historyState );
+    document.addEventListener( 'keyup', function handleDocumentKeyUp( e ) {
+      const key = window.event ? e.keyCode : e.which;
+      if ( key == 13 ) {
+        e.preventDefault();
+      }
+      else if ( key == 27 ) {
+        e.preventDefault();
+      }
+    } );
+
   }
 
   function view(
@@ -236,7 +255,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         if ( ['home'].includes( status ) ) {
           Marketplace.draw();
         }
-        else if ( ['market', 'market category'].includes( status ) ) {
+        else if ( ['market', 'market category', 'pool'].includes( status ) ) {
           Marketplace.draw( which );
         }
         else if ( ['media', 'media category'].includes( status ) ) {
@@ -264,6 +283,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           Profile.draw( which );
         }
 
+      } )
+      .catch( () => {
+        Marketplace.draw();
+        Modal.draw( '404' );
       } );
 
   }
@@ -293,12 +316,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
       Button.launch(); // sets nodes: hidden buttons
+      Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
     }
   }
 
   function returningUser() {
-    if( !V.getState( 'activeEntity' ) ) {
+    if( !V.aE() ) {
       const returningWallet = V.getCookie( 'last-active-address' );
       const returningUphrase = V.getCookie( 'last-active-uphrase' );
 
@@ -318,6 +342,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function handleKeyboard( array ) {
+    array.some( elem => {
+      if ( V.getVisibility( '#' + elem ) ) {
+        V.getNode( '#' + elem ).click();
+      }
+    } );
+  }
+
   /* ============ public methods and exports ============ */
 
   async function launch() {
@@ -325,17 +357,15 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     await launchStylesheets();
     await launchScripts();
 
-    V.setPipe(
-      setState,
-      setWindow,
-      setCss,
-      setFont,
-    )();
+    setState();
+    setDocument();
+    setCss();
+    setFont();
 
   }
 
   function draw( historyState ) {
-    presenter( historyState ).then( historyState => { view( historyState ) } );
+    view( historyState );
   }
 
   return {

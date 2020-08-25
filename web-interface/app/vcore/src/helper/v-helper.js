@@ -97,7 +97,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       c: 'max-w-full',
       a: {
         src: src,
-        alt: thumbnailData.entity + ' ' + V.i18n( 'Title Image', 'user components', 'image alt text' ) + ' - ' + thumbnailData.originalName
+        alt: thumbnailData.entity + ' ' + 'Title Image' + ' - ' + thumbnailData.originalName
       },
       // TODO: revokeObjectURL
       // e: {
@@ -501,13 +501,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function getTranslation( which, whichContext, whichDescr = '' ) {
 
     // castTranslations( which, whichContext, whichPart );
-    const aE = V.getState( 'activeEntity' );
+    const aE = V.aE();
     const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
-    const exists = VTranslations[whichContext][which] ?
-      VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
-
-    if ( exists ) {
-      return exists;
+    // console.log( lang, whichContext, which );
+    if ( lang != 'en_US' ) {
+      const exists = VTranslations[whichContext][which] ?
+        VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
+      return exists ? exists : which;
     }
     else {
       return which;
@@ -524,29 +524,27 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castImageUpload = castImageUpload;
-    V.castEntityThumbnail = castEntityThumbnail;
-    V.setSrc = setSrc;
-    V.castLinks = castLinks;
-    V.castTime = castTime;
-    V.castRandLatLng = castRandLatLng;
-    V.castInitials = castInitials;
-    V.castCamelCase = castCamelCase;
-    V.castSlugOrId = castSlugOrId;
-    V.castPathOrId = castPathOrId;
-    V.castJson = castJson;
-    V.castShortAddress = castShortAddress;
-    V.castUUID = castUUID;
-    V.castRandomInt = castRandomInt;
-    V.castTag = castTag;
-    V.getIcon = getIcon;
-    V.stripHtml = stripHtml;
-    V.setPipe = setPipe;
-    V.getTranslation = getTranslation;
-    V.i18n = i18n;
-    V.sleep = sleep;
-  } )();
+  V.castImageUpload = castImageUpload;
+  V.castEntityThumbnail = castEntityThumbnail;
+  V.setSrc = setSrc;
+  V.castLinks = castLinks;
+  V.castTime = castTime;
+  V.castRandLatLng = castRandLatLng;
+  V.castInitials = castInitials;
+  V.castCamelCase = castCamelCase;
+  V.castSlugOrId = castSlugOrId;
+  V.castPathOrId = castPathOrId;
+  V.castJson = castJson;
+  V.castShortAddress = castShortAddress;
+  V.castUUID = castUUID;
+  V.castRandomInt = castRandomInt;
+  V.castTag = castTag;
+  V.getIcon = getIcon;
+  V.stripHtml = stripHtml;
+  V.setPipe = setPipe;
+  V.getTranslation = getTranslation;
+  V.i18n = i18n;
+  V.sleep = sleep;
 
   return {
     castImageUpload: castImageUpload,

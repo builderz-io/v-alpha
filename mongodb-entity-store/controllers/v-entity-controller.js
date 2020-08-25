@@ -3,10 +3,11 @@ const daysToZero = systemInit.tokenDyn.daysToZero;
 const baseTimeToZero = systemInit.tokenDyn.baseTimeToZero * daysToZero;
 const initialBalance = systemInit.tokenDyn.initialBalance; // TODO: depends on entity role
 
+const autoFloat = require( '../lib/auto-float' ).autoFloat;
+const telegramNotification = require( '../lib/telegram' ).adminNotify;
+
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
-
-const autoFloat = require( '../lib/auto-float' ).autoFloat;
 
 async function findEntity( query ) {
   return new Promise( resolve => {
@@ -101,6 +102,10 @@ exports.register = function( req, res ) {
    */
 
   if ( req.profile.role == 'member' ) {
+    telegramNotification( {
+      msg: 'New registration at',
+      network: systemInit.communityGovernance.commName
+    } );
     autoFloat( req.evmCredentials.address );
   }
 

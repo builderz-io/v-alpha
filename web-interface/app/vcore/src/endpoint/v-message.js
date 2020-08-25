@@ -194,10 +194,9 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   ) {
     const msgData = {};
     msgData.message = whichMessage;
-    const aE = V.getState( 'activeEntity' );
 
-    if ( aE ) {
-      msgData.sender = V.getState( 'activeEntity' ).fullId;
+    if ( V.aE() ) {
+      msgData.sender = V.aE().fullId;
       return V.setData( msgData, 'message', V.getSetting( 'chatLedger' ) );
     }
     else {
@@ -211,12 +210,10 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.checkForTriggers = checkForTriggers;
-    V.getMessage = getMessage;
-    V.setMessage = setMessage;
-    V.setMessageBot = setMessageBot;
-  } )();
+  V.checkForTriggers = checkForTriggers;
+  V.getMessage = getMessage;
+  V.setMessage = setMessage;
+  V.setMessageBot = setMessageBot;
 
   return {
     checkForTriggers: checkForTriggers,

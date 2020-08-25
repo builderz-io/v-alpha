@@ -9,10 +9,6 @@ const Haze = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function presenter( options ) {
-    return options;
-  }
-
   function view( options ) {
 
     if ( options && options.fade == 'out' ) {
@@ -34,10 +30,7 @@ const Haze = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( options ) {
-    V.setPipe(
-      presenter,
-      view
-    )( options );
+    view( options );
   }
 
   return {

@@ -71,11 +71,15 @@ body {
 }
 
 .pill-shadow {
-  box-shadow: 0px -1px 1px 0px rgba(var(--black), .15), 0px 2px 1px 0px rgba(var(--black), .19);
+  box-shadow: 0px -1px 1px 0px rgba(var(--black), .18), 0px 2px 1px 0px rgba(var(--black), .23);
+}
+
+.svg-shadow {
+    filter: drop-shadow(0px 2px 1px rgba(var(--black), .18));
 }
 
 .card-shadow {
-  box-shadow: 0 1px 1px 0 rgba(var(--black), .11), 0 1px 3px 1px rgba(var(--black), .15);
+  box-shadow: 0 1px 1px 0 rgba(var(--black), .13), 0 1px 3px 1px rgba(var(--black), .18);
 }
 
 .txt-shadow {
@@ -83,7 +87,7 @@ body {
 }
 
 input:focus, textarea:focus {
-  box-shadow: 0px -1px 1px 0px rgba(var(--black), .11), 0px 2px 1px 0px rgba(var(--black), .15);
+  box-shadow: 0px -1px 1px 0px rgba(var(--black), .13), 0px 2px 1px 0px rgba(var(--black), .18);
   /* border: 2px solid rgba(var(--brandPrimary), 1); */
 }
 

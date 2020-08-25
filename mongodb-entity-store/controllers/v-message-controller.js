@@ -1,5 +1,8 @@
-const ChatDB = require( '../models/v-message-model' );
+const systemInit = require( '../systemInit' );
 const sio = require( '../server-es' ).sio;
+const telegramNotification = require( '../lib/telegram' ).adminNotify;
+
+const ChatDB = require( '../models/v-message-model' );
 
 exports.set = function( req, res ) {
 
@@ -12,6 +15,11 @@ exports.set = function( req, res ) {
     sender: sender,
     // senderTag: 'test', //socket.userTag,
     time: date
+  } );
+
+  telegramNotification( {
+    msg: 'Someone wrote in',
+    network: systemInit.communityGovernance.commName
   } );
 
   newMessage.save( function( err ) {

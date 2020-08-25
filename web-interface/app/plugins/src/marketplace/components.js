@@ -7,6 +7,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   'use strict';
 
+  /* ================== event handlers ================== */
+
   function handleProfileDraw() {
     const path = this;
     V.setState( 'active', { navItem: path } );
@@ -14,7 +16,14 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Profile.draw( path );
   }
 
-  const background = ( cardData ) => {
+  function handleDrawPlusForm() {
+    Page.draw( { position: 'closed', reset: false } );
+    Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
+  }
+
+  /* ================== private methods ================= */
+
+  function castBackground( cardData ) {
     const sc = V.getState( 'screen' );
     const palette = ['rgba(' + sc.brandSecondary + ', 1)'];
 
@@ -34,10 +43,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     case '8': return palette[0];
     case '9': return palette[3];
     }
-  };
+  }
+
+  /* ================  public components ================ */
 
   function castCircle( circleData ) {
-    const backgr = background( circleData );
+    const backgr = castBackground( circleData );
     return V.cN( {
       t: 'div',
       c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
@@ -51,6 +62,30 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       },
       e: {
         click: handleProfileDraw.bind( circleData.path )
+      }
+    } );
+  }
+
+  function entitiesAddCard() {
+    return V.cN( {
+      t: 'li',
+      c: 'pxy flex items-center',
+      h: {
+        t: 'addcard',
+        c: 'addcard__container txt-center rounded bkg-white',
+        h: {
+          t: 'div',
+          c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
+          a: {
+            style: 'background:rgba(var(--black), 0.08);margin-left: 5px;' // border: 2px solid rgba(var(--brandPrimary), 1)
+          },
+          h: {
+            t: 'div',
+            c: 'card__initials font-bold fs-xxl txt-white',
+            h: '+'
+          },
+          k: handleDrawPlusForm
+        }
       }
     } );
   }
@@ -145,8 +180,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   }
 
+  /* ====================== export ====================== */
+
   return {
     castCircle: castCircle,
+    entitiesAddCard: entitiesAddCard,
     entitiesSmallCard: entitiesSmallCard,
     entitiesPlaceholder: entitiesPlaceholder,
     cardContent: cardContent,

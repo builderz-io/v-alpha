@@ -11,9 +11,6 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   async function launchScripts() {
 
-    V.getData = getData;
-    V.setData = setData;
-
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       if ( V.getSetting( 'useBuilds' ) ) {
         await Promise.all( [
@@ -90,7 +87,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       window.socket.on( 'connect_error', ( error ) => {
-        VDebugger.debug( error );
+        // V.debug( error );
         reject( 'could not connect socket' );
       } );
 
@@ -212,6 +209,11 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     return launchScripts();
 
   }
+
+  /* ====================== export ====================== */
+
+  V.getData = getData;
+  V.setData = setData;
 
   return {
     launch: launch,

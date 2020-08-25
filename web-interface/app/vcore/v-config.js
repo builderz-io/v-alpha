@@ -13,19 +13,20 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedgerWeb2: 'MongoDB',
 
     // socketHost: 'http://localhost',
-    // socketPort: 6021,
-    socketHost: 'https://cocooonmongo.valueinstrument.org', // omit trailing slash
+    // socketPort: 6023,
+    socketHost: 'https://buildersmongo.valueinstrument.org', // cocooonmongo // omit trailing slash
     socketPort: 443,
 
     useBuilds: false,
 
+    sendLogsToServer: true,
+
     subscribeToChainEvents: false,
     balanceCheckInterval: 20, // in sec
-    sendLogsToServer: true,
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    loadMap: true,
+    drawMap: true,
     marketCacheDuration: 3, // in minutes
 
     thumbnailWidth: 420, // Number in px
@@ -34,18 +35,18 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     coinTicker: 'ETH',
     tokenTicker: 'V',
 
-    tokenDivisibility: 6,
-    transactionFee: 3333, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
+    tokenDivisibility: 18,
+    transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
-    appVersion: 'v2.2',
+    appVersion: 'v2 0.8.0',
     entityDocVersion: 'v0.20 - valueinstrument.org',
 
   };
 
   const networks = {
 
-    choice: 'kovan2',
+    choice: 'rinkeby1',
 
     trufflePAV1: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
@@ -58,6 +59,18 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     idchain: {
       contractAddress: '',
       rpc: 'https://idchain.one/rpc/'
+    },
+    rinkeby1: {
+      contractAddress: '0x23f1d397Bc94439C6159D618855d6D176CEad4E0', // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1', // builderz.io
+      rpc: 'https://rinkeby.infura.io/v3/32ec6f4ab5544ec3a45473458c3a1638'
+    },
+    ropstenDevelop: {
+      contractAddress: '0x87a100DFe128616e1e53e499EB0ae99Ff9Cf0d8c', // daily rice coin
+      rpc: 'wss://ropsten.infura.io/v3/199ad2592bb243e2b00118d4c6de0641'
+    },
+    ganacheDevelop: {
+      contractAddress: '0x669e17db2Db2334fDbC9CBC01D117528e5F84488', // '0xC89Ce4735882C9F0f0FE26686c53074E09B0D550',
+      rpc: 'http://161.97.97.238:8547'
     },
     kovan1: {
       contractAddress: '0x793315F6E7dAA99d6000fb2B4347F5301E20dB09',
@@ -108,10 +121,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getSetting = getSetting;
-    V.getNetwork = getNetwork;
-  } )();
+  V.getSetting = getSetting;
+  V.getNetwork = getNetwork;
 
   return {
     getSetting: getSetting,

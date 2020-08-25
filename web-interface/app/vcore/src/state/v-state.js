@@ -58,6 +58,14 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function aE() {
+    return getState( 'activeEntity' );
+  }
+
+  function aA() {
+    return getState( 'activeAddress' );
+  }
+
   function getCache( which ) {
     return which ? cache[which] : cache;
   }
@@ -90,7 +98,6 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function getNavItem( whichItem, whichNav ) {
     if ( whichItem == 'active' ) {
-      // const converted = V.castCamelCase( getState( 'active' ).navItem );
       if( Array.isArray( whichNav ) ) {
         let state;
         for ( let i = 0; i < whichNav.length; i++ ) {
@@ -118,7 +125,6 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
         const maxLength = 250;
         if ( item.title.length <= maxLength ) {
           const state = getState( whichNav );
-          // const key = item.path;
           if ( state && state[item.path] ) {
             throw new Error( '"' + item.path + '" already set' );
           }
@@ -160,20 +166,22 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getState = getState;
-    V.setState = setState;
-    V.getCache = getCache;
-    V.setCache = setCache;
-    V.getNavItem = getNavItem;
-    V.setNavItem = setNavItem;
-    V.getCookie = getCookie;
-    V.setCookie = setCookie;
-  } )();
+  V.getState = getState;
+  V.setState = setState;
+  V.aE = aE;
+  V.aA = aA;
+  V.getCache = getCache;
+  V.setCache = setCache;
+  V.getNavItem = getNavItem;
+  V.setNavItem = setNavItem;
+  V.getCookie = getCookie;
+  V.setCookie = setCookie;
 
   return {
     getState: getState,
     setState: setState,
+    aE: aE,
+    aA: aA,
     getCache: getCache,
     setCache: setCache,
     getNavItem: getNavItem,

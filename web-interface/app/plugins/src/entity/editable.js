@@ -9,15 +9,9 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  async function presenter() {
 
-    if ( which == '/me/disconnect' ) {
-      return which;
-    }
-
-    const aE = V.getState( 'activeEntity' );
-
-    if ( !aE ) {
+    if ( !V.aE() ) {
       return {
         success: false,
         status: ''
@@ -28,15 +22,14 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'active entity retrieved',
         data: [{
-          which: which,
-          entity: V.getState( 'activeEntity' ),
+          entity: V.aE(),
           mapData: [
             {
               type: 'Feature',
-              geometry: aE.geometry,
-              profile: aE.profile,
-              thumbnail: aE.thumbnail,
-              path: aE.path
+              geometry: V.aE().geometry,
+              profile: V.aE().profile,
+              thumbnail: V.aE().thumbnail,
+              path: V.aE().path
             }
           ]
         }]
@@ -44,18 +37,13 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function view( data ) {
-
-    if ( data == '/me/disconnect' ) {
-      Modal.draw( 'disconnect' );
-      return;
-    }
+  function view( viewData ) {
 
     let $topcontent, $list;
 
-    if ( data.success ) {
+    if ( viewData.success ) {
       UserComponents.setData( {
-        entity: data.data[0].entity,
+        entity: viewData.data[0].entity,
         editable: true
       } );
 
@@ -76,30 +64,32 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.uPhraseCard(),
       ] );
 
-      Navigation.draw( data.data[0].which );
-
       Page.draw( {
         topcontent: $topcontent,
         listings: $list,
-        position: 'top',
       } ).then( () => {
         Google.launch().then( () => { // adds places lib script
           Google.initAutocomplete( 'user' );
         } );
       } );
 
-      // Chat.drawMessageForm( 'clear' );
-
-      VMap.draw( data.data[0].mapData );
+      VMap.draw( viewData.data[0].mapData );
     }
-    else if ( data.success === null ) {
+    else {
       Page.draw( {
         topcontent: CanvasComponents.notFound( 'entity' ),
       } );
     }
-    else {
-      Marketplace.draw();
-    }
+  }
+
+  function preview( path ) {
+    Button.draw( 'all', { fade: 'out' } );
+
+    Navigation.draw( path );
+
+    Page.draw( {
+      position: 'top',
+    } );
   }
 
   /* ============ public methods and exports ============ */
@@ -156,8 +146,14 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     ] );
   }
 
-  function draw( which ) {
-    presenter( which ).then( data => { view( data ) } );
+  function draw( path ) {
+    if ( path == '/me/disconnect' ) {
+      Modal.draw( 'disconnect' );
+    }
+    else {
+      preview( path );
+      presenter().then( viewData => { view( viewData ) } );
+    }
   }
 
   return {

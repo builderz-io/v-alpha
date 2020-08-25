@@ -10,8 +10,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleSetEntity( e ) {
-    e.target.removeEventListener( 'click', handleSetEntity );
-    Button.draw( 'all', { fade: 'out' } );
+    // e.target.removeEventListener( 'click', handleSetEntity );
 
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
@@ -27,7 +26,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       target: form.getNode( '#plusform__target' ).value
     };
 
-    if ( !V.getState( 'activeEntity' ) ) {
+    if ( !V.aE() ) {
 
       /**
        * ask user to authenticate first
@@ -46,6 +45,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           V.setCache( res.data[0].profile.role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
           Profile.draw( res.data[0].path );
+          Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
           // Button.draw( 'plus search', { delay: 1 } );
           VMap.draw(
@@ -63,7 +63,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
            *
            */
 
-          V.setEntity( V.getState( 'activeEntity' ).fullId, {
+          V.setEntity( V.aE().fullId, {
             field: 'adminOf',
             data: res.data[0].fullId,
             auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
@@ -72,7 +72,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         }
         else {
           Form.draw( 'error', res );
-          Button.draw( 'close set', { delay: 1 } );
+          e.target.addEventListener( 'click', handleSetEntity );
+          // Button.draw( /*'close */ 'set', { delay: 1 } );
           console.error( res.status );
         }
       } );
@@ -92,12 +93,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     Marketplace.draw( V.getState( 'active' ).navItem, data );
   }
 
-  function handleCloseForms() {
-    Form.draw( 'all', { fade: 'out' } );
-    Button.draw( 'all', { fade: 'out' } );
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
-    Page.draw( { position: 'peek', reset: false } );
-  }
+  // function handleCloseForms() {
+  //   Form.draw( 'all', { fade: 'out' } );
+  //   Button.draw( 'all', { fade: 'out' } );
+  //   Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+  //   Page.draw( { position: 'peek', reset: false } );
+  // }
 
   function handleDrawSearchForm() {
     Page.draw( { position: 'closed', reset: false } );
@@ -125,32 +126,25 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     const $plus = InteractionComponents.plus();
     const $set = InteractionComponents.set();
     const $send = InteractionComponents.sendNav();
-    const $close = InteractionComponents.close();
+    // const $close = InteractionComponents.close();
 
     $plus.addEventListener( 'click', handleDrawPlusForm );
     $search.addEventListener( 'click', handleDrawSearchForm );
-    $close.addEventListener( 'click', handleCloseForms );
+    // $close.addEventListener( 'click', handleCloseForms );
     $query.addEventListener( 'click', handleQuery );
-    $set.addEventListener( 'click', handleSetEntity );
+    $set.addEventListener( 'click', handleSetEntity, { once: true } );
     $send.addEventListener( 'click', handleSend );
 
     // V.setNode( DOM.$backUL, $back );
-    V.setNode( 'interactions > ul', [ $close, $plus, $filter, $search, $query, $set, $send ] );
+    V.setNode( 'interactions > ul', [ /* $close, */ $plus, $filter, $search, $query, $set, $send ] );
   }
 
-  function presenter( which, options ) {
-    const btnArr = which == 'all' ? ['filter', 'search', 'plus', 'close', 'set', 'send', 'query'] : which.split( ' ' );
-    return {
-      btnArr: btnArr,
-      options: options
-    };
-  }
-
-  function view( set ) {
+  function view( which, options ) {
+    const btnArr = which == 'all' ? ['filter', 'search', 'plus', /*'close', */ 'set', 'send', 'query'] : which.split( ' ' );
     let fade = 'fadeIn', delay = 0.2;
-    set.options && set.options.fade == 'out' ? fade = 'fadeOut' : null;
-    set.options && set.options.delay ? delay = set.options.delay : null;
-    set.btnArr.forEach( btn => {
+    options && options.fade == 'out' ? fade = 'fadeOut' : null;
+    options && options.delay ? delay = options.delay : null;
+    btnArr.forEach( btn => {
       V.setAnimation( '#' + btn, fade, { delay: delay, duration: 0.5 } );
     } );
   }
@@ -162,7 +156,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( which, options ) {
-    view( presenter( which, options ) );
+    view( which, options );
   }
 
   return {

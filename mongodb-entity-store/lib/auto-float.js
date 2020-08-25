@@ -4,11 +4,21 @@
 // const privKey = '0xEE755BDE43408CAC383752931F4D6C41AAE12CEBDAAE69FF4855560548E86D75';
 
 // trufflePAV2
-const rpc = 'http://127.0.0.1:9545/';
-const contractAddress = '0x7F4c6BA99864fCF201f6cb07B0DF8dA0ffD0b818';
-const privKey = '0xae458e1123dede0b9efb6880f55bc63174b4ea8d76d2e8e59e841083d04aebe3';
+// const rpc = 'http://127.0.0.1:9545/';
+// const contractAddress = '0x7F4c6BA99864fCF201f6cb07B0DF8dA0ffD0b818';
+// const privKey = '0xae458e1123dede0b9efb6880f55bc63174b4ea8d76d2e8e59e841083d04aebe3';
 
-const amount = 0.01;
+// ganache remote
+// const rpc = 'http://161.97.97.238:8547/';
+// const contractAddress = '0x669e17db2Db2334fDbC9CBC01D117528e5F84488';
+// const privKey = '0xEE755BDE43408CAC383752931F4D6C41AAE12CEBDAAE69FF4855560548E86D75';
+
+// rinkeby builderz
+const rpc = 'https://rinkeby.infura.io/v3/32ec6f4ab5544ec3a45473458c3a1638';
+const contractAddress = '0x23f1d397Bc94439C6159D618855d6D176CEad4E0'; // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1'; builderz.io
+const privKey = '0xEE755BDE43408CAC383752931F4D6C41AAE12CEBDAAE69FF4855560548E86D75';
+
+const amount = 0.05;
 
 const Web3 = require( 'web3' );
 const fs = require( 'fs' );

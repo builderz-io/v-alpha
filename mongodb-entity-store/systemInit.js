@@ -189,12 +189,12 @@ exports.admins = [  // add objects for each admin
 
 exports.communityGovernance = {
                                 // PChain network
-                                commName: 'Community',
-                                commuPhrase: 'yo3001',
-                                excludeNames: ['Vivi'],
-                                indexSuffix: 'pc',
-                                commPort: 3051,
-                                logo: '<img style="width:50px" src="css/pchain2.png" alt="" />',
+                                // commName: 'Community',
+                                // commuPhrase: 'yo3001',
+                                // excludeNames: ['Vivi'],
+                                // indexSuffix: 'pc',
+                                // commPort: 3051,
+                                // logo: '<img style="width:50px" src="css/pchain2.png" alt="" />',
 
                                 // Value Instrument
                                 // commName: 'Value Instrument',  // the community name // MUST have at least two letters // MUST have capital initials AND no other capital lettering // Type String
@@ -215,6 +215,15 @@ exports.communityGovernance = {
                                 // logo: '',
                                 // teleToken: '711518551:AAHHry2z4qAYBtYSr2_Rp6yErHxyp6rABQY', // IJ Telegram bot token
 
+                                // Builderz
+                                commName: 'builderz.io',  // the community name // MUST have at least two letters // MUST have capital initials AND no other capital lettering // Type String
+                                commuPhrase: 'vx19022019HappyNewYear!',  // corresponding community uPhrase // MUST start with "vx" // Type String
+                                excludeNames: ['Builderz', 'Vivi'],  // avoid impostering by listing names to exclude. Check your community name for things like cap I looking like lower l
+                                indexSuffix: 'bz',  // the index.html prefix
+                                commPort: 3024,  // the app listening port
+                                logo: '',
+                                teleToken: '807765781:AAGHOLRAkHJ_0nF2pSuS0aiNiWzhTMR8XyM', // VI Alpha Telegram Bot token
+
                                 // // Sustainable Development Goals
                                 // commName: 'SDG Budgeting HQ',  // the community name // MUST have at least two letters // MUST have capital initials AND no other capital lettering // Type String
                                 // commuPhrase: 'vxCommSDGLogin3000',  // corresponding community uPhrase // MUST start with "vx" // Type String
@@ -231,7 +240,7 @@ exports.communityGovernance = {
                                 commTag: exports.initTag,  // the community tag
                                 commIgnition: 250000,  // token amount for community account at start // Type Number (integer)
                                 allowPublic: true,  // allow public user signup
-                                limitTransactions: true,  // unverified entities can only transact with other unverified entities // Type Boolean // 'true' to enable
+                                limitTransactions: false,  // unverified entities can only transact with other unverified entities // Type Boolean // 'true' to enable
                                 limitCreation: false,  // unverified entities can not create pools or other entities // Type Boolean // 'true' to enable
                                 capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
                                 maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength

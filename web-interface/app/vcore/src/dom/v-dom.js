@@ -1,7 +1,7 @@
 const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Core Module for dom-manipulation
+   * V Core Module for DOM-manipulation
    *
    */
 
@@ -10,19 +10,48 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function placeNode( $targetNode, $node, prepend ) {
-    // TODO: add prepend node
     prepend == 'prepend' || prepend == true ? $targetNode.prepend( $node ) : $targetNode.append( $node );
+  }
+
+  function setAttr( $elem, attr, data ) {
+    if ( data ) {
+      $elem.setAttribute( attr, data );
+    }
+  }
+
+  function writeStyle( data, $customStyles ) {
+
+    let string = '';
+
+    for( const className in data ) {
+      const formattedClassName = ( className => {
+        // TODO: @media
+        if ( className.includes( '@font-face' ) ) {
+          return '@font-face' + '{';
+        }
+        else {
+          return '.' + className + '{';
+        }
+      } )( className );
+
+      if ( $customStyles.innerHTML.includes( formattedClassName ) ) {
+        // TODO: should not just skip, but update
+        continue;
+      }
+      else {
+        string += formattedClassName;
+        for( const prop in data[className] ) {
+          string += prop + ':' + data[className][prop] + ';';
+        }
+        string += '}';
+      }
+    }
+    return string;
   }
 
   /* ================== public methods ================== */
 
   function castNode( data ) {
-
-    function setAttr( attr, data ) {
-      if ( data ) {
-        $elem.setAttribute( attr, data );
-      }
-    }
 
     const tag = data.t ? data.t : data.tag;
 
@@ -41,7 +70,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {
-
         if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
           $elem.innerHTML = data[key];
         }
@@ -59,14 +87,10 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
           }
           $elem.appendChild( data[key] );
         }
-
       }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in data[key] ) {
-          // if ( data[key][attr] ) {
-          //   $elem.setAttribute( attr, data[key][attr] );
-          // }
-          setAttr( attr, data[key][attr] );
+          setAttr( $elem, attr, data[key][attr] );
         }
       }
       else if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
@@ -92,29 +116,16 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if ( ['i', 'id'].includes( key ) ) {
-        // if ( data[key] ) {
-        //   $elem.setAttribute( 'id', data[key] );
-        // }
-        setAttr( 'id', data[key] );
+        setAttr( $elem, 'id', data[key] );
       }
       else if ( ['f', 'href'].includes( key ) ) {
-        // if ( data[key] ) {
-        //   $elem.setAttribute( 'href', data[key] );
-        // }
-        setAttr( 'href', data[key] );
-
+        setAttr( $elem, 'href', data[key] );
       }
       else if ( ['r', 'src'].includes( key ) ) {
-        // if ( data[key] ) {
-        //   $elem.setAttribute( 'src', data[key] );
-        // }
-        setAttr( 'src', data[key] );
+        setAttr( $elem, 'src', data[key] );
       }
       else if ( ['v', 'value'].includes( key ) ) {
-        // if ( data[key] ) {
-        //   $elem.setAttribute( 'value', data[key] );
-        // }
-        setAttr( 'value', data[key] );
+        setAttr( $elem, 'value', data[key] );
       }
     }
     return $elem;
@@ -300,41 +311,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     else if ( typeof data == 'object' ) {
       $customStyles.innerHTML += writeStyle( data, $customStyles );
     }
-
-    function writeStyle( data, $customStyles ) {
-
-      let string = '';
-
-      for( const className in data ) {
-        const formattedClassName = ( className => {
-          // TODO: @media
-          if ( className.includes( '@font-face' ) ) {
-            return '@font-face' + '{';
-          }
-          else {
-            return '.' + className + '{';
-          }
-        } )( className );
-
-        if ( $customStyles.innerHTML.includes( formattedClassName ) ) {
-          // TODO: should not just skip, but update
-          continue;
-        }
-        else {
-          string += formattedClassName;
-          for( const prop in data[className] ) {
-            string += prop + ':' + data[className][prop] + ';';
-          }
-          string += '}';
-        }
-      }
-      return string;
-    }
-
-  }
-
-  function setClick( whichNode, handler ) {
-    getNode( whichNode ).addEventListener( 'click', handler );
   }
 
   function getCss( which ) {
@@ -397,24 +373,21 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castNode = castNode;
-    V.cN = cN;
-    V.setNode = setNode;
-    V.sN = sN;
-    V.getNode = getNode;
-    V.gN = gN;
-    V.setAnimation = setAnimation;
-    V.sA = sA;
-    V.setStyle = setStyle;
-    V.setClick = setClick;
-    V.getCss = getCss;
-    V.getVisibility = getVisibility;
-    V.castRemToPixel = castRemToPixel;
-    V.setScript = setScript;
-    V.setStylesheet = setStylesheet;
-    V.setToggle = setToggle;
-  } )();
+  V.castNode = castNode;
+  V.cN = cN;
+  V.setNode = setNode;
+  V.sN = sN;
+  V.getNode = getNode;
+  V.gN = gN;
+  V.setAnimation = setAnimation;
+  V.sA = sA;
+  V.setStyle = setStyle;
+  V.getCss = getCss;
+  V.getVisibility = getVisibility;
+  V.castRemToPixel = castRemToPixel;
+  V.setScript = setScript;
+  V.setStylesheet = setStylesheet;
+  V.setToggle = setToggle;
 
   return {
     castNode: castNode,
@@ -426,7 +399,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     setAnimation: setAnimation,
     sA: sA,
     setStyle: setStyle,
-    setClick: setClick,
     getCss: getCss,
     getVisibility: getVisibility,
     castRemToPixel: castRemToPixel,

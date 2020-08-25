@@ -7,12 +7,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  /* ================== private methods ================= */
+  /* ============== user interface strings ============== */
 
-  function castRecipient( messageParts ) {
-    const tag = messageParts.pop();
-    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
+  const ui = {
+    notActive: 'no active entity',
+    invalidAmount: 'invalid amount',
+    noDecimals: 'no decimals',
+    noRecipient: 'recipient not found',
+    noRecipientAddress: 'recipient address not found',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'transaction', scope || 'error message' ) + ' ';
   }
+
+  /* ================== private methods ================= */
 
   async function castTransaction( data ) {
 
@@ -24,11 +33,12 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
      */
 
     const initiator = V.getState( 'activeEntity' );
+
     if ( !initiator ) {
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'no active entity'
+        status: getString( ui.notActive )
       };
     }
 
@@ -73,7 +83,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'invalid amount'
+        status: getString( ui.invalidAmount )
+      };
+    }
+    else if ( amount % 1 != 0 ) {
+      return {
+        success: false,
+        endpoint: 'transaction',
+        status: getString( ui.noDecimals )
       };
     }
 
@@ -83,7 +100,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'recipient not found'
+        status: getString( ui.noRecipient )
       };
     }
 
@@ -91,7 +108,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     currency = 'V'; // eslint-disable-line prefer-const
 
     if ( currency == 'V' ) {
-      const convert = V.setGrossVAmount( amount );
+      const convert = V.getGrossVAmount( amount );
       contribution = convert.contribution;
       feeAmount = convert.feeAmount;
       txTotal =convert.gross;
@@ -103,9 +120,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     let recipientAddress, signature;
 
     const tL = V.getSetting( 'transactionLedger' );
-    const aA = V.getState( 'activeAddress' );
 
-    if ( tL == 'EVM' && aA ) {
+    if ( tL == 'EVM' && V.aA() ) {
       const rD = recipientData.data[0];
 
       rD.evmCredentials ? rD.evmCredentials.address ?
@@ -120,16 +136,16 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
       // signature = initiator.evmCredentials.privateKey;
     }
-    else if ( tL == 'Symbol' && aA ) {
+    else if ( tL == 'Symbol' && V.aA() ) {
       recipientAddress = recipientData.data[0].symbolCredentials.address;
       signature = initiator.symbolCredentials.privateKey;
     }
 
-    if ( aA && !recipientAddress ) {
+    if ( V.aA() && !recipientAddress ) {
       return {
         success: false,
         endpoint: 'transaction',
-        status: 'recipient address not found'
+        status: getString( ui.noRecipientAddress )
       };
     }
 
@@ -146,9 +162,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         currency: currency,
         command: command,
         initiator: initiator.fullId,
-        initiatorAddress: aA,
+        initiatorAddress: V.aA(),
         sender: initiator.fullId, // currently the same as initiator
-        senderAddress: aA, // currently the same as initiator
+        senderAddress: V.aA(), // currently the same as initiator
         recipient: recipient,
         recipientAddress: recipientAddress,
         reference: reference || 'no reference given',
@@ -158,6 +174,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       }]
     };
 
+  }
+
+  function castRecipient( messageParts ) {
+    const tag = messageParts.pop();
+    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
   }
 
   function reduceNumbers( array ) {
@@ -170,9 +191,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function getTransaction(
-    which = V.getState( 'activeEntity' ).fullId // for MongoDB
+    which = V.aE().fullId // for MongoDB
   ) {
-    const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
+    const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
     return V.getData( which, 'transaction', V.getSetting( choice ) );
   }
 
@@ -183,7 +204,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      const choice = V.getState( 'activeAddress' ) ? 'transactionLedger' : 'transactionLedgerWeb2';
+      const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
       return V.setData( txData.data[0], 'transaction', V.getSetting( choice ) );
     }
     else {
@@ -193,11 +214,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.getTransaction = getTransaction;
-    V.setTransactionConfirmation = setTransactionConfirmation;
-    V.setTransaction = setTransaction;
-  } )();
+  V.getTransaction = getTransaction;
+  V.setTransactionConfirmation = setTransactionConfirmation;
+  V.setTransaction = setTransaction;
 
   return {
     getTransaction: getTransaction,

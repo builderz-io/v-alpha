@@ -11,17 +11,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    const fullId = V.castPathOrId( which );
+    if (
+      isNaN( Number( which.slice( -4 ) ) ) ||
+      which.slice( -5, -4 ) != '-'
+    ) {
+      return {
+        success: null,
+        status: 'not a valid profile link'
+      };
+    }
 
-    // const aE = V.getState( 'activeEntity' );
-    // if ( aE && fullId == aE.fullId ) {
-    //   V.setBrowserHistory( '/me/profile' );
-    //   User.draw();
-    //   return {
-    //     success: false,
-    //     status: 'diverted to User.draw'
-    //   };
-    // }
+    const fullId = V.castPathOrId( which );
 
     const query = await V.getEntity( fullId );
 
@@ -39,7 +39,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
       if ( query.data[0].profile.role == 'pool' ) {
-        if ( V.getState( 'activeAddress' ) || !V.getState( 'activeEntity' ) ) {
+        if ( V.aA() || !V.aE() ) {
           if ( query.data[0].evmCredentials ) {
             txHistory = await V.getAddressHistory( query.data[0].evmCredentials.address );
             if ( txHistory.success && txHistory.data.length ) {
@@ -100,7 +100,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   function view( data ) {
 
-    let $topcontent, $list;
+    let $list;
 
     if ( data.success ) {
 
@@ -110,7 +110,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       $list = CanvasComponents.list( 'narrow' );
-      $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
         UserComponents.thumbnailCard(),
@@ -123,22 +122,16 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.preferredLangsCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
+        UserComponents.socialShareButtons(),
       ] );
 
       Navigation.draw( data.data[0].entity );
 
-      // Button.draw( 'send' );
-
       Chat.drawMessageForm();
 
       Page.draw( {
-        // topcontent: $topcontent,
         listings: $list,
-        // position: 'top', // could optionally be 'feature', if map flies to entity
-        // haze: false
       } );
-
-      // Chat.drawMessageForm( 'clear' );
 
       VMap.draw( data.data[0].mapData );
     }

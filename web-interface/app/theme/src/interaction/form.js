@@ -13,11 +13,11 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
     if ( options && options.fade == 'out' ) { return { fadeOut: true } }
     if ( which == 'error' ) { return options }
 
-    const $form = InteractionComponents.form();
+    let values;
 
     if ( which == 'new entity' ) {
 
-      const values = {
+      values = {
         title: undefined,
         role: undefined,
         location: undefined,
@@ -40,29 +40,12 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         values.target = lastForm.target;
       }
 
-      V.setNode( $form, [
-        InteractionComponents.formField( 'title', values.title ),
-        InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
-        InteractionComponents.formField( 'description', values.description ),
-        InteractionComponents.formField( 'target', values.target ),
-        InteractionComponents.formField( 'unit', values.unit ),
-        InteractionComponents.formUploadImage()
-      ] );
-    }
-    else if ( which == 'search' ) {
-      V.setNode( $form, [
-        InteractionComponents.formField( 'search' ),
-        InteractionComponents.formSearchFilter(),
-      ] );
-    }
-    else {
-      V.setNode( $form, [ InteractionComponents.title(), InteractionComponents.desc() ] );
     }
 
     return {
       success: true,
       layout: which,
-      $form: $form
+      data: [values]
     };
   }
 
@@ -76,35 +59,40 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( !formData.success ) {
-      // console.log( formData );
-      // const $formtitle = V.getNode( '#plusform__title' );
-      // $formtitle.setAttribute( 'placeholder', V.i18n( formData.message, 'placeholder', 'form error' ) );
-      // $formtitle.value = '';
-      // $formtitle.className += ' border-error';
       V.getNode( '.form__response' ).innerHTML = formData.message;
     }
-    // else if ( formData.status == 'invalid title' ) {
-    //   const $formtitle = V.getNode( '#plusform__title' );
-    //   $formtitle.setAttribute( 'placeholder', V.i18n( 'Please choose another title', 'placeholder', 'form error' ) );
-    //   $formtitle.value = '';
-    //   $formtitle.className += ' border-error';
-    // }
-    // else if ( formData.status == 'could not attach geo data' ) {
-    //   const $formtitle = V.getNode( '#plusform__loc' );
-    //   $formtitle.setAttribute( 'placeholder', V.i18n( 'Could not attach geo data', 'placeholder', 'form error' ) );
-    //   $formtitle.value = '';
-    //   $formtitle.className += ' border-error';
-    // }
     else {
-      V.setNode( 'body', formData.$form );
+      const $form = InteractionComponents.form();
+
+      if ( formData.layout == 'new entity' ) {
+        const values = formData.data[0];
+        V.setNode( $form, [
+          InteractionComponents.formField( 'title', values.title ),
+          InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
+          InteractionComponents.formField( 'description', values.description ),
+          InteractionComponents.formField( 'target', values.target ),
+          InteractionComponents.formField( 'unit', values.unit ),
+          InteractionComponents.formUploadImage()
+        ] );
+      }
+      else if ( formData.layout == 'search' ) {
+        V.setNode( $form, [
+          InteractionComponents.formField( 'search' ),
+          InteractionComponents.formSearchFilter(),
+        ] );
+      }
+      else {
+        V.setNode( $form, [ InteractionComponents.title(), InteractionComponents.desc() ] );
+      }
+
+      V.setNode( 'body', $form );
+
       V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
       Google.launch().then( () => { // adds places lib script
         Google.initAutocomplete( 'plusform' ); // + __loc, __lng and __lat
       } );
-      // Page.draw( { pos: 'closed', reset: false } );
-      // Button.draw( ( formData.layout == 'search' ? 'plus' : 'plus search' ), { fade: 'out' } );
       Button.draw( 'all', { fade: 'out' } );
-      Button.draw( formData.layout == 'search' ? 'close query' : 'close set', { delay: 1 } );
+      Button.draw( formData.layout == 'search' ? /* 'close */ 'query' : /* 'close */ 'set', { delay: 1 } );
     }
   }
 

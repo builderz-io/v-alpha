@@ -38,7 +38,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.getState( 'activeAddress' )
+    which = V.aA()
   ) {
 
     const address = 'todo...';
@@ -67,7 +67,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.getState( 'activeAddress' )
+    which = V.aA()
   ) {
 
     const address = 'todo...';
@@ -153,12 +153,10 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export  ===================== */
 
-  ( () => {
-    V.setActiveAddress = setActiveAddress;
-    V.getAddressState = getAddressState;
-    V.getAddressHistory = getAddressHistory;
-    V.setEOSTransaction = setEOSTransaction;
-  } )();
+  V.setActiveAddress = setActiveAddress;
+  V.getAddressState = getAddressState;
+  V.getAddressHistory = getAddressHistory;
+  V.setEOSTransaction = setEOSTransaction;
 
   return {
     setActiveAddress: setActiveAddress,

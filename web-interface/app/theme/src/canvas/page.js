@@ -106,19 +106,10 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function presenter( options ) {
-    return options;
-  }
-
   function view( pageData ) {
     if ( !pageData ) { return }
 
     pageData.reset == false ? null : reset();
-
-    // if ( pageData.active == true ) {
-    //   V.getNavItem( 'active', 'serviceNav' ).draw();
-    //   return;
-    // }
 
     if ( pageData.topcontent ) {
       V.setNode( DOM.$topcontent, pageData.topcontent );
@@ -194,21 +185,21 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         Haze.draw();
       }
       handlebar( 7, 22 );
-      $page.classList.remove( 'pill-shadow' );
     }
     else if ( pagePos == 'closed' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
       $page.classList.add( 'pill-shadow' );
-
+      Logo.draw( pagePos );
     }
     else if ( pagePos == 'peek' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
+      // Form.draw( 'all', { fade: 'out' } );
       handlebar( 5, 25 );
       $page.classList.add( 'pill-shadow' );
-
+      Logo.draw( pagePos );
     }
   }
 
@@ -225,11 +216,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( options ) {
-    return Promise.resolve( view( presenter( options ) ) );
-    // V.setPipe(
-    //   presenter,
-    //   view
-    // )( options );
+    return Promise.resolve( view( options ) );
   }
 
   return {

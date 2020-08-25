@@ -25,7 +25,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      V.setNode( $list, CanvasComponents.notFound( 'media items' ) );
+      V.setNode( $list, CanvasComponents.notFound( 'media' ) );
     }
 
     const pageData = {

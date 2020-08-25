@@ -22,7 +22,13 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     const cache = V.getCache( whichRole );
     const now = Date.now();
 
-    if (
+    if ( search && search.query ) {
+      Object.assign( search, { role: whichRole } );
+      isSearch = true;
+      query = await V.getQuery( search );
+      // V.setCache( whichRole, query.data );
+    }
+    else if (
       cache &&
       ( now - cache.timestamp ) < ( V.getSetting( 'marketCacheDuration' ) * 60 * 1000 )
     ) {
@@ -32,12 +38,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         elapsed: now - cache.timestamp,
         data: V.castJson( cache.data, 'clone' ).reverse()
       };
-    }
-    else if ( search && search.query ) {
-      Object.assign( search, { role: whichRole } );
-      isSearch = true;
-      query = await V.getQuery( search );
-      V.setCache( whichRole, query.data );
     }
     else {
       query = await V.getEntity( whichRole );
@@ -95,6 +95,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Form.draw( 'all', { fade: 'out' } );
         Button.draw( 'all', { fade: 'out' } );
       }
+
+      if ( viewData.whichPath && viewData.whichPath != '/market/all' ) {
+        const $addcard = MarketplaceComponents.entitiesAddCard();
+        V.setNode( $slider, $addcard );
+      }
+
       viewData.entities.reverse().forEach( cardData => {
         const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
         const $cardContent = MarketplaceComponents.cardContent( cardData );
@@ -108,7 +114,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'all', { fade: 'out' } );
         Button.draw( 'close query' );
       }
-      V.setNode( $slider, CanvasComponents.notFound( 'marketplace items' ) );
+      V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
     }
 
     Page.draw( {
@@ -119,7 +125,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     VMap.draw( viewData.mapData );
   }
 
-  function preview( whichPath ) {
+  function preview( whichPath, search ) {
     const $slider = CanvasComponents.slider();
     for ( let i = 0; i < 20; i++ ) {
       const $ph = MarketplaceComponents.entitiesPlaceholder();
@@ -127,7 +133,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     if ( whichPath ) {
       Navigation.draw( whichPath );
-      Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+      if ( !search ) {
+        Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+      }
     }
     else {
       Navigation.draw();
@@ -136,8 +144,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       topslider: $slider,
       position: whichPath ? 'peek' : 'closed',
     } );
-
-    // VMap.draw();
 
   }
 
@@ -219,7 +225,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function draw( whichPath, search ) {
-    preview( whichPath );
+    preview( whichPath, search );
     presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
 

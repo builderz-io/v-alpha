@@ -155,6 +155,15 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
         };
       }
     },
+    {
+      path: '/pools',
+      action: () => {
+        return {
+          status: 'pool',
+          data: [ '/pools' ]
+        };
+      }
+    },
     // {
     //   path: '/events',
     //   action: () => {
@@ -179,10 +188,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setBrowserHistory( path ) {
-
     const data = { path: path };
-    // console.log( data );
-    // console.log( V.castJson( V.getState( 'active' ), 'clone' ) );
     if( V.getState( 'active' ).path != data.path ) {
       window.history.pushState(
         data,
@@ -195,11 +201,9 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  ( () => {
-    V.castRoute = castRoute;
-    V.setRoute = setRoute;
-    V.setBrowserHistory = setBrowserHistory;
-  } )();
+  V.castRoute = castRoute;
+  V.setRoute = setRoute;
+  V.setBrowserHistory = setBrowserHistory;
 
   return {
     castRoute: castRoute,

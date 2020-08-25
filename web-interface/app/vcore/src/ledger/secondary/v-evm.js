@@ -13,113 +13,21 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   const burnAddress = '0x0000000000000000000000000000000000000000';
 
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    community: 'Community',
+    fee: 'Transaction Fee',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'evm', scope || 'transaction' ) + ' ';
+  }
+
   /* ================== event handlers ================== */
 
-  function setNewActiveAddress() {
-
-    var currentActiveAddress = window.ethereum.selectedAddress;
-    // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-    // console.log( currentActiveAddress );
-    // console.log( V.getState( 'activeAddress' ) );
-
-    if ( currentActiveAddress == null ) {
-      V.setState( 'activeEntity', 'clear' );
-      V.setState( 'activeAddress', 'clear' );
-      V.setCookie( 'last-active-address', 'clear' );
-      V.setCookie( 'last-active-uphrase', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
-      Join.draw( 'logged out' );
-    }
-    else if ( currentActiveAddress != V.getState( 'activeAddress' ) ) {
-      V.setCookie( 'welcome-modal', 1 );
-      V.setState( 'activeEntity', 'clear' );
-      V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
-      Join.draw( 'new entity was set up' );
-    }
-
-  }
-
-  /* ================== private methods ================= */
-
-  function castEthBalance( balance ) {
-    return Number( balance / 10**18 ).toFixed( 4 );
-  }
-
-  function castTokenFloat( balance ) {
-    const divisibility = V.getState( 'contract' ).divisibility;
-    return Number( balance / 10**( divisibility ) ).toFixed( 0 );
-  }
-
-  async function castEntityName( address ) {
-    const entity = await V.getEntity( address );
-    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
-  }
-
-  async function castTransfers( transfers, which ) {
-    const aA = V.getState( 'activeAddress' );
-    const aE = V.getState( 'activeEntity' );
-    const filteredAndEnhanced = await transfers.filter( tx => {
-      const data = tx.returnValues;
-      return data.from.toLowerCase() == which ||
-            data.to.toLowerCase() == which;
-
-    } ).map( async tx => {
-      const txData = {};
-
-      txData.fromAddress = tx.returnValues.from.toLowerCase();
-      txData.toAddress = tx.returnValues.to.toLowerCase();
-
-      txData.fromAddress == which ? txData.txType = 'out' : null;
-      txData.toAddress == which ? txData.txType = 'in' : null;
-      txData.toAddress == burnAddress ? txData.txType = 'fee' : null;
-      txData.fromAddress == burnAddress ? txData.txType = 'generated' : null;
-
-      txData.amount = castTokenFloat( tx.returnValues.value );
-
-      txData.feesBurned = castTokenFloat( tx.returnValues.feesBurned || 0 );
-      txData.contribution = castTokenFloat( tx.returnValues.contribution || 0 );
-
-      txData.payout = txData.fromAddress == which
-        ? castTokenFloat( tx.returnValues.payoutSender || 0 )
-        : castTokenFloat( tx.returnValues.payoutRecipient || 0 );
-
-      txData.message = 'n/a';
-
-      txData.hash = tx.transactionHash;
-      txData.logIndex = tx.logIndex;
-      txData.block = tx.blockNumber;
-
-      const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
-      txData.blockDate = blockDetails.timestamp;
-
-      txData.fromEntity = txData.fromAddress == aA ? aE.fullId : await castEntityName( txData.fromAddress );
-      txData.toEntity = txData.toAddress == aA ? aE.fullId : await castEntityName( txData.toAddress );
-
-      if ( txData.txType == 'in' ) {
-        txData.title = txData.fromEntity;
-      }
-      else if ( txData.txType == 'out' ) {
-        txData.title = txData.toEntity;
-      }
-      else if ( txData.txType == 'fee' ) {
-        txData.title = 'Transaction Fee';
-      }
-      else if ( txData.txType == 'generated' ) {
-        txData.title = 'Community Payout';
-      }
-
-      return txData;
-
-    } );
-
-    const a = await Promise.all( filteredAndEnhanced );
-    // console.log( a );
-    return a;
-  }
-
   function handleTransferSummaryEvent( eventData ) {
-    const aA = V.getState( 'activeAddress' );
-    if ( aA && ( eventData.to.toLowerCase() == aA || eventData.from.toLowerCase() == aA ) ) {
+    if ( V.aA() && ( eventData.to.toLowerCase() == V.aA() || eventData.from.toLowerCase() == V.aA() ) ) {
       Account.drawHeaderBalance();
       if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
         setNewTxNode( { returnValues: eventData } );
@@ -145,10 +53,132 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  /* ================== private methods ================= */
+
+  function setNewActiveAddress() {
+
+    var currentActiveAddress = window.ethereum.selectedAddress;
+    // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+    // console.log( currentActiveAddress );
+    // console.log( V.aA() );
+
+    if ( currentActiveAddress == null ) {
+      V.setState( 'activeEntity', 'clear' );
+      V.setState( 'activeAddress', 'clear' );
+      V.setCookie( 'last-active-address', 'clear' );
+      V.setCookie( 'last-active-uphrase', 'clear' );
+      V.setCookie( 'welcome-modal', 1 );
+      Join.draw( 'logged out' );
+    }
+    else if ( currentActiveAddress != V.aA() ) {
+      V.setCookie( 'welcome-modal', 1 );
+      V.setState( 'activeEntity', 'clear' );
+      V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
+      Join.draw( 'new entity was set up' );
+      Marketplace.draw();
+    }
+
+  }
+
+  function setEventSubscription( whichEvent ) {
+    // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
+    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
+    /* const subscription = */ window.Web3Obj.eth.subscribe( 'logs', {
+      address: contract.options.address,
+      topics: [eventJsonInterface.signature]  },
+    ( error, result ) => {
+      if ( error ) { console.log( error ); return }
+
+      const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
+      if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
+        handleTransferSummaryEvent( eventData );
+      }
+
+    } );
+
+    // subscribedEvents[whichEvent] = subscription;
+  }
+
+  function castEthBalance( balance ) {
+    return Number( balance / 10**18 ).toFixed( 4 );
+  }
+
+  function castTokenBalance( balance, decimals ) {
+    const divisibility = V.getState( 'contract' ).divisibility;
+    return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
+  }
+
+  async function castEntityName( address ) {
+    const entity = await V.getEntity( address );
+    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
+  }
+
+  async function castTransfers( transfers, which ) {
+
+    const filteredAndEnhanced = await transfers.filter( tx => {
+      const data = tx.returnValues;
+      return data.from.toLowerCase() == which ||
+            data.to.toLowerCase() == which;
+
+    } ).map( async tx => {
+      const txData = {};
+      // console.log( tx );
+      txData.fromAddress = tx.returnValues.from.toLowerCase();
+      txData.toAddress = tx.returnValues.to.toLowerCase();
+
+      txData.fromAddress == which ? txData.txType = 'out' : null;
+      txData.toAddress == which ? txData.txType = 'in' : null;
+      txData.toAddress == burnAddress ? txData.txType = 'fee' : null;
+      txData.fromAddress == burnAddress ? txData.txType = 'generated' : null;
+
+      txData.amount = castTokenBalance( tx.returnValues.value );
+
+      txData.feesBurned = castTokenBalance( tx.returnValues.feesBurned || 0, 6 );
+      txData.contribution = castTokenBalance( tx.returnValues.contribution || 0, 6 );
+
+      txData.payout = txData.fromAddress == which
+        ? castTokenBalance( tx.returnValues.payoutSender || 0, 6 )
+        : castTokenBalance( tx.returnValues.payoutRecipient || 0, 6 );
+
+      txData.message = 'n/a';
+
+      txData.hash = tx.transactionHash;
+      txData.logIndex = tx.logIndex;
+      txData.block = tx.blockNumber;
+
+      const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
+      txData.blockDate = blockDetails.timestamp;
+
+      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
+      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
+
+      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
+
+      if ( txData.txType == 'in' ) {
+        txData.title = txData.fromEntity;
+      }
+      else if ( txData.txType == 'out' ) {
+        txData.title = txData.toEntity;
+      }
+      else if ( txData.txType == 'fee' ) {
+        txData.title = getString( ui.fee );
+      }
+      else if ( txData.txType == 'generated' ) {
+        txData.title = getString( ui.community );
+      }
+
+      return txData;
+
+    } );
+
+    const a = await Promise.all( filteredAndEnhanced );
+    // console.log( a );
+    return a;
+  }
+
   async function setNewTxNode( txSummary, id ) {
-    const aA = V.getState( 'activeAddress' );
     console.log( 'txSummary: ', txSummary.returnValues );
-    const filteredAndEnhanced = await castTransfers( [ txSummary ], aA );
+    const filteredAndEnhanced = await castTransfers( [ txSummary ], V.aA() );
     console.log( 'cast txData: ', JSON.stringify( filteredAndEnhanced ) );
     const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
     const $card = CanvasComponents.card( $cardContent );
@@ -258,10 +288,17 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   async function getContractState() {
     if ( contract ) {
 
+      // kovan2
+      // const blockNumber = contract.methods.getBlockNumber().call();
+      // const fee = contract.methods.transactionFee.call().call();
+      // const contribution = contract.methods.communityContribution.call().call();
+      // const divisibility = contract.methods.decimals.call().call();
+
+      // ganache remote
       const blockNumber = contract.methods.getBlockNumber().call();
-      const fee = contract.methods.transactionFee.call().call();
-      const contribution = contract.methods.communityContribution.call().call();
-      const divisibility = contract.methods.decimals.call().call();
+      const fee = contract.methods.getTransactionFee.call().call();
+      const contribution = contract.methods.getCommunityContribution.call().call();
+      const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
 
       // const allEvents = contract.getPastEvents( 'allEvents', {
       // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -282,17 +319,17 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       //   } );
 
       const all = await Promise.all( [ blockNumber, fee, contribution, divisibility /*, allEvents */ ] )
-        .catch( err => { return err } );
+        .catch( err => { console.log( err ) } );
 
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
-        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        // console.log( 'Divisibility: ', all[3] );
-        // console.log( 'Contract: ', contract._address );
-        // console.log( 'Network: ', V.getNetwork().network );
+        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        console.log( 'Divisibility: ', all[3] );
+        console.log( 'Contract: ', contract._address );
+        console.log( 'Network: ', V.getNetwork().network );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
@@ -345,11 +382,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     if ( all && all[0] && all[1] && all[2] ) {
-
       const data = {
         coinBalance: castEthBalance( all[0] ),
-        liveBalance: castTokenFloat( all[1] ),
-        tokenBalance: castTokenFloat( all[2]._balance ),
+        liveBalance: castTokenBalance( all[1] ),
+        tokenBalance: castTokenBalance( all[2]._balance ),
         lastBlock: all[2]._lastBlock,
         zeroBlock: all[2]._zeroBlock,
       };
@@ -373,7 +409,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.getState( 'activeAddress' ),
+    which = V.aA(),
     data = { fromBlock: 0, toBlock: 'latest' },
     whichEvent = 'TransferSummary'
   ) {
@@ -410,7 +446,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   function setAddressVerification( which ) {
     console.log( 'verify:', which );
-    return contract.methods.verifyAccount( which ).send( { from: V.getState( 'activeAddress' ), gas: 6001000 } )
+    return contract.methods.verifyAccount( which ).send( { from: V.aA(), gas: 6001000 } )
       .on( 'transactionHash', ( hash ) => {
         console.log( 'Hash: ', hash );
         // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {
@@ -467,10 +503,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setTokenTransaction( data ) {
-    const div = Number( V.getState( 'contract' ).divisibility );
+    // const div = Number( V.getState( 'contract' ).divisibility );
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const sender = data.initiatorAddress;
-    const amount = data.txTotal * 10**div;
+    const amount = window.Web3Obj.utils.toWei( String( data.txTotal /* * 10**div */ ) );
     const txFunction = await new Promise( ( resolve, reject ) => {
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
         .once( 'transactionHash', function( hash ) {
@@ -508,32 +544,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return txFunction;
   }
 
-  function setEventSubscription( whichEvent ) {
-    // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
-    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
-    /* const subscription = */ window.Web3Obj.eth.subscribe( 'logs', {
-      address: contract.options.address,
-      topics: [eventJsonInterface.signature]  },
-    ( error, result ) => {
-      if ( error ) { console.log( error ); return }
-
-      const eventData = window.Web3Obj.eth.abi.decodeLog( eventJsonInterface.inputs, result.data, result.topics.slice( 1 ) );
-      if ( V.getSetting( 'subscribeToChainEvents' ) && whichEvent == 'TransferSummary' ) {
-        handleTransferSummaryEvent( eventData );
-      }
-
-    } );
-
-    // subscribedEvents[whichEvent] = subscription;
-  }
-
-  function setNetVAmount( amount ) {
+  function getNetVAmount( amount ) {
     const fee = V.getSetting( 'transactionFee' );
     const contr = V.getSetting( 'communityContribution' );
     const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-    const totalFee = Math.floor( amount * ( ( contractState.fee / 100**2 ) ) );
-    const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
-    const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+    const totalFee = Math.floor( amount * ( contractState.fee / 100**2 ) );
+    const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
+    const feeAmount = totalFee - contribution;
     const net = amount - totalFee;
 
     return  {
@@ -544,37 +561,85 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     };
   }
 
-  function setGrossVAmount( amount ) {
+  function getGrossVAmount( amount ) {
     const fee = V.getSetting( 'transactionFee' );
     const contr = V.getSetting( 'communityContribution' );
     const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
-    const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
-    const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
-    const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+
+    /**
+     * 33.33% and 25% are two possible and likely choices for a transaction fee
+     * in the smart contract.
+     * In order to avoid rounding issues, these are specifically setup here
+     *
+     */
+
+    const totalFee =
+      contractState.fee == 3333 ? amount * 0.5 :
+        contractState.fee == 2500 ? Math.round( amount * 0.33333333 * 100 ) / 100 :
+          Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
+
+    const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
+    const feeAmount = totalFee - contribution;
     const gross = amount + feeAmount + contribution;
 
-    return  {
+    const data = {
       net: amount,
       gross: gross,
       contribution: contribution,
       feeAmount: feeAmount
     };
+
+    return data;
   }
+
+  // previous versions
+
+  // function getNetVAmount( amount ) {
+  //   const fee = V.getSetting( 'transactionFee' );
+  //   const contr = V.getSetting( 'communityContribution' );
+  //   const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+  //   const totalFee = Math.floor( amount * ( contractState.fee / 100**2 ) );
+  //   const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+  //   const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+  //   const net = amount - totalFee;
+  //
+  //   return  {
+  //     net: net,
+  //     gross: amount,
+  //     contribution: contribution,
+  //     feeAmount: feeAmount
+  //   };
+  // }
+
+  // function getGrossVAmount( amount ) {
+  //   const fee = V.getSetting( 'transactionFee' );
+  //   const contr = V.getSetting( 'communityContribution' );
+  //   const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+  //   const totalFee = Math.floor( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount );
+  //   const contribution = totalFee == 0 ? 1 : Math.ceil( totalFee * ( Number( contractState.contribution ) / 100**2 ) );
+  //   const feeAmount = totalFee == 0 ? 0 : totalFee - contribution;
+  //   const gross = amount + feeAmount + contribution;
+  //
+  //   return  {
+  //     net: amount,
+  //     gross: gross,
+  //     contribution: contribution,
+  //     feeAmount: feeAmount
+  //   };
+  // }
 
   /* ====================== export  ===================== */
 
-  ( () => {
-    V.getWeb3Provider = getWeb3Provider;
-    V.setActiveAddress = setActiveAddress;
-    V.getContractState = getContractState;
-    V.getAddressState = getAddressState;
-    V.getAddressHistory = getAddressHistory;
-    V.setAddressVerification = setAddressVerification;
-    V.setCoinTransaction = setCoinTransaction;
-    V.setTokenTransaction = setTokenTransaction;
-    V.setNetVAmount = setNetVAmount;
-    V.setGrossVAmount = setGrossVAmount;
-  } )();
+  V.getWeb3Provider = getWeb3Provider;
+  V.setActiveAddress = setActiveAddress;
+  V.getContractState = getContractState;
+  V.getAddressState = getAddressState;
+  V.getAddressHistory = getAddressHistory;
+  V.setAddressVerification = setAddressVerification;
+  V.setCoinTransaction = setCoinTransaction;
+  V.setTokenTransaction = setTokenTransaction;
+  V.getNetVAmount = getNetVAmount;
+  V.getGrossVAmount = getGrossVAmount;
 
   return {
     getWeb3Provider: getWeb3Provider,
@@ -585,8 +650,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     setAddressVerification: setAddressVerification,
     setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
-    setNetVAmount: setNetVAmount,
-    setGrossVAmount: setGrossVAmount
+    getNetVAmount: getNetVAmount,
+    getGrossVAmount: getGrossVAmount
   };
 
 } )();

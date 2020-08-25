@@ -240,23 +240,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     e.stopPropagation(); // no need to bubble any further
     const $itemClicked = e.target.closest( 'li' );
 
-    // const $itemClicked = ( ( e ) => {
-    //   // in case svg is used in the pill, return the correct li clicked
-    //   const t = e.target;
-    //   if ( t.localName == 'li' ) { return t }
-    //   else if ( t.localName == 'svg' ) { return t.parentNode }
-    //   else if ( t.localName == 'path' ) { return t.parentNode.parentNode }
-    // } )( e );
-
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( path );
-
-      // if ( path != '/me/disconnect' ) {
-      //   Navigation.draw( path );
-      // }
-
       V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
     }
 
@@ -288,8 +275,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function movingPillAnimation( nav, $itemToAnimate, itemClickedRect, menuStateObj ) {
     // adjusted from LukePH https://stackoverflow.com/questions/907279/jquery-animate-moving-dom-element-to-new-parent
-    // deselect();
-    // select( $itemToAnimate );
 
     let classes = ' absolute font-medium';
     if ( nav == 'entity-nav' ) {
@@ -328,7 +313,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       span.classList.remove( 'pill__initials' );
     }
     $item.className += ' pill--selected';
-    $item.addEventListener( 'click', resetOnClick, { once: true } );
+    $item.addEventListener( 'click', resetOnClick /*, { once: true } */ );
   }
 
   function deselect() {
@@ -350,9 +335,21 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function resetOnClick( e ) {
     e.stopPropagation();
+
+    if ( V.getNode( 'form' ) ) {
+      handleCloseForms();
+      return;
+    }
+
     reset();
     Page.draw( { position: 'closed', reset: false } );
+  }
 
+  function handleCloseForms() {
+    Form.draw( 'all', { fade: 'out' } );
+    Button.draw( 'all', { fade: 'out' } );
+    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+    Page.draw( { position: 'peek', reset: false } );
   }
 
   function reset() {

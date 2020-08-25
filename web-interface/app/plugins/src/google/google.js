@@ -8,16 +8,6 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  /* ================== private methods ================= */
-
-  function presenter( options ) {
-    return options;
-  }
-
-  function view() {
-
-  }
-
   /* ============ public methods and exports ============ */
 
   function initAutocomplete( component ) {
@@ -55,17 +45,9 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function draw( options ) {
-    V.setPipe(
-      presenter,
-      view
-    )( options );
-  }
-
   return {
     initAutocomplete: initAutocomplete,
     launch: launch,
-    draw: draw,
   };
 
 } )();

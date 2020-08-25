@@ -50,7 +50,7 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: 'Abmelden'
     }
   },
-  'user profile': {
+  'profile': {
     'title': {
       en_US: 'title',
       de_DE: 'titel'
@@ -129,18 +129,18 @@ const VTranslations = // eslint-disable-line no-unused-vars
     },
     'Entity Ethereum Address': {
       en_US: 'Entity Ethereum Address',
-      de_DE: 'Ethereum Addresse (Ausgang)'
+      de_DE: 'Ethereum Addresse'
     },
     'Receiving Ethereum Address': {
       en_US: 'Receiving Ethereum Address',
-      de_DE: 'Ethereum Addresse (Eingang)'
+      de_DE: 'Ethereum Addresse (eingehend)'
     },
     'App Language': {
       en_US: 'App Language',
       de_DE: 'App Sprache'
     }
   },
-  'join': {
+  'interaction': {
     'Connect a crypto wallet': {
       en_US: 'Connect a crypto wallet',
       de_DE: 'Verbinde Dein Crypto Wallet'
@@ -167,9 +167,6 @@ const VTranslations = // eslint-disable-line no-unused-vars
 
   },
   'modal': {
-
-  },
-  'modal components': {
     close: {
       en_US: 'close',
       de_DE: 'schließen'
@@ -178,7 +175,7 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'trigger': {
 
   },
-  'account components': {
+  'account': {
     from: {
       en_US: 'From',
       de_DE: 'Von'
@@ -196,13 +193,20 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: 'Block'
     }
   },
-  'chat components': {
+  'chat': {
 
   },
-  'user components': {
+  'canvas': {
 
   },
-  'entity creation': {
+  'entity': {
+
+  },
+  'transaction': {
+
+  },
+  'evm': {
 
   }
+
 };

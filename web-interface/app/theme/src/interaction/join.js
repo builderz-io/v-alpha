@@ -21,10 +21,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
             const check = await ckeckEntityStoreByAddress();
 
-            // if ( check == 'entity found' ) {
-            //   which = check;
-            // }
-            // else {
             if ( which.includes( 'existing entity' ) ) {
               V.setCookie( 'welcome-modal', 1 );
               which = 'authenticate existing entity';
@@ -32,7 +28,6 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
             else {
               which = check;
             }
-            // }
           }
           else {
             which = res.status;
@@ -41,10 +36,10 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         // Modal.draw( 'please wait' );
-        if ( V.getState( 'activeAddress' ) ) {
+        if ( V.aA() ) {
           which = await ckeckEntityStoreByAddress();
         }
-        else if ( V.getState( 'activeEntity' ).fullId ) {
+        else if ( V.aE().fullId ) {
           which = 'entity found';
         }
       }
@@ -54,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
-        V.setState( 'activeAddress', V.getState( 'activeEntity' ).symbolCredentials.address );
+        V.setState( 'activeAddress', V.aE().symbolCredentials.address );
         which = 'entity found';
       }
     }
@@ -73,39 +68,34 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   function view( which ) {
     console.log( 'join: ', which );
-    // Marketplace.draw();
+
     if ( which == 'entity found' ) {
+
       V.setNode( 'join', 'clear' );
-      const bal = V.getState( 'activeEntity' ).balance;
+
+      V.setNode( '.modal', 'clear' );
+
+      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+        Modal.draw( which );
+        V.setCookie( 'welcome-modal', 0 );
+      }
+
+      const bal = V.aE().balance;
+
       if ( !bal ) { // web2 signup
         Account.drawHeaderBalance();
-
-        // TODO: replace setInterval with eventsubscription, when possible
-        // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
-        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
-
-        V.setNode( '.modal', 'clear' );
-        if ( V.getCookie( 'welcome-modal' ) == 1 ) {
-          Modal.draw( which );
-          V.setCookie( 'welcome-modal', 0 );
-        }
       }
       else if ( bal && bal.success ) { // web3 signup
         Account.drawHeaderBalance( bal.balance.balance );
-
-        // TODO: replace setInterval with eventsubscription, when possible
-        // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
-        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
-
-        V.setNode( '.modal', 'clear' );
-        if ( V.getCookie( 'welcome-modal' ) == 1 ) {
-          Modal.draw( which );
-          V.setCookie( 'welcome-modal', 0 );
-        }
       }
       else { // web3 signup, balance not found (e.g. wrong network)
         Modal.draw( 'could not get balance' );
       }
+
+      // TODO: replace setInterval with eventsubscription, when possible
+      // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
+      setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+
     }
     else if ( which == 'entity not found' ) {
       V.sN( 'balance > svg', 'clear' );
@@ -124,16 +114,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       Navigation.draw();
-      // Page.draw( { position: 'closed' } );
       Modal.draw( which );
     }
   }
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    const activeAddress = V.getState( 'activeAddress' );
-
-    return activeAddress ? V.getEntity( activeAddress ).then( async res => {
+    return V.aA() ? V.getEntity( V.aA() ).then( async res => {
       if ( res.reset ) {
         return 'entity not found';
       }

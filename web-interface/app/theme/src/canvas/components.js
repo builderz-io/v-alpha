@@ -34,63 +34,91 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       width: '100%'
     },
     'card__container': {
-      // 'height': 'var(--card-height)',
       'max-width': '360px',
       'flex-wrap': 'wrap'
+    },
+    'background': {
+      'background': 'rgba(211,232,235,1)',
+      // 'background': 'rgba(115,182,230,1)',
+      'height': '100vh', // 'calc(var(--screen-height) - var(--page-position-closed))',
+      'z-index': -2
+    },
+    'haze': {
+      'top': 0,
+      'height': '45vh',
+      'z-index': -1
+    },
+    'handle': {
+      'padding-top': '12px',
+      'height': '26px',
+      'display': 'block'
+    },
+    'handle__bar': {
+      'margin-left': 'auto',
+      'margin-right': 'auto',
+      'height': '4px',
+      'width': '5%',
+      'max-width': '40px'
+    },
+    'page': {
+      bottom: 0,
+      height: 'var(--page-position-peek)',
+    },
+    'network-logo': {
+      height: '18px',
     }
   } );
+
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    transaction: 'No transactions found',
+    message: 'No messages found',
+    entity: 'No entities found',
+    marketplace: 'No marketplace items found',
+    media: 'No media items found',
+  };
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'canvas', scope || 'not found' ) + ' ';
+  }
+
+  /* ================  public components ================ */
 
   function notFound( which ) {
     return V.setNode( {
       t: 'p',
       c: 'pxy',
-      h: V.i18n( 'No ' + which + ' found', 'app', 'not found' )
+      h: getString( ui[which] )
     } );
   }
 
   function background() {
     return V.setNode( {
-      tag: 'background',
+      t: 'background',
       id: 'background',
-      classes: 'background fixed w-screen',
-      setStyle: {
-        background: {
-          'background': 'rgba(211,232,235,1)',
-          // 'background': 'rgba(115,182,230,1)',
-          'height': '100vh', // 'calc(var(--screen-height) - var(--page-position-closed))',
-          'z-index': -2
-        }
-      },
-      // h: `<div class="preloader">
-      //       <div class="preloader__ring"></div>
-      //       <loader class="preloader__text">Loading Map<loader>
-      //     </div>`
+      c: 'background fixed w-screen'
     } );
   }
+
   function haze() {
     return V.setNode( {
-      tag: 'haze',
-      classes: 'haze fixed w-screen bkg-white hidden',
-      setStyle: {
-        haze: {
-          'top': 0,
-          'height': '45vh',
-          'z-index': -1
-        }
-      }
+      t: 'haze',
+      c: 'haze fixed w-screen bkg-white hidden'
     } );
   }
+
   function feature() {
     const dimensions = V.getState( 'page' ).featureDimensions;
     return V.setNode( {
-      tag: 'feature',
-      classes: 'feature fixed hidden',
+      t: 'feature',
+      c: 'feature fixed hidden',
       setStyle: {
         feature: {
           top: 'var(--page-position-top-selected)',
           height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
           width: dimensions.width + 'px'
-        }
+        },
       }
     } );
   }
@@ -99,80 +127,67 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
 
     return V.setNode( {
-      tag: 'balance',
-      classes: 'balance fixed cursor-pointer txt-anchor-mid',
+      t: 'balance',
+      c: 'balance fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
     } );
   }
+
   function interactions() {
     const sc = V.getState( 'screen' );
 
     return V.setNode( {
-      tag: 'interactions',
-      classes: 'interactions fixed',
-      setStyle: {
+      t: 'interactions',
+      c: 'interactions fixed',
+      s: {
         interactions: {
           top: sc.width > 800 ? '23px' : '11px',
           right: 0,
           width: '45%'
-        }
+        },
       },
-      html: {
-        tag: 'ul',
-        classes: 'flex items-center justify-end'
+      h: {
+        t: 'ul',
+        c: 'flex items-center justify-end'
       }
     } );
   }
+
   function handle() {
     return V.setNode( {
-      tag: 'handle',
-      classes: 'handle',
-      setStyle: {
-        handle: {
-          'padding-top': '12px',
-          'height': '26px',
-          'display': 'block'
-        }
-      },
-      html: {
-        tag: 'div',
-        classes: 'handle__bar rounded-full bkg-offblack',
-        setStyle: {
-          handle__bar: {
-            'margin-left': 'auto',
-            'margin-right': 'auto',
-            'height': '4px',
-            'width': '5%',
-            'max-width': '40px'
-          }
-        },
+      t: 'handle',
+      c: 'handle',
+      h: {
+        t: 'div',
+        c: 'handle__bar rounded-full bkg-offblack'
       }
     } );
   }
+
   function topSlider() {
     return V.setNode( {
-      tag: 'topslider'
+      t: 'topslider'
     } );
   }
 
   function slider() {
     return V.castNode( {
-      tag: 'slider',
-      classes: 'flex overflow-x-scroll list-none pb-s'
+      t: 'slider',
+      c: 'flex overflow-x-scroll list-none pb-s'
     } );
   }
 
   function listings() {
     return V.setNode( {
-      tag: 'listings'
+      t: 'listings'
     } );
   }
 
   function list( which ) {
 
     const $list = V.setNode( {
-      tag: 'list',
-      classes: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
+      t: 'list',
+      c: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
     } );
 
     if ( which == 'narrow' ) {
@@ -193,7 +208,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          { t: 'h2', c: 'w-full font-bold pxy', h: V.i18n( cardTitle, 'user profile', 'card title' ) },
+          { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle },
           $cardContent
         ] : $cardContent
       }
@@ -202,32 +217,45 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function header() {
     return V.setNode( {
-      tag: 'header',
+      t: 'header',
     } );
   }
+
   function page() {
     return V.setNode( {
-      tag: 'page',
-      classes: 'page fixed w-screen bkg-white pill-shadow overflow-hidden',
-      setStyle: {
-        page: {
-          bottom: 0,
-          height: 'var(--page-position-peek)',
-          // 'max-height': 'calc(100vh - var(--page-position-top-selected))'
-        }
-      },
+      t: 'page',
+      c: 'page fixed w-screen bkg-white pill-shadow overflow-hidden'
     } );
   }
+
   function content() {
     return V.setNode( {
-      tag: 'content'
+      t: 'content'
     } );
   }
+
   function topContent() {
     return V.setNode( {
-      tag: 'topcontent'
+      t: 'topcontent'
     } );
   }
+
+  function logo() {
+    return V.cN( {
+      t: 'logo',
+      c: 'fixed hidden'
+    } );
+  }
+
+  function networkLogo() {
+    return V.cN( {
+      t: 'img',
+      c: 'network-logo',
+      src: '/assets/img/builderz-logo.png'
+    } );
+  }
+
+  /* ====================== export ====================== */
 
   return {
     notFound: notFound,
@@ -245,7 +273,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     header: header,
     page: page,
     content: content,
-    topContent: topContent
+    topContent: topContent,
+    logo: logo,
+    networkLogo: networkLogo
   };
 
 } )();
