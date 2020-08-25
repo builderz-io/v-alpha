@@ -32,6 +32,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     copyKeyExplain: 'You\'ll need this key to manage this profile',
     liveBalance: 'Live Balance',
     notRetrieved: 'Sorry, account details could not be retrieved',
+    fourOfour: '404 - Page not found',
 
     loggedOut: 'You are logged out',
     txSent: '✅ Sent to network',

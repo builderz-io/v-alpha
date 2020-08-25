@@ -283,6 +283,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           Profile.draw( which );
         }
 
+      } )
+      .catch( () => {
+        Marketplace.draw();
+        Modal.draw( '404' );
       } );
 
   }

@@ -11,6 +11,16 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
+    if (
+      isNaN( Number( which.slice( -4 ) ) ) ||
+      which.slice( -5, -4 ) != '-'
+    ) {
+      return {
+        success: null,
+        status: 'not a valid profile link'
+      };
+    }
+
     const fullId = V.castPathOrId( which );
 
     const query = await V.getEntity( fullId );

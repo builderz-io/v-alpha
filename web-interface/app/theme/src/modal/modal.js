@@ -69,6 +69,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $modal, ModalComponents.simpleMessage( 'txSuccess' ) );
       setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 2500 );
     }
+    else if ( which == '404' ) {
+      V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );
+    }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'error' ) );
     }

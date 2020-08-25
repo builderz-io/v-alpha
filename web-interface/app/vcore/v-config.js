@@ -12,18 +12,17 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: 'http://localhost',
-    socketPort: 6021,
-    // socketHost: 'https://cocooonmongo.valueinstrument.org', // omit trailing slash
-    // socketPort: 443,
-    // socketHost: 'https://buildersmongo.valueinstrument.org', // omit trailing slash
-    // socketPort: 443,
+    // socketHost: 'http://localhost',
+    // socketPort: 6023,
+    socketHost: 'https://buildersmongo.valueinstrument.org', // cocooonmongo // omit trailing slash
+    socketPort: 443,
 
     useBuilds: false,
 
+    sendLogsToServer: true,
+
     subscribeToChainEvents: false,
     balanceCheckInterval: 20, // in sec
-    sendLogsToServer: false,
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,

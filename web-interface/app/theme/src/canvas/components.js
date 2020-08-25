@@ -65,7 +65,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       height: 'var(--page-position-peek)',
     },
     'network-logo': {
-      height: '25px',
+      height: '18px',
     }
   } );
 

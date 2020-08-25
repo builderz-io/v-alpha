@@ -801,17 +801,26 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function socialShareButtons() {
     return V.cN( {
       t: 'div',
-      s: {
-        'sharing-button__icon svg': {
-          'width': '1em',
-          'height': '1em',
-          'margin-right': '1.4em'
+      c: 'pxy',
+      h: [
+        {
+          t: 'p',
+          c: 'pxy fs-s txt-center',
+          h: 'share this profile on'
         },
-        'sharing-button__icon--solid': {
-          fill: 'rgba(var(--brandPrimary), 1)'
-        }
-      },
-      h: `
+        {
+          t: 'div',
+          s: {
+            'sharing-button__icon svg': {
+              'width': '1em',
+              'height': '1em',
+              'margin-right': '1.4em'
+            },
+            'sharing-button__icon--solid': {
+              fill: 'rgba(var(--brandPrimary), 1)'
+            }
+          },
+          h: `
 
       <a class="inline-block pxy" href="https://facebook.com/sharer/sharer.php?u=http%3A%2F%2Fbuilderz.io${entity.paths.entity}" target="_blank" rel="noopener" aria-label="">
         <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
@@ -842,6 +851,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       </a>
 
  `
+        }]
     } );
   }
 

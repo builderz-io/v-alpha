@@ -1,5 +1,7 @@
 const settings = {
-  port: 6021
+  port: 6023,
+  host: 'builderz.io',
+  db: 'buildersmongo'
 };
 
 const http = require( 'http' );
@@ -7,16 +9,16 @@ const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 
 const cors = require( 'cors' );
-const whitelist = ['http://localhost:3021', 'https://alpha.valueinstrument.org', 'http://vialpha.pagekite.me'];
+const whitelist = ['https://' + settings.host, 'https://' + settings.db + '.valueinstrument.org', 'http://localhost:3123', 'https://alpha.valueinstrument.org', 'http://vialpha.pagekite.me'];
 
-mongoose.connect( 'mongodb://localhost/ui2020', { useNewUrlParser: true, useUnifiedTopology: true } );
+mongoose.connect( 'mongodb://localhost/' + settings.db, { useNewUrlParser: true, useUnifiedTopology: true } );
 
 const app = express();
 const server = http.createServer( app );
 
 server.listen( settings.port, function( err ) {
   if ( err ) {throw err}
-  console.log( 'MongoDB Entity Store listening on port', settings.port );
+  console.log( 'MongoDB Entity Store for ' + settings.host + ' listening on port', settings.port );
 } );
 
 app.use( cors( {
@@ -33,7 +35,7 @@ app.use( cors( {
 } ) );
 
 app.get( '/', function( req, res ) {
-  res.send( 'MongoDB connector is live' );
+  res.send( settings.host +' MongoDB connector is live' );
 } );
 
 app.post( '/logs', function( req, res ) {
