@@ -5,7 +5,7 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
    *
    */
 
-  // Ganache Dev Contract ABI
+  // Rinkeby Contract ABI
   [
     {
       anonymous: false,

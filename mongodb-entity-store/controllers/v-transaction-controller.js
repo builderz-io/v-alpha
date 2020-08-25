@@ -1,6 +1,8 @@
+const systemInit = require( '../systemInit' );
 const findEntities = require( '../lib/find-entities' );
 const updateEntities = require( '../lib/transaction-mongodb/update-entities' );
 const checkValid = require( '../lib/transaction-mongodb/check-tx-validity' );
+const telegramNotification = require( '../lib/telegram' ).adminNotify;
 
 const addRolesSimplified = ( array ) => {
 
@@ -60,9 +62,16 @@ exports.updateEntities = function( req, res ) {
       else {
         // Updating MongoDB Accounts
         updateEntities.updateAllEntities( txRoleEntities, txData.amount, txData.feeAmount, txData.contribution, txData.date, txData.timeSecondsUNIX, txData.reference, txData.command ).then( success => {
+
+          telegramNotification( {
+            msg: 'MongoDB transaction in',
+            network: systemInit.communityGovernance.commName
+          } );
+
           res( {
             success: true,
             status: 'transaction successful',
+            message: success,
             ledger: 'MongoDB'
           } );
         } );
@@ -99,5 +108,12 @@ exports.findTransaction = function( req, res ) {
         data: entities[0].txHistory
       } );
     }
+  } );
+};
+
+exports.adminNotify = function( txSuccess ) {
+  telegramNotification( {
+    msg: 'Someone ' + txSuccess + ' transacted funds in',
+    network: systemInit.communityGovernance.commName
   } );
 };

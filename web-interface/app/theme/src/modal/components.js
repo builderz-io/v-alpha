@@ -186,6 +186,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const aTx = V.getState( 'active' ).transaction;
 
+    const adminNotify = status => {
+      V.setData( status, 'transaction admin notification', V.getSetting( 'transactionLedgerWeb2' ) );
+    };
+
     V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
@@ -193,13 +197,18 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
             Modal.draw( 'transaction successful' );
             Account.drawHeaderBalance();
           }
+          else {
+            adminNotify( 'successfully' );
+          }
         }
         else {
+          adminNotify( 'unsuccessfully' );
           Modal.draw( 'error' );
           console.log( res );
         }
       } )
       .catch( err => {
+        adminNotify( 'unsuccessfully' );
         console.error( err );
         Modal.draw();
       } );
