@@ -27,6 +27,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     create: 'create',
     query: 'search',
 
+    getStarted: 'Watch intro',
     connectWallet: 'Connect a new crypto wallet',
     progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
     brightId: 'Verify with BrightID to receive VALUE basic income.',
@@ -519,6 +520,21 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     }
   }
 
+  function getStarted() {
+    return V.cN( {
+      t: 'li',
+      s: {
+        getstarted: {
+          background: 'rgb(255,112,148)',
+          color: 'white',
+          // border: '2px solid blue',
+        }
+      },
+      c: 'pill getstarted flex justify-center items-center rounded-full cursor-pointer no-txt-select whitespace-no-wrap',
+      h: getString( ui.getStarted )
+    } );
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -536,6 +552,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     formSearchFilter: formSearchFilter,
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,
+    getStarted: getStarted
   };
 
 } )();
