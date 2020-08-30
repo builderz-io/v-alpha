@@ -162,18 +162,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        title: 'Places',
-        path: '/market/places',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'place',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        }
-      },
-      {
         title: 'Jobs',
         path: '/market/jobs',
         use: {
@@ -198,24 +186,36 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        title: 'Events',
-        path: '/market/events',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'event',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        }
-      },
-      {
         title: 'Crowdfunding',
         path: '/pools',
         use: {
           button: 'plus search',
           form: 'new entity',
           role: 'pool',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Places',
+        path: '/market/places',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'place',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Events',
+        path: '/market/events',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'event',
         },
         draw: function( path ) {
           Marketplace.draw( path );

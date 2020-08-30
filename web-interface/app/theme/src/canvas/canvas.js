@@ -294,10 +294,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   function setNavStates() {
     if( !V.getState( 'serviceNav' ) ) {
       Chat.launch(); // sets navItem & sets socket.on
-      Data.launch(); // sets navItem
       Marketplace.launch(); // sets navItem
       Media.launch(); // sets navItem
-      User.launch(); // sets navItem
+      Data.launch(); // sets navItem
+      User.launch(); // sets user navItems (transfer, settings ...)
     }
 
     if ( V.getSetting( 'demoContent' ) ) {
@@ -315,9 +315,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Haze.launch(); // sets node
       Feature.launch(); // sets node
       Header.launch(); // sets nodes
-      Button.launch(); // sets nodes: hidden buttons
       Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
+      Button.launch(); // sets nodes: hidden buttons
     }
   }
 
