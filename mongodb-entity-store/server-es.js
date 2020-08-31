@@ -96,6 +96,8 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get transaction', handleTransaction.findTransaction );
 
+  client.on( 'set managed transaction', handleTransaction.managedTransaction );
+
   client.on( 'set transaction admin notification', handleTransaction.adminNotify );
 
   client.on( 'user is typing', function( callback ) {

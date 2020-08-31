@@ -6,6 +6,11 @@ var entitySchema = mongoose.Schema( {
   path: String,
   private: {
     uPhrase: String,
+    evmCredentials: {
+      address: String,
+      privateKey: String,
+      issuer: String
+    }
   },
   profile: {
     fullId: String, // name + tag, e.g. 'Jane Wood #2121'
@@ -39,7 +44,7 @@ var entitySchema = mongoose.Schema( {
   },
   evmCredentials: {
     address: String,
-    privateKey: String,
+    issuer: String
   },
   symbolCredentials: {
     rawAddress: String,

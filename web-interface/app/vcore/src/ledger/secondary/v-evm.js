@@ -580,7 +580,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
     const feeAmount = totalFee - contribution;
-    const gross = amount + feeAmount + contribution;
+    const gross = Math.round( ( amount + feeAmount + contribution ) * 100 ) / 100;
 
     const data = {
       net: amount,

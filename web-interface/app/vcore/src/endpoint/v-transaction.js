@@ -204,8 +204,13 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
-      return V.setData( txData.data[0], 'transaction', V.getSetting( choice ) );
+      // const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
+      if ( V.aA() ) {
+        return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
+      }
+      else {
+        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'transactionLedgerWeb2' ) );
+      }
     }
     else {
       return Promise.resolve( txData );

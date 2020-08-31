@@ -147,18 +147,19 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
 
-      if ( window.Web3Obj && !entityData.evmAddress ) {
-        const newEvmAccount = window.Web3Obj.eth.accounts.create();
+      if ( !entityData.evmAddress ) {
+        const web3 = new Web3( Web3.givenProvider );
+        const newEvmAccount = web3.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
+        entityData.evmIssuer = 'VDID';
       }
       else {
-        entityData.evmPrivateKey = undefined;
-        entityData.evmReceivingAddress = undefined;
+        entityData.evmIssuer = 'SELF';
       }
 
-      if ( V.aA() && ['skill', 'job'].includes( entityData.role ) ) {
-        Object.assign( entityData, { evmReceivingAddress: V.aA() } );
+      if ( ['skill', 'job'].includes( entityData.role ) ) {
+        Object.assign( entityData, { evmReceivingAddress: V.aE().evmCredentials.address } );
       }
 
       await V.getContractState().then( res => {
@@ -201,6 +202,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       path: path,
       private: {
         uPhrase: uPhrase,
+        evmCredentials: {
+          address: entityData.evmAddress,
+          privateKey: entityData.evmPrivateKey,
+          issuer: entityData.evmIssuer,
+        }
       },
       profile: {
         fullId: fullId,
@@ -231,7 +237,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       },
       evmCredentials: {
         address: entityData.evmAddress,
-        privateKey: entityData.evmPrivateKey
+        issuer: entityData.evmIssuer,
       },
       receivingAddresses: {
         evm: entityData.evmReceivingAddress

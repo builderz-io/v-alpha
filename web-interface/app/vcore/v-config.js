@@ -12,14 +12,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    // socketHost: 'http://localhost',
-    // socketPort: 6023,
-    socketHost: 'https://buildersmongo.valueinstrument.org', // cocooonmongo // omit trailing slash
-    socketPort: 443,
+    socketHost: 'http://localhost',
+    socketPort: 6023,
+    // socketHost: 'https://buildersmongo.valueinstrument.org', // cocooonmongo // omit trailing slash
+    // socketPort: 443,
 
     useBuilds: false,
 
-    sendLogsToServer: true,
+    sendLogsToServer: false,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 20, // in sec
@@ -40,7 +40,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
     appVersion: 'v2 0.8.0',
-    entityDocVersion: 'v0.20 - valueinstrument.org',
+    entityDocVersion: 'v0.21 - valueinstrument.org',
 
   };
 

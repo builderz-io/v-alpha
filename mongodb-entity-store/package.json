@@ -18,6 +18,7 @@
   "homepage": "https://github.com/valueinstrument/v-alpha-2#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
     "mongoose": "^5.9.1",
     "node-telegram-bot-api": "^0.50.0",
