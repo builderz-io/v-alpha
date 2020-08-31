@@ -121,7 +121,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
     const tL = V.getSetting( 'transactionLedger' );
 
-    if ( tL == 'EVM' && V.aA() ) {
+    if ( tL == 'EVM' /* && V.aA() */ ) {
       const rD = recipientData.data[0];
 
       rD.evmCredentials ? rD.evmCredentials.address ?
@@ -154,7 +154,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       endpoint: 'transaction',
       status: 'transaction cast',
       data: [{
-        date: new Date(),
+        date: ( new Date() ).toString(),
         amount: amount,
         feeAmount: feeAmount,
         contribution: contribution,
@@ -162,15 +162,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         currency: currency,
         command: command,
         initiator: initiator.fullId,
-        initiatorAddress: V.aA(),
+        initiatorAddress: V.aA() || V.aE().evmCredentials.address,
         sender: initiator.fullId, // currently the same as initiator
-        senderAddress: V.aA(), // currently the same as initiator
+        senderAddress: V.aA() || V.aE().evmCredentials.address, // currently the same as initiator
         recipient: recipient,
         recipientAddress: recipientAddress,
         reference: reference || 'no reference given',
         timeSecondsUNIX: timeSecondsUNIX,
         origMessage: data,
-        signature: signature
+        signature: signature,
+
+        // added for compatibility with accountCard
+        fromEntity: initiator.fullId,
+        toEntity: recipient,
+        title: recipient,
+        txType: 'out'
       }]
     };
 
@@ -186,6 +192,23 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return Number( parseInt( item ) == item );
     } )
       .reduce( function( acc, val ) { return Number( acc ) + Number( val ) }, 0 );
+  }
+
+  async function setNewTxNode( txSummary, id ) {
+    let $cardContent;
+    if ( txSummary.blockNumber ) {
+      const filteredAndEnhanced = await V.castTransfers( [ txSummary ], V.aA() || V.aE().evmCredentials.address );
+      $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
+    }
+    else {
+      $cardContent = AccountComponents.accountCard( txSummary );
+    }
+    const $card = CanvasComponents.card( $cardContent );
+
+    const $ph = V.getNode( '#' + id );
+    $ph ? V.setNode(  $ph, 'clear' ) : null;
+    V.setNode(  'modal', 'clear' );
+    V.setNode( 'list', $card, 'prepend' );
   }
 
   /* ================== public methods ================== */
@@ -217,16 +240,57 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function drawHashConfirmation( hash ) {
+    Modal.draw( 'transaction sent' );
+    if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+      const $ph = AccountComponents.accountPlaceholderCard();
+      const $card = CanvasComponents.card( $ph, undefined, 'phS' + hash.substr( 3, 6 ) + 'E' );
+      V.setNode( 'list', $card, 'prepend' );
+    }
+  }
+
+  function drawTxConfirmation( receipt ) {
+    if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
+      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
+        if ( receipt.events ) {
+
+          /**
+           * when browser wallet is used, we get an events Object in receipt
+           * and use the TransferSummary
+           */
+
+          setNewTxNode( receipt.events.TransferSummary, 'phS' + receipt.transactionHash.substr( 3, 6 ) + 'E' );
+        }
+        else {
+
+          /**
+           * when a managed wallet is used, we DON'T get the events Object in receipt
+           * and use the transaction data from the state
+           */
+
+          const tx = V.getState( 'active' ).transaction.data[0];
+
+          setNewTxNode( tx, 'phS' + String( tx.timeSecondsUNIX ).substr( 3, 6 ) + 'E' );
+
+        }
+      }
+    }
+  }
+
   /* ====================== export ====================== */
 
   V.getTransaction = getTransaction;
   V.setTransactionConfirmation = setTransactionConfirmation;
   V.setTransaction = setTransaction;
+  V.drawHashConfirmation = drawHashConfirmation;
+  V.drawTxConfirmation = drawTxConfirmation;
 
   return {
     getTransaction: getTransaction,
     setTransactionConfirmation: setTransactionConfirmation,
-    setTransaction: setTransaction
+    setTransaction: setTransaction,
+    drawHashConfirmation: drawHashConfirmation,
+    drawTxConfirmation: drawTxConfirmation
   };
 
 } )();

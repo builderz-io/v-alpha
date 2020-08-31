@@ -223,11 +223,11 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             [ getString( ui.to ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag, handleProfileDraw ],
           txData.blockDate ? [ getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
           txData.blockDate ? [ getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
-          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date ],
+          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date.substr( 4, 11 ) + ' ' + txData.date.substr( 15, 6 ) ],
           [ getString( ui.amount ), txData.amount ],
-          txData.txType == 'out' ? [ getString( ui.fees ), txData.feesBurned ] : [ getString( ui.fees ), '0' ],
+          txData.txType == 'out' ? [ getString( ui.fees ), txData.feeAmount ] : [ getString( ui.fees ), '0' ],
           txData.txType == 'out' ?  [ getString( ui.contr ), txData.contribution ] : [ getString( ui.contr ), '0' ],
-          [ getString( ui.payout ), txData.payout ],
+          txData.payout ? [ getString( ui.payout ), txData.payout ] : undefined,
         ].filter( index => { return Array.isArray( index ) } ).map( row => {
           return V.cN( {
             t: 'tr',
@@ -274,10 +274,11 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'relative animated-background',
       y: {
-        height: '20px',
-        width: '200px',
-        top: '25px',
-        left: '8px'
+        'height': '20px',
+        'width': '200px',
+        'top': '25px',
+        'left': '8px',
+        'border-radius': '4px'
       },
       // h: {
       //   t: 'h2',

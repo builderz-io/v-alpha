@@ -186,7 +186,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       $btn.innerHTML = getString( ui.confInWallet );
     }
     else {
-      $btn.innerHTML = getString( ui.submitted );
+      // $btn.innerHTML = getString( ui.submitted );
+      Modal.draw( 'transaction sent' );
+      V.drawHashConfirmation( String( V.getState( 'active' ).transaction.data[0].timeSecondsUNIX ) );
     }
 
     const aTx = V.getState( 'active' ).transaction;
@@ -198,24 +200,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
-          if ( !V.aA() ) {
-            Modal.draw( 'transaction successful' );
-            Account.drawHeaderBalance();
-          }
-          else {
-            adminNotify( 'successfully' );
-          }
+          V.drawTxConfirmation( res.data[0] );
+          Account.drawHeaderBalance();
+          adminNotify( 'successfully' );
         }
         else {
-          adminNotify( 'unsuccessfully' );
           Modal.draw( 'error' );
           console.log( res );
+          adminNotify( 'unsuccessfully' );
         }
       } )
       .catch( err => {
-        adminNotify( 'unsuccessfully' );
         console.error( err );
         Modal.draw();
+        adminNotify( 'unsuccessfully' );
       } );
   }
 

@@ -168,6 +168,10 @@ exports.managedTransaction = async function( req, res ) {
 
   const amount = toBaseUnit( String( req.txTotal ), 18, web3.utils.BN );
 
+  const rA = getRecipient.receivingAddresses.evm;
+  const eA = getRecipient.evmCredentials.address;
+  const recipient = rA && rA != eA ? rA : eA;
+
   const rawTransaction = {
     from: getSender.evmCredentials.address,
     nonce: web3.utils.toHex( txCount ),
@@ -175,7 +179,7 @@ exports.managedTransaction = async function( req, res ) {
     gasLimit: web3.utils.toHex( 210000 ),
     to: contractAddress,
     value: '0x0',
-    data: contract.methods.transfer( getRecipient.evmCredentials.address, amount ).encodeABI(),
+    data: contract.methods.transfer( recipient, amount ).encodeABI(),
   };
 
   const transaction = new Tx( rawTransaction, { chain: chain } );
@@ -185,11 +189,7 @@ exports.managedTransaction = async function( req, res ) {
   web3.eth.sendSignedTransaction( '0x' + transaction.serialize().toString( 'hex' ) )
     .once( 'transactionHash', function( hash ) {
       console.log( 'Managed transaction triggered. Hash: ' + hash );
-      res( {
-        success: true,
-        status: 'transaction transmitted using managed private key',
-        data: [ hash ]
-      } );
+      // todo emit hash
     } )
     .on( 'error', function( error ) {
       console.log( 'Managed Transaction Error: ' + JSON.stringify( error ) );
@@ -204,6 +204,11 @@ exports.managedTransaction = async function( req, res ) {
     } )
     .then( function( receipt ) {
       console.log( 'Managed Transaction Success' /* + JSON.stringify( receipt ) */ );
+      res( {
+        success: true,
+        status: 'transaction transmitted using managed private key',
+        data: [ receipt ]
+      } );
     } );
 
 };

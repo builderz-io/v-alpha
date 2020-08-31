@@ -63,11 +63,11 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'transaction sent' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'txSent' ) );
-      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 2500 );
+      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 3500 );
     }
     else if ( which == 'transaction successful' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'txSuccess' ) );
-      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 2500 );
+      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 3500 );
     }
     else if ( which == '404' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );

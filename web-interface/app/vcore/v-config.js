@@ -39,8 +39,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
-    appVersion: 'v2 0.8.0',
-    entityDocVersion: 'v0.21 - valueinstrument.org',
+    appVersion: 'v2 0.8.5',
+    entityDocVersion: 'v0.3 - valueinstrument.org',
 
   };
 
