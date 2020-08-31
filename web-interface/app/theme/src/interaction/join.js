@@ -10,7 +10,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( which ) {
-    if ( window.Web3Obj && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
+    if ( V.getState( 'browserWallet' ) && V.getSetting( 'transactionLedger' ) == 'EVM' ) { // web3 join
       if ( which == 'initialize join' ) {
         which = 'initialize web3 join';
       }

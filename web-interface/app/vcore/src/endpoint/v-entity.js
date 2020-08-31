@@ -148,8 +148,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
 
       if ( !entityData.evmAddress ) {
-        const web3 = new Web3( Web3.givenProvider );
-        const newEvmAccount = web3.eth.accounts.create();
+        const newEvmAccount = window.Web3Obj.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
         entityData.evmIssuer = 'VDID';
@@ -386,7 +385,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     };
 
-    if ( ['EVM', 'Symbol'].includes( tL ) && V.aA() && V.aE() ) {
+    if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.aA() */ ) {
 
       const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
 

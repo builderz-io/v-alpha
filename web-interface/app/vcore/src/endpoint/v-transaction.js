@@ -193,7 +193,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   async function getTransaction(
     which = V.aE().fullId // for MongoDB
   ) {
-    const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
+    const choice = V.aA() ? 'transactionLedger' : 'transactionLedger'; // 'transactionLedgerWeb2';
     return V.getData( which, 'transaction', V.getSetting( choice ) );
   }
 

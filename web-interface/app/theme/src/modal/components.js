@@ -19,6 +19,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     welcome: 'Welcome',
     connectedAddress: 'Address connected',
     confInWallet: 'Confirm in wallet ... ',
+    submitted: 'submitted ...',
     enableWallet: 'Enable a crypto wallet in your browser, for example',
     getMetaMask: 'Get MetaMask',
     signTx: 'Sign Transaction',
@@ -178,11 +179,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     e.target.removeEventListener( 'click', handleTransaction, false );
 
+    const $btn = V.getNode( '#sign-transaction' );
+    $btn.style.background = 'white';
+    $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
     if ( V.aA() ) {
-      const $btn = V.getNode( '#sign-transaction' );
-      $btn.style.background = 'white';
-      $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
       $btn.innerHTML = getString( ui.confInWallet );
+    }
+    else {
+      $btn.innerHTML = getString( ui.submitted );
     }
 
     const aTx = V.getState( 'active' ).transaction;

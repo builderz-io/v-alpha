@@ -197,6 +197,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // Modern dapp browsers
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
+      V.setState( 'browserWallet', true );
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
@@ -211,10 +212,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
       // console.log( 'local network may be there' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
-      return {
-        success: false,
-        status: 'web3 provider not found',
-      };
+      provider = new Web3.providers.HttpProvider(  V.getNetwork().rpc );
+      V.setState( 'browserWallet', false );
+      // return {
+      //   success: false,
+      //   status: 'web3 provider not found',
+      // };
     }
 
     window.Web3Obj = new Web3( provider );
@@ -409,7 +412,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.aA(),
+    which = V.aA() || V.aE().evmCredentials.address,
     data = { fromBlock: 0, toBlock: 'latest' },
     whichEvent = 'TransferSummary'
   ) {
