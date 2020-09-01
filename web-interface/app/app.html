@@ -43,6 +43,24 @@
     const preloaderTimeout = setTimeout(preloader, 1500);
     function preloader() {
       document.getElementsByTagName('body')[0].innerHTML = `<style>
+      body {
+        background: rgba(211,232,235,1);
+      }
+      .modal {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0,0,0,0.8)
+      }
+      .modal__content {
+        background: white;
+        width: 75vw;
+        max-width: 500px;
+        height: 46vh;
+        margin: 14vh auto;
+        padding: 0.5rem;
+      }
       .preloader {
         display:block;
         margin: 0 auto;
@@ -83,10 +101,17 @@
         }
       }
       </style>
-      <div class="preloader">
-        <div class="preloader__ring"></div>
-        <loader class="preloader__text">Loading VCore<loader>
-      </div>`
+      <modal class="modal">
+        <div class="modal__content">
+          <div class="preloader">
+            <div class="preloader__ring"></div>
+            <loader class="preloader__text">Loading VCore<loader>
+          </div>
+        </div>
+      </modal>
+
+      `
+
 
     }
 
