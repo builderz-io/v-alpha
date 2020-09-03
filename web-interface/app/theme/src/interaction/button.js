@@ -137,6 +137,9 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     $send.addEventListener( 'click', handleSend );
 
     // V.setNode( DOM.$backUL, $back );
+
+    setTimeout( () => { V.setNode( 'entity-nav > ul', InteractionComponents.getStarted(), 'prepend' ) }, 2000 );
+
     V.setNode( 'interactions > ul', [ /* $close, */ $plus, $filter, $search, $query, $set, $send ] );
   }
 

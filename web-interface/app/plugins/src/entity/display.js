@@ -104,6 +104,19 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     if ( data.success ) {
 
+      /**
+       * removes "Get Started"/"Watch intro" button, to exclude it
+       * from "last position" update. This is also cool, so the user only
+       * sees it in the beginning of their session
+       */
+
+      V.setNode( '#get-started', 'clear' );
+
+      /**
+       * sets up the profile data for use in components
+       *
+       */
+
       UserComponents.setData( {
         entity: data.data[0].entity,
         editable: false

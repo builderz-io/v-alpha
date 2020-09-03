@@ -562,7 +562,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function entityListCard( entity ) {
     const uPhrase = entity.private.uPhrase;
-    const privateKey = entity.evmCredentials ? entity.evmCredentials.privateKey ? entity.evmCredentials.privateKey : '' : '';
+    const privateKey = entity.private.evmCredentials ? entity.private.evmCredentials.privateKey ? entity.private.evmCredentials.privateKey : '' : '';
     const $innerContent = V.cN( {
       t: 'div',
       h: [

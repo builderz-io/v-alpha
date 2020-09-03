@@ -165,8 +165,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $entityNavUl, $pill );
       }
 
-      // V.setNode( $entityNavUl, InteractionComponents.getStarted() );
-
       V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
 
       V.setNode( 'entity-nav', '' );

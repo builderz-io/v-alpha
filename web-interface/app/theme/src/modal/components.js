@@ -38,7 +38,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     loggedOut: 'You are logged out',
     txSent: '✅ Sent to network',
     txSuccess: '✅ Transaction successful',
-    error: 'An error occured',
+    error: 'An error occured. Maybe the wallet is locked?',
     wait: 'Please wait... requesting data',
     walletLocked: 'Could not unlock wallet',
     noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
