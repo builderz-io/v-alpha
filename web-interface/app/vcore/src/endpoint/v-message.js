@@ -7,6 +7,8 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const blackList = ['porn', 'sex', 'xxx', 'bit.ly', 'goo.gl', 'tinyurl', 'ow.ly', 'is.gd', 'buff.ly', 'adf.ly', 'bit.do', 'mcaf.ee', 'su.pr'];
+
   const triggers = {
     // NOTE: Adding request and transfer commands requires updating the backend language files also
 
@@ -58,8 +60,14 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
     const text = sanitize( message );
 
+    const spam = blackList.some( v => {return text.toLowerCase().includes( v )} );
+
     if ( text.indexOf( 'vx' ) > -1 ) {
       return Promise.resolve( { success: false, endpoint: 'message', status: 'unique phrase entered?' } );
+    }
+
+    else if ( spam ) {
+      return Promise.resolve( { success: false, endpoint: 'message', status: 'sorry, message content may contain spam' } );
     }
 
     else if ( text.match( /[a-zA-Z0-9+]/ ) === null ) {

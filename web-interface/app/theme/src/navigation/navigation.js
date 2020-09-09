@@ -458,8 +458,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     view( presenter( data ) );
   }
 
+  function drawReset() {
+    reset();
+  }
+
   return {
-    draw: draw
+    draw: draw,
+    drawReset: drawReset,
   };
 
 } )();
