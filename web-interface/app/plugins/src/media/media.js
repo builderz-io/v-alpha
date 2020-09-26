@@ -90,7 +90,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           role: 'media',
         },
         draw: function() {
-          Media.draw( '/media', { feature: 'https://youtu.be/iGBfYtmYbtM' } );
+          Media.draw( '/media', { feature: 'https://youtu.be/kJbto4TISKA' } );
         }
       },
       {
