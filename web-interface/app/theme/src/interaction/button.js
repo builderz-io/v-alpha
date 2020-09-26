@@ -107,7 +107,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDrawPlusForm() {
-    Page.draw( { position: 'closed', reset: false } );
+    Page.draw( { position: 'closed', reset: false, navReset: false } );
     Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
   }
 

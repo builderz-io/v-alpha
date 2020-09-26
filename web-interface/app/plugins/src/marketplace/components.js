@@ -17,7 +17,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function handleDrawPlusForm() {
-    Page.draw( { position: 'closed', reset: false } );
+    Page.draw( { position: 'closed', reset: false, navReset: false } );
     Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
   }
 

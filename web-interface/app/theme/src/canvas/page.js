@@ -116,8 +116,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( pageData.listings ) {
       V.setNode( DOM.$listings, pageData.listings );
     }
-    pageData.position ? slide( pageData.position, pageData.scroll, pageData.haze ) : null;
-    pageData.pos ? slide( pageData.pos, pageData.scroll, pageData.haze ) : null;
+    pageData.position || pageData.pos ? slide( pageData.position || pageData.pos, pageData.scroll, pageData.haze, pageData.navReset ) : null;
   }
 
   function getPageHeight( pagePos ) {
@@ -145,7 +144,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( 'handle', { height: h + 'px' } );
   }
 
-  function slide( pagePos, pageScroll, showHaze ) {
+  function slide( pagePos, pageScroll, showHaze, navReset ) {
     const $list = V.getNode( 'list' );
     const $page = V.getNode( 'page' );
     const p = V.getState( 'page' );
@@ -188,7 +187,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       handlebar( 5, 35 );
       $page.classList.add( 'pill-shadow' );
       Logo.draw( pagePos );
-      Navigation.drawReset();
+      if ( navReset == undefined || navReset != false ) {
+        Navigation.drawReset();
+      }
     }
     else if ( pagePos == 'peek' ) {
       Haze.draw( { fade: 'out' } );
