@@ -89,9 +89,21 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const $topcontent = ChatComponents.topcontent();
     const $list = CanvasComponents.list( 'narrow' );
 
+    let previousSender;
+
     if ( viewData.success ) {
       viewData.data[0].messages.forEach( cardData => {
-        viewData.data[0].aE && viewData.data[0].aE.fullId == cardData.sender ? cardData.sender = 'Me' : null;
+
+        previousSender == cardData.sender ?
+          cardData.hideSender = true : null;
+
+        previousSender = cardData.sender;
+
+        if ( viewData.data[0].aE ) {
+          viewData.data[0].aE.fullId == cardData.sender ?
+            cardData.sender = 'Me' : null;
+        }
+
         const $card = ChatComponents.message( cardData );
         V.setNode( $list, $card );
       } );

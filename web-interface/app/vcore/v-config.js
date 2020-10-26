@@ -19,7 +19,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     useBuilds: false,
 
-    sendLogsToServer: true,
+    sendLogsToServer: false,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec

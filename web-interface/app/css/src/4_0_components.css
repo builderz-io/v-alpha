@@ -16,6 +16,7 @@ list a {
   border: 1px solid rgba(var(--brandPrimary), 1);
 }
 .circle-2 {
+  box-shadow: 0px 0px 1px rgba(0,0,0,0.4);
 	width: 3.5rem;
 	height: 3.5rem
 }
