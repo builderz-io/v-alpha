@@ -96,7 +96,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'all', { fade: 'out' } );
       }
 
-      if ( viewData.whichPath && viewData.whichPath != '/market/all' ) {
+      if ( viewData.whichPath && viewData.whichPath != '/network/all' ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
@@ -210,7 +210,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', [
       {
         title: 'Network',
-        path: '/market/all',
+        path: '/network/all',
         use: {
           button: 'search',
         },
@@ -231,7 +231,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         // receivingAddress being set to owner during entity creation
         title: 'Businesses',
-        path: '/market/businesses',
+        path: '/network/businesses',
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -244,7 +244,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         // receivingAddress being set to owner during entity creation
         title: 'Anchor Institutions',
-        path: '/market/institutions',
+        path: '/network/institutions',
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -257,7 +257,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         // receivingAddress being set to owner during entity creation
         title: 'Skills',
-        path: '/market/skills',
+        path: '/network/skills',
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -270,7 +270,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         // receivingAddress being set to owner during entity creation
         title: 'Tasks',
-        path: '/market/tasks',
+        path: '/network/tasks',
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -294,7 +294,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         title: 'Places',
-        path: '/market/places',
+        path: '/network/places',
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -306,7 +306,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         title: 'Events',
-        path: '/market/events',
+        path: '/network/events',
         use: {
           button: 'plus search',
           form: 'new entity',
