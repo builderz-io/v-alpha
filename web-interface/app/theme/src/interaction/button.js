@@ -102,7 +102,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   // }
 
   function handleDrawSearchForm() {
-    Page.draw( { position: 'closed', reset: false } );
+    Page.draw( { position: 'closed', reset: false, navReset: false } );
     Form.draw( 'search' );
   }
 
