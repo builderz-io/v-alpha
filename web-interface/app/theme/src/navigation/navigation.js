@@ -342,7 +342,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }
 
     reset();
-    Page.draw( { position: 'closed', reset: false } );
+    Page.draw( { position: 'closed', reset: false, navReset: false } );
   }
 
   function handleCloseForms() {
@@ -353,7 +353,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function reset() {
-
     const menuStateObj = V.getState( 'header' );
     const width = window.innerWidth;
 

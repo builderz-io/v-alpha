@@ -506,7 +506,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     } ).map( async tx => {
       const txData = {};
-      console.log( tx );
+      // console.log( tx );
       txData.fromAddress = tx.returnValues.from.toLowerCase();
       txData.toAddress = tx.returnValues.to.toLowerCase();
 

@@ -9,9 +9,21 @@ const VTranslations = // eslint-disable-line no-unused-vars
       en_US: 'Marketplace',
       de_DE: 'Marktplatz'
     },
+    Economy: {
+      en_US: 'Economy',
+      de_DE: 'Economy'
+    },
+    Network: {
+      en_US: 'Network',
+      de_DE: 'Netzwerk'
+    },
     Jobs: {
       en_US: 'Jobs',
       de_DE: 'Jobs'
+    },
+    Tasks: {
+      en_US: 'Tasks',
+      de_DE: 'Tasks'
     },
     Skills: {
       en_US: 'Skills',
@@ -56,8 +68,16 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: 'titel'
     },
     'tag': {
-      en_US: 'tag',
-      de_DE: 'tag'
+      en_US: 'title tag',
+      de_DE: 'Titel-Tag'
+    },
+    'ownerName': {
+      en_US: 'Holder',
+      de_DE: 'Eigentümer'
+    },
+    'ownerTag': {
+      en_US: 'Holder Tag',
+      de_DE: 'Eigentümer-Tag'
     },
     'role': {
       en_US: 'role',
@@ -206,6 +226,9 @@ const VTranslations = // eslint-disable-line no-unused-vars
 
   },
   'evm': {
+
+  },
+  'launch': {
 
   }
 

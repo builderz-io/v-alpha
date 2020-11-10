@@ -134,6 +134,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         UserComponents.thumbnailCard(),
+        UserComponents.roleCard(),
         UserComponents.entityCard(),
         UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.financialCard(),

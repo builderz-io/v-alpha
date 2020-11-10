@@ -11,6 +11,7 @@ const TxDB = require( '../models/v-transaction-model' );
 
 async function findEntity( query ) {
   return new Promise( resolve => {
+    // EntityDB.find( query ).sort( { $natural: -1 } ).limit( 35 ).exec( ( err, entities ) => {
     EntityDB.find( query ).exec( ( err, entities ) => {
       if ( err ) {
         resolve( {
@@ -85,7 +86,8 @@ exports.findByQuery = async function( req, res ) {
       req.role == 'all' ? {} : { 'profile.role': req.role },
       { $or: [
         { 'profile.title': regex },
-        { 'properties.baseLocation': regex }
+        { 'properties.baseLocation': regex },
+        { 'properties.description': regex }
       ] }
     ]
   };

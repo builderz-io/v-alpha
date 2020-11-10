@@ -104,6 +104,30 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castPopup( feature ) {
+    return V.cN( {
+      t: 'div',
+      c: '',
+      h: [
+        {
+          t: 'p',
+          c: 'font-bold txt-center',
+          h: feature.profile.fullId
+        },
+        MarketplaceComponents.castCircle( {
+          thumbnail: feature.thumbnail,
+          profile: { title: feature.profile.title },
+          path: feature.path
+        } ),
+        {
+          t: 'p',
+          c: 'fs-s capitalize txt-center',
+          h: feature.profile.role
+        },
+      ]
+    } );
+  }
+
   async function launch() {
     await V.setScript( '/plugins/dependencies/leaflet.js' );
     console.log( '*** leaflet library loaded ***' );
@@ -151,30 +175,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function castPopup( feature ) {
-    return V.cN( {
-      t: 'div',
-      c: '',
-      h: [
-        {
-          t: 'p',
-          c: 'font-bold txt-center',
-          h: feature.profile.fullId
-        },
-        MarketplaceComponents.castCircle( {
-          thumbnail: feature.thumbnail,
-          profile: { title: feature.profile.title },
-          path: feature.path
-        } ),
-        {
-          t: 'p',
-          c: 'fs-s capitalize txt-center',
-          h: feature.profile.role
-        },
-      ]
-    } );
-  }
-
   /* ============ public methods and exports ============ */
 
   function draw( features ) {
@@ -184,7 +184,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    launch: launch,
     draw: draw,
+    setMap: setMap,
   };
 
 } )();

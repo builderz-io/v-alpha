@@ -504,14 +504,14 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     const aE = V.aE();
     const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
     // console.log( lang, whichContext, which );
-    if ( lang != 'en_US' ) {
-      const exists = VTranslations[whichContext][which] ?
-        VTranslations[whichContext][which][lang] == '' ? undefined : VTranslations[whichContext][which][lang] : undefined;
-      return exists ? exists : which;
-    }
-    else {
-      return which;
-    }
+    // if ( lang != 'en_US' ) {
+    const exists = VTranslations[whichContext][which] ?
+      VTranslations[whichContext][which][lang] != '' ? VTranslations[whichContext][which][lang] : undefined : undefined;
+    return exists ? exists : which;
+    // }
+    // else {
+    //   return which;
+    // }
   }
 
   function i18n( which, whichContext, whichDescr ) {

@@ -184,7 +184,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   function preview( whichPath, search ) {
     const $slider = CanvasComponents.slider();
-    for ( let i = 0; i < 20; i++ ) {
+    for ( let i = 0; i < 12; i++ ) {
       const $ph = MarketplaceComponents.entitiesPlaceholder();
       V.setNode( $slider, $ph );
     }
@@ -209,7 +209,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'serviceNav', [
       {
-        title: 'Marketplace',
+        title: 'Network',
         path: '/market/all',
         use: {
           button: 'search',
@@ -219,24 +219,62 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        title: 'Jobs',
-        path: '/market/jobs',
+        title: 'People',
+        path: '/people',
         use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'job',
+          button: 'search',
         },
         draw: function( path ) {
           Marketplace.draw( path );
         }
       },
       {
+        // receivingAddress being set to owner during entity creation
+        title: 'Businesses',
+        path: '/market/businesses',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'business',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        // receivingAddress being set to owner during entity creation
+        title: 'Anchor Institutions',
+        path: '/market/institutions',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'institution',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        // receivingAddress being set to owner during entity creation
         title: 'Skills',
         path: '/market/skills',
         use: {
           button: 'plus search',
           form: 'new entity',
           role: 'skill',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        // receivingAddress being set to owner during entity creation
+        title: 'Tasks',
+        path: '/market/tasks',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'task',
         },
         draw: function( path ) {
           Marketplace.draw( path );

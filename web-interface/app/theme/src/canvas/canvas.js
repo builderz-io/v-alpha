@@ -209,7 +209,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
-        e.preventDefault();
+        // e.preventDefault();
         handleKeyboard( ['sign-transaction', 'plus', 'set', 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
