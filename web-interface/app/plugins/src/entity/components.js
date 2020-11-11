@@ -200,21 +200,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
         const fullId = V.getState( 'active' ).lastViewed; // V.aE().fullId;
-        const auth = V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' );
         const imageUpload = V.getState( 'imageUpload' );
         const tinyImageUpload = V.getState( 'tinyImageUpload' );
         Object.assign( imageUpload, { entity: fullId } );
         Object.assign( tinyImageUpload, { entity: fullId } );
-        V.setEntity( fullId, {
-          field: 'thumbnail',
-          data: imageUpload,
-          auth: auth
-        } ).then( () => {
-          V.setEntity( fullId, {
-            field: 'tinyImage',
-            data: tinyImageUpload,
-            auth: auth
-          } );
+        setField( 'thumbnail', imageUpload ).then( () => {
+          setField( 'tinyImage', tinyImageUpload );
           V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
           V.setNode( '#img-upload-profile__preview', '' );
           V.setNode( '#img-upload-profile__preview', V.cN( {
@@ -305,7 +296,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setField( field, data ) {
-    V.setEntity( V.getState( 'active' ).lastViewed /* V.aE().fullId */, {
+    return V.setEntity( V.getState( 'active' ).lastViewed /* V.aE().fullId */, {
       field: field,
       data: data,
       auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
