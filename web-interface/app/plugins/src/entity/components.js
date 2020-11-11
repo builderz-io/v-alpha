@@ -78,6 +78,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
+  function handleTitleClick( e ) {
+    User.draw( V.castPathOrId( e.target.innerHTML ) );
+  }
+
+  function handleBaseLocationFocus() {
+    DOM.location = this.value;
+  }
+
   function handleEntryFocus() {
     DOM.entry = this.value ? this.value : this.innerHTML;
     if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
@@ -101,6 +109,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       this.type = 'password';
     }
   }
+
+  /* ============ event handlers (edit entity) ========== */
 
   function handleEntry() {
     let str, entry;
@@ -151,10 +161,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function handleBaseLocationFocus() {
-    DOM.location = this.value;
-  }
-
   function handleBaseLocation() {
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
@@ -193,7 +199,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        const fullId = V.aE().fullId;
+        const fullId = V.getState( 'active' ).lastViewed; // V.aE().fullId;
         const auth = V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' );
         const imageUpload = V.getState( 'imageUpload' );
         const tinyImageUpload = V.getState( 'tinyImageUpload' );
@@ -299,7 +305,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setField( field, data ) {
-    V.setEntity( V.aE().fullId, {
+    V.setEntity( V.getState( 'active' ).lastViewed /* V.aE().fullId */, {
       field: field,
       data: data,
       auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
@@ -586,9 +592,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'h2',
-          c: 'pxy font-bold fs-l',
+          c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
+          k: handleTitleClick
         },
+        // {
+        //   t: 'p',
+        //   c: 'pxy',
+        //   h: entity.properties.description,
+        // },
         castUphraseNode( uPhrase ),
         castUphraseNode( privateKey )
       ],

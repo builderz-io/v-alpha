@@ -504,8 +504,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     else {
       Object.assign( data, { entity: whichEntity } );
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
-        V.setState( 'activeEntity', 'clear' );
-        V.setState( 'activeEntity', res.data[0] );
+
+        /* Only update state if activeEntity was edited, not a managed entity */
+
+        if ( V.getState( 'activeEntity' ).fullId == res.data[0].fullId ) {
+          V.setState( 'activeEntity', 'clear' );
+          V.setState( 'activeEntity', res.data[0] );
+        }
         return res;
       } );
     }
