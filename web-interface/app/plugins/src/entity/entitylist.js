@@ -20,19 +20,32 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
     const adminOf = V.aE().adminOf; // query.data[0].adminOf;
 
-    const entitiesAdmined = [];
-    const mapData = [];
+    let entitiesAdmined = [];
+    let mapData = [];
 
-    for ( let i = 0; i < adminOf.length; i++ ) {
-      const query = await V.getEntity( adminOf[i] );
-      entitiesAdmined.push( query );
-      mapData.push( {
-        type: 'Feature',
-        geometry: query.data[0].geometry,
-        profile: query.data[0].profile,
-        thumbnail: query.data[0].thumbnail,
-        path: query.data[0].path
-      } );
+    const cache = V.getCache( 'managedEntities' );
+    const now = Date.now();
+
+    if (
+      cache &&
+      ( now - cache.timestamp ) < ( V.getSetting( 'managedEntitiesCacheDuration' ) * 60 * 1000 )
+    ) {
+      entitiesAdmined = cache.data[0].e;
+      mapData = cache.data[0].m;
+    }
+    else {
+      for ( let i = 0; i < adminOf.length; i++ ) {
+        const query = await V.getEntity( adminOf[i] );
+        entitiesAdmined.push( query );
+        mapData.push( {
+          type: 'Feature',
+          geometry: query.data[0].geometry,
+          profile: query.data[0].profile,
+          thumbnail: query.data[0].thumbnail,
+          path: query.data[0].path
+        } );
+      }
+      V.setCache( 'managedEntities', [{ e: entitiesAdmined, m: mapData }] );
     }
 
     if ( entitiesAdmined[0] && entitiesAdmined[0].success ) {

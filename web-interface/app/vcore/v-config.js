@@ -28,6 +28,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     update3BoxEntityStore: false,
     drawMap: true,
     marketCacheDuration: 3, // in minutes
+    managedEntitiesCacheDuration: 5, // in minutes
 
     thumbnailWidth: 420, // Number in px
     thumbnailQuality: 0.85, // Number from 0 to 1

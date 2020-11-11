@@ -157,7 +157,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setEntity( entityData ).then( res => {
       if ( res.success ) {
         console.log( 'response: ', res );
-        V.setCache( 'all', 'clear' );
+        V.setCache( 'entire cache', 'clear' );
         setActiveEntityState( res );
       }
       else {
