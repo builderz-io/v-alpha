@@ -336,11 +336,22 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function resetOnClick( e ) {
     e.stopPropagation();
 
+    /* if a form is open, just close form first */
     if ( V.getNode( 'form' ) ) {
       handleCloseForms();
       return;
     }
 
+    /* if an entity is being edited, just return to entity list first */
+    if (
+      V.getState( 'active' ).path == '/me/entities' &&
+      V.getVisibility( '#pref-lang-edit' )
+    ) {
+      EntityList.draw( '/me/entities' );
+      return;
+    }
+
+    /* else reset navigation and page */
     reset();
     Page.draw( { position: 'closed', reset: false, navReset: false } );
   }

@@ -380,6 +380,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
         c: 'pxy',
+        i: 'pref-lang-edit',
         a: { title: 'preferredLangs', db: 'properties' },
         h: langs,
       } ) : {
