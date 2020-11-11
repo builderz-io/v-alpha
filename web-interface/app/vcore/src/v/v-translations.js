@@ -87,6 +87,10 @@ const VTranslations = // eslint-disable-line no-unused-vars
       en_US: 'Entity',
       de_DE: 'Konto'
     },
+    'Holder': {
+      en_US: 'Holder',
+      de_DE: 'Eigentümer'
+    },
     'base location': {
       en_US: 'base location',
       de_DE: 'Hauptstandort'
@@ -104,8 +108,12 @@ const VTranslations = // eslint-disable-line no-unused-vars
       de_DE: 'Standort'
     },
     'Description': {
-      en_US: 'Description',
+      en_US: 'Introduction',
       de_DE: 'Beschreibung'
+    },
+    'Questionnaire': {
+      en_US: 'Questionnaire',
+      de_DE: 'Fragebogen'
     },
     'Preferred Languages': {
       en_US: 'Preferred Languages',

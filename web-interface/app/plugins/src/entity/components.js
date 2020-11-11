@@ -59,6 +59,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     spent: 'Budget spent',
 
     description: 'Description',
+    questionnaire: 'Questionnaire',
+    shortened: '[ ... shortened ]',
     prefLang: 'Preferred Languages',
     lang: 'App Language',
     uPhrase: 'Entity Management Key',
@@ -69,7 +71,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     fin: 'Financial',
     social: 'Social',
     funding: 'Funding Status',
-    img: 'Image'
+    img: 'Image',
+    holder: 'Holder'
   };
 
   function getString( string, scope ) {
@@ -78,20 +81,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
-  function handleTitleClick( e ) {
+  function handleEditEntityClick( e ) {
     User.draw( V.castPathOrId( e.target.innerHTML ) );
+  }
+
+  function handleHolderClick( e ) {
+    const path = V.castPathOrId( e.target.innerHTML );
+    V.setState( 'active', { navItem: path } );
+    V.setBrowserHistory( path );
+    Profile.draw( path );
   }
 
   function handleBaseLocationFocus() {
     DOM.location = this.value;
-  }
-
-  function handleEntryFocus() {
-    DOM.entry = this.value ? this.value : this.innerHTML;
-    if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
-      this.innerHTML = '';
-      this.value = '';
-    }
   }
 
   function handleViewKeyFocus( e ) {
@@ -110,11 +112,21 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function handleEntryFocus() {
+    DOM.entry = this.value ? this.value : this.innerHTML;
+    console.log( 'focussed:', DOM.entry );
+    if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
+      this.innerHTML = '';
+      this.value = '';
+    }
+  }
+
   /* ============ event handlers (edit entity) ========== */
 
   function handleEntry() {
     let str, entry;
-    this.value ? str = this.value : str = this.innerHTML;
+    this.nodeName == 'TEXTAREA' ? str = this.value : str = this.innerHTML;
+
     str = V.stripHtml( str );
     const title = this.getAttribute( 'title' );
     const db = this.getAttribute( 'db' );
@@ -122,6 +134,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( str != DOM.entry ) {
       if ( str == '' ) {
         this.innerHTML = getString( ui.edit );
+        this.value = getString( ui.edit );
         setField( db + '.' + title, '' );
         return;
       }
@@ -143,8 +156,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       else if ( title == 'currentUTC' ) {
         entry = isNaN( str ) ? getString( ui.invalid ) : str;
       }
-      else if ( title == 'description' ) {
-        entry = str.length > 2000 ? getString( ui.invalid ) : str;
+      else if ( ['description', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'].includes( title ) ) {
+        const words = str.split( ' ' );
+        if ( words.length > 200 ) {
+          words.length = 200;
+          entry = words.join( ' ' ) + ' ' + getString( ui.shortened );
+        }
+        else {
+          entry = words.join( ' ' );
+        }
       }
       else {
         entry = str;
@@ -373,6 +393,48 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function questionnaireCard() {
+    const questions = V.getSetting( 'neQuestionnaire' );
+    const responses = entity.questionnaire;
+
+    if ( responses || editable ) {
+      const $innerContent = V.cN( {
+        t: 'div',
+        h: questions.map( question => {
+          const response = entity.questionnaire ? entity.questionnaire['q' + question.qid] || undefined : null;
+          return V.cN( {
+            t: 'div',
+            h: response || editable ? [
+              {
+                t: 'h3',
+                c: 'font-bold pxy',
+                h: question.q
+              },
+              editable ? {
+                t: 'textarea',
+                c: 'w-full pxy',
+                a: { title: 'q' + question.qid, db: 'questionnaire' },
+                e: {
+                  focus: handleEntryFocus,
+                  blur: handleEntry
+                },
+                h: response ? response : getString( ui.edit ),
+              } : {
+                t: 'div',
+                c: 'pxy',
+                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : 'not answered' ).iframes,
+              }
+            ] : ''
+          } );
+        } )
+      } );
+      return castCard( $innerContent, getString( ui.questionnaire ) );
+    }
+
+    return '';
+
+  }
+
   function preferredLangsCard() {
     const langs = entity.properties ? entity.properties.preferredLangs : undefined;
 
@@ -536,21 +598,36 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const $innerContent = castTableNode( titles, db, false, 'capitalize' );
 
     // get owner into view
-    let $ownerTable;
+    let $owner;
     if (
       entity.profile.title != entity.owners[0].ownerName &&
       entity.profile.tag != entity.owners[0].ownerTag
     ) {
-      entity.firstOwner = entity.owners[0];
-      const owners = ['ownerName', 'ownerTag'];
-      const db2 = 'firstOwner';
-      $ownerTable = castTableNode( owners, db2, false, 'capitalize' );
+      $owner = V.cN( {
+        t: 'table',
+        c: 'pxy w-full',
+        h: {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: getString( ui.holder )
+            },
+            {
+              t: 'td',
+              c: 'txt-right cursor-pointer',
+              h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
+              k: handleHolderClick
+            }
+          ]
+        }
+      } );
     }
     else {
-      $ownerTable = '';
+      $owner = '';
     }
     const $combined = V.cN( { t: 'div', c: 'w-full' } );
-    V.setNode( $combined, [$innerContent, $ownerTable] );
+    V.setNode( $combined, [$innerContent, $owner] );
 
     return castCard( $combined, getString( ui.entity ) );
   }
@@ -586,7 +663,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'h2',
           c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
-          k: handleTitleClick
+          k: handleEditEntityClick
         },
         // {
         //   t: 'p',
@@ -896,6 +973,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     castUphraseNode: castUphraseNode,
     topcontent: topcontent,
     descriptionCard: descriptionCard,
+    questionnaireCard: questionnaireCard,
     uPhraseCard: uPhraseCard,
     evmAddressCard: evmAddressCard,
     evmReceiverAddressCard: evmReceiverAddressCard,

@@ -210,7 +210,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
         // e.preventDefault();
-        handleKeyboard( ['sign-transaction', 'plus', 'set', 'name-new', 'query'] );
+        handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
@@ -239,6 +239,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      * Canvas view renders on initial page load, reload and history change
      *
      */
+
+    Chat.drawMessageForm( 'clear' );
 
     setNavStates(); // if !serviceNav
 
