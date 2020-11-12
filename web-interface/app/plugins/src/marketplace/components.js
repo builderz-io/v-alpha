@@ -16,6 +16,42 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     Profile.draw( path );
   }
 
+  function handleEditProfileDraw() {
+    User.draw( this );
+  }
+
+  function handlePopup( e ) {
+    const cache = V.getCache( 'all' );
+    if ( cache ) {
+      const entities = cache.data;
+      for ( let i = 0; i < entities.length; i++ ) {
+        if ( entities[i].path == this ) {
+          V.getNode( '.popup' ).style.opacity = 1;
+          V.setNode( '.popup-content', '' );
+          V.setNode( '.popup-content', V.cN( {
+            t: 'div',
+            h: [
+              castCircle( entities[i] ),
+              {
+                t: 'p',
+                c: 'pxy txt-center font-bold cursor-pointer',
+                h: entities[i].fullId,
+                k: handleProfileDraw.bind( entities[i].path )
+              },
+              {
+                t: 'p',
+                c: 'pxy cursor-pointer',
+                h: entities[i].properties.description ? entities[i].properties.description.substr( 0, 200 ) + ' ...' : '',
+              }
+            ]
+          } ) );
+          // V.getNode( '.popup-tip-container' ).style.left = ( e.target.getBoundingClientRect().left - 15 ) + 'px';
+          break;
+        }
+      }
+    }
+  }
+
   function handleDrawPlusForm() {
     Page.draw( { position: 'closed', reset: false, navReset: false } );
     Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
@@ -47,7 +83,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   /* ================  public components ================ */
 
-  function castCircle( circleData ) {
+  function castCircle( circleData, whichHandler ) {
     const backgr = castBackground( circleData );
     return V.cN( {
       t: 'div',
@@ -61,7 +97,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.profile.title )
       },
       e: {
-        click: handleProfileDraw.bind( circleData.path )
+        click: whichHandler == 'editable' ?
+          handleEditProfileDraw.bind( circleData.path ) :
+          whichHandler == 'popup' ?
+            handlePopup.bind( circleData.path ) :
+            handleProfileDraw.bind( circleData.path )
       }
     } );
   }
@@ -96,8 +136,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'pxy',
       h: {
         t: 'smallcard',
-        c: 'smallcard__container txt-center rounded bkg-white',
-        h: castCircle( cardData )
+        c: 'smallcard__container flex flex-wrap justify-center items-center',
+        h: [
+          castCircle( cardData, 'popup' ),
+        ]
       }
     } );
   }

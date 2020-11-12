@@ -87,6 +87,60 @@ list a {
     }
 }
 
+/* in the style of the leaflet.js popup */
+
+.popup {
+  width: 55%;
+  margin: 0 auto 12px;
+  opacity: 0;
+  transition: opacity 0.2s linear;
+  transform: translate3d(0px, 0px, 0px);
+}
+
+.popup-content-wrapper {
+    background: white;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+    padding: 1px;
+    border-radius: 12px;
+}
+
+.popup-content-close {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+}
+
+.popup-content {
+    margin: 13px 19px;
+}
+
+.popup-tip-container {
+    width: 40px;
+    height: 20px;
+    position: absolute;
+    left: 50%;
+    margin-left: -20px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.popup-tip {
+    background: white;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+    width: 17px;
+    height: 17px;
+    padding: 1px;
+    margin: -10px auto 0;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+
+
+
 
 
 .field__border {
@@ -241,6 +295,9 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
       left: var(--desktop-page-detach) !important;
       width: 495px !important;
       border-radius: 20px;
+    }
+    logo {
+      width: 495px !important;
     }
     feature {
       left: var(--desktop-page-detach);

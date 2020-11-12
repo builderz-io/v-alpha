@@ -214,6 +214,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( key == 27 ) {
         e.preventDefault();
+        V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
         handleKeyboard( ['close', 'modal-close'] );
       }
     } );

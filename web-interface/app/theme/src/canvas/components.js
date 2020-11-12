@@ -77,10 +77,17 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     entity: 'No entities found',
     marketplace: 'No marketplace items found',
     media: 'No media items found',
+    close: 'close'
   };
 
   function getString( string, scope ) {
     return V.i18n( string, 'canvas', scope || 'not found' ) + ' ';
+  }
+
+  /* ================== event handlers ================== */
+
+  function handleClosePopup() {
+    this.style.opacity = 0;
   }
 
   /* ================  public components ================ */
@@ -243,7 +250,37 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function logo() {
     return V.cN( {
       t: 'logo',
-      c: 'fixed hidden'
+      c: 'fixed hidden w-screen',
+      h: {
+        t: 'div',
+        c: 'popup',
+        k: handleClosePopup,
+        h: [
+          {
+            t: 'div',
+            c: 'popup-content-wrapper flex flex-wrap justify-center items-center',
+            h: [
+              {
+                t: 'p',
+                c: 'popup-content-close fs-xxs',
+                h: getString( ui.close )
+              },
+              {
+                t: 'div',
+                c: 'popup-content'
+              }
+            ]
+          },
+          {
+            t: 'div',
+            c: 'popup-tip-container',
+            h: {
+              t: 'div',
+              c: 'popup-tip'
+            }
+          }
+        ]
+      }
     } );
   }
 

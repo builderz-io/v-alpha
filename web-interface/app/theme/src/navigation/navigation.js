@@ -192,16 +192,17 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     }
 
-    /**
-     * animate, if path was provided
-     *
-     */
+    /* animate, if path was provided */
 
     const which = viewData.data[0].which;
 
     if ( which ) {
       animate( which );
     }
+
+    /* clear popup */
+
+    V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
 
   }
 
@@ -339,21 +340,31 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /* if a form is open, just close form first */
     if ( V.getNode( 'form' ) ) {
       handleCloseForms();
-      return;
     }
 
-    /* if an entity is being edited, just return to entity list first */
-    if (
+    /* else if an entity is being edited, just return to entity list first */
+    else if (
       V.getState( 'active' ).path == '/me/entities' &&
       V.getVisibility( '#pref-lang-edit' )
     ) {
       EntityList.draw( '/me/entities' );
-      return;
+
     }
 
-    /* else reset navigation and page */
-    reset();
-    Page.draw( { position: 'closed', reset: false, navReset: false } );
+    /* else if an entity was viewed, draw the Marketplace */
+    else if (
+      V.getState( 'active' ).path.includes( 'profile' )
+    ) {
+      Canvas.draw();
+    }
+
+    /* else reset navigation, page and popup */
+    else {
+      reset();
+      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
+      Page.draw( { position: 'peek', reset: false, navReset: false } );
+    }
+
   }
 
   function handleCloseForms() {

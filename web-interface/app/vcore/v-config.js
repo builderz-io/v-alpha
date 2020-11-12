@@ -5,7 +5,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const production = true;
+  const production = false;
 
   const settings = {
 

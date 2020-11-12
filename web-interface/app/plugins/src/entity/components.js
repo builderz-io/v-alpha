@@ -72,7 +72,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     social: 'Social',
     funding: 'Funding Status',
     img: 'Image',
-    holder: 'Holder'
+    holder: 'Holder',
+    accessKeys: 'Access Keys:'
   };
 
   function getString( string, scope ) {
@@ -81,8 +82,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
-  function handleEditEntityClick( e ) {
-    User.draw( V.castPathOrId( e.target.innerHTML ) );
+  function handleEditProfileDraw( e ) {
+    const path = V.castPathOrId( e.target.innerHTML );
+    User.draw( path );
   }
 
   function handleHolderClick( e ) {
@@ -224,7 +226,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         const tinyImageUpload = V.getState( 'tinyImageUpload' );
         Object.assign( imageUpload, { entity: fullId } );
         Object.assign( tinyImageUpload, { entity: fullId } );
-        setField( 'thumbnail', imageUpload ).then( () => {
+        setField( 'thumbnail', imageUpload ).then( response => {
           setField( 'tinyImage', tinyImageUpload );
           V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
           V.setNode( '#img-upload-profile__preview', '' );
@@ -235,12 +237,34 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             },
             src: res.src
           } ) );
+
+          /* also change cached image after an edit */
+
+          updateImageInCache( 'managedEntities', response, fullId );
+          updateImageInCache( 'all', response, fullId );
+          updateImageInCache( response.data[0].profile.role, response, fullId );
+
         } );
       }
     } );
   }
 
   /* ================== private methods ================= */
+
+  function updateImageInCache( which, response, fullId ) {
+    const cache = V.getCache( which );
+    if ( cache ) {
+      const entities = cache.data[0].e || cache.data;
+      for ( let i = 0; i < entities.length; i++ ) {
+        const entity = ( entities[i].data ? entities[i].data[0] : undefined ) || entities[i];
+        if ( entity.fullId == fullId ) {
+          entity.thumbnail = response.data[0].thumbnail;
+          // entity.tinyImage = response.data[0].tinyImage;
+          break;
+        }
+      }
+    }
+  }
 
   function castCard( $innerContent, whichTitle ) {
     return CanvasComponents.card( $innerContent, whichTitle );
@@ -333,7 +357,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function castUphraseNode( phrase, css = '' ) {
     return V.cN( {
       t: 'div',
-      c: 'pxy ' + css,
+      c: 'pxy fs-s' + css,
       h: [
         { t: 'span', h: phrase.length > 18 ? '0x' : phrase.length ? 'vx' : '' },
         {
@@ -397,7 +421,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const questions = V.getSetting( 'neQuestionnaire' );
     const responses = entity.questionnaire;
 
-    if ( responses || editable ) {
+    if ( ['business'].includes( entity.profile.role ) && ( responses || editable ) ) {
       const $innerContent = V.cN( {
         t: 'div',
         h: questions.map( question => {
@@ -441,7 +465,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if( langs || ( !langs && editable ) ) {
       const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
-        c: 'pxy',
+        c: 'pxy w-full',
         i: 'pref-lang-edit',
         a: { title: 'preferredLangs', db: 'properties' },
         h: langs,
@@ -655,26 +679,51 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function entityListCard( entity ) {
     const uPhrase = entity.private.uPhrase;
-    const privateKey = entity.private.evmCredentials ? entity.private.evmCredentials.privateKey ? entity.private.evmCredentials.privateKey : '' : '';
-    const $innerContent = V.cN( {
+    const privateKey = entity.private.evmCredentials ? entity.private.evmCredentials.privateKey || '' : '';
+
+    const $cardContentFrame = V.cN( {
       t: 'div',
+      c: 'contents'
+    } );
+
+    const $topLeft = V.cN( {
+      t: 'div',
+      c: 'card__top-left flex flex-wrap justify-center items-center pxy',
+      h: [
+        MarketplaceComponents.castCircle( entity, 'editable' ),
+        {
+          t: 'p',
+          c: 'pxy fs-s font-bold capitalize cursor-pointer',
+          h: entity.profile.role,
+          k: handleEditProfileDraw
+        },
+      ]
+    } );
+
+    const $topRight = V.cN( {
+      t: 'div',
+      c: 'card__top-right items-center pxy',
       h: [
         {
           t: 'h2',
           c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
-          k: handleEditEntityClick
+          k: handleEditProfileDraw
         },
-        // {
-        //   t: 'p',
-        //   c: 'pxy',
-        //   h: entity.properties.description,
-        // },
+        {
+          t: 'p',
+          c: 'pxy fs-s capitalize',
+          h: getString( ui.accessKeys ),
+        },
         castUphraseNode( uPhrase ),
         castUphraseNode( privateKey )
-      ],
+      ]
     } );
-    return castCard( $innerContent, '' );
+
+    V.setNode( $cardContentFrame, [ $topLeft, $topRight ] );
+
+    return castCard( $cardContentFrame, '' );
+
   }
 
   function appLanguageCard() {

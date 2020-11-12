@@ -169,6 +169,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         Haze.draw();
         $page.classList.remove( 'pill-shadow' );
       }
+      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
       Feature.draw( { fade: 'out' } );
       handlebar( 7, 22 );
     }
