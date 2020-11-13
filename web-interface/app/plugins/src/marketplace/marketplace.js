@@ -92,7 +92,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'all', { fade: 'out' } );
       }
 
-      if ( viewData.whichPath && viewData.whichPath != '/network/all' ) {
+      if ( !( ['/network/all', '/network/members'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
@@ -205,7 +205,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'serviceNav', [
       {
-        title: 'Network',
+        title: 'Local Economy',
         path: '/network/all',
         use: {
           button: 'search',
@@ -254,6 +254,19 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         // receivingAddress being set to owner during entity creation
+        title: 'Networks',
+        path: '/network/networks',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'network'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        // receivingAddress being set to owner during entity creation
         title: 'Skills',
         path: '/network/skills',
         use: {
@@ -278,18 +291,18 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         }
       },
-      {
-        title: 'Crowdfunding',
-        path: '/pools',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'pool'
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        }
-      },
+      // {
+      //   title: 'Crowdfunding',
+      //   path: '/pools',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'pool'
+      //   },
+      //   draw: function( path ) {
+      //     Marketplace.draw( path );
+      //   }
+      // },
       {
         title: 'Places',
         path: '/network/places',

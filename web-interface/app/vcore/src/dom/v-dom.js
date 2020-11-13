@@ -75,6 +75,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
         else if ( Array.isArray( data[key] ) ) {
           for ( let i = 0; i < data[key].length; i++ ) {
+            if ( [data[key][i].x, data[key][i].condition].includes( false ) ) {
+              continue;
+            }
             if ( !data[key][i].localName ) {
               data[key][i] = castNode( data[key][i] );
             }

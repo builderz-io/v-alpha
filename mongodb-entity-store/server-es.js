@@ -1,7 +1,13 @@
+// const settings = {
+//   port: 6023,
+//   host: 'builderz.io',
+//   db: 'buildersmongo'
+// };
+
 const settings = {
-  port: 6023,
-  host: 'builderz.io',
-  db: 'buildersmongo'
+  port: 6022,
+  host: 'neighborhoodeconomics.trnty.edu',
+  db: 'cocooonmongo'
 };
 
 const http = require( 'http' );
@@ -9,7 +15,14 @@ const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 
 const cors = require( 'cors' );
-const whitelist = ['https://' + settings.host, 'https://' + settings.db + '.valueinstrument.org', 'http://localhost:3123', 'https://alpha.valueinstrument.org', 'http://vialpha.pagekite.me'];
+
+const whitelist = [
+  'https://' + settings.host,
+  'https://' + settings.db + '.valueinstrument.org',
+  'http://localhost:3123',
+  'https://alpha.valueinstrument.org',
+  'http://vialpha.pagekite.me'
+];
 
 mongoose.connect( 'mongodb://localhost/' + settings.db, { useNewUrlParser: true, useUnifiedTopology: true } );
 
@@ -26,7 +39,7 @@ app.use( cors( {
     // allow requests with no origin
     if( !origin ) {return callback( null, true )}
     if( whitelist.indexOf( origin ) === -1 ) {
-      var message = origin + ' - ' + 'The CORS policy for this origin does not ' +
+      const message = origin + ' - ' + 'The CORS policy for this origin does not ' +
                 'allow access from the particular origin.';
       return callback( new Error( message ), false );
     }

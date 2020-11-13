@@ -90,10 +90,10 @@ list a {
 /* in the style of the leaflet.js popup */
 
 .popup {
-  width: 55%;
+  width: 65%;
   margin: 0 auto 12px;
   opacity: 0;
-  transition: opacity 0.2s linear;
+  /* transition: opacity 0.2s linear; */
   transform: translate3d(0px, 0px, 0px);
 }
 
@@ -111,7 +111,7 @@ list a {
 }
 
 .popup-content {
-    margin: 13px 19px;
+    margin: 15px 10px;
 }
 
 .popup-tip-container {

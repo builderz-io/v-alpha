@@ -87,7 +87,14 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleClosePopup() {
-    this.style.opacity = 0;
+    V.setNode( '.leaflet-popup-pane', '' );
+    if ( V.getNode( '.popup' ) ) {
+      V.setAnimation( '.popup', {
+        opacity: 0
+      }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
+        V.setNode( '.popup-content', '' );
+      } );
+    }
   }
 
   /* ================  public components ================ */
@@ -104,6 +111,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'background',
       id: 'background',
+      k: handleClosePopup,
       c: 'background fixed w-screen'
     } );
   }
@@ -251,20 +259,21 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'logo',
       c: 'fixed hidden w-screen',
+      k: handleClosePopup,
       h: {
         t: 'div',
         c: 'popup',
-        k: handleClosePopup,
+        // k: handleClosePopup,
         h: [
           {
             t: 'div',
             c: 'popup-content-wrapper flex flex-wrap justify-center items-center',
             h: [
-              {
-                t: 'p',
-                c: 'popup-content-close fs-xxs',
-                h: getString( ui.close )
-              },
+              // {
+              //   t: 'p',
+              //   c: 'popup-content-close fs-xxs',
+              //   h: getString( ui.close )
+              // },
               {
                 t: 'div',
                 c: 'popup-content'

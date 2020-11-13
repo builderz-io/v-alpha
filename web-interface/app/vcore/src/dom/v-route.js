@@ -117,7 +117,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           action: () => {
             return {
               status: 'user entities',
-              data: [ '/me/entities' ]
+              data: [ '/me/edit' ]
             };
           }
         }

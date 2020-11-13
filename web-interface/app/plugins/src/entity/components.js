@@ -116,7 +116,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleEntryFocus() {
     DOM.entry = this.value ? this.value : this.innerHTML;
-    console.log( 'focussed:', DOM.entry );
     if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
       this.innerHTML = '';
       this.value = '';
@@ -421,34 +420,38 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const questions = V.getSetting( 'neQuestionnaire' );
     const responses = entity.questionnaire;
 
-    if ( ['business'].includes( entity.profile.role ) && ( responses || editable ) ) {
+    if ( ['business', 'institution'].includes( entity.profile.role ) && ( responses || editable ) ) {
       const $innerContent = V.cN( {
         t: 'div',
         h: questions.map( question => {
-          const response = entity.questionnaire ? entity.questionnaire['q' + question.qid] || undefined : null;
+          const response = responses ? responses['q' + question.qid] || false : false;
           return V.cN( {
             t: 'div',
-            h: response || editable ? [
+            h: [
               {
+                x: editable || response,
                 t: 'h3',
-                c: 'font-bold pxy',
+                c: 'font-bold pxy AAA',
                 h: question.q
               },
-              editable ? {
+              {
+                x: editable,
                 t: 'textarea',
-                c: 'w-full pxy',
+                c: 'w-full pxy BBB',
                 a: { title: 'q' + question.qid, db: 'questionnaire' },
                 e: {
                   focus: handleEntryFocus,
                   blur: handleEntry
                 },
                 h: response ? response : getString( ui.edit ),
-              } : {
+              },
+              {
+                x: !editable && response,
                 t: 'div',
-                c: 'pxy',
-                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : 'not answered' ).iframes,
+                c: 'pxy CCC',
+                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).iframes,
               }
-            ] : ''
+            ]
           } );
         } )
       } );
@@ -695,7 +698,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'p',
           c: 'pxy fs-s font-bold capitalize cursor-pointer',
           h: entity.profile.role,
-          k: handleEditProfileDraw
         },
       ]
     } );

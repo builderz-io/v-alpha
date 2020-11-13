@@ -130,6 +130,16 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'userNav', [
       {
+        title: 'Edit',
+        path: '/me/edit',
+        use: {
+          button: 'plus search',
+        },
+        draw: function( path ) {
+          EntityList.draw( path );
+        }
+      },
+      {
         title: 'Transfers',
         path: '/me/transfers',
         use: {
@@ -139,16 +149,16 @@ const User = ( function() { // eslint-disable-line no-unused-vars
           Account.draw( path );
         }
       },
-      {
-        title: 'Profile',
-        path: '/me/profile',
-        use: {
-          button: 'plus search',
-        },
-        draw: function( path ) {
-          User.draw( path );
-        }
-      },
+      // {
+      //   title: 'Profile',
+      //   path: '/me/profile',
+      //   use: {
+      //     button: 'plus search',
+      //   },
+      //   draw: function( path ) {
+      //     User.draw( path );
+      //   }
+      // },
       {
         title: 'Settings',
         path: '/me/settings',
@@ -157,16 +167,6 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Settings.draw( path );
-        }
-      },
-      {
-        title: 'Entities',
-        path: '/me/entities',
-        use: {
-          button: 'plus search',
-        },
-        draw: function( path ) {
-          EntityList.draw( path );
         }
       },
       {

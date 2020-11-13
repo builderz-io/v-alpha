@@ -20,28 +20,47 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     User.draw( this );
   }
 
-  function handlePopup( e ) {
+  function handlePopup() {
+    const pathOfOpen = V.getNode( '.popup-content' ) ?
+      V.getNode( '.popup-content' ).firstChild ?
+        V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
+    if ( pathOfOpen && pathOfOpen == this ) {
+      V.setAnimation( '.popup', {
+        opacity: 0
+      }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
+        V.setNode( '.popup-content', '' );
+      } );
+      return;
+    }
     const cache = V.getCache( 'all' );
     if ( cache ) {
       const entities = cache.data;
       for ( let i = 0; i < entities.length; i++ ) {
         if ( entities[i].path == this ) {
+          const descr = entities[i].properties.description;
           V.getNode( '.popup' ).style.opacity = 1;
           V.setNode( '.popup-content', '' );
+          V.setNode( '.leaflet-popup-pane', '' );
           V.setNode( '.popup-content', V.cN( {
             t: 'div',
+            a: { path: entities[i].path },
             h: [
-              castCircle( entities[i] ),
               {
                 t: 'p',
                 c: 'pxy txt-center font-bold cursor-pointer',
                 h: entities[i].fullId,
                 k: handleProfileDraw.bind( entities[i].path )
               },
+              castCircle( entities[i] ),
               {
                 t: 'p',
-                c: 'pxy cursor-pointer',
-                h: entities[i].properties.description ? entities[i].properties.description.substr( 0, 200 ) + ' ...' : '',
+                c: 'pxy fs-s capitalize txt-center',
+                h: entities[i].role
+              },
+              {
+                t: 'p',
+                c: 'pxy fs-s cursor-pointer',
+                h: descr ? descr.length > 170 ? descr.substr( 0, 170 ) + ' ...' : descr : '',
               }
             ]
           } ) );
@@ -117,7 +136,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
           a: {
-            style: 'background:rgba(var(--black), 0.08);margin-left: 5px;' // border: 2px solid rgba(var(--brandPrimary), 1)
+            style: 'background:rgba(var(--black), 0.094);margin-left: 5px;' // border: 2px solid rgba(var(--brandPrimary), 1)
           },
           h: {
             t: 'div',
@@ -209,9 +228,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'div',
       c: 'card__bottom-right pxy',
       h: [
-        { t: 'p', c: 'capitalize', h: cardData.profile.role },
-        { t: 'p', h: cardData.properties && cardData.properties.description ? cardData.properties.description.substr( 0, 160 ) : '' },
-        { t: 'p', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
+        { t: 'p', c: 'pxy capitalize', h: cardData.profile.role },
+        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.description ? cardData.properties.description.substr( 0, 160 ) : '' },
+        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
       ],
       k: handleProfileDraw.bind( cardData.path )
     } );

@@ -5,7 +5,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const production = false;
+  const production = true;
 
   const settings = {
 
@@ -14,10 +14,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: production ? 'https://buildersmongo.valueinstrument.org' : 'http://localhost', // cocooonmongo // omit trailing slash
+    socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // buildersmongo // omit trailing slash
     socketPort: production ? 443 : 6023,
 
-    useBuilds: false,
+    useBuilds: production ? false : false,
 
     sendLogsToServer: production ? true : false,
 
