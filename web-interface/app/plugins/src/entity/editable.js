@@ -78,17 +78,19 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         // InteractionComponents.onboardingCard(),
-        UserComponents.entityCard(),
-        UserComponents.socialCard(),
+        UserComponents.roleCard(),
         UserComponents.addOrChangeImage(),
+        UserComponents.entityCard(),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
+        UserComponents.socialCard(),
         UserComponents.locationCard(),
         UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.uPhraseCard(),
+        UserComponents.socialShareButtons(),
       ] );
 
       // if( viewData.data.drawNav ) {

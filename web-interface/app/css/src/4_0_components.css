@@ -2,10 +2,6 @@ td {
   height: 26px;
 }
 
-list a {
-  color: rgba(var(--brandPrimary), 1);
-}
-
 .circle-0 {
 	width: 2rem;
 	height: 2rem;

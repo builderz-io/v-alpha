@@ -41,6 +41,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'border-radius': '50%',
       'display': 'block',
       'background': '#ddd',
+    },
+    'td-right': {
+      'max-width': '205px',
+      'word-wrap': 'break-word'
+    },
+    'share-by-email': {
+      color: 'gray',
+      position: 'relative',
+      top: '-3px',
+      left: '6px',
     }
   } );
 
@@ -274,47 +284,31 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'table',
       c: 'w-full pxy',
       h: titles.map( title => {
-        const inner = entity[db] ? entity[db][title] : undefined;
-
-        const leftTd = {
-          t: 'td',
-          c: 'capitalize',
-          h: getString( title )
-        };
-
-        const editTd = setEditable( {
-          t: 'td',
-          c: 'txt-right',
-          a: { title: title, db: db },
-          h: inner
-        } );
-
-        const noEditTd = {
-          t: 'td',
-          c: 'txt-right' + ( css ? ' ' + css : '' ),
-          h: inner
-        };
-
-        let $row = V.cN( {
+        const inner = entity[db] ? entity[db][title] : false;
+        return V.cN( {
+          x: inner || editable,
           t: 'tr',
           h: [
-            leftTd,
-            editable ? editTd : noEditTd,
+            {
+              t: 'td',
+              c: 'capitalize',
+              h: getString( title )
+            },
+            setEditable( {
+              x: editable,
+              t: 'td',
+              c: 'td-right txt-right',
+              a: { title: title, db: db },
+              h: inner
+            } ),
+            {
+              x: !editable,
+              t: 'td',
+              c: 'td-right txt-right' + ( css ? ' ' + css : '' ),
+              h: inner ? V.castLinks( inner ).links : ''
+            }
           ]
         } );
-
-        if ( !inner ) {
-          $row = editable ? V.cN( {
-            t: 'tr',
-            h: [
-              leftTd,
-              editTd
-            ]
-          } ) : '';
-        }
-
-        return $row;
-
       } ).filter( item => {return item != ''} )
     } );
 
@@ -398,7 +392,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
-        a: { rows: '6', title: 'description', db: 'properties' },
+        a: { rows: '4', title: 'description', db: 'properties' },
         e: {
           focus: handleEntryFocus,
           blur: handleEntry
@@ -584,7 +578,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                   value: loc
                 },
                 e: {
-                  focus: handleBaseLocationFocus,
+                // focus: handleBaseLocationFocus,
                 // blur: handleBaseLocation
                 }
               } : {
@@ -594,22 +588,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
             ]
           },
-          {
-            t: 'tr',
-            h: [
-              { t: 'td', c: 'capitalize', h: getString( ui.UTCOffset ) },
-              editable ? setEditable( {
-                t: 'td',
-                c: 'txt-right',
-                a: { title: 'currentUTC', db: 'properties' },
-                h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-              } ) : {
-                t: 'td',
-                c: 'txt-right',
-                h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-              },
-            ]
-          }
+          // {
+          //   t: 'tr',
+          //   h: [
+          //     { t: 'td', c: 'capitalize', h: getString( ui.UTCOffset ) },
+          //     editable ? setEditable( {
+          //       t: 'td',
+          //       c: 'txt-right',
+          //       a: { title: 'currentUTC', db: 'properties' },
+          //       h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+          //     } ) : {
+          //       t: 'td',
+          //       c: 'txt-right',
+          //       h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+          //     },
+          //   ]
+          // }
         ]
       } );
       return castCard( $innerContent, getString( ui.loc ) );
@@ -882,7 +876,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'div',
-            c: 'pxy',
+            i: 'img-upload-profile__preview',
+            h: img
+          },
+          {
+            t: 'div',
+            c: 'pxy txt-right',
             h: [
               {
                 t: 'label',
@@ -906,11 +905,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 }
               }
             ]
-          },
-          {
-            t: 'div',
-            i: 'img-upload-profile__preview',
-            h: img
           },
           // {
           //   t: 'p',
@@ -1012,11 +1006,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         </div>
       </a>
 
+      <a class="share-by-email font-bold" href="mailto:?subject=${entity.profile.title}%20is%20on%20${ window.location.hostname }&amp;body=Profile:%20https%3A%2F%2F${ window.location.hostname + entity.paths.entity}${ V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : ''}">@</a>
+
  `
         }]
     } );
   }
 
+  /*
+  <a class="share-by-email font-bold" href="mailto:?subject=${ entity.fullId }%20is%20on%20${ window.location.hostname }&amp;
+   body=Profile%20Link:%20%3Ca+href%3D%22${ window.location.hostname }${entity.paths.entity}%22%3E${ window.location.hostname }${entity.paths.entity}%3C%2Fa%3E
+   <br/><br/>My%20Profile%20Link:%3Ca+href%3D%22${entity.fullId}%22%3E${entity.fullId}%3C%2Fa%3E">@</a>
+*/
   /* ====================== export ====================== */
 
   return {

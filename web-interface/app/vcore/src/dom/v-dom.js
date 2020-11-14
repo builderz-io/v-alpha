@@ -53,6 +53,10 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   function castNode( data ) {
 
+    if ( [data.x, data.condition].includes( false ) ) {
+      return '';
+    }
+
     const tag = data.t ? data.t : data.tag;
 
     let $elem = document.createElement( tag );

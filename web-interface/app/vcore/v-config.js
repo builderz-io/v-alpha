@@ -5,7 +5,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const production = true;
+  const production = false;
 
   const settings = {
 
@@ -15,11 +15,11 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedgerWeb2: 'MongoDB',
 
     socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // buildersmongo // omit trailing slash
-    socketPort: production ? 443 : 6023,
+    socketPort: production ? 443 : 6022,
 
     useBuilds: production ? false : false,
 
-    sendLogsToServer: production ? true : false,
+    sendLogsToServer: production ? false : false,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
