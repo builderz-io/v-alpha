@@ -213,6 +213,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         lng: lng,
         value: value,
         rand: false
+      } ).then( res => {
+        VMap.draw(
+          [{
+            type: 'Feature',
+            geometry: res.data[0].geometry,
+            profile: res.data[0].profile,
+            thumbnail: res.data[0].thumbnail,
+            path: res.data[0].path
+          }]
+        );
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );

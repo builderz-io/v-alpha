@@ -48,16 +48,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           Profile.draw( res.data[0].path );
           Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
-          // Button.draw( 'plus search', { delay: 1 } );
-          VMap.draw(
-            {
-              type: 'Feature',
-              geometry: res.data[0].geometry,
-              profile: res.data[0].profile,
-              thumbnail: res.data[0].thumbnail,
-              path: res.data[0].path
-            }
-          );
 
           /**
            * Update "adminOf" Array of activeEntity in database
@@ -74,7 +64,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         else {
           Form.draw( 'error', res );
           e.target.addEventListener( 'click', handleSetEntity );
-          // Button.draw( /*'close */ 'set', { delay: 1 } );
           console.error( res.status );
         }
       } );
