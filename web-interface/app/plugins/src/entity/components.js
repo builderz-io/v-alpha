@@ -51,6 +51,42 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       position: 'relative',
       top: '-3px',
       left: '6px',
+    },
+    'toggle-switch__input': {
+      height: 0,
+      width: 0,
+      visibility: 'hidden'
+    },
+    'toggle-switch': {
+      'cursor': 'pointer',
+      'text-indent': '-9999px',
+      'width': '60px',
+      'height': '25px',
+      'background': 'grey',
+      'display': 'block',
+      'border-radius': '100px',
+      'position': 'relative',
+    },
+    'toggle-switch:after': {
+      'content': '\'\'',
+      'position': 'absolute',
+      'top': '3px',
+      'left': '5px',
+      'width': '26px',
+      'height': '19px',
+      'background': '#fff',
+      'border-radius': '90px',
+      'transition': '0.3s',
+    },
+    'toggle-switch__input:checked + .toggle-switch': {
+      background: '#bada55'
+    },
+    'toggle-switch__input:checked + .toggle-switch:after': {
+      left: 'calc(100% - 5px)',
+      transform: 'translateX(-100%)'
+    },
+    'toggle-switch:active:after': {
+      width: '130px'
     }
   } );
 
@@ -73,7 +109,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     shortened: '[ ... shortened ]',
     prefLang: 'Preferred Languages',
     lang: 'App Language',
-    uPhrase: 'Entity Management Key',
+    management: 'Entity Management',
     ethAddress: 'Entity Ethereum Address',
     ethAddressReceiver: 'Receiving Ethereum Address',
     loc: 'Location',
@@ -83,7 +119,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     funding: 'Funding Status',
     img: 'Image',
     holder: 'Holder',
-    accessKeys: 'Access Keys:'
+    accessKeys: 'Access Keys',
+    deactivated: 'deactivated',
+    activated: 'activated',
+
+    emailSubject: 'Contacting you via',
+    emailGreeting: 'Dear',
+    socialSubject: 'is on'
   };
 
   function getString( string, scope ) {
@@ -145,6 +187,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ============ event handlers (edit entity) ========== */
+
+  function handleActive() {
+    setField( 'status.active', this.checked ? true : false ).then( res => {
+      V.getNode( '.active__title' ).innerHTML = this.checked ? ui.activated : ui.deactivated;
+    } );
+  }
 
   function handleEntry() {
     let str, entry;
@@ -320,6 +368,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           case 'telegram':
             linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
             break;
+          case 'email':
+            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner.replace( /@.+/, '' ) + '</a>';
+            break;
           case 'website':
             linkedInner = V.castLinks( inner ).links;
             break;
@@ -435,7 +486,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
-        a: { rows: '4', title: 'description', db: 'properties' },
+        a: { rows: '6', title: 'description', db: 'properties' },
         e: {
           focus: handleEntryFocus,
           blur: handleEntry
@@ -521,15 +572,52 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function uPhraseCard() {
+  function managementCard() {
+    const active = entity.status.active;
+    const $innerContent = V.cN( { t: 'div' } );
+
+    V.setNode( $innerContent, V.cN( {
+      t: 'div',
+      c: 'pxy flex ',
+      h: [
+        {
+          t: 'input',
+          i: 'active',
+          c: 'toggle-switch__input',
+          a: {
+            type: 'checkbox',
+            checked: active ? true : false
+          },
+          e: {
+            change: handleActive
+          }
+        },
+        {
+          t: 'label',
+          c: 'toggle-switch',
+          a: { for: 'active' },
+          h: 'toggle'
+        },
+        {
+          t: 'p',
+          c: 'active__title fs-xs pxy',
+          h: getString( active ? ui.activated : ui.deactivated )
+        },
+      ]
+    } ) );
+
+    return castCard( $innerContent, getString( ui.management ) );
+  }
+
+  function accessKeysCard() {
     const uPhrase = entity.private.uPhrase;
+    const $innerContent = V.cN( { t: 'div' } );
+
     if( uPhrase ) {
-      const $innerContent = castUphraseNode( uPhrase );
-      return castCard( $innerContent, getString( ui.uPhrase ) );
+      V.setNode( $innerContent, V.cN( { t: 'div', h: castUphraseNode( uPhrase ) } ) );
     }
-    else {
-      return '';
-    }
+
+    return castCard( $innerContent, getString( ui.accessKeys ) );
   }
 
   function evmAddressCard() {
@@ -999,7 +1087,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function socialShareButtons() {
     // https://sharingbuttons.io/
-    const subject = `${entity.profile.title}%20is%20on%20${ window.location.hostname }`;
+    const subject = `${entity.profile.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
     const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.paths.entity}`;
     const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
@@ -1056,7 +1144,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
       <a class="share-by-email font-bold" href="mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }">@</a>
 
-
  `
         }]
     } );
@@ -1075,7 +1162,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     topcontent: topcontent,
     descriptionCard: descriptionCard,
     questionnaireCard: questionnaireCard,
-    uPhraseCard: uPhraseCard,
+    managementCard: managementCard,
+    accessKeysCard: accessKeysCard,
     evmAddressCard: evmAddressCard,
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,

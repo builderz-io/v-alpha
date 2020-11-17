@@ -40,8 +40,9 @@ async function findEntity( query ) {
 exports.findByRole = async function( req, res ) {
 
   const find = req != 'all' ? { 'profile.role': req } : {};
+  const query = { $and: [find, { 'status.active': true }] };
 
-  res( await findEntity( find ) );
+  res( await findEntity( query ) );
 
 };
 
@@ -232,7 +233,7 @@ exports.update = async function( req, cb ) {
   else {
     const updateWhat = {};
     updateWhat[req.field] = req.data;
-    how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
+    how = req.data === '' ? { $unset: updateWhat } : { $set: updateWhat };
   }
 
   EntityDB.findOneAndUpdate(

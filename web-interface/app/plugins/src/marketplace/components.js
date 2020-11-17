@@ -229,7 +229,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'card__bottom-right pxy',
       h: [
         { t: 'p', c: 'pxy capitalize', h: cardData.profile.role },
-        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.description ? cardData.properties.description.substr( 0, 160 ) : '' },
+        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
         { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
       ],
       k: handleProfileDraw.bind( cardData.path )
