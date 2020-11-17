@@ -203,13 +203,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    V.setNavItem( 'serviceNav', [
+    const navArray = [
       {
         title: 'Local Economy',
         path: '/network/all',
+        routeFundsToOwner: false,
         use: {
           button: 'search',
-          role: 'all' // 'all' is used here to enable search within all entities
+          role: 'all', // 'all' is used here to enable search within all entities
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -218,16 +219,16 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'People',
         path: '/network/members',
+        routeFundsToOwner: false,
         use: {
           button: 'search',
-          role: 'member'
+          role: 'member',
         },
         draw: function( path ) {
           Marketplace.draw( path );
         }
       },
       {
-        // receivingAddress being set to owner during entity creation
         title: 'Businesses',
         path: '/network/businesses',
         use: {
@@ -240,7 +241,30 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        // receivingAddress being set to owner during entity creation
+        title: 'NGO',
+        path: '/network/non-profits',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'nonprofit'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Public Sector',
+        path: '/network/public-sector',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'publicsector'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
         title: 'Anchor Institutions',
         path: '/network/institutions',
         use: {
@@ -253,7 +277,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        // receivingAddress being set to owner during entity creation
         title: 'Networks',
         path: '/network/networks',
         use: {
@@ -266,7 +289,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        // receivingAddress being set to owner during entity creation
         title: 'Skills',
         path: '/network/skills',
         use: {
@@ -279,7 +301,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
       },
       {
-        // receivingAddress being set to owner during entity creation
         title: 'Tasks',
         path: '/network/tasks',
         use: {
@@ -327,7 +348,15 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         }
       }
-    ] );
+    ];
+    V.setNavItem( 'serviceNav', navArray );
+
+    const routeFundsForRoles = {};
+    navArray.forEach( navItem => {
+      if ( navItem.routeFundsToOwner === false ) { return }
+      routeFundsForRoles[navItem.use.role] = navItem.use.role;
+    } );
+    V.setState( 'rolesWithReceivingAddress', routeFundsForRoles );
   }
 
   function draw( whichPath, search ) {

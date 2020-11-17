@@ -157,7 +157,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         entityData.evmIssuer = 'SELF';
       }
 
-      if ( ['skill', 'task', 'business', 'institution', 'network'].includes( entityData.role ) ) {
+      if ( Object.keys( V.getState( 'rolesWithReceivingAddress' ) ).includes( entityData.role ) ) {
         Object.assign( entityData, { evmReceivingAddress: V.aE().evmCredentials.address } );
       }
 

@@ -93,18 +93,18 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           Media.draw( '/media', { feature: 'https://youtu.be/kJbto4TISKA' } );
         }
       },
-      {
-        title: 'Moocs',
-        path: '/media/moocs',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'mooc',
-        },
-        draw: function() {
-          Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
-        }
-      }
+      // {
+      //   title: 'Moocs',
+      //   path: '/media/moocs',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'mooc',
+      //   },
+      //   draw: function() {
+      //     Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
+      //   }
+      // }
     ] );
   }
 

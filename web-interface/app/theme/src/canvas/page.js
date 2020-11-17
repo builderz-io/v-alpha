@@ -165,6 +165,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     if ( pagePos == 'top' ) {
+      if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
+        V.getNode( 'page' ).classList.add( 'page-full-screen' );
+      }
       if ( s.width < 800 ) {
         Haze.draw();
         $page.classList.remove( 'pill-shadow' );
@@ -176,6 +179,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     else if ( pagePos == 'feature' ) {
       if ( s.width < 800 ) {
         $page.classList.remove( 'pill-shadow' );
+        $page.classList.remove( 'page-full-screen' );
       }
       if ( s.width < 800 && ( showHaze == undefined || showHaze != false ) ) {
         Haze.draw();
@@ -187,6 +191,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
       $page.classList.add( 'pill-shadow' );
+      $page.classList.remove( 'page-full-screen' );
       Logo.draw( pagePos );
       if ( navReset == undefined || navReset != false ) {
         Navigation.drawReset();
@@ -197,6 +202,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 25 );
       $page.classList.add( 'pill-shadow' );
+      $page.classList.remove( 'page-full-screen' );
       Logo.draw( pagePos );
     }
   }

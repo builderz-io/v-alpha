@@ -64,6 +64,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       bottom: 0,
       height: 'var(--page-position-peek)',
     },
+    'page-full-screen': {
+      top: 0,
+      bottom: '0 !important',
+      height: 'unset !important'
+    },
     'network-logo': {
       height: '18px',
     }

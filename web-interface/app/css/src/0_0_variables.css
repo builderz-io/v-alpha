@@ -63,7 +63,7 @@
   --buttonBkg: var(--brandPrimary);
   --buttonTxt: var(--white);
 
-  --link: var(--brandSecondary);
+  --link: 215, 126, 88;
 
   /* Spacing */
   --global-padding: 5px;
