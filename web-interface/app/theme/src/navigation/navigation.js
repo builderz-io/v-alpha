@@ -380,6 +380,22 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     deselect();
 
+    /* shorten entityNav */
+
+    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+
+    const entitiesViewed = Object.keys( entityNavOrder );
+
+    if ( entitiesViewed.length >= 50 ) {
+      entitiesViewed.forEach( entityPath => {
+        if ( entityNavOrder[entityPath].l > 40 ) {
+          console.log( entityPath );
+          delete entityNavOrder[entityPath];
+        }
+      } );
+      V.setCookie( 'entity-nav-order', entityNavOrder );
+    }
+
     Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
     // (previous version) also reset path if not account or profile path
