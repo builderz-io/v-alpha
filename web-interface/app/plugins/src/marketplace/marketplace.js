@@ -11,11 +11,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( whichPath, search ) {
 
-    const split = whichPath ? whichPath.split( '/' ) : ['all']; // default to 'all'
-    let whichRole = split.pop();
-    if ( !['all', 'media'].includes( whichRole ) ) {
-      whichRole = whichRole.slice( 0, -1 ); // remove plural
-    }
+    const whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
 
     let query, isSearch = false;
 
@@ -36,7 +32,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'cache used',
         elapsed: now - cache.timestamp,
-        data: V.castJson( cache.data, 'clone' ).reverse()
+        data: V.castJson( cache.data, 'clone' )
       };
     }
     else {
@@ -96,18 +92,40 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'all', { fade: 'out' } );
       }
 
-      if ( viewData.whichPath && viewData.whichPath != '/market/all' ) {
+      if ( !( ['/network/all', '/network/members'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
 
-      viewData.entities.reverse().forEach( cardData => {
-        const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
-        const $cardContent = MarketplaceComponents.cardContent( cardData );
-        const $card = CanvasComponents.card( $cardContent );
-        V.setNode( $slider, $smallcard );
-        V.setNode( $list, $card );
-      } );
+      if ( viewData.entities.length > 10 ) {
+        const last = viewData.entities.pop();
+        const secondLast = viewData.entities.pop();
+        setListContent( last );
+        setListContent( secondLast );
+
+        const hasThumbnail = viewData.entities.filter( item => {return item.thumbnail != undefined} );
+        const hasNoThumbnail = viewData.entities.filter( item => { return item.thumbnail === undefined } );
+
+        hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
+          setListContent( cardData );
+        } );
+
+        shuffleArray( hasThumbnail ).forEach( cardData => {
+          setSliderContent( cardData );
+        } );
+
+        hasNoThumbnail.reverse().forEach( cardData => {
+          // setSliderContent( cardData );
+          setListContent( cardData );
+        } );
+      }
+      else {
+        viewData.entities.reverse().forEach( cardData => {
+          setSliderContent( cardData );
+          setListContent( cardData );
+        } );
+      }
+
     }
     else {
       if ( data.isSearch ) {
@@ -123,11 +141,46 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     VMap.draw( viewData.mapData );
-  }
+
+    // View methods
+
+    function setListContent( cardData ) { // eslint-disable-line no-inner-declarations
+      const $cardContent = MarketplaceComponents.cardContent( cardData );
+      const $card = CanvasComponents.card( $cardContent );
+      V.setNode( $list, $card );
+    }
+
+    function setSliderContent( cardData ) { // eslint-disable-line no-inner-declarations
+      const $smallcard = MarketplaceComponents.entitiesSmallCard( cardData );
+      V.setNode( $slider, $smallcard );
+    }
+
+    function compareDesc( a, b ) { // eslint-disable-line no-inner-declarations
+      const c = a.properties ? a.properties.description ? 1 : 0 : 0;
+      const d = b.properties ? b.properties.description ? 1 : 0 : 0;
+      return c < d ? 1 : c > d ? -1 : 0;
+    }
+
+    /* Randomize array in-place using Durstenfeld shuffle algorithm
+     * from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+     * only for demo
+     */
+
+    function shuffleArray( array ) { // eslint-disable-line no-inner-declarations
+      for ( let i = array.length - 1; i > 0; i-- ) {
+        const j = Math.floor( Math.random() * ( i + 1 ) );
+        const temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+      return array;
+    }
+
+  } // end view
 
   function preview( whichPath, search ) {
     const $slider = CanvasComponents.slider();
-    for ( let i = 0; i < 20; i++ ) {
+    for ( let i = 0; i < 12; i++ ) {
       const $ph = MarketplaceComponents.entitiesPlaceholder();
       V.setNode( $slider, $ph );
     }
@@ -150,24 +203,86 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    V.setNavItem( 'serviceNav', [
+    const navArray = [
       {
-        title: 'Marketplace',
-        path: '/market/all',
+        title: 'Local Economy',
+        path: '/network/all',
+        routeFundsToOwner: false,
         use: {
           button: 'search',
+          role: 'all', // 'all' is used here to enable search within all entities
         },
         draw: function( path ) {
           Marketplace.draw( path );
         }
       },
       {
-        title: 'Jobs',
-        path: '/market/jobs',
+        title: 'People',
+        path: '/network/members',
+        routeFundsToOwner: false,
+        use: {
+          button: 'search',
+          role: 'member',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Businesses',
+        path: '/network/businesses',
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'job',
+          role: 'business'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'NGO',
+        path: '/network/non-profits',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'nonprofit'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Public Sector',
+        path: '/network/public-sector',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'publicsector'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Anchor Institutions',
+        path: '/network/institutions',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'institution'
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        }
+      },
+      {
+        title: 'Networks',
+        path: '/network/networks',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'network'
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -175,35 +290,47 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         title: 'Skills',
-        path: '/market/skills',
+        path: '/network/skills',
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'skill',
+          role: 'skill'
         },
         draw: function( path ) {
           Marketplace.draw( path );
         }
       },
       {
-        title: 'Crowdfunding',
-        path: '/pools',
+        title: 'Tasks',
+        path: '/network/tasks',
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'pool',
+          role: 'task'
         },
         draw: function( path ) {
           Marketplace.draw( path );
         }
       },
+      // {
+      //   title: 'Crowdfunding',
+      //   path: '/pools',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'pool'
+      //   },
+      //   draw: function( path ) {
+      //     Marketplace.draw( path );
+      //   }
+      // },
       {
         title: 'Places',
-        path: '/market/places',
+        path: '/network/places',
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'place',
+          role: 'place'
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -211,17 +338,25 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         title: 'Events',
-        path: '/market/events',
+        path: '/network/events',
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'event',
+          role: 'event'
         },
         draw: function( path ) {
           Marketplace.draw( path );
         }
       }
-    ] );
+    ];
+    V.setNavItem( 'serviceNav', navArray );
+
+    const routeFundsForRoles = {};
+    navArray.forEach( navItem => {
+      if ( navItem.routeFundsToOwner === false ) { return }
+      routeFundsForRoles[navItem.use.role] = navItem.use.role;
+    } );
+    V.setState( 'rolesWithReceivingAddress', routeFundsForRoles );
   }
 
   function draw( whichPath, search ) {

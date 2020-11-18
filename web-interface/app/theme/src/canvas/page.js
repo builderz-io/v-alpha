@@ -41,7 +41,6 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         Page.draw( { position: 'top', reset: false } );
       }
       else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
-        Navigation.draw();
         Page.draw( { position: 'closed', reset: false } );
       }
     }
@@ -84,12 +83,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       ) {
         if ( p.height == p.peek ) {
           Page.draw( { position: 'closed', reset: false } );
-          // Feature.draw( { fade: 'out' } );
-          Navigation.draw();
         }
         else if ( p.height == p.featureCalc || p.height >= p.topCalc ) {
           Page.draw( { position: 'peek', reset: false } );
-          // Feature.draw( { fade: 'out' } );
         }
       }
     }
@@ -120,8 +116,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( pageData.listings ) {
       V.setNode( DOM.$listings, pageData.listings );
     }
-    pageData.position ? slide( pageData.position, pageData.scroll, pageData.haze ) : null;
-    pageData.pos ? slide( pageData.pos, pageData.scroll, pageData.haze ) : null;
+    pageData.position || pageData.pos ? slide( pageData.position || pageData.pos, pageData.scroll, pageData.haze, pageData.navReset ) : null;
   }
 
   function getPageHeight( pagePos ) {
@@ -149,7 +144,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( 'handle', { height: h + 'px' } );
   }
 
-  function slide( pagePos, pageScroll, showHaze ) {
+  function slide( pagePos, pageScroll, showHaze, navReset ) {
     const $list = V.getNode( 'list' );
     const $page = V.getNode( 'page' );
     const p = V.getState( 'page' );
@@ -170,16 +165,21 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     if ( pagePos == 'top' ) {
+      if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
+        V.getNode( 'page' ).classList.add( 'page-full-screen' );
+      }
       if ( s.width < 800 ) {
         Haze.draw();
         $page.classList.remove( 'pill-shadow' );
       }
+      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
       Feature.draw( { fade: 'out' } );
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
       if ( s.width < 800 ) {
         $page.classList.remove( 'pill-shadow' );
+        $page.classList.remove( 'page-full-screen' );
       }
       if ( s.width < 800 && ( showHaze == undefined || showHaze != false ) ) {
         Haze.draw();
@@ -191,14 +191,18 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       Feature.draw( { fade: 'out' } );
       handlebar( 5, 35 );
       $page.classList.add( 'pill-shadow' );
+      $page.classList.remove( 'page-full-screen' );
       Logo.draw( pagePos );
+      if ( navReset == undefined || navReset != false ) {
+        Navigation.drawReset();
+      }
     }
     else if ( pagePos == 'peek' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
-      // Form.draw( 'all', { fade: 'out' } );
       handlebar( 5, 25 );
       $page.classList.add( 'pill-shadow' );
+      $page.classList.remove( 'page-full-screen' );
       Logo.draw( pagePos );
     }
   }

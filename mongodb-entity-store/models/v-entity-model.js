@@ -6,6 +6,11 @@ var entitySchema = mongoose.Schema( {
   path: String,
   private: {
     uPhrase: String,
+    evmCredentials: {
+      address: String,
+      privateKey: String,
+      issuer: String
+    }
   },
   profile: {
     fullId: String, // name + tag, e.g. 'Jane Wood #2121'
@@ -39,7 +44,7 @@ var entitySchema = mongoose.Schema( {
   },
   evmCredentials: {
     address: String,
-    privateKey: String,
+    issuer: String
   },
   symbolCredentials: {
     rawAddress: String,
@@ -95,6 +100,9 @@ var entitySchema = mongoose.Schema( {
   social: {
     facebook: String,
     twitter: String,
+    instagram: String,
+    tiktok: String,
+    youtube: String,
     telegram: String,
     website: String,
     email: String,
@@ -103,6 +111,18 @@ var entitySchema = mongoose.Schema( {
       time: Number,
       sixDigit: Number,
     }
+  },
+  questionnaire: {
+    q1: String,
+    q2: String,
+    q3: String,
+    q4: String,
+    q5: String,
+    q6: String,
+    q7: String,
+    q8: String,
+    q9: String,
+    q10: String,
   },
   onChain: {
     balance: Number,

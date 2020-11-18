@@ -55,17 +55,17 @@ exports.autoFloat = async which => {
 
   return web3.eth.sendTransaction( txObject )
     .once( 'transactionHash', function( hash ) {
-      console.log( 'Transaction Hash: ' + hash );
+      console.log( 'Float ETH Transaction Hash: ' + hash );
     } )
     .on( 'error', function( error ) {
-      console.log( 'Transaction Error: ' + error );
+      console.log( 'Float ETH Transaction Error: ' + error );
       execCounts[which].float += 1;
       if ( execCounts[which].float <= 3 ) {
         exports.autoFloat( which );
       }
     } )
     .then( function( receipt ) {
-      console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
+      console.log( 'Float ETH Transaction Success' /* + JSON.stringify( receipt ) */ );
 
       /* auto verify */
       verify( which );

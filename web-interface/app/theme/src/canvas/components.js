@@ -64,6 +64,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       bottom: 0,
       height: 'var(--page-position-peek)',
     },
+    'page-full-screen': {
+      top: 0,
+      bottom: '0 !important',
+      height: 'unset !important'
+    },
     'network-logo': {
       height: '18px',
     }
@@ -75,12 +80,26 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     transaction: 'No transactions found',
     message: 'No messages found',
     entity: 'No entities found',
-    marketplace: 'No marketplace items found',
+    marketplace: 'No network items found',
     media: 'No media items found',
+    close: 'close'
   };
 
   function getString( string, scope ) {
     return V.i18n( string, 'canvas', scope || 'not found' ) + ' ';
+  }
+
+  /* ================== event handlers ================== */
+
+  function handleClosePopup() {
+    V.setNode( '.leaflet-popup-pane', '' );
+    if ( V.getNode( '.popup' ) ) {
+      V.setAnimation( '.popup', {
+        opacity: 0
+      }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
+        V.setNode( '.popup-content', '' );
+      } );
+    }
   }
 
   /* ================  public components ================ */
@@ -97,6 +116,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'background',
       id: 'background',
+      k: handleClosePopup,
       c: 'background fixed w-screen'
     } );
   }
@@ -243,7 +263,38 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function logo() {
     return V.cN( {
       t: 'logo',
-      c: 'fixed hidden'
+      c: 'fixed hidden w-screen',
+      k: handleClosePopup,
+      h: {
+        t: 'div',
+        c: 'popup',
+        // k: handleClosePopup,
+        h: [
+          {
+            t: 'div',
+            c: 'popup-content-wrapper flex flex-wrap justify-center items-center',
+            h: [
+              // {
+              //   t: 'p',
+              //   c: 'popup-content-close fs-xxs',
+              //   h: getString( ui.close )
+              // },
+              {
+                t: 'div',
+                c: 'popup-content'
+              }
+            ]
+          },
+          {
+            t: 'div',
+            c: 'popup-tip-container',
+            h: {
+              t: 'div',
+              c: 'popup-tip'
+            }
+          }
+        ]
+      }
     } );
   }
 

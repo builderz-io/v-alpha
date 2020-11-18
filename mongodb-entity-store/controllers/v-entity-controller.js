@@ -11,6 +11,7 @@ const TxDB = require( '../models/v-transaction-model' );
 
 async function findEntity( query ) {
   return new Promise( resolve => {
+    // EntityDB.find( query ).sort( { $natural: -1 } ).limit( 35 ).exec( ( err, entities ) => {
     EntityDB.find( query ).exec( ( err, entities ) => {
       if ( err ) {
         resolve( {
@@ -39,8 +40,9 @@ async function findEntity( query ) {
 exports.findByRole = async function( req, res ) {
 
   const find = req != 'all' ? { 'profile.role': req } : {};
+  const query = { $and: [find, { 'status.active': true }] };
 
-  res( await findEntity( find ) );
+  res( await findEntity( query ) );
 
 };
 
@@ -85,7 +87,8 @@ exports.findByQuery = async function( req, res ) {
       req.role == 'all' ? {} : { 'profile.role': req.role },
       { $or: [
         { 'profile.title': regex },
-        { 'properties.baseLocation': regex }
+        { 'properties.baseLocation': regex },
+        { 'properties.description': regex }
       ] }
     ]
   };
@@ -230,7 +233,7 @@ exports.update = async function( req, cb ) {
   else {
     const updateWhat = {};
     updateWhat[req.field] = req.data;
-    how = req.data == '' ? { $unset: updateWhat } : { $set: updateWhat };
+    how = req.data === '' ? { $unset: updateWhat } : { $set: updateWhat };
   }
 
   EntityDB.findOneAndUpdate(

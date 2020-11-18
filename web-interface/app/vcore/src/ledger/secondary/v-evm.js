@@ -28,28 +28,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   function handleTransferSummaryEvent( eventData ) {
     if ( V.aA() && ( eventData.to.toLowerCase() == V.aA() || eventData.from.toLowerCase() == V.aA() ) ) {
-      Account.drawHeaderBalance();
-      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        setNewTxNode( { returnValues: eventData } );
-      }
-    }
-  }
-
-  function handleHashConfirmation( hash ) {
-    Modal.draw( 'transaction sent', hash );
-    if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-      const $ph = AccountComponents.accountPlaceholderCard();
-      const $card = CanvasComponents.card( $ph, undefined, 'phS' + hash.substr( 3, 6 ) + 'E' );
-      V.setNode( 'list', $card, 'prepend' );
-    }
-  }
-
-  function handleTxConfirmation( receipt ) {
-    if ( !V.getSetting( 'subscribeToChainEvents' ) ) {
-      Account.drawHeaderBalance();
-      if ( V.getState( 'active' ).navItem == '/me/transfers' ) {
-        setNewTxNode( receipt.events.TransferSummary, 'phS' + receipt.transactionHash.substr( 3, 6 ) + 'E' );
-      }
+      // TODO
     }
   }
 
@@ -113,82 +92,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
   }
 
-  async function castTransfers( transfers, which ) {
-
-    const filteredAndEnhanced = await transfers.filter( tx => {
-      const data = tx.returnValues;
-      return data.from.toLowerCase() == which ||
-            data.to.toLowerCase() == which;
-
-    } ).map( async tx => {
-      const txData = {};
-      // console.log( tx );
-      txData.fromAddress = tx.returnValues.from.toLowerCase();
-      txData.toAddress = tx.returnValues.to.toLowerCase();
-
-      txData.fromAddress == which ? txData.txType = 'out' : null;
-      txData.toAddress == which ? txData.txType = 'in' : null;
-      txData.toAddress == burnAddress ? txData.txType = 'fee' : null;
-      txData.fromAddress == burnAddress ? txData.txType = 'generated' : null;
-
-      txData.amount = castTokenBalance( tx.returnValues.value );
-
-      txData.feesBurned = castTokenBalance( tx.returnValues.feesBurned || 0, 6 );
-      txData.contribution = castTokenBalance( tx.returnValues.contribution || 0, 6 );
-
-      txData.payout = txData.fromAddress == which
-        ? castTokenBalance( tx.returnValues.payoutSender || 0, 6 )
-        : castTokenBalance( tx.returnValues.payoutRecipient || 0, 6 );
-
-      txData.message = 'n/a';
-
-      txData.hash = tx.transactionHash;
-      txData.logIndex = tx.logIndex;
-      txData.block = tx.blockNumber;
-
-      const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
-      txData.blockDate = blockDetails.timestamp;
-
-      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
-      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
-
-      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
-
-      if ( txData.txType == 'in' ) {
-        txData.title = txData.fromEntity;
-      }
-      else if ( txData.txType == 'out' ) {
-        txData.title = txData.toEntity;
-      }
-      else if ( txData.txType == 'fee' ) {
-        txData.title = getString( ui.fee );
-      }
-      else if ( txData.txType == 'generated' ) {
-        txData.title = getString( ui.community );
-      }
-
-      return txData;
-
-    } );
-
-    const a = await Promise.all( filteredAndEnhanced );
-    // console.log( a );
-    return a;
-  }
-
-  async function setNewTxNode( txSummary, id ) {
-    console.log( 'txSummary: ', txSummary.returnValues );
-    const filteredAndEnhanced = await castTransfers( [ txSummary ], V.aA() );
-    console.log( 'cast txData: ', JSON.stringify( filteredAndEnhanced ) );
-    const $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
-    const $card = CanvasComponents.card( $cardContent );
-
-    const $ph = V.getNode( '#' + id );
-    $ph ? V.setNode(  $ph, 'clear' ) : null;
-    V.setNode(  'modal', 'clear' );
-    V.setNode( 'list', $card, 'prepend' );
-  }
-
   /* ================== public methods  ================= */
 
   async function getWeb3Provider() {
@@ -197,6 +100,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // Modern dapp browsers
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
+      V.setState( 'browserWallet', true );
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
@@ -211,10 +115,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
       // console.log( 'local network may be there' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
-      return {
-        success: false,
-        status: 'web3 provider not found',
-      };
+      provider = new Web3.providers.HttpProvider(  V.getNetwork().rpc );
+      V.setState( 'browserWallet', false );
+      // return {
+      //   success: false,
+      //   status: 'web3 provider not found',
+      // };
     }
 
     window.Web3Obj = new Web3( provider );
@@ -409,7 +315,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.aA(),
+    which = V.aA() || V.aE().evmCredentials.address,
     data = { fromBlock: 0, toBlock: 'latest' },
     whichEvent = 'TransferSummary'
   ) {
@@ -511,7 +417,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       return contract.methods.transfer( recipient, amount ).send( { from: sender } )
         .once( 'transactionHash', function( hash ) {
           console.log( 'Transaction Hash: ' + hash );
-          handleHashConfirmation( hash );
+          V.drawHashConfirmation( hash );
         } )
         // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
         // .on( 'confirmation', function( confNumber, receipt ) {
@@ -531,7 +437,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         } )
         .then( function( receipt ) {
           console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
-          handleTxConfirmation( receipt );
           resolve( {
             success: true,
             status: 'last token transaction successful',
@@ -579,8 +484,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
 
     const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
-    const feeAmount = totalFee - contribution;
-    const gross = amount + feeAmount + contribution;
+    const feeAmount = Math.round( ( totalFee - contribution ) * 100 ) / 100;
+    const gross = Math.round( ( amount + feeAmount + contribution ) * 100 ) / 100;
 
     const data = {
       net: amount,
@@ -590,6 +495,69 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     };
 
     return data;
+  }
+
+  async function castTransfers( transfers, which ) {
+
+    const filteredAndEnhanced = await transfers.filter( tx => {
+      const data = tx.returnValues;
+      return data.from.toLowerCase() == which ||
+              data.to.toLowerCase() == which;
+
+    } ).map( async tx => {
+      const txData = {};
+      // console.log( tx );
+      txData.fromAddress = tx.returnValues.from.toLowerCase();
+      txData.toAddress = tx.returnValues.to.toLowerCase();
+
+      txData.fromAddress == which ? txData.txType = 'out' : null;
+      txData.toAddress == which ? txData.txType = 'in' : null;
+      txData.toAddress == burnAddress ? txData.txType = 'fee' : null;
+      txData.fromAddress == burnAddress ? txData.txType = 'generated' : null;
+
+      txData.amount = castTokenBalance( tx.returnValues.value );
+
+      txData.feeAmount = castTokenBalance( tx.returnValues.feesBurned || 0, 2 );
+      txData.contribution = castTokenBalance( tx.returnValues.contribution || 0, 2 );
+
+      txData.payout = txData.fromAddress == which
+        ? castTokenBalance( tx.returnValues.payoutSender || 0 )
+        : castTokenBalance( tx.returnValues.payoutRecipient || 0 );
+
+      txData.message = 'n/a';
+
+      txData.hash = tx.transactionHash;
+      txData.logIndex = tx.logIndex;
+      txData.block = tx.blockNumber;
+
+      const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
+      txData.blockDate = blockDetails.timestamp;
+
+      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
+      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
+
+      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
+
+      if ( txData.txType == 'in' ) {
+        txData.title = txData.fromEntity;
+      }
+      else if ( txData.txType == 'out' ) {
+        txData.title = txData.toEntity;
+      }
+      else if ( txData.txType == 'fee' ) {
+        txData.title = getString( ui.fee );
+      }
+      else if ( txData.txType == 'generated' ) {
+        txData.title = getString( ui.community );
+      }
+
+      return txData;
+
+    } );
+
+    const a = await Promise.all( filteredAndEnhanced );
+    // console.log( a );
+    return a;
   }
 
   // previous versions
@@ -640,6 +608,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   V.setTokenTransaction = setTokenTransaction;
   V.getNetVAmount = getNetVAmount;
   V.getGrossVAmount = getGrossVAmount;
+  V.castTransfers = castTransfers;
 
   return {
     getWeb3Provider: getWeb3Provider,
@@ -651,7 +620,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
     getNetVAmount: getNetVAmount,
-    getGrossVAmount: getGrossVAmount
+    getGrossVAmount: getGrossVAmount,
+    castTransfers: castTransfers
   };
 
 } )();

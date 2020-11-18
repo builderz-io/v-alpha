@@ -165,8 +165,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $entityNavUl, $pill );
       }
 
-      // V.setNode( $entityNavUl, InteractionComponents.getStarted() );
-
       V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
 
       V.setNode( 'entity-nav', '' );
@@ -194,16 +192,17 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     }
 
-    /**
-     * animate, if path was provided
-     *
-     */
+    /* animate, if path was provided */
 
     const which = viewData.data[0].which;
 
     if ( which ) {
       animate( which );
     }
+
+    /* clear popup */
+
+    V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
 
   }
 
@@ -338,13 +337,34 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function resetOnClick( e ) {
     e.stopPropagation();
 
+    /* if a form is open, just close form first */
     if ( V.getNode( 'form' ) ) {
       handleCloseForms();
-      return;
     }
 
-    reset();
-    Page.draw( { position: 'closed', reset: false } );
+    /* else if an entity is being edited, just return to entity list first */
+    else if (
+      V.getState( 'active' ).path == '/me/edit' &&
+      V.getVisibility( '#pref-lang-edit' )
+    ) {
+      EntityList.draw( '/me/edit' );
+
+    }
+
+    // /* else if an entity was viewed, draw the Marketplace */
+    // else if (
+    //   V.getState( 'active' ).path.includes( 'profile' )
+    // ) {
+    //   Canvas.draw();
+    // }
+
+    /* else reset navigation, page and popup */
+    else {
+      reset();
+      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
+      Page.draw( { position: 'closed', reset: false, navReset: false } );
+    }
+
   }
 
   function handleCloseForms() {
@@ -355,11 +375,26 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function reset() {
-
     const menuStateObj = V.getState( 'header' );
     const width = window.innerWidth;
 
     deselect();
+
+    /* shorten entityNav */
+
+    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+
+    const entitiesViewed = Object.keys( entityNavOrder );
+
+    if ( entitiesViewed.length >= 50 ) {
+      entitiesViewed.forEach( entityPath => {
+        if ( entityNavOrder[entityPath].l > 40 ) {
+          console.log( entityPath );
+          delete entityNavOrder[entityPath];
+        }
+      } );
+      V.setCookie( 'entity-nav-order', entityNavOrder );
+    }
 
     Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
@@ -460,8 +495,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     view( presenter( data ) );
   }
 
+  function drawReset() {
+    reset();
+  }
+
   return {
-    draw: draw
+    draw: draw,
+    drawReset: drawReset,
   };
 
 } )();

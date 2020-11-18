@@ -48,16 +48,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           Profile.draw( res.data[0].path );
           Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
-          // Button.draw( 'plus search', { delay: 1 } );
-          VMap.draw(
-            {
-              type: 'Feature',
-              geometry: res.data[0].geometry,
-              profile: res.data[0].profile,
-              thumbnail: res.data[0].thumbnail,
-              path: res.data[0].path
-            }
-          );
 
           /**
            * Update "adminOf" Array of activeEntity in database
@@ -74,7 +64,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         else {
           Form.draw( 'error', res );
           e.target.addEventListener( 'click', handleSetEntity );
-          // Button.draw( /*'close */ 'set', { delay: 1 } );
           console.error( res.status );
         }
       } );
@@ -102,12 +91,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   // }
 
   function handleDrawSearchForm() {
-    Page.draw( { position: 'closed', reset: false } );
+    Page.draw( { position: 'closed', reset: false, navReset: false } );
     Form.draw( 'search' );
   }
 
   function handleDrawPlusForm() {
-    Page.draw( { position: 'closed', reset: false } );
+    Page.draw( { position: 'closed', reset: false, navReset: false } );
     Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
   }
 
@@ -137,6 +126,9 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     $send.addEventListener( 'click', handleSend );
 
     // V.setNode( DOM.$backUL, $back );
+
+    // setTimeout( () => { V.setNode( 'entity-nav > ul', InteractionComponents.getStarted(), 'prepend' ) }, 2000 );
+
     V.setNode( 'interactions > ul', [ /* $close, */ $plus, $filter, $search, $query, $set, $send ] );
   }
 

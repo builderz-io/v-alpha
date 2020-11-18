@@ -18,7 +18,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   const state = {};
 
-  const cache = {};
+  let cache = {};
 
   /* ================== public methods ================== */
 
@@ -72,6 +72,10 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function setCache( which, data ) {
     if ( data == 'clear' ) {
+      if ( which == 'entire cache' ) {
+        cache = {};
+        return;
+      }
       delete cache[which];
       return;
     }

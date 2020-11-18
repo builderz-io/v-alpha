@@ -109,7 +109,7 @@ exports.geoModule = true;   // enables/disables Location Service // Type Boolean
 
 exports.telegramModule = {
                            on: false,  // enables/disables Telegram Service // Type Boolean // 'true' to enable
-                           adminNotifications: true,  // enables/disables admin notification via Telegram // Type Boolean // 'true' to enable
+                           adminNotifications: false,  // enables/disables admin notification via Telegram // Type Boolean // 'true' to enable
                          }
 
 exports.emailModule = {

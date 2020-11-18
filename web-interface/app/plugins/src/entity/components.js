@@ -41,6 +41,52 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'border-radius': '50%',
       'display': 'block',
       'background': '#ddd',
+    },
+    'td-right': {
+      'max-width': '205px',
+      'word-wrap': 'break-word'
+    },
+    'share-by-email': {
+      color: 'gray',
+      position: 'relative',
+      top: '-3px',
+      left: '6px',
+    },
+    'toggle-switch__input': {
+      height: 0,
+      width: 0,
+      visibility: 'hidden'
+    },
+    'toggle-switch': {
+      'cursor': 'pointer',
+      'text-indent': '-9999px',
+      'width': '60px',
+      'height': '25px',
+      'background': 'grey',
+      'display': 'block',
+      'border-radius': '100px',
+      'position': 'relative',
+    },
+    'toggle-switch:after': {
+      'content': '\'\'',
+      'position': 'absolute',
+      'top': '3px',
+      'left': '5px',
+      'width': '26px',
+      'height': '19px',
+      'background': '#fff',
+      'border-radius': '90px',
+      'transition': '0.3s',
+    },
+    'toggle-switch__input:checked + .toggle-switch': {
+      background: '#bada55'
+    },
+    'toggle-switch__input:checked + .toggle-switch:after': {
+      left: 'calc(100% - 5px)',
+      transform: 'translateX(-100%)'
+    },
+    'toggle-switch:active:after': {
+      width: '130px'
     }
   } );
 
@@ -59,9 +105,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     spent: 'Budget spent',
 
     description: 'Description',
+    questionnaire: 'Questionnaire',
+    shortened: '[ ... shortened ]',
     prefLang: 'Preferred Languages',
     lang: 'App Language',
-    uPhrase: 'Entity Management Key',
+    management: 'Entity Management',
     ethAddress: 'Entity Ethereum Address',
     ethAddressReceiver: 'Receiving Ethereum Address',
     loc: 'Location',
@@ -69,7 +117,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     fin: 'Financial',
     social: 'Social',
     funding: 'Funding Status',
-    img: 'Image'
+    img: 'Image',
+    holder: 'Holder',
+    accessKeys: 'Access Keys',
+    deactivated: 'deactivated',
+    activated: 'activated',
+
+    emailSubject: 'Contacting you via',
+    emailGreeting: 'Dear',
+    socialSubject: 'is on'
   };
 
   function getString( string, scope ) {
@@ -78,12 +134,20 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
-  function handleEntryFocus() {
-    DOM.entry = this.value ? this.value : this.innerHTML;
-    if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
-      this.innerHTML = '';
-      this.value = '';
-    }
+  function handleEditProfileDraw( e ) {
+    const path = V.castPathOrId( e.target.innerHTML );
+    User.draw( path );
+  }
+
+  function handleHolderClick( e ) {
+    const path = V.castPathOrId( e.target.innerHTML );
+    V.setState( 'active', { navItem: path } );
+    V.setBrowserHistory( path );
+    Profile.draw( path );
+  }
+
+  function handleBaseLocationFocus() {
+    DOM.location = this.value;
   }
 
   function handleViewKeyFocus( e ) {
@@ -102,9 +166,38 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function handleEntryFocus() {
+
+    const $list = V.getNode( 'list' );
+    const $table = this.closest( 'table' );
+
+    const offset = ( $table ? $table.offsetTop + this.offsetTop : this.offsetTop )
+     - $list.getBoundingClientRect().height / 2;
+
+    $list.scrollTo( {
+      top: offset,
+      behavior: 'smooth'
+    } );
+
+    DOM.entry = this.value ? this.value : this.innerHTML;
+    if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
+      this.innerHTML = '';
+      this.value = '';
+    }
+  }
+
+  /* ============ event handlers (edit entity) ========== */
+
+  function handleActive() {
+    setField( 'status.active', this.checked ? true : false ).then( res => {
+      V.getNode( '.active__title' ).innerHTML = this.checked ? ui.activated : ui.deactivated;
+    } );
+  }
+
   function handleEntry() {
     let str, entry;
-    this.value ? str = this.value : str = this.innerHTML;
+    this.nodeName == 'TEXTAREA' ? str = this.value : str = this.innerHTML;
+
     str = V.stripHtml( str );
     const title = this.getAttribute( 'title' );
     const db = this.getAttribute( 'db' );
@@ -112,17 +205,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( str != DOM.entry ) {
       if ( str == '' ) {
         this.innerHTML = getString( ui.edit );
+        this.value = getString( ui.edit );
         setField( db + '.' + title, '' );
         return;
       }
 
-      if ( ['facebook', 'twitter', 'telegram'].includes( title ) ) {
+      if ( ['facebook', 'twitter', 'telegram', 'instagram', 'tiktok'].includes( title ) ) {
         str = str.endsWith( '/' ) ? str.slice( 0, -1 ) : str;
         const split = str.split( '/' );
         entry = split.pop().replace( '@', '' );
       }
       else if ( title == 'email' ) {
         entry = str.includes( '@' ) ? str.includes( '.' ) ? str : getString( ui.invalid ) : str == '' ? '' : getString( ui.invalid );
+      }
+      else if ( title == 'youtube' ) {
+        // must be a channel, not a video
+        entry = str.includes( '/c/' ) ? str : getString( ui.invalid );
       }
       else if ( title == 'website' ) {
         entry = str.includes( '.' ) ? str : getString( ui.invalid );
@@ -133,8 +231,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       else if ( title == 'currentUTC' ) {
         entry = isNaN( str ) ? getString( ui.invalid ) : str;
       }
-      else if ( title == 'description' ) {
-        entry = str.length > 2000 ? getString( ui.invalid ) : str;
+      else if ( ['description', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'].includes( title ) ) {
+        const words = str.split( ' ' );
+        if ( words.length > 2000 ) {
+          words.length = 2000;
+          entry = words.join( ' ' ) + ' ' + getString( ui.shortened );
+        }
+        else {
+          entry = words.join( ' ' );
+        }
       }
       else {
         entry = str;
@@ -149,10 +254,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
       setField( db + '.' + title, entry );
     }
-  }
-
-  function handleBaseLocationFocus() {
-    DOM.location = this.value;
   }
 
   function handleBaseLocation() {
@@ -176,6 +277,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         lng: lng,
         value: value,
         rand: false
+      } ).then( res => {
+        VMap.draw(
+          [{
+            type: 'Feature',
+            geometry: res.data[0].geometry,
+            profile: res.data[0].profile,
+            thumbnail: res.data[0].thumbnail,
+            path: res.data[0].path
+          }]
+        );
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );
@@ -193,22 +304,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        const fullId = V.aE().fullId;
-        const auth = V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' );
+        const fullId = V.getState( 'active' ).lastViewed; // V.aE().fullId;
         const imageUpload = V.getState( 'imageUpload' );
         const tinyImageUpload = V.getState( 'tinyImageUpload' );
         Object.assign( imageUpload, { entity: fullId } );
         Object.assign( tinyImageUpload, { entity: fullId } );
-        V.setEntity( fullId, {
-          field: 'thumbnail',
-          data: imageUpload,
-          auth: auth
-        } ).then( () => {
-          V.setEntity( fullId, {
-            field: 'tinyImage',
-            data: tinyImageUpload,
-            auth: auth
-          } );
+        setField( 'thumbnail', imageUpload ).then( response => {
+          setField( 'tinyImage', tinyImageUpload );
           V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
           V.setNode( '#img-upload-profile__preview', '' );
           V.setNode( '#img-upload-profile__preview', V.cN( {
@@ -218,12 +320,34 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             },
             src: res.src
           } ) );
+
+          /* also change cached image after an edit */
+
+          updateImageInCache( 'managedEntities', response, fullId );
+          updateImageInCache( 'all', response, fullId );
+          updateImageInCache( response.data[0].profile.role, response, fullId );
+
         } );
       }
     } );
   }
 
   /* ================== private methods ================= */
+
+  function updateImageInCache( which, response, fullId ) {
+    const cache = V.getCache( which );
+    if ( cache ) {
+      const entities = cache.data[0].e || cache.data;
+      for ( let i = 0; i < entities.length; i++ ) {
+        const entity = ( entities[i].data ? entities[i].data[0] : undefined ) || entities[i];
+        if ( entity.fullId == fullId ) {
+          entity.thumbnail = response.data[0].thumbnail;
+          // entity.tinyImage = response.data[0].tinyImage;
+          break;
+        }
+      }
+    }
+  }
 
   function castCard( $innerContent, whichTitle ) {
     return CanvasComponents.card( $innerContent, whichTitle );
@@ -234,47 +358,64 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'table',
       c: 'w-full pxy',
       h: titles.map( title => {
-        const inner = entity[db] ? entity[db][title] : undefined;
+        const inner = entity[db] ? entity[db][title] : false;
+        let linkedInner;
 
-        const leftTd = {
-          t: 'td',
-          c: 'capitalize',
-          h: getString( title )
-        };
-
-        const editTd = setEditable( {
-          t: 'td',
-          c: 'txt-right',
-          a: { title: title, db: db },
-          h: inner
-        } );
-
-        const noEditTd = {
-          t: 'td',
-          c: 'txt-right' + ( css ? ' ' + css : '' ),
-          h: inner
-        };
-
-        let $row = V.cN( {
-          t: 'tr',
-          h: [
-            leftTd,
-            editable ? editTd : noEditTd,
-          ]
-        } );
-
-        if ( !inner ) {
-          $row = editable ? V.cN( {
-            t: 'tr',
-            h: [
-              leftTd,
-              editTd
-            ]
-          } ) : '';
+        if ( inner ) {
+          switch ( title ) {
+          case 'facebook':
+            linkedInner = '<a href="https://facebook.com/' + inner + '">' + inner + '</a>';
+            break;
+          case 'twitter':
+            linkedInner = '<a href="https://twitter.com/' + inner + '">' + inner + '</a>';
+            break;
+          case 'telegram':
+            linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
+            break;
+          case 'instagram':
+            linkedInner = '<a href="https://www.instagram.com/' + inner + '">' + inner + '</a>';
+            break;
+          case 'tiktok':
+            linkedInner = '<a href="https://tiktok.com/@' + inner + '">' + inner + '</a>';
+            break;
+          case 'youtube':
+            linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
+            break;
+          case 'email':
+            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner.replace( /@.+/, '' ) + '</a>';
+            break;
+          case 'website':
+            linkedInner = V.castLinks( inner ).links;
+            break;
+          default:
+            linkedInner = inner;
+          }
         }
 
-        return $row;
-
+        return V.cN( {
+          x: inner || editable,
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              c: 'capitalize',
+              h: getString( title )
+            },
+            setEditable( {
+              x: editable,
+              t: 'td',
+              c: 'td-right txt-right',
+              a: { title: title, db: db },
+              h: inner
+            } ),
+            {
+              x: !editable,
+              t: 'td',
+              c: 'td-right txt-right' + ( css ? ' ' + css : '' ),
+              h: inner ? linkedInner : ''
+            }
+          ]
+        } );
       } ).filter( item => {return item != ''} )
     } );
 
@@ -299,7 +440,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setField( field, data ) {
-    V.setEntity( V.aE().fullId, {
+    return V.setEntity( V.getState( 'active' ).lastViewed /* V.aE().fullId */, {
       field: field,
       data: data,
       auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
@@ -316,7 +457,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function castUphraseNode( phrase, css = '' ) {
     return V.cN( {
       t: 'div',
-      c: 'pxy ' + css,
+      c: 'pxy fs-s' + css,
       h: [
         { t: 'span', h: phrase.length > 18 ? '0x' : phrase.length ? 'vx' : '' },
         {
@@ -376,13 +517,60 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function questionnaireCard() {
+    const questions = V.getSetting( 'neQuestionnaire' );
+    const responses = entity.questionnaire;
+
+    if ( ['business', 'institution'].includes( entity.profile.role ) && ( responses || editable ) ) {
+      const $innerContent = V.cN( {
+        t: 'div',
+        h: questions.map( question => {
+          const response = responses ? responses['q' + question.qid] || false : false;
+          return V.cN( {
+            t: 'div',
+            h: [
+              {
+                x: editable || response,
+                t: 'h3',
+                c: 'font-bold pxy AAA',
+                h: question.q
+              },
+              {
+                x: editable,
+                t: 'textarea',
+                c: 'w-full pxy BBB',
+                a: { title: 'q' + question.qid, db: 'questionnaire' },
+                e: {
+                  focus: handleEntryFocus,
+                  blur: handleEntry
+                },
+                h: response ? response : getString( ui.edit ),
+              },
+              {
+                x: !editable && response,
+                t: 'div',
+                c: 'pxy CCC',
+                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).iframes,
+              }
+            ]
+          } );
+        } )
+      } );
+      return castCard( $innerContent, getString( ui.questionnaire ) );
+    }
+
+    return '';
+
+  }
+
   function preferredLangsCard() {
     const langs = entity.properties ? entity.properties.preferredLangs : undefined;
 
     if( langs || ( !langs && editable ) ) {
       const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
-        c: 'pxy',
+        c: 'pxy w-full',
+        i: 'pref-lang-edit',
         a: { title: 'preferredLangs', db: 'properties' },
         h: langs,
       } ) : {
@@ -397,15 +585,52 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function uPhraseCard() {
+  function managementCard() {
+    const active = entity.status.active;
+    const $innerContent = V.cN( { t: 'div' } );
+
+    V.setNode( $innerContent, V.cN( {
+      t: 'div',
+      c: 'pxy flex ',
+      h: [
+        {
+          t: 'input',
+          i: 'active',
+          c: 'toggle-switch__input',
+          a: {
+            type: 'checkbox',
+            checked: active ? true : false
+          },
+          e: {
+            change: handleActive
+          }
+        },
+        {
+          t: 'label',
+          c: 'toggle-switch',
+          a: { for: 'active' },
+          h: 'toggle'
+        },
+        {
+          t: 'p',
+          c: 'active__title fs-xs pxy',
+          h: getString( active ? ui.activated : ui.deactivated )
+        },
+      ]
+    } ) );
+
+    return castCard( $innerContent, getString( ui.management ) );
+  }
+
+  function accessKeysCard() {
     const uPhrase = entity.private.uPhrase;
+    const $innerContent = V.cN( { t: 'div' } );
+
     if( uPhrase ) {
-      const $innerContent = castUphraseNode( uPhrase );
-      return castCard( $innerContent, getString( ui.uPhrase ) );
+      V.setNode( $innerContent, V.cN( { t: 'div', h: castUphraseNode( uPhrase ) } ) );
     }
-    else {
-      return '';
-    }
+
+    return castCard( $innerContent, getString( ui.accessKeys ) );
   }
 
   function evmAddressCard() {
@@ -497,7 +722,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                   value: loc
                 },
                 e: {
-                  focus: handleBaseLocationFocus,
+                // focus: handleBaseLocationFocus,
                 // blur: handleBaseLocation
                 }
               } : {
@@ -507,22 +732,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
             ]
           },
-          {
-            t: 'tr',
-            h: [
-              { t: 'td', c: 'capitalize', h: getString( ui.UTCOffset ) },
-              editable ? setEditable( {
-                t: 'td',
-                c: 'txt-right',
-                a: { title: 'currentUTC', db: 'properties' },
-                h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-              } ) : {
-                t: 'td',
-                c: 'txt-right',
-                h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-              },
-            ]
-          }
+          // {
+          //   t: 'tr',
+          //   h: [
+          //     { t: 'td', c: 'capitalize', h: getString( ui.UTCOffset ) },
+          //     editable ? setEditable( {
+          //       t: 'td',
+          //       c: 'txt-right',
+          //       a: { title: 'currentUTC', db: 'properties' },
+          //       h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+          //     } ) : {
+          //       t: 'td',
+          //       c: 'txt-right',
+          //       h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
+          //     },
+          //   ]
+          // }
         ]
       } );
       return castCard( $innerContent, getString( ui.loc ) );
@@ -533,10 +758,43 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityCard() {
-    const titles = ['title', 'tag', 'role'];
+    const titles = ['title', 'tag' /*, 'role' */];
     const db = 'profile';
     const $innerContent = castTableNode( titles, db, false, 'capitalize' );
-    return castCard( $innerContent, getString( ui.entity ) );
+
+    // get owner into view
+    let $owner;
+    if (
+      entity.profile.title != entity.owners[0].ownerName &&
+      entity.profile.tag != entity.owners[0].ownerTag
+    ) {
+      $owner = V.cN( {
+        t: 'table',
+        c: 'pxy w-full',
+        h: {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: getString( ui.holder )
+            },
+            {
+              t: 'td',
+              c: 'txt-right cursor-pointer',
+              h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
+              k: handleHolderClick
+            }
+          ]
+        }
+      } );
+    }
+    else {
+      $owner = '';
+    }
+    const $combined = V.cN( { t: 'div', c: 'w-full' } );
+    V.setNode( $combined, [$innerContent, $owner] );
+
+    return castCard( $combined, getString( ui.entity ) );
   }
 
   function financialCard() {
@@ -554,7 +812,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialCard() {
-    const titles = ['facebook', 'twitter', 'telegram', 'website', 'email'];
+    const titles = ['facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', 'email'];
     const db = 'social';
     const $innerContent = castTableNode( titles, db, editable );
     return $innerContent ? castCard( $innerContent, getString( ui.social ) ) : '';
@@ -562,20 +820,50 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function entityListCard( entity ) {
     const uPhrase = entity.private.uPhrase;
-    const privateKey = entity.evmCredentials ? entity.evmCredentials.privateKey ? entity.evmCredentials.privateKey : '' : '';
-    const $innerContent = V.cN( {
+    const privateKey = entity.private.evmCredentials ? entity.private.evmCredentials.privateKey || '' : '';
+
+    const $cardContentFrame = V.cN( {
       t: 'div',
+      c: 'contents'
+    } );
+
+    const $topLeft = V.cN( {
+      t: 'div',
+      c: 'card__top-left flex flex-wrap justify-center items-center pxy',
+      h: [
+        MarketplaceComponents.castCircle( entity, 'editable' ),
+        {
+          t: 'p',
+          c: 'pxy fs-s font-bold capitalize cursor-pointer',
+          h: entity.profile.role,
+        },
+      ]
+    } );
+
+    const $topRight = V.cN( {
+      t: 'div',
+      c: 'card__top-right items-center pxy',
       h: [
         {
           t: 'h2',
-          c: 'pxy font-bold fs-l',
+          c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
+          k: handleEditProfileDraw
+        },
+        {
+          t: 'p',
+          c: 'pxy fs-s capitalize',
+          h: getString( ui.accessKeys ),
         },
         castUphraseNode( uPhrase ),
         castUphraseNode( privateKey )
-      ],
+      ]
     } );
-    return castCard( $innerContent, '' );
+
+    V.setNode( $cardContentFrame, [ $topLeft, $topRight ] );
+
+    return castCard( $cardContentFrame, '' );
+
   }
 
   function appLanguageCard() {
@@ -707,6 +995,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function roleCard() {
+    return V.cN( {
+      t: 'div',
+      c: 'pxy',
+      h: {
+        t: 'h3',
+        c: 'pxy txt-center capitalize',
+        h: entity.profile.role
+      }
+    } );
+  }
+
   function addOrChangeImage() {
     let $innerContent;
     // const tinyImage = entity.tinyImage;
@@ -720,7 +1020,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'div',
-            c: 'pxy',
+            i: 'img-upload-profile__preview',
+            h: img
+          },
+          {
+            t: 'div',
+            c: 'pxy txt-right',
             h: [
               {
                 t: 'label',
@@ -744,11 +1049,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 }
               }
             ]
-          },
-          {
-            t: 'div',
-            i: 'img-upload-profile__preview',
-            h: img
           },
           // {
           //   t: 'p',
@@ -799,6 +1099,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialShareButtons() {
+    // https://sharingbuttons.io/
+    const subject = `${entity.profile.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
+    const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.paths.entity}`;
+    const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
+
     return V.cN( {
       t: 'div',
       c: 'pxy',
@@ -822,39 +1127,46 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           },
           h: `
 
-      <a class="inline-block pxy" href="https://facebook.com/sharer/sharer.php?u=http%3A%2F%2Fbuilderz.io${entity.paths.entity}" target="_blank" rel="noopener" aria-label="">
+      <a class="inline-block pxy" href="https://facebook.com/sharer/sharer.php?u=${ profileLink }" target="_blank" rel="noopener">
         <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
           </div>
         </div>
       </a>
 
-      <a class="inline-block pxy" href="https://twitter.com/intent/tweet/?text=Found%20this%20on%20builderz.io&amp;url=http%3A%2F%2Fbuilderz.io${entity.paths.entity}" target="_blank" rel="noopener" aria-label="">
+      <a class="inline-block pxy" href="https://twitter.com/intent/tweet/?text=${ subject }&amp;url=${ profileLink }" target="_blank" rel="noopener">
         <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
           </div>
         </div>
       </a>
 
-      <a class="inline-block pxy" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fbuilderz.io&amp;title=Found%20this%20on%20builderz.io&amp;summary=Found%20this%20on%20builderz.io&amp;source=http%3A%2F%2Fbuilderz.io${entity.paths.entity}" target="_blank" rel="noopener" aria-label="">
+      <a class="inline-block pxy" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2F${ window.location.hostname }&amp;title=${ subject }&amp;summary=${ subject }&amp;source=${ profileLink }" target="_blank" rel="noopener">
         <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z"/></svg>
           </div>
         </div>
       </a>
 
-      <a class="inline-block pxy" href="https://telegram.me/share/url?text=Found%20this%20on%20builderz.io&amp;url=http%3A%2F%2Fbuilderz.io${entity.paths.entity}" target="_blank" rel="noopener" aria-label="">
+      <a class="inline-block pxy" href="https://telegram.me/share/url?text=${ subject }&amp;url=${ profileLink }" target="_blank" rel="noopener">
         <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.707 8.475C.275 8.64 0 9.508 0 9.508s.284.867.718 1.03l5.09 1.897 1.986 6.38a1.102 1.102 0 0 0 1.75.527l2.96-2.41a.405.405 0 0 1 .494-.013l5.34 3.87a1.1 1.1 0 0 0 1.046.135 1.1 1.1 0 0 0 .682-.803l3.91-18.795A1.102 1.102 0 0 0 22.5.075L.706 8.475z"/></svg>
           </div>
         </div>
       </a>
 
+      <a class="share-by-email font-bold" href="mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }">@</a>
+
  `
         }]
     } );
   }
 
+  /*
+  <a class="share-by-email font-bold" href="mailto:?subject=${ entity.fullId }%20is%20on%20${ window.location.hostname }&amp;
+   body=Profile%20Link:%20%3Ca+href%3D%22${ window.location.hostname }${entity.paths.entity}%22%3E${ window.location.hostname }${entity.paths.entity}%3C%2Fa%3E
+   <br/><br/>My%20Profile%20Link:%3Ca+href%3D%22${entity.fullId}%22%3E${entity.fullId}%3C%2Fa%3E">@</a>
+*/
   /* ====================== export ====================== */
 
   return {
@@ -862,7 +1174,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     castUphraseNode: castUphraseNode,
     topcontent: topcontent,
     descriptionCard: descriptionCard,
-    uPhraseCard: uPhraseCard,
+    questionnaireCard: questionnaireCard,
+    managementCard: managementCard,
+    accessKeysCard: accessKeysCard,
     evmAddressCard: evmAddressCard,
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,
@@ -874,6 +1188,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     appLanguageCard: appLanguageCard,
     fundingStatusCard: fundingStatusCard,
     thumbnailCard: thumbnailCard,
+    roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,
     socialShareButtons: socialShareButtons
   };

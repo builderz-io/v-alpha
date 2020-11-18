@@ -23,13 +23,29 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     const fullId = V.castPathOrId( which );
 
-    const query = await V.getEntity( fullId );
+    const inCache = V.getCache().all ? V.getCache().all.data.find( entity => {
+      return entity.path == which;
+    } ) : undefined;
+
+    let query;
+
+    if ( inCache ) {
+      query = {
+        success: true,
+        data: [inCache]
+      };
+    }
+    else {
+      query = await V.getEntity( fullId );
+    }
 
     const mapData = [];
 
     if ( query.success ) {
 
-      V.setState( 'active', { lastViewed: query.data[0].fullId } );
+      const entity = query.data[0];
+
+      V.setState( 'active', { lastViewed: entity.fullId } );
 
       /*
        * Pool data
@@ -38,10 +54,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
-      if ( query.data[0].profile.role == 'pool' ) {
+      if ( entity.profile.role == 'pool' ) {
         if ( V.aA() || !V.aE() ) {
-          if ( query.data[0].evmCredentials ) {
-            txHistory = await V.getAddressHistory( query.data[0].evmCredentials.address );
+          if ( entity.evmCredentials ) {
+            txHistory = await V.getAddressHistory( entity.evmCredentials.address );
             if ( txHistory.success && txHistory.data.length ) {
               txHistory.data.forEach( tx => {
                 tx.txType == 'out'? sendVolume += Number( tx.amount ) : null;
@@ -54,14 +70,14 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           }
         }
         else {
-          if ( !query.data[0].stats ) {
-            Object.assign( query.data[0], { stats: {
+          if ( !entity.stats ) {
+            Object.assign( entity, { stats: {
               sendVolume: 0,
               receiveVolume: 0,
             } } );
           }
-          sendVolume = query.data[0].stats.sendVolume;
-          receiveVolume = query.data[0].stats.receiveVolume;
+          sendVolume = entity.stats.sendVolume;
+          receiveVolume = entity.stats.receiveVolume;
         }
       }
 
@@ -72,10 +88,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       mapData.push( {
         type: 'Feature',
-        geometry: query.data[0].geometry,
-        profile: query.data[0].profile,
-        thumbnail: query.data[0].thumbnail,
-        path: query.data[0].path
+        geometry: entity.geometry,
+        profile: entity.profile,
+        thumbnail: entity.thumbnail,
+        path: entity.path
       } );
 
       return {
@@ -83,7 +99,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         status: 'entities retrieved',
         data: [{
           which: which,
-          entity: query.data[0],
+          entity: entity,
           sendVolume: sendVolume,
           receiveVolume: receiveVolume,
           mapData: mapData,
@@ -104,6 +120,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     if ( data.success ) {
 
+      /**
+       * sets up the profile data for use in components
+       *
+       */
+
       UserComponents.setData( {
         entity: data.data[0].entity,
         editable: false
@@ -113,13 +134,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         UserComponents.thumbnailCard(),
+        UserComponents.roleCard(),
         UserComponents.entityCard(),
+        UserComponents.descriptionCard(),
+        UserComponents.questionnaireCard(),
+        UserComponents.socialCard(),
+        UserComponents.locationCard(),
+        UserComponents.preferredLangsCard(),
         UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.financialCard(),
-        UserComponents.descriptionCard(),
-        UserComponents.locationCard(),
-        UserComponents.socialCard(),
-        UserComponents.preferredLangsCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.socialShareButtons(),
@@ -143,6 +166,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview() {
+
+    /**
+     * removes "Get Started"/"Watch intro" button, to exclude it
+     * from "last position" update.
+     *
+     */
+
+    V.setNode( '#get-started', 'clear' );
+
     Button.draw( 'all', { fade: 'out' } );
 
     Page.draw( {

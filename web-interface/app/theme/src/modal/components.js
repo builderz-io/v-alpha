@@ -19,6 +19,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     welcome: 'Welcome',
     connectedAddress: 'Address connected',
     confInWallet: 'Confirm in wallet ... ',
+    submitted: 'submitted ...',
     enableWallet: 'Enable a crypto wallet in your browser, for example',
     getMetaMask: 'Get MetaMask',
     signTx: 'Sign Transaction',
@@ -37,7 +38,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     loggedOut: 'You are logged out',
     txSent: '✅ Sent to network',
     txSuccess: '✅ Transaction successful',
-    error: 'An error occured',
+    error: 'An error occured. Maybe the wallet is locked?',
     wait: 'Please wait... requesting data',
     walletLocked: 'Could not unlock wallet',
     noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
@@ -156,7 +157,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setEntity( entityData ).then( res => {
       if ( res.success ) {
         console.log( 'response: ', res );
-        V.setCache( 'all', 'clear' );
+        V.setCache( 'entire cache', 'clear' );
         setActiveEntityState( res );
       }
       else {
@@ -178,11 +179,16 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     e.target.removeEventListener( 'click', handleTransaction, false );
 
+    const $btn = V.getNode( '#sign-transaction' );
+    $btn.style.background = 'white';
+    $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
     if ( V.aA() ) {
-      const $btn = V.getNode( '#sign-transaction' );
-      $btn.style.background = 'white';
-      $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
       $btn.innerHTML = getString( ui.confInWallet );
+    }
+    else {
+      // $btn.innerHTML = getString( ui.submitted );
+      Modal.draw( 'transaction sent' );
+      V.drawHashConfirmation( String( V.getState( 'active' ).transaction.data[0].timeSecondsUNIX ) );
     }
 
     const aTx = V.getState( 'active' ).transaction;
@@ -194,24 +200,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         if ( res.success ) {
-          if ( !V.aA() ) {
-            Modal.draw( 'transaction successful' );
-            Account.drawHeaderBalance();
-          }
-          else {
-            adminNotify( 'successfully' );
-          }
+          V.drawTxConfirmation( res.data[0] );
+          Account.drawHeaderBalance();
+          adminNotify( 'successfully' );
         }
         else {
-          adminNotify( 'unsuccessfully' );
           Modal.draw( 'error' );
           console.log( res );
+          adminNotify( 'unsuccessfully' );
         }
       } )
       .catch( err => {
-        adminNotify( 'unsuccessfully' );
         console.error( err );
         Modal.draw();
+        adminNotify( 'unsuccessfully' );
       } );
   }
 

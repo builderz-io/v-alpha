@@ -5,7 +5,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   *
   * List of tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
   * Locations: Map Center [ 43.776, 4.63 ], Berlin [ 52.522, 13.383 ], Geneva [ 46.205, 6.141 ]
-  *
+  *            Chicago [41.858, -87.964]
   */
 
   'use strict';
@@ -97,11 +97,36 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       // if( !viMap.getZoom() == 3 ) {
-      viMap.setView( [geo[1] - 9, geo[0]], 3 );
+      // viMap.setView( [geo[1] - 9, geo[0]], 3 );
+      viMap.setView( [41.858, -87.964], 8 );
       // }
 
       featureLayer.addTo( viMap );
     }
+  }
+
+  function castPopup( feature ) {
+    return V.cN( {
+      t: 'div',
+      c: '',
+      h: [
+        {
+          t: 'p',
+          c: 'font-bold txt-center',
+          h: feature.profile.fullId
+        },
+        MarketplaceComponents.castCircle( {
+          thumbnail: feature.thumbnail,
+          profile: { title: feature.profile.title },
+          path: feature.path
+        } ),
+        {
+          t: 'p',
+          c: 'fs-s capitalize txt-center',
+          h: feature.profile.role
+        },
+      ]
+    } );
   }
 
   async function launch() {
@@ -151,30 +176,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function castPopup( feature ) {
-    return V.cN( {
-      t: 'div',
-      c: '',
-      h: [
-        {
-          t: 'p',
-          c: 'font-bold txt-center',
-          h: feature.profile.fullId
-        },
-        MarketplaceComponents.castCircle( {
-          thumbnail: feature.thumbnail,
-          profile: { title: feature.profile.title },
-          path: feature.path
-        } ),
-        {
-          t: 'p',
-          c: 'fs-s capitalize txt-center',
-          h: feature.profile.role
-        },
-      ]
-    } );
-  }
-
   /* ============ public methods and exports ============ */
 
   function draw( features ) {
@@ -184,7 +185,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    launch: launch,
     draw: draw,
+    setMap: setMap,
   };
 
 } )();

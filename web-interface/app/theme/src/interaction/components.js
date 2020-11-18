@@ -67,6 +67,12 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   //   }
   // }
 
+  function handleGetStarted() {
+    V.setState( 'active', { navItem: '/media' } );
+
+    setTimeout( () => { V.getNode( '[path="/media"]' ).click() }, 350 );
+  }
+
   /* ================== private methods ================= */
 
   function img( icon, css ) {
@@ -523,6 +529,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function getStarted() {
     return V.cN( {
       t: 'li',
+      i: 'get-started',
       s: {
         getstarted: {
           background: 'rgb(255,112,148)',
@@ -531,7 +538,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         }
       },
       c: 'pill getstarted flex justify-center items-center rounded-full cursor-pointer no-txt-select whitespace-no-wrap',
-      h: getString( ui.getStarted )
+      h: getString( ui.getStarted ),
+      k: handleGetStarted
     } );
   }
 

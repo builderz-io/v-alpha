@@ -90,21 +90,21 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           role: 'media',
         },
         draw: function() {
-          Media.draw( '/media', { feature: 'https://youtu.be/5eTCZ9L834s' } );
+          Media.draw( '/media', { feature: 'https://youtu.be/kJbto4TISKA' } );
         }
       },
-      {
-        title: 'Moocs',
-        path: '/media/moocs',
-        use: {
-          button: 'plus search',
-          form: 'new entity',
-          role: 'mooc',
-        },
-        draw: function() {
-          Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
-        }
-      }
+      // {
+      //   title: 'Moocs',
+      //   path: '/media/moocs',
+      //   use: {
+      //     button: 'plus search',
+      //     form: 'new entity',
+      //     role: 'mooc',
+      //   },
+      //   draw: function() {
+      //     Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
+      //   }
+      // }
     ] );
   }
 

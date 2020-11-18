@@ -206,14 +206,29 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     //   V.setState( 'throttle', setTimeout( refresh, 200 ) );
     // };
 
+    window.onresize = function() {
+
+      // handle mobile keyboard
+
+      const s = V.getState( 'screen' );
+
+      if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
+        V.getNode( 'page' ).classList.add( 'page-full-screen' );
+      }
+      else {
+        V.getNode( 'page' ).classList.remove( 'page-full-screen' );
+      }
+    };
+
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
-        e.preventDefault();
-        handleKeyboard( ['sign-transaction', 'plus', 'set', 'name-new', 'query'] );
+        // e.preventDefault();
+        handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
+        V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
         handleKeyboard( ['close', 'modal-close'] );
       }
     } );
@@ -239,6 +254,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      * Canvas view renders on initial page load, reload and history change
      *
      */
+
+    Chat.drawMessageForm( 'clear' );
 
     setNavStates(); // if !serviceNav
 

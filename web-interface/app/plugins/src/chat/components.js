@@ -448,10 +448,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.castNode( {
       tag: 'li',
       classes: 'w-screen pxy',
+      a: {
+        id: msg._id
+      },
       y: style,
       html: '<message style="background:' + background + '" class="message__container flex card-shadow rounded bkg-white pxy">' +
                   '<div class="font-medium pxy">' +
-                    ( msg.sender == 'Me' ? '' : '<p onclick="Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')" >' + msg.sender + '</p>' ) +
+                    ( msg.sender == 'Me' || msg.hideSender ? '' : '<p onclick="Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')" >' + msg.sender + '</p>' ) +
                     '<p class="chat-link">' + linkedMsg.iframes + '</p>' +
                   '</div>' +
               '</message>'

@@ -5,6 +5,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
+  const production = false;
+
   const settings = {
 
     entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
@@ -12,22 +14,21 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    // socketHost: 'http://localhost',
-    // socketPort: 6023,
-    socketHost: 'https://buildersmongo.valueinstrument.org', // cocooonmongo // omit trailing slash
-    socketPort: 443,
+    socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // buildersmongo // omit trailing slash
+    socketPort: production ? 443 : 6022,
 
-    useBuilds: false,
+    useBuilds: production ? false : false,
 
-    sendLogsToServer: true,
+    sendLogsToServer: production ? false : false,
 
     subscribeToChainEvents: false,
-    balanceCheckInterval: 20, // in sec
+    balanceCheckInterval: 10, // in sec
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    drawMap: true,
+    drawMap: production ? true : false,
     marketCacheDuration: 3, // in minutes
+    managedEntitiesCacheDuration: 5, // in minutes
 
     thumbnailWidth: 420, // Number in px
     thumbnailQuality: 0.85, // Number from 0 to 1
@@ -39,9 +40,46 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
-    appVersion: 'v2 0.8.0',
-    entityDocVersion: 'v0.20 - valueinstrument.org',
+    appVersion: 'v2 0.8.6',
+    entityDocVersion: 'v0.3 - valueinstrument.org',
 
+    neQuestionnaire: [
+
+      /*
+       * do not change the qid of the question once used in production,
+       * max 10 questions
+       *
+       */
+
+      {
+        q: 'What is the project about',
+        qid: 1
+      },
+      {
+        q: 'How is the system broken',
+        qid: 2
+      },
+      {
+        q: 'What is the goal',
+        qid: 3
+      },
+      {
+        q: 'What is the system',
+        qid: 4
+      },
+      {
+        q: 'What is the shape of capital that is needed',
+        qid: 5
+      },
+      {
+        q: 'What is the point of leverage',
+        qid: 6
+      },
+      {
+        q: 'What is the trim tab, the thing that it changes, catalyses a system shift or phase change',
+        qid: 7
+      }
+    ]
   };
 
   const networks = {
