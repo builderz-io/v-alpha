@@ -210,13 +210,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         return;
       }
 
-      if ( ['facebook', 'twitter', 'telegram'].includes( title ) ) {
+      if ( ['facebook', 'twitter', 'telegram', 'instagram', 'tiktok'].includes( title ) ) {
         str = str.endsWith( '/' ) ? str.slice( 0, -1 ) : str;
         const split = str.split( '/' );
         entry = split.pop().replace( '@', '' );
       }
       else if ( title == 'email' ) {
         entry = str.includes( '@' ) ? str.includes( '.' ) ? str : getString( ui.invalid ) : str == '' ? '' : getString( ui.invalid );
+      }
+      else if ( title == 'youtube' ) {
+        // must be a channel, not a video
+        entry = str.includes( '/c/' ) ? str : getString( ui.invalid );
       }
       else if ( title == 'website' ) {
         entry = str.includes( '.' ) ? str : getString( ui.invalid );
@@ -367,6 +371,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             break;
           case 'telegram':
             linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
+            break;
+          case 'instagram':
+            linkedInner = '<a href="https://www.instagram.com/' + inner + '">' + inner + '</a>';
+            break;
+          case 'tiktok':
+            linkedInner = '<a href="https://tiktok.com/@' + inner + '">' + inner + '</a>';
+            break;
+          case 'youtube':
+            linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
             break;
           case 'email':
             linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner.replace( /@.+/, '' ) + '</a>';
@@ -799,7 +812,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialCard() {
-    const titles = ['facebook', 'twitter', 'telegram', 'website', 'email'];
+    const titles = ['facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', 'email'];
     const db = 'social';
     const $innerContent = castTableNode( titles, db, editable );
     return $innerContent ? castCard( $innerContent, getString( ui.social ) ) : '';

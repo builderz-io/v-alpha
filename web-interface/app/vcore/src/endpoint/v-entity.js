@@ -12,7 +12,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
     maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength
     maxHumanWords: 3,  // max allowed words in human entity names // MUST be less or equal to capWordLength
-    maxWordLength: 12,  // max allowed length of each word in name
+    maxWordLength: 13,  // max allowed length of each word in name
   };
 
   const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
@@ -21,19 +21,19 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ============== user interface strings ============== */
 
   const ui = {
-    invalidTitle: 'invalid title',
-    invalidChar: 'invalid character',
-    maxLength: 'max 12 characters in a word',
-    min2Adjecent: 'min 2 adjecent letters',
-    maxHuman: 'max 3 words',
-    maxEntity: 'max 7 words',
-    tooLong: 'max 200 characters',
-    tooShort: 'min 2 characters',
+    invalidTitle: 'Invalid title',
+    invalidChar: 'Title: invalid character',
+    maxLength: 'Title: max 12 characters in a word',
+    min2Adjecent: 'Title: min 2 adjecent letters',
+    maxHuman: 'Title: max 3 words',
+    maxEntity: 'Title: max 7 words',
+    tooLong: 'Title: max 200 characters',
+    tooShort: 'Title: min 2 characters',
     free: 'free',
-    targetRange: 'target must be within 0 - 9999',
-    isNaN: 'target must be a number',
-    noUnit: 'please add a unit, such as "hour"',
-    noTarget: 'please add a target'
+    targetRange: 'Target must be within 0 - 9999',
+    isNaN: 'Target must be a number',
+    noUnit: 'Please add a unit, such as "hour"',
+    noTarget: 'Please add a target'
   };
 
   function getString( string, scope ) {
@@ -343,7 +343,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'invalid title',
-        message: error
+        message: '🔮' + ' ' + error
       };
     }
     else {

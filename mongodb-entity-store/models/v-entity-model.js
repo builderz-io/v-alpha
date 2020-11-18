@@ -100,6 +100,9 @@ var entitySchema = mongoose.Schema( {
   social: {
     facebook: String,
     twitter: String,
+    instagram: String,
+    tiktok: String,
+    youtube: String,
     telegram: String,
     website: String,
     email: String,

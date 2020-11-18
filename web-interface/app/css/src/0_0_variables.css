@@ -7,7 +7,7 @@
   --card-height: 172px;
 
   --entity-nav-top: 7px;
-  --entity-nav-left: 61px;
+  --entity-nav-left: 101px; /* 61 */
   --user-nav-top: 7px;
   --user-nav-left: 61px;
   --service-nav-top: 4rem;
@@ -84,7 +84,7 @@
 @media screen and (min-width: 800px) {
     :root {
       --entity-nav-top: 21px;
-      --entity-nav-left: 84px;
+      --entity-nav-left: 124px; /* 84 */
       --user-nav-top: 21px;
       --user-nav-left: 84px;
       --service-nav-top: 5.5rem;
