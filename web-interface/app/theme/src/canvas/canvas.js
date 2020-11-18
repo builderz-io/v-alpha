@@ -150,7 +150,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       topSelected: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top-selected' ),
       peek: V.getCss( '--page-position-peek' ),
       closed: V.getCss( '--page-position-closed' ),
-      detach: V.setPipe( V.getCss, V.castRemToPixel )( '--desktop-page-detach' )
+      detach: V.setPipe( V.getCss, V.castRemToPixel )( '--desktop-page-detach' ),
+      rectOffset: 11, // getBoundingClientRect-for-pill-bug-mitigation
     } );
 
     /* calculate page size for the feature and top position according to screen dimensions */
@@ -270,6 +271,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         which = x.data[0]
       ) => {
         if ( ['home'].includes( status ) ) {
+          V.setState( 'page', { rectOffset: 0 } ); // getBoundingClientRect-for-pill-bug-mitigation
           Marketplace.draw();
         }
         else if ( ['market', 'market category', 'pool'].includes( status ) ) {
