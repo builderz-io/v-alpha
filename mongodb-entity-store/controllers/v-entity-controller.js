@@ -9,10 +9,10 @@ const telegramNotification = require( '../lib/telegram' ).adminNotify;
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
 
-async function findEntity( query ) {
+async function findEntity( query, exclude ) {
   return new Promise( resolve => {
     // EntityDB.find( query ).sort( { $natural: -1 } ).limit( 35 ).exec( ( err, entities ) => {
-    EntityDB.find( query ).exec( ( err, entities ) => {
+    EntityDB.find( query, exclude ? { private: 0 } : {} ).exec( ( err, entities ) => {
       if ( err ) {
         resolve( {
           success: false,
@@ -42,7 +42,7 @@ exports.findByRole = async function( req, res ) {
   const find = req != 'all' ? { 'profile.role': req } : {};
   const query = { $and: [find, { 'status.active': true }] };
 
-  res( await findEntity( query ) );
+  res( await findEntity( query, true ) );
 
 };
 
