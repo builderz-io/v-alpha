@@ -38,7 +38,13 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      const query = await V.getEntity( V.castPathOrId( path ) );
+      const query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
+        res.data.forEach( entity => {
+          entity.type = 'Feature'; // needed to populate entity on map
+          entity.properties ? null : entity.properties = {};
+        } );
+        return res;
+      } );
       if ( query.success ) {
 
         const entity = query.data[0];
@@ -47,17 +53,8 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
         return {
           success: true,
-          status: 'entities retrieved',
-          data: [{
-            entity: entity,
-            mapData: {
-              type: 'Feature',
-              geometry: entity.geometry,
-              profile: entity.profile,
-              thumbnail: entity.thumbnail,
-              path: entity.path
-            },
-          }]
+          status: 'editable entity retrieved',
+          data: [entity]
         };
       }
     }
@@ -69,7 +66,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.success ) {
       UserComponents.setData( {
-        entity: viewData.data[0].entity,
+        entity: viewData.data[0],
         editable: true
       } );
 
@@ -107,7 +104,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         } );
       } );
 
-      VMap.draw( viewData.data[0].mapData );
+      VMap.draw( [viewData.data[0]] );
     }
     else {
       Page.draw( {

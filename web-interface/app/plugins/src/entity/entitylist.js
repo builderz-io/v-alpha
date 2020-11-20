@@ -45,6 +45,11 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
           path: query.data[0].path
         } );
       }
+
+      entitiesAdmined.reverse();
+      const own = entitiesAdmined.pop();
+      entitiesAdmined.splice( 0, 0, own );
+
       V.setCache( 'managedEntities', [{ e: entitiesAdmined, m: mapData }] );
     }
 

@@ -24,7 +24,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     // credit to https://zocada.com/compress-resize-images-javascript-browser/
 
     return new Promise( ( resolve, reject ) => {
-      const width = V.getSetting( 'thumbnailWidth' );
+      const tinyImageWidth = V.getSetting( 'tinyImageWidth' );
+      const thumbnailWidth = V.getSetting( 'thumbnailWidth' );
+      const mediumImageWidth = V.getSetting( 'mediumImageWidth' );
 
       const reader = new FileReader();
       reader.readAsDataURL( e.target.files[0] );
@@ -34,44 +36,57 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         img.src = event.target.result;
         img.onload = () => {
           // img.width and img.height will contain the original dimensions
-          const elem = document.createElement( 'canvas' );
-          elem.width = width; // img.width * ( height / img.height );
-          elem.height = img.height * ( width / img.width ); // height;
-          const ctx = elem.getContext( '2d' );
-          ctx.drawImage( img, 0, 0, elem.width, elem.height );
 
-          const elem2 = document.createElement( 'canvas' );
-          elem2.width = 32;
-          elem2.height = elem2.width;
-          const ctx2 = elem2.getContext( '2d' );
-          ctx2.drawImage( img, 0, 0, elem2.width, elem2.height );
+          const tiny = document.createElement( 'canvas' );
+          tiny.width = tinyImageWidth;
+          tiny.height = tinyImageWidth;
+          const tinyImage = tiny.getContext( '2d' );
+          tinyImage.drawImage( img, 0, 0, tiny.width, tiny.height );
 
-          ctx.canvas.toBlob( blob => {
+          const thumb = document.createElement( 'canvas' );
+          thumb.width = thumbnailWidth; // img.width * ( height / img.height );
+          thumb.height = img.height * ( thumbnailWidth / img.width ); // height;
+          const thumbnail = thumb.getContext( '2d' );
+          thumbnail.drawImage( img, 0, 0, thumb.width, thumb.height );
 
-            const imageData = {
-              blob: blob,
-              contentType: blob.type,
+          const medium = document.createElement( 'canvas' );
+          medium.width = mediumImageWidth; // img.width * ( height / img.height );
+          medium.height = img.height * ( mediumImageWidth / img.width ); // height;
+          const mediumImage = medium.getContext( '2d' );
+          mediumImage.drawImage( img, 0, 0, medium.width, medium.height );
+
+          tinyImage.canvas.toBlob( tinyBlob => {
+            V.setState( 'tinyImageUpload', {
+              blob: tinyBlob,
+              contentType: tinyBlob.type,
               originalName: e.target.files[0].name
-            };
-            V.setState( 'imageUpload', imageData );
+            } );
 
-            ctx2.canvas.toBlob( blob => {
-              const imageData = {
-                blob: blob,
-                contentType: blob.type,
+            thumbnail.canvas.toBlob( thumbBlob => {
+              V.setState( 'thumbnailUpload', {
+                blob: thumbBlob,
+                contentType: thumbBlob.type,
                 originalName: e.target.files[0].name
-              };
-              V.setState( 'tinyImageUpload', imageData );
-
-              resolve( {
-                success: true,
-                status: 'image prepared for upload',
-                src: img.src,
               } );
+
+              mediumImage.canvas.toBlob( mediumBlob => {
+                V.setState( 'mediumImageUpload', {
+                  blob: mediumBlob,
+                  contentType: mediumBlob.type,
+                  originalName: e.target.files[0].name
+                } );
+
+                resolve( {
+                  success: true,
+                  status: 'images prepared for upload',
+                  src: img.src,
+                } );
+
+              }, 'image/jpeg', V.getSetting( 'mediumImageQuality' ) );
 
             }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
 
-          }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
+          }, 'image/jpeg', V.getSetting( 'tinyImageQuality' ) );
 
         };
       };

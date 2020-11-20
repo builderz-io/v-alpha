@@ -305,28 +305,28 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
         const fullId = V.getState( 'active' ).lastViewed; // V.aE().fullId;
-        const imageUpload = V.getState( 'imageUpload' );
-        const tinyImageUpload = V.getState( 'tinyImageUpload' );
-        Object.assign( imageUpload, { entity: fullId } );
-        Object.assign( tinyImageUpload, { entity: fullId } );
-        setField( 'thumbnail', imageUpload ).then( response => {
-          setField( 'tinyImage', tinyImageUpload );
-          V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
-          V.setNode( '#img-upload-profile__preview', '' );
-          V.setNode( '#img-upload-profile__preview', V.cN( {
-            t: 'img',
-            y: {
-              'max-width': '100%'
-            },
-            src: res.src
-          } ) );
 
-          /* also change cached image after an edit */
+        setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
+          setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
+            setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( response => {
+              V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+              V.setNode( '#img-upload-profile__preview', '' );
+              V.setNode( '#img-upload-profile__preview', V.cN( {
+                t: 'img',
+                y: {
+                  'max-width': '100%'
+                },
+                src: res.src
+              } ) );
 
-          updateImageInCache( 'managedEntities', response, fullId );
-          updateImageInCache( 'all', response, fullId );
-          updateImageInCache( response.data[0].profile.role, response, fullId );
+              /* also change cached image after an edit */
 
+              updateImageInCache( 'managedEntities', response, fullId );
+              updateImageInCache( 'all', response, fullId );
+              updateImageInCache( response.data[0].profile.role, response, fullId );
+
+            } );
+          } );
         } );
       }
     } );
@@ -981,9 +981,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function thumbnailCard() {
-    if ( entity.thumbnail ) {
-      const $img = V.castEntityThumbnail( entity.thumbnail ).img;
+  function mediumImageCard() {
+    if ( entity.mediumImage ) {
+      const $img = V.castEntityThumbnail( entity.mediumImage  ).img;
       return V.cN( {
         t: 'li',
         h: $img
@@ -1009,11 +1009,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function addOrChangeImage() {
     let $innerContent;
-    // const tinyImage = entity.tinyImage;
-    const thumbnail = entity.thumbnail;
 
-    if( thumbnail ) {
-      const img = V.castEntityThumbnail( thumbnail ).img;
+    if( entity.mediumImage ) {
+      const img = V.castEntityThumbnail( entity.mediumImage ).img;
       $innerContent = V.castNode( {
         t: 'div',
         c: 'pxy',
@@ -1187,7 +1185,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     preferredLangsCard: preferredLangsCard,
     appLanguageCard: appLanguageCard,
     fundingStatusCard: fundingStatusCard,
-    thumbnailCard: thumbnailCard,
+    mediumImageCard: mediumImageCard,
     roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,
     socialShareButtons: socialShareButtons

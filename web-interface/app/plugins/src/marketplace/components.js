@@ -25,11 +25,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       V.getNode( '.popup-content' ).firstChild ?
         V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
     if ( pathOfOpen && pathOfOpen == this ) {
-      V.setAnimation( '.popup', {
-        opacity: 0
-      }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
-        V.setNode( '.popup-content', '' );
-      } );
+      // V.setAnimation( '.popup', {
+      //   opacity: 0
+      // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
+      //   V.setNode( '.popup-content', '' );
+      // } );
+      Profile.draw( this );
       return;
     }
     const entity = V.getCache( 'preview' ).data.find( item => {return item.path == this} );

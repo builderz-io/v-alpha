@@ -36,10 +36,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( fullId );
-    }
+      query = await V.getEntity( fullId ).then( res => {
+        res.data.forEach( entity => {
+          entity.type = 'Feature'; // needed to populate entity on map
+          entity.properties ? null : entity.properties = {};
+        } );
 
-    const mapData = [];
+        // V.setCache( 'preview', res.data );
+
+        return res;
+      } );
+    }
 
     if ( query.success ) {
 
@@ -81,19 +88,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         }
       }
 
-      /*
-       * Map data
-       *
-       */
-
-      mapData.push( {
-        type: 'Feature',
-        geometry: entity.geometry,
-        profile: entity.profile,
-        thumbnail: entity.thumbnail,
-        path: entity.path
-      } );
-
       return {
         success: true,
         status: 'entities retrieved',
@@ -102,7 +96,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           entity: entity,
           sendVolume: sendVolume,
           receiveVolume: receiveVolume,
-          mapData: mapData,
         }]
       };
     }
@@ -133,7 +126,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       $list = CanvasComponents.list( 'narrow' );
 
       V.setNode( $list, [
-        UserComponents.thumbnailCard(),
+        UserComponents.mediumImageCard(),
         UserComponents.roleCard(),
         UserComponents.entityCard(),
         UserComponents.descriptionCard(),
@@ -156,7 +149,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         listings: $list,
       } );
 
-      VMap.draw( data.data[0].mapData );
+      VMap.draw( [data.data[0].entity] );
     }
     else {
       Page.draw( {

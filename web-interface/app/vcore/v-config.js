@@ -5,7 +5,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const production = false;
+  const production = true;
 
   const settings = {
 
@@ -14,15 +14,15 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    // socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
-    // socketPort: production ? 443 : 6022,
+    socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
+    socketPort: production ? 443 : 6022,
 
-    socketHost: 'https://buildersmongo.valueinstrument.org',
-    socketPort: 443,
+    // socketHost: 'https://buildersmongo.valueinstrument.org',
+    // socketPort: 443,
 
     useBuilds: production ? false : false,
 
-    sendLogsToServer: production ? false : false,
+    sendLogsToServer: production ? true : false,
 
     drawMap: production ? true : true,
 
@@ -34,8 +34,12 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     marketCacheDuration: 3, // in minutes
     managedEntitiesCacheDuration: 5, // in minutes
 
-    thumbnailWidth: 420, // Number in px
-    thumbnailQuality: 0.85, // Number from 0 to 1
+    tinyImageWidth: 40, // Numbers in px
+    tinyImageQuality: 0.93, // Number from 0 to 1
+    thumbnailWidth: 88,
+    thumbnailQuality: 0.90,
+    mediumImageWidth: 400,
+    mediumImageQuality: 0.87,
 
     coinTicker: 'ETH',
     tokenTicker: 'V',
