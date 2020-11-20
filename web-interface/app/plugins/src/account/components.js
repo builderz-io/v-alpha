@@ -107,7 +107,13 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function headerBalance( balance ) {
-    balance = V.getNetVAmount( balance ).net;
+    if ( balance === -1 ) {
+      balance = '..';
+    }
+    else {
+      balance = V.getNetVAmount( balance ).net;
+      balance = isNaN( balance ) ? '😷' : balance;
+    }
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
     const textColor = V.aA() ? 'txt-green' : 'txt-brand-primary';
@@ -120,7 +126,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         viewBox: '0 0 36 36'
       },
       html: `<circle cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7" transform="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200"></circle>
-              <text class="font-medium fs-xxs ${ textColor } no-txt-select" x="50%" y="59%">${ isNaN( balance ) ? '😷' : balance }</text>`,
+              <text class="font-medium fs-xxs ${ textColor } no-txt-select" x="50%" y="59%">${ balance }</text>`,
       click: handleDrawUserNav
 
     } );

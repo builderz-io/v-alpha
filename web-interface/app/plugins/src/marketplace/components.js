@@ -32,42 +32,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       } );
       return;
     }
-    const cache = V.getCache( 'all' );
-    if ( cache ) {
-      const entities = cache.data;
-      for ( let i = 0; i < entities.length; i++ ) {
-        if ( entities[i].path == this ) {
-          const descr = entities[i].properties.description;
-          V.getNode( '.popup' ).style.opacity = 1;
-          V.setNode( '.popup-content', '' );
-          V.setNode( '.leaflet-popup-pane', '' );
-          V.setNode( '.popup-content', V.cN( {
-            t: 'div',
-            a: { path: entities[i].path },
-            h: [
-              {
-                t: 'p',
-                c: 'pxy txt-center font-bold cursor-pointer',
-                h: entities[i].fullId,
-                k: handleProfileDraw.bind( entities[i].path )
-              },
-              castCircle( entities[i] ),
-              {
-                t: 'p',
-                c: 'pxy fs-s capitalize txt-center',
-                h: entities[i].role
-              },
-              {
-                t: 'p',
-                c: 'pxy fs-s cursor-pointer',
-                h: descr ? descr.length > 170 ? descr.substr( 0, 170 ) + ' ...' : descr : '',
-              }
-            ]
-          } ) );
-          // V.getNode( '.popup-tip-container' ).style.left = ( e.target.getBoundingClientRect().left - 15 ) + 'px';
-          break;
-        }
-      }
+    const entity = V.getCache( 'preview' ).data.find( item => {return item.path == this} );
+    if ( entity ) {
+      V.setNode( '.leaflet-popup-pane', '' );
+      V.setNode( '.popup-content', '' );
+      V.setNode( '.popup-content', popupContent( entity ) );
+      V.getNode( '.popup' ).style.opacity = 1;
     }
   }
 
@@ -113,7 +83,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       h: {
         t: 'div',
         c: 'card__initials font-bold fs-xl txt-white',
-        h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.profile.title )
+        h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId )
       },
       e: {
         click: whichHandler == 'editable' ?
@@ -182,7 +152,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function cardContent( cardData ) {
-    cardData.properties ? null : cardData.properties = {};
+
     const $cardContentFrame = V.cN( {
       t: 'div',
       c: 'contents'
@@ -209,17 +179,17 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $bottomLeft = V.cN( {
       t: 'div',
       c: 'card__bottom-left items-center pxy',
-      h: cardData.properties && cardData.properties.target ? [
+      h: cardData.properties.target ? [
         {
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
-          h: cardData.properties && cardData.properties.target ? cardData.properties.target : '',
+          h: cardData.properties.target || '',
           k: handleProfileDraw.bind( cardData.path )
         },
         {
           t: 'p',
           c: 'card__unit fs-xxs',
-          h: cardData.properties && cardData.properties.unit ? cardData.properties.unit : '',
+          h: cardData.properties.unit || '',
         }
       ] : ''
     } );
@@ -229,8 +199,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'card__bottom-right pxy',
       h: [
         { t: 'p', c: 'pxy capitalize', h: cardData.profile.role },
-        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
-        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.baseLocation ? cardData.properties.baseLocation : '' }
+        { t: 'p', c: 'pxy', h: cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
+        { t: 'p', c: 'pxy', h: cardData.properties.baseLocation || '' }
       ],
       k: handleProfileDraw.bind( cardData.path )
     } );
@@ -241,6 +211,33 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   }
 
+  function popupContent( entity ) {
+    const descr = entity.properties.description || undefined;
+    return V.cN( {
+      t: 'div',
+      a: { path: entity.path },
+      h: [
+        {
+          t: 'p',
+          c: 'pxy txt-center font-bold cursor-pointer',
+          h: entity.fullId,
+          k: handleProfileDraw.bind( entity.path )
+        },
+        castCircle( entity ),
+        {
+          t: 'p',
+          c: 'pxy fs-s capitalize txt-center',
+          h: entity.profile.role
+        },
+        {
+          t: 'p',
+          c: 'pxy fs-s cursor-pointer',
+          h: descr ? descr.length > 170 ? descr.substr( 0, 170 ) + ' ...' : descr : '',
+        }
+      ]
+    } );
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -249,6 +246,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     entitiesSmallCard: entitiesSmallCard,
     entitiesPlaceholder: entitiesPlaceholder,
     cardContent: cardContent,
+    popupContent: popupContent,
   };
 
 } )();

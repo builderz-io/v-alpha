@@ -15,14 +15,30 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let query, isSearch = false;
 
-    const cache = V.getCache( whichRole );
+    const cache = V.getCache( 'preview' );
     const now = Date.now();
 
     if ( search && search.query ) {
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search );
-      // V.setCache( whichRole, query.data );
+    }
+    else if ( cache && !cache.data.length ) {
+      const polledCache = await new Promise( resolve => {
+        const polling = setInterval( () => {
+          const cache = V.getCache( 'preview' );
+          if ( cache.data.length ) {
+            clearInterval( polling );
+            resolve( cache );
+          }
+        }, 70 );
+      } );
+      query = {
+        success: true,
+        status: 'polled cache used',
+        elapsed: now - cache.timestamp,
+        data: V.castJson( polledCache.data, 'clone' )
+      };
     }
     else if (
       cache &&
@@ -36,31 +52,36 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( whichRole );
-      V.setCache( whichRole, query.data );
-    }
+      query = await V.getEntity( 'preview' ).then( res => {
+        res.data.forEach( entity => {
+          entity.path = V.castPathOrId( entity.fullId );
+          entity.type = 'Feature'; // needed to populate entity on map
+          entity.properties ? null : entity.properties = {};
+        } );
 
-    const mapData = [];
+        V.setCache( 'preview', res.data );
+
+        return res;
+      } );
+    }
 
     if ( query.success ) {
 
-      query.data.forEach( entity => {
-        mapData.push( {
-          type: 'Feature',
-          geometry: entity.geometry,
-          profile: entity.profile,
-          thumbnail: entity.thumbnail,
-          path: entity.path
+      let filtered = query.data;
+
+      if ( whichRole != 'all' ) {
+        filtered = query.data.filter( item => {
+          return item.profile.role == whichRole;
         } );
-      } );
+      }
+
       return {
         success: true,
-        status: 'entities retrieved',
+        status: 'entities retrieved and filtered',
         isSearch: isSearch,
         data: [{
           whichPath: whichPath,
-          entities: query.data,
-          mapData: mapData,
+          entities: filtered,
         }]
       };
     }
@@ -72,7 +93,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           whichPath: whichPath,
           entities: query.data,
-          mapData: mapData,
         }]
       };
     }
@@ -115,7 +135,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         } );
 
         hasNoThumbnail.reverse().forEach( cardData => {
-          // setSliderContent( cardData );
+          if ( hasThumbnail.length < 8 ) {
+            setSliderContent( cardData );
+          }
           setListContent( cardData );
         } );
       }
@@ -140,7 +162,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       listings: $list,
     } );
 
-    VMap.draw( viewData.mapData );
+    VMap.draw( viewData.entities );
 
     // View methods
 

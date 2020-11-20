@@ -337,6 +337,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
       Button.launch(); // sets nodes: hidden buttons
+
+      V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
     }
   }
 

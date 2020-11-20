@@ -9,10 +9,10 @@ const telegramNotification = require( '../lib/telegram' ).adminNotify;
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
 
-async function findEntity( query, exclude ) {
+async function findEntity( query, filter ) {
   return new Promise( resolve => {
     // EntityDB.find( query ).sort( { $natural: -1 } ).limit( 35 ).exec( ( err, entities ) => {
-    EntityDB.find( query, exclude ? { private: 0 } : {} ).exec( ( err, entities ) => {
+    EntityDB.find( query, filter ).exec( ( err, entities ) => {
       if ( err ) {
         resolve( {
           success: false,
@@ -39,10 +39,38 @@ async function findEntity( query, exclude ) {
 
 exports.findByRole = async function( req, res ) {
 
-  const find = req != 'all' ? { 'profile.role': req } : {};
+  let find, filter;
+
+  if ( req == 'preview' ) {
+    find = {};
+    filter = {
+      'fullId': 1,
+      'profile.role': 1,
+      'thumbnail': 1,
+      'geometry': 1,
+      'properties.description': 1,
+      '_id': 0
+    };
+  }
+  else if ( req == 'all' ) {
+    find = {};
+    filter = {
+      private: 0,
+      _id: 0
+    };
+  }
+  else {
+    find = { 'profile.role': req };
+    filter = {
+      private: 0,
+      _id: 0
+    };
+  }
+
+  // const find = req != 'all' ? { 'profile.role': req } : {};
   const query = { $and: [find, { 'status.active': true }] };
 
-  res( await findEntity( query, true ) );
+  res( await findEntity( query, filter ) );
 
 };
 

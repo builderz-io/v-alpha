@@ -148,9 +148,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     if ( window.ethereum && !window.ethereum.selectedAddress ) {
 
-      Join.draw( 'wallet locked' );
+      // Join.draw( 'wallet locked' );
 
-      await V.sleep( 1500 );
+      // await V.sleep( 1500 );
 
       try {
         // Request account access

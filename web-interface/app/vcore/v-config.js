@@ -14,19 +14,23 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // buildersmongo // omit trailing slash
-    socketPort: production ? 443 : 6022,
+    // socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
+    // socketPort: production ? 443 : 6022,
+
+    socketHost: 'https://buildersmongo.valueinstrument.org',
+    socketPort: 443,
 
     useBuilds: production ? false : false,
 
     sendLogsToServer: production ? false : false,
+
+    drawMap: production ? true : true,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    drawMap: production ? true : false,
     marketCacheDuration: 3, // in minutes
     managedEntitiesCacheDuration: 5, // in minutes
 

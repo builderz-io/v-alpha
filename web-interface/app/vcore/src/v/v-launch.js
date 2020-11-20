@@ -14,12 +14,24 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   /**
     * Launch ledger-specific VCore scripts and methods,
-    *
+    * and get entities for initial view
     */
 
   V.setNode( 'loader', getString( ui.ledgerLoad ) );
 
   await VLedger.launch();
+
+  V.setCache( 'preview', { data: [] } );
+
+  V.getEntity( 'preview' ).then( res => {
+    res.data.forEach( entity => {
+      entity.path = V.castPathOrId( entity.fullId );
+      entity.type = 'Feature'; // needed to populate entity on map
+      entity.properties ? null : entity.properties = {};
+    } );
+
+    V.setCache( 'preview', res.data );
+  } );
 
   /**
    * Also load the canvas script (the first theme script)

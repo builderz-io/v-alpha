@@ -97,8 +97,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       // if( !viMap.getZoom() == 3 ) {
-      // viMap.setView( [geo[1] - 9, geo[0]], 3 );
-      viMap.setView( [41.858, -87.964], 8 );
+      viMap.setView( [geo[1] - 9, geo[0]], 3 );
+      // viMap.setView( [41.858, -87.964], 8 );
       // }
 
       featureLayer.addTo( viMap );
@@ -106,27 +106,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castPopup( feature ) {
-    return V.cN( {
-      t: 'div',
-      c: '',
-      h: [
-        {
-          t: 'p',
-          c: 'font-bold txt-center',
-          h: feature.profile.fullId
-        },
-        MarketplaceComponents.castCircle( {
-          thumbnail: feature.thumbnail,
-          profile: { title: feature.profile.title },
-          path: feature.path
-        } ),
-        {
-          t: 'p',
-          c: 'fs-s capitalize txt-center',
-          h: feature.profile.role
-        },
-      ]
-    } );
+    return MarketplaceComponents.popupContent( feature );
   }
 
   async function launch() {

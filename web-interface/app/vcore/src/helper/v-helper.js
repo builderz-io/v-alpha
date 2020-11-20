@@ -188,7 +188,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castInitials( which ) {
-    const initials = which ? which.split( ' ' ).filter( item => { return isNaN( item ) } ) : [];
+    const initials = which ? which.split( ' ' ).filter( item => { return isNaN( item.replace( '#', '' ) ) } ) : [];
     if ( initials.length ) {
       const first = initials[0].charAt( 0 );
       const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => { return ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 } )[0];
