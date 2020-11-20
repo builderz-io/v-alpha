@@ -75,7 +75,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( '/plugins/src/entity/entitylist.js' ),
         V.setScript( '/plugins/src/chat/components.js' ),
         V.setScript( '/plugins/src/chat/chat.js' ),
+
+        V.setScript( '/plugins/dependencies/leaflet.js' ),
         V.setScript( '/plugins/src/map/map.js' ),
+
         V.setScript( '/plugins/src/google/google.js' ),
         V.setScript( '/plugins/src/data/components.js' ),
         V.setScript( '/plugins/src/data/data.js' ),
@@ -339,6 +342,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Button.launch(); // sets nodes: hidden buttons
 
       V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
+
+      VMap.setMap();
     }
   }
 
