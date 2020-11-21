@@ -137,7 +137,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         feature: {
           top: 'var(--page-position-top-selected)',
           height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
-          width: dimensions.width + 'px'
+          width: dimensions.width + 'px',
+          background: 'white'
         },
       }
     } );

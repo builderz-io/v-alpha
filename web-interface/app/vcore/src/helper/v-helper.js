@@ -152,6 +152,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         if ( !( linksFound[i].match( /(http(s?)):\/\// ) ) ) { replace = 'http://' + linksFound[i] }
         let linkText = replace.split( '/' )[2];
         if ( linkText.substring( 0, 3 ) == 'www' ) { linkText = linkText.replace( 'www.', '' ) }
+
         noIframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
 
         if ( linkText.match( /youtu/ ) ) {
@@ -162,8 +163,32 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         }
         else if ( linkText.match( /vimeo/ ) ) {
           const vimeoID = replace.split( '/' ).slice( -1 )[0];
-          const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://player.vimeo.com/video/' + vimeoID + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+          const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://player.vimeo.com/video/' + vimeoID + '?color=ffffff&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
+        }
+        else if ( linkText.match( /soundcloud/ ) ) {
+          const split = replace.split( '/' );
+          const scID = split.slice( -1 )[0]; // example 933028357
+          if ( isNaN( scID ) ) {
+            iframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+          }
+          else {
+
+            /* omit number and replace link in noIframeLinks */
+            split.pop();
+            noIframeLinks.pop();
+            noIframeLinks.push( '<a href="' + split.join( '/' ) + '" target="_blank">' + linkText + '</a>' );
+
+            /* generate the iframe from track ID */
+            const iframe = `
+            <div class="iframe-wrapper w-full">
+            <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${ scID }&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
+            ></iframe>
+            </div>
+            `;
+            iframeLinks.push( iframe );
+          }
         }
         else {
           iframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );

@@ -223,7 +223,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = str.includes( '/c/' ) ? str : getString( ui.invalid );
       }
       else if ( title == 'website' ) {
-        entry = str.includes( '.' ) ? str : getString( ui.invalid );
+        entry = str.includes( '.' ) && str.includes( 'http' ) ? str : getString( ui.invalid );
       }
       else if ( ['address', 'evm'].includes( title ) ) {
         entry = str.includes( '0x' ) && str.length == 42 ? str : getString( ui.invalid );
@@ -382,7 +382,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
             break;
           case 'email':
-            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner.replace( /@.+/, '' ) + '</a>';
+            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
             break;
           case 'website':
             linkedInner = V.castLinks( inner ).links;
@@ -668,12 +668,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if( address || ( !address && editable ) ) {
       const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
-        c: 'pxy fs-s',
+        c: 'pxy fs-s w-full',
         a: { title: 'evm', db: 'receivingAddresses' },
         h: address,
       } ) : {
         t: 'p',
-        c: 'pxy fs-s',
+        c: 'pxy fs-s w-full',
         h: address,
       } );
       return castCard( $innerContent, getString( ui.ethAddressReceiver ) );
