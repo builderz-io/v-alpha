@@ -23,7 +23,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     const fullId = V.castPathOrId( which );
 
-    const inCache = V.getCache().all ? V.getCache().all.data.find( entity => {
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
       return entity.path == which;
     } ) : undefined;
 
@@ -37,12 +37,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       query = await V.getEntity( fullId ).then( res => {
-        res.data.forEach( entity => {
-          entity.type = 'Feature'; // needed to populate entity on map
-          entity.properties ? null : entity.properties = {};
-        } );
 
-        // V.setCache( 'preview', res.data );
+        res.data[0].type = 'Feature'; // needed to populate entity on map
+        res.data[0].properties ? null : entity.properties = {};
+
+        V.setCache( 'viewed', res.data );
 
         return res;
       } );
@@ -128,7 +127,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, [
         UserComponents.mediumImageCard(),
         UserComponents.roleCard(),
-        UserComponents.entityCard(),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
         UserComponents.socialCard(),
@@ -136,6 +134,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.preferredLangsCard(),
         UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.financialCard(),
+        UserComponents.entityCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.socialShareButtons(),

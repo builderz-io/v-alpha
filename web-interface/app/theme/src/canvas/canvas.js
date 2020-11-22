@@ -216,7 +216,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       const s = V.getState( 'screen' );
 
-      if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
+      if ( window.innerHeight < ( s.height / 3 * 2 ) && !V.getVisibility( 'form' ) ) {
         V.getNode( 'page' ).classList.add( 'page-full-screen' );
       }
       else {

@@ -85,12 +85,17 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( Array.isArray( data ) ) {
-      const obj = {
-        timestamp: Date.now(),
-        date: new Date(),
-        data: data
-      };
-      Object.assign( cache[which], obj );
+      if ( cache[which].timestamp ) {
+        cache[which].data = [].concat( cache[which].data, data );
+      }
+      else {
+        const obj = {
+          timestamp: Date.now(),
+          date: new Date(),
+          data: data
+        };
+        Object.assign( cache[which], obj );
+      }
     }
     else if ( typeof data == 'object' ) {
       Object.assign( cache[which], data );

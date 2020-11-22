@@ -229,7 +229,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Local Economy',
         path: '/network/all',
-        routeFundsToOwner: false,
+        divertFundsToOwner: false,
         use: {
           button: 'search',
           role: 'all', // 'all' is used here to enable search within all entities
@@ -241,7 +241,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'People',
         path: '/network/members',
-        routeFundsToOwner: false,
+        divertFundsToOwner: false,
         use: {
           button: 'search',
           role: 'member',
@@ -375,7 +375,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     const routeFundsForRoles = {};
     navArray.forEach( navItem => {
-      if ( navItem.routeFundsToOwner === false ) { return }
+      if ( navItem.divertFundsToOwner === false ) { return }
       routeFundsForRoles[navItem.use.role] = navItem.use.role;
     } );
     V.setState( 'rolesWithReceivingAddress', routeFundsForRoles );
