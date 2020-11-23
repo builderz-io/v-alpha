@@ -213,7 +213,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function popupContent( entity ) {
-    const descr = entity.properties.description || undefined;
+    const descr = entity.properties.description ? V.castLinks( entity.properties.description ).links : undefined;
     return V.cN( {
       t: 'div',
       a: { path: entity.path },
@@ -232,7 +232,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         },
         {
           t: 'p',
-          c: 'pxy fs-s cursor-pointer',
+          c: 'pxy fs-s break-words',
           h: descr ? descr.length > 170 ? descr.substr( 0, 170 ) + ' ...' : descr : '',
         }
       ]

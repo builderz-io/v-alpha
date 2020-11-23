@@ -39,7 +39,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       query = await V.getEntity( fullId ).then( res => {
 
         res.data[0].type = 'Feature'; // needed to populate entity on map
-        res.data[0].properties ? null : entity.properties = {};
+        res.data[0].properties ? null : res.data[0].properties = {};
 
         V.setCache( 'viewed', res.data );
 
@@ -126,7 +126,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         UserComponents.mediumImageCard(),
-        UserComponents.roleCard(),
+        // UserComponents.roleCard(),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
         UserComponents.socialCard(),
@@ -138,6 +138,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.socialShareButtons(),
+        UserComponents.adminOfCard(),
       ] );
 
       Navigation.draw( data.data[0].entity );

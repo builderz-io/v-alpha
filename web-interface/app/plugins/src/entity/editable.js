@@ -39,10 +39,12 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       const query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
-        res.data.forEach( entity => {
-          entity.type = 'Feature'; // needed to populate entity on map
-          entity.properties ? null : entity.properties = {};
-        } );
+
+        res.data[0].type = 'Feature'; // needed to populate entity on map
+        res.data[0].properties ? null : res.data[0].properties = {};
+
+        V.setCache( 'viewed', res.data );
+
         return res;
       } );
       if ( query.success ) {

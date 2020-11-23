@@ -10,6 +10,10 @@
   	text-decoration: underline;
 }
 
+.break-words {
+  overflow-wrap: break-word;
+}
+
 .w-screen {
   width: 100vw;
 }

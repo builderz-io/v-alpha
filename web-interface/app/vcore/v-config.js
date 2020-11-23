@@ -22,7 +22,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     useBuilds: production ? false : false,
 
-    sendLogsToServer: production ? false : false,
+    sendLogsToServer: production ? true : false,
 
     drawMap: production ? true : true,
 

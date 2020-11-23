@@ -229,7 +229,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle },
+          { t: 'h2', c: 'w-full font-bold pxy capitalize', h: cardTitle },
           $cardContent
         ] : $cardContent
       }

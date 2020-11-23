@@ -43,8 +43,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': '#ddd',
     },
     'td-right': {
-      'max-width': '205px',
-      'word-wrap': 'break-word'
+      'max-width': '205px'
     },
     'share-by-email': {
       color: 'gray',
@@ -119,6 +118,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     funding: 'Funding Status',
     img: 'Image',
     holder: 'Holder',
+    holderOf: 'Holder of',
     accessKeys: 'Access Keys',
     deactivated: 'deactivated',
     activated: 'activated',
@@ -139,8 +139,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     User.draw( path );
   }
 
-  function handleHolderClick( e ) {
-    const path = V.castPathOrId( e.target.innerHTML );
+  function handleProfileDraw() {
+    const path = V.castPathOrId( this.innerHTML );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -278,15 +278,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         value: value,
         rand: false
       } ).then( res => {
-        VMap.draw(
-          [{
-            type: 'Feature',
-            geometry: res.data[0].geometry,
-            profile: res.data[0].profile,
-            thumbnail: res.data[0].thumbnail,
-            path: res.data[0].path
-          }]
-        );
+        VMap.draw( res.data );
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );
@@ -304,11 +296,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        const fullId = V.getState( 'active' ).lastViewed; // V.aE().fullId;
-
         setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
           setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
-            setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( response => {
+            setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
               V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
               V.setNode( '#img-upload-profile__preview', '' );
               V.setNode( '#img-upload-profile__preview', V.cN( {
@@ -318,13 +308,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 },
                 src: res.src
               } ) );
-
-              /* also change cached image after an edit */
-
-              updateImageInCache( 'managedEntities', response, fullId );
-              updateImageInCache( 'all', response, fullId );
-              updateImageInCache( response.data[0].profile.role, response, fullId );
-
             } );
           } );
         } );
@@ -333,21 +316,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ================== private methods ================= */
-
-  function updateImageInCache( which, response, fullId ) {
-    const cache = V.getCache( which );
-    if ( cache ) {
-      const entities = cache.data[0].e || cache.data;
-      for ( let i = 0; i < entities.length; i++ ) {
-        const entity = ( entities[i].data ? entities[i].data[0] : undefined ) || entities[i];
-        if ( entity.fullId == fullId ) {
-          entity.thumbnail = response.data[0].thumbnail;
-          // entity.tinyImage = response.data[0].tinyImage;
-          break;
-        }
-      }
-    }
-  }
 
   function castCard( $innerContent, whichTitle ) {
     return CanvasComponents.card( $innerContent, whichTitle );
@@ -404,14 +372,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             setEditable( {
               x: editable,
               t: 'td',
-              c: 'td-right txt-right',
+              c: 'td-right txt-right break-words',
               a: { title: title, db: db },
               h: inner
             } ),
             {
               x: !editable,
               t: 'td',
-              c: 'td-right txt-right' + ( css ? ' ' + css : '' ),
+              c: 'td-right txt-right break-words' + ( css ? ' ' + css : '' ),
               h: inner ? linkedInner : ''
             }
           ]
@@ -440,10 +408,26 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setField( field, data ) {
-    return V.setEntity( V.getState( 'active' ).lastViewed /* V.aE().fullId */, {
+    return V.setEntity( V.getState( 'active' ).lastViewed, {
       field: field,
       data: data,
       auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+    } ).then( res => {
+
+      res.data[0].type = 'Feature'; // needed to populate entity on map
+      res.data[0].properties ? null : res.data[0].properties = {};
+
+      /* also update caches after an edit */
+      updateEntityInCaches( res );
+
+      return res;
+    } );
+  }
+
+  function updateEntityInCaches( response ) {
+    ['managedEntities', 'preview', 'viewed'].forEach( cache => {
+      const index = V.getCache( cache ).data.findIndex( item => {return item.fullId == V.getState( 'active' ).lastViewed} );
+      V.getCache( cache ).data.splice( index, 1, response.data[0] );
     } );
   }
 
@@ -510,7 +494,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy',
         h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ).iframes,
       } );
-      return castCard( $innerContent, getString( ui.description ) );
+      return castCard( $innerContent, editable ? getString( ui.description ) : entity.profile.role );
     }
     else {
       return '';
@@ -782,7 +766,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'td',
               c: 'txt-right cursor-pointer',
               h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
-              k: handleHolderClick
+              k: handleProfileDraw
             }
           ]
         }
@@ -795,6 +779,21 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( $combined, [$innerContent, $owner] );
 
     return castCard( $combined, getString( ui.entity ) );
+  }
+
+  function adminOfCard() {
+    const $innerContent = V.cN( {
+      t: 'div',
+      h: entity.adminOf.map( item => {
+        return V.cN( {
+          t: 'p',
+          c: 'pxy cursor-pointer',
+          h: item,
+          k: handleProfileDraw
+        } );
+      } )
+    } );
+    return castCard( $innerContent, getString( ui.holderOf ) );
   }
 
   function financialCard() {
@@ -1179,6 +1178,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,
     entityCard: entityCard,
+    adminOfCard: adminOfCard,
     entityListCard: entityListCard,
     financialCard: financialCard,
     socialCard: socialCard,

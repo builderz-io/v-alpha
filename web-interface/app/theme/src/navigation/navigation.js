@@ -481,12 +481,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
 
     V.setAnimation( nav, {
-      width: itemClickedRect.width + 11 + V.getState( 'page' ).rectOffset,
+      width: itemClickedRect.width + 11 /* + V.getState( 'page' ).rectOffset */,
       top: menuStateObj.entityNavTop,
       left: menuStateObj.entityNavLeft
     }, { duration: 1 } );
 
-    V.setState( 'page', { rectOffset: 0 } ); // resets the offset to 0 after first page load
+    // V.setState( 'page', { rectOffset: 0 } ); // resets the offset to 0 after first page load
 
     V.getNode( nav ).scrollLeft = 0;
 
