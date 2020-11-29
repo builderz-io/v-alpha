@@ -106,7 +106,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castPopup( feature ) {
-    console.log( feature );
     return MarketplaceComponents.popupContent( feature );
   }
 

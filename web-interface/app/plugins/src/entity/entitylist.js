@@ -33,7 +33,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
       for ( let i = 0; i < V.aE().adminOf.length; i++ ) {
         const query = await V.getEntity( V.aE().adminOf[i] );
         query.data[0].type = 'Feature'; // needed to populate entity on map
-        query.data[0].properties ? null : entity.properties = {};
+        query.data[0].properties ? null : query.data[0].properties = {};
         entitiesAdmined.push( query.data[0] );
       }
 

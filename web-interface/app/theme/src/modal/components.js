@@ -40,7 +40,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     txSuccess: '✅ Transaction successful',
     error: 'An error occured. Maybe the wallet is locked?',
     wait: 'Please wait... requesting data',
-    walletLocked: 'Could not unlock wallet. Maybe the site\'s access to the wallet was denied? Check the browser or wallet settigs.',
+    walletLocked: 'Could not unlock wallet. Maybe the site\'s connectivity to the wallet was denied? Check the browser or wallet settings.',
     noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
   };
 

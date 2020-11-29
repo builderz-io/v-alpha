@@ -21,7 +21,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( search && search.query ) {
       Object.assign( search, { role: whichRole } );
       isSearch = true;
-      query = await V.getQuery( search );
+      query = await V.getQuery( search ).then( res => {
+        res.data.forEach( entity => {
+          entity.type = 'Feature'; // needed to populate entity on map
+          entity.properties ? null : entity.properties = {};
+        } );
+
+        return res;
+      } );
     }
     else if ( cache && !cache.data.length ) {
       const polledCache = await new Promise( resolve => {
