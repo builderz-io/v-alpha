@@ -130,6 +130,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         setListContent( last );
         setListContent( secondLast );
 
+        setSliderContent( last );
+
         const hasThumbnail = viewData.entities.filter( item => {return item.thumbnail != undefined} );
         const hasNoThumbnail = viewData.entities.filter( item => { return item.thumbnail === undefined } );
 

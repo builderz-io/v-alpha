@@ -24,7 +24,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const pathOfOpen = V.getNode( '.popup-content' ) ?
       V.getNode( '.popup-content' ).firstChild ?
         V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
-    if ( pathOfOpen && pathOfOpen == this ) {
+    if (
+      V.getState( 'page' ).height > V.getState( 'page' ).peek ||
+      ( pathOfOpen && pathOfOpen == this )
+    ) {
       // V.setAnimation( '.popup', {
       //   opacity: 0
       // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{

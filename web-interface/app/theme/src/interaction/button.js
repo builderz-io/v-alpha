@@ -45,7 +45,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           V.setCache( 'all', 'clear' );
           V.setCache( res.data[0].profile.role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
-          Profile.draw( res.data[0].path );
+          User.draw( res.data[0].path );
           Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
 
@@ -59,6 +59,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
             data: res.data[0].fullId,
             auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
           } );
+
+          /* update cache with new entity */
+
+          V.setCache( 'preview', res.data );
 
         }
         else {

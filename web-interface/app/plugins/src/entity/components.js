@@ -782,6 +782,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function adminOfCard() {
+    entity.adminOf.splice( 0, 1 );
+
+    if ( !entity.adminOf.length ) {
+      return '';
+    }
+
     const $innerContent = V.cN( {
       t: 'div',
       h: entity.adminOf.map( item => {
