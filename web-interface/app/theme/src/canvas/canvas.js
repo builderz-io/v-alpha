@@ -227,25 +227,28 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
-        // e.preventDefault();
-        handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
+        if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
+          e.preventDefault();
+          handleKeyboard( ['search', 'query'] );
+        }
+        // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
-        V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
+        CanvasComponents.handleClosePopup();
         handleKeyboard( ['close', 'modal-close'] );
       }
     } );
 
-    document.addEventListener( 'keyup', function handleDocumentKeyUp( e ) {
-      const key = window.event ? e.keyCode : e.which;
-      if ( key == 13 ) {
-        e.preventDefault();
-      }
-      else if ( key == 27 ) {
-        e.preventDefault();
-      }
-    } );
+    // document.addEventListener( 'keyup', function handleDocumentKeyUp( e ) {
+    //   const key = window.event ? e.keyCode : e.which;
+    //   if ( key == 13 ) {
+    //     e.preventDefault();
+    //   }
+    //   else if ( key == 27 ) {
+    //     e.preventDefault();
+    //   }
+    // } );
 
   }
 

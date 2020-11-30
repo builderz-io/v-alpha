@@ -93,7 +93,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleClosePopup() {
     V.setNode( '.leaflet-popup-pane', '' );
-    if ( V.getNode( '.popup' ) ) {
+    if ( V.getVisibility( '.popup' ) ) {
       V.setAnimation( '.popup', {
         opacity: 0
       }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
@@ -327,7 +327,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     content: content,
     topContent: topContent,
     logo: logo,
-    networkLogo: networkLogo
+    networkLogo: networkLogo,
+    handleClosePopup: handleClosePopup
   };
 
 } )();

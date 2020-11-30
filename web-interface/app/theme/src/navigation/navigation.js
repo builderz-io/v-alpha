@@ -200,10 +200,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       animate( which );
     }
 
-    /* clear popup */
-
-    V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
-
   }
 
   function castNavDrawingOrder( rowObj, keep ) {
@@ -361,7 +357,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /* else reset navigation, page and popup */
     else {
       reset();
-      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
       Page.draw( { position: 'closed', reset: false, navReset: false } );
     }
 

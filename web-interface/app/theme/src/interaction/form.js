@@ -93,11 +93,10 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( 'body', $form );
 
-      if( V.getNode( '#search-input' ) ) {
-        setTimeout( () => {
-          V.getNode( '#search-input' ).focus();
-        }, 800 );
-      }
+      setTimeout( () => {
+        V.getVisibility( '#search-input' ) ? V.getNode( '#search-input' ).focus() : null;
+        V.getVisibility( '#plusform__title' ) ? V.getNode( '#plusform__title' ).focus() : null;
+      }, 600 );
 
       V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
       Google.launch().then( () => { // adds places lib script

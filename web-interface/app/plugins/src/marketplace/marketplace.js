@@ -22,11 +22,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search ).then( res => {
-        res.data.forEach( entity => {
-          entity.type = 'Feature'; // needed to populate entity on map
-          entity.properties ? null : entity.properties = {};
-        } );
-
+        if ( res.success ) {
+          res.data.forEach( entity => {
+            entity.type = 'Feature'; // needed to populate entity on map
+            entity.properties ? null : entity.properties = {};
+          } );
+        }
         return res;
       } );
     }
@@ -60,13 +61,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       query = await V.getEntity( 'preview' ).then( res => {
-        res.data.forEach( entity => {
-          entity.path = V.castPathOrId( entity.fullId );
-          entity.type = 'Feature'; // needed to populate entity on map
-          entity.properties ? null : entity.properties = {};
-        } );
-
-        V.setCache( 'preview', res.data );
+        if ( res.success ) {
+          res.data.forEach( entity => {
+            entity.path = V.castPathOrId( entity.fullId );
+            entity.type = 'Feature'; // needed to populate entity on map
+            entity.properties ? null : entity.properties = {};
+          } );
+          V.setCache( 'preview', res.data );
+        }
 
         return res;
       } );
@@ -117,6 +119,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       if ( data.isSearch ) {
         Form.draw( 'all', { fade: 'out' } );
         Button.draw( 'all', { fade: 'out' } );
+        Button.draw( 'search' );
       }
 
       if ( !( ['/network/all', '/network/members'].includes( viewData.whichPath ) ) ) {
@@ -159,10 +162,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     }
     else {
-      if ( data.isSearch ) {
-        Button.draw( 'all', { fade: 'out' } );
-        Button.draw( 'close query' );
-      }
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
     }
 
