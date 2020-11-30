@@ -263,7 +263,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Businesses',
         path: '/network/businesses',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'business'
         },
@@ -275,7 +275,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'NGO',
         path: '/network/non-profits',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'nonprofit'
         },
@@ -287,7 +287,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Public Sector',
         path: '/network/public-sector',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'publicsector'
         },
@@ -299,7 +299,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Anchor Institutions',
         path: '/network/institutions',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'institution'
         },
@@ -311,7 +311,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Networks',
         path: '/network/networks',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'network'
         },
@@ -323,7 +323,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Skills',
         path: '/network/skills',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'skill'
         },
@@ -335,7 +335,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Tasks',
         path: '/network/tasks',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'task'
         },
@@ -347,7 +347,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       //   title: 'Crowdfunding',
       //   path: '/pools',
       //   use: {
-      //     button: 'plus search',
+      //     button: 'search',
       //     form: 'new entity',
       //     role: 'pool'
       //   },
@@ -359,7 +359,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Places',
         path: '/network/places',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'place'
         },
@@ -371,7 +371,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Events',
         path: '/network/events',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'event'
         },
