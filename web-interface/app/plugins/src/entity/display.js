@@ -32,6 +32,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     if ( inCache ) {
       query = {
         success: true,
+        message: 'cache used',
         data: [inCache]
       };
     }
@@ -48,7 +49,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( query.success ) {
-
+      console.log( query.message );
       const entity = query.data[0];
 
       V.setState( 'active', { lastViewed: entity.fullId } );
@@ -137,8 +138,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.entityCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
-        UserComponents.socialShareButtons(),
+        UserComponents.managementCard(),
         UserComponents.adminOfCard(),
+        UserComponents.socialShareButtons(),
       ] );
 
       Navigation.draw( data.data[0].entity );

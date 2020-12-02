@@ -10,35 +10,46 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( path ) {
+    let query;
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
+      return entity.path == path;
+    } ) : undefined;
+
     if ( !V.aE() ) {
       return {
         success: false,
         status: ''
       };
     }
-    else if ( path == '/me/profile' ) {
-      V.setState( 'active', { lastViewed: V.aE().fullId } );
-
-      return {
+    if ( inCache ) {
+      query = {
         success: true,
-        status: 'active entity retrieved',
-        data: [{
-          entity: V.aE(),
-          drawNav: true,
-          mapData: [
-            {
-              type: 'Feature',
-              geometry: V.aE().geometry,
-              profile: V.aE().profile,
-              thumbnail: V.aE().thumbnail,
-              path: V.aE().path
-            }
-          ]
-        }]
+        data: [inCache]
       };
     }
+    // else if ( path == '/me/profile' ) {
+    //   V.setState( 'active', { lastViewed: V.aE().fullId } );
+    //
+    //   return {
+    //     success: true,
+    //     status: 'active entity retrieved',
+    //     data: [{
+    //       entity: V.aE(),
+    //       drawNav: true,
+    //       mapData: [
+    //         {
+    //           type: 'Feature',
+    //           geometry: V.aE().geometry,
+    //           profile: V.aE().profile,
+    //           thumbnail: V.aE().thumbnail,
+    //           path: V.aE().path
+    //         }
+    //       ]
+    //     }]
+    //   };
+    // }
     else {
-      const query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
+      query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
 
         res.data[0].type = 'Feature'; // needed to populate entity on map
         res.data[0].properties ? null : res.data[0].properties = {};
@@ -47,18 +58,18 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
         return res;
       } );
-      if ( query.success ) {
+    }
+    if ( query.success ) {
 
-        const entity = query.data[0];
+      const entity = query.data[0];
 
-        V.setState( 'active', { lastViewed: entity.fullId } );
+      V.setState( 'active', { lastViewed: entity.fullId } );
 
-        return {
-          success: true,
-          status: 'editable entity retrieved',
-          data: [entity]
-        };
-      }
+      return {
+        success: true,
+        status: 'editable entity retrieved',
+        data: [entity]
+      };
     }
   }
 
@@ -90,6 +101,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmReceiverAddressCard(),
         UserComponents.accessKeysCard(),
         UserComponents.managementCard(),
+        UserComponents.adminOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 

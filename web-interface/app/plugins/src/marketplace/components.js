@@ -33,6 +33,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
       //   V.setNode( '.popup-content', '' );
       // } );
+      V.setBrowserHistory( this );
       Profile.draw( this );
       return;
     }

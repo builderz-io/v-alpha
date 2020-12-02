@@ -120,8 +120,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     holder: 'Holder',
     holderOf: 'Holder of',
     accessKeys: 'Access Keys',
-    deactivated: 'deactivated',
+    deactivated: 'activate',
     activated: 'activated',
+    viewMode: 'edit',
+    editMode: 'editing',
 
     emailSubject: 'Contacting you via',
     emailGreeting: 'Dear',
@@ -184,6 +186,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       this.innerHTML = '';
       this.value = '';
     }
+  }
+
+  function handleViewMode() {
+    this.checked
+      ? User.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) )
+      : Profile.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) );
+
   }
 
   /* ============ event handlers (edit entity) ========== */
@@ -426,6 +435,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function updateEntityInCaches( response ) {
     ['managedEntities', 'preview', 'viewed'].forEach( cache => {
+      if ( !V.getCache( cache ) ) {return}
       const index = V.getCache( cache ).data.findIndex( item => {return item.fullId == V.getState( 'active' ).lastViewed} );
       V.getCache( cache ).data.splice( index, 1, response.data[0] );
     } );
@@ -570,40 +580,83 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function managementCard() {
-    const active = entity.status.active;
-    const $innerContent = V.cN( { t: 'div' } );
+    if (
+      V.getState( 'activeEntity' ) &&
+      V.getState( 'activeEntity' ).adminOf.includes( V.getState( 'active' ).lastViewed )
+    ) {
 
-    V.setNode( $innerContent, V.cN( {
-      t: 'div',
-      c: 'pxy flex ',
-      h: [
-        {
-          t: 'input',
-          i: 'active',
-          c: 'toggle-switch__input',
-          a: {
-            type: 'checkbox',
-            checked: active ? true : false
+      const active = entity.status.active;
+      const $innerContent = V.cN( { t: 'div' } );
+
+      V.setNode( $innerContent, V.cN( {
+        t: 'div',
+        h: [
+          {
+            t: 'div',
+            c: 'pxy flex ',
+            h: [
+              {
+                t: 'input',
+                i: 'active',
+                c: 'toggle-switch__input',
+                a: {
+                  type: 'checkbox',
+                  checked: active ? true : false
+                },
+                e: {
+                  change: handleActive
+                }
+              },
+              {
+                t: 'label',
+                c: 'toggle-switch',
+                a: { for: 'active' },
+                h: 'toggle'
+              },
+              {
+                t: 'p',
+                c: 'active__title fs-xs pxy',
+                h: getString( active ? ui.activated : ui.deactivated )
+              },
+            ]
           },
-          e: {
-            change: handleActive
+          {
+            t: 'div',
+            c: 'pxy flex ',
+            h: [
+              {
+                t: 'input',
+                i: 'view-mode',
+                c: 'toggle-switch__input',
+                a: {
+                  type: 'checkbox',
+                  checked: editable ? true : false
+                },
+                e: {
+                  change: handleViewMode
+                }
+              },
+              {
+                t: 'label',
+                c: 'toggle-switch',
+                a: { for: 'view-mode' },
+                h: 'toggle'
+              },
+              {
+                t: 'p',
+                c: 'active__title fs-xs pxy',
+                h: getString( editable ? ui.editMode : ui.viewMode )
+              },
+            ]
           }
-        },
-        {
-          t: 'label',
-          c: 'toggle-switch',
-          a: { for: 'active' },
-          h: 'toggle'
-        },
-        {
-          t: 'p',
-          c: 'active__title fs-xs pxy',
-          h: getString( active ? ui.activated : ui.deactivated )
-        },
-      ]
-    } ) );
+        ]
+      } ) );
 
-    return castCard( $innerContent, getString( ui.management ) );
+      return castCard( $innerContent, getString( ui.management ) );
+    }
+    else {
+      return '';
+    }
   }
 
   function accessKeysCard() {
@@ -782,15 +835,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function adminOfCard() {
-    entity.adminOf.splice( 0, 1 );
+    const adminOf = entity.adminOf.slice( 1 );
 
-    if ( !entity.adminOf.length ) {
+    if ( !adminOf.length ) {
       return '';
     }
 
     const $innerContent = V.cN( {
       t: 'div',
-      h: entity.adminOf.map( item => {
+      h: adminOf.map( item => {
         return V.cN( {
           t: 'p',
           c: 'pxy cursor-pointer',
