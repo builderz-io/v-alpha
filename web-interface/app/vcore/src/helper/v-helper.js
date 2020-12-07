@@ -140,7 +140,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
     const text = which.replace( /www./gi, 'www.' ).replace( /http/gi, 'http' ).replace( /https/gi, 'https' );
     const linksFound = text.match( /(?:www|https?)[^\s]+/g );
-    const iframeLinks = [], noIframeLinks = [];
+    const iframeLinks = [], regularLinks = [], socialLinksImages = [], socialLinksHandles = [];
 
     let links = ( ' ' + text ).slice( 1 );
     let iframes = ( ' ' + text ).slice( 1 );
@@ -148,58 +148,74 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     if ( linksFound != null ) {
 
       for ( let i=0; i<linksFound.length; i++ ) {
-        let replace = linksFound[i];
+        let anchorText, replace = linksFound[i];
+        if ( replace.substr( -1 ) == '.' ) { replace = replace.slice( 0, -1 ) }
         if ( !( linksFound[i].match( /(http(s?)):\/\// ) ) ) { replace = 'http://' + linksFound[i] }
-        let linkText = replace.split( '/' )[2];
-        if ( linkText.substring( 0, 3 ) == 'www' ) { linkText = linkText.replace( 'www.', '' ) }
 
-        noIframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+        let host = replace.split( '/' )[2];
+        host = host.replace( 'www.', '' );
+        console.log( replace, Number( replace.substr( -5 ) ) < -2000 );
+        if ( Number( replace.substr( -5 ) ) < -2000 ) {
+          anchorText = V.castPathOrId( replace.split( '/' ).pop() );
+        }
+        else if ( host.match( /facebook/ ) ) {
+          anchorText = replace.split( '/' ).pop();
+          socialLinksImages.push( '<a href="' + replace + '">' + '🔮' + '</a>' );
+          socialLinksHandles.push( '<a href="' + replace + '">' + anchorText + '</a>' );
+        }
+        else {
+          anchorText = host;
+        }
 
-        if ( linkText.match( /youtu/ ) ) {
+        regularLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
+
+        if ( host.match( /youtu/ ) ) {
           // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
           const youtubeID = replace.split( '/' ).slice( -1 )[0];
           const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://www.youtube.com/embed/' + youtubeID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
         }
-        else if ( linkText.match( /vimeo/ ) ) {
+        else if ( host.match( /vimeo/ ) ) {
           const vimeoID = replace.split( '/' ).slice( -1 )[0];
           const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://player.vimeo.com/video/' + vimeoID + '?color=ffffff&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
         }
-        else if ( linkText.match( /soundcloud/ ) ) {
+        else if ( host.match( /soundcloud/ ) ) {
           const split = replace.split( '/' );
           const scID = split.slice( -1 )[0]; // example 933028357
           if ( isNaN( scID ) ) {
-            iframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+            iframeLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
           }
           else {
 
-            /* omit number and replace link in noIframeLinks */
+            /* omit number and replace link in regularLinks */
             split.pop();
-            noIframeLinks.pop();
-            noIframeLinks.push( '<a href="' + split.join( '/' ) + '" target="_blank">' + linkText + '</a>' );
+            regularLinks.pop();
+            regularLinks.push( '<a href="' + split.join( '/' ) + '" >' + anchorText + '</a>' );
 
             /* generate the iframe from track ID */
             const iframe = `
-            <div class="iframe-wrapper w-full">
-            <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${ scID }&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
-            ></iframe>
-            </div>
-            `;
+              <div class="iframe-wrapper w-full">
+              <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${ scID }&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
+              ></iframe>
+              </div>
+              `;
             iframeLinks.push( iframe );
           }
         }
         else {
-          iframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+          iframeLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
         }
         iframes = iframes.split( linksFound[i] ).map( item => { return iframeLinks[i].includes( 'iframe' ) ? item.trim() : item } ).join( iframeLinks[i] );
-        links = links.split( linksFound[i] ).join( noIframeLinks[i] );
+        links = links.split( linksFound[i] ).join( regularLinks[i] );
       }
 
       return {
         original: which,
         links: links,
+        socialLinksImages: socialLinksImages,
+        socialLinksHandles: socialLinksHandles,
         iframes: iframes,
         firstIframe: iframeLinks[0]
       };
@@ -209,6 +225,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return {
         original: which,
         links: which,
+        socialLinksImages: which,
+        socialLinksHandles: which,
         iframes: which,
         firstIframe: iframeLinks[0]
       };
