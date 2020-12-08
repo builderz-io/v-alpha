@@ -23,6 +23,12 @@
 [Solidity](https://solidity.readthedocs.io/en/v0.6.6/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [Tailwind CSS](https://tailwindcss.com/docs/utility-first)
 
+## Visit Live Networks
+
+[builderz.io network](https://builderz.io)
+
+[Neighborhood Economics & Trinity Christian College Chicago](http://neighborhoodeconomics.trnty.edu/)
+
 ## Contains
 
 This repository contains four distinct code bases:
@@ -63,6 +69,8 @@ Visit the [Issues](https://github.com/valueinstrument/v-alpha-2/issues) to find 
 
 ## Intro Video
 
-View the [Intro Video](https://youtu.be/47wnrc06FDo) on YouTube to get an idea of the project
+View the [builderz.io Intro Video](https://youtu.be/kJbto4TISKA) on YouTube to get an idea of the project
 
-![V Alpha 2 Screenshot](https://user-images.githubusercontent.com/20671922/78137776-2796e080-7426-11ea-9208-87a2d4c5741f.png)
+![V Alpha 2 Screenshot 1](https://user-images.githubusercontent.com/20671922/101465423-35e7b580-3940-11eb-9941-36f1b9469b07.png)
+
+![V Alpha 2 Screenshot 2](https://user-images.githubusercontent.com/20671922/101465532-57e13800-3940-11eb-8e62-7896bd06c42a.png)
