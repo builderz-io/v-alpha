@@ -43,8 +43,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': '#ddd',
     },
     'td-right': {
-      'max-width': '205px',
-      'word-wrap': 'break-word'
+      'max-width': '205px'
     },
     'share-by-email': {
       color: 'gray',
@@ -116,12 +115,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     entity: 'Entity',
     fin: 'Financial',
     social: 'Social',
+    contact: 'Contact',
     funding: 'Funding Status',
     img: 'Image',
     holder: 'Holder',
+    holderOf: 'Holder of',
     accessKeys: 'Access Keys',
-    deactivated: 'deactivated',
+    deactivated: 'activate',
     activated: 'activated',
+    viewMode: 'edit',
+    editMode: 'editing',
 
     emailSubject: 'Contacting you via',
     emailGreeting: 'Dear',
@@ -139,8 +142,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     User.draw( path );
   }
 
-  function handleHolderClick( e ) {
-    const path = V.castPathOrId( e.target.innerHTML );
+  function handleProfileDraw() {
+    const path = V.castPathOrId( this.innerHTML );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -186,6 +189,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function handleViewMode() {
+    this.checked
+      ? User.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) )
+      : Profile.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) );
+
+  }
+
   /* ============ event handlers (edit entity) ========== */
 
   function handleActive() {
@@ -223,7 +233,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = str.includes( '/c/' ) ? str : getString( ui.invalid );
       }
       else if ( title == 'website' ) {
-        entry = str.includes( '.' ) ? str : getString( ui.invalid );
+        entry = str.includes( '.' ) && str.includes( 'http' ) ? str : getString( ui.invalid );
       }
       else if ( ['address', 'evm'].includes( title ) ) {
         entry = str.includes( '0x' ) && str.length == 42 ? str : getString( ui.invalid );
@@ -278,15 +288,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         value: value,
         rand: false
       } ).then( res => {
-        VMap.draw(
-          [{
-            type: 'Feature',
-            geometry: res.data[0].geometry,
-            profile: res.data[0].profile,
-            thumbnail: res.data[0].thumbnail,
-            path: res.data[0].path
-          }]
-        );
+        VMap.draw( res.data );
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );
@@ -304,50 +306,26 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        const fullId = V.getState( 'active' ).lastViewed; // V.aE().fullId;
-        const imageUpload = V.getState( 'imageUpload' );
-        const tinyImageUpload = V.getState( 'tinyImageUpload' );
-        Object.assign( imageUpload, { entity: fullId } );
-        Object.assign( tinyImageUpload, { entity: fullId } );
-        setField( 'thumbnail', imageUpload ).then( response => {
-          setField( 'tinyImage', tinyImageUpload );
-          V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
-          V.setNode( '#img-upload-profile__preview', '' );
-          V.setNode( '#img-upload-profile__preview', V.cN( {
-            t: 'img',
-            y: {
-              'max-width': '100%'
-            },
-            src: res.src
-          } ) );
-
-          /* also change cached image after an edit */
-
-          updateImageInCache( 'managedEntities', response, fullId );
-          updateImageInCache( 'all', response, fullId );
-          updateImageInCache( response.data[0].profile.role, response, fullId );
-
+        setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
+          setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
+            setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
+              V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+              V.setNode( '#img-upload-profile__preview', '' );
+              V.setNode( '#img-upload-profile__preview', V.cN( {
+                t: 'img',
+                y: {
+                  'max-width': '100%'
+                },
+                src: res.src
+              } ) );
+            } );
+          } );
         } );
       }
     } );
   }
 
   /* ================== private methods ================= */
-
-  function updateImageInCache( which, response, fullId ) {
-    const cache = V.getCache( which );
-    if ( cache ) {
-      const entities = cache.data[0].e || cache.data;
-      for ( let i = 0; i < entities.length; i++ ) {
-        const entity = ( entities[i].data ? entities[i].data[0] : undefined ) || entities[i];
-        if ( entity.fullId == fullId ) {
-          entity.thumbnail = response.data[0].thumbnail;
-          // entity.tinyImage = response.data[0].tinyImage;
-          break;
-        }
-      }
-    }
-  }
 
   function castCard( $innerContent, whichTitle ) {
     return CanvasComponents.card( $innerContent, whichTitle );
@@ -382,7 +360,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
             break;
           case 'email':
-            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner.replace( /@.+/, '' ) + '</a>';
+            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
             break;
           case 'website':
             linkedInner = V.castLinks( inner ).links;
@@ -404,14 +382,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             setEditable( {
               x: editable,
               t: 'td',
-              c: 'td-right txt-right',
+              c: 'td-right txt-right break-words',
               a: { title: title, db: db },
               h: inner
             } ),
             {
               x: !editable,
               t: 'td',
-              c: 'td-right txt-right' + ( css ? ' ' + css : '' ),
+              c: 'td-right txt-right break-words' + ( css ? ' ' + css : '' ),
               h: inner ? linkedInner : ''
             }
           ]
@@ -440,10 +418,27 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setField( field, data ) {
-    return V.setEntity( V.getState( 'active' ).lastViewed /* V.aE().fullId */, {
+    return V.setEntity( V.getState( 'active' ).lastViewed, {
       field: field,
       data: data,
       auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+    } ).then( res => {
+
+      res.data[0].type = 'Feature'; // needed to populate entity on map
+      res.data[0].properties ? null : res.data[0].properties = {};
+
+      /* also update caches after an edit */
+      updateEntityInCaches( res );
+
+      return res;
+    } );
+  }
+
+  function updateEntityInCaches( response ) {
+    ['managedEntities', 'preview', 'viewed'].forEach( cache => {
+      if ( !V.getCache( cache ) ) {return}
+      const index = V.getCache( cache ).data.findIndex( item => {return item.fullId == V.getState( 'active' ).lastViewed} );
+      V.getCache( cache ).data.splice( index, 1, response.data[0] );
     } );
   }
 
@@ -494,12 +489,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
-
     if( descr || ( !descr && editable ) ) {
+      const linkedDescr = V.castLinks( descr ? descr.replace( /\n/g, ' <br>' ) : '' ); // needs whitespace before <br>
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
-        a: { rows: '6', title: 'description', db: 'properties' },
+        a: { rows: '8', title: 'description', db: 'properties' },
         e: {
           focus: handleEntryFocus,
           blur: handleEntry
@@ -507,10 +502,21 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: descr ? descr : getString( ui.edit ),
       } : {
         t: 'div',
-        c: 'pxy',
-        h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ).iframes,
+        c: 'pxy w-full',
+        h: [
+          {
+            x: linkedDescr.socialLinksImages,
+            t: 'div',
+            h: linkedDescr.socialLinksImages
+          },
+          {
+            t: 'div',
+            c: 'mt-xs',
+            h: linkedDescr.omitOriginalSocialLinks
+          }
+        ]
       } );
-      return castCard( $innerContent, getString( ui.description ) );
+      return castCard( $innerContent, editable ? getString( ui.description ) : entity.profile.role );
     }
     else {
       return '';
@@ -586,40 +592,83 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function managementCard() {
-    const active = entity.status.active;
-    const $innerContent = V.cN( { t: 'div' } );
+    if (
+      V.getState( 'activeEntity' ) &&
+      V.getState( 'activeEntity' ).adminOf.includes( V.getState( 'active' ).lastViewed )
+    ) {
 
-    V.setNode( $innerContent, V.cN( {
-      t: 'div',
-      c: 'pxy flex ',
-      h: [
-        {
-          t: 'input',
-          i: 'active',
-          c: 'toggle-switch__input',
-          a: {
-            type: 'checkbox',
-            checked: active ? true : false
+      const active = entity.status.active;
+      const $innerContent = V.cN( { t: 'div' } );
+
+      V.setNode( $innerContent, V.cN( {
+        t: 'div',
+        h: [
+          {
+            t: 'div',
+            c: 'pxy flex ',
+            h: [
+              {
+                t: 'input',
+                i: 'active',
+                c: 'toggle-switch__input',
+                a: {
+                  type: 'checkbox',
+                  checked: active ? true : false
+                },
+                e: {
+                  change: handleActive
+                }
+              },
+              {
+                t: 'label',
+                c: 'toggle-switch',
+                a: { for: 'active' },
+                h: 'toggle'
+              },
+              {
+                t: 'p',
+                c: 'active__title fs-xs pxy',
+                h: getString( active ? ui.activated : ui.deactivated )
+              },
+            ]
           },
-          e: {
-            change: handleActive
+          {
+            t: 'div',
+            c: 'pxy flex ',
+            h: [
+              {
+                t: 'input',
+                i: 'view-mode',
+                c: 'toggle-switch__input',
+                a: {
+                  type: 'checkbox',
+                  checked: editable ? true : false
+                },
+                e: {
+                  change: handleViewMode
+                }
+              },
+              {
+                t: 'label',
+                c: 'toggle-switch',
+                a: { for: 'view-mode' },
+                h: 'toggle'
+              },
+              {
+                t: 'p',
+                c: 'active__title fs-xs pxy',
+                h: getString( editable ? ui.editMode : ui.viewMode )
+              },
+            ]
           }
-        },
-        {
-          t: 'label',
-          c: 'toggle-switch',
-          a: { for: 'active' },
-          h: 'toggle'
-        },
-        {
-          t: 'p',
-          c: 'active__title fs-xs pxy',
-          h: getString( active ? ui.activated : ui.deactivated )
-        },
-      ]
-    } ) );
+        ]
+      } ) );
 
-    return castCard( $innerContent, getString( ui.management ) );
+      return castCard( $innerContent, getString( ui.management ) );
+    }
+    else {
+      return '';
+    }
   }
 
   function accessKeysCard() {
@@ -668,12 +717,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if( address || ( !address && editable ) ) {
       const $innerContent = V.cN( editable ? setEditable( {
         t: 'p',
-        c: 'pxy fs-s',
+        c: 'pxy fs-s w-full',
         a: { title: 'evm', db: 'receivingAddresses' },
         h: address,
       } ) : {
         t: 'p',
-        c: 'pxy fs-s',
+        c: 'pxy fs-s w-full',
         h: address,
       } );
       return castCard( $innerContent, getString( ui.ethAddressReceiver ) );
@@ -782,7 +831,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'td',
               c: 'txt-right cursor-pointer',
               h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
-              k: handleHolderClick
+              k: handleProfileDraw
             }
           ]
         }
@@ -795,6 +844,27 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( $combined, [$innerContent, $owner] );
 
     return castCard( $combined, getString( ui.entity ) );
+  }
+
+  function adminOfCard() {
+    const adminOf = entity.adminOf.slice( 1 );
+
+    if ( !adminOf.length ) {
+      return '';
+    }
+
+    const $innerContent = V.cN( {
+      t: 'div',
+      h: adminOf.map( item => {
+        return V.cN( {
+          t: 'p',
+          c: 'pxy cursor-pointer',
+          h: item,
+          k: handleProfileDraw
+        } );
+      } )
+    } );
+    return castCard( $innerContent, getString( ui.holderOf ) );
   }
 
   function financialCard() {
@@ -812,10 +882,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialCard() {
-    const titles = ['facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', 'email'];
+    const titles = [/*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */ 'email'];
     const db = 'social';
     const $innerContent = castTableNode( titles, db, editable );
-    return $innerContent ? castCard( $innerContent, getString( ui.social ) ) : '';
+    return $innerContent ? castCard( $innerContent, getString( ui.contact ) ) : '';
   }
 
   function entityListCard( entity ) {
@@ -981,9 +1051,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function thumbnailCard() {
-    if ( entity.thumbnail ) {
-      const $img = V.castEntityThumbnail( entity.thumbnail ).img;
+  function mediumImageCard() {
+    if ( entity.mediumImage ) {
+      const $img = V.castEntityThumbnail( entity.mediumImage  ).img;
       return V.cN( {
         t: 'li',
         h: $img
@@ -1009,11 +1079,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function addOrChangeImage() {
     let $innerContent;
-    // const tinyImage = entity.tinyImage;
-    const thumbnail = entity.thumbnail;
 
-    if( thumbnail ) {
-      const img = V.castEntityThumbnail( thumbnail ).img;
+    if( entity.mediumImage ) {
+      const img = V.castEntityThumbnail( entity.mediumImage ).img;
       $innerContent = V.castNode( {
         t: 'div',
         c: 'pxy',
@@ -1181,13 +1249,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,
     entityCard: entityCard,
+    adminOfCard: adminOfCard,
     entityListCard: entityListCard,
     financialCard: financialCard,
     socialCard: socialCard,
     preferredLangsCard: preferredLangsCard,
     appLanguageCard: appLanguageCard,
     fundingStatusCard: fundingStatusCard,
-    thumbnailCard: thumbnailCard,
+    mediumImageCard: mediumImageCard,
     roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,
     socialShareButtons: socialShareButtons

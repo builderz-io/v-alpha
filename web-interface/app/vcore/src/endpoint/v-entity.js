@@ -84,15 +84,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const activeEntity = V.getState( 'activeEntity' );
-    const imageUpload = V.getState( 'imageUpload' );
-    const tinyImageUpload= V.getState( 'tinyImageUpload' );
-
     const d = new Date();
     const date = d.toString();
     const unix = Date.now();
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, thumbnail, tinyImage;
+    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -118,23 +114,22 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
     }
 
-    if ( imageUpload ) {
-      thumbnail = {
-        blob: imageUpload.blob,
-        contentType: imageUpload.contentType,
-        originalName: imageUpload.originalName,
-        entity: fullId
-      };
+    if ( V.getState( 'tinyImageUpload' ) ) {
+      tinyImage = V.getState( 'tinyImageUpload' );
+      console.log( tinyImage );
     }
 
-    if ( tinyImageUpload ) {
-      tinyImage = {
-        blob: tinyImageUpload.blob,
-        contentType: tinyImageUpload.contentType,
-        originalName: tinyImageUpload.originalName,
-        entity: fullId
-      };
+    if ( V.getState( 'thumbnailUpload' ) ) {
+      thumbnail = V.getState( 'thumbnailUpload' );
+      console.log( thumbnail );
     }
+
+    if ( V.getState( 'mediumImageUpload' ) ) {
+      mediumImage = V.getState( 'mediumImageUpload' );
+      console.log( mediumImage );
+    }
+
+    const activeEntity = V.getState( 'activeEntity' );
 
     if ( activeEntity ) {
       creator = activeEntity.profile.title;
@@ -259,13 +254,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       },
       tinyImage: tinyImage,
       thumbnail: thumbnail,
+      mediumImage: mediumImage,
       geometry: geometry,
       social: {
         email: email,
       }
     };
 
-    V.setState( 'imageUpload', 'clear' );
+    V.setState( 'tinyImageUpload', 'clear' );
+    V.setState( 'thumbnailUpload', 'clear' );
+    V.setState( 'mediumImageUpload', 'clear' );
 
     return {
       success: true,

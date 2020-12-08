@@ -70,9 +70,15 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
           InteractionComponents.formField( 'title', values.title ),
           InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
           InteractionComponents.formField( 'description', values.description ),
-          InteractionComponents.formUploadImage(),
-          InteractionComponents.formField( 'target', values.target ),
-          InteractionComponents.formField( 'unit', values.unit ),
+          V.cN( {
+            t: 'div',
+            c: 'flex',
+            h: [
+              InteractionComponents.formUploadImage(),
+              InteractionComponents.formField( 'target', values.target ),
+              InteractionComponents.formField( 'unit', values.unit ),
+            ]
+          } )
         ] );
       }
       else if ( formData.layout == 'search' ) {
@@ -86,6 +92,11 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       }
 
       V.setNode( 'body', $form );
+
+      setTimeout( () => {
+        V.getVisibility( '#search-input' ) ? V.getNode( '#search-input' ).focus() : null;
+        V.getVisibility( '#plusform__title' ) ? V.getNode( '#plusform__title' ).focus() : null;
+      }, 600 );
 
       V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
       Google.launch().then( () => { // adds places lib script

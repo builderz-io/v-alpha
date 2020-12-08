@@ -75,7 +75,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( '/plugins/src/entity/entitylist.js' ),
         V.setScript( '/plugins/src/chat/components.js' ),
         V.setScript( '/plugins/src/chat/chat.js' ),
+
+        V.setScript( '/plugins/dependencies/leaflet.js' ),
         V.setScript( '/plugins/src/map/map.js' ),
+
         V.setScript( '/plugins/src/google/google.js' ),
         V.setScript( '/plugins/src/data/components.js' ),
         V.setScript( '/plugins/src/data/data.js' ),
@@ -150,7 +153,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       topSelected: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top-selected' ),
       peek: V.getCss( '--page-position-peek' ),
       closed: V.getCss( '--page-position-closed' ),
-      detach: V.setPipe( V.getCss, V.castRemToPixel )( '--desktop-page-detach' )
+      detach: V.setPipe( V.getCss, V.castRemToPixel )( '--desktop-page-detach' ),
+      // rectOffset: 11, // getBoundingClientRect-for-pill-bug-mitigation
     } );
 
     /* calculate page size for the feature and top position according to screen dimensions */
@@ -212,7 +216,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       const s = V.getState( 'screen' );
 
-      if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
+      if ( window.innerHeight < ( s.height / 3 * 2 ) && !V.getVisibility( 'form' ) ) {
         V.getNode( 'page' ).classList.add( 'page-full-screen' );
       }
       else {
@@ -223,25 +227,28 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
-        // e.preventDefault();
-        handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
+        if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
+          e.preventDefault();
+          handleKeyboard( ['search', 'query'] );
+        }
+        // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
-        V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
+        CanvasComponents.handleClosePopup();
         handleKeyboard( ['close', 'modal-close'] );
       }
     } );
 
-    document.addEventListener( 'keyup', function handleDocumentKeyUp( e ) {
-      const key = window.event ? e.keyCode : e.which;
-      if ( key == 13 ) {
-        e.preventDefault();
-      }
-      else if ( key == 27 ) {
-        e.preventDefault();
-      }
-    } );
+    // document.addEventListener( 'keyup', function handleDocumentKeyUp( e ) {
+    //   const key = window.event ? e.keyCode : e.which;
+    //   if ( key == 13 ) {
+    //     e.preventDefault();
+    //   }
+    //   else if ( key == 27 ) {
+    //     e.preventDefault();
+    //   }
+    // } );
 
   }
 
@@ -270,6 +277,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         which = x.data[0]
       ) => {
         if ( ['home'].includes( status ) ) {
+          // V.setState( 'page', { rectOffset: 0 } ); // getBoundingClientRect-for-pill-bug-mitigation
           Marketplace.draw();
         }
         else if ( ['market', 'market category', 'pool'].includes( status ) ) {
@@ -335,6 +343,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
       Button.launch(); // sets nodes: hidden buttons
+
+      V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
+
+      VMap.setMap();
     }
   }
 

@@ -214,7 +214,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
 
-    V.setState( 'active', { lastViewed: undefined } );
+    // V.setState( 'active', { lastViewed: undefined } );
 
     V.setNode( $form, [ $response, $input, $send ] );
     V.setNode( 'page', $form );

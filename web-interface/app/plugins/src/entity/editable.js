@@ -10,56 +10,71 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( path ) {
+    let query;
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
+      return entity.path == path;
+    } ) : undefined;
+
     if ( !V.aE() ) {
       return {
         success: false,
         status: ''
       };
     }
-    else if ( path == '/me/profile' ) {
-      V.setState( 'active', { lastViewed: V.aE().fullId } );
+    if ( inCache ) {
+      query = {
+        success: true,
+        data: [inCache]
+      };
+    }
+    // else if ( path == '/me/profile' ) {
+    //   V.setState( 'active', { lastViewed: V.aE().fullId } );
+    //
+    //   return {
+    //     success: true,
+    //     status: 'active entity retrieved',
+    //     data: [{
+    //       entity: V.aE(),
+    //       drawNav: true,
+    //       mapData: [
+    //         {
+    //           type: 'Feature',
+    //           geometry: V.aE().geometry,
+    //           profile: V.aE().profile,
+    //           thumbnail: V.aE().thumbnail,
+    //           path: V.aE().path
+    //         }
+    //       ]
+    //     }]
+    //   };
+    // }
+    else {
+      query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
+        if ( res.success ) {
+
+          res.data[0].type = 'Feature'; // needed to populate entity on map
+          res.data[0].properties ? null : res.data[0].properties = {};
+
+          V.setCache( 'viewed', res.data );
+
+          return res;
+        }
+        else {
+          return false;
+        }
+      } );
+    }
+    if ( query.success ) {
+
+      const entity = query.data[0];
+
+      V.setState( 'active', { lastViewed: entity.fullId } );
 
       return {
         success: true,
-        status: 'active entity retrieved',
-        data: [{
-          entity: V.aE(),
-          drawNav: true,
-          mapData: [
-            {
-              type: 'Feature',
-              geometry: V.aE().geometry,
-              profile: V.aE().profile,
-              thumbnail: V.aE().thumbnail,
-              path: V.aE().path
-            }
-          ]
-        }]
+        status: 'editable entity retrieved',
+        data: [entity]
       };
-    }
-    else {
-      const query = await V.getEntity( V.castPathOrId( path ) );
-      if ( query.success ) {
-
-        const entity = query.data[0];
-
-        V.setState( 'active', { lastViewed: entity.fullId } );
-
-        return {
-          success: true,
-          status: 'entities retrieved',
-          data: [{
-            entity: entity,
-            mapData: {
-              type: 'Feature',
-              geometry: entity.geometry,
-              profile: entity.profile,
-              thumbnail: entity.thumbnail,
-              path: entity.path
-            },
-          }]
-        };
-      }
     }
   }
 
@@ -69,7 +84,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.success ) {
       UserComponents.setData( {
-        entity: viewData.data[0].entity,
+        entity: viewData.data[0],
         editable: true
       } );
 
@@ -80,17 +95,18 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         // InteractionComponents.onboardingCard(),
         UserComponents.roleCard(),
         UserComponents.addOrChangeImage(),
-        UserComponents.entityCard(),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
         UserComponents.socialCard(),
         UserComponents.locationCard(),
         UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
+        UserComponents.entityCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.accessKeysCard(),
         UserComponents.managementCard(),
+        UserComponents.adminOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 
@@ -107,7 +123,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         } );
       } );
 
-      VMap.draw( viewData.data[0].mapData );
+      VMap.draw( [viewData.data[0]] );
     }
     else {
       Page.draw( {

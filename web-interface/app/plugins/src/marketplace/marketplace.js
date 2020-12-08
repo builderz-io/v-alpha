@@ -15,14 +15,38 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let query, isSearch = false;
 
-    const cache = V.getCache( whichRole );
+    const cache = V.getCache( 'preview' );
     const now = Date.now();
 
     if ( search && search.query ) {
       Object.assign( search, { role: whichRole } );
       isSearch = true;
-      query = await V.getQuery( search );
-      // V.setCache( whichRole, query.data );
+      query = await V.getQuery( search ).then( res => {
+        if ( res.success ) {
+          res.data.forEach( entity => {
+            entity.type = 'Feature'; // needed to populate entity on map
+            entity.properties ? null : entity.properties = {};
+          } );
+        }
+        return res;
+      } );
+    }
+    else if ( cache && !cache.data.length ) {
+      const polledCache = await new Promise( resolve => {
+        const polling = setInterval( () => {
+          const cache = V.getCache( 'preview' );
+          if ( cache.data.length ) {
+            clearInterval( polling );
+            resolve( cache );
+          }
+        }, 70 );
+      } );
+      query = {
+        success: true,
+        status: 'polled cache used',
+        elapsed: now - cache.timestamp,
+        data: V.castJson( polledCache.data, 'clone' )
+      };
     }
     else if (
       cache &&
@@ -36,31 +60,37 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( whichRole );
-      V.setCache( whichRole, query.data );
-    }
+      query = await V.getEntity( 'preview' ).then( res => {
+        if ( res.success ) {
+          res.data.forEach( entity => {
+            entity.path = V.castPathOrId( entity.fullId );
+            entity.type = 'Feature'; // needed to populate entity on map
+            entity.properties ? null : entity.properties = {};
+          } );
+          V.setCache( 'preview', res.data );
+        }
 
-    const mapData = [];
+        return res;
+      } );
+    }
 
     if ( query.success ) {
 
-      query.data.forEach( entity => {
-        mapData.push( {
-          type: 'Feature',
-          geometry: entity.geometry,
-          profile: entity.profile,
-          thumbnail: entity.thumbnail,
-          path: entity.path
+      let filtered = query.data;
+
+      if ( whichRole != 'all' ) {
+        filtered = query.data.filter( item => {
+          return item.profile.role == whichRole;
         } );
-      } );
+      }
+
       return {
         success: true,
-        status: 'entities retrieved',
+        status: 'entities retrieved and filtered',
         isSearch: isSearch,
         data: [{
           whichPath: whichPath,
-          entities: query.data,
-          mapData: mapData,
+          entities: filtered,
         }]
       };
     }
@@ -72,7 +102,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           whichPath: whichPath,
           entities: query.data,
-          mapData: mapData,
         }]
       };
     }
@@ -90,6 +119,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       if ( data.isSearch ) {
         Form.draw( 'all', { fade: 'out' } );
         Button.draw( 'all', { fade: 'out' } );
+        Button.draw( 'search' );
       }
 
       if ( !( ['/network/all', '/network/members'].includes( viewData.whichPath ) ) ) {
@@ -103,6 +133,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         setListContent( last );
         setListContent( secondLast );
 
+        setSliderContent( last );
+
         const hasThumbnail = viewData.entities.filter( item => {return item.thumbnail != undefined} );
         const hasNoThumbnail = viewData.entities.filter( item => { return item.thumbnail === undefined } );
 
@@ -115,7 +147,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         } );
 
         hasNoThumbnail.reverse().forEach( cardData => {
-          // setSliderContent( cardData );
+          if ( hasThumbnail.length < 8 ) {
+            setSliderContent( cardData );
+          }
           setListContent( cardData );
         } );
       }
@@ -128,10 +162,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     }
     else {
-      if ( data.isSearch ) {
-        Button.draw( 'all', { fade: 'out' } );
-        Button.draw( 'close query' );
-      }
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
     }
 
@@ -140,7 +170,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       listings: $list,
     } );
 
-    VMap.draw( viewData.mapData );
+    VMap.draw( viewData.entities );
 
     // View methods
 
@@ -207,7 +237,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'Local Economy',
         path: '/network/all',
-        routeFundsToOwner: false,
+        divertFundsToOwner: false,
         use: {
           button: 'search',
           role: 'all', // 'all' is used here to enable search within all entities
@@ -219,7 +249,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       {
         title: 'People',
         path: '/network/members',
-        routeFundsToOwner: false,
+        divertFundsToOwner: false,
         use: {
           button: 'search',
           role: 'member',
@@ -232,7 +262,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Businesses',
         path: '/network/businesses',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'business'
         },
@@ -244,7 +274,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'NGO',
         path: '/network/non-profits',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'nonprofit'
         },
@@ -256,7 +286,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Public Sector',
         path: '/network/public-sector',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'publicsector'
         },
@@ -268,7 +298,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Anchor Institutions',
         path: '/network/institutions',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'institution'
         },
@@ -280,7 +310,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Networks',
         path: '/network/networks',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'network'
         },
@@ -292,7 +322,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Skills',
         path: '/network/skills',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'skill'
         },
@@ -304,7 +334,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Tasks',
         path: '/network/tasks',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'task'
         },
@@ -316,7 +346,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       //   title: 'Crowdfunding',
       //   path: '/pools',
       //   use: {
-      //     button: 'plus search',
+      //     button: 'search',
       //     form: 'new entity',
       //     role: 'pool'
       //   },
@@ -328,7 +358,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Places',
         path: '/network/places',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'place'
         },
@@ -340,7 +370,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         title: 'Events',
         path: '/network/events',
         use: {
-          button: 'plus search',
+          button: 'search',
           form: 'new entity',
           role: 'event'
         },
@@ -353,7 +383,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     const routeFundsForRoles = {};
     navArray.forEach( navItem => {
-      if ( navItem.routeFundsToOwner === false ) { return }
+      if ( navItem.divertFundsToOwner === false ) { return }
       routeFundsForRoles[navItem.use.role] = navItem.use.role;
     } );
     V.setState( 'rolesWithReceivingAddress', routeFundsForRoles );

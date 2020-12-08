@@ -35,16 +35,16 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function presenter( features ) {
-    if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
-      return Promise.resolve( features );
-    }
-    else {
-      return launch()
-        .then( () => {
-          setMap();
-          return features;
-        } );
-    }
+    return Promise.resolve( features );
+    // if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
+    // }
+    // else {
+    //   return launch()
+    //     .then( () => {
+    //       setMap();
+    //       return features;
+    //     } );
+    // }
 
   }
 
@@ -96,43 +96,23 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       setTimeout( () => {featureLayer.addTo( viMap )}, 1000 );
     }
     else {
-      // if( !viMap.getZoom() == 3 ) {
-      // viMap.setView( [geo[1] - 9, geo[0]], 3 );
-      viMap.setView( [41.858, -87.964], 8 );
-      // }
+      if( !viMap.getZoom() == 3 ) {
+        viMap.setView( [geo[1] - 9, geo[0]], 3 );
+      // viMap.setView( [41.858, -87.964], 8 );
+      }
 
       featureLayer.addTo( viMap );
     }
   }
 
   function castPopup( feature ) {
-    return V.cN( {
-      t: 'div',
-      c: '',
-      h: [
-        {
-          t: 'p',
-          c: 'font-bold txt-center',
-          h: feature.profile.fullId
-        },
-        MarketplaceComponents.castCircle( {
-          thumbnail: feature.thumbnail,
-          profile: { title: feature.profile.title },
-          path: feature.path
-        } ),
-        {
-          t: 'p',
-          c: 'fs-s capitalize txt-center',
-          h: feature.profile.role
-        },
-      ]
-    } );
+    return MarketplaceComponents.popupContent( feature );
   }
 
-  async function launch() {
-    await V.setScript( '/plugins/dependencies/leaflet.js' );
-    console.log( '*** leaflet library loaded ***' );
-  }
+  // async function launch() {
+  //   await V.setScript( '/plugins/dependencies/leaflet.js' );
+  //   console.log( '*** leaflet library loaded ***' );
+  // }
 
   function setMap() {
 
@@ -185,7 +165,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    launch: launch,
+    // launch: launch,
     draw: draw,
     setMap: setMap,
   };

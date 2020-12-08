@@ -172,8 +172,8 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         Haze.draw();
         $page.classList.remove( 'pill-shadow' );
       }
-      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
       Feature.draw( { fade: 'out' } );
+      CanvasComponents.handleClosePopup();
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'feature' ) {
@@ -184,11 +184,13 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       if ( s.width < 800 && ( showHaze == undefined || showHaze != false ) ) {
         Haze.draw();
       }
+      CanvasComponents.handleClosePopup();
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'closed' ) {
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
+      CanvasComponents.handleClosePopup();
       handlebar( 5, 35 );
       $page.classList.add( 'pill-shadow' );
       $page.classList.remove( 'page-full-screen' );

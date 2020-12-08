@@ -9,6 +9,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   const urlCreator = window.URL || window.webkitURL;
 
+  const socialMatch = 'facebook|twitter|linkedin|t.me|instagram|tiktok';
+
   /* ================== private methods ================= */
 
   function castTranslationFile( which, whichContext, whichPart ) {
@@ -24,7 +26,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     // credit to https://zocada.com/compress-resize-images-javascript-browser/
 
     return new Promise( ( resolve, reject ) => {
-      const width = V.getSetting( 'thumbnailWidth' );
+      const tinyImageWidth = V.getSetting( 'tinyImageWidth' );
+      const thumbnailWidth = V.getSetting( 'thumbnailWidth' );
+      const mediumImageWidth = V.getSetting( 'mediumImageWidth' );
 
       const reader = new FileReader();
       reader.readAsDataURL( e.target.files[0] );
@@ -34,44 +38,57 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         img.src = event.target.result;
         img.onload = () => {
           // img.width and img.height will contain the original dimensions
-          const elem = document.createElement( 'canvas' );
-          elem.width = width; // img.width * ( height / img.height );
-          elem.height = img.height * ( width / img.width ); // height;
-          const ctx = elem.getContext( '2d' );
-          ctx.drawImage( img, 0, 0, elem.width, elem.height );
 
-          const elem2 = document.createElement( 'canvas' );
-          elem2.width = 32;
-          elem2.height = elem2.width;
-          const ctx2 = elem2.getContext( '2d' );
-          ctx2.drawImage( img, 0, 0, elem2.width, elem2.height );
+          const tiny = document.createElement( 'canvas' );
+          tiny.width = tinyImageWidth;
+          tiny.height = tinyImageWidth;
+          const tinyImage = tiny.getContext( '2d' );
+          tinyImage.drawImage( img, 0, 0, tiny.width, tiny.height );
 
-          ctx.canvas.toBlob( blob => {
+          const thumb = document.createElement( 'canvas' );
+          thumb.width = thumbnailWidth; // img.width * ( height / img.height );
+          thumb.height = img.height * ( thumbnailWidth / img.width ); // height;
+          const thumbnail = thumb.getContext( '2d' );
+          thumbnail.drawImage( img, 0, 0, thumb.width, thumb.height );
 
-            const imageData = {
-              blob: blob,
-              contentType: blob.type,
+          const medium = document.createElement( 'canvas' );
+          medium.width = mediumImageWidth; // img.width * ( height / img.height );
+          medium.height = img.height * ( mediumImageWidth / img.width ); // height;
+          const mediumImage = medium.getContext( '2d' );
+          mediumImage.drawImage( img, 0, 0, medium.width, medium.height );
+
+          tinyImage.canvas.toBlob( tinyBlob => {
+            V.setState( 'tinyImageUpload', {
+              blob: tinyBlob,
+              contentType: tinyBlob.type,
               originalName: e.target.files[0].name
-            };
-            V.setState( 'imageUpload', imageData );
+            } );
 
-            ctx2.canvas.toBlob( blob => {
-              const imageData = {
-                blob: blob,
-                contentType: blob.type,
+            thumbnail.canvas.toBlob( thumbBlob => {
+              V.setState( 'thumbnailUpload', {
+                blob: thumbBlob,
+                contentType: thumbBlob.type,
                 originalName: e.target.files[0].name
-              };
-              V.setState( 'tinyImageUpload', imageData );
-
-              resolve( {
-                success: true,
-                status: 'image prepared for upload',
-                src: img.src,
               } );
+
+              mediumImage.canvas.toBlob( mediumBlob => {
+                V.setState( 'mediumImageUpload', {
+                  blob: mediumBlob,
+                  contentType: mediumBlob.type,
+                  originalName: e.target.files[0].name
+                } );
+
+                resolve( {
+                  success: true,
+                  status: 'images prepared for upload',
+                  src: img.src,
+                } );
+
+              }, 'image/jpeg', V.getSetting( 'mediumImageQuality' ) );
 
             }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
 
-          }, 'image/jpeg', V.getSetting( 'thumbnailQuality' ) );
+          }, 'image/jpeg', V.getSetting( 'tinyImageQuality' ) );
 
         };
       };
@@ -125,7 +142,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
     const text = which.replace( /www./gi, 'www.' ).replace( /http/gi, 'http' ).replace( /https/gi, 'https' );
     const linksFound = text.match( /(?:www|https?)[^\s]+/g );
-    const iframeLinks = [], noIframeLinks = [];
+    const iframeLinks = [], regularLinks = [], socialLinksImages = [], socialLinksHandles = [];
 
     let links = ( ' ' + text ).slice( 1 );
     let iframes = ( ' ' + text ).slice( 1 );
@@ -133,33 +150,89 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     if ( linksFound != null ) {
 
       for ( let i=0; i<linksFound.length; i++ ) {
-        let replace = linksFound[i];
+        let anchorText, replace = linksFound[i];
+        if ( replace.substr( -1 ) == '.' ) { replace = replace.slice( 0, -1 ) }
         if ( !( linksFound[i].match( /(http(s?)):\/\// ) ) ) { replace = 'http://' + linksFound[i] }
-        let linkText = replace.split( '/' )[2];
-        if ( linkText.substring( 0, 3 ) == 'www' ) { linkText = linkText.replace( 'www.', '' ) }
-        noIframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
 
-        if ( linkText.match( /youtu/ ) ) {
+        let host = replace.split( '/' )[2];
+        host = host.replace( 'www.', '' );
+
+        if ( Number( replace.substr( -5 ) ) < -2000 ) {
+          anchorText = V.castPathOrId( replace.split( '/' ).pop() );
+        }
+        else if ( host.match( new RegExp( socialMatch ) ) ) {
+          anchorText = replace.split( '/' ).pop();
+          socialLinksImages.push( '<a href="' + replace + '">' + V.getIcon( host.match( new RegExp( socialMatch ) )[0] ) + '</a>' );
+          socialLinksHandles.push( '<a href="' + replace + '">' + anchorText + '</a>' );
+        }
+        else {
+          anchorText = host;
+        }
+
+        regularLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
+
+        if ( host.match( /youtu/ ) ) {
           // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
           const youtubeID = replace.split( '/' ).slice( -1 )[0];
           const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://www.youtube.com/embed/' + youtubeID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
         }
-        else if ( linkText.match( /vimeo/ ) ) {
+        else if ( host.match( /vimeo/ ) ) {
           const vimeoID = replace.split( '/' ).slice( -1 )[0];
-          const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://player.vimeo.com/video/' + vimeoID + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+          const iframe = '<div class="iframe-wrapper w-full"><iframe src="https://player.vimeo.com/video/' + vimeoID + '?color=ffffff&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>';
           iframeLinks.push( iframe );
         }
+        else if ( host.match( /soundcloud/ ) ) {
+          const split = replace.split( '/' );
+          const scID = split.slice( -1 )[0]; // example 933028357
+          if ( isNaN( scID ) ) {
+            iframeLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
+          }
+          else {
+
+            /* omit number and replace link in regularLinks */
+            split.pop();
+            regularLinks.pop();
+            regularLinks.push( '<a href="' + split.join( '/' ) + '" >' + anchorText + '</a>' );
+
+            /* generate the iframe from track ID */
+            const iframe = `
+              <div class="iframe-wrapper w-full">
+              <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${ scID }&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
+              ></iframe>
+              </div>
+              `;
+            iframeLinks.push( iframe );
+          }
+        }
         else {
-          iframeLinks.push( '<a href="' + replace + '" target="_blank">' + linkText + '</a>' );
+          iframeLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
         }
         iframes = iframes.split( linksFound[i] ).map( item => { return iframeLinks[i].includes( 'iframe' ) ? item.trim() : item } ).join( iframeLinks[i] );
-        links = links.split( linksFound[i] ).join( noIframeLinks[i] );
+        links = links.split( linksFound[i] ).join( regularLinks[i] );
+      } // end loop over linksFound
+
+      /* create a version without the social links */
+      let omitOriginalSocialLinks = ( ' ' + iframes ).slice( 1 );
+      for ( let i=0; i<linksFound.length; i++ ) {
+        if ( iframeLinks[i].match( new RegExp( socialMatch ) ) ) {
+          omitOriginalSocialLinks = omitOriginalSocialLinks.replace( iframeLinks[i], '' );
+        }
+      }
+
+      /* remove excess line-breaks */
+      omitOriginalSocialLinks = omitOriginalSocialLinks.trim().replace( /( <br>){3,}/g, ' <br> <br>' );
+      while ( omitOriginalSocialLinks.startsWith( '<br>' ) ) {
+        omitOriginalSocialLinks = omitOriginalSocialLinks.replace( '<br>', '' ).trim();
       }
 
       return {
         original: which,
         links: links,
+        socialLinksImages: socialLinksImages.length ? socialLinksImages.join( ' ' ) : false,
+        socialLinksHandles: socialLinksHandles,
+        omitOriginalSocialLinks: omitOriginalSocialLinks,
         iframes: iframes,
         firstIframe: iframeLinks[0]
       };
@@ -169,6 +242,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return {
         original: which,
         links: which,
+        socialLinksImages: false,
+        socialLinksHandles: which,
+        omitOriginalSocialLinks: which,
         iframes: which,
         firstIframe: iframeLinks[0]
       };
@@ -188,7 +264,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castInitials( which ) {
-    const initials = which ? which.split( ' ' ).filter( item => { return isNaN( item ) } ) : [];
+    const initials = which ? which.split( ' ' ).filter( item => { return isNaN( item.replace( '#', '' ) ) } ) : [];
     if ( initials.length ) {
       const first = initials[0].charAt( 0 );
       const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => { return ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 } )[0];
@@ -481,7 +557,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getIcon( which ) {
-    return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+    return which.match( new RegExp( socialMatch ) )
+      ? '<img src="/assets/icon/social/' + which + '.svg" height="28px">'
+      : which == '+'
+        ? '<span class="plus-icon fs-l no-txt-select">+</span>'
+        : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+
   }
 
   function stripHtml( which ) {

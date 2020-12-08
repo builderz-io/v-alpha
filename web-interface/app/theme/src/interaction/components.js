@@ -216,7 +216,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         inputId: 'plusform__title',
         attributes: {
           value: whichValue,
-          autocomplete: 'off'
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
+          spellcheck: 'false'
         }
       },
       location: {
@@ -237,16 +240,22 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       target: {
         label: getString( ui.target ),
         inputId: 'plusform__target',
-        fieldClasses: 'w-1/3 inline-block'
+        fieldClasses: 'flex-grow w-30%'
       },
       unit: {
         label: getString( ui.unit ),
         inputId: 'plusform__unit',
-        fieldClasses: 'w-1/3 inline-block'
+        fieldClasses: 'flex-grow w-30%'
       },
       search: {
         label: getString( ui.search ),
         inputId: 'search-input',
+        attributes: {
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
+          spellcheck: 'false'
+        }
       }
     };
 
@@ -341,44 +350,57 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function formUploadImage() {
     return V.cN( {
       t: 'div',
-      y: {
-        'padding': '16px',
-        'margin-left': '6px',
-        'display': 'inline-flex',
-        'align-items': 'center',
-        'position': 'relative'
-      },
-      c: 'field pxy w-30% border-shadow',
-      h: [
-        {
-          t: 'label',
-          i: 'img-upload__label',
-          a: {
-            for: 'img-upload__file',
+      c: 'pxy w-30%',
+      h: {
+        t: 'div',
+        s: {
+          'upload-field': {
+            'padding': '16px 12px 17px',
+            'align-items': 'center',
+            // adjust look to other fields:
+            'border': '1px solid #DBDAE3',
+            'border-radius': '2px',
+            'color': '#6F7287',
+            'font-size': '14px',
+            'transition': 'border 240ms cubic-bezier(0.4, 0, 0.3, 1)'
           },
-          h: getString( ui.image )
-        },
-        {
-          t: 'input',
-          i: 'img-upload__file',
-          c: 'hidden',
-          a: {
-            type: 'file',
-            accept: 'image/*'
-          },
-          e: {
-            change: handleImageUpload
+          'upload-field:hover': {
+            border: '1px solid #A9A8B3'
           }
         },
-        {
-          t: 'div',
-          i: 'img-upload__preview',
-          y: {
-            position: 'absolute',
-            right: '10px'
+        c: 'upload-field relative flex flex-grow',
+        h: [
+          {
+            t: 'label',
+            i: 'img-upload__label',
+            c: 'w-full cursor-pointer',
+            a: {
+              for: 'img-upload__file',
+            },
+            h: getString( ui.image )
           },
-        },
-      ]
+          {
+            t: 'input',
+            i: 'img-upload__file',
+            c: 'hidden',
+            a: {
+              type: 'file',
+              accept: 'image/*'
+            },
+            e: {
+              change: handleImageUpload
+            }
+          },
+          {
+            t: 'div',
+            i: 'img-upload__preview',
+            y: {
+              position: 'absolute',
+              right: '10px'
+            },
+          },
+        ]
+      }
     } );
   }
 

@@ -38,7 +38,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   function featurePresenter( options ) {
     const $featureUl = MediaComponents.featureUl();
-    const $videoFeature = MediaComponents.videoFeature( options && options.feature ? options.feature : 'https://youtu.be/ygJ4uu4XNM8' );
+    const $videoFeature = MediaComponents.videoFeature( options && options.feature ? options.feature : 'https://vimeo.com/236725407' /* 'https://youtu.be/ygJ4uu4XNM8' */ );
     V.setNode( $featureUl, $videoFeature );
 
     const pageData = {
@@ -90,7 +90,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
           role: 'media',
         },
         draw: function() {
-          Media.draw( '/media', { feature: 'https://youtu.be/kJbto4TISKA' } );
+          Media.draw( '/media', { feature: 'https://vimeo.com/236725407' } ); // 'https://youtu.be/kJbto4TISKA'
         }
       },
       // {

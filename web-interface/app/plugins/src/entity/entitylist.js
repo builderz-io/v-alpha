@@ -18,10 +18,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const adminOf = V.aE().adminOf; // query.data[0].adminOf;
-
     let entitiesAdmined = [];
-    let mapData = [];
 
     const cache = V.getCache( 'managedEntities' );
     const now = Date.now();
@@ -30,32 +27,30 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
       cache &&
       ( now - cache.timestamp ) < ( V.getSetting( 'managedEntitiesCacheDuration' ) * 60 * 1000 )
     ) {
-      entitiesAdmined = cache.data[0].e;
-      mapData = cache.data[0].m;
+      entitiesAdmined = cache.data;
     }
     else {
-      for ( let i = 0; i < adminOf.length; i++ ) {
-        const query = await V.getEntity( adminOf[i] );
-        entitiesAdmined.push( query );
-        mapData.push( {
-          type: 'Feature',
-          geometry: query.data[0].geometry,
-          profile: query.data[0].profile,
-          thumbnail: query.data[0].thumbnail,
-          path: query.data[0].path
-        } );
+      for ( let i = 0; i < V.aE().adminOf.length; i++ ) {
+        const query = await V.getEntity( V.aE().adminOf[i] );
+        query.data[0].type = 'Feature'; // needed to populate entity on map
+        query.data[0].properties ? null : query.data[0].properties = {};
+        entitiesAdmined.push( query.data[0] );
       }
-      V.setCache( 'managedEntities', [{ e: entitiesAdmined, m: mapData }] );
+
+      entitiesAdmined.reverse();
+      const own = entitiesAdmined.pop();
+      entitiesAdmined.splice( 0, 0, own );
+
+      V.setCache( 'managedEntities', entitiesAdmined );
     }
 
-    if ( entitiesAdmined[0] && entitiesAdmined[0].success ) {
+    if ( entitiesAdmined[0] ) {
       return {
         success: true,
         status: 'entities retrieved',
         data: [{
           entity: V.aE(),
           entitiesAdmined: entitiesAdmined,
-          mapData: mapData,
         }]
       };
     }
@@ -83,7 +78,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
       for ( let i = 0; i < viewData.data[0].entitiesAdmined.length; i++ ) {
         V.setNode( $list, [
-          UserComponents.entityListCard( viewData.data[0].entitiesAdmined[i].data[0] )
+          UserComponents.entityListCard( viewData.data[0].entitiesAdmined[i] )
         ] );
       }
 
@@ -92,7 +87,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         listings: $list,
       } );
 
-      VMap.draw( viewData.data[0].mapData );
+      VMap.draw( viewData.data[0].entitiesAdmined );
     }
     else {
       Page.draw( {

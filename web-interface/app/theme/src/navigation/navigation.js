@@ -200,10 +200,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       animate( which );
     }
 
-    /* clear popup */
-
-    V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
-
   }
 
   function castNavDrawingOrder( rowObj, keep ) {
@@ -361,7 +357,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /* else reset navigation, page and popup */
     else {
       reset();
-      V.getNode( '.popup' ) ? V.getNode( '.popup' ).style.opacity = 0 : null;
       Page.draw( { position: 'closed', reset: false, navReset: false } );
     }
 
@@ -481,10 +476,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // V.sA( otherRow, { opacity: 0 }, { duration: 0.5, visibility: 'hidden' } ); // alternative animation
 
     V.setAnimation( nav, {
-      width: itemClickedRect.width + 11,
+      width: itemClickedRect.width + 11 /* + V.getState( 'page' ).rectOffset */,
       top: menuStateObj.entityNavTop,
       left: menuStateObj.entityNavLeft
     }, { duration: 1 } );
+
+    // V.setState( 'page', { rectOffset: 0 } ); // resets the offset to 0 after first page load
+
     V.getNode( nav ).scrollLeft = 0;
 
   }
@@ -492,7 +490,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function draw( data ) {
-    view( presenter( data ) );
+    return Promise.resolve( view( presenter( data ) ) );
   }
 
   function drawReset() {

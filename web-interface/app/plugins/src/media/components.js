@@ -24,15 +24,23 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   } );
 
+  function handleProfileDraw() {
+    const path = V.castPathOrId( this.innerHTML );
+    V.setState( 'active', { navItem: path } );
+    V.setBrowserHistory( path );
+    Profile.draw( path );
+  }
+
   function videoFeature( link ) {
     return V.castNode( {
       t: 'div',
-      // c: 'feature__video-wrapper w-full',
       h: V.castLinks( link ).iframes
     } );
   }
 
   function mediaCard( cardData ) {
+
+    const linkedContent = V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) );
 
     const $cardContent = V.cN( {
       t: 'media',
@@ -40,21 +48,22 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $title = V.cN( {
-      t: 'p',
-      c: 'font-medium pxy',
-      h: cardData.fullId
+      t: 'h2',
+      c: 'font-bold fs-l pxy cursor-pointer',
+      h: cardData.fullId,
+      k: handleProfileDraw
     } );
 
     const $video = V.castNode( {
       t: 'div',
       c: 'w-full',
-      h: V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) ).firstIframe
+      h: linkedContent.firstIframe
     } );
 
     const $text = V.castNode( {
       t: 'div',
       c: 'media-text pt-r',
-      h: V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) ).links
+      h: linkedContent.links
     } );
 
     V.setNode( $cardContent, [$title, $video, $text] );

@@ -23,7 +23,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     const fullId = V.castPathOrId( which );
 
-    const inCache = V.getCache().all ? V.getCache().all.data.find( entity => {
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
       return entity.path == which;
     } ) : undefined;
 
@@ -32,14 +32,26 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     if ( inCache ) {
       query = {
         success: true,
+        message: 'cache used',
         data: [inCache]
       };
     }
     else {
-      query = await V.getEntity( fullId );
-    }
+      query = await V.getEntity( fullId ).then( res => {
+        if ( res.success ) {
 
-    const mapData = [];
+          res.data[0].type = 'Feature'; // needed to populate entity on map
+          res.data[0].properties ? null : res.data[0].properties = {};
+
+          V.setCache( 'viewed', res.data );
+
+          return res;
+        }
+        else {
+          return false;
+        }
+      } );
+    }
 
     if ( query.success ) {
 
@@ -81,19 +93,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         }
       }
 
-      /*
-       * Map data
-       *
-       */
-
-      mapData.push( {
-        type: 'Feature',
-        geometry: entity.geometry,
-        profile: entity.profile,
-        thumbnail: entity.thumbnail,
-        path: entity.path
-      } );
-
       return {
         success: true,
         status: 'entities retrieved',
@@ -102,7 +101,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           entity: entity,
           sendVolume: sendVolume,
           receiveVolume: receiveVolume,
-          mapData: mapData,
         }]
       };
     }
@@ -133,9 +131,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       $list = CanvasComponents.list( 'narrow' );
 
       V.setNode( $list, [
-        UserComponents.thumbnailCard(),
-        UserComponents.roleCard(),
-        UserComponents.entityCard(),
+        UserComponents.mediumImageCard(),
+        // UserComponents.roleCard(),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
         UserComponents.socialCard(),
@@ -143,20 +140,23 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.preferredLangsCard(),
         UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.financialCard(),
+        UserComponents.entityCard(),
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
+        UserComponents.managementCard(),
+        UserComponents.adminOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 
-      Navigation.draw( data.data[0].entity );
+      VMap.draw( [data.data[0].entity] );
 
-      Chat.drawMessageForm();
-
-      Page.draw( {
-        listings: $list,
+      Navigation.draw( data.data[0].entity ).then( () => {
+        Page.draw( {
+          position: 'top',
+          listings: $list,
+        } );
+        Chat.drawMessageForm();
       } );
-
-      VMap.draw( data.data[0].mapData );
     }
     else {
       Page.draw( {

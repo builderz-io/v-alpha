@@ -93,7 +93,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleClosePopup() {
     V.setNode( '.leaflet-popup-pane', '' );
-    if ( V.getNode( '.popup' ) ) {
+    if ( V.getVisibility( '.popup' ) ) {
       V.setAnimation( '.popup', {
         opacity: 0
       }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
@@ -137,7 +137,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         feature: {
           top: 'var(--page-position-top-selected)',
           height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
-          width: dimensions.width + 'px'
+          width: dimensions.width + 'px',
+          background: 'white'
         },
       }
     } );
@@ -228,7 +229,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'card',
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle },
+          { t: 'h2', c: 'w-full font-bold pxy capitalize', h: cardTitle },
           $cardContent
         ] : $cardContent
       }
@@ -326,7 +327,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     content: content,
     topContent: topContent,
     logo: logo,
-    networkLogo: networkLogo
+    networkLogo: networkLogo,
+    handleClosePopup: handleClosePopup
   };
 
 } )();

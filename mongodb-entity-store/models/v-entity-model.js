@@ -89,13 +89,16 @@ var entitySchema = mongoose.Schema( {
     blob: Buffer,
     contentType: String,
     originalName: String,
-    entity: String
   },
   thumbnail: {
     blob: Buffer,
     contentType: String,
     originalName: String,
-    entity: String
+  },
+  mediumImage: {
+    blob: Buffer,
+    contentType: String,
+    originalName: String,
   },
   social: {
     facebook: String,
