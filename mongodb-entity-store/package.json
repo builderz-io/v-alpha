@@ -1,0 +1,28 @@
+{
+  "name": "v-alpha-2-entity-store",
+  "version": "2.0.0",
+  "description": "The Value Instrument Alpha Version 2 MongoDB Entity Store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valueinstrument/v-alpha-2"
+  },
+  "author": "philipeachille",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/valueinstrument/v-alpha-2/issues"
+  },
+  "homepage": "https://github.com/valueinstrument/v-alpha-2#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "ethereumjs-tx": "^2.1.2",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.1",
+    "node-telegram-bot-api": "^0.50.0",
+    "socket.io": "^2.3.0",
+    "web3": "^1.2.9"
+  }
+}

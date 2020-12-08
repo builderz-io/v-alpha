@@ -1,0 +1,33 @@
+{
+  "name": "v-alpha-2-interface",
+  "version": "2.0.0",
+  "description": "The Value Instrument Alpha Version 2 User Interface",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valueinstrument/v-alpha-2"
+  },
+  "author": "philipeachille",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/valueinstrument/v-alpha-2/issues"
+  },
+  "homepage": "https://github.com/valueinstrument/v-alpha-2#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-gzip": "^1.4.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-terser": "^1.2.0",
+    "gulp-terser-js": "^5.0.1",
+    "gulp-watch": "^5.0.1"
+  }
+}

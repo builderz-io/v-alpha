@@ -1,0 +1,67 @@
+/**
+* Elad Shechter Reset
+*/
+
+*,
+*::before,
+*::after{box-sizing:border-box;}
+
+a{text-decoration:none; color:inherit; cursor:pointer;}
+button{background-color:transparent; color:inherit; border-width:0; padding:0; cursor:pointer;}
+figure{margin:0;}
+input::-moz-focus-inner {border:0; padding:0; margin:0;}
+ul, ol, dd{margin:0; padding:0; list-style:none;}
+h1, h2, h3, h4, h5, h6{margin:0; font-size:inherit; font-weight:inherit;}
+p{margin:0;}
+cite {font-style:normal;}
+fieldset{border-width:0; padding:0; margin:0;}
+
+/**
+* PAV Reset
+*/
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+*::-webkit-scrollbar {
+  display: none; /* Webkit based browsers */
+}
+*:focus {
+    outline: none;
+}
+
+textarea, input {
+  border-width: 0;
+}
+
+textarea:focus, input:focus {
+  border-width: 0;
+  box-shadow: 0px 0px 0px #fff !important
+}
+
+html {
+  -webkit-tap-highlight-color:transparent;
+}
+
+body {
+  overflow-y: hidden; /* Prevents Chrome Page Reload on swipe down */
+}
+
+.no-txt-select {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+h2:before {
+  /* https://codyhouse.co/blog/post/line-height-crop */
+  content: '';
+  display: block;
+  height: 0;
+  width: 0;
+  margin-top: calc((1 - 1.125) * 1.44em); /* (1 - line-height) * font-size */
+}
