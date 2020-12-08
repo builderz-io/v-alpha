@@ -9,6 +9,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   const urlCreator = window.URL || window.webkitURL;
 
+  const socialMatch = 'facebook|twitter|linkedin|t.me|instagram|tiktok';
+
   /* ================== private methods ================= */
 
   function castTranslationFile( which, whichContext, whichPart ) {
@@ -154,13 +156,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
         let host = replace.split( '/' )[2];
         host = host.replace( 'www.', '' );
-        console.log( replace, Number( replace.substr( -5 ) ) < -2000 );
+
         if ( Number( replace.substr( -5 ) ) < -2000 ) {
           anchorText = V.castPathOrId( replace.split( '/' ).pop() );
         }
-        else if ( host.match( /facebook/ ) ) {
+        else if ( host.match( new RegExp( socialMatch ) ) ) {
           anchorText = replace.split( '/' ).pop();
-          socialLinksImages.push( '<a href="' + replace + '">' + '🔮' + '</a>' );
+          socialLinksImages.push( '<a href="' + replace + '">' + V.getIcon( host.match( new RegExp( socialMatch ) )[0] ) + '</a>' );
           socialLinksHandles.push( '<a href="' + replace + '">' + anchorText + '</a>' );
         }
         else {
@@ -209,13 +211,28 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         }
         iframes = iframes.split( linksFound[i] ).map( item => { return iframeLinks[i].includes( 'iframe' ) ? item.trim() : item } ).join( iframeLinks[i] );
         links = links.split( linksFound[i] ).join( regularLinks[i] );
+      } // end loop over linksFound
+
+      /* create a version without the social links */
+      let omitOriginalSocialLinks = ( ' ' + iframes ).slice( 1 );
+      for ( let i=0; i<linksFound.length; i++ ) {
+        if ( iframeLinks[i].match( new RegExp( socialMatch ) ) ) {
+          omitOriginalSocialLinks = omitOriginalSocialLinks.replace( iframeLinks[i], '' );
+        }
+      }
+
+      /* remove excess line-breaks */
+      omitOriginalSocialLinks = omitOriginalSocialLinks.trim().replace( /( <br>){3,}/g, ' <br> <br>' );
+      while ( omitOriginalSocialLinks.startsWith( '<br>' ) ) {
+        omitOriginalSocialLinks = omitOriginalSocialLinks.replace( '<br>', '' ).trim();
       }
 
       return {
         original: which,
         links: links,
-        socialLinksImages: socialLinksImages,
+        socialLinksImages: socialLinksImages.length ? socialLinksImages.join( ' ' ) : false,
         socialLinksHandles: socialLinksHandles,
+        omitOriginalSocialLinks: omitOriginalSocialLinks,
         iframes: iframes,
         firstIframe: iframeLinks[0]
       };
@@ -225,8 +242,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return {
         original: which,
         links: which,
-        socialLinksImages: which,
+        socialLinksImages: false,
         socialLinksHandles: which,
+        omitOriginalSocialLinks: which,
         iframes: which,
         firstIframe: iframeLinks[0]
       };
@@ -539,7 +557,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getIcon( which ) {
-    return which == '+' ? '<span class="plus-icon fs-l no-txt-select">+</span>' : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+    return which.match( new RegExp( socialMatch ) )
+      ? '<img src="/assets/icon/social/' + which + '.svg" height="28px">'
+      : which == '+'
+        ? '<span class="plus-icon fs-l no-txt-select">+</span>'
+        : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+
   }
 
   function stripHtml( which ) {

@@ -490,7 +490,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function draw( data ) {
-    view( presenter( data ) );
+    return Promise.resolve( view( presenter( data ) ) );
   }
 
   function drawReset() {

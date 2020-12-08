@@ -115,6 +115,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     entity: 'Entity',
     fin: 'Financial',
     social: 'Social',
+    contact: 'Contact',
     funding: 'Funding Status',
     img: 'Image',
     holder: 'Holder',
@@ -488,12 +489,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
-
     if( descr || ( !descr && editable ) ) {
+      const linkedDescr = V.castLinks( descr ? descr.replace( /\n/g, ' <br>' ) : '' ); // needs whitespace before <br>
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
-        a: { rows: '6', title: 'description', db: 'properties' },
+        a: { rows: '8', title: 'description', db: 'properties' },
         e: {
           focus: handleEntryFocus,
           blur: handleEntry
@@ -501,8 +502,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: descr ? descr : getString( ui.edit ),
       } : {
         t: 'div',
-        c: 'pxy',
-        h: V.castLinks( descr.replace( /\n/g, ' <br>' ) ).iframes,
+        c: 'pxy w-full',
+        h: [
+          {
+            x: linkedDescr.socialLinksImages,
+            t: 'div',
+            h: linkedDescr.socialLinksImages
+          },
+          {
+            t: 'div',
+            c: 'mt-xs',
+            h: linkedDescr.omitOriginalSocialLinks
+          }
+        ]
       } );
       return castCard( $innerContent, editable ? getString( ui.description ) : entity.profile.role );
     }
@@ -870,10 +882,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialCard() {
-    const titles = ['facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', 'email'];
+    const titles = [/*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */ 'email'];
     const db = 'social';
     const $innerContent = castTableNode( titles, db, editable );
-    return $innerContent ? castCard( $innerContent, getString( ui.social ) ) : '';
+    return $innerContent ? castCard( $innerContent, getString( ui.contact ) ) : '';
   }
 
   function entityListCard( entity ) {

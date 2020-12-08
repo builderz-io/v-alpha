@@ -148,15 +148,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.socialShareButtons(),
       ] );
 
-      Navigation.draw( data.data[0].entity );
-
-      Chat.drawMessageForm();
-
-      Page.draw( {
-        listings: $list,
-      } );
-
       VMap.draw( [data.data[0].entity] );
+
+      Navigation.draw( data.data[0].entity ).then( () => {
+        Page.draw( {
+          position: 'top',
+          listings: $list,
+        } );
+        Chat.drawMessageForm();
+      } );
     }
     else {
       Page.draw( {
