@@ -23,11 +23,6 @@
 [Solidity](https://solidity.readthedocs.io/en/v0.6.6/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [Tailwind CSS](https://tailwindcss.com/docs/utility-first)
 
-## Visit Live Networks
-
-[builderz.io network](https://builderz.io)
-
-[Neighborhood Economics & Trinity Christian College Chicago](http://neighborhoodeconomics.trnty.edu/)
 
 ## Contains
 
@@ -43,9 +38,13 @@ Modules to connect to distributed ledger technologies and distributed identity m
 
 **VPlugins** create and display various content. Plugins control what is displayed in the Theme.
 
+[See a web interface code example](https://github.com/valueinstrument/v-alpha-2/blob/master/web-interface/app/plugins/src/marketplace/marketplace.js)
+
 🔸 **Smart Contract**
 
 The VToken concept cast into a smart contract, which can be setup on Ethereum and EVM-compatible ledgers. This is a special kind of token with several customizable properties, which can be set to the initiators liking.
+
+[See the smart contract code](https://github.com/valueinstrument/v-alpha-2/blob/master/smart-contract/contracts/VICoin.sol)
 
 🔸 **Administration Panel**
 
@@ -55,17 +54,28 @@ The Admin Panel allows the initiators of a VToken smart contract to change any o
 
 The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used to transact funds but not used for identities. This is helpful for testing and exploring user needs. This module also enables token accounts and transactions in VToken format, if no distributed ledger is used for transactions either (as a simulation of such) and provides a network/community chat-thread.
 
+
+## Visit Live Networks / Demos
+
+[builderz.io network](https://builderz.io)
+
+[Neighborhood Economics & Trinity Christian College Chicago](http://neighborhoodeconomics.trnty.edu/)
+
+
 ## Installation
 
 Please refer to the [INSTALL](https://github.com/valueinstrument/v-alpha-2/blob/development/INSTALL.md) file.
+
 
 ## Documentation
 
 Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here on GitHub to find the documentation
 
+
 ## Contribute
 
 Visit the [Issues](https://github.com/valueinstrument/v-alpha-2/issues) to find a selection of tasks in need of attention. The issues listed mainly provide a global overview. We do not currently track detailed issues or the project roadmap here on GitHub.
+
 
 ## Intro Video
 
