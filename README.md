@@ -28,23 +28,21 @@
 
 This repository contains four distinct code bases:
 
-🔸 **Web Interface**
+🔸 **Web Interface** [View a code example](https://github.com/valueinstrument/v-alpha-2/blob/master/web-interface/app/plugins/src/marketplace/marketplace.js)
 
 Modules to connect to distributed ledger technologies and distributed identity mechanisms, and build user interfaces around these technologies. All web interface modules are written in plain Javascript.
 
-**VCore** provides modules to access Ethereum and all EVM-compatible ledgers, Symbol ledgers, 3Box profiles, storage and messages, and MongoDB (e.g. our MongoDB Entity Store)
+**VCore** provides modules to access Ethereum and all EVM-compatible ledgers, Symbol ledgers, 3Box profiles, storage and messages, and MongoDB (e.g. our MongoDB Entity Store). It further contains many methods for DOM node creation and manipulation, a state and caching module and other useful helper-methods.
 
 **VTheme** is a first theme build with VCore. A responsive web app, featuring an intelligent menu, login user flow, mapping and more.
 
-**VPlugins** create and display various content. Plugins control what is displayed in the Theme.
+**VPlugins** create and display various content. Plugins control what and how content is displayed in the VTheme. Included are our first plugins to manage a marketplace, display the map, chat and entity management.
 
-[See a web interface code example](https://github.com/valueinstrument/v-alpha-2/blob/master/web-interface/app/plugins/src/marketplace/marketplace.js)
 
-🔸 **Smart Contract**
+🔸 **Smart Contract** [View the code](https://github.com/valueinstrument/v-alpha-2/blob/master/smart-contract/contracts/VICoin.sol)
 
 The VToken concept cast into a smart contract, which can be setup on Ethereum and EVM-compatible ledgers. This is a special kind of token with several customizable properties, which can be set to the initiators liking.
 
-[See the smart contract code](https://github.com/valueinstrument/v-alpha-2/blob/master/smart-contract/contracts/VICoin.sol)
 
 🔸 **Administration Panel**
 
@@ -55,7 +53,7 @@ The Admin Panel allows the initiators of a VToken smart contract to change any o
 The MongoDB Entity Store resolves user names to Web3 addresses, when a distributed ledger is used to transact funds but not used for identities. This is helpful for testing and exploring user needs. This module also enables token accounts and transactions in VToken format, if no distributed ledger is used for transactions either (as a simulation of such) and provides a network/community chat-thread.
 
 
-## Visit Live Networks / Demos
+## Live Networks & Demos
 
 [builderz.io network](https://builderz.io)
 
@@ -69,7 +67,7 @@ Please refer to the [INSTALL](https://github.com/valueinstrument/v-alpha-2/blob/
 
 ## Documentation
 
-Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here on GitHub to find the documentation
+Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here on GitHub to find the documentation.
 
 
 ## Contribute
@@ -79,7 +77,9 @@ Visit the [Issues](https://github.com/valueinstrument/v-alpha-2/issues) to find 
 
 ## Intro Video
 
-View the [builderz.io Intro Video](https://youtu.be/kJbto4TISKA) on YouTube to get an idea of the project
+View the [builderz.io Intro Video](https://youtu.be/kJbto4TISKA) on YouTube to get an idea of the project.
+
+Here are some screenshots:
 
 ![V Alpha 2 Screenshot 1](https://user-images.githubusercontent.com/20671922/101465423-35e7b580-3940-11eb-9941-36f1b9469b07.png)
 
