@@ -12,7 +12,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
     maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength
     maxHumanWords: 3,  // max allowed words in human entity names // MUST be less or equal to capWordLength
-    maxWordLength: 13,  // max allowed length of each word in name
+    maxWordLength: 14,  // max allowed length of each word in name
   };
 
   const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
@@ -23,7 +23,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     invalidTitle: 'Invalid title',
     invalidChar: 'Title: invalid character',
-    maxLength: 'Title: max 12 characters in a word',
+    maxLength: 'Title: max 14 characters in a word',
     min2Adjecent: 'Title: min 2 adjecent letters',
     maxHuman: 'Title: max 3 words',
     maxEntity: 'Title: max 7 words',
