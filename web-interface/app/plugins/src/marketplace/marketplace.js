@@ -32,21 +32,36 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else if ( cache && !cache.data.length ) {
+      let counter = 0;
       const polledCache = await new Promise( resolve => {
         const polling = setInterval( () => {
+          counter += 1;
           const cache = V.getCache( 'preview' );
           if ( cache.data.length ) {
             clearInterval( polling );
             resolve( cache );
           }
+          else if ( counter > 299 ) {
+            clearInterval( polling );
+            resolve( false );
+          }
         }, 70 );
       } );
-      query = {
-        success: true,
-        status: 'polled cache used',
-        elapsed: now - cache.timestamp,
-        data: V.castJson( polledCache.data, 'clone' )
-      };
+
+      if ( polledCache ) {
+        query = {
+          success: true,
+          status: 'polled cache used',
+          elapsed: now - cache.timestamp,
+          data: V.castJson( polledCache.data, 'clone' )
+        };
+      }
+      else {
+        query = {
+          success: false,
+          status: 'cache empty',
+        };
+      }
     }
     else if (
       cache &&

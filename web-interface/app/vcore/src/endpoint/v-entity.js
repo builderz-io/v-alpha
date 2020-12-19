@@ -8,6 +8,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const entitySetup = {
+    entityDocVersion: 'idxns.org/e/v0',
+    profileDocVersion: 'idxns.org/p/v0',
     useWhitelist: true, // allow only chars in whitelist
     // capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
     maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength
@@ -86,7 +88,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const d = new Date();
     const date = d.toString();
-    const unix = Date.now();
+    const unix = Math.floor( Date.now() / 1000 );
 
     let geometry, uPhrase, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
@@ -110,7 +112,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = entityData.uPhrase; // for demo data
     }
     else {
-      const gen = V.castUUID();
+      const gen = V.castUuid();
       uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
     }
 
@@ -146,7 +148,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         const newEvmAccount = window.Web3Obj.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
-        entityData.evmIssuer = 'VDID';
+        entityData.evmIssuer = 'IDXNS';
       }
       else {
         entityData.evmIssuer = 'SELF';
@@ -171,12 +173,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      block = Math.floor( unix / 1000 );
+      block = unix;
       rpc = 'none';
       contract = 'none';
     }
-
-    const host = window.location.host;
 
     if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
 
@@ -186,11 +186,58 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
 
-    const uuid = V.castUUID();
-
     const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
 
-    const newEntity = {
+    const entityCast = {
+
+      contextE: entitySetup.entityDocVersion,
+      typeE: entityData.role,
+      uuidE: V.castUuid().base64Url,
+
+      contextP: entitySetup.profileDocVersion,
+      typeP: 'StandardProfile',
+      uuidP: V.castUuid().base64Url,
+
+      active: true,
+      statusCode: 100,
+
+      title: title.data[0],
+      tag: tag,
+      specialTag: 'none',
+      issuer: window.location.host,
+      unix: unix,
+      expires: unix + 60 * 60 * 24 * 180,
+      auth: uPhrase,
+
+      evmCredentials: {
+        address: entityData.evmAddress,
+        privateKey: entityData.evmPrivateKey,
+        evmIssuer: entityData.evmIssuer,
+      },
+      symbolCredentials: entityData.symbolCredentials || {
+        address: undefined
+      },
+      receivingAddresses: {
+        evm: entityData.evmReceivingAddress
+      },
+
+      props: {
+        baseLocation: entityData.location || undefined,
+        descr: entityData.description || undefined,
+        target: target.data[0],
+        unit: entityData.unit || undefined,
+        email: email,
+        prefLangs: undefined
+      },
+
+      geometry: geometry,
+
+      tinyImage: tinyImage,
+      thumbnail: thumbnail,
+      mediumImage: mediumImage,
+
+      /*
+      // MongoDB version
       docVersion: V.getSetting( 'entityDocVersion' ),
       fullId: fullId,
       path: path,
@@ -213,7 +260,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           date: date,
           unix: unix,
           network: {
-            host: host,
+            issuer: window.location.host,
             block: block,
             rpc: rpc,
             contract: contract,
@@ -259,6 +306,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       social: {
         email: email,
       }
+      */
     };
 
     V.setState( 'tinyImageUpload', 'clear' );
@@ -269,7 +317,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       endpoint: 'entity',
       status: 'cast entity',
-      data: [ newEntity ]
+      data: [ entityCast ]
     };
   }
 

@@ -9,7 +9,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    entityLedger: 'MongoDB', // choices are: 'MongoDB' or '3Box' (case sensitive)
+    entityLedger: 'Firebase', // choices are: 'MongoDB' or '3Box' (case sensitive)
     chatLedger: 'MongoDB',
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
@@ -28,7 +28,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
-    demoContent: false, // set to 'true', then reload page once, then set to 'false'
+    demoContent: true, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
     marketCacheDuration: 3, // in minutes
@@ -49,7 +49,6 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
     appVersion: 'v2 0.8.6',
-    entityDocVersion: 'v0.3 - valueinstrument.org',
 
     neQuestionnaire: [
 

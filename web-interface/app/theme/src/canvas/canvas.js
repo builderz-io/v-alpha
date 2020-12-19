@@ -326,11 +326,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( V.getSetting( 'demoContent' ) ) {
-      ( async () => {
-        for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
-          await V.setEntity( DemoContent.mongoArr[i] );
-        }
-      } )();
+      V.setEntity( DemoContent.mongoArr[4] );
+      // ( async () => {
+      //   for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
+      //     await V.setEntity( DemoContent.mongoArr[i] );
+      //   }
+      // } )();
     }
   }
 

@@ -340,7 +340,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
 
-  function castUUID( input ) {
+  function castUuid( input ) {
     // creation adapted from https://github.com/uuidjs/uuid
     // encode/decode adapted from https://gist.github.com/brianboyko/1b652a1bf85c48bc982ab1f2352246c8
     // on 6th May 2020
@@ -617,7 +617,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castPathOrId = castPathOrId;
   V.castJson = castJson;
   V.castShortAddress = castShortAddress;
-  V.castUUID = castUUID;
+  V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;
   V.castTag = castTag;
   V.getIcon = getIcon;
@@ -640,7 +640,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castPathOrId: castPathOrId,
     castJson: castJson,
     castShortAddress: castShortAddress,
-    castUUID: castUUID,
+    castUuid: castUuid,
     castRandomInt: castRandomInt,
     castTag: castTag,
     getIcon: getIcon,
