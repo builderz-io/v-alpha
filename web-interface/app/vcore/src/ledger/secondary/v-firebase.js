@@ -11,21 +11,17 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setEntityNamespace( data ) {
 
-    const a = data.contextE;
-    const b = data.typeE;
-    const c = data.issuer;
-    const d = data.uuidE;
+    const a = data.uuidE;
+    const b = data.contextE;
+    const c = data.typeE;
+    const d = data.issuer;
     const e = data.auth;
 
     const u = data.title;
     const v = data.tag;
-    const w = data.specialTag;
+    // const w = data.specialTag;
 
     const m = {
-      a: data.active,
-      b: data.statusCode
-    };
-    const n = {
       a: data.uuidE,
       // b: [data.uuidE], // owners
       m: data.uuidP
@@ -37,6 +33,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const y = {
       a: String( data.unix ),
       // b: String( data.unix ), // modified
+      m: data.statusCode,
+      n: data.active,
       z: String( data.expires ),
     };
     // const z = {
@@ -51,15 +49,15 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const variables = {
       input: {
-        // Full set: a, b, c, d, e, u, v, w, m, n, x, y, z
-        a, b, c, d, e, u, v, w, m, n, x, y
+        // Full set: a, b, c, d, e, u, v, w, m, x, y, z
+        a, b, c, d, e, u, v, m, x, y
       }
     };
 
     const query = `mutation SetNewEntity( $input: InputEntity! ) {
                 setEntity(input: $input) {
-                  ${ '' /* Full set: a b c d e u v w m { a b } n { a b m } x { a } y { a b z } z { a { a b c } } */ }
-                  d, n { a }
+                  ${ '' /* Full set: a b c d e u v w m { a b m } x { a } y { a b m n z } z { a { a b c } } */ }
+                  a
                 }
               }
             `;
@@ -69,20 +67,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setProfile( data ) {
 
-    const a = data.contextP;
-    const b = data.typeP;
-    const c = data.issuer;
-    const d = data.uuidP;
-    const e = data.auth;
+    const a = data.uuidP;
+    const b = data.contextP;
+    // const c = data.typeP;
 
     const m = {
-      a: data.active,
-      b: data.statusCode
-    };
-    const n = {
       a: data.uuidE,
       // b: [data.uuidE], // owners
-      m: data.uuidE
+      // m: data.uuidE
     };
 
     const r = {
@@ -112,7 +104,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const y = {
       a: String( data.unix ),
       // b: String( data.unix ), // modified
-      z: String( data.expires ),
     };
     // const z = { // changeLog
     //   a: [
@@ -126,15 +117,15 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const variables = {
       input: {
-        // full set: a, b, c, d, e, m, n, r, s, t, x, y, z
-        a, b, c, d, e, m, n, r, s, t, x, y
+        // full set: a, b, c, m, r, s, t, x, y, z
+        a, b, m, r, s, t, x, y
       }
     };
 
     const query = `mutation SetNewProfile( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ '' /* Full set: a, b, c, d, e, m { a b }, n { a b m }, r { a b c m n }, s { a b c d z }, t { a b c }, x { a } y { a b z } z { a { a b c } } */ }
-                  d, n { a }
+                  ${ '' /* Full set: a, b, c, d, e, m { a }, r { a b c m n }, s { a b c d z }, t { a b c }, x { a } y { a b } z { a { a b c } } */ }
+                  a
                 }
               }
             `;

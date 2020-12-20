@@ -1,19 +1,18 @@
 const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Core Module to manage entities
+   * V Core Module to create and manage entities
    *
    */
 
   'use strict';
 
   const entitySetup = {
-    entityDocVersion: 'idxns.org/e/v0',
-    profileDocVersion: 'idxns.org/p/v0',
+    entityDocVersion: 'idxns.org/e1/v0',
+    profileDocVersion: 'idxns.org/p1/v0',
     useWhitelist: true, // allow only chars in whitelist
-    // capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
-    maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength
-    maxHumanWords: 3,  // max allowed words in human entity names // MUST be less or equal to capWordLength
+    maxEntityWords: 7,  // max allowed words in entity names (not humans)
+    maxHumanWords: 3,  // max allowed words in human entity names
     maxWordLength: 14,  // max allowed length of each word in name
   };
 
@@ -46,6 +45,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function castEntity( entityData ) {
 
+    /**
+     * Check whether lat/lng are present,
+     * if the user entered a location.
+     */
+
     if ( entityData.location && !entityData.lat ) {
       return {
         success: false,
@@ -55,26 +59,32 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    // check whether we have a valid title
+    /** Check whether the title is valid. */
+
     const title = castEntityTitle( entityData.title, entityData.role );
 
     if ( !title.success ) {
-      return title; // error object
+      return title; // return the error object
     }
+
+    /** Check whether the target amount is valid. */
 
     const target = castTarget( entityData );
 
     if ( !target.success ) {
-      return target; // error object
+      return target; // return the error object
     }
 
-    // cast tag and fullId
+    /** Cast tag and fullId. */
+
     const tag = V.castTag();
     const fullId = title.data[0] + ' ' + tag;
-    const slug = V.castSlugOrId( fullId );
-    const path = '/profile/' + slug;
 
-    // check whether this title and tag combination exists, otherwise start again
+    /**
+     * Check whether this title and tag combination exists,
+     * otherwise start again.
+     */
+
     const exists = await getEntity( fullId );
 
     if ( exists.success ) { // success is not a good thing here ;)
@@ -86,11 +96,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const d = new Date();
-    const date = d.toString();
-    const unix = Math.floor( Date.now() / 1000 );
+    /** Prepare data */
 
     let geometry, uPhrase, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
+
+    const unix = Math.floor( Date.now() / 1000 );
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -116,21 +126,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
     }
 
-    if ( V.getState( 'tinyImageUpload' ) ) {
-      tinyImage = V.getState( 'tinyImageUpload' );
-      console.log( tinyImage );
-    }
-
-    if ( V.getState( 'thumbnailUpload' ) ) {
-      thumbnail = V.getState( 'thumbnailUpload' );
-      console.log( thumbnail );
-    }
-
-    if ( V.getState( 'mediumImageUpload' ) ) {
-      mediumImage = V.getState( 'mediumImageUpload' );
-      console.log( mediumImage );
-    }
-
     const activeEntity = V.getState( 'activeEntity' );
 
     if ( activeEntity ) {
@@ -142,7 +137,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       creatorTag = tag;
     }
 
-    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+    const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
+
+    V.getState( 'tinyImageUpload' ) ? tinyImage = V.getState( 'tinyImageUpload' ) : null;
+    V.getState( 'thumbnailUpload' ) ? tinyImage = V.getState( 'thumbnailUpload' ) : null;
+    V.getState( 'mediumImageUpload' ) ? tinyImage = V.getState( 'mediumImageUpload' ) : null;
+    V.setState( 'tinyImageUpload', 'clear' );
+    V.setState( 'thumbnailUpload', 'clear' );
+    V.setState( 'mediumImageUpload', 'clear' );
+
+    if ( 'EVM' == V.getSetting( 'transactionLedger' ) ) {
 
       if ( !entityData.evmAddress ) {
         const newEvmAccount = window.Web3Obj.eth.accounts.create();
@@ -172,21 +176,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         }
       } );
     }
-    else {
-      block = unix;
-      rpc = 'none';
-      contract = 'none';
-    }
+    else if ( 'Symbol' == V.getSetting( 'transactionLedger' ) ) {
 
-    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-
-      // TODO: sync with EVM
+      // EXPERIMENTAL
 
       const newSymbolAddress = await V.setActiveAddress();
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
-
-    const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
 
     const entityCast = {
 
@@ -195,7 +191,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uuidE: V.castUuid().base64Url,
 
       contextP: entitySetup.profileDocVersion,
-      typeP: 'StandardProfile',
       uuidP: V.castUuid().base64Url,
 
       active: true,
@@ -203,7 +198,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       title: title.data[0],
       tag: tag,
-      specialTag: 'none',
+
       issuer: window.location.host,
       unix: unix,
       expires: unix + 60 * 60 * 24 * 180,
@@ -236,82 +231,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       thumbnail: thumbnail,
       mediumImage: mediumImage,
 
-      /*
-      // MongoDB version
-      docVersion: V.getSetting( 'entityDocVersion' ),
-      fullId: fullId,
-      path: path,
-      private: {
-        uPhrase: uPhrase,
-        evmCredentials: {
-          address: entityData.evmAddress,
-          privateKey: entityData.evmPrivateKey,
-          issuer: entityData.evmIssuer,
-        }
-      },
-      profile: {
-        fullId: fullId,
-        title: title.data[0],
-        tag: tag,
-        creator: creator,
-        creatorTag: creatorTag,
-        role: entityData.role,
-        joined: {
-          date: date,
-          unix: unix,
-          network: {
-            issuer: window.location.host,
-            block: block,
-            rpc: rpc,
-            contract: contract,
-          }
-        },
-        uuidV4: uuid.v4,
-      },
-      paths: {
-        entity: path,
-        base64: '/' + uuid.base64Url
-      },
-      status: {
-        active: true,
-        verified: V.getSetting( 'defaultVerification' )
-      },
-      evmCredentials: {
-        address: entityData.evmAddress,
-        issuer: entityData.evmIssuer,
-      },
-      receivingAddresses: {
-        evm: entityData.evmReceivingAddress
-      },
-      symbolCredentials: entityData.symbolCredentials || { address: undefined },
-      owners: [{
-        ownerName: creator,
-        ownerTag: creatorTag,
-      }],
-      admins: [{
-        adminName: creator,
-        adminTag: creatorTag,
-      }],
-      adminOf: [ fullId ],
-      properties: {
-        baseLocation: entityData.location || undefined,
-        description: entityData.description || undefined,
-        target: target.data[0],
-        unit: entityData.unit || undefined,
-      },
-      tinyImage: tinyImage,
-      thumbnail: thumbnail,
-      mediumImage: mediumImage,
-      geometry: geometry,
-      social: {
-        email: email,
-      }
-      */
-    };
+      // for backwards compatibility
+      creator: creator,
+      creatorTag: creatorTag,
+      block: block,
+      rpc: rpc,
+      contract: contract
 
-    V.setState( 'tinyImageUpload', 'clear' );
-    V.setState( 'thumbnailUpload', 'clear' );
-    V.setState( 'mediumImageUpload', 'clear' );
+    };
 
     return {
       success: true,
@@ -370,16 +297,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     let error;
 
     ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
-    // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) )  ? error = getString( ui.invalidTitle ) : null;
+    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
     entitySetup.useWhitelist && title.match( charWhitelist ) ? error = getString( ui.invalidTitle ) : null;
     title.match( charBlacklist ) ? error = getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
     !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = getString( ui.min2Adjecent ) : null;
-    title.length > 200  ? error = getString( ui.tooLong ) : null;
-    title.length < 2 ? error = getString( ui.tooShort ) : null;
+    // title.length > 200  ? error = getString( ui.tooLong ) : null; // redundant rule
+    // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
     // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
-    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
     // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-    // checkLength > entitySetup.capWordLength ? error = getString( ui.invalidTitle ) : null;
     ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
     ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
     wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;

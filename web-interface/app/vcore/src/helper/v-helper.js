@@ -258,7 +258,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   function castRandLatLng() {
     return {
-      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ),
+      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1,
       lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1
     };
   }
@@ -481,15 +481,15 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       uuidV4 = v4();
       encoded = encode( uuidV4 );
 
-      while ( uuidV4.charAt( 0 ) == '0' ||
-              encoded.includes( '-' ) ||
-              encoded.includes( '_' ) ||
-              encoded.includes( 'O' ) ||
-              ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
-              ['x', 'X'].includes( encoded.charAt( 1 ) ) ||
-              // !encoded.charAt( 0 ).match( /[0-9]/ ) ||
-              !encoded.charAt( 0 ).match( /[A-Z]/ ) ||
-              !encoded.charAt( 1 ).match( /[A-Z]/ )
+      while (
+        // uuidV4.charAt( 0 ) == '0' ||
+        !encoded.charAt( 0 ).match( /[a-z]/ ) ||
+        !encoded.charAt( 1 ).match( /[a-z]/ ) ||
+        encoded.charAt( 0 ) == encoded.charAt( 1 ) ||
+        encoded.includes( '-' ) ||
+        encoded.includes( '_' ) ||
+        ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
+        ['x', 'X'].includes( encoded.charAt( 1 ) )
       ) {
         uuidV4 = v4();
         encoded = encode( uuidV4 );

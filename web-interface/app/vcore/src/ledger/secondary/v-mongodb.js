@@ -9,76 +9,69 @@ const VMongoDB = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function castNewEntity( entityData ) {
+  function castNewEntity( data ) {
+    const fullId = data.title + ' ' + data.tag;
+    const path = '/profile/' + V.castSlugOrId( fullId );
+    const date = new Date();
     return {
-      // MongoDB version
-      docVersion: V.getSetting( 'entityDocVersion' ),
+      docVersion: data.contextP,
       fullId: fullId,
       path: path,
       private: {
-        uPhrase: uPhrase,
-        evmCredentials: {
-          address: entityData.evmAddress,
-          privateKey: entityData.evmPrivateKey,
-          issuer: entityData.evmIssuer,
-        }
+        uPhrase: data.auth,
+        evmCredentials: data.evmCredentials
       },
       profile: {
         fullId: fullId,
-        title: title.data[0],
-        tag: tag,
-        creator: creator,
-        creatorTag: creatorTag,
-        role: entityData.role,
+        title: data.title,
+        tag: data.tag,
+        creator: data.creator,
+        creatorTag: data.creatorTag,
+        role: data.typeE,
         joined: {
-          date: date,
-          unix: unix,
+          date: date.toString(),
+          unix: data.unix,
           network: {
-            host: host,
-            block: block,
-            rpc: rpc,
-            contract: contract,
+            host: data.issuer,
+            block: data.block,
+            rpc: data.rpc,
+            contract: data.contract,
           }
         },
-        uuidV4: uuid.v4,
+        uuidV4: data.uuidE,
       },
       paths: {
         entity: path,
-        base64: '/' + uuid.base64Url
+        base64: '/' + data.uuidE
       },
       status: {
         active: true,
         verified: V.getSetting( 'defaultVerification' )
       },
       evmCredentials: {
-        address: entityData.evmAddress,
-        issuer: entityData.evmIssuer,
+        address: data.evmCredentials.evmAddress,
+        issuer: data.evmCredentials.evmIssuer,
       },
       receivingAddresses: {
-        evm: entityData.evmReceivingAddress
+        evm: data.receivingAddresses.evm
       },
-      symbolCredentials: entityData.symbolCredentials || { address: undefined },
+      symbolCredentials: data.symbolCredentials,
       owners: [{
-        ownerName: creator,
-        ownerTag: creatorTag,
+        ownerName: data.creator,
+        ownerTag: data.creatorTag,
       }],
       admins: [{
-        adminName: creator,
-        adminTag: creatorTag,
+        adminName: data.creator,
+        adminTag: data.creatorTag,
       }],
       adminOf: [ fullId ],
-      properties: {
-        baseLocation: entityData.location || undefined,
-        description: entityData.description || undefined,
-        target: target.data[0],
-        unit: entityData.unit || undefined,
-      },
-      tinyImage: tinyImage,
-      thumbnail: thumbnail,
-      mediumImage: mediumImage,
-      geometry: geometry,
+      properties: data.props,
+      tinyImage: data.tinyImage,
+      thumbnail: data.thumbnail,
+      mediumImage: data.mediumImage,
+      geometry: data.geometry,
       social: {
-        email: email,
+        email: data.props.email,
       }
     };
   }

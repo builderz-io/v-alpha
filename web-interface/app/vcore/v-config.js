@@ -28,7 +28,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
-    demoContent: true, // set to 'true', then reload page once, then set to 'false'
+    demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
     marketCacheDuration: 3, // in minutes
