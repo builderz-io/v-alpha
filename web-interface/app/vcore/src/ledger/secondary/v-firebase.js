@@ -7,9 +7,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const activeE = 'a u v e n';
+  const activeP = 'a';
+  const previewsE = 'a c u v';
+  const previewsP = 'a r { a } s { a }';
+
   /* ================== private methods ================= */
 
-  function setEntityNamespace( data ) {
+  function setNewEntityNamespace( data ) {
 
     const a = data.uuidE;
     const b = data.contextE;
@@ -19,63 +24,49 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const u = data.title;
     const v = data.tag;
-    // const w = data.specialTag;
 
     const m = {
       a: data.uuidE,
-      // b: [data.uuidE], // owners
       m: data.uuidP
     };
 
-    const x = {
-      a: [data.evmCredentials.address]
-    };
+    const n = data.evmCredentials.address;
+
     const y = {
       a: String( data.unix ),
-      // b: String( data.unix ), // modified
       m: data.statusCode,
       n: data.active,
       z: String( data.expires ),
     };
-    // const z = {
-    //   a: [
-    //     {
-    //       a: String( data.unix ),
-    //       b: ['Title', 'Tag'],
-    //       c: [data.title, data.tag]
-    //     }
-    //   ]
-    // };
 
     const variables = {
       input: {
-        // Full set: a, b, c, d, e, u, v, w, m, x, y, z
-        a, b, c, d, e, u, v, m, x, y
+        a, b, c, d, e, u, v, m, n, y
       }
     };
 
+    /* Full entity set: a b c d e u v w m { a b m } x { a } y { a b m n z } z { a { a b c } } */
+
     const query = `mutation SetNewEntity( $input: InputEntity! ) {
                 setEntity(input: $input) {
-                  ${ '' /* Full set: a b c d e u v w m { a b m } x { a } y { a b m n z } z { a { a b c } } */ }
-                  a
+                  ${ activeE }
                 }
               }
             `;
 
-    fetchFirebase( query, variables );
+    return fetchFirebase( query, variables );
   }
 
-  function setProfile( data ) {
+  function setNewProfile( data ) {
 
     const a = data.uuidP;
     const b = data.contextP;
-    // const c = data.typeP;
 
     const m = {
       a: data.uuidE,
-      // b: [data.uuidE], // owners
-      // m: data.uuidE
     };
+
+    const n = data.evmCredentials.address;
 
     const r = {
       a: data.props.descr,
@@ -87,8 +78,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const s = {
       a: data.geometry.coordinates,
       b: data.props.baseLocation,
-      // c: [0, 0], // current Location
-      // d: 'undefined',
       z: data.geometry.rand
     };
     const t = {
@@ -97,44 +86,30 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       c: 'some image data string'
     };
 
-    const x = {
-      a: [data.evmCredentials.address],
-      b: data.receivingAddresses.evm
-    };
     const y = {
       a: String( data.unix ),
-      // b: String( data.unix ), // modified
     };
-    // const z = { // changeLog
-    //   a: [
-    //     {
-    //       a: String( data.unix ),
-    //       b: ['Test', 'This'],
-    //       c: ['only', 'test']
-    //     }
-    //   ]
-    // };
 
     const variables = {
       input: {
-        // full set: a, b, c, m, r, s, t, x, y, z
-        a, b, m, r, s, t, x, y
+        a, b, m, n, r, s, t, y
       }
     };
 
+    /* Full profile set: a, b, c, d, e, m { a }, r { a b c m n }, s { a b c d z }, t { a b c }, x { a } y { a b } z { a { a b c } } */
+
     const query = `mutation SetNewProfile( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ '' /* Full set: a, b, c, d, e, m { a }, r { a b c m n }, s { a b c d z }, t { a b c }, x { a } y { a b } z { a { a b c } } */ }
-                  a
+                  ${ activeP }
                 }
               }
             `;
 
-    fetchFirebase( query, variables );
+    return fetchFirebase( query, variables );
   }
 
   function fetchFirebase( query, variables ) {
-    fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
+    return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -145,23 +120,116 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         variables: variables,
       } )
     } )
-      .then( r => {return r.json()} )
-      .then( data => {
-        console.log( 'data returned:', data );
-      }
+      .then( r => { return r.json() }
       );
+  }
+
+  function castActiveEntityData( E, P ) {
+    const fullId = E.u + ' ' + E.v;
+    return {
+      uuidE: E.a,
+      uuidP: P.a,
+      fullId: fullId,
+      path: V.castPathOrId( fullId ),
+      private: {
+        uPhrase: E.e
+      },
+      evmCredentials: {
+        address: E.n
+      }
+    };
+  }
+
+  function castEntityPreviewData( E, P ) {
+    const fullId = E.u + ' ' + E.v;
+    return {
+      uuidE: E.a,
+      uuidP: P.a,
+      fullId: fullId,
+      path: V.castPathOrId( fullId ),
+      properties: {
+        description: P.r ? P.r.a ? P.r.a : '' : ''
+      },
+      profile: {
+        role: E.c
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: P.s.a
+      }
+    };
   }
 
   /* ================== public methods ================== */
 
-  function getFirebase() {
-    console.log( 'todo: getting firebase data' );
-    return Promise.resolve( 'test' );
+  function getFirebase( data, whichEndpoint ) {
+    let query;
+    if ( 'entity by role' == whichEndpoint ) {
+      console.log( 111 );
+      query = `query EntityByRole {
+           getEntity { ${ previewsE } }
+           getProfile { ${ previewsP } }
+         }`;
+    }
+    else if ( 'entity by evmAddress' == whichEndpoint ) {
+      console.log( 222 );
+      query = `query EntityByEvmAddress {
+        getEntity { ${ activeE } }
+        getProfile { ${ activeP } }
+      }`;
+    }
+    else if ( 'entity by fullId' == whichEndpoint ) {
+      console.log( 333 );
+      query = `query EntityByFullId {
+        getEntity { ${ activeE } }
+        getProfile { ${ activeP } }
+      }`;
+    }
+    return fetchFirebase( query )
+      .then( data => {
+        if ( data.data.getEntity ) {
+          const combined = data.data.getEntity.map( ( item, i ) => {
+            if ( query.includes( 'EntityByRole' ) ) {
+              return castEntityPreviewData( item, data.data.getProfile[i]  );
+            }
+            else {
+              return castActiveEntityData( item, data.data.getProfile[i]  );
+            }
+          } );
+          return {
+            success: true,
+            status: 'fetched firebase',
+            data: combined
+          };
+        }
+        else {
+          return {
+            success: false,
+            status: 'could not fetch firebase',
+          };
+        }
+      } );
   }
 
-  function setFirebase( data ) {
-    setProfile( data );
-    setEntityNamespace( data );
+  function setFirebase( data, whichEndpoint  ) {
+    if ( whichEndpoint == 'entity' ) {
+      return setNewEntityNamespace( data )
+        .then( async E => {
+          const P = await setNewProfile( data );
+          const entityData = castActiveEntityData( E.data.setEntity, P.data.setProfile );
+          return {
+            success: true,
+            status: 'firebase entity set',
+            data: [ entityData ]
+          };
+        } )
+        .catch( err => {
+          return {
+            success: false,
+            message: 'error with setting Firebase: ' + err
+          };
+        } );
+    }
   }
 
   /* ====================== export ====================== */

@@ -36,11 +36,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         // Modal.draw( 'please wait' );
-        if ( V.aA() ) {
-          which = await ckeckEntityStoreByAddress();
-        }
-        else if ( V.aE().fullId ) {
+        if ( V.aE().fullId ) {
           which = 'entity found';
+        }
+        else if ( V.aA() ) {
+          which = await ckeckEntityStoreByAddress();
         }
       }
     }

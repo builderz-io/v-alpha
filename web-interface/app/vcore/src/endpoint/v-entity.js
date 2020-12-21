@@ -416,7 +416,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     const whichLedger = V.getSetting( 'entityLedger' );
 
-    if ( whichLedger == 'MongoDB' ) {
+    if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
       if ( which.substr( 0, 2 ) == '0x' ) {
         filter = 'evmAddress';
       }

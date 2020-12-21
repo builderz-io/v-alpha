@@ -146,7 +146,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       return V.setMongoDB( data, whichEndpoint );
     }
     else if ( whichLedger == 'Firebase' ) {
-      return V.setFirebase( data );
+      return V.setFirebase( data, whichEndpoint );
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {
@@ -186,7 +186,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       return V.getMongoDB( data, whichEndpoint );
     }
     else if ( whichLedger == 'Firebase' ) {
-      return V.getFirebase( data );
+      return V.getFirebase( data, whichEndpoint );
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {

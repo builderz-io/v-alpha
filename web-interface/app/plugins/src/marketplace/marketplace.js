@@ -37,7 +37,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         const polling = setInterval( () => {
           counter += 1;
           const cache = V.getCache( 'preview' );
-          if ( cache.data.length ) {
+          if ( cache && cache.data.length ) {
             clearInterval( polling );
             resolve( cache );
           }
