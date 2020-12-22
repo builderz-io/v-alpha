@@ -8,8 +8,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const entitySetup = {
-    entityDocVersion: 'idxns.org/e1/v0',
-    profileDocVersion: 'idxns.org/p1/v0',
+    entityDocVersion: '/e1/v0',
+    profileDocVersion: '/p1/v0',
     useWhitelist: true, // allow only chars in whitelist
     maxEntityWords: 7,  // max allowed words in entity names (not humans)
     maxHumanWords: 3,  // max allowed words in human entity names
@@ -98,15 +98,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     /** Prepare data */
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
-
+    const uuidE = V.castUuid().base64Url;
+    const uuidP = V.castUuid().base64Url;
     const unix = Math.floor( Date.now() / 1000 );
+
+    let geometry, uPhrase, creatorUuid, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
         rand: false,
         type: 'Point',
-        coordinates: [entityData.lng, entityData.lat],
+        coordinates: [ Number( entityData.lng ), Number( entityData.lat ) ],
       };
     }
     else {
@@ -129,10 +131,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const activeEntity = V.getState( 'activeEntity' );
 
     if ( activeEntity ) {
+      creatorUuid = activeEntity.uuidE;
       creator = activeEntity.profile.title;
       creatorTag = activeEntity.profile.tag;
     }
     else {
+      creatorUuid = undefined;
       creator = title.data[0];
       creatorTag = tag;
     }
@@ -188,16 +192,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       contextE: entitySetup.entityDocVersion,
       typeE: entityData.role,
-      uuidE: V.castUuid().base64Url,
+      uuidE: uuidE,
 
       contextP: entitySetup.profileDocVersion,
-      uuidP: V.castUuid().base64Url,
+      uuidP: uuidP,
 
       active: true,
       statusCode: 100,
 
       title: title.data[0],
       tag: tag,
+
+      creatorUuid: creatorUuid,
 
       issuer: window.location.host,
       unix: unix,
@@ -279,7 +285,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         endpoint: 'entity',
         status: 'cast entity target',
-        data: [ entityData.target ]
+        data: [ Number( entityData.target ) ]
       };
     }
 

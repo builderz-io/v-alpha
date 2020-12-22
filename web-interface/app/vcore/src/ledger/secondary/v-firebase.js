@@ -7,45 +7,84 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const activeE = 'a u v e n';
+  const activeE = 'a m n f i';
   const activeP = 'a';
-  const previewsE = 'a c u v';
-  const previewsP = 'a r { a } s { a }';
+  const previewsE = 'a c m n';
+  const previewsP = 'a m { a } n { a b }';
 
   /* ================== private methods ================= */
+
+  function castActiveEntityData( E, P ) {
+    const fullId = V.castFullId( E.m, E.n );
+    return {
+      uuidE: E.a,
+      uuidP: P.a,
+      fullId: fullId,
+      path: V.castPathOrId( fullId ),
+      private: {
+        uPhrase: E.f
+      },
+      evmCredentials: {
+        address: E.i
+      },
+      // for backwards compatibility
+      profile: {
+        title: E.m,
+        tag: E.n
+      }
+    };
+  }
+
+  function castEntityPreviewData( E, P ) {
+    const fullId = V.castFullId( E.m, E.n );
+    return {
+      uuidE: E.a,
+      uuidP: P.a,
+      fullId: fullId,
+      path: V.castPathOrId( fullId ),
+      properties: {
+        description: P.m ? P.m.a ? P.m.a : '' : ''
+      },
+      profile: {
+        role: E.c
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: P.n.a
+      }
+    };
+  }
 
   function setNewEntityNamespace( data ) {
 
     const a = data.uuidE;
     const b = data.contextE;
     const c = data.typeE;
-    const d = data.issuer;
-    const e = data.auth;
+    const d = data.uuidP;
+    const e = data.issuer;
+    const f = data.auth;
 
-    const u = data.title;
-    const v = data.tag;
+    const i = data.evmCredentials.address;
 
-    const m = {
-      a: data.uuidE,
-      m: data.uuidP
+    const m = data.title;
+    const n = data.tag;
+
+    const x = {
+      a: data.creatorUuid,
     };
-
-    const n = data.evmCredentials.address;
 
     const y = {
       a: String( data.unix ),
-      m: data.statusCode,
-      n: data.active,
-      z: String( data.expires ),
+      c: String( data.expires ),
+      m: data.active,
+      z: data.statusCode,
     };
 
     const variables = {
       input: {
-        a, b, c, d, e, u, v, m, n, y
+        a, b, c, d, e, f, i, m, n, x, y
       }
     };
-
-    /* Full entity set: a b c d e u v w m { a b m } x { a } y { a b m n z } z { a { a b c } } */
 
     const query = `mutation SetNewEntity( $input: InputEntity! ) {
                 setEntity(input: $input) {
@@ -61,26 +100,21 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const a = data.uuidP;
     const b = data.contextP;
+    const d = data.uuidE; // note that this is NOT creatorUuid
 
     const m = {
-      a: data.uuidE,
-    };
-
-    const n = data.evmCredentials.address;
-
-    const r = {
       a: data.props.descr,
       b: data.props.email,
       c: data.props.prefLangs,
       m: data.props.target,
       n: data.props.unit
     };
-    const s = {
+    const n = {
       a: data.geometry.coordinates,
       b: data.props.baseLocation,
       z: data.geometry.rand
     };
-    const t = {
+    const o = {
       a: 'some image data string',
       b: 'some image data string',
       c: 'some image data string'
@@ -89,14 +123,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const y = {
       a: String( data.unix ),
     };
-
+    console.log( a, b, d, m, n, o, y );
     const variables = {
       input: {
-        a, b, m, n, r, s, t, y
+        a, b, d, m, n, o, y
       }
     };
-
-    /* Full profile set: a, b, c, d, e, m { a }, r { a b c m n }, s { a b c d z }, t { a b c }, x { a } y { a b } z { a { a b c } } */
 
     const query = `mutation SetNewProfile( $input: InputProfile! ) {
                 setProfile(input: $input) {
@@ -124,47 +156,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       );
   }
 
-  function castActiveEntityData( E, P ) {
-    const fullId = V.castFullId( E.u, E.v );
-    return {
-      uuidE: E.a,
-      uuidP: P.a,
-      fullId: fullId,
-      path: V.castPathOrId( fullId ),
-      private: {
-        uPhrase: E.e
-      },
-      evmCredentials: {
-        address: E.n
-      },
-      // for backwards compatibility
-      profile: {
-        title: E.u,
-        tag: E.v
-      }
-    };
-  }
-
-  function castEntityPreviewData( E, P ) {
-    const fullId = V.castFullId( E.u, E.v );
-    return {
-      uuidE: E.a,
-      uuidP: P.a,
-      fullId: fullId,
-      path: V.castPathOrId( fullId ),
-      properties: {
-        description: P.r ? P.r.a ? P.r.a : '' : ''
-      },
-      profile: {
-        role: E.c
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: P.s.a
-      }
-    };
-  }
-
   /* ================== public methods ================== */
 
   function getFirebase( data, whichEndpoint ) {
@@ -179,21 +170,21 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222 );
       query = `query EntityByEvmAddress {
-        getEntity (n:"${ data }") { ${ activeE } }
+        getEntity (i:"${ data }") { ${ activeE } }
         getProfile { ${ activeP } }
       }`;
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
-      console.log( 333 );
       const tT = V.castFullId( data );
       query = `query EntityByFullId {
-        getEntity (u:"${ tT.title }",v:"${ tT.tag }") { ${ activeE } }
+        getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ activeE } }
         getProfile { ${ activeP } }
       }`;
     }
     return fetchFirebase( query )
       .then( data => {
-        if ( data.data.getEntity[0] != null ) {
+        console.log( data );
+        if ( !data.errors && data.data.getEntity[0] != null ) {
           const combined = data.data.getEntity.map( ( item, i ) => {
             if ( query.includes( 'EntityByRole' ) ) {
               return castEntityPreviewData( item, data.data.getProfile[i]  );
