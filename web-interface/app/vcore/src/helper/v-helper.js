@@ -317,6 +317,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castFullId( title, tag ) {
+    const split = title.split( '#' );
+    return tag ? title + ' ' + tag : { title: split[0].trim(), tag: '#' + split[1] };
+  }
+
   function castJson( data, clone ) {
 
     if ( !data || data === 'undefined' ) {
@@ -615,6 +620,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castCamelCase = castCamelCase;
   V.castSlugOrId = castSlugOrId;
   V.castPathOrId = castPathOrId;
+  V.castFullId = castFullId;
   V.castJson = castJson;
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
@@ -638,6 +644,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
     castPathOrId: castPathOrId,
+    castFullId: castFullId,
     castJson: castJson,
     castShortAddress: castShortAddress,
     castUuid: castUuid,

@@ -125,7 +125,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castActiveEntityData( E, P ) {
-    const fullId = E.u + ' ' + E.v;
+    const fullId = V.castFullId( E.u, E.v );
     return {
       uuidE: E.a,
       uuidP: P.a,
@@ -136,12 +136,17 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       evmCredentials: {
         address: E.n
+      },
+      // for backwards compatibility
+      profile: {
+        title: E.u,
+        tag: E.v
       }
     };
   }
 
   function castEntityPreviewData( E, P ) {
-    const fullId = E.u + ' ' + E.v;
+    const fullId = V.castFullId( E.u, E.v );
     return {
       uuidE: E.a,
       uuidP: P.a,
@@ -174,20 +179,21 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222 );
       query = `query EntityByEvmAddress {
-        getEntity { ${ activeE } }
+        getEntity (n:"${ data }") { ${ activeE } }
         getProfile { ${ activeP } }
       }`;
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       console.log( 333 );
+      const tT = V.castFullId( data );
       query = `query EntityByFullId {
-        getEntity { ${ activeE } }
+        getEntity (u:"${ tT.title }",v:"${ tT.tag }") { ${ activeE } }
         getProfile { ${ activeP } }
       }`;
     }
     return fetchFirebase( query )
       .then( data => {
-        if ( data.data.getEntity ) {
+        if ( data.data.getEntity[0] != null ) {
           const combined = data.data.getEntity.map( ( item, i ) => {
             if ( query.includes( 'EntityByRole' ) ) {
               return castEntityPreviewData( item, data.data.getProfile[i]  );

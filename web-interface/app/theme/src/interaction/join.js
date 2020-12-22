@@ -36,7 +36,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         // Modal.draw( 'please wait' );
-        if ( V.aE().fullId ) {
+        if ( V.aE() && V.aE().fullId ) {
           which = 'entity found';
         }
         else if ( V.aA() ) {
