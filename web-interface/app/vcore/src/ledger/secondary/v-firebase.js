@@ -7,9 +7,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const activeE = 'a m n f i';
+  const activeE = 'a d m n f i';
   const activeP = 'a';
-  const previewsE = 'a c m n';
+  const previewsE = 'a c d m n';
   const previewsP = 'a m { a } n { a b }';
 
   /* ================== private methods ================= */
@@ -140,6 +140,40 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( query, variables );
   }
 
+  function getFirebaseEntities( data, whichEndpoint ) {
+    let queryE;
+
+    if ( 'entity by role' == whichEndpoint ) {
+      console.log( 111 );
+      queryE = `query EntityByRole {
+           getEntity { ${ previewsE } }
+         }`;
+    }
+    else if ( 'entity by evmAddress' == whichEndpoint ) {
+      console.log( 222 );
+      queryE = `query EntityByEvmAddress {
+        getEntity (i:"${ data }") { ${ activeE } }
+      }`;
+    }
+    else if ( 'entity by fullId' == whichEndpoint ) {
+      const tT = V.castFullId( data );
+      console.log( 333 );
+      queryE = `query EntityByFullId {
+        getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ activeE } }
+      }`;
+    }
+    return fetchFirebase( queryE );
+  }
+
+  function getFirebaseProfiles( array ) {
+    const uuidEs = array.map( item => {return item.d} );
+    console.log( uuidEs );
+    const queryP = `query Profiles {
+         getProfile { ${ previewsP } }
+       }`;
+    return fetchFirebase( queryP );
+  }
+
   function fetchFirebase( query, variables ) {
     return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
       method: 'POST',
@@ -158,54 +192,50 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
-  function getFirebase( data, whichEndpoint ) {
-    let query;
-    if ( 'entity by role' == whichEndpoint ) {
-      console.log( 111 );
-      query = `query EntityByRole {
-           getEntity { ${ previewsE } }
-           getProfile { ${ previewsP } }
-         }`;
+  async function getFirebase( data, whichEndpoint ) {
+
+    /** Query entities */
+
+    const entities = await getFirebaseEntities( data, whichEndpoint );
+    console.log( entities );
+
+    /** Query profiles for entities fetched */
+
+    if ( !entities.errors && entities.data.getEntity[0] != null ) {
+      const profiles = await getFirebaseProfiles( entities.data.getEntity );
+      console.log( profiles );
+
+      /** Combine profile and entity data */
+
+      if ( !profiles.errors && profiles.data.getProfile[0] != null ) {
+        const combined = entities.data.getEntity.map( ( item, i ) => {
+          if ( 'entity by role' == whichEndpoint ) {
+            return castEntityPreviewData( item, profiles.data.getProfile[i] );
+          }
+          else {
+            return castActiveEntityData( item, profiles.data.getProfile[i] );
+          }
+
+        } );
+        return {
+          success: true,
+          status: 'fetched firebase',
+          data: combined
+        };
+      }
+      else {
+        return {
+          success: false,
+          message: 'could not fetch firebase profiles'
+        };
+      }
     }
-    else if ( 'entity by evmAddress' == whichEndpoint ) {
-      console.log( 222 );
-      query = `query EntityByEvmAddress {
-        getEntity (i:"${ data }") { ${ activeE } }
-        getProfile { ${ activeP } }
-      }`;
+    else {
+      return {
+        success: false,
+        message: 'could not fetch firebase entities'
+      };
     }
-    else if ( 'entity by fullId' == whichEndpoint ) {
-      const tT = V.castFullId( data );
-      query = `query EntityByFullId {
-        getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ activeE } }
-        getProfile { ${ activeP } }
-      }`;
-    }
-    return fetchFirebase( query )
-      .then( data => {
-        console.log( data );
-        if ( !data.errors && data.data.getEntity[0] != null ) {
-          const combined = data.data.getEntity.map( ( item, i ) => {
-            if ( query.includes( 'EntityByRole' ) ) {
-              return castEntityPreviewData( item, data.data.getProfile[i]  );
-            }
-            else {
-              return castActiveEntityData( item, data.data.getProfile[i]  );
-            }
-          } );
-          return {
-            success: true,
-            status: 'fetched firebase',
-            data: combined
-          };
-        }
-        else {
-          return {
-            success: false,
-            status: 'could not fetch firebase',
-          };
-        }
-      } );
   }
 
   function setFirebase( data, whichEndpoint  ) {
