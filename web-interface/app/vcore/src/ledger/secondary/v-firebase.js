@@ -123,7 +123,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const y = {
       a: String( data.unix ),
     };
-    console.log( a, b, d, m, n, o, y );
+
     const variables = {
       input: {
         a, b, d, m, n, o, y
@@ -167,9 +167,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function getFirebaseProfiles( array ) {
     const uuidEs = array.map( item => {return item.d} );
-    console.log( uuidEs );
     const queryP = `query Profiles {
-         getProfile { ${ previewsP } }
+         getProfile (a: ${ V.castJson( uuidEs ) }) { ${ previewsP } }
        }`;
     return fetchFirebase( queryP );
   }
@@ -197,13 +196,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     /** Query entities */
 
     const entities = await getFirebaseEntities( data, whichEndpoint );
-    console.log( entities );
 
     /** Query profiles for entities fetched */
 
     if ( !entities.errors && entities.data.getEntity[0] != null ) {
       const profiles = await getFirebaseProfiles( entities.data.getEntity );
-      console.log( profiles );
 
       /** Combine profile and entity data */
 
