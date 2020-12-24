@@ -11,7 +11,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function presenter(
     data,
-    whichPath = typeof data == 'object' ? data.paths.entity : data
+    whichPath = typeof data == 'object' ? data.path : data
   ) {
 
     /**

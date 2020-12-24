@@ -7,18 +7,17 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const activeE = 'a d m n f i';
-  const activeP = 'a';
+  const singleE = 'a c d m n f i';
+  const singleP = 'm { a } n { a b } o { a c }';
   const previewsE = 'a c d m n';
-  const previewsP = 'a m { a } n { a b }';
+  const previewsP = 'm { a } n { a b } o { b }';
 
   /* ================== private methods ================= */
 
-  function castActiveEntityData( E, P ) {
+  function castSingleEntityData( E, P ) {
     const fullId = V.castFullId( E.m, E.n );
     return {
       uuidE: E.a,
-      uuidP: P.a,
       fullId: fullId,
       path: V.castPathOrId( fullId ),
       private: {
@@ -27,11 +26,22 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       evmCredentials: {
         address: E.i
       },
-      // for backwards compatibility
+      images: {
+        tinyImage: P.o ? P.o.a : undefined,
+        mediumImage: P.o ? P.o.c : undefined
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: P.n.a
+      },
       profile: {
         title: E.m,
-        tag: E.n
-      }
+        tag: E.n,
+        role: E.c
+      },
+      // for backwards compatibility
+      adminOf: [''],
+      owners: [{ ownerName: '', ownerTag: '' }]
     };
   }
 
@@ -39,7 +49,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const fullId = V.castFullId( E.m, E.n );
     return {
       uuidE: E.a,
-      uuidP: P.a,
       fullId: fullId,
       path: V.castPathOrId( fullId ),
       properties: {
@@ -51,6 +60,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       geometry: {
         type: 'Point',
         coordinates: P.n.a
+      },
+      images: {
+        thumbnail: P.o ? P.o.b : undefined
       }
     };
   }
@@ -88,7 +100,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetNewEntity( $input: InputEntity! ) {
                 setEntity(input: $input) {
-                  ${ activeE }
+                  ${ singleE }
                 }
               }
             `;
@@ -115,9 +127,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       z: data.geometry.rand
     };
     const o = {
-      a: 'some image data string',
-      b: 'some image data string',
-      c: 'some image data string'
+      a: data.tinyImageDU,
+      b: data.thumbnailDU,
+      c: data.mediumImageDU
     };
 
     const y = {
@@ -132,7 +144,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetNewProfile( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ activeP }
+                  ${ singleP }
                 }
               }
             `;
@@ -152,14 +164,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222 );
       queryE = `query EntityByEvmAddress {
-        getEntity (i:"${ data }") { ${ activeE } }
+        getEntity (i:"${ data }") { ${ singleE } }
       }`;
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
       console.log( 333 );
       queryE = `query EntityByFullId {
-        getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ activeE } }
+        getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
       }`;
     }
     return fetchFirebase( queryE );
@@ -168,7 +180,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getFirebaseProfiles( array ) {
     const uuidEs = array.map( item => {return item.d} );
     const queryP = `query Profiles {
-         getProfile (a: ${ V.castJson( uuidEs ) }) { ${ previewsP } }
+         getProfile (a: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
        }`;
     return fetchFirebase( queryP );
   }
@@ -210,7 +222,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
             return castEntityPreviewData( item, profiles.data.getProfile[i] );
           }
           else {
-            return castActiveEntityData( item, profiles.data.getProfile[i] );
+            return castSingleEntityData( item, profiles.data.getProfile[i] );
           }
 
         } );
@@ -240,7 +252,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       return setNewEntityNamespace( data )
         .then( async E => {
           const P = await setNewProfile( data );
-          const entityData = castActiveEntityData( E.data.setEntity, P.data.setProfile );
+          const entityData = castSingleEntityData( E.data.setEntity, P.data.setProfile );
           return {
             success: true,
             status: 'firebase entity set',

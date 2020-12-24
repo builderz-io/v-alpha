@@ -61,6 +61,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       const url = V.castEntityThumbnail( cardData.thumbnail ).src;
       return 'url(\'' + url + '\')';
     }
+    else if ( cardData.images.thumbnail ) { // new model
+      return 'url(\'' + cardData.images.thumbnail + '\')';
+    }
 
     switch ( '2' /* cardData.profile.tag.charAt( 1 ) */ ) {
     // case '1': return palette[0];

@@ -144,8 +144,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
 
     V.getState( 'tinyImageUpload' ) ? tinyImage = V.getState( 'tinyImageUpload' ) : null;
-    V.getState( 'thumbnailUpload' ) ? tinyImage = V.getState( 'thumbnailUpload' ) : null;
-    V.getState( 'mediumImageUpload' ) ? tinyImage = V.getState( 'mediumImageUpload' ) : null;
+    V.getState( 'thumbnailUpload' ) ? thumbnail = V.getState( 'thumbnailUpload' ) : null;
+    V.getState( 'mediumImageUpload' ) ? mediumImage = V.getState( 'mediumImageUpload' ) : null;
     V.setState( 'tinyImageUpload', 'clear' );
     V.setState( 'thumbnailUpload', 'clear' );
     V.setState( 'mediumImageUpload', 'clear' );
@@ -233,11 +233,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       geometry: geometry,
 
+      tinyImageDU: tinyImage ? tinyImage.dataUrl : undefined,
+      thumbnailDU: thumbnail ? thumbnail.dataUrl : undefined,
+      mediumImageDU: mediumImage ? mediumImage.dataUrl : undefined,
+
+      // for backwards compatibility
       tinyImage: tinyImage,
       thumbnail: thumbnail,
       mediumImage: mediumImage,
-
-      // for backwards compatibility
       creator: creator,
       creatorTag: creatorTag,
       block: block,

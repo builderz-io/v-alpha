@@ -59,6 +59,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
           tinyImage.canvas.toBlob( tinyBlob => {
             V.setState( 'tinyImageUpload', {
+              dataUrl: tinyImage.canvas.toDataURL( 'image/jpeg' ),
               blob: tinyBlob,
               contentType: tinyBlob.type,
               originalName: e.target.files[0].name
@@ -66,6 +67,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
             thumbnail.canvas.toBlob( thumbBlob => {
               V.setState( 'thumbnailUpload', {
+                dataUrl: thumbnail.canvas.toDataURL( 'image/jpeg' ),
                 blob: thumbBlob,
                 contentType: thumbBlob.type,
                 originalName: e.target.files[0].name
@@ -73,6 +75,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
               mediumImage.canvas.toBlob( mediumBlob => {
                 V.setState( 'mediumImageUpload', {
+                  dataUrl: mediumImage.canvas.toDataURL( 'image/jpeg' ),
                   blob: mediumBlob,
                   contentType: mediumBlob.type,
                   originalName: e.target.files[0].name

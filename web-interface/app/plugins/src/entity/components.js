@@ -1060,6 +1060,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
       // return castCard( $img, '' );
     }
+    else if ( entity.images.mediumImage ) { // new model
+      return V.cN( {
+        t: 'li',
+        h: {
+          t: 'img',
+          src: entity.images.mediumImage
+        }
+      } );
+    }
     else {
       return '';
     }
@@ -1169,7 +1178,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function socialShareButtons() {
     // https://sharingbuttons.io/
     const subject = `${entity.profile.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
-    const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.paths.entity}`;
+    const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.path}`;
     const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
     return V.cN( {
