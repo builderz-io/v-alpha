@@ -90,7 +90,10 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     // const palette = ['#FFD255'];
     // const palette = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc'];
 
-    if ( item.tinyImage ) {
+    if ( item.useDataUrl ) { // new model
+      return 'url(\'' + item.tinyImage + '\')';
+    }
+    else if ( item.tinyImage ) {
       const url = V.castEntityThumbnail( JSON.parse( item.tinyImage ) ).src;
       return 'url(\'' + url + '\')';
     }

@@ -8,7 +8,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const singleE = 'a c d m n f i';
-  const singleP = 'm { a } n { a b } o { a c }';
+  const singleP = 'm { a } n { a b } o { a b c }';
   const previewsE = 'a c d m n';
   const previewsP = 'm { a } n { a b } o { b }';
 
@@ -28,6 +28,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       images: {
         tinyImage: P.o ? P.o.a : undefined,
+        thumbnail: P.o ? P.o.b : undefined,
         mediumImage: P.o ? P.o.c : undefined
       },
       geometry: {
@@ -156,20 +157,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     let queryE;
 
     if ( 'entity by role' == whichEndpoint ) {
-      console.log( 111 );
+      console.log( 111, 'by Role' );
       queryE = `query EntityByRole {
            getEntity { ${ previewsE } }
          }`;
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
-      console.log( 222 );
+      console.log( 222, 'by EVM Address' );
       queryE = `query EntityByEvmAddress {
         getEntity (i:"${ data }") { ${ singleE } }
       }`;
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
-      console.log( 333 );
+      console.log( 333, 'by FullId' );
       queryE = `query EntityByFullId {
         getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
       }`;

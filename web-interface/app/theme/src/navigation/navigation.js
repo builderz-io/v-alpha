@@ -32,6 +32,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( data && data.tinyImage && entityNavOrder[data.path] ) { // update the clicked entity tinyImage if available
       entityNavOrder[data.path].tinyImage = JSON.stringify( data.tinyImage );
     }
+    else if ( data && data.images && data.images.tinyImage && entityNavOrder[data.path] ) { // new model
+      entityNavOrder[data.path].tinyImage = data.images.tinyImage;
+      entityNavOrder[data.path].useDataUrl = true; // flag to create image from dataUrl in component
+    }
 
     for ( const item in entityNavOrder ) {
 
