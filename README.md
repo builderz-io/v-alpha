@@ -36,7 +36,7 @@ This repository contains five distinct code bases:
 
 Modules to connect to distributed ledger technologies and distributed identity mechanisms, and build user interfaces around these technologies. All web interface modules are written in plain Javascript.
 
-**VCore** provides modules to access Ethereum and all EVM-compatible ledgers, Symbol ledgers, 3Box profiles, storage and messages, and MongoDB (e.g. our MongoDB Entity Store). It further contains many methods for DOM node creation and manipulation, a state and caching module and other useful helper-methods.
+**VCore** provides modules to access Ethereum and all EVM-compatible ledgers, Symbol ledgers, 3Box profiles, storage and messages, MongoDB (e.g. our MongoDB Entity Store) and Firebase (e.g. our GraphQL/Firebase Entity Store). It further contains many methods for DOM node creation and manipulation, a state and caching module and other useful helper-methods.
 
 **VTheme** is a first theme build with VCore. A responsive web app, featuring an intelligent menu, login user flow, mapping and more.
 
