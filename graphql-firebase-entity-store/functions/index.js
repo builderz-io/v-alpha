@@ -14,7 +14,16 @@ const { ApolloServer } = require( 'apollo-server-express' );
 const app = express();
 
 // Create graphql server
-const server = new ApolloServer( { typeDefs, resolvers, playground: true } );
+const server = new ApolloServer( {
+  typeDefs,
+  resolvers,
+  playground: false,
+  context: async ( { req } ) => {
+    const token = req.headers.authorization;
+    const user = await resolvers.Query.getEntity( undefined, { f: token } );
+    return user[0];
+  },
+} );
 server.applyMiddleware( { app, path: '/v1', cors: true } );
 
 console.log( ' ***  Started Apollo Server at', new Date().toString().split( ' ' )[4], ' ***' );

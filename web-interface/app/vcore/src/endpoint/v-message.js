@@ -129,8 +129,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
           return V.setEntity( caseArray.join( ' ' ), {
             field: 'status.verified',
-            data: true,
-            auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+            data: true
           } ).then( res => {
             console.log( 'verification success:', res.data[0].fullId );
             return {

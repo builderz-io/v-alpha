@@ -66,6 +66,12 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     return getState( 'activeAddress' );
   }
 
+  function getViewed( which ) {
+    return getCache().viewed ? getCache().viewed.data.find( entity => {
+      return which.includes( ' #' ) ? entity.fullId == which : entity.path == which;
+    } ) : undefined;
+  }
+
   function getCache( which ) {
     return which ? cache[which] : cache;
   }
@@ -179,6 +185,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   V.setState = setState;
   V.aE = aE;
   V.aA = aA;
+  V.getViewed = getViewed;
   V.getCache = getCache;
   V.setCache = setCache;
   V.getNavItem = getNavItem;

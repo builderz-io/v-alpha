@@ -21,11 +21,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const fullId = V.castPathOrId( which );
-
-    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
-      return entity.path == which;
-    } ) : undefined;
+    const inCache = V.getViewed( which );
 
     let query;
 
@@ -37,7 +33,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( fullId ).then( res => {
+      query = await V.getEntity( V.castPathOrId( which ) ).then( res => {
         if ( res.success ) {
 
           res.data[0].type = 'Feature'; // needed to populate entity on map

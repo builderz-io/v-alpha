@@ -7,17 +7,18 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const singleE = 'a c d m n f i';
-  const singleP = 'm { a } n { a b } o { a b c }';
+  const singleE = 'a c d m n f i y { m }';
+  const singleP = 'm { a b } n { a b } o { a b c }';
   const previewsE = 'a c d m n';
   const previewsP = 'm { a } n { a b } o { b }';
 
   /* ================== private methods ================= */
 
-  function castSingleEntityData( E, P ) {
+  function castActiveEntityData( E, P ) {
     const fullId = V.castFullId( E.m, E.n );
     return {
       uuidE: E.a,
+      uuidP: E.d,
       fullId: fullId,
       path: V.castPathOrId( fullId ),
       private: {
@@ -25,6 +26,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       evmCredentials: {
         address: E.i
+      },
+      properties: {
+        description: P.m ? P.m.a ? P.m.a : '' : ''
       },
       images: {
         tinyImage: P.o ? P.o.a : undefined,
@@ -40,8 +44,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         tag: E.n,
         role: E.c
       },
+      social: {
+        email: P.m.b
+      },
+      status: { active: E.y.m },
       // for backwards compatibility
-      adminOf: [''],
+      adminOf: [fullId],
       owners: [{ ownerName: '', ownerTag: '' }]
     };
   }
@@ -68,7 +76,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
   }
 
-  function setNewEntityNamespace( data ) {
+  function setNewEntity( data ) {
 
     const a = data.uuidE;
     const b = data.contextE;
@@ -186,12 +194,13 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryP );
   }
 
-  function fetchFirebase( query, variables ) {
+  function fetchFirebase( query, variables, auth ) {
     return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'Authorization': auth || '' // 'vxzvpVSZpVT4qbxbLX'
       },
       body: JSON.stringify( {
         query,
@@ -223,7 +232,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
             return castEntityPreviewData( item, profiles.data.getProfile[i] );
           }
           else {
-            return castSingleEntityData( item, profiles.data.getProfile[i] );
+            return castActiveEntityData( item, profiles.data.getProfile[i] );
           }
 
         } );
@@ -249,11 +258,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setFirebase( data, whichEndpoint  ) {
-    if ( whichEndpoint == 'entity' ) {
-      return setNewEntityNamespace( data )
+    if ( 'entity' == whichEndpoint ) {
+      return setNewEntity( data )
         .then( async E => {
           const P = await setNewProfile( data );
-          const entityData = castSingleEntityData( E.data.setEntity, P.data.setProfile );
+          const entityData = castActiveEntityData( E.data.setEntity, P.data.setProfile );
           return {
             success: true,
             status: 'firebase entity set',
@@ -266,6 +275,36 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
             message: 'error with setting Firebase: ' + err
           };
         } );
+    }
+    else if ( 'entity update' == whichEndpoint ) {
+      console.log( data );
+      const a = V.getViewed( V.getState( 'active' ).lastViewed ).uuidP;
+
+      let m;
+
+      switch ( data.field ) {
+      case 'properties.description':
+        m = { a: data.data };
+        break;
+      case 'social.email':
+        m = { b: data.data };
+        break;
+      }
+
+      const variables = {
+        input: {
+          a, m
+        }
+      };
+
+      const query = `mutation SetNewProfile( $input: InputProfile! ) {
+                  setProfile(input: $input) {
+                    ${ /* singleP */ 'a m { a b }' }
+                  }
+                }
+              `;
+
+      return fetchFirebase( query, variables, data.auth );
     }
   }
 

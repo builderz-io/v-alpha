@@ -222,8 +222,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( V.aE().fullId, {
         field: 'evmCredentials.address',
         data: V.aA(),
-        role: V.aE().profile.role,
-        auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+        role: V.aE().profile.role
       } ).then( () => {
         Join.draw( 'authenticate' );
       } );

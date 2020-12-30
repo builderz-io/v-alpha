@@ -421,7 +421,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setEntity( V.getState( 'active' ).lastViewed, {
       field: field,
       data: data,
-      auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
     } ).then( res => {
 
       res.data[0].type = 'Feature'; // needed to populate entity on map

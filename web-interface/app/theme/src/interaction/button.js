@@ -57,8 +57,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
             V.setEntity( V.aE().fullId, {
               field: 'adminOf',
-              data: res.data[0].fullId,
-              auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+              data: res.data[0].fullId
             } );
           }
 
