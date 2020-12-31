@@ -592,8 +592,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function managementCard() {
     if (
-      V.getState( 'activeEntity' ) &&
-      V.getState( 'activeEntity' ).adminOf.includes( V.getState( 'active' ).lastViewed )
+      V.aE() &&
+      (
+        V.aE().uuidE == V.getLastViewed().relations.creator || // new model
+        V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
+      )
     ) {
 
       const active = entity.status.active;

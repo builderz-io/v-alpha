@@ -72,6 +72,10 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     } ) : undefined;
   }
 
+  function getLastViewed() {
+    return getViewed( getState( 'active' ).lastViewed );
+  }
+
   function getCache( which ) {
     return which ? cache[which] : cache;
   }
@@ -186,6 +190,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   V.aE = aE;
   V.aA = aA;
   V.getViewed = getViewed;
+  V.getLastViewed = getLastViewed;
   V.getCache = getCache;
   V.setCache = setCache;
   V.getNavItem = getNavItem;

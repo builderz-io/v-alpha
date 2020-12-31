@@ -26,6 +26,12 @@ const types = {
       c: String       // medium
     }
   `,
+  RelationsP: `
+    {
+      a: String      // creator uuid
+      b: [String]    // owners uuids  // ONLY on first addition or change of owner
+    }
+  `,
   DatesP: `
     {
       a: String      // created
@@ -55,6 +61,7 @@ const types = {
       n: Geometry
       o: Images
 
+      x: RelationsP
       y: DatesP
       z: ChangeLogP
     }

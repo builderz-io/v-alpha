@@ -7,7 +7,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const singleE = 'a c d m n f i y { m }';
+  const singleE = 'a c d m n f i y { m } x { a }';
   const singleP = 'm { a b } n { a b } o { a b c }';
   const previewsE = 'a c d m n';
   const previewsP = 'm { a } n { a b } o { b }';
@@ -29,6 +29,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       properties: {
         description: P.m ? P.m.a ? P.m.a : '' : ''
+      },
+      relations: {
+        creator: E.x ? E.x.a : E.a,
       },
       images: {
         tinyImage: P.o ? P.o.a : undefined,
@@ -141,13 +144,17 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       c: data.mediumImageDU
     };
 
+    const x = {
+      a: data.creatorUuid,
+    };
+
     const y = {
       a: String( data.unix ),
     };
 
     const variables = {
       input: {
-        a, b, d, m, n, o, y
+        a, b, d, m, n, o, x, y
       }
     };
 
@@ -278,7 +285,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'entity update' == whichEndpoint ) {
       console.log( data );
-      const a = V.getViewed( V.getState( 'active' ).lastViewed ).uuidP;
+      const a = V.getLastViewed().uuidP;
 
       let m;
 

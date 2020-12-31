@@ -16,75 +16,72 @@ const resolvers = {
       else if ( args.i ) {
         return findByEvmAddress( colE, args.i );
       }
+      else if ( args.f ) {
+        return findByUphrase( colE, args.f );
+      }
       else {
         return mapSnap( colE );
       }
     },
-    getProfile: ( parent, args ) => {
-      return findProfiles( colP, args.a );
-    }
+    getProfile: ( parent, args ) => findProfiles( colP, args.a )
   },
   Mutation: {
-    setEntity: ( parent, input, context ) => {
-      return setItem( colE, input, context );
-    },
-    setProfile: ( parent, input, context ) => {
-      return setItem( colP, input, context );
-    }
+    setEntity: ( parent, input, context ) => setItem( colE, input, context ),
+    setProfile: ( parent, input, context ) => setItem( colP, input, context )
   }
 };
 
 function mapSnap( col ) {
-  return col
-    .once( 'value' )
-    .then( snap => {return snap.val()} )
-    .then( val => {return Object.keys( val ).map( key => {return val[key]} )} );
+  return col.once( 'value' )
+    .then( snap => snap.val() )
+    .then( val => Object.keys( val ).map( key => val[key] ) );
 }
 
 function findByFullId( col, m, n ) {
-  return col
-    .once( 'value' )
-    .then( snap => {return snap.val()} )
-    .then( val => { return [ Object.values( val ).find( entity => { return entity.m == m && entity.n == n } ) ] } );
+  return col.once( 'value' )
+    .then( snap => snap.val() )
+    .then( val => [ Object.values( val ).find( entity => entity.m == m && entity.n == n ) ] );
 }
 
 function findByEvmAddress( col, i ) {
-  return col
-    .once( 'value' )
-    .then( snap => {return snap.val()} )
-    .then( val => { return [ Object.values( val ).find( entity => { return entity.i == i } ) ] } );
+  return col.once( 'value' )
+    .then( snap => snap.val() )
+    .then( val => [ Object.values( val ).find( entity => entity.i == i ) ] );
+}
+
+function findByUphrase( col, f ) {
+  return col.once( 'value' )
+    .then( snap => snap.val() )
+    .then( val => [ Object.values( val ).find( entity => entity.f == f ) ] );
 }
 
 function findProfiles( col, a ) {
-  return col
-    .once( 'value' )
-    .then( snap => {return snap.val()} )
-    .then( val => {
-      return a.map( uuidP => {
-        return val[uuidP];
-      } );
-    } );
+  return col.once( 'value' )
+    .then( snap => snap.val() )
+    .then( val => a.map( uuidP => val[uuidP] ) );
 }
 
 async function setItem( col, { input }, context ) {
   const data = JSON.parse( JSON.stringify( input ) );
-  const obj = await col
-    .once( 'value' )
-    .then( snap => {return snap.val()} )
-    .then( val => { return Object.values( val ).find( entity => { return entity.a == data.a } ) } );
 
-  // console.log( 555, obj, data, context );
+  const obj = await col.child( data.a ).once( 'value' )
+    .then( snap => snap.val() );
 
   if (
     !obj
   ) {
     return new Promise( resolve => {
-      col.child( data.a ).update( data, () => { return resolve( data ) } );
+      col.child( data.a ).update( data, () => resolve( data ) );
     } );
   }
   else if (
-    obj.a == context.d || // authorizes a profile update
-     obj.a == context.a // authorizes an entity update
+    context.a &&
+    (
+      context.a == obj.a ||   // authorizes main entity update
+      context.d == obj.a ||   // authorizes profile update of main entity
+      context.a == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
+      // IDEA: check owners first: ( obj.x ? obj.x.b ? obj.x.b : [ obj.x.a ] : [] ).includes( context.a )
+    )
   ) {
 
     /**
@@ -101,7 +98,7 @@ async function setItem( col, { input }, context ) {
     /** Update single fields */
 
     return new Promise( resolve => {
-      col.child( data.a ).update( fields, () => { return resolve( data ) } );
+      col.child( data.a ).update( fields, () => resolve( data ) );
     } );
   }
   else {

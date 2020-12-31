@@ -1,4 +1,4 @@
-/* PAV Linting rules April 2020 */
+/* PAV Linting rules December 2020 */
 module.exports = {
     "env": {
         "browser": true,
@@ -59,7 +59,7 @@ module.exports = {
         ],
         "arrow-body-style": [
           "error",
-          "always"
+          "as-needed"
         ],
         "comma-spacing": [
           "error",
