@@ -9,14 +9,20 @@ const colP = profileDb.database().ref( 'profiles' );
 
 const resolvers = {
   Query: {
-    getEntity: ( parent, args ) => {
+    getEntity: ( parent, args, context ) => {
       if ( args.m && args.n ) {
         return findByFullId( colE, args.m, args.n );
       }
       else if ( args.i ) {
+        if ( context ) {
+          setNewExpiryDate( context );
+        }
         return findByEvmAddress( colE, args.i );
       }
       else if ( args.f ) {
+        if ( context ) {
+          setNewExpiryDate( context );
+        }
         return findByUphrase( colE, args.f );
       }
       else {
@@ -26,8 +32,8 @@ const resolvers = {
     getProfile: ( parent, args ) => findProfiles( colP, args.a )
   },
   Mutation: {
-    setEntity: ( parent, input, context ) => setItem( colE, input, context ),
-    setProfile: ( parent, input, context ) => setItem( colP, input, context )
+    setEntity: ( parent, input, context ) => setFields( colE, input, context ),
+    setProfile: ( parent, input, context ) => setFields( colP, input, context )
   }
 };
 
@@ -61,9 +67,8 @@ function findProfiles( col, a ) {
     .then( val => a.map( uuidP => val[uuidP] ) );
 }
 
-async function setItem( col, { input }, context ) {
+async function setFields( col, { input }, context ) {
   const data = JSON.parse( JSON.stringify( input ) );
-
   const obj = await col.child( data.a ).once( 'value' )
     .then( snap => snap.val() );
 
@@ -127,6 +132,13 @@ function castObjectPaths( data ) {
   }
 
   return newObj;
+}
+
+function setNewExpiryDate( context ) {
+  const unix = Math.floor( Date.now() / 1000 );
+  const expires = String( unix + 60 * 60 * 24 * 180 );
+  const input = { input: { a: context.a, y: { c: expires } } };
+  setFields( colE, input, context );
 }
 
 module.exports = resolvers;

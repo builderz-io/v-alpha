@@ -48,7 +48,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         role: E.c
       },
       social: {
-        email: P.m.b
+        email: P.m ? P.m.b : undefined
       },
       status: { active: E.y.m },
       // for backwards compatibility
@@ -145,7 +145,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const x = {
-      a: data.creatorUuid,
+      a: data.creatorUuid ? data.creatorUuid : data.uuidE,
     };
 
     const y = {
@@ -194,7 +194,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getFirebaseProfiles( array ) {
-    const uuidEs = array.map( item => {return item.d} );
+    const uuidEs = array.map( item => item.d );
     const queryP = `query Profiles {
          getProfile (a: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
        }`;
@@ -207,15 +207,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': auth || '' // 'vxzvpVSZpVT4qbxbLX'
+        'Authorization': auth || ''
       },
       body: JSON.stringify( {
         query,
         variables: variables,
       } )
     } )
-      .then( r => { return r.json() }
-      );
+      .then( r => r.json() );
   }
 
   /* ================== public methods ================== */
@@ -276,12 +275,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
             data: [ entityData ]
           };
         } )
-        .catch( err => {
-          return {
-            success: false,
-            message: 'error with setting Firebase: ' + err
-          };
-        } );
+        .catch( err => ( {
+          success: false,
+          message: 'error with setting Firebase: ' + err
+        } ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
       console.log( data );
