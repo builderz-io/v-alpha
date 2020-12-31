@@ -301,7 +301,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const titleArray = title.trim().toLowerCase().split( ' ' );
 
     var checkLength = titleArray.length;
-    var wordLengthExeeded = titleArray.map( item => { return item.length > entitySetup.maxWordLength } );
+    var wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
 
     let error;
 
@@ -354,16 +354,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const tL = V.getSetting( 'transactionLedger' );
     const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
-    const returnFalse = ( tL, bal ) => {
-      return {
-        success: false,
-        endpoint: 'entity',
-        ledger: tL,
-        status: 'could not retrieve entity balance',
-        message: bal,
-        data: []
-      };
-    };
+    const returnFalse = ( tL, bal ) => ( {
+      success: false,
+      endpoint: 'entity',
+      ledger: tL,
+      status: 'could not retrieve entity balance',
+      message: bal,
+      data: []
+    } );
 
     if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.aA() */ ) {
 
@@ -491,7 +489,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
         /* Only update state if activeEntity was edited, not a managed entity */
 
-        if ( V.getState( 'activeEntity' ).fullId == res.data[0].fullId ) {
+        if (
+          'MongoDB' == V.getSetting( 'entityLedger' ) &&
+          V.getState( 'activeEntity' ).fullId == res.data[0].fullId
+        ) {
           V.setState( 'activeEntity', 'clear' );
           V.setState( 'activeEntity', res.data[0] );
         }

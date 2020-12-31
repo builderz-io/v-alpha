@@ -306,21 +306,40 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
-          setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
-            setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
-              V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
-              V.setNode( '#img-upload-profile__preview', '' );
-              V.setNode( '#img-upload-profile__preview', V.cN( {
-                t: 'img',
-                y: {
-                  'max-width': '100%'
-                },
-                src: res.src
-              } ) );
+        if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
+          setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
+            setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
+              setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
+                V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+                V.setNode( '#img-upload-profile__preview', '' );
+                V.setNode( '#img-upload-profile__preview', V.cN( {
+                  t: 'img',
+                  y: {
+                    'max-width': '100%'
+                  },
+                  src: res.src
+                } ) );
+              } );
             } );
           } );
-        } );
+        }
+        else if ( 'Firebase' == V.getSetting( 'entityLedger' ) ) {
+          setField( 'images', {
+            tiny: V.getState( 'tinyImageUpload' ),
+            thumb: V.getState( 'thumbnailUpload' ),
+            medium: V.getState( 'mediumImageUpload' )
+          } ).then( () => {
+            V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+            V.setNode( '#img-upload-profile__preview', '' );
+            V.setNode( '#img-upload-profile__preview', V.cN( {
+              t: 'img',
+              y: {
+                'max-width': '100%'
+              },
+              src: V.getState( 'mediumImageUpload' ).dataUrl
+            } ) );
+          } );
+        }
       }
     } );
   }
@@ -394,7 +413,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             }
           ]
         } );
-      } ).filter( item => {return item != ''} )
+      } ).filter( item => item != '' )
     } );
 
     return $table.firstChild ? $table : null;
@@ -422,13 +441,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       field: field,
       data: data,
     } ).then( res => {
+      if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
+        res.data[0].type = 'Feature'; // needed to populate entity on map
+        res.data[0].properties ? null : res.data[0].properties = {};
 
-      res.data[0].type = 'Feature'; // needed to populate entity on map
-      res.data[0].properties ? null : res.data[0].properties = {};
-
-      /* also update caches after an edit */
-      updateEntityInCaches( res );
-
+        /* also update caches after an edit */
+        updateEntityInCaches( res );
+      }
       return res;
     } );
   }
@@ -436,7 +455,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function updateEntityInCaches( response ) {
     ['managedEntities', 'preview', 'viewed'].forEach( cache => {
       if ( !V.getCache( cache ) ) {return}
-      const index = V.getCache( cache ).data.findIndex( item => {return item.fullId == V.getState( 'active' ).lastViewed} );
+      const index = V.getCache( cache ).data.findIndex( item => item.fullId == V.getState( 'active' ).lastViewed );
       V.getCache( cache ).data.splice( index, 1, response.data[0] );
     } );
   }
@@ -857,14 +876,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $innerContent = V.cN( {
       t: 'div',
-      h: adminOf.map( item => {
-        return V.cN( {
-          t: 'p',
-          c: 'pxy cursor-pointer',
-          h: item,
-          k: handleProfileDraw
-        } );
-      } )
+      h: adminOf.map( item => V.cN( {
+        t: 'p',
+        c: 'pxy cursor-pointer',
+        h: item,
+        k: handleProfileDraw
+      } ) )
     } );
     return castCard( $innerContent, getString( ui.holderOf ) );
   }

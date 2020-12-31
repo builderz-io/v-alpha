@@ -284,7 +284,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       console.log( data );
       const a = V.getLastViewed().uuidP;
 
-      let m;
+      let m, n, o;
 
       switch ( data.field ) {
       case 'properties.description':
@@ -293,11 +293,36 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       case 'social.email':
         m = { b: data.data };
         break;
+      case 'properties.preferredLangs':
+        m = { c: data.data };
+        break;
+      case 'properties.target':
+        m = { m: Number( data.data ) };
+        break;
+      case 'properties.unit':
+        m = { n: data.data };
+        break;
+
+      case 'properties.baseLocation':
+        n = {
+          a: [ Number( data.data.lng ), Number( data.data.lat ) ],
+          b: data.data.value,
+          z: data.data.rand
+        };
+        break;
+
+      case 'images':
+        o = {
+          a: data.data.tiny.dataUrl,
+          b: data.data.thumb.dataUrl,
+          c: data.data.medium.dataUrl
+        };
+        break;
       }
 
       const variables = {
         input: {
-          a, m
+          a, m, n, o
         }
       };
 
