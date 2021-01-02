@@ -201,13 +201,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryP );
   }
 
-  function fetchFirebase( query, variables, auth ) {
+  function fetchFirebase( query, variables ) {
     return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': auth || ''
+        'Authorization': V.getCookie( 'last-active-uphrase' ) ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' ) : ''
+
       },
       body: JSON.stringify( {
         query,
@@ -333,7 +334,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
                 }
               `;
 
-      return fetchFirebase( query, variables, data.auth );
+      return fetchFirebase( query, variables );
     }
   }
 

@@ -14,13 +14,13 @@ const resolvers = {
         return findByFullId( colE, args.m, args.n );
       }
       else if ( args.i ) {
-        if ( context ) {
+        if ( context && context.a ) {
           setNewExpiryDate( context );
         }
         return findByEvmAddress( colE, args.i );
       }
       else if ( args.f ) {
-        if ( context ) {
+        if ( context && context.a ) {
           setNewExpiryDate( context );
         }
         return findByUphrase( colE, args.f );
@@ -82,9 +82,9 @@ async function setFields( col, { input }, context ) {
   else if (
     context.a &&
     (
-      context.a == obj.a ||   // authorizes main entity update
-      context.d == obj.a ||   // authorizes profile update of main entity
-      context.a == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
+      context.m == obj.a ||   // authorizes main entity update
+      context.n == obj.a ||   // authorizes profile update of main entity
+      context.m == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
       // IDEA: check owners first: ( obj.x ? obj.x.b ? obj.x.b : [ obj.x.a ] : [] ).includes( context.a )
     )
   ) {
@@ -137,7 +137,7 @@ function castObjectPaths( data ) {
 function setNewExpiryDate( context ) {
   const unix = Math.floor( Date.now() / 1000 );
   const expires = String( unix + 60 * 60 * 24 * 180 );
-  const input = { input: { a: context.a, y: { c: expires } } };
+  const input = { input: { a: context.m, y: { c: expires } } };
   setFields( colE, input, context );
 }
 

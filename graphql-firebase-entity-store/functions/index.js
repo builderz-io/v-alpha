@@ -5,7 +5,7 @@ const express = require( 'express' );
 const typeDefs = require( './schemas/typeDefs' );
 
 // Provide resolver functions for your schema fields
-const apiResolvers = require( './resolvers/api-resolvers' );
+const resolvers = require( './resolvers/api-resolvers' );
 
 // Provide resolver functions for authentication
 const authResolvers = require( './resolvers/auth-resolvers' );
@@ -19,15 +19,20 @@ const app = express();
 // Create graphql server
 const server = new ApolloServer( {
   typeDefs,
-  apiResolvers,
+  resolvers,
   playground: false,
   context: async ( { req } ) => {
     const token = req.headers.authorization;
-    console.log( 222, token );
-    const user = await apiResolvers.Query.getEntity( undefined, { f: token } );
-    // const user = await authResolvers.getAuthDoc( token );
-    console.log( 333, user );
-    return user[0];
+    console.log( 111, token );
+    if ( token != '' ) {
+      // const user = await resolvers.Query.getEntity( undefined, { f: token } );
+      const user = await authResolvers.getAuthDoc( token );
+      console.log( 999, user );
+      return user[0];
+    }
+    else {
+      return {};
+    }
   },
 } );
 server.applyMiddleware( { app, path: '/v1', cors: true } );

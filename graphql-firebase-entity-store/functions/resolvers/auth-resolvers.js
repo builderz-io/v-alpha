@@ -7,10 +7,9 @@ const resolvers = {
 };
 
 function findByToken( col, token ) {
-  console.log( 111, token );
   return col.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => [ Object.values( val ).find( entity => entity.a == token ) ] );
+    .then( val => [ Object.values( val ).find( entity => entity.f == token ) ] );
 }
 
 module.exports = resolvers;
