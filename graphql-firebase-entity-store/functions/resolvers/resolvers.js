@@ -1,11 +1,11 @@
 // Connect to firebase database
 const namespaceDb = require( '../resources/databases-setup' ).namespaceDb;
 const profileDb = require( '../resources/databases-setup' ).profileDb;
-
-// Here Firebase returns an object and GraphQL is expecting an array, so we need to extract the values.
+const authDb = require( '../resources/databases-setup' ).authDb;
 
 const colE = namespaceDb.database().ref( 'entities' ); // col as in "collection"
 const colP = profileDb.database().ref( 'profiles' );
+const colA = authDb.database().ref( 'authentication' );
 
 const resolvers = {
   Query: {
@@ -19,14 +19,12 @@ const resolvers = {
       else if ( args.i ) {
         return findByEvmAddress( colE, args.i );
       }
-      else if ( args.f ) {
-        return findByUphrase( colE, args.f );
-      }
       else {
         return mapSnap( colE );
       }
     },
-    getProfile: ( parent, args ) => findProfiles( colP, args.a )
+    getProfile: ( parent, args ) => findProfiles( colP, args.a ),
+    getAuth: ( parent, args ) => findByToken( colA, args.f )
   },
   Mutation: {
     setEntity: ( parent, input, context ) => setFields( colE, input, context ),
@@ -52,7 +50,7 @@ function findByEvmAddress( col, i ) {
     .then( val => [ Object.values( val ).find( entity => entity.i == i ) ] );
 }
 
-function findByUphrase( col, f ) {
+function findByToken( col, f ) {
   return col.once( 'value' )
     .then( snap => snap.val() )
     .then( val => [ Object.values( val ).find( entity => entity.f == f ) ] );
@@ -79,9 +77,9 @@ async function setFields( col, { input }, context ) {
   else if (
     context.a &&
     (
-      context.m == obj.a ||   // authorizes main entity update
-      context.n == obj.a ||   // authorizes profile update of main entity
-      context.m == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
+      context.m.includes( obj.a ) ||   // authorizes main entity update
+      context.n.includes( obj.a )      // authorizes profile update of main entity
+      // context.m == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
       // IDEA: check owners first: ( obj.x ? obj.x.b ? obj.x.b : [ obj.x.a ] : [] ).includes( context.m )
     )
   ) {

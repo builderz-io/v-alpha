@@ -384,6 +384,18 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
+  function confirmUPhrase() {
+    const $content = modalContent();
+    const $key = V.cN( {
+      t: 'div',
+      c: buttonClasses + ' modal-pos-1',
+      k: handleGetEntityForm,
+      h: getString( ui.manageProfile )
+    } );
+    V.setNode( $content, $key );
+    return $content;
+  }
+
   function disconnect() {
     const $content = modalContent();
     const $disc = V.cN( {
@@ -462,7 +474,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'txt-center',
       h: [
         { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
-        UserComponents.castUphraseNode( activeEntity.private.uPhrase, 'txt-red fs-l' ),
+        UserComponents.castUphraseNode( activeEntity.private ? activeEntity.private.uPhrase : '', 'txt-red fs-l' ),
         { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) }
       ]
     } );
@@ -534,6 +546,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     confirmTransaction: confirmTransaction,
     web3Join: web3Join,
     web2Join: web2Join,
+    confirmUPhrase: confirmUPhrase,
     disconnect: disconnect,
     connectWallet: connectWallet,
     mapAddress: mapAddress,

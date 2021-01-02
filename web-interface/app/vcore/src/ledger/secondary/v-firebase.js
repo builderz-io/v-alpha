@@ -21,9 +21,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       uuidP: E.d,
       fullId: fullId,
       path: V.castPathOrId( fullId ),
-      private: {
-        uPhrase: E.f
-      },
       evmCredentials: {
         address: E.i
       },
@@ -54,6 +51,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       // for backwards compatibility
       adminOf: [fullId],
       owners: [{ ownerName: '', ownerTag: '' }]
+      // private: {
+      //   uPhrase: E.f
+      // },
     };
   }
 
@@ -192,6 +192,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryE );
   }
 
+  function getFirebaseAuth( data ) {
+    const queryA = `query EntityByUphrase {
+        getAuth (f:"${ data }") { f }
+      }`;
+
+    return fetchFirebase( queryA );
+  }
+
   function getFirebaseProfiles( array ) {
     const uuidEs = array.map( item => item.d );
     const queryP = `query Profiles {
@@ -220,6 +228,23 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function getFirebase( data, whichEndpoint ) {
+
+    if ( 'entity by uPhrase' == whichEndpoint ) {
+      const auth = await getFirebaseAuth( data );
+      if ( !auth.errors && auth.data.getAuth[0] != null ) {
+        return {
+          success: true,
+          status: 'fetched firebase auth doc',
+          data: [{ private: { uPhrase: auth.data.getAuth[0].f } }]
+        };
+      }
+      else {
+        return {
+          success: false,
+          message: 'could not fetch firebase auth doc'
+        };
+      }
+    }
 
     /** Query entities */
 

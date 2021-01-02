@@ -11,7 +11,8 @@ function castType( which, schema ) {
   return 'type ' + which + ' ' + schema + '\n';
 }
 function castInput( which, schema, schemaTypes ) {
-  if ( ['Entity', 'Profile', 'ChangeLogE', 'ChangeLogP'].includes( which ) ) {
+  if ( ['Entity', 'Profile', 'Auth',
+    'ChangeLogE', 'ChangeLogP', 'ChangeLogA'].includes( which ) ) {
     schemaTypes.forEach( schemaType => {
       schema = schema.replace( schemaType, 'Input' + schemaType );
     } );

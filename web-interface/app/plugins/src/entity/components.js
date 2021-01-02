@@ -448,6 +448,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         /* also update caches after an edit */
         updateEntityInCaches( res );
       }
+      if ( res.data && res.data.setProfile.a == 'not authorized' ) {
+        Modal.draw( 'confirm uPhrase' );
+      }
       return res;
     } );
   }
@@ -472,7 +475,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'pxy fs-s' + css,
       h: [
-        { t: 'span', h: phrase.length > 18 ? '0x' : phrase.length ? 'vx' : '' },
+        { t: 'span', h: phrase ? phrase.length > 18 ? '0x' : 'vx' : '' },
         {
           t: 'input',
           c: css,
@@ -693,7 +696,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function accessKeysCard() {
-    const uPhrase = entity.private.uPhrase;
+    const uPhrase = entity.private ? entity.private.uPhrase : undefined;
     const $innerContent = V.cN( { t: 'div' } );
 
     if( uPhrase ) {

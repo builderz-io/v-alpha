@@ -5,10 +5,7 @@ const express = require( 'express' );
 const typeDefs = require( './schemas/typeDefs' );
 
 // Provide resolver functions for your schema fields
-const resolvers = require( './resolvers/api-resolvers' );
-
-// Provide resolver functions for authentication
-const authResolvers = require( './resolvers/auth-resolvers' );
+const resolvers = require( './resolvers/resolvers' );
 
 // Create GraphQL express server
 const { ApolloServer } = require( 'apollo-server-express' );
@@ -26,7 +23,7 @@ const server = new ApolloServer( {
     console.log( 111, token );
     if ( token == '' ) { return {} }
     // const user = await resolvers.Query.getEntity( undefined, { f: token } );
-    const user = await authResolvers.getAuthDoc( token );
+    const user = await resolvers.Query.getAuth( undefined, { f: token } );
     console.log( 999, user );
     return user[0];
 

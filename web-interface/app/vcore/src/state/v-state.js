@@ -67,9 +67,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getViewed( which ) {
-    return getCache().viewed ? getCache().viewed.data.find( entity => {
-      return which.includes( ' #' ) ? entity.fullId == which : entity.path == which;
-    } ) : undefined;
+    return getCache().viewed ? getCache().viewed.data.find( entity => which.includes( ' #' ) ? entity.fullId == which : entity.path == which ) : undefined;
   }
 
   function getLastViewed() {
