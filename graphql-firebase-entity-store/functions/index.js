@@ -24,15 +24,12 @@ const server = new ApolloServer( {
   context: async ( { req } ) => {
     const token = req.headers.authorization;
     console.log( 111, token );
-    if ( token != '' ) {
-      // const user = await resolvers.Query.getEntity( undefined, { f: token } );
-      const user = await authResolvers.getAuthDoc( token );
-      console.log( 999, user );
-      return user[0];
-    }
-    else {
-      return {};
-    }
+    if ( token == '' ) { return {} }
+    // const user = await resolvers.Query.getEntity( undefined, { f: token } );
+    const user = await authResolvers.getAuthDoc( token );
+    console.log( 999, user );
+    return user[0];
+
   },
 } );
 server.applyMiddleware( { app, path: '/v1', cors: true } );

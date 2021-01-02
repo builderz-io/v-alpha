@@ -10,19 +10,16 @@ const colP = profileDb.database().ref( 'profiles' );
 const resolvers = {
   Query: {
     getEntity: ( parent, args, context ) => {
+      if ( context && context.a ) {
+        // do stuff like setNewExpiryDate on all owned entities
+      }
       if ( args.m && args.n ) {
         return findByFullId( colE, args.m, args.n );
       }
       else if ( args.i ) {
-        if ( context && context.a ) {
-          setNewExpiryDate( context );
-        }
         return findByEvmAddress( colE, args.i );
       }
       else if ( args.f ) {
-        if ( context && context.a ) {
-          setNewExpiryDate( context );
-        }
         return findByUphrase( colE, args.f );
       }
       else {
@@ -85,7 +82,7 @@ async function setFields( col, { input }, context ) {
       context.m == obj.a ||   // authorizes main entity update
       context.n == obj.a ||   // authorizes profile update of main entity
       context.m == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
-      // IDEA: check owners first: ( obj.x ? obj.x.b ? obj.x.b : [ obj.x.a ] : [] ).includes( context.a )
+      // IDEA: check owners first: ( obj.x ? obj.x.b ? obj.x.b : [ obj.x.a ] : [] ).includes( context.m )
     )
   ) {
 

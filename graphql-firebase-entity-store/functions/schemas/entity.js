@@ -35,7 +35,6 @@ const types = {
       c: String      // @type
       d: String      // related profile document
       e: String      // issuer
-      f: String      // auth
 
       i: String      // Current EVM Address
       j: String      // receiving EVM Address

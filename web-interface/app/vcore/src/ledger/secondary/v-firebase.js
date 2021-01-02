@@ -7,7 +7,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const singleE = 'a c d m n f i y { m } x { a }';
+  const singleE = 'a c d m n i y { m } x { a }';
   const singleP = 'm { a b } n { a b } o { a b c }';
   const previewsE = 'a c d m n';
   const previewsP = 'm { a } n { a b } o { b }';
@@ -86,7 +86,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const c = data.typeE;
     const d = data.uuidP;
     const e = data.issuer;
-    const f = data.auth;
 
     const i = data.evmCredentials.address;
 
@@ -106,7 +105,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const variables = {
       input: {
-        a, b, c, d, e, f, i, m, n, x, y
+        a, b, c, d, e, i, m, n, x, y
       }
     };
 
