@@ -365,7 +365,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.aA() */ ) {
 
-      const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
+      const bal = entity[tL.toLowerCase() + 'Credentials']
+        ? await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] )
+        : { success: false };
 
       if ( bal.success ) {
         return  {
@@ -485,7 +487,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         // auth: V.getCookie( 'last-active-uphrase' ) ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' ) : ''
       } );
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
-        console.log( res );
 
         /* Only update state if activeEntity was edited, not a managed entity */
 

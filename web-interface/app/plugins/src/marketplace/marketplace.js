@@ -94,9 +94,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       let filtered = query.data;
 
       if ( whichRole != 'all' ) {
-        filtered = query.data.filter( item => {
-          return item.profile.role == whichRole;
-        } );
+        filtered = query.data.filter( item => item.profile.role == whichRole );
       }
 
       return {
@@ -150,8 +148,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
         setSliderContent( last );
 
-        const hasThumbnail = viewData.entities.filter( item => {return item.thumbnail != undefined} );
-        const hasNoThumbnail = viewData.entities.filter( item => { return item.thumbnail === undefined } );
+        const hasThumbnail = viewData.entities.filter( item => item.thumbnail != undefined );
+        const hasNoThumbnail = viewData.entities.filter( item => item.thumbnail === undefined );
 
         hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
           setListContent( cardData );

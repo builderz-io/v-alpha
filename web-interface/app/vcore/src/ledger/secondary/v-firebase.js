@@ -167,6 +167,61 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( query, variables );
   }
 
+  function setProfileUpdate( data ) {
+    const a = V.getLastViewed().uuidP;
+
+    let m, n, o;
+
+    switch ( data.field ) {
+    case 'properties.description':
+      m = { a: data.data };
+      break;
+    case 'social.email':
+      m = { b: data.data };
+      break;
+    case 'properties.preferredLangs':
+      m = { c: data.data };
+      break;
+    case 'properties.target':
+      m = { m: Number( data.data ) };
+      break;
+    case 'properties.unit':
+      m = { n: data.data };
+      break;
+
+    case 'properties.baseLocation':
+      n = {
+        a: [ Number( data.data.lng ), Number( data.data.lat ) ],
+        b: data.data.value,
+        z: data.data.rand
+      };
+      break;
+
+    case 'images':
+      o = {
+        a: data.data.tiny.dataUrl,
+        b: data.data.thumb.dataUrl,
+        c: data.data.medium.dataUrl
+      };
+      break;
+    }
+
+    const variables = {
+      input: {
+        a, m, n, o
+      }
+    };
+
+    const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
+                setProfile(input: $input) {
+                  ${ /* singleP */ 'a m { a b }' }
+                }
+              }
+            `;
+
+    return fetchFirebase( query, variables );
+  }
+
   function getFirebaseEntities( data, whichEndpoint ) {
     let queryE;
 
@@ -192,14 +247,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryE );
   }
 
-  function getFirebaseAuth( data ) {
-    const queryA = `query EntityByUphrase {
-        getAuth (f:"${ data }") { f }
-      }`;
-
-    return fetchFirebase( queryA );
-  }
-
   function getFirebaseProfiles( array ) {
     const uuidEs = array.map( item => item.d );
     const queryP = `query Profiles {
@@ -208,14 +255,23 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryP );
   }
 
+  function getFirebaseAuth( data ) {
+    const queryA = `query EntityByUphrase {
+          getAuth (f:"${ data }") { f }
+        }`;
+
+    return fetchFirebase( queryA );
+  }
+
   function fetchFirebase( query, variables ) {
     return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': V.getCookie( 'last-active-uphrase' ) ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' ) : ''
-
+        'Authorization': V.getCookie( 'last-active-uphrase' )
+          ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+          : ''
       },
       body: JSON.stringify( {
         query,
@@ -306,59 +362,16 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         } ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
-      console.log( data );
-      const a = V.getLastViewed().uuidP;
-
-      let m, n, o;
-
-      switch ( data.field ) {
-      case 'properties.description':
-        m = { a: data.data };
-        break;
-      case 'social.email':
-        m = { b: data.data };
-        break;
-      case 'properties.preferredLangs':
-        m = { c: data.data };
-        break;
-      case 'properties.target':
-        m = { m: Number( data.data ) };
-        break;
-      case 'properties.unit':
-        m = { n: data.data };
-        break;
-
-      case 'properties.baseLocation':
-        n = {
-          a: [ Number( data.data.lng ), Number( data.data.lat ) ],
-          b: data.data.value,
-          z: data.data.rand
-        };
-        break;
-
-      case 'images':
-        o = {
-          a: data.data.tiny.dataUrl,
-          b: data.data.thumb.dataUrl,
-          c: data.data.medium.dataUrl
-        };
-        break;
-      }
-
-      const variables = {
-        input: {
-          a, m, n, o
-        }
-      };
-
-      const query = `mutation SetNewProfile( $input: InputProfile! ) {
-                  setProfile(input: $input) {
-                    ${ /* singleP */ 'a m { a b }' }
-                  }
-                }
-              `;
-
-      return fetchFirebase( query, variables );
+      return setProfileUpdate( data )
+        .then( P => ( {
+          success: true,
+          status: 'firebase entity updated',
+          data: [ P.data.setProfile ]
+        } ) )
+        .catch( err => ( {
+          success: false,
+          message: 'error with updating Firebase: ' + err
+        } ) );
     }
   }
 

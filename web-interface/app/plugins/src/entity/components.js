@@ -448,7 +448,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         /* also update caches after an edit */
         updateEntityInCaches( res );
       }
-      if ( res.data && res.data.setProfile.a == 'not authorized' ) {
+      if ( res.data && res.data[0].a == 'not authorized' ) {
         Modal.draw( 'confirm uPhrase' );
       }
       return res;
