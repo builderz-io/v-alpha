@@ -11,9 +11,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( path ) {
     let query;
-    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
-      return entity.path == path;
-    } ) : undefined;
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == path ) : undefined;
 
     if ( !V.aE() ) {
       return {
@@ -51,9 +49,6 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     else {
       query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
         if ( res.success ) {
-
-          res.data[0].type = 'Feature'; // needed to populate entity on map
-          res.data[0].properties ? null : res.data[0].properties = {};
 
           V.setCache( 'viewed', res.data );
 

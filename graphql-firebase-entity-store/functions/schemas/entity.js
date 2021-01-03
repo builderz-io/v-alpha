@@ -44,7 +44,7 @@ const types = {
       o: String      // tag - special // ONLY when purchased
 
       x: RelationsE
-      y: DatesE
+      y: DatesE      // Dates and Status
       z: ChangeLogE
     }
   `

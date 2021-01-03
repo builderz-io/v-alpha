@@ -7,79 +7,67 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const singleE = 'a c d m n i y { m } x { a }';
-  const singleP = 'm { a b } n { a b } o { a b c }';
+  /**
+   * Single Entity View returns all relevant fields.
+   * Fields may be undefined.
+   */
+
+  const singleE = 'a c d i j m n y { a b m } x { a }';
+  const singleP = 'm { a b c m n } n { a b } o { a b c }';
+
+  /**
+   * Preview View returns only a few fields:
+   * UuidE, Type, UuidP, Title and Tag (from Entity)
+   * Description, Location name, Thumbnail image (from Profile)
+   */
+
   const previewsE = 'a c d m n';
-  const previewsP = 'm { a } n { a b } o { b }';
+  const previewsP = 'm { a } n { a } o { b }';
 
   /* ================== private methods ================= */
 
-  function castActiveEntityData( E, P ) {
-    const fullId = V.castFullId( E.m, E.n );
-    return {
-      uuidE: E.a,
-      uuidP: E.d,
-      fullId: fullId,
-      path: V.castPathOrId( fullId ),
-      evmCredentials: {
-        address: E.i
-      },
-      properties: {
-        description: P.m ? P.m.a ? P.m.a : '' : ''
-      },
-      relations: {
-        creator: E.x ? E.x.a : E.a,
-      },
-      images: {
-        tinyImage: P.o ? P.o.a : undefined,
-        thumbnail: P.o ? P.o.b : undefined,
-        mediumImage: P.o ? P.o.c : undefined
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: P.n.a
-      },
-      profile: {
-        title: E.m,
-        tag: E.n,
-        role: E.c
-      },
-      social: {
-        email: P.m ? P.m.b : undefined
-      },
-      status: { active: E.y.m },
-      // for backwards compatibility
-      adminOf: [fullId],
-      owners: [{ ownerName: '', ownerTag: '' }]
-      // private: {
-      //   uPhrase: E.f
-      // },
-    };
+  function getEntities( data, whichEndpoint ) {
+    let queryE;
+
+    if ( 'entity by role' == whichEndpoint ) {
+      console.log( 111, 'by Role' );
+      queryE = `query EntityByRole {
+             getEntity { ${ previewsE } }
+           }`;
+    }
+    else if ( 'entity by evmAddress' == whichEndpoint ) {
+      console.log( 222, 'by EVM Address' );
+      queryE = `query EntityByEvmAddress {
+          getEntity (i:"${ data }") { ${ singleE } }
+        }`;
+    }
+    else if ( 'entity by fullId' == whichEndpoint ) {
+      const tT = V.castFullId( data );
+      console.log( 333, 'by FullId' );
+      queryE = `query EntityByFullId {
+          getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
+        }`;
+    }
+    return fetchFirebase( queryE );
   }
 
-  function castEntityPreviewData( E, P ) {
-    const fullId = V.castFullId( E.m, E.n );
-    return {
-      uuidE: E.a,
-      fullId: fullId,
-      path: V.castPathOrId( fullId ),
-      properties: {
-        description: P.m ? P.m.a ? P.m.a : '' : ''
-      },
-      profile: {
-        role: E.c
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: P.n.a
-      },
-      images: {
-        thumbnail: P.o ? P.o.b : undefined
-      }
-    };
+  function getProfiles( array ) {
+    const uuidEs = array.map( item => item.d );
+    const queryP = `query Profiles {
+           getProfile (a: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
+         }`;
+    return fetchFirebase( queryP );
   }
 
-  function setNewEntity( data ) {
+  function getFirebaseAuth( data ) {
+    const queryA = `query EntityByUphrase {
+            getAuth (f:"${ data }") { f }
+          }`;
+
+    return fetchFirebase( queryA );
+  }
+
+  function setEntity( data ) {
 
     const a = data.uuidE;
     const b = data.contextE;
@@ -88,6 +76,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const e = data.issuer;
 
     const i = data.evmCredentials.address;
+    const j = data.receivingAddresses.evm;
 
     const m = data.title;
     const n = data.tag;
@@ -105,7 +94,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const variables = {
       input: {
-        a, b, c, d, e, i, m, n, x, y
+        a, b, c, d, e, i, j, m, n, x, y
       }
     };
 
@@ -119,7 +108,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( query, variables );
   }
 
-  function setNewProfile( data ) {
+  function setProfile( data ) {
 
     const a = data.uuidP;
     const b = data.contextP;
@@ -167,10 +156,50 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( query, variables );
   }
 
-  function setProfileUpdate( data ) {
+  function setEntityField( data ) {
+    console.log( 'UPDATING ENTITY: ', data );
+    const a = V.getLastViewed().uuidE;
+
+    let j, m, returnFields;
+
+    switch ( data.field ) {
+    case 'title':
+      m = data.data;
+      returnFields = 'm';
+      break;
+    case 'role':
+      c = data.data;
+      returnFields = 'c';
+      break;
+    case 'receivingAddresses.evm':
+      j = data.data;
+      returnFields = 'j';
+      break;
+    }
+
+    const variables = {
+      input: {
+        a, j, m,
+      }
+    };
+
+    const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
+                setEntity(input: $input) {
+                  ${ returnFields }
+                }
+              }
+            `;
+
+    return fetchFirebase( query, variables );
+  }
+
+  function setProfileField( data ) {
+    console.log( 'UPDATING PROFILE: ', data );
     const a = V.getLastViewed().uuidP;
 
     let m, n, o;
+
+    let returnFields = 'm { a b c m n }';
 
     switch ( data.field ) {
     case 'properties.description':
@@ -195,6 +224,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         b: data.data.value,
         z: data.data.rand
       };
+      returnFields = 'n { a b }';
       break;
 
     case 'images':
@@ -214,7 +244,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ /* singleP */ 'a m { a b }' }
+                  ${ returnFields }
                 }
               }
             `;
@@ -222,45 +252,58 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( query, variables );
   }
 
-  function getFirebaseEntities( data, whichEndpoint ) {
-    let queryE;
+  function castEntityData( E, P ) {
+    const fullId = V.castFullId( E.m, E.n );
+    return {
+      uuidE: E.a || P.d,
+      uuidP: E.d || P.a,
+      fullId: fullId,
+      path: V.castPathOrId( fullId ),
+      evmCredentials: {
+        address: E.i
+      },
+      receivingAddresses: {
+        evm: E.j
+      },
+      properties: {
+        description: P.m ? P.m.a : undefined,
+        email: P.m ? P.m.b : undefined,
+        preferredLangs: P.m ? P.m.c : undefined,
+        target: P.m ? P.m.m : undefined,
+        unit: P.m ? P.m.n : undefined,
+        baseLocation: P.n ? P.n.b : undefined, // placed here also for UI compatibility
+      },
+      relations: {
+        creator: E.x ? E.x.a : E.a,
+      },
+      images: {
+        tinyImage: P.o ? P.o.a : undefined,
+        thumbnail: P.o ? P.o.b : undefined,
+        mediumImage: P.o ? P.o.c : undefined
+      },
+      geometry: {
+        coordinates: P.n ? P.n.a : undefined,
+        baseLocation: P.n ? P.n.b : undefined,
+        type: 'Point',
+      },
+      type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
+      profile: {
+        title: E.m,
+        tag: E.n,
+        role: E.c
+      },
+      social: {
+        email: P.m ? P.m.b : undefined // placed here also for UI compatibility
+      },
+      status: { active: E.y ? E.y.m : undefined },
 
-    if ( 'entity by role' == whichEndpoint ) {
-      console.log( 111, 'by Role' );
-      queryE = `query EntityByRole {
-           getEntity { ${ previewsE } }
-         }`;
-    }
-    else if ( 'entity by evmAddress' == whichEndpoint ) {
-      console.log( 222, 'by EVM Address' );
-      queryE = `query EntityByEvmAddress {
-        getEntity (i:"${ data }") { ${ singleE } }
-      }`;
-    }
-    else if ( 'entity by fullId' == whichEndpoint ) {
-      const tT = V.castFullId( data );
-      console.log( 333, 'by FullId' );
-      queryE = `query EntityByFullId {
-        getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
-      }`;
-    }
-    return fetchFirebase( queryE );
-  }
-
-  function getFirebaseProfiles( array ) {
-    const uuidEs = array.map( item => item.d );
-    const queryP = `query Profiles {
-         getProfile (a: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
-       }`;
-    return fetchFirebase( queryP );
-  }
-
-  function getFirebaseAuth( data ) {
-    const queryA = `query EntityByUphrase {
-          getAuth (f:"${ data }") { f }
-        }`;
-
-    return fetchFirebase( queryA );
+      // for UI compatibility:
+      adminOf: [fullId],
+      owners: [{ ownerName: '', ownerTag: '' }]
+      // private: {
+      //   uPhrase: E.f
+      // },
+    };
   }
 
   function fetchFirebase( query, variables ) {
@@ -304,25 +347,19 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     /** Query entities */
 
-    const entities = await getFirebaseEntities( data, whichEndpoint );
+    const entities = await getEntities( data, whichEndpoint );
 
     /** Query profiles for entities fetched */
 
     if ( !entities.errors && entities.data.getEntity[0] != null ) {
-      const profiles = await getFirebaseProfiles( entities.data.getEntity );
+      const profiles = await getProfiles( entities.data.getEntity );
 
       /** Combine profile and entity data */
 
       if ( !profiles.errors && profiles.data.getProfile[0] != null ) {
-        const combined = entities.data.getEntity.map( ( item, i ) => {
-          if ( 'entity by role' == whichEndpoint ) {
-            return castEntityPreviewData( item, profiles.data.getProfile[i] );
-          }
-          else {
-            return castActiveEntityData( item, profiles.data.getProfile[i] );
-          }
-
-        } );
+        const combined = entities.data.getEntity.map( ( item, i ) =>
+          castEntityData( item, profiles.data.getProfile[i] )
+        );
         return {
           success: true,
           status: 'fetched firebase',
@@ -346,10 +383,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setFirebase( data, whichEndpoint  ) {
     if ( 'entity' == whichEndpoint ) {
-      return setNewEntity( data )
+      return setEntity( data )
         .then( async E => {
-          const P = await setNewProfile( data );
-          const entityData = castActiveEntityData( E.data.setEntity, P.data.setProfile );
+          const P = await setProfile( data );
+          const entityData = castEntityData( E.data.setEntity, P.data.setProfile );
           return {
             success: true,
             status: 'firebase entity set',
@@ -362,16 +399,30 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         } ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
-      return setProfileUpdate( data )
-        .then( P => ( {
-          success: true,
-          status: 'firebase entity updated',
-          data: [ P.data.setProfile ]
-        } ) )
-        .catch( err => ( {
-          success: false,
-          message: 'error with updating Firebase: ' + err
-        } ) );
+      if ( ['title', 'role', 'receivingAddresses.evm'].includes( data.field ) ) {
+        return setEntityField( data )
+          .then( E => ( {
+            success: true,
+            status: 'Firebase entity updated',
+            data: [ E.data.setEntity ]
+          } ) )
+          .catch( err => ( {
+            success: false,
+            message: 'error with updating entity in Firebase: ' + err
+          } ) );
+      }
+      else {
+        return setProfileField( data )
+          .then( P => ( {
+            success: true,
+            status: 'Firebase profile updated',
+            data: [ P.data.setProfile ]
+          } ) )
+          .catch( err => ( {
+            success: false,
+            message: 'error with updating profile in Firebase: ' + err
+          } ) );
+      }
     }
   }
 

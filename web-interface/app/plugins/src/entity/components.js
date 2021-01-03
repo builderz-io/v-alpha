@@ -288,7 +288,34 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         value: value,
         rand: false
       } ).then( res => {
-        VMap.draw( res.data );
+
+        /** Draw the new map position */
+        if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
+          VMap.draw( res.data );
+        }
+        if ( 'Firebase' == V.getSetting( 'entityLedger' ) ) {
+
+          /** Create GeoJSON object and mixin data from active entity */
+          VMap.draw( [{
+            fullId: V.aE().fullId,
+            path: V.aE().path,
+            profile: {
+              role: V.aE().role,
+            },
+            properties: {
+              description: V.aE().properties.description
+            },
+            images: {
+              thumbnail: V.aE().images.thumbnail
+            },
+            geometry: {
+              coordinates: res.data[0].n.a,
+              type: 'Point',
+              rand: false
+            },
+            type: 'Feature'
+          }] );
+        }
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );
@@ -442,8 +469,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       data: data,
     } ).then( res => {
       if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
-        res.data[0].type = 'Feature'; // needed to populate entity on map
-        res.data[0].properties ? null : res.data[0].properties = {};
 
         /* also update caches after an edit */
         updateEntityInCaches( res );
@@ -1111,8 +1136,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function addOrChangeImage() {
     let $innerContent;
 
-    if( entity.mediumImage ) {
-      const img = V.castEntityThumbnail( entity.mediumImage ).img;
+    if( entity.mediumImage || ( entity.images && entity.images.mediumImage ) ) {
+      // const img = V.castEntityThumbnail( entity.mediumImage ).img;
       $innerContent = V.castNode( {
         t: 'div',
         c: 'pxy',
@@ -1120,7 +1145,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'div',
             i: 'img-upload-profile__preview',
-            h: img
+            h: entity.mediumImage
+              ? V.castEntityThumbnail( entity.mediumImage ).img
+              : {
+                t: 'img',
+                y: {
+                  'max-width': '100%'
+                },
+                src: entity.images.mediumImage
+              }
           },
           {
             t: 'div',

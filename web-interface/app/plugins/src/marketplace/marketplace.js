@@ -23,12 +23,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       isSearch = true;
       query = await V.getQuery( search ).then( res => {
         if ( res.success ) {
-          res.data.forEach( entity => {
-            entity.type = 'Feature'; // needed to populate entity on map
-            entity.properties ? null : entity.properties = {};
-          } );
+          return res;
         }
-        return res;
       } );
     }
     else if ( cache && !cache.data.length ) {
@@ -77,15 +73,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     else {
       query = await V.getEntity( 'preview' ).then( res => {
         if ( res.success ) {
-          res.data.forEach( entity => {
-            entity.path = V.castPathOrId( entity.fullId );
-            entity.type = 'Feature'; // needed to populate entity on map
-            entity.properties ? null : entity.properties = {};
-          } );
           V.setCache( 'preview', res.data );
+          return res;
         }
-
-        return res;
       } );
     }
 

@@ -37,7 +37,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       Profile.draw( this );
       return;
     }
-    const entity = V.getCache( 'preview' ).data.find( item => {return item.path == this} );
+    const entity = V.getCache( 'preview' ).data.find( item => item.path == this );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );
@@ -220,7 +220,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function popupContent( entity ) {
-    const descr = entity.properties.description ? V.castLinks( entity.properties.description ).links : undefined;
+    const descr = entity.properties && entity.properties.description ? V.castLinks( entity.properties.description ).links : undefined;
     return V.cN( {
       t: 'div',
       a: { path: entity.path },

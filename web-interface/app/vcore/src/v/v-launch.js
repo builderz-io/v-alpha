@@ -24,12 +24,6 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
   V.setCache( 'preview', { data: [] } );
 
   V.getEntity( 'preview' ).then( res => {
-    res.data.forEach( entity => {
-      entity.path = V.castPathOrId( entity.fullId );
-      entity.type = 'Feature'; // needed to populate entity on map
-      entity.properties ? null : entity.properties = {};
-    } );
-
     V.setCache( 'preview', res.data );
   } );
 

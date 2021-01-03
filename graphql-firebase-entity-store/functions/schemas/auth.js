@@ -26,9 +26,13 @@ const types = {
 
       f: String        // auth string
 
-      m: [String]
-      n: [String]
+      i: String        // related entity document
+      j: String        // related profile document
 
+      m: [String]      // Entities owned
+      n: [String]      // Profiles owned
+
+      w: [String]      // Auth Log
       y: DatesA
       z: ChangeLogA
     }
