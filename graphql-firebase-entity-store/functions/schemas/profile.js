@@ -29,7 +29,6 @@ const types = {
   RelationsP: `
     {
       a: String      // creator uuid
-      b: [String]    // owners uuids  // ONLY on first addition or change of owner
     }
   `,
   DatesP: `
@@ -56,7 +55,6 @@ const types = {
       b: String        // @context - includes document version
       d: String        // related entity document
 
-
       m: Properties
       n: Geometry
       o: Images
@@ -64,6 +62,8 @@ const types = {
       x: RelationsP
       y: DatesP
       z: ChangeLogP
+
+      error: String  // mixin of error message
     }
   `
 };

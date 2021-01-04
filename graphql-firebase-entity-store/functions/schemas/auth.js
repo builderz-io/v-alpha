@@ -23,11 +23,11 @@ const types = {
     {
       a: ID!           // uuid - as base64 and URL compatible
       b: String        // @context - includes document version
+      d: String        // related entity document
+      e: String        // related profile document
 
       f: String        // auth string
 
-      i: String        // related entity document
-      j: String        // related profile document
 
       m: [String]      // Entities owned
       n: [String]      // Profiles owned

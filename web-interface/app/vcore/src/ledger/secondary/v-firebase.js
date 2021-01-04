@@ -12,7 +12,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } x { a }';
+  const singleE = 'a c d i j m n x { a } y { a b m } private';
   const singleP = 'm { a b c m n } n { a b } o { a b c }';
 
   /**
@@ -31,20 +31,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     if ( 'entity by role' == whichEndpoint ) {
       console.log( 111, 'by Role' );
-      queryE = `query EntityByRole {
+      queryE = `query GetEntitiesByRole {
              getEntity { ${ previewsE } }
            }`;
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222, 'by EVM Address' );
-      queryE = `query EntityByEvmAddress {
+      queryE = `query GetEntityByEvmAddress {
           getEntity (i:"${ data }") { ${ singleE } }
         }`;
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
       console.log( 333, 'by FullId' );
-      queryE = `query EntityByFullId {
+      queryE = `query GetEntityByFullId {
           getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
         }`;
     }
@@ -53,14 +53,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function getProfiles( array ) {
     const uuidEs = array.map( item => item.d );
-    const queryP = `query Profiles {
+    const queryP = `query GetProfiles {
            getProfile (a: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
          }`;
     return fetchFirebase( queryP );
   }
 
   function getFirebaseAuth( data ) {
-    const queryA = `query EntityByUphrase {
+    const queryA = `query GetEntityAuth {
             getAuth (f:"${ data }") { f }
           }`;
 
@@ -73,7 +73,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const b = data.contextE;
     const c = data.typeE;
     const d = data.uuidP;
-    const e = data.issuer;
+    const e = data.uuidA;
+    const g = data.issuer;
 
     const i = data.evmCredentials.address;
     const j = data.receivingAddresses.evm;
@@ -94,7 +95,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const variables = {
       input: {
-        a, b, c, d, e, i, j, m, n, x, y
+        a, b, c, d, e, g, i, j, m, n, x, y
       }
     };
 
@@ -185,7 +186,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
                 setEntity(input: $input) {
-                  ${ returnFields }
+                  ${ returnFields + ' ' + 'error' }
                 }
               }
             `;
@@ -244,7 +245,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ returnFields }
+                  ${ returnFields + ' ' + 'error' }
                 }
               }
             `;
@@ -297,12 +298,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       status: { active: E.y ? E.y.m : undefined },
 
+      private: {
+        uPhrase: E.private
+      },
       // for UI compatibility:
       adminOf: [fullId],
-      owners: [{ ownerName: '', ownerTag: '' }]
-      // private: {
-      //   uPhrase: E.f
-      // },
+      owners: [{ ownerName: '', ownerTag: '' }],
     };
   }
 
@@ -401,11 +402,22 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'entity update' == whichEndpoint ) {
       if ( ['title', 'role', 'receivingAddresses.evm'].includes( data.field ) ) {
         return setEntityField( data )
-          .then( E => ( {
-            success: true,
-            status: 'Firebase entity updated',
-            data: [ E.data.setEntity ]
-          } ) )
+          .then( P => {
+            if ( !P.data.setEntity.error ) {
+              return {
+                success: true,
+                status: 'Firebase entity updated',
+                data: [ P.data.setEntity ]
+              };
+            }
+            else {
+              return {
+                success: false,
+                status: 'could not update Firebase entity: ' + P.data.setEntity.error,
+                data: [ P.data.setEntity ]
+              };
+            }
+          } )
           .catch( err => ( {
             success: false,
             message: 'error with updating entity in Firebase: ' + err
@@ -413,11 +425,22 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
         return setProfileField( data )
-          .then( P => ( {
-            success: true,
-            status: 'Firebase profile updated',
-            data: [ P.data.setProfile ]
-          } ) )
+          .then( P => {
+            if ( !P.data.setProfile.error ) {
+              return {
+                success: true,
+                status: 'Firebase profile updated',
+                data: [ P.data.setProfile ]
+              };
+            }
+            else {
+              return {
+                success: false,
+                status: 'could not update Firebase profile: ' + P.data.setProfile.error,
+                data: [ P.data.setProfile ]
+              };
+            }
+          } )
           .catch( err => ( {
             success: false,
             message: 'error with updating profile in Firebase: ' + err

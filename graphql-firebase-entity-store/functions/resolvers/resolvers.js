@@ -14,10 +14,10 @@ const resolvers = {
         // do stuff like setNewExpiryDate on all owned entities
       }
       if ( args.m && args.n ) {
-        return findByFullId( colE, args.m, args.n );
+        return findByFullId( context, args.m, args.n );
       }
       else if ( args.i ) {
-        return findByEvmAddress( colE, args.i );
+        return findByEvmAddress( context, args.i );
       }
       else {
         return mapSnap( colE );
@@ -38,16 +38,36 @@ function mapSnap( col ) {
     .then( val => Object.keys( val ).map( key => val[key] ) );
 }
 
-function findByFullId( col, m, n ) {
-  return col.once( 'value' )
-    .then( snap => snap.val() )
-    .then( val => [ Object.values( val ).find( entity => entity.m == m && entity.n == n ) ] );
+function findByFullId( context, m, n ) {
+  const match = function( entity ) {
+    return entity.m == m && entity.n == n;
+  };
+  return getSingleEntity( context, match );
 }
 
-function findByEvmAddress( col, i ) {
-  return col.once( 'value' )
+function findByEvmAddress( context, i ) {
+  const match = function( entity ) {
+    return entity.i == i;
+  };
+  return getSingleEntity( context, match );
+}
+
+async function getSingleEntity( context, match ) {
+  const entity = await colE.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => [ Object.values( val ).find( entity => entity.i == i ) ] );
+    .then( val => Object.values( val ).find( match ) );
+
+  /** authorize the mixin of private data for authenticated user */
+  if ( context.a && ( context.m.includes( entity.a ) ) ) {
+
+    /** fetch related auth doc */
+    const obj = await colA.child( entity.e ).once( 'value' )
+      .then( snap => snap.val() );
+
+    /** add auth token to entity object */
+    Object.assign( entity, { private: obj.f } );
+  }
+  return [entity];
 }
 
 function findByToken( col, f ) {
@@ -74,13 +94,14 @@ async function setFields( col, { input }, context ) {
       col.child( data.a ).update( data, () => resolve( data ) );
     } );
   }
+  else if ( !context.a ) {
+    return Promise.resolve( { error: 'not authenticated' } );
+  }
   else if (
-    context.a &&
+    context.a &&                       // check authentication
     (
-      context.m.includes( obj.a ) ||   // authorizes main entity update
-      context.n.includes( obj.a )      // authorizes profile update of main entity
-      // context.m == ( obj.x ? obj.x.a : '' )   // authorizes updates of created entity or profile
-      // IDEA: check owners first: ( obj.x ? obj.x.b ? obj.x.b : [ obj.x.a ] : [] ).includes( context.m )
+      context.m.includes( obj.a ) ||   // authorizes entity updates
+      context.n.includes( obj.a )      // authorizes profile updates
     )
   ) {
 
@@ -102,7 +123,7 @@ async function setFields( col, { input }, context ) {
     } );
   }
   else {
-    return Promise.resolve( { a: 'not authorized' } );
+    return Promise.resolve( { error: 'not authorized' } );
   }
 }
 

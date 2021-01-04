@@ -121,6 +121,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     holder: 'Holder',
     holderOf: 'Holder of',
     accessKeys: 'Access Keys',
+    notAuthenticated: 'not authorized to view',
     deactivated: 'activate',
     activated: 'activated',
     viewMode: 'edit',
@@ -473,7 +474,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         /* also update caches after an edit */
         updateEntityInCaches( res );
       }
-      if ( res.data && res.data[0].a == 'not authorized' ) {
+      if ( res.data && res.data[0].error ) {
         Modal.draw( 'confirm uPhrase' );
       }
       return res;
@@ -727,6 +728,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if( uPhrase ) {
       V.setNode( $innerContent, V.cN( { t: 'div', h: castUphraseNode( uPhrase ) } ) );
     }
+    else {
+      V.setNode( $innerContent, V.cN( { t: 'div', c: 'pxy fs-s', h: getString( ui.notAuthenticated ) } ) );
+    }
 
     return castCard( $innerContent, getString( ui.accessKeys ) );
   }
@@ -936,8 +940,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityListCard( entity ) {
-    const uPhrase = entity.private.uPhrase;
-    const privateKey = entity.private.evmCredentials ? entity.private.evmCredentials.privateKey || '' : '';
+    const uPhrase = entity.private ? entity.private.uPhrase : '';
+    const privateKey = entity.private ? entity.private.evmCredentials ? entity.private.evmCredentials.privateKey || '' : '' : '';
 
     const $cardContentFrame = V.cN( {
       t: 'div',

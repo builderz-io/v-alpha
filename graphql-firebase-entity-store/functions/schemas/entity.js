@@ -4,7 +4,6 @@ const types = {
   RelationsE: `
     {
       a: String      // creator uuid
-      b: [String]    // owners uuids  // ONLY on first addition or change of owner
     }
   `,
   DatesE: `
@@ -34,7 +33,9 @@ const types = {
       b: String      // @context - includes document version
       c: String      // @type
       d: String      // related profile document
-      e: String      // issuer
+      e: String      // related auth document
+
+      g: String      // issuer
 
       i: String      // Current EVM Address
       j: String      // receiving EVM Address
@@ -46,6 +47,9 @@ const types = {
       x: RelationsE
       y: DatesE      // Dates and Status
       z: ChangeLogE
+
+      private: String  // mixin of uphrase and privateKey from Auth
+      error: String  // mixin of error message
     }
   `
 };
