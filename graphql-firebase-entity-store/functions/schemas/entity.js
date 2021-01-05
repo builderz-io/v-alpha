@@ -27,6 +27,13 @@ const types = {
       a: [EntryE]      // logging changes to this document // ONLY on first change
     }
   `,
+  AuthData: `
+    {
+      a: String      // uPhrase (unique phrase)
+      m: String      // evm address
+      n: String      // evm address private key
+    }
+  `,
   Entity: `
     {
       a: ID!         // uuid - as base64 and URL compatible
@@ -48,8 +55,8 @@ const types = {
       y: DatesE      // Dates and Status
       z: ChangeLogE
 
-      private: String  // mixin of uphrase and privateKey from Auth
-      error: String  // mixin of error message
+      auth: AuthData   // mixin of uphrase and privateKey from Auth
+      error: String    // mixin of error message
     }
   `
 };

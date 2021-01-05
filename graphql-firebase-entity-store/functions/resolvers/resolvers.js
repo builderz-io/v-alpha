@@ -65,7 +65,7 @@ async function getSingleEntity( context, match ) {
       .then( snap => snap.val() );
 
     /** add auth token to entity object */
-    Object.assign( entity, { private: obj.f } );
+    Object.assign( entity, { auth: { a: obj.f } } );
   }
   return [entity];
 }
@@ -98,10 +98,10 @@ async function setFields( col, { input }, context ) {
     return Promise.resolve( { error: 'not authenticated' } );
   }
   else if (
-    context.a &&                       // check authentication
+    context.a &&                            // check authentication
     (
-      context.m.includes( obj.a ) ||   // authorizes entity updates
-      context.n.includes( obj.a )      // authorizes profile updates
+      // context.m.includes( obj.a ) ||     // authorizes main entity update
+      context.m.includes( obj.x.a )         // authorizes updates as owner
     )
   ) {
 

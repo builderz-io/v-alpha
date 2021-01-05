@@ -6,7 +6,7 @@ var profileServiceAccount = require( './entity-profile-creds.json' );
 
 const authDb = admin.initializeApp( {
   credential: admin.credential.cert( authServiceAccount ),
-  databaseURL: 'https://entity-authentication-default-rtdb.firebaseio.com'
+  databaseURL: 'https://entity-authentication.firebaseio.com'
 }, 'authentication' );
 
 const namespaceDb = admin.initializeApp( {

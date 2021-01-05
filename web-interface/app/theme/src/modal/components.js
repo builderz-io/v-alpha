@@ -474,7 +474,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'txt-center',
       h: [
         { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
-        UserComponents.castUphraseNode( activeEntity.private ? activeEntity.private.uPhrase : '', 'txt-red fs-l' ),
+        UserComponents.castUphraseNode( activeEntity.auth ? activeEntity.auth.uPhrase : '', 'txt-red fs-l' ),
         { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) }
       ]
     } );

@@ -12,7 +12,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n x { a } y { a b m } private';
+  const singleE = 'a c d i j m n x { a } y { a b m } auth { a }';
   const singleP = 'm { a b c m n } n { a b } o { a b c }';
 
   /**
@@ -93,9 +93,15 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       z: data.statusCode,
     };
 
+    const auth = {
+      a: data.uPhrase,
+      m: data.evmCredentials.address,
+      n: data.evmCredentials.privateKey
+    };
+
     const variables = {
       input: {
-        a, b, c, d, e, g, i, j, m, n, x, y
+        a, b, c, d, e, g, i, j, m, n, x, y, auth
       }
     };
 
@@ -298,8 +304,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       status: { active: E.y ? E.y.m : undefined },
 
-      private: {
-        uPhrase: E.private
+      auth: {
+        uPhrase: E.auth ? E.auth.a : undefined
       },
       // for UI compatibility:
       adminOf: [fullId],
@@ -335,7 +341,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         return {
           success: true,
           status: 'fetched firebase auth doc',
-          data: [{ private: { uPhrase: auth.data.getAuth[0].f } }]
+          data: [{ auth: { uPhrase: auth.data.getAuth[0].f } }]
         };
       }
       else {

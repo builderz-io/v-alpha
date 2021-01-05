@@ -28,9 +28,8 @@ const types = {
 
       f: String        // auth string
 
-
       m: [String]      // Entities owned
-      n: [String]      // Profiles owned
+      n: [String]      // Entities admined
 
       w: [String]      // Auth Log
       y: DatesA

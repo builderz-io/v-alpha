@@ -722,7 +722,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function accessKeysCard() {
-    const uPhrase = entity.private ? entity.private.uPhrase : undefined;
+    const uPhrase = entity.auth ? entity.auth.uPhrase : undefined;
     const $innerContent = V.cN( { t: 'div' } );
 
     if( uPhrase ) {
@@ -940,8 +940,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityListCard( entity ) {
-    const uPhrase = entity.private ? entity.private.uPhrase : '';
-    const privateKey = entity.private ? entity.private.evmCredentials ? entity.private.evmCredentials.privateKey || '' : '' : '';
+    const uPhrase = entity.auth ? entity.auth.uPhrase : '';
+    const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
 
     const $cardContentFrame = V.cN( {
       t: 'div',

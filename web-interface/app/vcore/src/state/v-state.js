@@ -52,8 +52,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     if ( which == 'activeAddress' ) {
       setCookie( 'last-active-address', data );
     }
-    else if ( which == 'activeEntity' && data && data.private && data.private.uPhrase ) {
-      setCookie( 'last-active-uphrase', data.private.uPhrase );
+    else if ( which == 'activeEntity' && data && data.auth && data.auth.uPhrase ) {
+      setCookie( 'last-active-uphrase', data.auth.uPhrase );
     }
 
   }

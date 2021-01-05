@@ -184,7 +184,7 @@ exports.managedTransaction = async function( req, res ) {
 
   const transaction = new Tx( rawTransaction, { chain: chain } );
 
-  transaction.sign( Buffer.from( getSender.private.evmCredentials.privateKey.slice( 2 ), 'hex' ) );
+  transaction.sign( Buffer.from( getSender.auth.evmCredentials.privateKey.slice( 2 ), 'hex' ) );
 
   web3.eth.sendSignedTransaction( '0x' + transaction.serialize().toString( 'hex' ) )
     .once( 'transactionHash', function( hash ) {
