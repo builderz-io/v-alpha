@@ -69,7 +69,7 @@ async function getSingleEntity( context, match ) {
       .then( snap => snap.val() );
 
     /** add auth token to entity object */
-    Object.assign( entity, { auth: { a: obj.f } } );
+    Object.assign( entity, { auth: { f: obj.f } } );
   }
   return [entity];
 }
