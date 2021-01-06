@@ -7,6 +7,10 @@ const colE = namespaceDb.database().ref( 'entities' ); // col as in "collection"
 const colP = profileDb.database().ref( 'profiles' );
 const colA = authDb.database().ref( 'authentication' );
 
+const settings = {
+  useClientData: true,
+};
+
 const resolvers = {
   Query: {
     getEntity: ( parent, args, context ) => {
@@ -88,10 +92,21 @@ async function setFields( col, { input }, context ) {
     .then( snap => snap.val() );
 
   if (
-    !obj
+    !obj && settings.useClientData
   ) {
     return new Promise( resolve => {
-      col.child( data.a ).update( data, () => resolve( data ) );
+      data.b == '/e1/v0' ? colA.child( data.auth.a ).update( data.auth ) : null;
+      const omitAuth = JSON.parse( JSON.stringify( data ) );
+      delete omitAuth.auth;
+      // TODO: post-write data should be resolved, not pre-write data
+      col.child( data.a ).update( omitAuth, () => resolve( data ) );
+    } );
+  }
+  else if (
+    !obj && !settings.useClientData
+  ) {
+    return new Promise( resolve => {
+      // initializeEntity( data )
     } );
   }
   else if ( !context.a ) {

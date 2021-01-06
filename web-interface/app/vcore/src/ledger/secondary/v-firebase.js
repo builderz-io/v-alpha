@@ -12,7 +12,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n x { a } y { a b m } auth { a }';
+  const singleE = 'a c d i j m n x { a } y { a b m } auth { f }';
   const singleP = 'm { a b c m n } n { a b } o { a b c }';
 
   /**
@@ -25,6 +25,250 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   const previewsP = 'm { a } n { a } o { b }';
 
   /* ================== private methods ================= */
+
+  function castEntityData( E, P ) {
+    const fullId = V.castFullId( E.m, E.n );
+    return {
+      uuidE: E.a || P.d,
+      uuidP: E.d || P.a,
+      fullId: fullId,
+      path: V.castPathOrId( fullId ),
+      evmCredentials: {
+        address: E.i,
+      },
+      receivingAddresses: {
+        evm: E.j,
+      },
+      properties: {
+        description: P.m ? P.m.a : undefined,
+        email: P.m ? P.m.b : undefined,
+        preferredLangs: P.m ? P.m.c : undefined,
+        target: P.m ? P.m.m : undefined,
+        unit: P.m ? P.m.n : undefined,
+        baseLocation: P.n ? P.n.b : undefined, // placed here also for UI compatibility
+      },
+      relations: {
+        creator: E.x ? E.x.a : E.a,
+      },
+      images: {
+        tinyImage: P.o ? P.o.a : undefined,
+        thumbnail: P.o ? P.o.b : undefined,
+        mediumImage: P.o ? P.o.c : undefined,
+      },
+      geometry: {
+        coordinates: P.n ? P.n.a : undefined,
+        baseLocation: P.n ? P.n.b : undefined,
+        type: 'Point',
+      },
+      type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
+      profile: {
+        title: E.m,
+        tag: E.n,
+        role: E.c,
+      },
+      social: {
+        email: P.m ? P.m.b : undefined, // placed here also for UI compatibility
+      },
+      status: { active: E.y ? E.y.m : undefined },
+
+      auth: {
+        uPhrase: E.auth ? E.auth.f : undefined,
+      },
+      // for UI compatibility:
+      adminOf: [fullId],
+      owners: [{ ownerName: '', ownerTag: '' }],
+    };
+  }
+
+  function setEntity( data ) {
+
+    const a = data.uuidE;
+    const b = data.contextE;
+    const c = data.typeE;
+    const d = data.uuidP;
+    const e = data.uuidA;
+    const g = data.issuer;
+
+    const i = data.evmCredentials.address;
+    const j = data.receivingAddresses.evm;
+
+    const m = data.title;
+    const n = data.tag;
+
+    const x = {
+      a: data.creatorUuid,
+    };
+
+    const y = {
+      a: String( data.unix ),
+      c: String( data.expires ),
+      m: data.active,
+      z: data.statusCode,
+    };
+
+    const auth = {
+      a: data.uuidA,
+      b: data.contextA,
+      d: data.uuidE,
+      e: data.uuidP,
+      f: data.uPhrase,
+      i: data.evmCredentials.privateKey ? data.evmCredentials.address : undefined,
+      j: data.evmCredentials.privateKey,
+      m: [data.uuidE],
+      n: [data.uuidP],
+    };
+
+    const variables = {
+      input: { a, b, c, d, e, g, i, j, m, n, x, y, auth },
+    };
+
+    const query = `mutation SetNewEntity( $input: InputEntity! ) {
+                setEntity(input: $input) {
+                  ${ singleE }
+                }
+              }
+            `;
+
+    return fetchFirebase( query, variables );
+  }
+
+  function setProfile( data ) {
+
+    const a = data.uuidP;
+    const b = data.contextP;
+    const d = data.uuidE; // note that this is NOT creatorUuid
+
+    const m = {
+      a: data.props.descr,
+      b: data.props.email,
+      c: data.props.prefLangs,
+      m: data.props.target,
+      n: data.props.unit,
+    };
+    const n = {
+      a: data.geometry.coordinates,
+      b: data.props.baseLocation,
+      z: data.geometry.rand,
+    };
+    const o = {
+      a: data.tinyImageDU,
+      b: data.thumbnailDU,
+      c: data.mediumImageDU,
+    };
+
+    const x = {
+      a: data.creatorUuid ? data.creatorUuid : data.uuidE,
+    };
+
+    const y = {
+      a: String( data.unix ),
+    };
+
+    const variables = {
+      input: { a, b, d, m, n, o, x, y },
+    };
+
+    const query = `mutation SetNewProfile( $input: InputProfile! ) {
+                setProfile(input: $input) {
+                  ${ singleP }
+                }
+              }
+            `;
+
+    return fetchFirebase( query, variables );
+  }
+
+  function setEntityField( data ) {
+    console.log( 'UPDATING ENTITY: ', data );
+    const a = V.getLastViewed().uuidE;
+
+    let j, m, returnFields;
+
+    switch ( data.field ) {
+    case 'title':
+      m = data.data;
+      returnFields = 'm';
+      break;
+    case 'role':
+      c = data.data;
+      returnFields = 'c';
+      break;
+    case 'receivingAddresses.evm':
+      j = data.data;
+      returnFields = 'j';
+      break;
+    }
+
+    const variables = {
+      input: { a, j, m },
+    };
+
+    const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
+                setEntity(input: $input) {
+                  ${ returnFields + ' ' + 'error' }
+                }
+              }
+            `;
+
+    return fetchFirebase( query, variables );
+  }
+
+  function setProfileField( data ) {
+    console.log( 'UPDATING PROFILE: ', data );
+    const a = V.getLastViewed().uuidP;
+
+    let m, n, o;
+
+    let returnFields = 'm { a b c m n }';
+
+    switch ( data.field ) {
+    case 'properties.description':
+      m = { a: data.data };
+      break;
+    case 'social.email':
+      m = { b: data.data };
+      break;
+    case 'properties.preferredLangs':
+      m = { c: data.data };
+      break;
+    case 'properties.target':
+      m = { m: Number( data.data ) };
+      break;
+    case 'properties.unit':
+      m = { n: data.data };
+      break;
+
+    case 'properties.baseLocation':
+      n = {
+        a: [ Number( data.data.lng ), Number( data.data.lat ) ],
+        b: data.data.value,
+        z: data.data.rand,
+      };
+      returnFields = 'n { a b }';
+      break;
+
+    case 'images':
+      o = {
+        a: data.data.tiny.dataUrl,
+        b: data.data.thumb.dataUrl,
+        c: data.data.medium.dataUrl,
+      };
+      break;
+    }
+
+    const variables = {
+      input: { a, m, n, o },
+    };
+
+    const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
+                setProfile(input: $input) {
+                  ${ returnFields + ' ' + 'error' }
+                }
+              }
+            `;
+
+    return fetchFirebase( query, variables );
+  }
 
   function getEntities( data, whichEndpoint ) {
     let queryE;
@@ -67,252 +311,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryA );
   }
 
-  function setEntity( data ) {
-
-    const a = data.uuidE;
-    const b = data.contextE;
-    const c = data.typeE;
-    const d = data.uuidP;
-    const e = data.uuidA;
-    const g = data.issuer;
-
-    const i = data.evmCredentials.address;
-    const j = data.receivingAddresses.evm;
-
-    const m = data.title;
-    const n = data.tag;
-
-    const x = {
-      a: data.creatorUuid,
-    };
-
-    const y = {
-      a: String( data.unix ),
-      c: String( data.expires ),
-      m: data.active,
-      z: data.statusCode,
-    };
-
-    const auth = {
-      a: data.uPhrase,
-      m: data.evmCredentials.address,
-      n: data.evmCredentials.privateKey
-    };
-
-    const variables = {
-      input: {
-        a, b, c, d, e, g, i, j, m, n, x, y, auth
-      }
-    };
-
-    const query = `mutation SetNewEntity( $input: InputEntity! ) {
-                setEntity(input: $input) {
-                  ${ singleE }
-                }
-              }
-            `;
-
-    return fetchFirebase( query, variables );
-  }
-
-  function setProfile( data ) {
-
-    const a = data.uuidP;
-    const b = data.contextP;
-    const d = data.uuidE; // note that this is NOT creatorUuid
-
-    const m = {
-      a: data.props.descr,
-      b: data.props.email,
-      c: data.props.prefLangs,
-      m: data.props.target,
-      n: data.props.unit
-    };
-    const n = {
-      a: data.geometry.coordinates,
-      b: data.props.baseLocation,
-      z: data.geometry.rand
-    };
-    const o = {
-      a: data.tinyImageDU,
-      b: data.thumbnailDU,
-      c: data.mediumImageDU
-    };
-
-    const x = {
-      a: data.creatorUuid ? data.creatorUuid : data.uuidE,
-    };
-
-    const y = {
-      a: String( data.unix ),
-    };
-
-    const variables = {
-      input: {
-        a, b, d, m, n, o, x, y
-      }
-    };
-
-    const query = `mutation SetNewProfile( $input: InputProfile! ) {
-                setProfile(input: $input) {
-                  ${ singleP }
-                }
-              }
-            `;
-
-    return fetchFirebase( query, variables );
-  }
-
-  function setEntityField( data ) {
-    console.log( 'UPDATING ENTITY: ', data );
-    const a = V.getLastViewed().uuidE;
-
-    let j, m, returnFields;
-
-    switch ( data.field ) {
-    case 'title':
-      m = data.data;
-      returnFields = 'm';
-      break;
-    case 'role':
-      c = data.data;
-      returnFields = 'c';
-      break;
-    case 'receivingAddresses.evm':
-      j = data.data;
-      returnFields = 'j';
-      break;
-    }
-
-    const variables = {
-      input: {
-        a, j, m,
-      }
-    };
-
-    const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
-                setEntity(input: $input) {
-                  ${ returnFields + ' ' + 'error' }
-                }
-              }
-            `;
-
-    return fetchFirebase( query, variables );
-  }
-
-  function setProfileField( data ) {
-    console.log( 'UPDATING PROFILE: ', data );
-    const a = V.getLastViewed().uuidP;
-
-    let m, n, o;
-
-    let returnFields = 'm { a b c m n }';
-
-    switch ( data.field ) {
-    case 'properties.description':
-      m = { a: data.data };
-      break;
-    case 'social.email':
-      m = { b: data.data };
-      break;
-    case 'properties.preferredLangs':
-      m = { c: data.data };
-      break;
-    case 'properties.target':
-      m = { m: Number( data.data ) };
-      break;
-    case 'properties.unit':
-      m = { n: data.data };
-      break;
-
-    case 'properties.baseLocation':
-      n = {
-        a: [ Number( data.data.lng ), Number( data.data.lat ) ],
-        b: data.data.value,
-        z: data.data.rand
-      };
-      returnFields = 'n { a b }';
-      break;
-
-    case 'images':
-      o = {
-        a: data.data.tiny.dataUrl,
-        b: data.data.thumb.dataUrl,
-        c: data.data.medium.dataUrl
-      };
-      break;
-    }
-
-    const variables = {
-      input: {
-        a, m, n, o
-      }
-    };
-
-    const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
-                setProfile(input: $input) {
-                  ${ returnFields + ' ' + 'error' }
-                }
-              }
-            `;
-
-    return fetchFirebase( query, variables );
-  }
-
-  function castEntityData( E, P ) {
-    const fullId = V.castFullId( E.m, E.n );
-    return {
-      uuidE: E.a || P.d,
-      uuidP: E.d || P.a,
-      fullId: fullId,
-      path: V.castPathOrId( fullId ),
-      evmCredentials: {
-        address: E.i
-      },
-      receivingAddresses: {
-        evm: E.j
-      },
-      properties: {
-        description: P.m ? P.m.a : undefined,
-        email: P.m ? P.m.b : undefined,
-        preferredLangs: P.m ? P.m.c : undefined,
-        target: P.m ? P.m.m : undefined,
-        unit: P.m ? P.m.n : undefined,
-        baseLocation: P.n ? P.n.b : undefined, // placed here also for UI compatibility
-      },
-      relations: {
-        creator: E.x ? E.x.a : E.a,
-      },
-      images: {
-        tinyImage: P.o ? P.o.a : undefined,
-        thumbnail: P.o ? P.o.b : undefined,
-        mediumImage: P.o ? P.o.c : undefined
-      },
-      geometry: {
-        coordinates: P.n ? P.n.a : undefined,
-        baseLocation: P.n ? P.n.b : undefined,
-        type: 'Point',
-      },
-      type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
-      profile: {
-        title: E.m,
-        tag: E.n,
-        role: E.c
-      },
-      social: {
-        email: P.m ? P.m.b : undefined // placed here also for UI compatibility
-      },
-      status: { active: E.y ? E.y.m : undefined },
-
-      auth: {
-        uPhrase: E.auth ? E.auth.a : undefined
-      },
-      // for UI compatibility:
-      adminOf: [fullId],
-      owners: [{ ownerName: '', ownerTag: '' }],
-    };
-  }
-
   function fetchFirebase( query, variables ) {
     return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
       method: 'POST',
@@ -321,12 +319,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         'Accept': 'application/json',
         'Authorization': V.getCookie( 'last-active-uphrase' )
           ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
-          : ''
+          : '',
       },
       body: JSON.stringify( {
         query,
         variables: variables,
-      } )
+      } ),
     } )
       .then( r => r.json() );
   }
@@ -338,17 +336,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     if ( 'entity by uPhrase' == whichEndpoint ) {
       const auth = await getFirebaseAuth( data );
       if ( !auth.errors && auth.data.getAuth[0] != null ) {
-        return {
-          success: true,
-          status: 'fetched firebase auth doc',
-          data: [{ auth: { uPhrase: auth.data.getAuth[0].f } }]
-        };
+        const authObj = { auth: { uPhrase: auth.data.getAuth[0].f } };
+        return V.successTrue( 'got auth doc', authObj );
       }
       else {
-        return {
-          success: false,
-          message: 'could not fetch firebase auth doc'
-        };
+        return V.successFalse( 'get auth doc' );
       }
     }
 
@@ -367,24 +359,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         const combined = entities.data.getEntity.map( ( item, i ) =>
           castEntityData( item, profiles.data.getProfile[i] )
         );
-        return {
-          success: true,
-          status: 'fetched firebase',
-          data: combined
-        };
+        return V.successTrue( 'got entities and profiles', combined );
       }
       else {
-        return {
-          success: false,
-          message: 'could not fetch firebase profiles'
-        };
+        return V.successFalse( 'get profiles' );
       }
     }
     else {
-      return {
-        success: false,
-        message: 'could not fetch firebase entities'
-      };
+      return V.successFalse( 'get Entities' );
     }
   }
 
@@ -394,63 +376,36 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         .then( async E => {
           const P = await setProfile( data );
           const entityData = castEntityData( E.data.setEntity, P.data.setProfile );
-          return {
-            success: true,
-            status: 'firebase entity set',
-            data: [ entityData ]
-          };
+          return V.successTrue( 'set entity', entityData );
         } )
-        .catch( err => ( {
-          success: false,
-          message: 'error with setting Firebase: ' + err
-        } ) );
+        .catch( err => V.successFalse( 'set entity', err ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
       if ( ['title', 'role', 'receivingAddresses.evm'].includes( data.field ) ) {
         return setEntityField( data )
-          .then( P => {
-            if ( !P.data.setEntity.error ) {
-              return {
-                success: true,
-                status: 'Firebase entity updated',
-                data: [ P.data.setEntity ]
-              };
+          .then( E => {
+            E = E.data.setEntity;
+            if ( !E.error ) {
+              return V.successTrue( 'updated entity', E );
             }
             else {
-              return {
-                success: false,
-                status: 'could not update Firebase entity: ' + P.data.setEntity.error,
-                data: [ P.data.setEntity ]
-              };
+              return V.successFalse( 'update entity', E.error, E );
             }
           } )
-          .catch( err => ( {
-            success: false,
-            message: 'error with updating entity in Firebase: ' + err
-          } ) );
+          .catch( err => V.successFalse( 'update entity', err, E ) );
       }
       else {
         return setProfileField( data )
           .then( P => {
-            if ( !P.data.setProfile.error ) {
-              return {
-                success: true,
-                status: 'Firebase profile updated',
-                data: [ P.data.setProfile ]
-              };
+            P = P.data.setProfile;
+            if ( !P.error ) {
+              return V.successTrue( 'updated profile', P );
             }
             else {
-              return {
-                success: false,
-                status: 'could not update Firebase profile: ' + P.data.setProfile.error,
-                data: [ P.data.setProfile ]
-              };
+              return V.successFalse( 'update profile', P.error, P );
             }
           } )
-          .catch( err => ( {
-            success: false,
-            message: 'error with updating profile in Firebase: ' + err
-          } ) );
+          .catch( err => V.successFalse( 'update profile', err, P ) );
       }
     }
   }

@@ -27,11 +27,22 @@ const types = {
       a: [EntryE]      // logging changes to this document // ONLY on first change
     }
   `,
-  AuthData: `
+  AuthMixin: `
     {
-      a: String      // uPhrase (unique phrase)
-      m: String      // evm address
-      n: String      // evm address private key
+      a: ID!           // uuid - as base64 and URL compatible
+      b: String        // @context - includes document version
+      d: String        // related entity document
+      e: String        // related profile document
+
+      f: String        // auth string
+
+      i: String        // evm address
+      j: String        // evm address private key
+
+      m: [String]      // Entities owned
+      n: [String]      // Entities admined
+
+      w: [String]      // Auth Log
     }
   `,
   Entity: `
@@ -55,8 +66,8 @@ const types = {
       y: DatesE      // Dates and Status
       z: ChangeLogE
 
-      auth: AuthData   // mixin of uphrase and privateKey from Auth
-      error: String    // mixin of error message
+      auth: AuthMixin   // mixin of Auth
+      error: String     // mixin of error message
     }
   `
 };

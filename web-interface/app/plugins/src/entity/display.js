@@ -15,22 +15,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       isNaN( Number( which.slice( -4 ) ) ) ||
       which.slice( -5, -4 ) != '-'
     ) {
-      return {
-        success: null,
-        status: 'not a valid profile link'
-      };
+      return V.successFalse( 'validate profile link' );
     }
-
-    const inCache = V.getViewed( which );
 
     let query;
 
+    const inCache = V.getViewed( which );
+
     if ( inCache ) {
-      query = {
-        success: true,
-        message: 'cache used',
-        data: [inCache]
-      };
+      query = V.successTrue( 'used cache', inCache );
     }
     else {
       query = await V.getEntity( V.castPathOrId( which ) ).then( res => {
@@ -85,23 +78,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           receiveVolume = entity.stats.receiveVolume;
         }
       }
-
-      return {
-        success: true,
-        status: 'entities retrieved',
-        data: [{
-          which: which,
-          entity: entity,
-          sendVolume: sendVolume,
-          receiveVolume: receiveVolume,
-        }]
+      const data = {
+        which: which,
+        entity: entity,
+        sendVolume: sendVolume,
+        receiveVolume: receiveVolume,
       };
+
+      return V.successTrue( 'retrieved entities', data );
     }
     else {
-      return {
-        success: null,
-        status: 'cound not retrieve entities'
-      };
+      return V.successFalse( 'retrieve entities' );
     }
   }
 

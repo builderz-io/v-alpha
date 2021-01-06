@@ -10,6 +10,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   const entitySetup = {
     entityDocVersion: '/e1/v0',
     profileDocVersion: '/p1/v0',
+    authDocVersion: '/a1/v0',
     useWhitelist: true, // allow only chars in whitelist
     maxEntityWords: 7,  // max allowed words in entity names (not humans)
     maxHumanWords: 3,  // max allowed words in human entity names
@@ -103,7 +104,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const uuidA = V.castUuid().base64Url;
     const unix = Math.floor( Date.now() / 1000 );
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
+    let geometry, uPhrase, creatorUuid, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -132,10 +133,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const activeEntity = V.getState( 'activeEntity' );
 
     if ( activeEntity ) {
+      creatorUuid = activeEntity.uuidE;
       creator = activeEntity.profile.title;
       creatorTag = activeEntity.profile.tag;
     }
     else {
+      creatorUuid = uuidE;
       creator = title.data[0];
       creatorTag = tag;
     }
@@ -196,6 +199,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       contextP: entitySetup.profileDocVersion,
       uuidP: uuidP,
 
+      contextA: entitySetup.authDocVersion,
       uuidA: uuidA,
 
       active: true,
@@ -204,7 +208,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       title: title.data[0],
       tag: tag,
 
-      creatorUuid: activeEntity.uuidE,
+      creatorUuid: creatorUuid,
 
       uPhrase: uPhrase,
 

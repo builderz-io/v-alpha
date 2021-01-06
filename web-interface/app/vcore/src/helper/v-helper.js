@@ -212,7 +212,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         else {
           iframeLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
         }
-        iframes = iframes.split( linksFound[i] ).map( item => { return iframeLinks[i].includes( 'iframe' ) ? item.trim() : item } ).join( iframeLinks[i] );
+        iframes = iframes.split( linksFound[i] ).map( item => iframeLinks[i].includes( 'iframe' ) ? item.trim() : item ).join( iframeLinks[i] );
         links = links.split( linksFound[i] ).join( regularLinks[i] );
       } // end loop over linksFound
 
@@ -267,10 +267,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castInitials( which ) {
-    const initials = which ? which.split( ' ' ).filter( item => { return isNaN( item.replace( '#', '' ) ) } ) : [];
+    const initials = which ? which.split( ' ' ).filter( item => isNaN( item.replace( '#', '' ) ) ) : [];
     if ( initials.length ) {
       const first = initials[0].charAt( 0 );
-      const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => { return ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 } )[0];
+      const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 )[0];
       const second = initials[1] ? initials[1].charAt( 0 ) : firstConsonant ? firstConsonant.toUpperCase() : '';
       return first + second;
     }
@@ -282,7 +282,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castCamelCase( which ) {
 
     /* by @smilyface on stackoverflow */
-    return which.toLowerCase().replace( /[^a-zA-Z0-9]+(.)/g, ( m, chr ) => {return chr.toUpperCase()} );
+    return which.toLowerCase().replace( /[^a-zA-Z0-9]+(.)/g, ( m, chr ) => chr.toUpperCase() );
   }
 
   function castSlugOrId( which ) {
@@ -584,7 +584,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
      * https://medium.com/javascript-scene/reduce-composing-software-fe22f0c39a1d
      */
 
-    return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
+    return ( x ) => functions.reduce( ( v, f ) => f( v ), x );
   }
 
   function getTranslation( which, whichContext, whichDescr = '' ) {
@@ -608,7 +608,25 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function sleep( ms ) {
-    return new Promise( resolve => {return setTimeout( resolve, ms )} );
+    return new Promise( resolve => setTimeout( resolve, ms ) );
+  }
+
+  function successFalse( msg, err, data ) {
+    return {
+      success: false,
+      status: -500,
+      message: `could not ${ msg }: ${ err || 'no error message' }`,
+      data: [ data ]
+    };
+  }
+
+  function successTrue( msg, data ) {
+    return {
+      success: true,
+      status: 100,
+      message: `successfully ${ msg }`,
+      data: Array.isArray( data ) ? data : [ data ]
+    };
   }
 
   /* ====================== export ====================== */
@@ -635,6 +653,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.getTranslation = getTranslation;
   V.i18n = i18n;
   V.sleep = sleep;
+  V.successFalse = successFalse;
+  V.successTrue = successTrue;
 
   return {
     castImageUpload: castImageUpload,
@@ -658,7 +678,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     setPipe: setPipe,
     getTranslation: getTranslation,
     i18n: i18n,
-    sleep: sleep
+    sleep: sleep,
+    successFalse: successFalse,
+    successTrue: successTrue
   };
 
 } )();

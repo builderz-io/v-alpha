@@ -28,6 +28,9 @@ const types = {
 
       f: String        // auth string
 
+      i: String        // evm address
+      j: String        // evm address private key
+      
       m: [String]      // Entities owned
       n: [String]      // Entities admined
 
