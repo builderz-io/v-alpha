@@ -132,7 +132,7 @@ exports.register = function( req, res ) {
    *
    */
 
-  if ( req.profile.role == 'member' ) {
+  if ( req.profile.role == 'Person' ) {
     telegramNotification( {
       msg: 'New registration at',
       network: systemInit.communityGovernance.commName,
@@ -221,7 +221,7 @@ exports.register = function( req, res ) {
 exports.update = async function( req, cb ) {
   let how;
 
-  if ( req.field == 'evmCredentials.address' && req.role == 'member' ) {
+  if ( req.field == 'evmCredentials.address' && req.role == 'Person' ) {
     autoFloat( req.data );
   }
 

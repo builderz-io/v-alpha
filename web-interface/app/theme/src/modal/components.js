@@ -147,7 +147,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
-      role: 'member',
+      role: 'Person',
       evmAddress: V.aA(), // TODO: allow for other chains
     };
 

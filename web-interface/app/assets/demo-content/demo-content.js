@@ -41,7 +41,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         symbolCredentials: {
           rawAddress: 'TADHFN-NIGJXO-C74D2J-WLWAMO-RXPHNP-BXHJV4-6BQQ',
           address: 'TADHFNNIGJXOC74D2JWLWAMORXPHNPBXHJV46BQQ',
-          privateKey: '0291753B4B58EF14DEF3C68C250EBF0960243E2F67C8D2D379109B5010A393AF'
+          privateKey: '0291753B4B58EF14DEF3C68C250EBF0960243E2F67C8D2D379109B5010A393AF',
         },
       },
       {
@@ -58,12 +58,12 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         symbolCredentials: {
           rawAddress: 'TC7XRU-EL5NJ2-DCGP5L-OEZBJL-QIJXBP-XFA25S-DVOQ',
           address: 'TC7XRUEL5NJ2DCGP5LOEZBJLQIJXBPXFA25SDVOQ',
-          privateKey: '0A9A000052C2CBF38433400EED1F6F348EA1E3165D167E64443FDC84F43E0AB3'
+          privateKey: '0A9A000052C2CBF38433400EED1F6F348EA1E3165D167E64443FDC84F43E0AB3',
         },
       },
       {
         title: 'Symbol Testnet Faucet',
-        role: 'member',
+        role: 'Person',
         uPhrase: 'vxSymFaucetLogin',
         location: 'Berlin, Germany',
         lat: 52.5200,
@@ -75,7 +75,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         symbolCredentials: {
           rawAddress: 'TCQSO3-LUEWJZ-X4ITOY-4YWVL5-TAOEJ5-6YXUMS-AJHH',
           address: 'TCQSO3LUEWJZX4ITOY4YWVL5TAOEJ56YXUMSAJHH',
-          privateKey: 'none'
+          privateKey: 'none',
         },
       },
       {
@@ -88,7 +88,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'We need an accountant for our monthly reporting',
         unit: 'day',
         target: 400,
-        evmAddress: evmAddresses.three
+        evmAddress: evmAddresses.three,
       },
       {
         title: 'Frontend Developer',
@@ -100,7 +100,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Must know Vue JS and related frameworks. Knowledge of Kotlin also of advantage.',
         unit: 'day',
         target: 395,
-        evmAddress: evmAddresses.four
+        evmAddress: evmAddresses.four,
       },
       {
         title: 'Expert in NodeJS',
@@ -112,7 +112,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'My skill is in developing NodeJS driven backends',
         unit: 'day',
         target: 420,
-        evmAddress: evmAddresses.five
+        evmAddress: evmAddresses.five,
       },
       {
         title: 'Solidity EVM Developer',
@@ -124,7 +124,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Contact me for smart contract development',
         unit: 'day',
         target: 415,
-        evmAddress: evmAddresses.six
+        evmAddress: evmAddresses.six,
       },
       {
         title: 'Gardening and Tree Trimming',
@@ -136,7 +136,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Your Gardening needs are covered with our full service offer',
         unit: 'day',
         target: 375,
-        evmAddress: evmAddresses.seven
+        evmAddress: evmAddresses.seven,
       },
       {
         title: 'Tailored Suits',
@@ -148,7 +148,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'Bespoke Tailored Suites, 24/7 Service with appointment',
         unit: 'piece',
         target: 2490,
-        evmAddress: evmAddresses.eight
+        evmAddress: evmAddresses.eight,
       },
       {
         title: 'CO2 Capture Plant',
@@ -160,7 +160,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/63S0t4k_Glw',
         unit: 'view',
         target: 10,
-        evmAddress: evmAddresses.nine
+        evmAddress: evmAddresses.nine,
       },
       {
         title: 'Robot delivery',
@@ -172,7 +172,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/P_zRwq9c8LY',
         unit: 'delivery',
         target: 5,
-        evmAddress: evmAddresses.ten
+        evmAddress: evmAddresses.ten,
       },
       {
         title: 'Solar Energy Marocco',
@@ -184,7 +184,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/1lJVi3DRGYI',
         unit: '',
         target: 0,
-        evmAddress: 'none'
+        evmAddress: 'none',
       },
       {
         title: 'The Ocean Cleanup',
@@ -196,7 +196,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/du5d5PUrH0I',
         unit: 'view',
         target: 10,
-        evmAddress: 'none'
+        evmAddress: 'none',
       },
       {
         title: 'Web Developing',
@@ -208,7 +208,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/u-FWvnweTQ8',
         unit: 'view',
         target: 10,
-        evmAddress: 'none'
+        evmAddress: 'none',
       },
       {
         title: 'Learning Strategies',
@@ -220,7 +220,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         description: 'https://youtu.be/O6WtKeQrJmY',
         unit: 'view',
         target: 10,
-        evmAddress: 'none'
+        evmAddress: 'none',
       },
     ],
     accountData: {
@@ -228,7 +228,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       Lifetime: 163,
       In: 1770,
       Out: 686 + 53,
-      Tx: 137
+      Tx: 137,
     },
     transactionsArr: [
       {
@@ -241,7 +241,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         unit: 'V per day',
         for: 'e-van hire in march',
         by: 'Kris Thomas Jensson #2121',
-        loc: 'Berlin, Deutschland'
+        loc: 'Berlin, Deutschland',
       },
       {
         title: 'Make Light Company #8949',
@@ -253,7 +253,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         unit: 'V per day',
         for: 'solar panel engineering work',
         by: 'Marvin Fowler #2121',
-        loc: 'Budapest, Hungary'
+        loc: 'Budapest, Hungary',
       },
       {
         title: 'Anna Maria Blake #2121',
@@ -265,7 +265,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         unit: 'V per 45 min',
         for: 'welding work',
         by: 'Audun #2121',
-        loc: 'Vuollerim, Sweden'
+        loc: 'Vuollerim, Sweden',
       },
       {
         title: 'Real Farmfood Store #8747',
@@ -278,7 +278,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         unit: 'V',
         for: 'Shopping Basket on checkout',
         by: 'Marvin Fowler #2121',
-        loc: 'Budapest, Hungary'
+        loc: 'Budapest, Hungary',
       },
       {
         title: 'Community Account #2121',
@@ -291,7 +291,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         unit: 'V',
         for: 'Regular payout',
         by: 'Marvin Fowler #2121',
-        loc: 'Budapest, Hungary'
+        loc: 'Budapest, Hungary',
       },
       {
         title: 'Real Farmfood Store #8747',
@@ -304,14 +304,14 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         unit: 'V',
         for: 'Shopping Basket on checkout',
         by: 'Marvin Fowler #2121',
-        loc: 'Budapest, Hungary'
+        loc: 'Budapest, Hungary',
       },
     ],
     chatData: {
       Private: 569,
       Public: 8,
       Links: 36,
-      Accounts: 3
+      Accounts: 3,
     },
     chatsArr: [
       {
@@ -333,7 +333,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       {
         sender: 'Sheela Anand',
         msg: 'Super! ;) Just type "send 560"',
-      }
+      },
     ],
     entitiesArr: [
       {
@@ -343,7 +343,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 165,
         unit: 'V per night',
         by: 'Kris Thomas Jensson #2121',
-        loc: 'Berlin, Deutschland'
+        loc: 'Berlin, Deutschland',
       },
       {
         title: 'Car Hire Budapest #8949',
@@ -352,7 +352,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 275,
         unit: 'V per day',
         by: 'Marvin Fowler #2121',
-        loc: 'Budapest, Hungary'
+        loc: 'Budapest, Hungary',
       },
       {
         title: 'Moontalk At Nasa #2121',
@@ -362,7 +362,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 120,
         unit: 'V per 45 min',
         by: 'Michael #2121',
-        loc: 'Nasa, USA'
+        loc: 'Nasa, USA',
       },
       {
         title: 'My Really Nice Studio Apartment Berlin #2121',
@@ -372,7 +372,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 165,
         unit: 'V per night',
         by: 'Kris Thomas Jensson #2121',
-        loc: 'Berlin, Deutschland'
+        loc: 'Berlin, Deutschland',
       },
       {
         title: 'Car Hire Budapest #8949',
@@ -382,7 +382,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 275,
         unit: 'V per day',
         by: 'Marvin Fowler #2121',
-        loc: 'Budapest, Hungary'
+        loc: 'Budapest, Hungary',
       },
       {
         title: 'Moontalk At Nasa #2121',
@@ -392,7 +392,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 120,
         unit: 'V per 45 min',
         by: 'Michael #2121',
-        loc: 'Nasa, USA'
+        loc: 'Nasa, USA',
       },
       {
         title: 'The Collective #2121',
@@ -402,8 +402,8 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         price: 0,
         unit: 'free',
         by: 'Created by Daniel #2121',
-        loc: 'Berlin, Deutschland'
-      }
+        loc: 'Berlin, Deutschland',
+      },
     ],
     navArr: [
 
@@ -529,7 +529,7 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         l: -1,
         d: 'Moocs',
         p: 'feature',
-        f: 'https://youtu.be/eW3gMGqcZQc'
+        f: 'https://youtu.be/eW3gMGqcZQc',
         // sub: [
         //   {id: '012s1', c: 0, l: -1, d: 'Software Development'},
         //   {id: '012s2', c: 0, l: -1, d: 'Makers'},
@@ -540,8 +540,8 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
         c: 0,
         l: -1,
         d: 'Documents',
-        p: 'top'
-      }
+        p: 'top',
+      },
     ],
 
     /*entitiesNavArr: [
@@ -672,8 +672,8 @@ const DemoContent = ( function() { // eslint-disable-line no-unused-vars
       'private chat' /* in case of myself = notes */,
       'history',
       'download' /* if myself */,
-      'profile'
-    ]
+      'profile',
+    ],
   };
 
 } )();

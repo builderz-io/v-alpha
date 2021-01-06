@@ -255,7 +255,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         divertFundsToOwner: false,
         use: {
           button: 'search',
-          role: 'member',
+          role: 'Person',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -267,7 +267,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'business',
+          role: 'Business',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -279,7 +279,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'nonprofit',
+          role: 'NGO',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -291,7 +291,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'publicsector',
+          role: 'GOV',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -303,7 +303,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'institution',
+          role: 'Institution',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -315,7 +315,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'network',
+          role: 'Network',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -327,7 +327,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'skill',
+          role: 'Skill',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -339,7 +339,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'task',
+          role: 'Task',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -351,7 +351,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       //   use: {
       //     button: 'search',
       //     form: 'new entity',
-      //     role: 'pool'
+      //     role: 'ResourcePool'
       //   },
       //   draw: function( path ) {
       //     Marketplace.draw( path );
@@ -363,7 +363,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'place',
+          role: 'Place',
         },
         draw: function( path ) {
           Marketplace.draw( path );
@@ -375,7 +375,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'event',
+          role: 'Event',
         },
         draw: function( path ) {
           Marketplace.draw( path );

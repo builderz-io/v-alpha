@@ -117,7 +117,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'data',
+          role: 'Dataset',
         },
         draw: function() {
           Data.draw( '/data' );

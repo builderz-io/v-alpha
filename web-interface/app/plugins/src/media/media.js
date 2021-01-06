@@ -87,7 +87,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'media',
+          role: 'MediaObject',
         },
         draw: function() {
           Media.draw( '/media', { feature: 'https://vimeo.com/236725407' } ); // 'https://youtu.be/kJbto4TISKA'

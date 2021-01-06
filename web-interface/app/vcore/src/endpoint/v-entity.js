@@ -320,8 +320,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
     // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
     // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-    ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
-    ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
+    ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+    ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
     wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
     if ( error ) {
