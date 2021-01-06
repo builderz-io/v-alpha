@@ -15,154 +15,126 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
   const routes = [
     {
       path: '',
-      action: () => {
-        return {
-          status: 'home',
-          data: [ '/network/all' ]
-        };
-      }
+      action: () => ( {
+        status: 'home',
+        data: [ '/network/all' ],
+      } ),
     },
     {
       path: '/profile',
       children: [
         {
           path: '/:rawentity',
-          action: ( context ) => {
-            return {
-              status: 'profile',
-              data: [ context.params.rawentity ]
-            };
-          }
-        }
-      ]
+          action: ( context ) => ( {
+            status: 'profile',
+            data: [ context.params.rawentity ],
+          } ),
+        },
+      ],
     },
     {
       path: '/chat',
       children: [
         {
           path: '/everyone',
-          action: () => {
-            return {
-              status: 'chat everyone',
-              data: [ '/chat/everyone' ]
-            };
-          }
+          action: () => ( {
+            status: 'chat everyone',
+            data: [ '/chat/everyone' ],
+          } ),
         },
         {
           path: '/:id',
-          action: ( context ) => {
-            return {
-              status: 'chat id',
-              data: [ context.params.id ]
-            };
-          }
-        }
-      ]
+          action: ( context ) => ( {
+            status: 'chat id',
+            data: [ context.params.id ],
+          } ),
+        },
+      ],
     },
     {
       path: '/network',
       children: [
         {
           path: '',
-          action: () => {
-            return {
-              status: 'market',
-              data: [ '/network' ]
-            };
-          }
+          action: () => ( {
+            status: 'market',
+            data: [ '/network' ],
+          } ),
         },
         {
           path: '/:id',
-          action: ( context ) => {
-            return {
-              status: 'market category',
-              data: [ '/network/' + context.params.id ]
-            };
-          }
-        }
-      ]
+          action: ( context ) => ( {
+            status: 'market category',
+            data: [ '/network/' + context.params.id ],
+          } ),
+        },
+      ],
     },
     {
       path: '/me',
       children: [
         {
           path: '/transfers',
-          action: () => {
-            return {
-              status: 'user account',
-              data: [ '/me/transfers' ]
-            };
-          }
+          action: () => ( {
+            status: 'user account',
+            data: [ '/me/transfers' ],
+          } ),
         },
         {
           path: '/profile',
-          action: () => {
-            return {
-              status: 'user profile',
-              data: [ '/me/profile' ]
-            };
-          }
+          action: () => ( {
+            status: 'user profile',
+            data: [ '/me/profile' ],
+          } ),
         },
         {
           path: '/settings',
-          action: () => {
-            return {
-              status: 'user settings',
-              data: [ '/me/settings' ]
-            };
-          }
+          action: () => ( {
+            status: 'user settings',
+            data: [ '/me/settings' ],
+          } ),
         },
         {
           path: '/entities',
-          action: () => {
-            return {
-              status: 'user entities',
-              data: [ '/me/edit' ]
-            };
-          }
-        }
-      ]
+          action: () => ( {
+            status: 'user entities',
+            data: [ '/me/edit' ],
+          } ),
+        },
+      ],
     },
     {
       path: '/media',
       children: [
         {
           path: '',
-          action: () => {
-            return {
-              status: 'media',
-              data: [ '/media' ]
-            };
-          }
+          action: () => ( {
+            status: 'media',
+            data: [ '/media' ],
+          } ),
         },
         {
           path: '/:id',
-          action: ( context ) => {
-            return {
-              status: 'media category',
-              data: [ '/media/' + context.params.id ]
-            };
-          }
-        }
-      ]
+          action: ( context ) => ( {
+            status: 'media category',
+            data: [ '/media/' + context.params.id ],
+          } ),
+        },
+      ],
     },
     {
       path: '/data',
-      action: () => {
-        return {
-          status: 'data',
-          data: [ '/data' ]
-        };
-      }
+      action: () => ( {
+        status: 'data',
+        data: [ '/data' ],
+      } ),
     },
     {
       path: '/pools',
-      action: () => {
-        return {
-          status: 'pool',
-          data: [ '/pools' ]
-        };
-      }
+      action: () => ( {
+        status: 'pool',
+        data: [ '/pools' ],
+      } ),
     },
     // {
     //   path: '/events',
@@ -193,7 +165,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       window.history.pushState(
         data,
         data.path,
-        window.location.origin + data.path
+        window.location.origin + data.path,
       );
       V.setState( 'active', { path: data.path } );
     }
@@ -208,7 +180,7 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
   return {
     castRoute: castRoute,
     setRoute: setRoute,
-    setBrowserHistory: setBrowserHistory
+    setBrowserHistory: setBrowserHistory,
   };
 
 } )();

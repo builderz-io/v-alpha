@@ -16,12 +16,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'display': 'flex',
       'justify-content': 'space-evenly',
       'width': '190px',
-      'padding': '25px 0'
+      'padding': '25px 0',
     },
     'pool__funding-pie': {
       'stroke-width': '50',
       'fill': '#ddd',
-      'stroke': 'rgb(65, 183, 135)'
+      'stroke': 'rgb(65, 183, 135)',
     },
     'pool__funding-chart': {
       'margin': '23px 0 0 4px',
@@ -33,7 +33,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'pool__spending-pie': {
       'stroke-width': '50',
       'fill': '#ddd',
-      'stroke': 'rgb(99, 82, 185)'
+      'stroke': 'rgb(99, 82, 185)',
     },
     'pool__spending-chart': {
       'margin': '23px 0 0 4px',
@@ -43,7 +43,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': '#ddd',
     },
     'td-right': {
-      'max-width': '205px'
+      'max-width': '205px',
     },
     'share-by-email': {
       color: 'gray',
@@ -54,7 +54,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'toggle-switch__input': {
       height: 0,
       width: 0,
-      visibility: 'hidden'
+      visibility: 'hidden',
     },
     'toggle-switch': {
       'cursor': 'pointer',
@@ -78,15 +78,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'transition': '0.3s',
     },
     'toggle-switch__input:checked + .toggle-switch': {
-      background: '#bada55'
+      background: '#bada55',
     },
     'toggle-switch__input:checked + .toggle-switch:after': {
       left: 'calc(100% - 5px)',
-      transform: 'translateX(-100%)'
+      transform: 'translateX(-100%)',
     },
     'toggle-switch:active:after': {
-      width: '130px'
-    }
+      width: '130px',
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -129,7 +129,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     emailSubject: 'Contacting you via',
     emailGreeting: 'Dear',
-    socialSubject: 'is on'
+    socialSubject: 'is on',
   };
 
   function getString( string, scope ) {
@@ -180,7 +180,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     $list.scrollTo( {
       top: offset,
-      behavior: 'smooth'
+      behavior: 'smooth',
     } );
 
     DOM.entry = this.value ? this.value : this.innerHTML;
@@ -200,7 +200,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ============ event handlers (edit entity) ========== */
 
   function handleActive() {
-    setField( 'status.active', this.checked ? true : false ).then( res => {
+    setField( 'status.active', this.checked ? true : false ).then( () => {
       V.getNode( '.active__title' ).innerHTML = this.checked ? ui.activated : ui.deactivated;
     } );
   }
@@ -279,7 +279,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         lat: gen.lat,
         lng: gen.lng,
         value: undefined,
-        rand: true
+        rand: true,
       } );
     }
     else if ( lat ) {
@@ -287,7 +287,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         lat: lat,
         lng: lng,
         value: value,
-        rand: false
+        rand: false,
       } ).then( res => {
 
         /** Draw the new map position */
@@ -304,17 +304,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               role: V.aE().role,
             },
             properties: {
-              description: V.aE().properties.description
+              description: V.aE().properties.description,
             },
             images: {
-              thumbnail: V.aE().images.thumbnail
+              thumbnail: V.aE().images.thumbnail,
             },
             geometry: {
               coordinates: res.data[0].n.a,
               type: 'Point',
-              rand: false
+              rand: false,
             },
-            type: 'Feature'
+            type: 'Feature',
           }] );
         }
       } );
@@ -343,9 +343,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 V.setNode( '#img-upload-profile__preview', V.cN( {
                   t: 'img',
                   y: {
-                    'max-width': '100%'
+                    'max-width': '100%',
                   },
-                  src: res.src
+                  src: res.src,
                 } ) );
               } );
             } );
@@ -355,16 +355,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           setField( 'images', {
             tiny: V.getState( 'tinyImageUpload' ),
             thumb: V.getState( 'thumbnailUpload' ),
-            medium: V.getState( 'mediumImageUpload' )
+            medium: V.getState( 'mediumImageUpload' ),
           } ).then( () => {
             V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
             V.setNode( '#img-upload-profile__preview', '' );
             V.setNode( '#img-upload-profile__preview', V.cN( {
               t: 'img',
               y: {
-                'max-width': '100%'
+                'max-width': '100%',
               },
-              src: V.getState( 'mediumImageUpload' ).dataUrl
+              src: V.getState( 'mediumImageUpload' ).dataUrl,
             } ) );
           } );
         }
@@ -424,24 +424,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'capitalize',
-              h: getString( title )
+              h: getString( title ),
             },
             setEditable( {
               x: editable,
               t: 'td',
               c: 'td-right txt-right break-words',
               a: { title: title, db: db },
-              h: inner
+              h: inner,
             } ),
             {
               x: !editable,
               t: 'td',
               c: 'td-right txt-right break-words' + ( css ? ' ' + css : '' ),
-              h: inner ? linkedInner : ''
-            }
-          ]
+              h: inner ? linkedInner : '',
+            },
+          ],
         } );
-      } ).filter( item => item != '' )
+      } ).filter( item => item != '' ),
     } );
 
     return $table.firstChild ? $table : null;
@@ -450,7 +450,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function setEditable( obj ) {
     obj.e = {
       focus: handleEntryFocus,
-      blur: handleEntry
+      blur: handleEntry,
     };
     if ( obj.a ) {
       Object.assign( obj.a, { contenteditable: 'true' } );
@@ -511,14 +511,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           },
           y: {
             width: '190px',
-            padding: 0
+            padding: 0,
           },
           e: {
             focus: handleViewKeyFocus,
             blur: handleViewKeyFocus,
-          }
-        }
-      ]
+          },
+        },
+      ],
     } );
 
   }
@@ -530,7 +530,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         tag: 'h1',
         class: 'font-bold txt-center pxy',
         html: entity.fullId,
-      }
+      },
     } );
   }
 
@@ -544,7 +544,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         a: { rows: '8', title: 'description', db: 'properties' },
         e: {
           focus: handleEntryFocus,
-          blur: handleEntry
+          blur: handleEntry,
         },
         h: descr ? descr : getString( ui.edit ),
       } : {
@@ -554,14 +554,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             x: linkedDescr.socialLinksImages,
             t: 'div',
-            h: linkedDescr.socialLinksImages
+            h: linkedDescr.socialLinksImages,
           },
           {
             t: 'div',
             c: 'mt-xs',
-            h: linkedDescr.omitOriginalSocialLinks
-          }
-        ]
+            h: linkedDescr.omitOriginalSocialLinks,
+          },
+        ],
       } );
       return castCard( $innerContent, editable ? getString( ui.description ) : entity.profile.role );
     }
@@ -586,7 +586,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 x: editable || response,
                 t: 'h3',
                 c: 'font-bold pxy AAA',
-                h: question.q
+                h: question.q,
               },
               {
                 x: editable,
@@ -595,7 +595,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: { title: 'q' + question.qid, db: 'questionnaire' },
                 e: {
                   focus: handleEntryFocus,
-                  blur: handleEntry
+                  blur: handleEntry,
                 },
                 h: response ? response : getString( ui.edit ),
               },
@@ -604,10 +604,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 t: 'div',
                 c: 'pxy CCC',
                 h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).iframes,
-              }
-            ]
+              },
+            ],
           } );
-        } )
+        } ),
       } );
       return castCard( $innerContent, getString( ui.questionnaire ) );
     }
@@ -663,24 +663,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'toggle-switch__input',
                 a: {
                   type: 'checkbox',
-                  checked: active ? true : false
+                  checked: active ? true : false,
                 },
                 e: {
-                  change: handleActive
-                }
+                  change: handleActive,
+                },
               },
               {
                 t: 'label',
                 c: 'toggle-switch',
                 a: { for: 'active' },
-                h: 'toggle'
+                h: 'toggle',
               },
               {
                 t: 'p',
                 c: 'active__title fs-xs pxy',
-                h: getString( active ? ui.activated : ui.deactivated )
+                h: getString( active ? ui.activated : ui.deactivated ),
               },
-            ]
+            ],
           },
           {
             t: 'div',
@@ -692,26 +692,26 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'toggle-switch__input',
                 a: {
                   type: 'checkbox',
-                  checked: editable ? true : false
+                  checked: editable ? true : false,
                 },
                 e: {
-                  change: handleViewMode
-                }
+                  change: handleViewMode,
+                },
               },
               {
                 t: 'label',
                 c: 'toggle-switch',
                 a: { for: 'view-mode' },
-                h: 'toggle'
+                h: 'toggle',
               },
               {
                 t: 'p',
                 c: 'active__title fs-xs pxy',
-                h: getString( editable ? ui.editMode : ui.viewMode )
+                h: getString( editable ? ui.editMode : ui.viewMode ),
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       } ) );
 
       return castCard( $innerContent, getString( ui.management ) );
@@ -804,14 +804,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: { value: loc },
                 e: {
                   focus: handleBaseLocationFocus,
-                  blur: handleBaseLocation
-                }
+                  blur: handleBaseLocation,
+                },
               } : {
                 t: 'p',
                 c: 'location__base pxy txt-right',
-                h: loc
+                h: loc,
               },
-            ]
+            ],
           },
           {
             t: 'tr',
@@ -821,18 +821,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 t: 'input',
                 c: 'location__curr pxy w-full txt-right',
                 a: {
-                  value: loc
+                  value: loc,
                 },
                 e: {
                 // focus: handleBaseLocationFocus,
                 // blur: handleBaseLocation
-                }
+                },
               } : {
                 t: 'p',
                 c: 'location__curr pxy txt-right',
-                h: loc
+                h: loc,
               },
-            ]
+            ],
           },
           // {
           //   t: 'tr',
@@ -850,7 +850,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           //     },
           //   ]
           // }
-        ]
+        ],
       } );
       return castCard( $innerContent, getString( ui.loc ) );
     }
@@ -878,16 +878,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             {
               t: 'td',
-              h: getString( ui.holder )
+              h: getString( ui.holder ),
             },
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
               h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
-              k: handleProfileDraw
-            }
-          ]
-        }
+              k: handleProfileDraw,
+            },
+          ],
+        },
       } );
     }
     else {
@@ -912,8 +912,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'p',
         c: 'pxy cursor-pointer',
         h: item,
-        k: handleProfileDraw
-      } ) )
+        k: handleProfileDraw,
+      } ) ),
     } );
     return castCard( $innerContent, getString( ui.holderOf ) );
   }
@@ -945,7 +945,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $cardContentFrame = V.cN( {
       t: 'div',
-      c: 'contents'
+      c: 'contents',
     } );
 
     const $topLeft = V.cN( {
@@ -958,7 +958,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           c: 'pxy fs-s font-bold capitalize cursor-pointer',
           h: entity.profile.role,
         },
-      ]
+      ],
     } );
 
     const $topRight = V.cN( {
@@ -969,7 +969,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'h2',
           c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
-          k: handleEditProfileDraw
+          k: handleEditProfileDraw,
         },
         {
           t: 'p',
@@ -977,8 +977,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: getString( ui.accessKeys ),
         },
         castUphraseNode( uPhrase ),
-        castUphraseNode( privateKey )
-      ]
+        castUphraseNode( privateKey ),
+      ],
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight ] );
@@ -1002,13 +1002,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               value: 'en_US',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'en_US' ? true : false
+              checked: appLang == 'en_US' ? true : false,
             },
-            k: handleRadioEntry
+            k: handleRadioEntry,
           },
           {
             t: 'span',
-            h: '🇬🇧'
+            h: '🇬🇧',
           },
           {
             t: 'input',
@@ -1018,15 +1018,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               value: 'de_DE',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'de_DE' ? true : false
+              checked: appLang == 'de_DE' ? true : false,
             },
-            k: handleRadioEntry
+            k: handleRadioEntry,
           },
           {
             t: 'span',
-            h: '🇩🇪'
+            h: '🇩🇪',
           },
-        ]
+        ],
       } );
       return castCard( $innerContent, getString( ui.lang ) );
     }
@@ -1086,13 +1086,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'tr',
-            h: [ { t: 'td', h: svgFunded }, { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ]
+            h: [ { t: 'td', h: svgFunded }, { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ],
           },
           {
             t: 'tr',
-            h: [ { t: 'td', h: svgSpent }, { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ]
-          }
-        ]
+            h: [ { t: 'td', h: svgSpent }, { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ],
+          },
+        ],
       } );
 
       return castCard( $innerContent, getString( ui.funding ) );
@@ -1107,7 +1107,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const $img = V.castEntityThumbnail( entity.mediumImage  ).img;
       return V.cN( {
         t: 'li',
-        h: $img
+        h: $img,
       } );
       // return castCard( $img, '' );
     }
@@ -1116,8 +1116,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'li',
         h: {
           t: 'img',
-          src: entity.images.mediumImage
-        }
+          src: entity.images.mediumImage,
+        },
       } );
     }
     else {
@@ -1132,8 +1132,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'h3',
         c: 'pxy txt-center capitalize',
-        h: entity.profile.role
-      }
+        h: entity.profile.role,
+      },
     } );
   }
 
@@ -1154,10 +1154,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               : {
                 t: 'img',
                 y: {
-                  'max-width': '100%'
+                  'max-width': '100%',
                 },
-                src: entity.images.mediumImage
-              }
+                src: entity.images.mediumImage,
+              },
           },
           {
             t: 'div',
@@ -1170,7 +1170,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   for: 'img-upload-profile__file',
                 },
-                h: getString( ui.chgImg )
+                h: getString( ui.chgImg ),
               },
               {
                 t: 'input',
@@ -1178,13 +1178,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'hidden',
                 a: {
                   type: 'file',
-                  accept: 'image/*'
+                  accept: 'image/*',
                 },
                 e: {
-                  change: handleImageUpload
-                }
-              }
-            ]
+                  change: handleImageUpload,
+                },
+              },
+            ],
           },
           // {
           //   t: 'p',
@@ -1208,7 +1208,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               for: 'img-upload-profile__file',
             },
-            h: getString( ui.edit )
+            h: getString( ui.edit ),
           },
           {
             t: 'input',
@@ -1216,17 +1216,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             c: 'hidden',
             a: {
               type: 'file',
-              accept: 'image/*'
+              accept: 'image/*',
             },
             e: {
-              change: handleImageUpload
-            }
+              change: handleImageUpload,
+            },
           },
           {
             t: 'div',
             i: 'img-upload-profile__preview',
-          }
-        ]
+          },
+        ],
       } );
     }
 
@@ -1247,7 +1247,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'pxy fs-s txt-center',
-          h: 'share this profile on'
+          h: 'share this profile on',
         },
         {
           t: 'div',
@@ -1255,11 +1255,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             'sharing-button__icon svg': {
               'width': '1em',
               'height': '1em',
-              'margin-right': '1.4em'
+              'margin-right': '1.4em',
             },
             'sharing-button__icon--solid': {
-              fill: 'rgba(var(--brandPrimary), 1)'
-            }
+              fill: 'rgba(var(--brandPrimary), 1)',
+            },
           },
           h: `
 
@@ -1293,8 +1293,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
       <a class="share-by-email font-bold" href="mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }">@</a>
 
- `
-        }]
+ `,
+        }],
     } );
   }
 
@@ -1327,7 +1327,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     mediumImageCard: mediumImageCard,
     roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,
-    socialShareButtons: socialShareButtons
+    socialShareButtons: socialShareButtons,
   };
 
 } )();

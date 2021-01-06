@@ -304,7 +304,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     if ( !document.getElementById( whichId ) ) {
       setNode( 'head', {
         t: 'style',
-        i: whichId
+        i: whichId,
       } );
     }
     const $customStyles = document.getElementById( whichId );
@@ -411,7 +411,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     castRemToPixel: castRemToPixel,
     setScript: setScript,
     setStylesheet: setStylesheet,
-    setToggle: setToggle
+    setToggle: setToggle,
   };
 
 } )();

@@ -39,7 +39,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
             'onChain.lastMove': timeSecondsUNIX,
             'onChain.timeToZero': burnS.remainingTimeToZero,
           },
-          $inc: { 'stats.sendVolume': amount * numberOfRecipients }
+          $inc: { 'stats.sendVolume': amount * numberOfRecipients },
         },
         {
           new: true,
@@ -51,7 +51,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
           }
 
           resolve( 'sender updated' );
-        }
+        },
       ); // end findOneAndUpdate
     } ); // end Promise
   }; // close updateSender function
@@ -81,7 +81,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                 'onChain.timeToZero': newTimeToZeroRecipient,
               },
               $inc: { 'stats.receiveVolume': amount,
-              }
+              },
             },
             {
               new: true,
@@ -89,7 +89,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
             ( err ) => {
               if ( err ) {return handleMongoDBerror( 'Update Recipient in Database', err )}
               resolve( 'recipient updated' );
-            } // close callback
+            }, // close callback
           ); // close findOneAndUpdate
         } ); // close Promise a
 
@@ -104,12 +104,12 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                   'requestStats.lastAmount': amount,
                 },
                 $inc: { 'requestStats.totalRequested': amount,
-                }
+                },
               },
               ( err ) => {
                 if ( err ) {return handleMongoDBerror( 'Update Recipient Request Stats in Database', err )}
                 resolve( 'Recipient Request Stats resolved incl requestStats' );
-              } // close callback
+              }, // close callback
             );  // close findOneAndUpdate
           }
           else {
@@ -139,12 +139,12 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               txType: 'in',
               title: sender.profile.title + ' ' + sender.profile.tag,
               fromAddress: 'none',
-              toAddress: 'none'
+              toAddress: 'none',
             } } },
             ( err ) => {
               if ( err ) { console.log( err ); return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }
               resolve( 'c resolved' );
-            } // close callback
+            }, // close callback
           ); // close findOneAndUpdate
         } ); // close Promise c
 
@@ -170,7 +170,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               txType: 'fee',
               title: 'Transaction Fee', // entity.profile.title + ' ' + entity.profile.tag,
               fromAddress: 'none',
-              toAddress: 'none'
+              toAddress: 'none',
             } } },
             ( err ) => {
               if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
@@ -196,7 +196,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                   txType: 'out',
                   title: 'Community Contribution', // entity.profile.title + ' ' + entity.profile.tag,
                   fromAddress: 'none',
-                  toAddress: 'none'
+                  toAddress: 'none',
                 } } },
                 ( err ) => {
                   if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
@@ -222,18 +222,18 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                       txType: 'out',
                       title: entity.profile.title + ' ' + entity.profile.tag,
                       fromAddress: 'none',
-                      toAddress: 'none'
+                      toAddress: 'none',
                     } } },
                     ( err ) => {
                       if ( err ) { return handleMongoDBerror( 'Push Sender-Tx to Database', err ) }
                       resolve( 'd resolved' );
-                    } // close callback
+                    }, // close callback
                   ); // close findOneAndUpdate AMOUNT
 
-                } // close callback
+                }, // close callback
               ); // close findOneAndUpdate CONTRIBUTION
 
-            } // close callback
+            }, // close callback
           ); // close findOneAndUpdate FEE
 
         } ); // close Promise d
@@ -253,7 +253,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
             EntityDB.findOneAndUpdate(
               { fullId: entity.fullId },
               {
-                $inc: { 'stats.allTimeVolume': amount, }
+                $inc: { 'stats.allTimeVolume': amount },
               },
               {
                 new: true,
@@ -261,7 +261,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               ( err ) => {
                 if ( err ) {return handleMongoDBerror( 'Update Community Stats in Database', err )}
                 resolve( 'comm stats resolved' );
-              } // close callback
+              }, // close callback
             ); // close findOneAndUpdate
           } ); // close Promise
         };
@@ -293,7 +293,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
                 'onChain.timeToZero': newTimeToZeroTax,
               },
               $inc: { 'stats.receiveVolume': taxAmount,
-              }
+              },
             },
             {
               new: true,
@@ -301,7 +301,7 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
             ( err ) => {
               if ( err ) {return handleMongoDBerror( 'Update Tax Pool in Database', err )}
               resolve( 'tax pool updated' );
-            } // close callback
+            }, // close callback
           ); // close findOneAndUpdate
         } ); // close Promise a
 
@@ -327,12 +327,12 @@ module.exports.updateAllEntities = async ( txRoleEntities, amount, feeAmount, co
               txType: 'in',
               title: sender.profile.title + ' ' + sender.profile.tag,
               fromAddress: 'none',
-              toAddress: 'none'
+              toAddress: 'none',
             } } },
             ( err ) => {
               if ( err ) { return handleMongoDBerror( 'Push Recipient-Tx to Database', err ) }
               resolve( 'b resolved' );
-            } // close callback
+            }, // close callback
           ); // close findOneAndUpdate
         } ); // close Promise c
 

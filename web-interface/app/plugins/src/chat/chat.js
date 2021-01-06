@@ -40,10 +40,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
             messageform__respinner: {
               color: 'red',
               background: 'white',
-              padding: '2px 8px'
-            }
+              padding: '2px 8px',
+            },
           },
-          h: res.status
+          h: res.status,
         } ) );
       }
     } );
@@ -62,14 +62,14 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           messages: [],
           aE: V.aE() || undefined,
-        }]
+        }],
       };
     }
     else if ( !V.aE() && path != '/chat/everyone' ) {
       return {
         success: false,
         status: 'not logged in',
-        data: []
+        data: [],
       };
     }
     else {
@@ -79,7 +79,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           messages: messages.data[0],
           aE: V.aE() || undefined,
-        }]
+        }],
       };
     }
   }
@@ -116,7 +116,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       topcontent: $topcontent,
       listings: $list,
       position: 'top', // set again to trigger scroll
-      scroll: 'bottom'
+      scroll: 'bottom',
     } );
     Chat.drawMessageForm();
   }
@@ -187,8 +187,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         path: '/chat/everyone',
         draw: function() {
           Chat.draw( '/chat/everyone' );
-        }
-      }
+        },
+      },
     ] );
 
     if ( V.getSetting( 'chatLedger' ) == 'MongoDB' ) {

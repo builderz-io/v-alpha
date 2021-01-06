@@ -11,7 +11,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function presenter(
     data,
-    whichPath = typeof data == 'object' ? data.path : data
+    whichPath = typeof data == 'object' ? data.path : data,
   ) {
 
     /**
@@ -84,8 +84,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         status: 'navigation does not need updating',
         data: [{
-          which: whichPath
-        }]
+          which: whichPath,
+        }],
       };
     }
 
@@ -123,8 +123,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         entityNav: entityNavOrder,
         userNav: userNavOrder,
         serviceNav: serviceNavOrder,
-        keep: 5
-      }]
+        keep: 5,
+      }],
     };
   }
 
@@ -227,7 +227,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
           title: b[newKey].title,
           tag: b[newKey].tag,
           initials: b[newKey].initials,
-          path: b[newKey].path
+          path: b[newKey].path,
         };
 
         b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
@@ -294,9 +294,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setAnimation( $tempMover, {
       top: menuStateObj.entityNavTop + 4,
-      left: menuStateObj.entityNavLeft + 3
+      left: menuStateObj.entityNavLeft + 3,
     }, {
-      duration: 2
+      duration: 2,
     } ).then( () => {
       $itemToAnimate.style.visibility = 'visible';
       $tempMover.remove();
@@ -425,13 +425,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( 'service-nav' ).scrollLeft = 0;
 
     V.setAnimation( 'entity-nav', {
-      width: width
+      width: width,
     }, { duration: 1.5 } );
 
     V.setAnimation( 'service-nav', {
       width: width,
       top: menuStateObj.serviceNavTop,
-      left: menuStateObj.serviceNavLeft
+      left: menuStateObj.serviceNavLeft,
     }, { duration: 2.5 } );
 
     Form.draw( 'all', { fade: 'out' } );
@@ -482,7 +482,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( nav, {
       width: itemClickedRect.width + 11 /* + V.getState( 'page' ).rectOffset */,
       top: menuStateObj.entityNavTop,
-      left: menuStateObj.entityNavLeft
+      left: menuStateObj.entityNavLeft,
     }, { duration: 1 } );
 
     // V.setState( 'page', { rectOffset: 0 } ); // resets the offset to 0 after first page load

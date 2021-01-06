@@ -105,7 +105,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       UserComponents.setData( {
         entity: data.data[0].entity,
-        editable: false
+        editable: false,
       } );
 
       $list = CanvasComponents.list( 'narrow' );

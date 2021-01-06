@@ -43,7 +43,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const pageData = {
       feature: $featureUl,
-      position: 'feature'
+      position: 'feature',
     };
 
     return Promise.resolve( pageData );
@@ -91,7 +91,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function() {
           Media.draw( '/media', { feature: 'https://vimeo.com/236725407' } ); // 'https://youtu.be/kJbto4TISKA'
-        }
+        },
       },
       // {
       //   title: 'Moocs',

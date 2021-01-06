@@ -62,7 +62,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
               dataUrl: tinyImage.canvas.toDataURL( 'image/jpeg' ),
               blob: tinyBlob,
               contentType: tinyBlob.type,
-              originalName: e.target.files[0].name
+              originalName: e.target.files[0].name,
             } );
 
             thumbnail.canvas.toBlob( thumbBlob => {
@@ -70,7 +70,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
                 dataUrl: thumbnail.canvas.toDataURL( 'image/jpeg' ),
                 blob: thumbBlob,
                 contentType: thumbBlob.type,
-                originalName: e.target.files[0].name
+                originalName: e.target.files[0].name,
               } );
 
               mediumImage.canvas.toBlob( mediumBlob => {
@@ -78,7 +78,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
                   dataUrl: mediumImage.canvas.toDataURL( 'image/jpeg' ),
                   blob: mediumBlob,
                   contentType: mediumBlob.type,
-                  originalName: e.target.files[0].name
+                  originalName: e.target.files[0].name,
                 } );
 
                 resolve( {
@@ -100,7 +100,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         reject( {
           success: false,
           status: 'could not prepare image for upload',
-          message: error
+          message: error,
         } );
       };
     } );
@@ -117,7 +117,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       c: 'max-w-full',
       a: {
         src: src,
-        alt: thumbnailData.entity + ' ' + 'Title Image' + ' - ' + thumbnailData.originalName
+        alt: thumbnailData.entity + ' ' + 'Title Image' + ' - ' + thumbnailData.originalName,
       },
       // TODO: revokeObjectURL
       // e: {
@@ -127,7 +127,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
     return {
       img: $img,
-      src: src
+      src: src,
     };
   }
 
@@ -237,7 +237,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         socialLinksHandles: socialLinksHandles,
         omitOriginalSocialLinks: omitOriginalSocialLinks,
         iframes: iframes,
-        firstIframe: iframeLinks[0]
+        firstIframe: iframeLinks[0],
       };
 
     }
@@ -249,7 +249,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         socialLinksHandles: which,
         omitOriginalSocialLinks: which,
         iframes: which,
-        firstIframe: iframeLinks[0]
+        firstIframe: iframeLinks[0],
       };
     }
   }
@@ -262,7 +262,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castRandLatLng() {
     return {
       lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1,
-      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1
+      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1,
     };
   }
 
@@ -363,8 +363,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
             .replace( /\r|\n/g, '' )
             .replace( /([\da-fA-F]{2}) ?/g, '0x$1 ' )
             .replace( / +$/, '' )
-            .split( ' ' )
-        )
+            .split( ' ' ),
+        ),
       ); // turn uuid into base 64
       const url64 = true64
         .replace( /\//g, '_' )
@@ -616,7 +616,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       success: false,
       status: -500,
       message: `could not ${ msg }: ${ err || 'no error message' }`,
-      data: [ data ]
+      data: [ data ],
     };
   }
 
@@ -625,7 +625,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       status: 100,
       message: `successfully ${ msg }`,
-      data: Array.isArray( data ) ? data : [ data ]
+      data: Array.isArray( data ) ? data : [ data ],
     };
   }
 
@@ -680,7 +680,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     i18n: i18n,
     sleep: sleep,
     successFalse: successFalse,
-    successTrue: successTrue
+    successTrue: successTrue,
   };
 
 } )();

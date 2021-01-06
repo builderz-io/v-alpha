@@ -227,7 +227,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    draw: draw
+    draw: draw,
   };
 
 } )();

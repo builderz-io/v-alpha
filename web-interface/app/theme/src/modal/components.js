@@ -56,7 +56,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       right: '0',
       bottom: '0',
       left: '0',
-      background: 'rgba(0,0,0,0.8)'
+      background: 'rgba(0,0,0,0.8)',
     },
     'modal__content': {
       'background': 'white',
@@ -71,10 +71,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'right': '1rem',
       'top': '1rem',
       'text-decoration': 'none',
-      'color': 'white'
+      'color': 'white',
     },
     'modal__uphrase': {
-      color: 'red'
+      color: 'red',
     },
     'modal-pos-1': {
       top: '5vh',
@@ -106,7 +106,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntity,
-      h: getString( ui.useKey )
+      h: getString( ui.useKey ),
     } );
 
     V.sN( '.modal__content', '' );
@@ -126,7 +126,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       i: 'name-new',
       c: buttonClasses, //+ ' modal-pos-1',
       k: handleSetEntity,
-      h: getString( ui.nameProfile )
+      h: getString( ui.nameProfile ),
     } );
 
     const $response = V.sN( {
@@ -222,7 +222,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( V.aE().fullId, {
         field: 'evmCredentials.address',
         data: V.aA(),
-        role: V.aE().profile.role
+        role: V.aE().profile.role,
       } ).then( () => {
         Join.draw( 'authenticate' );
       } );
@@ -265,9 +265,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         i: 'modal-close',
         c: 'modal__close',
         h: getString( ui.close ),
-        k: handleModalClose
+        k: handleModalClose,
       },
-      k: handleModalClose
+      k: handleModalClose,
     } );
   }
 
@@ -275,7 +275,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'div',
       c: 'modal__content relative',
-      k: handleStopPropagation
+      k: handleStopPropagation,
     } );
   }
 
@@ -283,7 +283,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
-      h: getString( ui[text] )
+      h: getString( ui[text] ),
     } );
     V.setNode( $content, $msg );
     return $content;
@@ -295,24 +295,24 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $msg = V.cN( {
       t: 'p',
       c: 'txt-center',
-      h: getString( ui.enableWallet ) + ' ' + metaMaskLink
+      h: getString( ui.enableWallet ) + ' ' + metaMaskLink,
     } );
     const $fox = V.cN( {
       t: 'div',
       c: 'mt-r mb-r ml-auto mr-auto',
       y: {
-        width: '108px'
+        width: '108px',
       },
       h: {
         t: 'img',
-        src: '/assets/img/metamask-fox.png'
-      }
+        src: '/assets/img/metamask-fox.png',
+      },
     } );
     const $metaMask = V.cN( {
       t: 'div',
       c: buttonClasses,
       k: handleGetMetaMask,
-      h: getString( ui.getMetaMask )
+      h: getString( ui.getMetaMask ),
     } );
     V.setNode( $content, [$msg, $fox, $metaMask] );
     return $content;
@@ -329,14 +329,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: `<p>Amount: ${tx.amount}</p>
       <p>Fee: ${tx.feeAmount}</p>
       <p>Contribution: ${tx.contribution}</p>
-      <p>Total: ${tx.txTotal}</p>`
+      <p>Total: ${tx.txTotal}</p>`,
     } );
     const $confirm = V.cN( {
       t: 'div',
       i: 'sign-transaction',
       c: buttonClasses + ' modal-pos-1',
       k: handleTransaction,
-      h: getString( ui.signTx )
+      h: getString( ui.signTx ),
     } );
     V.setNode( $content, [$txDetails, $confirm]  );
     return $content;
@@ -348,19 +348,19 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleWeb3Join,
-      h: getString( ui.connectWallet )
+      h: getString( ui.connectWallet ),
     } );
     const $newName = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: getString( ui.newNameOnly )
+      h: getString( ui.newNameOnly ),
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile )
+      h: getString( ui.manageProfile ),
     } );
     V.setNode( $content, [$new, $newName, $key] );
     return $content;
@@ -372,13 +372,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: getString( ui.newName )
+      h: getString( ui.newName ),
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile )
+      h: getString( ui.manageProfile ),
     } );
     V.setNode( $content, [$new, $key] );
     return $content;
@@ -390,7 +390,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile )
+      h: getString( ui.manageProfile ),
     } );
     V.setNode( $content, $key );
     return $content;
@@ -402,7 +402,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleDisconnect,
-      h: getString( ui.disconnect )
+      h: getString( ui.disconnect ),
     } );
     V.setNode( $content, $disc );
     return $content;
@@ -416,14 +416,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'div',
-          c: 'preloader__ring'
+          c: 'preloader__ring',
         },
         {
           t: 'loader',
           c: 'preloader__text',
-          h: getString( ui.connectingWallet )
-        }
-      ]
+          h: getString( ui.connectingWallet ),
+        },
+      ],
     } );
     V.setNode( $content, $connect );
     return $content;
@@ -435,13 +435,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleAddressMapping,
-      h: getString( ui.useProfile )
+      h: getString( ui.useProfile ),
     } );
     const $new = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: getString( ui.newName )
+      h: getString( ui.newName ),
     } );
     V.setNode( $content, [$current, $new] );
     return $content;
@@ -458,15 +458,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'font-medium fs-l pxy',
-          h: activeEntity.fullId
+          h: activeEntity.fullId,
         },
         { t: 'p', h: activeAddress ? getString( ui.connectedAddress ) : '' },
         {
           t: 'p',
           c: 'fs-s pxy',
-          h: activeAddress
-        }
-      ]
+          h: activeAddress,
+        },
+      ],
     } );
 
     const $uPhrase = V.cN( {
@@ -475,8 +475,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
         UserComponents.castUphraseNode( activeEntity.auth ? activeEntity.auth.uPhrase : '', 'txt-red fs-l' ),
-        { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) }
-      ]
+        { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) },
+      ],
     } );
 
     // let $balance;
@@ -514,18 +514,18 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: getString( ui.newName )
+      h: getString( ui.newName ),
     } );
     const $current = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleAddressMapping,
-      h: getString( ui.useProfile )
+      h: getString( ui.useProfile ),
     } );
     const $descr = V.cN( {
       t: 'p',
       c: 'modal-pos-3 relative txt-center',
-      h: getString( ui.newNameExplain )
+      h: getString( ui.newNameExplain ),
     } );
     if ( V.aE() ) {
       V.setNode( $content, [$new, $current, $descr] );

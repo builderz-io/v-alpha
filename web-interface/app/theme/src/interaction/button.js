@@ -23,7 +23,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       lng: location.value ? location.getAttribute( 'lng' ) || undefined : undefined,
       description: form.getNode( '#plusform__descr' ).value,
       unit: form.getNode( '#plusform__unit' ).value,
-      target: form.getNode( '#plusform__target' ).value
+      target: form.getNode( '#plusform__target' ).value,
     };
 
     if ( !V.aE() ) {
@@ -57,7 +57,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
             V.setEntity( V.aE().fullId, {
               field: 'adminOf',
-              data: res.data[0].fullId
+              data: res.data[0].fullId,
             } );
           }
 
@@ -159,7 +159,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    draw: draw
+    draw: draw,
   };
 
 } )();

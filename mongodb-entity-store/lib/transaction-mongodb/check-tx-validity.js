@@ -8,9 +8,9 @@ const setTxFee = systemInit.tokenDyn.setTxFee;
 
 module.exports.checkTxValidity = ( txRoleEntities, amount, timeSecondsUNIX, reference, txType ) => {
 
-  const senders = txRoleEntities.filter( obj => {return obj.roleInTx === 'sender' } );
-  const recipients = txRoleEntities.filter( obj => {return obj.roleInTx === 'recipient' } );
-  const deactiveRecipient = recipients.filter( obj => {return obj.status.active != true } );
+  const senders = txRoleEntities.filter( obj => obj.roleInTx === 'sender' );
+  const recipients = txRoleEntities.filter( obj => obj.roleInTx === 'recipient' );
+  const deactiveRecipient = recipients.filter( obj => obj.status.active != true );
   var sufficientBalance = true;
   // var lastRequestDate;
 
@@ -29,7 +29,7 @@ module.exports.checkTxValidity = ( txRoleEntities, amount, timeSecondsUNIX, refe
     senders.length > 1 ? 'Only one sender allowed' :
       recipients.length < 1 ? i18n.strErTx130 : // 'No recipients entered'
       // TODO: sending to self >>> txType != i18n.str50020 && recipients.indexOf(senders[0]) != -1 ? errorTx(i18n.strErTx140 + ' <span class="currency-unit">' + i18n.str60010 + '</span> ' + i18n.strErTx141) :
-        systemInit.communityGovernance.limitTransactions === true && !senders[0].status.verified && recipients.find( recipient => {return recipient.status.verified != false} ) ? i18n.strErTx125 : // 'For security references you can only transact with unverified members...'
+        systemInit.communityGovernance.limitTransactions === true && !senders[0].status.verified && recipients.find( recipient => recipient.status.verified != false ) ? i18n.strErTx125 : // 'For security references you can only transact with unverified members...'
           senders[0].status.active != true ? senders[0].profile.title + ' ' + senders[0].profile.tag + ' ' + i18n.strErTx180 : // '... account deactivated'
             deactiveRecipient[0] ? deactiveRecipient[0].profile.title + ' ' + deactiveRecipient[0].profile.tag + ' ' + i18n.strErTx180 : // '... account deactivated'
             // TODO: fillUntil

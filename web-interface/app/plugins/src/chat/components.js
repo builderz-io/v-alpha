@@ -18,7 +18,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   V.setStyle( {
     'chat-link a': {
-      color: 'rgba(var(--link), 1)'
+      color: 'rgba(var(--link), 1)',
     },
     'messageform': {
       'bottom': '0',
@@ -26,7 +26,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       // 'background': '#d1d2da',
       'background': 'rgba(var(--brandPrimary),1)',
       'padding': '8px 5px',
-      'border-radius': '3px 3px 0 0'
+      'border-radius': '3px 3px 0 0',
     },
     'messageform__input': {
       'height': '37px',
@@ -34,7 +34,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       'width': '87%',
       // 'border': '1px solid #e8e8ec',
       'resize': 'none',
-      'border-radius': '30px'
+      'border-radius': '30px',
     },
     'messageform__response': {
       position: 'absolute',
@@ -74,8 +74,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       /* background: #f0f0f0, */
       'color': 'rgba(var(--brandPrimary), 1)',
       'font-size': '1.05em',
-      'font-family': 'IBM Plex Bold'
-    }
+      'font-family': 'IBM Plex Bold',
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -84,7 +84,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     notFound: 'not found',
     chatTitle: 'Chat with Everyone',
     placeholder: 'Send message or funds',
-    placeholder2: 'Join first to send a message or funds'
+    placeholder2: 'Join first to send a message or funds',
   };
 
   function getString( string, scope ) {
@@ -169,7 +169,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
       if ( autofillParts ) {
 
-        const strings = autofillParts.filter( item => { return isNaN( item.toLowerCase() ) } ); // remove amounts
+        const strings = autofillParts.filter( item => isNaN( item.toLowerCase() ) ); // remove amounts
         strings.shift(); // remove command
 
         const lastTagIndex = ( function() {
@@ -192,7 +192,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
         stringToComplete = ( function() {
           if ( lastTagIndex >= 1 ) {
-            return autofillParts.slice( lastTagIndex + 1 ).filter( item => { return isNaN( item ) } ).join( ' ' );
+            return autofillParts.slice( lastTagIndex + 1 ).filter( item => isNaN( item ) ).join( ' ' );
           }
           else {
             return strings.join( ' ' );
@@ -378,12 +378,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       y: {
         left: rect.left + 'px',
         bottom: rect.height + 20 + 'px',
-        width: rect.width + 'px'
+        width: rect.width + 'px',
       },
       h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
         t: 'div',
-        h: dbEntries.map( entry => { return castSuggestion( entry, stringToComplete ) } )
-      } )
+        h: dbEntries.map( entry => castSuggestion( entry, stringToComplete ) ),
+      } ),
     } );
   }
 
@@ -397,9 +397,9 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: 'ac-suggestion',
       a: {
-        'data-val': name + ' ' + tag
+        'data-val': name + ' ' + tag,
       },
-      h: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>'
+      h: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>',
     } );
 
   }
@@ -408,7 +408,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'div',
       c: 'ac-suggestion',
-      h: '"' + stringToComplete + '" ' + getString( ui.notFound )
+      h: '"' + stringToComplete + '" ' + getString( ui.notFound ),
     } );
   }
 
@@ -422,19 +422,19 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'h2',
           c: 'font-bold fs-l leading-snug txt-center w-full pxy',
-          h: getString( ui.chatTitle, 'chat title' )
+          h: getString( ui.chatTitle, 'chat title' ),
         },
         {
           t: 'span',
           c: 'block h-4 fs-s txt-center',
-          i: 'typing_on_1'
+          i: 'typing_on_1',
         },
         {
           t: 'span',
           c: 'block h-4 fs-s txt-center',
-          i: 'typing_on_2'
+          i: 'typing_on_2',
         },
-      ]
+      ],
     } );
   }
 
@@ -449,7 +449,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       tag: 'li',
       classes: 'w-screen pxy',
       a: {
-        id: msg._id
+        id: msg._id,
       },
       y: style,
       html: '<message style="background:' + background + '" class="message__container flex card-shadow rounded bkg-white pxy">' +
@@ -457,7 +457,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
                     ( msg.sender == 'Me' || msg.hideSender ? '' : '<p onclick="Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')" >' + msg.sender + '</p>' ) +
                     '<p class="chat-link">' + linkedMsg.iframes + '</p>' +
                   '</div>' +
-              '</message>'
+              '</message>',
     } );
   }
 
@@ -476,13 +476,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       a: {
         // style: 'height:10px;overflow-y:hidden;',
         placeholder: V.aE() ? getString( ui.placeholder, 'message textarea placeholder' )
-          : getString( ui.placeholder2, 'message textarea placeholder' )
+          : getString( ui.placeholder2, 'message textarea placeholder' ),
       },
       e: {
         keyup: handleKeyUp,
         keydown: handleKeyDown,
-        input: handleTextareaInput
-      }
+        input: handleTextareaInput,
+      },
     } );
   }
 
@@ -490,7 +490,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.sN( {
       t: 'button',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
-      h: V.getIcon( 'send' )
+      h: V.getIcon( 'send' ),
     } );
   }
 
@@ -510,7 +510,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     messageForm: messageForm,
     messageInput: messageInput,
     messageSend: messageSend,
-    messageResponse: messageResponse
+    messageResponse: messageResponse,
   };
 
 } )();

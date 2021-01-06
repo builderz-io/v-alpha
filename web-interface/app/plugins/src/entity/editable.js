@@ -16,13 +16,13 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     if ( !V.aE() ) {
       return {
         success: false,
-        status: ''
+        status: '',
       };
     }
     if ( inCache ) {
       query = {
         success: true,
-        data: [inCache]
+        data: [inCache],
       };
     }
     // else if ( path == '/me/profile' ) {
@@ -68,7 +68,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: true,
         status: 'editable entity retrieved',
-        data: [entity]
+        data: [entity],
       };
     }
   }
@@ -80,7 +80,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     if ( viewData.success ) {
       UserComponents.setData( {
         entity: viewData.data[0],
-        editable: true
+        editable: true,
       } );
 
       $list = CanvasComponents.list( 'narrow' );
@@ -151,7 +151,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           EntityList.draw( path );
-        }
+        },
       },
       {
         title: 'Transfers',
@@ -161,7 +161,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Account.draw( path );
-        }
+        },
       },
       // {
       //   title: 'Profile',
@@ -181,15 +181,15 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Settings.draw( path );
-        }
+        },
       },
       {
         title: 'Disconnect',
         path: '/me/disconnect',
         draw: function( path ) {
           User.draw( path );
-        }
-      }
+        },
+      },
     ] );
   }
 
@@ -205,7 +205,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     draw: draw,
-    launch: launch
+    launch: launch,
   };
 
 } )();

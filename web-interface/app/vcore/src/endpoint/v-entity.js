@@ -35,7 +35,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     targetRange: 'Target must be within 0 - 9999',
     isNaN: 'Target must be a number',
     noUnit: 'Please add a unit, such as "hour"',
-    noTarget: 'Please add a target'
+    noTarget: 'Please add a target',
   };
 
   function getString( string, scope ) {
@@ -56,7 +56,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'no geo data',
-        message: 'could not attach geo data'
+        message: 'could not attach geo data',
       };
     }
 
@@ -93,7 +93,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'entity exists',
-        data: [fullId]
+        data: [fullId],
       };
     }
 
@@ -222,10 +222,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         evmIssuer: entityData.evmIssuer,
       },
       symbolCredentials: entityData.symbolCredentials || {
-        address: undefined
+        address: undefined,
       },
       receivingAddresses: {
-        evm: entityData.evmReceivingAddress
+        evm: entityData.evmReceivingAddress,
       },
 
       props: {
@@ -234,7 +234,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: target.data[0],
         unit: entityData.unit || undefined,
         email: email,
-        prefLangs: undefined
+        prefLangs: undefined,
       },
 
       geometry: geometry,
@@ -251,7 +251,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       creatorTag: creatorTag,
       block: block,
       rpc: rpc,
-      contract: contract
+      contract: contract,
 
     };
 
@@ -259,7 +259,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       endpoint: 'entity',
       status: 'cast entity',
-      data: [ entityCast ]
+      data: [ entityCast ],
     };
   }
 
@@ -286,7 +286,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'invalid target',
-        message: error
+        message: error,
       };
     }
     else {
@@ -294,7 +294,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         endpoint: 'entity',
         status: 'cast entity target',
-        data: [ Number( entityData.target ) ]
+        data: [ Number( entityData.target ) ],
       };
     }
 
@@ -329,7 +329,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'invalid title',
-        message: '🔮' + ' ' + error
+        message: '🔮' + ' ' + error,
       };
     }
     else {
@@ -350,7 +350,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         endpoint: 'entity',
         status: 'cast entity title',
-        data: [ formattedTitle ]
+        data: [ formattedTitle ],
       };
     }
   }
@@ -366,7 +366,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       ledger: tL,
       status: 'could not retrieve entity balance',
       message: bal,
-      data: []
+      data: [],
     } );
 
     if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.aA() */ ) {
@@ -387,9 +387,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
               tokenBalance: bal.data[0].tokenBalance,
               liveBalance: bal.data[0].liveBalance,
               lastBlock: bal.data[0].lastBlock,
-              zeroBlock: bal.data[0].zeroBlock
-            }
-          ]
+              zeroBlock: bal.data[0].zeroBlock,
+            },
+          ],
         };
       }
       else {
@@ -410,8 +410,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
               tokenBalance: bal.data[0].onChain.balance,
               liveBalance: bal.data[0].onChain.balance, // TODO: this is the wrong live balance
               lastBlock: bal.data[0].onChain.lastMove,
-            }
-          ]
+            },
+          ],
         };
       }
       else {
@@ -426,7 +426,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   function getEntity(
     // defaults to searching all entities (via all roles)
     which = 'all',
-    filter = 'role'
+    filter = 'role',
   ) {
 
     const whichLedger = V.getSetting( 'entityLedger' );
@@ -526,7 +526,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     getEntity: getEntity,
     setEntity: setEntity,
     getEntityBalance: getEntityBalance,
-    getQuery: getQuery
+    getQuery: getQuery,
   };
 
 } )();

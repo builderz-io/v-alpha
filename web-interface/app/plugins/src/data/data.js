@@ -32,13 +32,13 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
     let formattedAirQualityData = {
       city: 'Sorry, could not get data',
-      pollution: 0
+      pollution: 0,
     };
 
     if ( airQuality && airQuality.status != 'fail' ) {
       formattedAirQualityData = {
         city: 'The current air pollution levels in ' + airQuality.data.city + '!',
-        pollution: airQuality.data.current.pollution
+        pollution: airQuality.data.current.pollution,
       };
     }
 
@@ -51,7 +51,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
       humidity: 'Humidity: ' + weatherData.main.humidity,
       sky: weatherData.weather[0].description,
       sunrise: 'Sunrise: ' + '<object type="image/svg+xml" data="001-sunrise.svg"></object>' + new Date( weatherData.sys.sunrise ),
-      sunset: 'Sunset: ' + new Date( weatherData.sys.sunset )
+      sunset: 'Sunset: ' + new Date( weatherData.sys.sunset ),
     };
 
     const formattedWeatherDataForecast = {
@@ -59,7 +59,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
         hr24: V.castTime( forecastData.list[8].dt * 1000, 'D MMM' ),
         hr48: V.castTime( forecastData.list[16].dt * 1000, 'D MMM' ),
         hr72: V.castTime( forecastData.list[24].dt * 1000, 'D MMM' ),
-        hr96: V.castTime( forecastData.list[32].dt * 1000, 'D MMM' )
+        hr96: V.castTime( forecastData.list[32].dt * 1000, 'D MMM' ),
       },
       tempC: {
         hr24: ( forecastData.list[8].main.temp - 273.15 ).toFixed( 0 ) + '°C',
@@ -71,8 +71,8 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
         hr24: 'http://openweathermap.org/img/wn/' + forecastData.list[8].weather[0].icon + '@2x.png',
         hr48: 'http://openweathermap.org/img/wn/' + forecastData.list[16].weather[0].icon + '@2x.png',
         hr72: 'http://openweathermap.org/img/wn/' + forecastData.list[24].weather[0].icon + '@2x.png',
-        hr96: 'http://openweathermap.org/img/wn/' + forecastData.list[32].weather[0].icon + '@2x.png'
-      }
+        hr96: 'http://openweathermap.org/img/wn/' + forecastData.list[32].weather[0].icon + '@2x.png',
+      },
     };
 
     const $list = CanvasComponents.list();
@@ -87,7 +87,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     const pageData = {
       which: which,
       listings: $list,
-      position: 'top'
+      position: 'top',
     };
 
     return pageData;
@@ -121,8 +121,8 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function() {
           Data.draw( '/data' );
-        }
-      }
+        },
+      },
     ] );
   }
 

@@ -133,13 +133,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         if ( eB.success ) {
           V.setState( 'activeEntity', { balance: {
             success: true,
-            balance: eB.data[0]
+            balance: eB.data[0],
           } } );
         }
         else {
           V.setState( 'activeEntity', { balance: {
             success: false,
-            message: eB.message.message.message
+            message: eB.message.message.message,
           } } );
         }
 

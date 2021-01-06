@@ -49,7 +49,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           success: true,
           status: 'polled cache used',
           elapsed: now - cache.timestamp,
-          data: V.castJson( polledCache.data, 'clone' )
+          data: V.castJson( polledCache.data, 'clone' ),
         };
       }
       else {
@@ -67,7 +67,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'cache used',
         elapsed: now - cache.timestamp,
-        data: V.castJson( cache.data, 'clone' )
+        data: V.castJson( cache.data, 'clone' ),
       };
     }
     else {
@@ -94,7 +94,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           whichPath: whichPath,
           entities: filtered,
-        }]
+        }],
       };
     }
     else {
@@ -105,7 +105,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           whichPath: whichPath,
           entities: query.data,
-        }]
+        }],
       };
     }
 
@@ -247,7 +247,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'People',
@@ -259,7 +259,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Businesses',
@@ -267,11 +267,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'business'
+          role: 'business',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'NGO',
@@ -279,11 +279,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'nonprofit'
+          role: 'nonprofit',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Public Sector',
@@ -291,11 +291,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'publicsector'
+          role: 'publicsector',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Anchor Institutions',
@@ -303,11 +303,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'institution'
+          role: 'institution',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Networks',
@@ -315,11 +315,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'network'
+          role: 'network',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Skills',
@@ -327,11 +327,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'skill'
+          role: 'skill',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Tasks',
@@ -339,11 +339,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'task'
+          role: 'task',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       // {
       //   title: 'Crowdfunding',
@@ -363,11 +363,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'place'
+          role: 'place',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
       {
         title: 'Events',
@@ -375,12 +375,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'event'
+          role: 'event',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
-      }
+        },
+      },
     ];
     V.setNavItem( 'serviceNav', navArray );
 

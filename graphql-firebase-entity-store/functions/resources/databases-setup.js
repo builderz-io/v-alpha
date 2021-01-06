@@ -6,17 +6,17 @@ var profileServiceAccount = require( './entity-profile-creds.json' );
 
 const authDb = admin.initializeApp( {
   credential: admin.credential.cert( authServiceAccount ),
-  databaseURL: 'https://entity-authentication.firebaseio.com'
+  databaseURL: 'https://entity-authentication.firebaseio.com',
 }, 'authentication' );
 
 const namespaceDb = admin.initializeApp( {
   credential: admin.credential.cert( namespaceServiceAccount ),
-  databaseURL: 'https://entity-namespace.firebaseio.com/'
+  databaseURL: 'https://entity-namespace.firebaseio.com/',
 }, 'namespace' );
 
 const profileDb = admin.initializeApp( {
   credential: admin.credential.cert( profileServiceAccount ),
-  databaseURL: 'https://entity-profile.firebaseio.com/'
+  databaseURL: 'https://entity-profile.firebaseio.com/',
 }, 'profile' );
 
 module.exports.authDb = authDb;

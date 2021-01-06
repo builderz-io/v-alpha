@@ -100,7 +100,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
         const obj = {
           timestamp: Date.now(),
           date: new Date(),
-          data: data
+          data: data,
         };
         Object.assign( cache[which], obj );
       }
@@ -206,7 +206,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     getNavItem: getNavItem,
     setNavItem: setNavItem,
     getCookie: getCookie,
-    setCookie: setCookie
+    setCookie: setCookie,
   };
 
 } )();

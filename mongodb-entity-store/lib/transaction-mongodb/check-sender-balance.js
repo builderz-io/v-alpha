@@ -1,9 +1,9 @@
 
 module.exports.checkSenderBalance = ( txRoleEntities, amount, timeSecondsUNIX, setTxFee ) => {
 
-  const senders = txRoleEntities.filter( obj => { return obj.roleInTx === 'sender' } );
+  const senders = txRoleEntities.filter( obj => obj.roleInTx === 'sender' );
 
-  const recipients = txRoleEntities.filter( obj => { return obj.roleInTx === 'recipient' } );
+  const recipients = txRoleEntities.filter( obj => obj.roleInTx === 'recipient' );
 
   // var txFee = txArray[0] & 1 == 1 ? Math.ceil(txArray[0] * setTxFee) : Math.floor(txArray[0] * setTxFee); // i & 1 == 1 ? checks first bit
   var txFee = Math.ceil( amount * setTxFee );

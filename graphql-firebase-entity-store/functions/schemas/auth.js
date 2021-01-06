@@ -38,7 +38,7 @@ const types = {
       y: DatesA
       z: ChangeLogA
     }
-  `
+  `,
 };
 
 const helpers = require( './helpers' );

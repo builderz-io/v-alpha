@@ -69,7 +69,7 @@ const types = {
       auth: AuthMixin   // mixin of Auth
       error: String     // mixin of error message
     }
-  `
+  `,
 };
 
 const helpers = require( './helpers' );

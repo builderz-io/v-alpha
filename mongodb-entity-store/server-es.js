@@ -7,7 +7,7 @@
 const settings = {
   port: 6022,
   host: 'neighborhoodeconomics.trnty.edu',
-  db: 'cocooonmongo'
+  db: 'cocooonmongo',
 };
 
 const http = require( 'http' );
@@ -21,7 +21,7 @@ const whitelist = [
   'https://' + settings.db + '.valueinstrument.org',
   'http://localhost:3123',
   'https://alpha.valueinstrument.org',
-  'http://vialpha.pagekite.me'
+  'http://vialpha.pagekite.me',
 ];
 
 mongoose.connect( 'mongodb://localhost/' + settings.db, { useNewUrlParser: true, useUnifiedTopology: true } );
@@ -44,7 +44,7 @@ app.use( cors( {
       return callback( new Error( message ), false );
     }
     return callback( null, true );
-  }
+  },
 } ) );
 
 app.get( '/', function( req, res ) {
@@ -67,11 +67,11 @@ exports.sio = require( 'socket.io' )( server, {
     const headers = {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Allow-Origin': req.headers.origin, //or the specific origin you want to give access to,
-      'Access-Control-Allow-Credentials': true
+      'Access-Control-Allow-Credentials': true,
     };
     res.writeHead( 200, headers );
     res.end();
-  }
+  },
 } );
 
 const handleEntity = require( './controllers/v-entity-controller' );

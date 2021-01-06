@@ -5,7 +5,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
   const ui = {
     ledgerLoad: 'Connecting to ledger',
     themeLoad: 'Setting up the theme',
-    pluginsLoad: 'Initializing network\'s plugins'
+    pluginsLoad: 'Initializing network\'s plugins',
   };
 
   function getString( string, scope ) {
@@ -37,7 +37,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   if( V.getSetting( 'useBuilds' ) ) {
     await Promise.all( [
-      V.setScript( '/theme/builds/vtheme.min.js' )
+      V.setScript( '/theme/builds/vtheme.min.js' ),
     ] );
     console.log( '*** theme builds loaded ***' );
   }
@@ -64,7 +64,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     */
 
   Canvas.draw( {
-    path: window.location.pathname
+    path: window.location.pathname,
   } );
 
 } )();

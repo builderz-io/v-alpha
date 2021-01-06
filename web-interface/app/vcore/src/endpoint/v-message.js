@@ -60,7 +60,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
     const text = sanitize( message );
 
-    const spam = blackList.some( v => {return text.toLowerCase().includes( v )} );
+    const spam = blackList.some( v => text.toLowerCase().includes( v ) );
 
     if ( text.indexOf( 'vx' ) > -1 ) {
       return Promise.resolve( { success: false, endpoint: 'message', status: 'unique phrase entered?' } );
@@ -129,12 +129,12 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
           return V.setEntity( caseArray.join( ' ' ), {
             field: 'status.verified',
-            data: true
+            data: true,
           } ).then( res => {
             console.log( 'verification success:', res.data[0].fullId );
             return {
               success: true,
-              status: 'entity verified'
+              status: 'entity verified',
             };
           } );
 
@@ -191,13 +191,13 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getMessage(
-    which = 'all'
+    which = 'all',
   ) {
     return V.getData( which, 'message', V.getSetting( 'chatLedger' ) );
   }
 
   function setMessage(
-    whichMessage
+    whichMessage,
   ) {
     const msgData = {};
     msgData.message = whichMessage;
@@ -210,7 +210,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
       return Promise.resolve( {
         success: false,
         endpoint: 'message',
-        status: 'not joined'
+        status: 'not joined',
       } );
     }
   }

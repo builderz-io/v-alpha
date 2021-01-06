@@ -65,7 +65,7 @@ const types = {
 
       error: String  // mixin of error message
     }
-  `
+  `,
 };
 
 const helpers = require( './helpers' );

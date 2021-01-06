@@ -86,20 +86,20 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'div',
       c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
       a: {
-        style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
+        style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`,
       },
       h: {
         t: 'div',
         c: 'card__initials font-bold fs-xl txt-white',
-        h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId )
+        h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId ),
       },
       e: {
         click: whichHandler == 'editable' ?
           handleEditProfileDraw.bind( circleData.path ) :
           whichHandler == 'popup' ?
             handlePopup.bind( circleData.path ) :
-            handleProfileDraw.bind( circleData.path )
-      }
+            handleProfileDraw.bind( circleData.path ),
+      },
     } );
   }
 
@@ -114,16 +114,16 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
           a: {
-            style: 'background:rgba(var(--black), 0.094);margin-left: 5px;' // border: 2px solid rgba(var(--brandPrimary), 1)
+            style: 'background:rgba(var(--black), 0.094);margin-left: 5px;', // border: 2px solid rgba(var(--brandPrimary), 1)
           },
           h: {
             t: 'div',
             c: 'card__initials font-bold fs-xxl txt-white',
-            h: '+'
+            h: '+',
           },
-          k: handleDrawPlusForm
-        }
-      }
+          k: handleDrawPlusForm,
+        },
+      },
     } );
   }
 
@@ -136,8 +136,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         c: 'smallcard__container flex flex-wrap justify-center items-center',
         h: [
           castCircle( cardData, 'popup' ),
-        ]
-      }
+        ],
+      },
     } );
   }
 
@@ -154,8 +154,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           // a: {
           //   style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
           // },
-        } )
-      }
+        } ),
+      },
     } );
   }
 
@@ -163,14 +163,14 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
     const $cardContentFrame = V.cN( {
       t: 'div',
-      c: 'contents'
+      c: 'contents',
     } );
 
     const $topLeft = V.cN( {
       t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: castCircle( cardData ),
-      k: handleProfileDraw.bind( cardData.path )
+      k: handleProfileDraw.bind( cardData.path ),
     } );
 
     const $topRight = V.cN( {
@@ -180,8 +180,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
         h: cardData.fullId,
-        k: handleProfileDraw.bind( cardData.path )
-      }
+        k: handleProfileDraw.bind( cardData.path ),
+      },
     } );
 
     const $bottomLeft = V.cN( {
@@ -192,14 +192,14 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
           h: cardData.properties.target || '',
-          k: handleProfileDraw.bind( cardData.path )
+          k: handleProfileDraw.bind( cardData.path ),
         },
         {
           t: 'p',
           c: 'card__unit fs-xxs',
           h: cardData.properties.unit || '',
-        }
-      ] : ''
+        },
+      ] : '',
     } );
 
     const $bottomRight = V.cN( {
@@ -208,9 +208,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       h: [
         { t: 'p', c: 'pxy capitalize', h: cardData.profile.role },
         { t: 'p', c: 'pxy', h: cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
-        { t: 'p', c: 'pxy', h: cardData.properties.baseLocation || '' }
+        { t: 'p', c: 'pxy', h: cardData.properties.baseLocation || '' },
       ],
-      k: handleProfileDraw.bind( cardData.path )
+      k: handleProfileDraw.bind( cardData.path ),
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
@@ -229,20 +229,20 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'p',
           c: 'pxy txt-center font-bold cursor-pointer',
           h: entity.fullId,
-          k: handleProfileDraw.bind( entity.path )
+          k: handleProfileDraw.bind( entity.path ),
         },
         castCircle( entity ),
         {
           t: 'p',
           c: 'pxy fs-s capitalize txt-center',
-          h: entity.profile.role
+          h: entity.profile.role,
         },
         {
           t: 'p',
           c: 'pxy fs-s break-words',
           h: descr ? descr.length > 170 ? descr.substr( 0, 170 ) + ' ...' : descr : '',
-        }
-      ]
+        },
+      ],
     } );
   }
 

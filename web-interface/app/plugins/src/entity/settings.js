@@ -14,7 +14,7 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
     if ( !V.aE() ) {
       return {
         success: false,
-        status: ''
+        status: '',
       };
     }
     else {
@@ -24,7 +24,7 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           path: path,
           entity: V.aE(),
-        }]
+        }],
       };
     }
   }
@@ -37,7 +37,7 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
 
       UserComponents.setData( {
         entity: viewData.data[0].entity,
-        editable: true
+        editable: true,
       } );
 
       $list = CanvasComponents.list( 'narrow' );

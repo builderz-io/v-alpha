@@ -28,12 +28,12 @@ const resolvers = {
       }
     },
     getProfile: ( parent, args ) => findProfiles( colP, args.a ),
-    getAuth: ( parent, args ) => findByToken( colA, args.f )
+    getAuth: ( parent, args ) => findByToken( colA, args.f ),
   },
   Mutation: {
     setEntity: ( parent, input, context ) => setFields( colE, input, context ),
-    setProfile: ( parent, input, context ) => setFields( colP, input, context )
-  }
+    setProfile: ( parent, input, context ) => setFields( colP, input, context ),
+  },
 };
 
 function mapSnap( col ) {

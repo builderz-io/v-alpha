@@ -18,7 +18,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     if ( !V.aE() ) {
       return {
         success: false,
-        status: ''
+        status: '',
       };
     }
 
@@ -55,7 +55,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       aE: V.aE(),
       entityBalance: bal,
-      data: transactions.data
+      data: transactions.data,
     };
 
   }
@@ -143,7 +143,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     draw: draw,
-    drawHeaderBalance: drawHeaderBalance
+    drawHeaderBalance: drawHeaderBalance,
   };
 
 } )();

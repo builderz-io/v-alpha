@@ -11,12 +11,12 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     'pill': {
       'height': '2.5rem',
       'padding': '0 1.2rem',
-      'margin-right': '0.7rem'
+      'margin-right': '0.7rem',
     },
     'pill__entity': {
       'height': '2.5rem',
       'padding': '0 1rem',
-      'margin-right': '0.7rem'
+      'margin-right': '0.7rem',
     },
     'pill--selected': {
       color: 'rgba(var(--brandPrimary), 1)',
@@ -25,16 +25,16 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     },
     'pill--user-online': {
       position: 'relative',
-      left: '-3px'
+      left: '-3px',
     },
     'pill__placeholderimage': {
       position: 'relative',
-      bottom: '-6px'
+      bottom: '-6px',
     },
     'pill__img': {
       position: 'relative',
       left: '-10px',
-      border: '2px solid white'
+      border: '2px solid white',
     },
     'pill__initials': {
       position: 'relative',
@@ -44,41 +44,41 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       'padding-top': '4px',
       'padding-bottom': '8px',
       'top': 'var(--entity-nav-top)',
-      'left': 'var(--entity-nav-left)'
+      'left': 'var(--entity-nav-left)',
     },
     'user-nav': {
       'padding-top': '4px',
       'padding-bottom': '8px',
       'top': 'var(--user-nav-top)',
       'left': 'var(--user-nav-left)',
-      'display': 'none'
+      'display': 'none',
     },
     'service-nav': {
       'padding-top': '4px',
       'padding-bottom': '28px',
       'top': 'var(--service-nav-top)',
-      'left': 'var(--service-nav-left)'
+      'left': 'var(--service-nav-left)',
     },
     'entity-nav__ul': {
-      'padding-left': '3px' /* needed for selected shadow */
+      'padding-left': '3px', /* needed for selected shadow */
     },
     'service-nav__ul': {
-      'padding-left': '3px' /* needed for selected shadow */
+      'padding-left': '3px', /* needed for selected shadow */
     },
     'user-nav__ul': {
-      'padding-left': '3px' /* needed for selected shadow */
+      'padding-left': '3px', /* needed for selected shadow */
     },
 
     /* Gain scrollable space adding invisible last pill to navs */
     'entity-nav__ul > *:last-child': {
-      visibility: 'hidden'
+      visibility: 'hidden',
     },
     'service-nav__ul > *:last-child': {
-      visibility: 'hidden'
+      visibility: 'hidden',
     },
     'user-nav__ul > *:last-child': {
-      visibility: 'hidden'
-    }
+      visibility: 'hidden',
+    },
   } );
 
   /* ================== private methods ================= */
@@ -123,9 +123,9 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'span',
-          h: V.i18n( item.title, 'navigation', 'nav item' )
-        }
-      ]
+          h: V.i18n( item.title, 'navigation', 'nav item' ),
+        },
+      ],
     } );
   }
 
@@ -139,27 +139,27 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       a: {
         path: item.path || '/',
         fullId: item.title + ' ' + item.tag,
-        initials: item.initials
+        initials: item.initials,
       },
       h: [
         {
           t: 'div',
           c: 'pill__img circle-0 rounded-full flex justify-center items-center cursor-pointer',
           a: {
-            style: `background:${backgr}; background-position: center center; background-size: cover;`
+            style: `background:${backgr}; background-position: center center; background-size: cover;`,
           },
           h: {
             t: 'div',
             c: 'card__initials font-bold fs-s txt-white',
-            h: backgr.includes( 'url' ) ? '' : placeholderImage // item.initials
+            h: backgr.includes( 'url' ) ? '' : placeholderImage, // item.initials
           },
         },
         {
           t: 'span',
           c: 'pill__initials',
-          h: item.initials
-        }
-      ]
+          h: item.initials,
+        },
+      ],
     } );
   }
 
@@ -215,7 +215,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     serviceNav: serviceNav,
     entityNavUl: entityNavUl,
     serviceNavUl: serviceNavUl,
-    userNavUl: userNavUl
+    userNavUl: userNavUl,
   };
 
 } )();

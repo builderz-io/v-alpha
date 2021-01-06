@@ -18,7 +18,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
         V.aE(),
         V.aA(),
         V.getSetting( 'coinTicker' ),
-        V.getSetting( 'tokenTicker' )
+        V.getSetting( 'tokenTicker' ),
       ) );
     }
     else if ( which == 'entity not found' ) {
