@@ -62,14 +62,14 @@ async function getSingleEntity( context, match ) {
     .then( val => Object.values( val ).find( match ) );
 
   /** authorize the mixin of private data for authenticated user */
-  if ( context.a && ( context.m.includes( entity.a ) ) ) {
+  if ( context.a && entity.r.includes( context.d ) ) {
 
     /** fetch related auth doc */
-    const obj = await colA.child( entity.e ).once( 'value' )
+    const authDoc = await colA.child( entity.e ).once( 'value' )
       .then( snap => snap.val() );
 
     /** add auth token to entity object */
-    Object.assign( entity, { auth: { f: obj.f } } );
+    Object.assign( entity, { auth: { f: authDoc.f } } );
   }
   return [entity];
 }
@@ -87,12 +87,22 @@ function findProfiles( col, a ) {
 }
 
 async function setFields( col, { input }, context ) {
+
+  /** Cast a copy of input */
   const data = JSON.parse( JSON.stringify( input ) );
-  const obj = await col.child( data.a ).once( 'value' )
+
+  /** Get the profile or entity object to be updated */
+  const objToUpdate = await col.child( data.a ).once( 'value' )
     .then( snap => snap.val() );
 
+  /** Determine set new or update action */
+
+  /**
+   * If no object to update was found, initialize a new set of data.
+   * Either use client or server side initialisation.
+   */
   if (
-    !obj && settings.useClientData
+    !objToUpdate && settings.useClientData
   ) {
     return new Promise( resolve => {
       data.b == '/e1/v0' ? colA.child( data.auth.a ).update( data.auth ) : null;
@@ -103,21 +113,18 @@ async function setFields( col, { input }, context ) {
     } );
   }
   else if (
-    !obj && !settings.useClientData
+    !objToUpdate && !settings.useClientData
   ) {
     return new Promise( resolve => {
       // initializeEntity( data )
     } );
   }
-  else if ( !context.a ) {
-    return Promise.resolve( { error: 'not authenticated' } );
-  }
+
+  /**
+   * If an object to update was found, check authentication and authorization.
+   */
   else if (
-    context.a &&                            // check authentication
-    (
-      // context.m.includes( obj.a ) ||     // authorizes main entity update
-      context.m.includes( obj.x.a )         // authorizes updates as owner
-    )
+    context.a && objToUpdate.r.includes( context.d )
   ) {
 
     /**
@@ -137,8 +144,11 @@ async function setFields( col, { input }, context ) {
       col.child( data.a ).update( fields, () => resolve( data ) );
     } );
   }
+  else if ( !context.a ) {
+    return Promise.resolve( { error: 'not authenticated to update' } );
+  }
   else {
-    return Promise.resolve( { error: 'not authorized' } );
+    return Promise.resolve( { error: 'not authorized to update' } );
   }
 }
 

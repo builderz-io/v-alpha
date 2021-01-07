@@ -40,7 +40,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     else {
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
-          console.log( res.status );
+          console.log( res.status, res.message );
           e.target.addEventListener( 'click', handleSetEntity );
           V.setCache( 'all', 'clear' );
           V.setCache( res.data[0].profile.role, 'clear' );

@@ -1,6 +1,25 @@
 // defines Profile schema
 
 const types = {
+  Profile: `
+    {
+      a: ID!           // uuid - as base64 and URL compatible
+      b: String        // @context - includes document version
+      d: String        // related entity document
+
+      m: Properties
+      n: Geometry
+      o: Images
+
+      r: [String]     // owned by
+
+      x: RelationsP
+      y: DatesP
+      z: ChangeLogP
+
+      error: String     // mixin of error message, e.g. "not authorized to update"
+    }
+  `,
   Properties: `
     {
       a: String       // description
@@ -47,23 +66,6 @@ const types = {
   ChangeLogP: `
     {
       a: [EntryP]       // logging changes to this document // ONLY on first change
-    }
-  `,
-  Profile: `
-    {
-      a: ID!           // uuid - as base64 and URL compatible
-      b: String        // @context - includes document version
-      d: String        // related entity document
-
-      m: Properties
-      n: Geometry
-      o: Images
-
-      x: RelationsP
-      y: DatesP
-      z: ChangeLogP
-
-      error: String  // mixin of error message
     }
   `,
 };

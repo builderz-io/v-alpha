@@ -12,7 +12,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n x { a } y { a b m } auth { f }';
+  const singleE = 'a c d i j m n r x { a } y { a b m } auth { f }';
   const singleP = 'm { a b c m n } n { a b } o { a b c }';
 
   /**
@@ -47,9 +47,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         unit: P.m ? P.m.n : undefined,
         baseLocation: P.n ? P.n.b : undefined, // placed here also for UI compatibility
       },
-      relations: {
-        creator: E.x ? E.x.a : E.a,
-      },
       images: {
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
@@ -74,7 +71,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       auth: {
         uPhrase: E.auth ? E.auth.f : undefined,
       },
-      // for UI compatibility:
+      // TODO: rework the following around UI
+      relations: {
+        creator: E.x ? E.x.a : undefined,
+      },
+      ownedBy: E.r ? E.r[0] : undefined,
       adminOf: [fullId],
       owners: [{ ownerName: '', ownerTag: '' }],
     };
@@ -95,6 +96,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const m = data.title;
     const n = data.tag;
 
+    const r = data.ownedBy;
+
     const x = {
       a: data.creatorUuid,
     };
@@ -114,12 +117,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       f: data.uPhrase,
       i: data.evmCredentials.privateKey ? data.evmCredentials.address : undefined,
       j: data.evmCredentials.privateKey,
-      m: [data.uuidE],
-      n: [data.uuidP],
     };
 
     const variables = {
-      input: { a, b, c, d, e, g, i, j, m, n, x, y, auth },
+      input: { a, b, c, d, e, g, i, j, m, n, r, x, y, auth },
     };
 
     const query = `mutation SetNewEntity( $input: InputEntity! ) {
@@ -156,6 +157,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       c: data.mediumImageDU,
     };
 
+    const r = data.ownedBy;
+
     const x = {
       a: data.creatorUuid ? data.creatorUuid : data.uuidE,
     };
@@ -165,7 +168,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const variables = {
-      input: { a, b, d, m, n, o, x, y },
+      input: { a, b, d, m, n, o, r, x, y },
     };
 
     const query = `mutation SetNewProfile( $input: InputProfile! ) {

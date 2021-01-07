@@ -1,6 +1,33 @@
 // defines Entity schema
 
 const types = {
+  Entity: `
+    {
+      a: ID!         // uuid - as base64 and URL compatible
+      b: String      // @context - includes document version
+      c: String      // @type
+      d: String      // related profile document
+      e: String      // related auth document
+
+      g: String      // issuer
+
+      i: String      // current EVM Address
+      j: String      // receiving EVM Address
+
+      m: String      // title
+      n: String      // tag - regular
+      o: String      // tag - special // ONLY when purchased
+
+      r: [String]    // owned by
+
+      x: RelationsE
+      y: DatesE      // dates and status
+      z: ChangeLogE
+
+      auth: AuthMixin   // mixin of Auth
+      error: String     // mixin of error message, e.g. "not authorized to update"
+    }
+  `,
   RelationsE: `
     {
       a: String      // creator uuid
@@ -39,35 +66,7 @@ const types = {
       i: String        // evm address
       j: String        // evm address private key
 
-      m: [String]      // Entities owned
-      n: [String]      // Entities admined
-
-      w: [String]      // Auth Log
-    }
-  `,
-  Entity: `
-    {
-      a: ID!         // uuid - as base64 and URL compatible
-      b: String      // @context - includes document version
-      c: String      // @type
-      d: String      // related profile document
-      e: String      // related auth document
-
-      g: String      // issuer
-
-      i: String      // Current EVM Address
-      j: String      // receiving EVM Address
-
-      m: String      // title
-      n: String      // tag - regular
-      o: String      // tag - special // ONLY when purchased
-
-      x: RelationsE
-      y: DatesE      // Dates and Status
-      z: ChangeLogE
-
-      auth: AuthMixin   // mixin of Auth
-      error: String     // mixin of error message
+      w: [String]      // auth log
     }
   `,
 };

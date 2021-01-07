@@ -104,7 +104,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const uuidA = V.castUuid().base64Url;
     const unix = Math.floor( Date.now() / 1000 );
 
-    let geometry, uPhrase, creatorUuid, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
+    let geometry, uPhrase, creatorUuid, ownedBy, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -133,11 +133,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const activeEntity = V.getState( 'activeEntity' );
 
     if ( activeEntity ) {
+      ownedBy = [uuidE, activeEntity.uuidE];
       creatorUuid = activeEntity.uuidE;
       creator = activeEntity.profile.title;
       creatorTag = activeEntity.profile.tag;
     }
     else {
+      ownedBy = [uuidE];
       creatorUuid = uuidE;
       creator = title.data[0];
       creatorTag = tag;
@@ -209,12 +211,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       tag: tag,
 
       creatorUuid: creatorUuid,
+      ownedBy: ownedBy,
 
       uPhrase: uPhrase,
 
       issuer: window.location.host,
       unix: unix,
-      expires: unix + 60 * 60 * 24 * 180,
+      expires: unix + 60 * 60 * 24 * 365 * 2,
 
       evmCredentials: {
         address: entityData.evmAddress,
