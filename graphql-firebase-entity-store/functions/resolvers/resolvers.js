@@ -14,9 +14,6 @@ const settings = {
 const resolvers = {
   Query: {
     getEntity: ( parent, args, context ) => {
-      if ( context && context.a ) {
-        // do stuff like setNewExpiryDate on all owned entities
-      }
       if ( args.m && args.n ) {
         return findByFullId( context, args.m, args.n );
       }
@@ -57,9 +54,18 @@ function findByEvmAddress( context, i ) {
 }
 
 async function getSingleEntity( context, match ) {
-  const entity = await colE.once( 'value' )
+  const DB = await colE.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => Object.values( val ).find( match ) );
+    .then( val => Object.values( val ) );
+
+  const entity = DB.find( match );
+
+  /**
+   * mixin the fullIds of the current entity holders
+   * currently requires "stringify" as workaround for possible bug in Apollo
+   */
+  const holdersFullIds = DB.filter( item => entity.r.includes( item.a ) ).map( item => item.m + ' ' + item.n );
+  Object.assign( entity, { holders: holdersFullIds } );
 
   /** authorize the mixin of private data for authenticated user */
   if ( context.a && entity.r.includes( context.d ) ) {
@@ -69,7 +75,7 @@ async function getSingleEntity( context, match ) {
       .then( snap => snap.val() );
 
     /** add auth token to entity object */
-    Object.assign( entity, { auth: { f: authDoc.f } } );
+    Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
   return [entity];
 }

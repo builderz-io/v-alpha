@@ -1,7 +1,7 @@
 const Settings = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Plugin driving the entity list page
+   * V Plugin driving the app settings page
    *
    */
 

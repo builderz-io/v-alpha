@@ -12,7 +12,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n r x { a } y { a b m } auth { f }';
+  const singleE = 'a c d i j m n y { a b m } holders auth { f j }';
   const singleP = 'm { a b c m n } n { a b } o { a b c }';
 
   /**
@@ -27,26 +27,33 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function castEntityData( E, P ) {
+
+    /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
+
     return {
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
+      role: E.c,
+      title: E.m,
+      tag: E.n,
+      profile: { // placed here also for UI compatibility
+        title: E.m,
+        tag: E.n,
+      },
       fullId: fullId,
       path: V.castPathOrId( fullId ),
-      evmCredentials: {
-        address: E.i,
-      },
-      receivingAddresses: {
-        evm: E.j,
-      },
       properties: {
         description: P.m ? P.m.a : undefined,
-        email: P.m ? P.m.b : undefined,
         preferredLangs: P.m ? P.m.c : undefined,
         target: P.m ? P.m.m : undefined,
         unit: P.m ? P.m.n : undefined,
-        baseLocation: P.n ? P.n.b : undefined, // placed here also for UI compatibility
+        // baseLocation: P.n ? P.n.b : undefined, // placed here also for UI compatibility
+        email: P.m ? P.m.b : undefined,
       },
+      // social: {
+      //   email: P.m ? P.m.b : undefined, // placed here also for UI compatibility
+      // },
       images: {
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
@@ -58,26 +65,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         type: 'Point',
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
-      profile: {
-        title: E.m,
-        tag: E.n,
-        role: E.c,
-      },
-      social: {
-        email: P.m ? P.m.b : undefined, // placed here also for UI compatibility
-      },
       status: { active: E.y ? E.y.m : undefined },
-
+      holders: E.holders,
+      evmCredentials: {
+        address: E.i,
+      },
+      receivingAddresses: {
+        evm: E.j,
+      },
       auth: {
         uPhrase: E.auth ? E.auth.f : undefined,
+        evmCredentials: {
+          privateKey: E.auth ? E.auth.j : undefined,
+        },
       },
-      // TODO: rework the following around UI
-      relations: {
-        creator: E.x ? E.x.a : undefined,
-      },
-      ownedBy: E.r ? E.r[0] : undefined,
-      adminOf: [fullId],
-      owners: [{ ownerName: '', ownerTag: '' }],
     };
   }
 
@@ -96,7 +97,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const m = data.title;
     const n = data.tag;
 
-    const r = data.ownedBy;
+    const r = data.heldBy;
 
     const x = {
       a: data.creatorUuid,
@@ -148,7 +149,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
     const n = {
       a: data.geometry.coordinates,
-      b: data.props.baseLocation,
+      b: data.geometry.baseLocation,
       z: data.geometry.rand,
     };
     const o = {
@@ -157,7 +158,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       c: data.mediumImageDU,
     };
 
-    const r = data.ownedBy;
+    const r = data.heldBy;
 
     const x = {
       a: data.creatorUuid ? data.creatorUuid : data.uuidE,
@@ -185,25 +186,25 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     console.log( 'UPDATING ENTITY: ', data );
     const a = V.getLastViewed().uuidE;
 
-    let j, m, returnFields;
+    let j, m, y, returnFields;
 
     switch ( data.field ) {
     case 'title':
       m = data.data;
       returnFields = 'm';
       break;
-    case 'role':
-      c = data.data;
-      returnFields = 'c';
-      break;
     case 'receivingAddresses.evm':
       j = data.data;
       returnFields = 'j';
       break;
+    case 'status.active':
+      y = { m: data.data };
+      returnFields = 'y { m }';
+      break;
     }
 
     const variables = {
-      input: { a, j, m },
+      input: { a, j, m, y },
     };
 
     const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
@@ -228,7 +229,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'properties.description':
       m = { a: data.data };
       break;
-    case 'social.email':
+    case 'properties.email':
       m = { b: data.data };
       break;
     case 'properties.preferredLangs':
@@ -241,7 +242,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       m = { n: data.data };
       break;
 
-    case 'properties.baseLocation':
+    case 'geometry.baseLocation':
       n = {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
         b: data.data.value,
@@ -296,6 +297,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         }`;
     }
     return fetchFirebase( queryE );
+    // .then( res => {
+    //   console.log( res );
+    //   return res;
+    // } );
   }
 
   function getProfiles( array ) {
@@ -308,7 +313,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function getFirebaseAuth( data ) {
     const queryA = `query GetEntityAuth {
-            getAuth (f:"${ data }") { f }
+            getAuth (f:"${ data }") { f j }
           }`;
 
     return fetchFirebase( queryA );
@@ -359,8 +364,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       /** Combine profile and entity data */
 
       if ( !profiles.errors && profiles.data.getProfile[0] != null ) {
-        const combined = entities.data.getEntity.map( ( item, i ) =>
-          castEntityData( item, profiles.data.getProfile[i] )
+        const combined = entities.data.getEntity.map(
+          ( item, i ) => castEntityData( item, profiles.data.getProfile[i] )
         );
         return V.successTrue( 'got entities and profiles', combined );
       }
@@ -384,7 +389,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         .catch( err => V.successFalse( 'set entity', err ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
-      if ( ['title', 'role', 'receivingAddresses.evm'].includes( data.field ) ) {
+      if ( ['title', 'receivingAddresses.evm', 'status.active'].includes( data.field ) ) {
         return setEntityField( data )
           .then( E => {
             E = E.data.setEntity;

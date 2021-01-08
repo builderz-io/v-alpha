@@ -43,7 +43,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           console.log( res.status, res.message );
           e.target.addEventListener( 'click', handleSetEntity );
           V.setCache( 'all', 'clear' );
-          V.setCache( res.data[0].profile.role, 'clear' );
+          V.setCache( res.data[0].role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
           User.draw( res.data[0].path );
           Button.draw( 'set', { fade: 'out' } );

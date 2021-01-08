@@ -65,7 +65,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       return 'url(\'' + cardData.images.thumbnail + '\')';
     }
 
-    switch ( '2' /* cardData.profile.tag.charAt( 1 ) */ ) {
+    switch ( '2' /* cardData.tag.charAt( 1 ) */ ) {
     // case '1': return palette[0];
     case '2': return palette[0];
     case '3': return palette[1];
@@ -206,9 +206,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'div',
       c: 'card__bottom-right pxy',
       h: [
-        { t: 'p', c: 'pxy capitalize', h: cardData.profile.role },
+        { t: 'p', c: 'pxy capitalize', h: cardData.role },
         { t: 'p', c: 'pxy', h: cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
-        { t: 'p', c: 'pxy', h: cardData.properties.baseLocation || '' },
+        { t: 'p', c: 'pxy', h: cardData.geometry.baseLocation || '' },
       ],
       k: handleProfileDraw.bind( cardData.path ),
     } );
@@ -235,7 +235,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         {
           t: 'p',
           c: 'pxy fs-s capitalize txt-center',
-          h: entity.profile.role,
+          h: entity.role,
         },
         {
           t: 'p',

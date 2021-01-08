@@ -28,7 +28,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     else {
       query = await V.getEntity( V.castPathOrId( which ) ).then( res => {
         if ( res.success ) {
-
           V.setCache( 'viewed', res.data );
 
           return res;
@@ -52,7 +51,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
-      if ( entity.profile.role == 'pool' ) {
+      if ( entity.role == 'Pool' ) {
         if ( V.aA() || !V.aE() ) {
           if ( entity.evmCredentials ) {
             txHistory = await V.getAddressHistory( entity.evmCredentials.address );
@@ -124,7 +123,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.managementCard(),
-        UserComponents.adminOfCard(),
+        // UserComponents.adminOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 

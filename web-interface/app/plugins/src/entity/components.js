@@ -275,7 +275,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( DOM.location.length && value == '' ) {
       const gen = V.castRandLatLng();
-      setField( 'properties.baseLocation', {
+      setField( 'geometry.baseLocation', {
         lat: gen.lat,
         lng: gen.lng,
         value: undefined,
@@ -283,7 +283,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else if ( lat ) {
-      setField( 'properties.baseLocation', {
+      setField( 'geometry.baseLocation', {
         lat: lat,
         lng: lng,
         value: value,
@@ -407,7 +407,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
             break;
           case 'email':
-            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
+            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
             break;
           case 'website':
             linkedInner = V.castLinks( inner ).links;
@@ -563,7 +563,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           },
         ],
       } );
-      return castCard( $innerContent, editable ? getString( ui.description ) : entity.profile.role );
+      return castCard( $innerContent, editable ? getString( ui.description ) : entity.role );
     }
     else {
       return '';
@@ -574,7 +574,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const questions = V.getSetting( 'neQuestionnaire' );
     const responses = entity.questionnaire;
 
-    if ( ['business', 'institution'].includes( entity.profile.role ) && ( responses || editable ) ) {
+    if ( ['business', 'institution'].includes( entity.role ) && ( responses || editable ) ) {
       const $innerContent = V.cN( {
         t: 'div',
         h: questions.map( question => {
@@ -642,8 +642,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if (
       V.aE() &&
       (
-        V.aE().uuidE == V.getLastViewed().relations.creator || // new model
-        V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
+        V.getLastViewed().holders.includes( V.aE().fullId ) // || // new model
+        // V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
       )
     ) {
 
@@ -786,7 +786,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function locationCard() {
-    const loc = entity.properties ? entity.properties.baseLocation || entity.properties.currentLocation : undefined;
+    const loc = entity.geometry ? entity.geometry.baseLocation || entity.geometry.currentLocation : undefined;
 
     if( loc || ( !loc && editable ) ) {
       const $innerContent = V.cN( {
@@ -864,13 +864,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const db = 'profile';
     const $innerContent = castTableNode( titles, db, false, 'capitalize' );
 
-    // get owner into view
-    let $owner;
+    // get holders into view
+    const holders = V.castJson( entity.holders, 'clone' );
+    holders.splice( holders.indexOf( entity.fullId ), 1 );
+    let $holders;
     if (
-      entity.profile.title != entity.owners[0].ownerName &&
-      entity.profile.tag != entity.owners[0].ownerTag
+      holders.length
     ) {
-      $owner = V.cN( {
+      $holders = V.cN( {
         t: 'table',
         c: 'pxy w-full',
         h: {
@@ -883,7 +884,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
-              h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
+              h: holders.join( ' & ' ),
               k: handleProfileDraw,
             },
           ],
@@ -891,10 +892,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      $owner = '';
+      $holders = '';
     }
     const $combined = V.cN( { t: 'div', c: 'w-full' } );
-    V.setNode( $combined, [$innerContent, $owner] );
+    V.setNode( $combined, [$innerContent, $holders] );
 
     return castCard( $combined, getString( ui.entity ) );
   }
@@ -933,8 +934,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialCard() {
-    const titles = [/*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */ 'email'];
-    const db = 'social';
+    const titles = ['email' /*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */];
+    const db = 'properties';
     const $innerContent = castTableNode( titles, db, editable );
     return $innerContent ? castCard( $innerContent, getString( ui.contact ) ) : '';
   }
@@ -956,7 +957,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'pxy fs-s font-bold capitalize cursor-pointer',
-          h: entity.profile.role,
+          h: entity.role,
         },
       ],
     } );
@@ -1042,7 +1043,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    if ( entity.profile.role == 'pool' ) {
+    if ( entity.role == 'Pool' ) {
 
       const i18n = {
         strPfPg432: getString( ui.notFunded ),
@@ -1132,7 +1133,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'h3',
         c: 'pxy txt-center capitalize',
-        h: entity.profile.role,
+        h: entity.role,
       },
     } );
   }
@@ -1236,7 +1237,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function socialShareButtons() {
     // https://sharingbuttons.io/
-    const subject = `${entity.profile.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
+    const subject = `${entity.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
     const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.path}`;
     const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 

@@ -522,7 +522,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( !balanceCheck && V.aE().profile.role == 'Person' ) { // wallet balance is 0
+      else if ( !balanceCheck && V.aE().role == 'Person' ) { // wallet balance is 0
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
@@ -530,7 +530,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( balanceCheck && V.aE().profile.role == 'Person' ) { // no brightID connected
+      else if ( balanceCheck && V.aE().role == 'Person' ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',

@@ -54,9 +54,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
-        title: data.profile.title,
-        tag: data.profile.tag,
-        initials: V.castInitials( data.profile.title ),
+        title: data.title,
+        tag: data.tag,
+        initials: V.castInitials( data.title ),
         path: data.path,
         draw: function( path ) { Profile.draw( path ) },
       };

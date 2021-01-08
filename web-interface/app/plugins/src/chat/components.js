@@ -390,8 +390,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function castSuggestion( entity, stringToComplete ) {
     const search = stringToComplete.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
     const re = new RegExp( '(' + search.split( ' ' ).join( '|' ) + ')', 'gi' );
-    const name = entity.profile.title;
-    const tag = entity.profile.tag;
+    const name = entity.title;
+    const tag = entity.tag;
 
     return V.cN( {
       t: 'div',

@@ -104,21 +104,23 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const uuidA = V.castUuid().base64Url;
     const unix = Math.floor( Date.now() / 1000 );
 
-    let geometry, uPhrase, creatorUuid, ownedBy, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
+    let geometry, uPhrase, creatorUuid, heldBy, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
-        rand: false,
-        type: 'Point',
         coordinates: [ Number( entityData.lng ), Number( entityData.lat ) ],
+        baseLocation: entityData.location || undefined,
+        type: 'Point',
+        rand: false,
       };
     }
     else {
       const gen = V.castRandLatLng();
       geometry = {
-        rand: true,
-        type: 'Point',
         coordinates: [ gen.lng, gen.lat ],
+        baseLocation: entityData.location || undefined,
+        type: 'Point',
+        rand: true,
       };
     }
 
@@ -130,22 +132,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
     }
 
-    const activeEntity = V.getState( 'activeEntity' );
+    const aE = V.getState( 'activeEntity' );
 
-    if ( activeEntity ) {
-      ownedBy = [uuidE, activeEntity.uuidE];
-      creatorUuid = activeEntity.uuidE;
-      creator = activeEntity.profile.title;
-      creatorTag = activeEntity.profile.tag;
+    if ( aE ) {
+      heldBy = [uuidE, aE.uuidE];
+      creatorUuid = aE.uuidE;
     }
     else {
-      ownedBy = [uuidE];
+      heldBy = [uuidE];
       creatorUuid = uuidE;
-      creator = title.data[0];
-      creatorTag = tag;
     }
 
-    const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
+    const email = aE && aE.properties ? aE.properties.email : undefined;
 
     V.getState( 'tinyImageUpload' ) ? tinyImage = V.getState( 'tinyImageUpload' ) : null;
     V.getState( 'thumbnailUpload' ) ? thumbnail = V.getState( 'thumbnailUpload' ) : null;
@@ -211,7 +209,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       tag: tag,
 
       creatorUuid: creatorUuid,
-      ownedBy: ownedBy,
+      heldBy: heldBy,
 
       uPhrase: uPhrase,
 
@@ -232,7 +230,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       },
 
       props: {
-        baseLocation: entityData.location || undefined,
         descr: entityData.description || undefined,
         target: target.data[0],
         unit: entityData.unit || undefined,
@@ -250,8 +247,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       tinyImage: tinyImage,
       thumbnail: thumbnail,
       mediumImage: mediumImage,
-      creator: creator,
-      creatorTag: creatorTag,
+      // creator: creator,
+      // creatorTag: creatorTag,
       block: block,
       rpc: rpc,
       contract: contract,

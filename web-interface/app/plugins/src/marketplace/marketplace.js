@@ -84,7 +84,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       let filtered = query.data;
 
       if ( whichRole != 'all' ) {
-        filtered = query.data.filter( item => item.profile.role == whichRole );
+        filtered = query.data.filter( item => item.role == whichRole );
       }
 
       return {

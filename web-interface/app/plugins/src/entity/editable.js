@@ -101,7 +101,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmReceiverAddressCard(),
         UserComponents.accessKeysCard(),
         UserComponents.managementCard(),
-        UserComponents.adminOfCard(),
+        // UserComponents.adminOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 
