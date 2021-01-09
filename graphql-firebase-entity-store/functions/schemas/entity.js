@@ -24,9 +24,10 @@ const types = {
       y: DatesE      // dates and status
       z: ChangeLogE
 
-      holders: [String]     // mixin of fullIds of holders (currently as stringified array)
-      auth: AuthMixin     // mixin of Auth
-      error: String       // mixin of error message, e.g. "not authorized to update"
+      holders: [String]     // mixin of fullIds of holders
+      holderOf: [String]    // mixin of fullIds of entities held
+      auth: AuthMixin       // mixin of Auth
+      error: String         // mixin of error message, e.g. "not authorized to update"
     }
   `,
   RelationsE: `

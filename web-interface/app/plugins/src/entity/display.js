@@ -123,7 +123,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.managementCard(),
-        // UserComponents.adminOfCard(),
+        UserComponents.holderOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 

@@ -143,16 +143,16 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     V.setNavItem( 'userNav', [
-      {
-        title: 'Edit',
-        path: '/me/edit',
-        use: {
-          button: 'plus search',
-        },
-        draw: function( path ) {
-          EntityList.draw( path );
-        },
-      },
+      // {
+      //   title: 'Edit',
+      //   path: '/me/edit',
+      //   use: {
+      //     button: 'plus search',
+      //   },
+      //   draw: function( path ) {
+      //     EntityList.draw( path );
+      //   },
+      // },
       {
         title: 'Transfers',
         path: '/me/transfers',

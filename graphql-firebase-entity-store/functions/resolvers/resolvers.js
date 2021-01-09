@@ -62,10 +62,15 @@ async function getSingleEntity( context, match ) {
 
   /**
    * mixin the fullIds of the current entity holders
-   * currently requires "stringify" as workaround for possible bug in Apollo
    */
   const holdersFullIds = DB.filter( item => entity.r.includes( item.a ) ).map( item => item.m + ' ' + item.n );
   Object.assign( entity, { holders: holdersFullIds } );
+
+  /**
+   * mixin the fullIds of entities held
+   */
+  const heldFullIds = DB.filter( item => item.r.includes( entity.a ) ).map( item => item.m + ' ' + item.n );
+  Object.assign( entity, { holderOf: heldFullIds } );
 
   /** authorize the mixin of private data for authenticated user */
   if ( context.a && entity.r.includes( context.d ) ) {

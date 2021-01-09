@@ -12,7 +12,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders auth { f j }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f j }';
   const singleP = 'm { a b c m n } n { a b } o { a b c }';
 
   /**
@@ -67,6 +67,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
       holders: E.holders,
+      holderOf: E.holderOf,
       evmCredentials: {
         address: E.i,
       },

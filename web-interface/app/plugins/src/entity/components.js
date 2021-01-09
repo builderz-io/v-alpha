@@ -496,7 +496,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     editable = data.editable ? true : false;
   }
 
-  function castUphraseNode( phrase, css = '' ) {
+  function castAccessKeyNode( phrase, css = '' ) {
     return V.cN( {
       t: 'div',
       c: 'pxy fs-s' + css,
@@ -723,15 +723,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function accessKeysCard() {
     const uPhrase = entity.auth ? entity.auth.uPhrase : undefined;
+    const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
+
     const $innerContent = V.cN( { t: 'div' } );
 
     if( uPhrase ) {
-      V.setNode( $innerContent, V.cN( { t: 'div', h: castUphraseNode( uPhrase ) } ) );
+      V.setNode( $innerContent, V.cN( { t: 'div', h: castAccessKeyNode( uPhrase ) } ) );
     }
     else {
       V.setNode( $innerContent, V.cN( { t: 'div', c: 'pxy fs-s', h: getString( ui.notAuthenticated ) } ) );
     }
-
+    if( privateKey ) {
+      V.setNode( $innerContent, V.cN( { t: 'div', h: castAccessKeyNode( privateKey ) } ) );
+    }
     return castCard( $innerContent, getString( ui.accessKeys ) );
   }
 
@@ -900,16 +904,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return castCard( $combined, getString( ui.entity ) );
   }
 
-  function adminOfCard() {
-    const adminOf = entity.adminOf.slice( 1 );
+  function holderOfCard() {
+    const holderOf = V.castJson( entity.holderOf, 'clone' );
+    holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
 
-    if ( !adminOf.length ) {
+    if ( !holderOf.length ) {
       return '';
     }
 
     const $innerContent = V.cN( {
       t: 'div',
-      h: adminOf.map( item => V.cN( {
+      h: holderOf.map( item => V.cN( {
         t: 'p',
         c: 'pxy cursor-pointer',
         h: item,
@@ -977,8 +982,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           c: 'pxy fs-s capitalize',
           h: getString( ui.accessKeys ),
         },
-        castUphraseNode( uPhrase ),
-        castUphraseNode( privateKey ),
+        castAccessKeyNode( uPhrase ),
+        castAccessKeyNode( privateKey ),
       ],
     } );
 
@@ -1308,7 +1313,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     setData: setData,
-    castUphraseNode: castUphraseNode,
+    castAccessKeyNode: castAccessKeyNode,
     topcontent: topcontent,
     descriptionCard: descriptionCard,
     questionnaireCard: questionnaireCard,
@@ -1318,7 +1323,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,
     entityCard: entityCard,
-    adminOfCard: adminOfCard,
+    holderOfCard: holderOfCard,
     entityListCard: entityListCard,
     financialCard: financialCard,
     socialCard: socialCard,
