@@ -36,6 +36,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     fourOfour: '404 - Page not found',
 
     loggedOut: 'You are logged out',
+    entityExists: 'This combination of title and tag already exists or is invalid',
     txSent: '✅ Sent to network',
     txSuccess: '✅ Transaction successful',
     error: 'An error occured. Maybe the wallet is locked?',

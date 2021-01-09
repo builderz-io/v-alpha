@@ -60,6 +60,12 @@ async function getSingleEntity( context, match ) {
 
   const entity = DB.find( match );
 
+  if ( !entity ) {
+    return Promise.resolve( [{
+      success: false,
+    }] );
+  }
+
   /**
    * mixin the fullIds of the current entity holders
    */
@@ -138,6 +144,14 @@ async function setFields( col, { input }, context ) {
     context.a && objToUpdate.r.includes( context.d )
   ) {
 
+    /** WIP: If title is being updated, run checks */
+    if ( data.m == '' || data.m ) {
+      const exists = await findByFullId( context, data.m, objToUpdate.n );
+      if ( data.m == '' || exists[0].a ) {
+        return Promise.resolve( { error: '-5003 combination of title and tag already exists or is invalid' } );
+      }
+    }
+
     /**
      * Cast Firebase-compatible object with paths, e.g.
      *      {'m': {'a': 'hello world'}}
@@ -156,10 +170,10 @@ async function setFields( col, { input }, context ) {
     } );
   }
   else if ( !context.a ) {
-    return Promise.resolve( { error: 'not authenticated to update' } );
+    return Promise.resolve( { error: '-5001 not authenticated to update' } );
   }
   else {
-    return Promise.resolve( { error: 'not authorized to update' } );
+    return Promise.resolve( { error: '-5002 not authorized to update' } );
   }
 }
 

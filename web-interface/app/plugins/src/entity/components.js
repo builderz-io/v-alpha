@@ -103,6 +103,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     noneSpent: 'None yet spent',
     spent: 'Budget spent',
 
+    title: 'Title',
+    tag: 'Tag',
+
     description: 'Description',
     questionnaire: 'Questionnaire',
     shortened: '[ ... shortened ]',
@@ -474,8 +477,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         /* also update caches after an edit */
         updateEntityInCaches( res );
       }
-      if ( res.data && res.data[0].error ) {
-        Modal.draw( 'confirm uPhrase' );
+      if ( !res.success /*res.data && res.data[0].error */ ) {
+        if ( res.message.includes( '-5003' ) ) {
+          Modal.draw( 'title and tag exist' );
+        }
+        else {
+          Modal.draw( 'confirm uPhrase' );
+        }
       }
       return res;
     } );
@@ -864,21 +872,54 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityCard() {
-    const titles = ['title', 'tag' /*, 'role' */];
-    const db = 'profile';
-    const $innerContent = castTableNode( titles, db, false, 'capitalize' );
-
-    // get holders into view
+    // const titles = ['title', 'tag' /*, 'role' */];
+    // const db = 'profile';
+    // const $innerContent = castTableNode( titles, db, false, 'capitalize' );
     const holders = V.castJson( entity.holders, 'clone' );
     holders.splice( holders.indexOf( entity.fullId ), 1 );
-    let $holders;
-    if (
-      holders.length
-    ) {
-      $holders = V.cN( {
-        t: 'table',
-        c: 'pxy w-full',
-        h: {
+
+    const $innerContent = V.cN( {
+      t: 'table',
+      c: 'pxy w-full',
+      h: [
+        {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: getString( ui.title ),
+            },
+            setEditable( {
+              x: editable,
+              t: 'td',
+              c: 'txt-right',
+              h: entity.title,
+              a: { title: 'title', db: 'profile' },
+            } ),
+            {
+              x: !editable,
+              t: 'td',
+              c: 'txt-right',
+              h: entity.title,
+            },
+          ],
+        },
+        {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: getString( ui.tag ),
+            },
+            {
+              t: 'td',
+              c: 'txt-right',
+              h: entity.tag,
+            },
+          ],
+        },
+        {
+          x: holders.length >= 1,
           t: 'tr',
           h: [
             {
@@ -893,15 +934,43 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             },
           ],
         },
-      } );
-    }
-    else {
-      $holders = '';
-    }
-    const $combined = V.cN( { t: 'div', c: 'w-full' } );
-    V.setNode( $combined, [$innerContent, $holders] );
+      ],
+    } );
 
-    return castCard( $combined, getString( ui.entity ) );
+    // get holders into view
+    // const holders = V.castJson( entity.holders, 'clone' );
+    // holders.splice( holders.indexOf( entity.fullId ), 1 );
+    // let $holders;
+    // if (
+    //   holders.length
+    // ) {
+    //   $holders = V.cN( {
+    //     t: 'table',
+    //     c: 'pxy w-full',
+    //     h: {
+    //       t: 'tr',
+    //       h: [
+    //         {
+    //           t: 'td',
+    //           h: getString( ui.holder ),
+    //         },
+    //         {
+    //           t: 'td',
+    //           c: 'txt-right cursor-pointer',
+    //           h: holders.join( ' & ' ),
+    //           k: handleProfileDraw,
+    //         },
+    //       ],
+    //     },
+    //   } );
+    // }
+    // else {
+    //   $holders = '';
+    // }
+    // const $combined = V.cN( { t: 'div', c: 'w-full' } );
+    // V.setNode( $combined, [$innerContent, $holders] );
+
+    return castCard( $innerContent, getString( ui.entity ) );
   }
 
   function holderOfCard() {

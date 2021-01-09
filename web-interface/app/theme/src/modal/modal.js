@@ -75,6 +75,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == '404' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );
     }
+    else if ( which == 'title and tag exist' ) {
+      V.setNode( $modal, ModalComponents.simpleMessage( 'entityExists' ) );
+    }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'error' ) );
     }

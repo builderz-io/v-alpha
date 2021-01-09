@@ -190,7 +190,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     let j, m, y, returnFields;
 
     switch ( data.field ) {
-    case 'title':
+    case 'profile.title':
       m = data.data;
       returnFields = 'm';
       break;
@@ -390,7 +390,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         .catch( err => V.successFalse( 'set entity', err ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
-      if ( ['title', 'receivingAddresses.evm', 'status.active'].includes( data.field ) ) {
+      if ( ['profile.title', 'receivingAddresses.evm', 'status.active'].includes( data.field ) ) {
         return setEntityField( data )
           .then( E => {
             E = E.data.setEntity;
