@@ -18,8 +18,6 @@ const types = {
       n: String      // tag - regular
       o: String      // tag - special // ONLY when purchased
 
-      r: [String]    // held by // UUID array
-
       x: RelationsE
       y: DatesE      // dates and status
       z: ChangeLogE
@@ -33,6 +31,7 @@ const types = {
   RelationsE: `
     {
       a: String      // creator uuid
+      b: [String]    // held by // UUID array
     }
   `,
   DatesE: `

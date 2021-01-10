@@ -98,10 +98,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const m = data.title;
     const n = data.tag;
 
-    const r = data.heldBy;
-
     const x = {
       a: data.creatorUuid,
+      b: data.heldBy,
     };
 
     const y = {
@@ -122,7 +121,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const variables = {
-      input: { a, b, c, d, e, g, i, j, m, n, r, x, y, auth },
+      input: { a, b, c, d, e, g, i, j, m, n, x, y, auth },
     };
 
     const query = `mutation SetNewEntity( $input: InputEntity! ) {
@@ -159,10 +158,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       c: data.mediumImageDU,
     };
 
-    const r = data.heldBy;
-
     const x = {
       a: data.creatorUuid ? data.creatorUuid : data.uuidE,
+      b: data.heldBy,
     };
 
     const y = {
@@ -170,7 +168,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const variables = {
-      input: { a, b, d, m, n, o, r, x, y },
+      input: { a, b, d, m, n, o, x, y },
     };
 
     const query = `mutation SetNewProfile( $input: InputProfile! ) {

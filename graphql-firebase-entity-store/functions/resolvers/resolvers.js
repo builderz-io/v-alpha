@@ -69,17 +69,17 @@ async function getSingleEntity( context, match ) {
   /**
    * mixin the fullIds of the current entity holders
    */
-  const holdersFullIds = DB.filter( item => entity.r.includes( item.a ) ).map( item => item.m + ' ' + item.n );
+  const holdersFullIds = DB.filter( item => entity.x.b.includes( item.a ) ).map( item => item.m + ' ' + item.n );
   Object.assign( entity, { holders: holdersFullIds } );
 
   /**
    * mixin the fullIds of entities held
    */
-  const heldFullIds = DB.filter( item => item.r.includes( entity.a ) ).map( item => item.m + ' ' + item.n );
+  const heldFullIds = DB.filter( item => item.x.b.includes( entity.a ) ).map( item => item.m + ' ' + item.n );
   Object.assign( entity, { holderOf: heldFullIds } );
 
   /** authorize the mixin of private data for authenticated user */
-  if ( context.a && entity.r.includes( context.d ) ) {
+  if ( context.a && entity.x.b.includes( context.d ) ) {
 
     /** fetch related auth doc */
     const authDoc = await colA.child( entity.e ).once( 'value' )
@@ -141,7 +141,7 @@ async function setFields( col, { input }, context ) {
    * If an object to update was found, check authentication and authorization.
    */
   else if (
-    context.a && objToUpdate.r.includes( context.d )
+    context.a && objToUpdate.x.b.includes( context.d )
   ) {
 
     /** WIP: If title is being updated, run checks */

@@ -11,8 +11,6 @@ const types = {
       n: Geometry
       o: Images
 
-      r: [String]     // owned by
-
       x: RelationsP
       y: DatesP
       z: ChangeLogP
@@ -48,6 +46,7 @@ const types = {
   RelationsP: `
     {
       a: String      // creator uuid
+      b: [String]    // owned by
     }
   `,
   DatesP: `
