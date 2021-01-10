@@ -295,6 +295,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
           getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
         }`;
     }
+    else if ( 'entity by uuidE' == whichEndpoint ) {
+      console.log( 333, 'by uuidE' );
+      queryE = `query GetEntityByUuidE {
+          getEntity (a:"${ data }") { ${ singleE } }
+        }`;
+    }
     return fetchFirebase( queryE );
     // .then( res => {
     //   console.log( res );

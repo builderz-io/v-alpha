@@ -20,6 +20,9 @@ const resolvers = {
       else if ( args.i ) {
         return findByEvmAddress( context, args.i );
       }
+      else if ( args.a ) {
+        return findByUuide( context, args.a );
+      }
       else {
         return mapSnap( colE );
       }
@@ -53,7 +56,16 @@ function findByEvmAddress( context, i ) {
   return getSingleEntity( context, match );
 }
 
+function findByUuide( context, a ) {
+  const match = function( entity ) {
+    return entity.a == a;
+  };
+  return getSingleEntity( context, match );
+}
+
 async function getSingleEntity( context, match ) {
+
+  /** retrieve the entity */
   const DB = await colE.once( 'value' )
     .then( snap => snap.val() )
     .then( val => Object.values( val ) );
@@ -78,6 +90,8 @@ async function getSingleEntity( context, match ) {
   const heldFullIds = DB.filter( item => item.x.b.includes( entity.a ) ).map( item => item.m + ' ' + item.n );
   Object.assign( entity, { holderOf: heldFullIds } );
 
+  console.log( 333, entity );
+
   /** authorize the mixin of private data for authenticated user */
   if ( context.a && entity.x.b.includes( context.d ) ) {
 
@@ -88,6 +102,8 @@ async function getSingleEntity( context, match ) {
     /** add auth token to entity object */
     Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
+  console.log( 444, entity );
+
   return [entity];
 }
 

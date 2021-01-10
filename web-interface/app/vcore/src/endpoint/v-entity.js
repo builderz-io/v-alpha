@@ -432,20 +432,33 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const whichLedger = V.getSetting( 'entityLedger' );
 
     if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
-      if ( which.substr( 0, 2 ) == '0x' ) {
+      if (
+        which.substr( 0, 2 ) == '0x' &&
+        which.length == 42
+      ) {
         filter = 'evmAddress';
       }
-      if (
+      else if (
         which.substr( 0, 1 ) == 'T' &&
         which.length == 40
       ) {
         filter = 'symbolAddress';
       }
-      else if ( which.substr( 0, 2 ) == 'vx' ) {
+      else if (
+        which.substr( 0, 2 ) == 'vx' &&
+        which.length == 18
+      ) {
         filter = 'uPhrase';
       }
-      else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
+      else if (
+        new RegExp( /\s#\d{4}/ ).test( which )
+      ) {
         filter = 'fullId';
+      }
+      else if (
+        which.length == 22
+      ) {
+        filter = 'uuidE';
       }
     }
     else if ( whichLedger == '3Box' ) {

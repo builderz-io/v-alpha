@@ -7,7 +7,7 @@ const Auth = require( './auth' );
 const Queries = `
   type Query {
     getAuth(f: String!): [Auth]
-    getEntity(m: String, n: String, i: String): [Entity]
+    getEntity(a: String, m: String, n: String, i: String): [Entity]
     getProfile(a: [String!]): [Profile]
   }
 `;

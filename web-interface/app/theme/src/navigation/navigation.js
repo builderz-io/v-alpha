@@ -41,6 +41,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
       if ( !entityNav[item] ) {
         const obj = {
+          uuidE: entityNavOrder[item].uuidE,
           title: entityNavOrder[item].title,
           tag: entityNavOrder[item].tag,
           initials: entityNavOrder[item].initials,
@@ -54,6 +55,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
+        uuidE: data.uuidE,
         title: data.title,
         tag: data.tag,
         initials: V.castInitials( data.title ),
@@ -224,6 +226,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     for ( const newKey in b ) {
       if( !a.hasOwnProperty( newKey ) ) {
         a[b[newKey].path] = {
+          uuidE: b[newKey].uuidE,
           title: b[newKey].title,
           tag: b[newKey].tag,
           initials: b[newKey].initials,
@@ -243,9 +246,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
+      const uuidE = $itemClicked.getAttribute( 'uuide' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( path );
-      V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
+      if ( uuidE ) { // entity pill
+        V.getNavItem( 'active', ['entityNav'] ).draw( uuidE );
+      }
+      else {
+        V.getNavItem( 'active', ['serviceNav', 'userNav'] ).draw( path );
+      }
     }
 
   }

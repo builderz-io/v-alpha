@@ -11,12 +11,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    if (
-      isNaN( Number( which.slice( -4 ) ) ) ||
-      which.slice( -5, -4 ) != '-'
-    ) {
-      return V.successFalse( 'validate profile link' );
-    }
+    // if (
+    //   isNaN( Number( which.slice( -4 ) ) ) ||
+    //   which.slice( -5, -4 ) != '-'
+    // ) {
+    //   return V.successFalse( 'validate profile link' );
+    // }
 
     let query;
 
@@ -26,7 +26,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       query = V.successTrue( 'used cache', inCache );
     }
     else {
-      query = await V.getEntity( V.castPathOrId( which ) ).then( res => {
+      query = await V.getEntity(
+        which.length == 22 && // checks whether which is a uuidE or a path
+        isNaN( Number( which.slice( -5 ) ) )
+          ? which
+          : V.castPathOrId( which )
+      ).then( res => {
         if ( res.success ) {
           V.setCache( 'viewed', res.data );
 
