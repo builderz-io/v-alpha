@@ -479,7 +479,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
       if ( !res.success /*res.data && res.data[0].error */ ) {
         if ( res.message.includes( '-5003' ) ) {
-          Modal.draw( 'title and tag exist' );
+          Modal.draw( 'title error', res.message );
         }
         else {
           Modal.draw( 'confirm uPhrase' );

@@ -290,6 +290,16 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
+  function titleError( text ) {
+    const $content = modalContent();
+    const $msg = V.cN( {
+      t: 'p',
+      h: text,
+    } );
+    V.setNode( $content, $msg );
+    return $content;
+  }
+
   function getMetaMask() {
     const $content = modalContent();
     const metaMaskLink = '<a href="https://metamask.io/download.html" target="_blank">MetaMask</a>';
@@ -543,6 +553,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     modal: modal,
     modalContent: modalContent,
     simpleMessage: simpleMessage,
+    titleError: titleError,
     getMetaMask: getMetaMask,
     confirmTransaction: confirmTransaction,
     web3Join: web3Join,

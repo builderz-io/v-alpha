@@ -144,11 +144,15 @@ async function setFields( col, { input }, context ) {
     context.a && objToUpdate.x.b.includes( context.d )
   ) {
 
-    /** WIP: If title is being updated, run checks */
+    /** If title is being updated, run checks */
     if ( data.m == '' || data.m ) {
+      const title = require( './cast-title' ).castEntityTitle( data.m, 'Person' ); // eslint-disable-line global-require
+      if ( !title.success ) {
+        return Promise.resolve( { error: '-5003 ' + title.message } );
+      }
       const exists = await findByFullId( context, data.m, objToUpdate.n );
-      if ( data.m == '' || exists[0].a ) {
-        return Promise.resolve( { error: '-5003 combination of title and tag already exists or is invalid' } );
+      if ( exists[0].a ) {
+        return Promise.resolve( { error: '-5003 combination of title and tag already exists' } );
       }
     }
 
