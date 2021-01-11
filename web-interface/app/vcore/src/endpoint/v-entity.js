@@ -508,6 +508,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
         console.log( 'RESPONSE:', res );
 
+        V.setCache( 'viewed', 'clear' ); // TODO: could be more granular
+
         /* Only update state if activeEntity was edited, not a managed entity */
 
         if (

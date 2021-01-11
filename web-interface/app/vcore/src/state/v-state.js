@@ -67,7 +67,15 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getViewed( which ) {
-    return getCache().viewed ? getCache().viewed.data.find( entity => which.includes( ' #' ) ? entity.fullId == which : entity.path == which ) : undefined;
+    return getCache().viewed
+      ? getCache().viewed.data.find( entity =>
+        which.includes( ' #' )
+          ? entity.fullId == which
+          : which.length == 22 && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
+            ? entity.uuidE == which
+            : entity.path == which
+      )
+      : undefined;
   }
 
   function getLastViewed() {

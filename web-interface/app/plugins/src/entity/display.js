@@ -17,6 +17,15 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     // ) {
     //   return V.successFalse( 'validate profile link' );
     // }
+    const cache = V.getCache( 'viewed' );
+    const now = Date.now();
+
+    if (
+      cache &&
+      ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
+    ) {
+      V.setCache( 'viewed', 'clear' );
+    }
 
     let query;
 

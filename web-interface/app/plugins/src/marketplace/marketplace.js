@@ -61,7 +61,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     else if (
       cache &&
-      ( now - cache.timestamp ) < ( V.getSetting( 'marketCacheDuration' ) * 60 * 1000 )
+      ( now - cache.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )
     ) {
       query = {
         success: true,
