@@ -356,14 +356,21 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       const returningWallet = V.getCookie( 'last-active-address' );
       const returningUphrase = V.getCookie( 'last-active-uphrase' );
 
-      if ( returningWallet ) {
+      if ( returningWallet && window.ethereum ) {
         Join.draw( 'authenticate' );
       }
       else if ( returningUphrase ) {
         ( async () => {
-          const returningEntity = await V.getEntity( V.castJson( returningUphrase ) );
-          V.setState( 'activeEntity', returningEntity.data[0] );
-          Join.draw( 'new entity was set up' );
+          await V.getEntity( V.castJson( returningUphrase ) )
+            .then( authDoc => {
+              V.setCookie( 'last-active-address', authDoc.data[0].i );
+              return authDoc.data[0].i;
+            } )
+            .then( evmAddress => V.getEntity( evmAddress ) )
+            .then( entity => {
+              V.setState( 'activeEntity', entity.data[0] );
+              Join.draw( 'new entity was set up' );
+            } );
         } )();
       }
       else {

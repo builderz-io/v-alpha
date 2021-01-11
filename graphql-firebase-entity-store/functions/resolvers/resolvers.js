@@ -90,8 +90,6 @@ async function getSingleEntity( context, match ) {
   const heldFullIds = DB.filter( item => item.x.b.includes( entity.a ) ).map( item => item.m + ' ' + item.n );
   Object.assign( entity, { holderOf: heldFullIds } );
 
-  console.log( 333, entity );
-
   /** authorize the mixin of private data for authenticated user */
   if ( context.a && entity.x.b.includes( context.d ) ) {
 
@@ -102,8 +100,6 @@ async function getSingleEntity( context, match ) {
     /** add auth token to entity object */
     Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
-  console.log( 444, entity );
-
   return [entity];
 }
 
@@ -138,9 +134,14 @@ async function setFields( col, { input }, context ) {
     !objToUpdate && settings.useClientData
   ) {
     return new Promise( resolve => {
-      data.b == '/e1/v0' ? colA.child( data.auth.a ).update( data.auth ) : null;
+
+      /** Write auth data into auth db */
+      data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
+
+      /** Then omit the auth data and write entity data into entity db */
       const omitAuth = JSON.parse( JSON.stringify( data ) );
       delete omitAuth.auth;
+
       // TODO: post-write data should be resolved, not pre-write data
       col.child( data.a ).update( omitAuth, () => resolve( data ) );
     } );
@@ -149,7 +150,7 @@ async function setFields( col, { input }, context ) {
     !objToUpdate && !settings.useClientData
   ) {
     return new Promise( resolve => {
-      // initializeEntity( data )
+      // TODO: initializeEntity( data )
     } );
   }
 
@@ -160,8 +161,11 @@ async function setFields( col, { input }, context ) {
     context.a && objToUpdate.x.b.includes( context.d )
   ) {
 
-    /** If title is being updated, run checks */
-    if ( data.m == '' || data.m ) {
+    /** If title in entity is being updated, run title validation checks */
+    if (
+      objToUpdate.b.includes( '/e' ) &&
+      ( data.m == '' || data.m )
+    ) {
       const title = require( './cast-title' ).castEntityTitle( data.m, 'Person' ); // eslint-disable-line global-require
       if ( !title.success ) {
         return Promise.resolve( { error: '-5003 ' + title.message } );
@@ -180,7 +184,7 @@ async function setFields( col, { input }, context ) {
 
     const fields = castObjectPaths( data );
 
-    /** Do not update uuid */
+    /** Never update uuid */
     delete fields.a;
 
     /** Update single fields */
@@ -222,7 +226,7 @@ function castObjectPaths( data ) {
 
 function setNewExpiryDate( context ) {
   const unix = Math.floor( Date.now() / 1000 );
-  const expires = String( unix + 60 * 60 * 24 * 180 );
+  const expires = String( unix + 60 * 60 * 24 * 365 * 2 );
   const input = { input: { a: context.m, y: { c: expires } } };
   setFields( colE, input, context );
 }

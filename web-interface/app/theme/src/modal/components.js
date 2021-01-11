@@ -115,9 +115,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity() {
-    V.getEntity( V.getNode( '#loginform__uphrase' ).value ).then( res => {
-      setActiveEntityState( res );
-    } );
+    V.getEntity( V.getNode( '#loginform__uphrase' ).value )
+      .then( authDoc => {
+        V.setCookie( 'last-active-uphrase', authDoc.data[0].f );
+        V.setCookie( 'last-active-address', authDoc.data[0].i );
+        return authDoc.data[0].i;
+      } )
+      .then( evmAddress => V.getEntity( evmAddress ) )
+      .then( entity => setActiveEntityState( entity ) );
   }
 
   function handleSetEntityForm() {

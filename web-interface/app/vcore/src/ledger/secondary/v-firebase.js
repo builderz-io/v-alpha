@@ -296,7 +296,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         }`;
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
-      console.log( 333, 'by uuidE' );
+      console.log( 444, 'by uuidE' );
       queryE = `query GetEntityByUuidE {
           getEntity (a:"${ data }") { ${ singleE } }
         }`;
@@ -317,8 +317,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getFirebaseAuth( data ) {
+    console.log( 555, 'by uPhrase / get auth Doc only' );
     const queryA = `query GetEntityAuth {
-            getAuth (f:"${ data }") { f j }
+            getAuth (f:"${ data }") { f i j }
           }`;
 
     return fetchFirebase( queryA );
@@ -349,8 +350,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     if ( 'entity by uPhrase' == whichEndpoint ) {
       const auth = await getFirebaseAuth( data );
       if ( !auth.errors && auth.data.getAuth[0] != null ) {
-        const authObj = { auth: { uPhrase: auth.data.getAuth[0].f } };
-        return V.successTrue( 'got auth doc', authObj );
+        return V.successTrue( 'got auth doc', auth.data.getAuth[0] );
       }
       else {
         return V.successFalse( 'get auth doc' );
@@ -405,11 +405,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
               return V.successFalse( 'update entity', E.error, E );
             }
           } )
-          .catch( err => V.successFalse( 'update entity', err, E ) );
+          .catch( err => V.successFalse( 'update entity', err ) );
       }
       else {
         return setProfileField( data )
           .then( P => {
+            console.log( P );
             P = P.data.setProfile;
             if ( !P.error ) {
               return V.successTrue( 'updated profile', P );
@@ -418,7 +419,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
               return V.successFalse( 'update profile', P.error, P );
             }
           } )
-          .catch( err => V.successFalse( 'update profile', err, P ) );
+          .catch( err => V.successFalse( 'update profile', err ) );
       }
     }
   }
