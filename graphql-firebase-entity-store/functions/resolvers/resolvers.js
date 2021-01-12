@@ -27,8 +27,9 @@ const resolvers = {
         return mapSnap( colE );
       }
     },
-    getProfile: ( parent, args ) => findProfiles( colP, args.a ),
-    getAuth: ( parent, args ) => findByToken( colA, args.f ),
+    getProfiles: ( parent, args ) => mapProfiles( args.array ),
+    getAuth: ( parent, args ) => findByToken( args.token ),
+    getEntityQuery: ( parent, args ) => filterEntities( args.filter ),
   },
   Mutation: {
     setEntity: ( parent, input, context ) => setFields( colE, input, context ),
@@ -103,14 +104,24 @@ async function getSingleEntity( context, match ) {
   return [entity];
 }
 
-function findByToken( col, f ) {
-  return col.once( 'value' )
+function findByToken( token ) {
+  return colA.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => [ Object.values( val ).find( entity => entity.f == f ) ] );
+    .then( val => [ Object.values( val ).find( auth => auth.f == token ) ] );
 }
 
-function findProfiles( col, a ) {
-  return col.once( 'value' )
+function filterEntities( filter ) {
+  const q = filter.query.toLowerCase();
+  return colE.once( 'value' )
+    .then( snap => snap.val() )
+    .then( val => Object.values( val ).filter( entity =>
+      entity.m.toLowerCase().includes( q ) ||
+      entity.i.toLowerCase().includes( q )
+    ) );
+}
+
+function mapProfiles( a ) {
+  return colP.once( 'value' )
     .then( snap => snap.val() )
     .then( val => a.map( uuidP => val[uuidP] ) );
 }

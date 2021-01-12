@@ -305,18 +305,35 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getProfiles( array ) {
     const uuidEs = array.map( item => item.d );
     const queryP = `query GetProfiles {
-           getProfile (a: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
+           getProfiles (array: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
          }`;
     return fetchFirebase( queryP );
   }
 
-  function getFirebaseAuth( data ) {
+  function getAuth( data ) {
     console.log( 555, 'by uPhrase / get auth Doc only' );
     const queryA = `query GetEntityAuth {
-            getAuth (f:"${ data }") { f i j }
+            getAuth (token:"${ data }") { f i j }
           }`;
 
     return fetchFirebase( queryA );
+  }
+
+  function getEntityQuery( data ) {
+    console.log( 100, 'by query' );
+
+    const queryS = `query GetEntitiesByQuery( $filter: TitleFilter! ) {
+                      getEntityQuery(filter: $filter) {
+                        ${ previewsE }
+                      }
+                    }
+                  `;
+
+    const variables = {
+      filter: data,
+    };
+
+    return fetchFirebase( queryS, variables );
   }
 
   function fetchFirebase( query, variables ) {
@@ -342,12 +359,22 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   async function getFirebase( data, whichEndpoint ) {
 
     if ( 'entity by uPhrase' == whichEndpoint ) {
-      const auth = await getFirebaseAuth( data );
+      const auth = await getAuth( data );
       if ( !auth.errors && auth.data.getAuth[0] != null ) {
         return V.successTrue( 'got auth doc', auth.data.getAuth[0] );
       }
       else {
         return V.successFalse( 'get auth doc' );
+      }
+    }
+    if ( 'entity by query' == whichEndpoint ) {
+      const search = await getEntityQuery( data );
+      console.log( search );
+      if ( !search.errors && search.data.getEntityQuery[0] != null ) {
+        return V.successTrue( 'got entities by query', search.data.getEntityQuery );
+      }
+      else {
+        return V.successFalse( 'get entities by query' );
       }
     }
 
@@ -362,9 +389,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
       /** Combine profile and entity data */
 
-      if ( !profiles.errors && profiles.data.getProfile[0] != null ) {
+      if ( !profiles.errors && profiles.data.getProfiles[0] != null ) {
         const combined = entities.data.getEntity.map(
-          ( item, i ) => castEntityData( item, profiles.data.getProfile[i] )
+          ( item, i ) => castEntityData( item, profiles.data.getProfiles[i] )
         );
         return V.successTrue( 'got entities and profiles', combined );
       }

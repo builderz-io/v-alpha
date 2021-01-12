@@ -61,7 +61,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       const url = V.castEntityThumbnail( cardData.thumbnail ).src;
       return 'url(\'' + url + '\')';
     }
-    else if ( cardData.images.thumbnail ) { // new model
+    else if ( cardData.images && cardData.images.thumbnail ) { // new model
       return 'url(\'' + cardData.images.thumbnail + '\')';
     }
 
@@ -187,7 +187,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $bottomLeft = V.cN( {
       t: 'div',
       c: 'card__bottom-left items-center pxy',
-      h: cardData.properties.target ? [
+      h: cardData.properties && cardData.properties.target ? [
         {
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
@@ -207,8 +207,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'card__bottom-right pxy',
       h: [
         { t: 'p', c: 'pxy capitalize', h: cardData.role },
-        { t: 'p', c: 'pxy', h: cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
-        { t: 'p', c: 'pxy', h: cardData.geometry.baseLocation || '' },
+        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
+        { t: 'p', c: 'pxy', h: cardData.geometry && cardData.geometry.baseLocation ? cardData.geometry.baseLocation : '' },
       ],
       k: handleProfileDraw.bind( cardData.path ),
     } );

@@ -4,11 +4,19 @@ const Profile = require( './profile' );
 const Entity = require( './entity' );
 const Auth = require( './auth' );
 
+const Filters = `
+  input TitleFilter {
+    query: String
+    role: String
+  }
+`;
+
 const Queries = `
   type Query {
-    getAuth(f: String!): [Auth]
+    getAuth(token: String!): [Auth]
+    getEntityQuery(filter: TitleFilter!): [Entity]
     getEntity(a: String, m: String, n: String, i: String): [Entity]
-    getProfile(a: [String!]): [Profile]
+    getProfiles(array: [String!]): [Profile]
   }
 `;
 
@@ -19,6 +27,6 @@ const Mutations = `
   }
 `;
 
-const allDefs = gql`${ Queries + Mutations + Profile + Entity + Auth }`;
+const allDefs = gql`${ Filters + Queries + Mutations + Profile + Entity + Auth }`;
 
 module.exports = allDefs;

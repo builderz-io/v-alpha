@@ -22,7 +22,7 @@ const server = new ApolloServer( {
     const token = req.headers.authorization;
     // console.log( 111, token );
     if ( token == '' ) { return {} }
-    const user = await resolvers.Query.getAuth( undefined, { f: token } );
+    const user = await resolvers.Query.getAuth( undefined, { token: token } );
     // console.log( 999, user );
     return user[0];
 
