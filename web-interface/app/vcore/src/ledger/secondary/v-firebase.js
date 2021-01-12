@@ -183,22 +183,19 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setEntityField( data ) {
     console.log( 'UPDATING ENTITY: ', data );
-    const a = V.getLastViewed().uuidE;
+    const a = V.getState( 'active' ).lastViewedUuidE;
 
-    let j, m, y, returnFields;
+    let j, m, y;
 
     switch ( data.field ) {
     case 'profile.title':
       m = data.data;
-      returnFields = 'm';
       break;
     case 'receivingAddresses.evm':
       j = data.data;
-      returnFields = 'j';
       break;
     case 'status.active':
       y = { m: data.data };
-      returnFields = 'y { m }';
       break;
     }
 
@@ -208,7 +205,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
                 setEntity(input: $input) {
-                  ${ returnFields + ' ' + 'error' }
+                  ${ 'a error' }
                 }
               }
             `;
@@ -218,11 +215,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setProfileField( data ) {
     console.log( 'UPDATING PROFILE: ', data );
-    const a = V.getLastViewed().uuidP;
+    const a = V.getState( 'active' ).lastViewedUuidP;
 
     let m, n, o;
-
-    let returnFields = 'm { a b c m n }';
 
     switch ( data.field ) {
     case 'properties.description':
@@ -247,7 +242,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         b: data.data.value,
         z: data.data.rand,
       };
-      returnFields = 'n { a b }';
       break;
 
     case 'images':
@@ -265,7 +259,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ returnFields + ' ' + 'error' }
+                  ${ 'a error' }
                 }
               }
             `;
@@ -410,7 +404,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       else {
         return setProfileField( data )
           .then( P => {
-            console.log( P );
             P = P.data.setProfile;
             if ( !P.error ) {
               return V.successTrue( 'updated profile', P );

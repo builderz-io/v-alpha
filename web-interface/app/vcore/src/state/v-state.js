@@ -79,7 +79,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getLastViewed() {
-    return getViewed( getState( 'active' ).lastViewed );
+    return getViewed( getState( 'active' ).lastViewedUuidE );
   }
 
   function getCache( which ) {

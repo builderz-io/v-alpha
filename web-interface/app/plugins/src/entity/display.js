@@ -42,7 +42,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           : V.castPathOrId( which )
       ).then( res => {
         if ( res.success ) {
-          V.setCache( 'viewed', res.data );
+          V.setCache( 'viewed', res.data ); // pass array
 
           return res;
         }
@@ -56,7 +56,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       const entity = query.data[0];
 
-      V.setState( 'active', { lastViewed: entity.fullId } );
+      V.setState( 'active', {
+        lastViewed: entity.fullId,
+        lastViewedUuidE: entity.uuidE,
+        lastViewedUuidP: entity.uuidP,
+      } );
 
       /*
        * Pool data

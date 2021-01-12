@@ -25,27 +25,6 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         data: [inCache],
       };
     }
-    // else if ( path == '/me/profile' ) {
-    //   V.setState( 'active', { lastViewed: V.aE().fullId } );
-    //
-    //   return {
-    //     success: true,
-    //     status: 'active entity retrieved',
-    //     data: [{
-    //       entity: V.aE(),
-    //       drawNav: true,
-    //       mapData: [
-    //         {
-    //           type: 'Feature',
-    //           geometry: V.aE().geometry,
-    //           profile: V.aE().profile,
-    //           thumbnail: V.aE().thumbnail,
-    //           path: V.aE().path
-    //         }
-    //       ]
-    //     }]
-    //   };
-    // }
     else {
       query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
         if ( res.success ) {
@@ -63,7 +42,11 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       const entity = query.data[0];
 
-      V.setState( 'active', { lastViewed: entity.fullId } );
+      V.setState( 'active', {
+        lastViewed: entity.fullId,
+        lastViewedUuidE: entity.uuidE,
+        lastViewedUuidP: entity.uuidP,
+      } );
 
       return {
         success: true,

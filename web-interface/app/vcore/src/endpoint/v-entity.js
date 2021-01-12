@@ -508,18 +508,32 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
         console.log( 'RESPONSE:', res );
 
-        V.setCache( 'viewed', 'clear' ); // TODO: could be more granular
+        if ( res.success ) {
+          V.setCache( 'viewed', 'clear' ); // TODO: could be more granular
 
-        /* Only update state if activeEntity was edited, not a managed entity */
-
-        if (
-          'MongoDB' == V.getSetting( 'entityLedger' ) &&
-          V.getState( 'activeEntity' ).fullId == res.data[0].fullId
-        ) {
-          V.setState( 'activeEntity', 'clear' );
-          V.setState( 'activeEntity', res.data[0] );
+          /** Only update state if activeEntity was edited, not a managed entity */
+          if (
+            'Firebase' == V.getSetting( 'entityLedger' ) &&
+            [ V.aE().uuidE, V.aE().uuidP ].includes( res.data[0].a )
+          ) {
+            getEntity( V.aE().uuidE ).then( res => {
+              if ( res.success ) {
+                V.setState( 'activeEntity', 'clear' );
+                V.setState( 'activeEntity', res.data[0] ); // pass object
+              }
+            } );
+          }
+          else if (
+            'MongoDB' == V.getSetting( 'entityLedger' ) &&
+            V.aE().fullId == res.data[0].fullId
+          ) {
+            V.setState( 'activeEntity', 'clear' );
+            V.setState( 'activeEntity', res.data[0] );
+          }
         }
+
         return res;
+
       } );
     }
 
