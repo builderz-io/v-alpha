@@ -114,9 +114,13 @@ function filterEntities( filter ) {
   const q = filter.query.toLowerCase();
   return colE.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => Object.values( val ).filter( entity =>
-      entity.m.toLowerCase().includes( q ) ||
-      entity.i.toLowerCase().includes( q )
+    .then( val => Object.values( val ).filter( E => {
+      let strings = [ E.a, E.d, E.m, E.i ];
+      strings = E.search ? strings.concat( [ E.search.a, E.search.b, E.search.c, E.search.d ] ) : strings;
+      const text = strings.join( ' ' ).toLowerCase();
+      const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;
+      return role && text.includes( q );
+    }
     ) );
 }
 
@@ -146,6 +150,9 @@ async function setFields( col, { input }, context ) {
   ) {
     return new Promise( resolve => {
 
+      /** Track searchable fields in entity db */
+      data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;
+
       /** Write auth data into auth db */
       data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
 
@@ -172,6 +179,9 @@ async function setFields( col, { input }, context ) {
     context.a && objToUpdate.x.b.includes( context.d )
   ) {
 
+    /** Track searchable fields in entity db */
+    objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
+
     /** If title in entity is being updated, run title validation checks */
     if (
       objToUpdate.b.includes( '/e' ) &&
@@ -186,12 +196,6 @@ async function setFields( col, { input }, context ) {
         return Promise.resolve( { error: '-5003 combination of title and tag already exists' } );
       }
     }
-
-    /**
-     * Cast Firebase-compatible object with paths, e.g.
-     *      {'m': {'a': 'hello world'}}
-     *   => {'m/a': 'hello world'}
-     */
 
     const fields = castObjectPaths( data );
 
@@ -213,22 +217,29 @@ async function setFields( col, { input }, context ) {
 }
 
 function castObjectPaths( data ) {
+
+  /**
+   * Cast Firebase-compatible object with paths, e.g.
+   *      {'m': {'a': 'hello world'}}
+   *   => {'m/a': 'hello world'}
+   */
+
   const newObj = {};
   for ( const k in data ) {
     if ( typeof data[k] == 'object' ) {
       for ( const k2 in data[k] ) {
         if ( typeof data[k][k2] == 'object' ) {
           for ( const k3 in data[k][k2] ) {
-            newObj[k + '/' + k2 + '/' + k3] = data[k][k2][k3];
+            data[k][k2][k3] ? newObj[k + '/' + k2 + '/' + k3] = data[k][k2][k3] : null;
           }
         }
         else {
-          newObj[k + '/' + k2] = data[k][k2];
+          data[k][k2] ? newObj[k + '/' + k2] = data[k][k2] : null;
         }
       }
     }
     else {
-      newObj[k] = data[k];
+      data[k] ? newObj[k] = data[k] : null;
     }
   }
 
@@ -240,6 +251,23 @@ function setNewExpiryDate( context ) {
   const expires = String( unix + 60 * 60 * 24 * 365 * 2 );
   const input = { input: { a: context.m, y: { c: expires } } };
   setFields( colE, input, context );
+}
+
+function trackSearchableFields( uuidE, data ) {
+  const track = {
+    search: {
+      a: data.m ? data.m.a ? data.m.a : undefined : undefined,  // description
+      b: data.m ? data.m.b ? data.m.b : undefined : undefined,  // email
+      c: data.n ? data.n.b ? data.n.b : undefined : undefined,  // base Location
+      d: data.o ? data.o.n ? data.o.n : undefined : undefined,  // image name on upload
+    },
+  };
+
+  const fields = castObjectPaths( track );
+
+  return new Promise( resolve => {
+    colE.child( uuidE ).update( fields, () => resolve( track ) );
+  } );
 }
 
 module.exports = resolvers;

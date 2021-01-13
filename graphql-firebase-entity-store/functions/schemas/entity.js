@@ -22,6 +22,8 @@ const types = {
       y: DatesE      // dates and status
       z: ChangeLogE
 
+      search: Search        // track searchable profile fields
+
       holders: [String]     // mixin of fullIds of holders
       holderOf: [String]    // mixin of fullIds of entities held
       auth: AuthMixin       // mixin of Auth
@@ -53,6 +55,14 @@ const types = {
   ChangeLogE: `
     {
       a: [EntryE]      // logging changes to this document // ONLY on first change
+    }
+  `,
+  Search: `
+    {
+      a: String       // description
+      b: String       // email
+      c: String       // base Location
+      d: String       // image name on upload
     }
   `,
   AuthMixin: `

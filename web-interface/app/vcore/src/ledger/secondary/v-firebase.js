@@ -218,6 +218,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const a = V.getState( 'active' ).lastViewedUuidP;
 
     let m, n, o;
+    let returnFields = '';
 
     switch ( data.field ) {
     case 'properties.description':
@@ -242,6 +243,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         b: data.data.value,
         z: data.data.rand,
       };
+      returnFields = 'n { a b z }';
       break;
 
     case 'images':
@@ -260,7 +262,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ 'a error' }
+                  ${ 'a ' + returnFields + ' error' }
                 }
               }
             `;
