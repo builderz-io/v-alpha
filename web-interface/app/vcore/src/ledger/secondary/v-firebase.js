@@ -116,8 +116,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       d: data.uuidE,
       e: data.uuidP,
       f: data.uPhrase,
-      i: data.evmCredentials.privateKey ? data.evmCredentials.address : undefined,
-      j: data.evmCredentials.privateKey,
+      i: data.evmCredentials.address,
+      j: data.evmCredentials.privateKey || undefined,
     };
 
     const variables = {

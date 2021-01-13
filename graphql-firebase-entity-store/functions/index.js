@@ -20,9 +20,11 @@ const server = new ApolloServer( {
   playground: false,
   context: async ( { req } ) => {
     const token = req.headers.authorization;
+    const host = req.headers.referer.split( '/' )[2];
     // console.log( 111, token );
-    if ( token == '' ) { return {} }
+    if ( token == '' ) { return { host: host } }
     const user = await resolvers.Query.getAuth( undefined, { token: token } );
+    user[0] ? user[0].host = host : null;
     // console.log( 999, user );
     return user[0];
 

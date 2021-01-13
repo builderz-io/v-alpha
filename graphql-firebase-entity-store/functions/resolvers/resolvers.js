@@ -24,12 +24,12 @@ const resolvers = {
         return findByUuide( context, args.a );
       }
       else {
-        return mapSnap( colE );
+        return getAllEntities( context );
       }
     },
     getProfiles: ( parent, args ) => mapProfiles( args.array ),
     getAuth: ( parent, args ) => findByToken( args.token ),
-    getEntityQuery: ( parent, args ) => filterEntities( args.filter ),
+    getEntityQuery: ( parent, args, context ) => filterEntities( context, args.filter ),
   },
   Mutation: {
     setEntity: ( parent, input, context ) => setFields( colE, input, context ),
@@ -37,29 +37,29 @@ const resolvers = {
   },
 };
 
-function mapSnap( col ) {
-  return col.once( 'value' )
+function getAllEntities( context ) {
+  return colE.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => Object.keys( val ).map( key => val[key] ) );
+    .then( val => Object.values( val ).filter( E => E.g == context.host ) );
 }
 
 function findByFullId( context, m, n ) {
-  const match = function( entity ) {
-    return entity.m == m && entity.n == n;
+  const match = function( E ) {
+    return E.m == m && E.n == n;
   };
   return getSingleEntity( context, match );
 }
 
 function findByEvmAddress( context, i ) {
-  const match = function( entity ) {
-    return entity.i == i;
+  const match = function( E ) {
+    return E.i == i;
   };
   return getSingleEntity( context, match );
 }
 
 function findByUuide( context, a ) {
-  const match = function( entity ) {
-    return entity.a == a;
+  const match = function( E ) {
+    return E.a == a;
   };
   return getSingleEntity( context, match );
 }
@@ -110,7 +110,7 @@ function findByToken( token ) {
     .then( val => [ Object.values( val ).find( auth => auth.f == token ) ] );
 }
 
-function filterEntities( filter ) {
+function filterEntities( context, filter ) {
   const q = filter.query.toLowerCase();
   return colE.once( 'value' )
     .then( snap => snap.val() )
@@ -119,7 +119,7 @@ function filterEntities( filter ) {
       strings = E.search ? strings.concat( [ E.search.a, E.search.b, E.search.c, E.search.d ] ) : strings;
       const text = strings.join( ' ' ).toLowerCase();
       const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;
-      return role && text.includes( q );
+      return role && text.includes( q ) && E.g == context.host;
     }
     ) );
 }
