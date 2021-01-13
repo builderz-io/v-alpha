@@ -239,6 +239,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       geometry: geometry,
 
+      imageName: thumbnail ? thumbnail.originalName : undefined,
       tinyImageDU: tinyImage ? tinyImage.dataUrl : undefined,
       thumbnailDU: thumbnail ? thumbnail.dataUrl : undefined,
       mediumImageDU: mediumImage ? mediumImage.dataUrl : undefined,

@@ -135,7 +135,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setProfile( data ) {
-
     const a = data.uuidP;
     const b = data.contextP;
     const d = data.uuidE; // note that this is NOT creatorUuid
@@ -156,6 +155,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       a: data.tinyImageDU,
       b: data.thumbnailDU,
       c: data.mediumImageDU,
+      n: data.imageName,
     };
 
     const x = {
@@ -249,6 +249,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         a: data.data.tiny.dataUrl,
         b: data.data.thumb.dataUrl,
         c: data.data.medium.dataUrl,
+        n: data.data.thumb.originalName,
       };
       break;
     }

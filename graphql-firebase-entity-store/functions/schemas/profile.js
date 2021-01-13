@@ -41,6 +41,7 @@ const types = {
       a: String       // tiny  // data URI
       b: String       // thumb
       c: String       // medium
+      n: String       // name on upload
     }
   `,
   RelationsP: `
