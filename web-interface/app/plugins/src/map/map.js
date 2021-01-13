@@ -50,7 +50,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   function view( features ) {
 
-    if ( !features || !features.length ) {
+    if ( !features || !features.length || features[0] == undefined ) {
       return;
     }
 

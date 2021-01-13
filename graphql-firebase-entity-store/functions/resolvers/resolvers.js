@@ -115,7 +115,7 @@ function filterEntities( filter ) {
   return colE.once( 'value' )
     .then( snap => snap.val() )
     .then( val => Object.values( val ).filter( E => {
-      let strings = [ E.a, E.d, E.m, E.i ];
+      let strings = [ E.a, E.d, E.m, E.n, E.m, E.o, E.i ]; // title + tag AND title + special tag
       strings = E.search ? strings.concat( [ E.search.a, E.search.b, E.search.c, E.search.d ] ) : strings;
       const text = strings.join( ' ' ).toLowerCase();
       const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;

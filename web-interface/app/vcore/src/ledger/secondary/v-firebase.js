@@ -361,6 +361,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   async function getFirebase( data, whichEndpoint ) {
 
+    /** Query entities */
+
+    let E;
+
     if ( 'entity by uPhrase' == whichEndpoint ) {
       const auth = await getAuth( data );
       if ( !auth.errors && auth.data.getAuth[0] != null ) {
@@ -370,31 +374,38 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         return V.successFalse( 'get auth doc' );
       }
     }
-    if ( 'entity by query' == whichEndpoint ) {
+    else if ( 'entity by query' == whichEndpoint ) {
       const search = await getEntityQuery( data );
-      console.log( search );
+
       if ( !search.errors && search.data.getEntityQuery[0] != null ) {
-        return V.successTrue( 'got entities by query', search.data.getEntityQuery );
+        E = search;
       }
       else {
         return V.successFalse( 'get entities by query' );
       }
     }
+    else {
+      E = await getEntities( data, whichEndpoint );
+    }
 
-    /** Query entities */
+    /** Query profiles for E fetched regularly or by query */
 
-    const entities = await getEntities( data, whichEndpoint );
+    if (
+      !E.errors &&
+      (
+        ( E.data.getEntity && E.data.getEntity[0] != null ) ||
+        ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
+      )
+    ) {
+      const entitiesArray = E.data.getEntity || E.data.getEntityQuery;
 
-    /** Query profiles for entities fetched */
-
-    if ( !entities.errors && entities.data.getEntity[0] != null ) {
-      const profiles = await getProfiles( entities.data.getEntity );
+      const P = await getProfiles( entitiesArray );
 
       /** Combine profile and entity data */
 
-      if ( !profiles.errors && profiles.data.getProfiles[0] != null ) {
-        const combined = entities.data.getEntity.map(
-          ( item, i ) => castEntityData( item, profiles.data.getProfiles[i] )
+      if ( !P.errors && P.data.getProfiles[0] != null ) {
+        const combined = entitiesArray.map(
+          ( item, i ) => castEntityData( item, P.data.getProfiles[i] )
         );
         return V.successTrue( 'got entities and profiles', combined );
       }

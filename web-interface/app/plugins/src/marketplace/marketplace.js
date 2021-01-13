@@ -21,11 +21,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( search && search.query ) {
       Object.assign( search, { role: whichRole } );
       isSearch = true;
-      query = await V.getQuery( search ).then( res => {
-        if ( res.success ) {
-          return res;
-        }
-      } );
+      query = await V.getQuery( search );
+      // .then( res => {
+      //   if ( res.success ) {
+      //     return res;
+      //   }
+      // } );
     }
     else if ( cache && !cache.data.length ) {
       let counter = 0;
