@@ -11,6 +11,8 @@ const types = {
       n: Geometry
       o: Images
 
+      q: Questionnaire
+
       x: RelationsP
       y: DatesP
       z: ChangeLogP
@@ -42,6 +44,20 @@ const types = {
       b: String       // thumb
       c: String       // medium
       n: String       // name on upload
+    }
+  `,
+  Questionnaire: `
+    {
+      q1: String     // optional questionnaire, can vary for each network
+      q2: String
+      q3: String
+      q4: String
+      q5: String
+      q6: String
+      q7: String
+      q8: String
+      q9: String
+      q10: String
     }
   `,
   RelationsP: `

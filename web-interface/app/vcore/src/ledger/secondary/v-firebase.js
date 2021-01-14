@@ -13,7 +13,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f j }';
-  const singleP = 'm { a b c m n } n { a b } o { a b c }';
+  const singleP = 'm { a b c m n } n { a b } o { a b c } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -79,6 +79,18 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         evmCredentials: {
           privateKey: E.auth ? E.auth.j : undefined,
         },
+      },
+      questionnaire: {
+        q1: P.q ? P.q.q1 : undefined,
+        q2: P.q ? P.q.q2 : undefined,
+        q3: P.q ? P.q.q3 : undefined,
+        q4: P.q ? P.q.q4 : undefined,
+        q5: P.q ? P.q.q5 : undefined,
+        q6: P.q ? P.q.q6 : undefined,
+        q7: P.q ? P.q.q7 : undefined,
+        q8: P.q ? P.q.q8 : undefined,
+        q9: P.q ? P.q.q9 : undefined,
+        q10: P.q ? P.q.q10 : undefined,
       },
     };
   }
@@ -217,8 +229,16 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     console.log( 'UPDATING PROFILE: ', data );
     const a = V.getState( 'active' ).lastViewedUuidP;
 
-    let m, n, o;
+    let m, n, o, q;
     let returnFields = '';
+
+    if ( data.field.includes( 'questionnaire' ) ) {
+      const n = data.field.replace( 'questionnaire.q', '' );
+      q = {};
+      for ( let i = 1; i <= 10; i++ ) {
+        n == i ? q['q' + n] = data.data : null;
+      }
+    }
 
     switch ( data.field ) {
     case 'properties.description':
@@ -257,7 +277,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const variables = {
-      input: { a, m, n, o },
+      input: { a, m, n, o, q },
     };
 
     const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
