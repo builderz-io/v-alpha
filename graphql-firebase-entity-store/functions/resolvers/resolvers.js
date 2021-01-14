@@ -167,10 +167,10 @@ async function setFields( context, { input }, col ) {
     return updateInNamespace( context, data, objToUpdate, col );
   }
   else if ( !context.a ) {
-    return Promise.resolve( { error: '-5001 not authenticated to update' } );
+    return Promise.resolve( { error: '-5001 not authenticated to update', a: data.a } );
   }
   else {
-    return Promise.resolve( { error: '-5002 not authorized to update' } );
+    return Promise.resolve( { error: '-5002 not authorized to update', a: data.a } );
   }
 }
 
@@ -207,11 +207,11 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
   ) {
     const title = require( './cast-title' ).castEntityTitle( data.m, 'Person' ); // eslint-disable-line global-require
     if ( !title.success ) {
-      return Promise.resolve( { error: '-5003 ' + title.message } );
+      return Promise.resolve( { error: '-5003 ' + title.message, a: data.a } );
     }
     const exists = await findByFullId( context, data.m, objToUpdate.n );
     if ( exists[0].a ) {
-      return Promise.resolve( { error: '-5003 combination of title and tag already exists' } );
+      return Promise.resolve( { error: '-5003 combination of title and tag already exists', a: data.a } );
     }
   }
 
