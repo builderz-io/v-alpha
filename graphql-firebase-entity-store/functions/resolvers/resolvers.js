@@ -32,8 +32,8 @@ const resolvers = {
     getEntityQuery: ( parent, args, context ) => filterEntities( context, args.filter ),
   },
   Mutation: {
-    setEntity: ( parent, input, context ) => setFields( colE, input, context ),
-    setProfile: ( parent, input, context ) => setFields( colP, input, context ),
+    setEntity: ( parent, input, context ) => setFields( context, input, colE ),
+    setProfile: ( parent, input, context ) => setFields( context, input, colP ),
   },
 };
 
@@ -130,7 +130,7 @@ function mapProfiles( a ) {
     .then( val => a.map( uuidP => val[uuidP] ) );
 }
 
-async function setFields( col, { input }, context ) {
+async function setFields( context, { input }, col ) {
 
   /** Cast a copy of input */
   const data = JSON.parse( JSON.stringify( input ) );
@@ -145,71 +145,26 @@ async function setFields( col, { input }, context ) {
    * If no object to update was found, initialize a new set of data.
    * Either use client or server side initialisation.
    */
+
   if (
     !objToUpdate && settings.useClientData
   ) {
-    return new Promise( resolve => {
-      if ( data.c === 'Person' ) {
-        require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
-      }
-
-      /** Track searchable fields in entity db */
-      data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;
-
-      /** Write auth data into auth db */
-      data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
-
-      /** Then omit the auth data and write entity data into entity db */
-      const omitAuth = JSON.parse( JSON.stringify( data ) );
-      delete omitAuth.auth;
-
-      // TODO: post-write data should be resolved, not pre-write data
-      col.child( data.a ).update( omitAuth, () => resolve( data ) );
-    } );
+    return initializeNewNamespace( context, data, col );
   }
   else if (
     !objToUpdate && !settings.useClientData
   ) {
-    return new Promise( resolve => {
-      // TODO: initializeEntity( data )
-    } );
+    // TODO: castNamespace then initializeNewNamespace
   }
 
   /**
    * If an object to update was found, check authentication and authorization.
    */
+
   else if (
     context.a && objToUpdate.x.b.includes( context.d )
   ) {
-
-    /** Track searchable fields in entity db */
-    objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
-
-    /** If title in entity is being updated, run title validation checks */
-    if (
-      objToUpdate.b.includes( '/e' ) &&
-      ( data.m == '' || data.m )
-    ) {
-      const title = require( './cast-title' ).castEntityTitle( data.m, 'Person' ); // eslint-disable-line global-require
-      if ( !title.success ) {
-        return Promise.resolve( { error: '-5003 ' + title.message } );
-      }
-      const exists = await findByFullId( context, data.m, objToUpdate.n );
-      if ( exists[0].a ) {
-        return Promise.resolve( { error: '-5003 combination of title and tag already exists' } );
-      }
-    }
-
-    const fields = castObjectPaths( data );
-
-    /** Never update uuid */
-    delete fields.a;
-
-    /** Update single fields */
-
-    return new Promise( resolve => {
-      col.child( data.a ).update( fields, () => resolve( data ) );
-    } );
+    return updateInNamespace( context, data, objToUpdate, col );
   }
   else if ( !context.a ) {
     return Promise.resolve( { error: '-5001 not authenticated to update' } );
@@ -217,6 +172,59 @@ async function setFields( col, { input }, context ) {
   else {
     return Promise.resolve( { error: '-5002 not authorized to update' } );
   }
+}
+
+function initializeNewNamespace( context, data, col ) {
+  return new Promise( resolve => {
+    if ( data.c === 'Person' ) {
+      require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
+    }
+
+    /** Track searchable fields in entity db */
+    data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;
+
+    /** Write auth data into auth db */
+    data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
+
+    /** Then omit the auth data and write entity data into entity db */
+    const omitAuth = JSON.parse( JSON.stringify( data ) );
+    delete omitAuth.auth;
+
+    // TODO: post-write data should be resolved, not pre-write data
+    col.child( data.a ).update( omitAuth, () => resolve( data ) );
+  } );
+}
+
+async function updateInNamespace( context, data, objToUpdate, col ) {
+
+  /** Track searchable fields in entity db */
+  objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
+
+  /** If title in entity is being updated, run title validation checks */
+  if (
+    objToUpdate.b.includes( '/e' ) &&
+        ( data.m == '' || data.m )
+  ) {
+    const title = require( './cast-title' ).castEntityTitle( data.m, 'Person' ); // eslint-disable-line global-require
+    if ( !title.success ) {
+      return Promise.resolve( { error: '-5003 ' + title.message } );
+    }
+    const exists = await findByFullId( context, data.m, objToUpdate.n );
+    if ( exists[0].a ) {
+      return Promise.resolve( { error: '-5003 combination of title and tag already exists' } );
+    }
+  }
+
+  const fields = castObjectPaths( data );
+
+  /** Never update uuid */
+  delete fields.a;
+
+  /** Update single fields */
+
+  return new Promise( resolve => {
+    col.child( data.a ).update( fields, () => resolve( data ) );
+  } );
 }
 
 function castObjectPaths( data ) {
@@ -249,13 +257,6 @@ function castObjectPaths( data ) {
   return newObj;
 }
 
-function setNewExpiryDate( context ) {
-  const unix = Math.floor( Date.now() / 1000 );
-  const expires = String( unix + 60 * 60 * 24 * 365 * 2 );
-  const input = { input: { a: context.m, y: { c: expires } } };
-  setFields( colE, input, context );
-}
-
 function trackSearchableFields( uuidE, data ) {
   const track = {
     search: {
@@ -271,6 +272,13 @@ function trackSearchableFields( uuidE, data ) {
   return new Promise( resolve => {
     colE.child( uuidE ).update( fields, () => resolve( track ) );
   } );
+}
+
+function setNewExpiryDate( context ) {
+  const unix = Math.floor( Date.now() / 1000 );
+  const expires = String( unix + 60 * 60 * 24 * 365 * 2 );
+  const input = { input: { a: context.m, y: { c: expires } } };
+  setFields( colE, input, context );
 }
 
 module.exports = resolvers;
