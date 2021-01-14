@@ -241,16 +241,16 @@ function castObjectPaths( data ) {
       for ( const k2 in data[k] ) {
         if ( typeof data[k][k2] == 'object' ) {
           for ( const k3 in data[k][k2] ) {
-            data[k][k2][k3] ? newObj[k + '/' + k2 + '/' + k3] = data[k][k2][k3] : null;
+            data[k][k2][k3] != undefined ? newObj[k + '/' + k2 + '/' + k3] = data[k][k2][k3] : null;
           }
         }
         else {
-          data[k][k2] ? newObj[k + '/' + k2] = data[k][k2] : null;
+          data[k][k2] != undefined ? newObj[k + '/' + k2] = data[k][k2] : null;
         }
       }
     }
     else {
-      data[k] ? newObj[k] = data[k] : null;
+      data[k] != undefined ? newObj[k] = data[k] : null;
     }
   }
 
@@ -260,10 +260,10 @@ function castObjectPaths( data ) {
 function trackSearchableFields( uuidE, data ) {
   const track = {
     search: {
-      a: data.m ? data.m.a ? data.m.a : undefined : undefined,  // description
-      b: data.m ? data.m.b ? data.m.b : undefined : undefined,  // email
-      c: data.n ? data.n.b ? data.n.b : undefined : undefined,  // base Location
-      d: data.o ? data.o.n ? data.o.n : undefined : undefined,  // image name on upload
+      a: data.m ? data.m.a : undefined,  // description
+      b: data.m ? data.m.b : undefined,  // email
+      c: data.n ? data.n.b : undefined,  // base Location
+      d: data.o ? data.o.n : undefined,  // image name on upload
     },
   };
 

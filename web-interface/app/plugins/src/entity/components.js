@@ -281,7 +281,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       setField( 'geometry.baseLocation', {
         lat: gen.lat,
         lng: gen.lng,
-        value: undefined,
+        value: '',
         rand: true,
       } );
     }
