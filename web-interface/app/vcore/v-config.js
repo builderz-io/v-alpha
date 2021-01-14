@@ -108,7 +108,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     },
     rinkeby1: {
       contractAddress: '0x23f1d397Bc94439C6159D618855d6D176CEad4E0', // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1', // builderz.io
-      rpc: 'https://rinkeby.infura.io/v3/32ec6f4ab5544ec3a45473458c3a1638',
+      rpc: '',
     },
     ropstenDevelop: {
       contractAddress: '0x87a100DFe128616e1e53e499EB0ae99Ff9Cf0d8c', // daily rice coin

@@ -7,6 +7,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const firebaseEndpoint = 'http://localhost:5001/entity-namespace/us-central1/api/v1';
+
   /**
    * Single Entity View returns all relevant fields.
    * Fields may be undefined.
@@ -360,7 +362,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function fetchFirebase( query, variables ) {
-    return fetch( 'http://localhost:5001/entity-namespace/us-central1/api/v1', {
+    return fetch( firebaseEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

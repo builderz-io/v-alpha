@@ -1,4 +1,5 @@
 node_modules/
+credentials.js
 entity-namespace-creds.json
 entity-profile-creds.json
 entity-authentication-creds.json

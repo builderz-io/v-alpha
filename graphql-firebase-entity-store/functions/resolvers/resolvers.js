@@ -149,6 +149,9 @@ async function setFields( col, { input }, context ) {
     !objToUpdate && settings.useClientData
   ) {
     return new Promise( resolve => {
+      if ( data.c === 'Person' ) {
+        require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
+      }
 
       /** Track searchable fields in entity db */
       data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;
