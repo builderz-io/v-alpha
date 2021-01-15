@@ -1,4 +1,10 @@
-// defines Entity schema
+/**
+ * Defines Entity schema
+ *
+ * Note: auth and profile data, generated client-side, are submitted by client
+ * to retain the idea to move this data to decentralized tech later on.
+ *
+ */
 
 const types = {
   Entity: `
@@ -24,10 +30,11 @@ const types = {
 
       search: Search        // track searchable profile fields
 
-      holders: [String]     // mixin of fullIds of holders
-      holderOf: [String]    // mixin of fullIds of entities held
-      auth: AuthMixin       // mixin of Auth
-      error: String         // mixin of error message, e.g. "not authorized to update"
+      holders: [String]       // mixin of fullIds of holders
+      holderOf: [String]      // mixin of fullIds of entities held
+      auth: AuthMixin         // mixin of auth data - see note above
+      profile: ProfileMixin   // mixin of some profile data - see note above
+      error: String           // mixin of error message, e.g. "not authorized to update"
     }
   `,
   RelationsE: `
@@ -78,6 +85,20 @@ const types = {
       j: String        // evm address private key
 
       w: [String]      // auth log
+    }
+  `,
+  ProfileMixin: `
+    {
+      desc: String
+      target: Int
+      unit: String
+      lngLat: [Float]
+      loc: String,
+      locRand: Boolean
+      tinyImg: String
+      thumb: String
+      medImg: String
+      imgName: String
     }
   `,
 };

@@ -20,7 +20,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   /**
    * Preview View returns only a few fields:
    * UuidE, Type, UuidP, Title and Tag (from Entity)
-   * Description, Location name, Thumbnail image (from Profile)
+   * Description, Lng/Lat, Thumbnail image (from Profile)
    */
 
   const previewsE = 'a c d m n';
@@ -28,7 +28,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function castEntityData( E, P ) {
+  function castReturnedEntityAndProfileData( E, P ) {
 
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
@@ -99,6 +99,45 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setEntity( data ) {
 
+    const query = `mutation SetNewEntity( $input: InputEntity! ) {
+                setEntity(input: $input) {
+                  ${ singleE }
+                }
+              }
+            `;
+
+    const variables = {
+      input: castNewEntityData( data ),
+    };
+
+    return fetchFirebase( query, variables );
+  }
+
+  function setProfile( data ) {
+
+    const query = `mutation SetNewProfile( $input: InputProfile! ) {
+                setProfile(input: $input) {
+                  ${ singleP }
+                }
+              }
+            `;
+
+    const variables = {
+      input: castNewProfileData( data ),
+    };
+
+    return fetchFirebase( query, variables );
+  }
+
+  function castNewEntityData( data ) {
+
+    /**
+     * casts a full set of entity data, to be used when
+     * server-side initialisation of entity is disabled.
+     * Some of this data is also used for server side initialisation (e.g. title).
+     *
+     */
+
     const a = data.uuidE;
     const b = data.contextE;
     const c = data.typeE;
@@ -124,6 +163,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       z: data.statusCode,
     };
 
+    /**
+     * send a set of auth data together with entity data, in case
+     * server-side initialisation of entity is disabled.
+     */
+
     const auth = {
       a: data.uuidA,
       b: data.contextA,
@@ -134,21 +178,34 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       j: data.evmCredentials.privateKey || undefined,
     };
 
-    const variables = {
-      input: { a, b, c, d, e, g, i, j, m, n, x, y, auth },
+    /**
+     * send the user-defined parts of the profile data together with entity data
+     * to optionally enable server-side initialisation of entity.
+     */
+
+    const profile = {
+      desc: data.props.descr,
+      target: data.props.target,
+      unit: data.props.unit,
+      lngLat: data.geometry.coordinates,
+      loc: data.geometry.baseLocation,
+      locRand: data.geometry.rand,
+      tinyImg: data.tinyImageDU,
+      thumb: data.thumbnailDU,
+      medImg: data.mediumImageDU,
+      imgName: data.imageName,
     };
 
-    const query = `mutation SetNewEntity( $input: InputEntity! ) {
-                setEntity(input: $input) {
-                  ${ singleE }
-                }
-              }
-            `;
-
-    return fetchFirebase( query, variables );
+    return { a, b, c, d, e, g, i, j, m, n, x, y, auth, profile };
   }
 
-  function setProfile( data ) {
+  function castNewProfileData( data ) {
+
+    /**
+     * casts a full set of profile data, to be used when
+     * server-side initialisation of entity is disabled.
+     */
+
     const a = data.uuidP;
     const b = data.contextP;
     const d = data.uuidE; // note that this is NOT creatorUuid
@@ -173,7 +230,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const x = {
-      a: data.creatorUuid ? data.creatorUuid : data.uuidE,
+      a: data.creatorUuid,
       b: data.heldBy,
     };
 
@@ -181,18 +238,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       a: String( data.unix ),
     };
 
-    const variables = {
-      input: { a, b, d, m, n, o, x, y },
-    };
-
-    const query = `mutation SetNewProfile( $input: InputProfile! ) {
-                setProfile(input: $input) {
-                  ${ singleP }
-                }
-              }
-            `;
-
-    return fetchFirebase( query, variables );
+    return { a, b, d, m, n, o, x, y };
   }
 
   function setEntityField( data ) {
@@ -443,7 +489,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
       if ( !P.errors && P.data.getProfiles[0] != null ) {
         const combined = entitiesArray.map(
-          ( item, i ) => castEntityData( item, P.data.getProfiles[i] )
+          ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
         );
         return V.successTrue( 'got entities and profiles', combined );
       }
@@ -460,9 +506,12 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     if ( 'entity' == whichEndpoint ) {
       return setEntity( data )
         .then( async E => {
+          if ( E.errors ) {
+            throw new Error( E.errors[0].message );
+          }
           const P = await setProfile( data );
-          const entityData = castEntityData( E.data.setEntity, P.data.setProfile );
-          return V.successTrue( 'set entity', entityData );
+          const combined = castReturnedEntityAndProfileData( E.data.setEntity, P.data.setProfile );
+          return V.successTrue( 'set entity', combined );
         } )
         .catch( err => V.successFalse( 'set entity', err ) );
     }

@@ -186,12 +186,13 @@ function initializeNewNamespace( context, data, col ) {
     /** Write auth data into auth db */
     data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
 
-    /** Then omit the auth data and write entity data into entity db */
-    const omitAuth = JSON.parse( JSON.stringify( data ) );
-    delete omitAuth.auth;
+    /** Then omit the auth and profile data and write entity data into entity db */
+    const omit = JSON.parse( JSON.stringify( data ) );
+    delete omit.auth;
+    delete omit.profile;
 
     // TODO: post-write data should be resolved, not pre-write data
-    col.child( data.a ).update( omitAuth, () => resolve( data ) );
+    col.child( data.a ).update( omit, () => resolve( data ) );
   } );
 }
 
