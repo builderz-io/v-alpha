@@ -12,7 +12,7 @@ const entitySetup = {
 };
 
 const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
-const charWhitelist = /[^0-9^a-z^A-Z^\s]/g;
+const charWhitelist = /[^0-9^a-z^A-Z^\s^']/g;
 
 /* ============== error strings ============== */
 

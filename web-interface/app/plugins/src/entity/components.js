@@ -582,11 +582,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const questions = V.getSetting( 'neQuestionnaire' );
     const responses = entity.questionnaire;
 
-    if ( ['Business', 'Institution'].includes( entity.role ) && ( responses || editable ) ) {
+    let count = 0;
+
+    for ( const k in responses ) {
+      responses[k] ? count += 1 : null;
+    }
+
+    if ( ['Business', 'Institution'].includes( entity.role ) && ( count || editable ) ) {
       const $innerContent = V.cN( {
         t: 'div',
         h: questions.map( question => {
-          const response = responses ? responses['q' + question.qid] || false : false;
+          const response = responses['q' + question.qid] || false;
           return V.cN( {
             t: 'div',
             h: [
