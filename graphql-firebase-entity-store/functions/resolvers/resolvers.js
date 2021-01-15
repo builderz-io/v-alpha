@@ -213,6 +213,8 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
     if ( exists[0].a ) {
       return Promise.resolve( { error: '-5003 combination of title and tag already exists', a: data.a } );
     }
+
+    data.m = title.data[0]; // overwrite field with formattedTitle
   }
 
   const fields = castObjectPaths( data );

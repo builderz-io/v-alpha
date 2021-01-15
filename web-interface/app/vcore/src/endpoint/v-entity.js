@@ -26,7 +26,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     invalidTitle: 'Invalid title',
     invalidChar: 'Title: invalid character',
     maxLength: 'Title: max 14 characters in a word',
-    min2Adjecent: 'Title: min 2 adjecent letters',
+    min2Adjecent: 'Title: min 2 adjacent letters',
     maxHuman: 'Title: max 3 words',
     maxEntity: 'Title: max 7 words',
     tooLong: 'Title: max 200 characters',

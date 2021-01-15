@@ -213,13 +213,29 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       break;
     }
 
+    /**
+     *  Run a title validation check already in frontend.
+     *  Mimics the server response on unsuccessful validation.
+     */
+
+    if ( m || m == '' ) {
+      const title = V.castEntityTitle( m );
+      if ( !title.success ) {
+        return Promise.resolve( {
+          data: {
+            setEntity: { a: a, error: '-5003 ' + title.message },
+          },
+        } );
+      }
+    }
+
     const variables = {
       input: { a, j, m, y },
     };
 
     const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
                 setEntity(input: $input) {
-                  ${ 'a error' }
+                  ${ 'a error' /* a confirms successful response */ }
                 }
               }
             `;
@@ -284,7 +300,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
                 setProfile(input: $input) {
-                  ${ 'a ' + returnFields + ' error' }
+                  ${ 'a ' + returnFields + ' error'  /* a confirms successful response */ }
                 }
               }
             `;
@@ -302,20 +318,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
            }`;
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
-      console.log( 222, 'by EVM Address' );
+      console.log( 222, 'by EVM Address:', data );
       queryE = `query GetEntityByEvmAddress {
           getEntity (i:"${ data }") { ${ singleE } }
         }`;
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
-      console.log( 333, 'by FullId' );
+      console.log( 333, 'by FullId:', tT.title, tT.tag );
       queryE = `query GetEntityByFullId {
           getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
         }`;
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
-      console.log( 444, 'by uuidE' );
+      console.log( 444, 'by uuidE:', data );
       queryE = `query GetEntityByUuidE {
           getEntity (a:"${ data }") { ${ singleE } }
         }`;
