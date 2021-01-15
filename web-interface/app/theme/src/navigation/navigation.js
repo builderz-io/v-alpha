@@ -510,9 +510,43 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     reset();
   }
 
+  function drawEntityNavPill( data ) {
+
+    /**
+     * In case Navigation.draw() is not called, this function
+     * can draw an entity item (e.g. on entity initialisation)
+     *
+     */
+
+    /** Create nav object */
+    const obj = {
+      uuidE: data.uuidE,
+      title: data.title,
+      tag: data.tag,
+      initials: V.castInitials( data.title ),
+      path: data.path,
+      draw: function( path ) { Profile.draw( path ) },
+    };
+    data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+
+    /** Set object into state */
+    V.setNavItem( 'entityNav', obj );
+
+    /** Update cookies */
+    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNav = V.getState( 'entityNav' );
+    syncNavOrder( entityNavOrder, entityNav );
+    V.setCookie( 'entity-nav-order', entityNavOrder );
+
+    /** Place into view */
+    const $pill = NavComponents.entityPill( obj );
+    V.getNode( 'entity-nav > ul' ).prepend( $pill );
+  }
+
   return {
     draw: draw,
     drawReset: drawReset,
+    drawEntityNavPill: drawEntityNavPill,
   };
 
 } )();

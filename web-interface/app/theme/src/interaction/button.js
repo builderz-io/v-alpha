@@ -45,6 +45,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           V.setCache( 'all', 'clear' );
           V.setCache( res.data[0].role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
+          Navigation.drawEntityNavPill( res.data[0] );
           User.draw( res.data[0].path );
           Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );

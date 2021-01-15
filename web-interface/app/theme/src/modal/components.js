@@ -164,6 +164,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       if ( res.success ) {
         console.log( 'response: ', res );
         V.setCache( 'entire cache', 'clear' );
+        Navigation.drawEntityNavPill( res.data[0] );
         setActiveEntityState( res );
       }
       else {

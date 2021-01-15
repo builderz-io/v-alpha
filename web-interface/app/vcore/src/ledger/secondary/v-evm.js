@@ -115,7 +115,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
       // console.log( 'local network may be there' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
-      provider = new Web3.providers.HttpProvider(  V.getApiKey().rpc );
+      provider = new Web3.providers.HttpProvider(  V.getApiKey( 'rpc' ) );
       V.setState( 'browserWallet', false );
       // return {
       //   success: false,
