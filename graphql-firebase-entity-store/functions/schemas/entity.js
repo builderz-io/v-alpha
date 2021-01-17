@@ -89,7 +89,7 @@ const types = {
   `,
   ProfileMixin: `
     {
-      desc: String
+      descr: String
       target: Int
       unit: String
       lngLat: [Float]

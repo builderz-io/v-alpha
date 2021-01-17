@@ -7,7 +7,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const firebaseEndpoint = 'http://localhost:5001/entity-namespace/us-central1/api/v1';
+  const settings = {
+    useClientData: true,
+    firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+  };
 
   /**
    * Single Entity View returns all relevant fields.
@@ -32,6 +35,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
+
+    /** cast some random geometry */
+    const geo = V.castRandLatLng();
 
     return {
       uuidE: E.a || P.d,
@@ -62,7 +68,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         mediumImage: P.o ? P.o.c : undefined,
       },
       geometry: {
-        coordinates: P.n ? P.n.a : undefined,
+        coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
         baseLocation: P.n ? P.n.b : undefined,
         type: 'Point',
       },
@@ -179,21 +185,22 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     /**
-     * send the user-defined parts of the profile data together with entity data
-     * to optionally enable server-side initialisation of entity.
+     * send the user-defined parts of the profile data together with entity data,
+     * in case server-side initialisation of entity is enabled.
      */
 
     const profile = {
-      desc: data.props.descr,
+      descr: data.props.descr,
+      email: data.props.email,
       target: data.props.target,
       unit: data.props.unit,
       lngLat: data.geometry.coordinates,
       loc: data.geometry.baseLocation,
-      locRand: data.geometry.rand,
       tinyImg: data.tinyImageDU,
       thumb: data.thumbnailDU,
       medImg: data.mediumImageDU,
       imgName: data.imageName,
+      evmIssuer: data.evmIssuer,
     };
 
     return { a, b, c, d, e, g, i, j, m, n, x, y, auth, profile };
@@ -213,7 +220,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const m = {
       a: data.props.descr,
       b: data.props.email,
-      c: data.props.prefLangs,
       m: data.props.target,
       n: data.props.unit,
     };
@@ -245,10 +251,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     console.log( 'UPDATING ENTITY: ', data );
     const a = V.getState( 'active' ).lastViewedUuidE;
 
-    let j, m, y;
+    let c, j, m, y;
 
     switch ( data.field ) {
     case 'profile.title':
+      c = V.getLastViewed().role;
       m = data.data;
       break;
     case 'receivingAddresses.evm':
@@ -276,7 +283,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const variables = {
-      input: { a, j, m, y },
+      input: { a, c, j, m, y },
     };
 
     const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
@@ -424,7 +431,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function fetchFirebase( query, variables ) {
-    return fetch( firebaseEndpoint, {
+    return fetch( settings.firebaseEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -502,20 +509,35 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function setFirebase( data, whichEndpoint  ) {
+  async function setFirebase( data, whichEndpoint  ) {
     if ( 'entity' == whichEndpoint ) {
+
+      /** initializes a new namespace */
       return setEntity( data )
         .then( async E => {
           if ( E.errors ) {
             throw new Error( E.errors[0].message );
           }
-          const P = await setProfile( data );
-          const combined = castReturnedEntityAndProfileData( E.data.setEntity, P.data.setProfile );
+          let combined;
+          if ( settings.useClientData ) {
+
+            /** If client data is used, set the profile */
+            const P = await setProfile( data );
+            combined = castReturnedEntityAndProfileData( E.data.setEntity, P.data.setProfile );
+          }
+          else {
+
+            /** If server is used, get the profile */
+            const P = await getProfiles( [ E.data.setEntity ] );
+            combined = castReturnedEntityAndProfileData( E.data.setEntity, P.data.getProfiles[0] );
+          }
           return V.successTrue( 'set entity', combined );
         } )
         .catch( err => V.successFalse( 'set entity', err ) );
     }
     else if ( 'entity update' == whichEndpoint ) {
+
+      /** Updates an existing namespace */
       if ( ['profile.title', 'receivingAddresses.evm', 'status.active'].includes( data.field ) ) {
         return setEntityField( data )
           .then( E => {

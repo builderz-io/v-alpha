@@ -184,7 +184,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function castRecipient( messageParts ) {
     const tag = messageParts.pop();
-    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
+    return V.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
   }
 
   function reduceNumbers( array ) {

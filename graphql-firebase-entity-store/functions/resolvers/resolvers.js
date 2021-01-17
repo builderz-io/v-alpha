@@ -69,9 +69,9 @@ async function getSingleEntity( context, match ) {
   /** retrieve the entity */
   const DB = await colE.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => Object.values( val ) );
+    .then( val => val ? Object.values( val ) : null );
 
-  const entity = DB.find( match );
+  const entity = DB ? DB.find( match ) : null;
 
   if ( !entity ) {
     return Promise.resolve( [{
@@ -147,14 +147,14 @@ async function setFields( context, { input }, col ) {
    */
 
   if (
-    !objToUpdate && settings.useClientData
-  ) {
-    return initializeNewNamespace( context, data, col );
-  }
-  else if (
     !objToUpdate && !settings.useClientData
   ) {
-    // TODO: castNamespace then initializeNewNamespace
+    return initNamespace( context, data );
+  }
+  else if (
+    !objToUpdate && settings.useClientData
+  ) {
+    return initNamespaceFromClientData( context, data, col );
   }
 
   /**
@@ -174,7 +174,68 @@ async function setFields( context, { input }, col ) {
   }
 }
 
-function initializeNewNamespace( context, data, col ) {
+async function initNamespace( context, data ) {
+
+  const VCore = require( './v-core' );
+
+  /** Check whether the title is valid. */
+
+  const title = VCore.castEntityTitle( data.m, data.c ); // eslint-disable-line global-require
+  if ( !title.success ) {
+    return { error: '-5003 ' + title.message, a: data.a };
+  }
+
+  /** Check whether the target amount is valid. */
+
+  const target = VCore.castTarget( data.profile.target, data.profile.unit, data.c );
+
+  if ( !target.success ) {
+    return { error: '-5005 ' + target.message, a: data.a };
+  }
+
+  /** Cast tag and check whether the title and tag combi exist. */
+
+  let tag = VCore.castTag(); // eslint-disable-line global-require
+  let exists = await findByFullId( context, data.m, tag );
+  let counter = 0;
+
+  while ( exists[0].a && counter <= 10 ) {
+    counter += 1;
+    tag = VCore.castTag(); // eslint-disable-line global-require
+    exists = await findByFullId( context, data.m, tag );
+  }
+
+  if ( counter == 10 ) {
+    return { error: '-5003 combination of title and tag already exists', a: data.a };
+  }
+  else {
+    data.n = tag;
+  }
+
+  /** Cast full set of namespace fields and store in DB. */
+
+  const namespace = require( './cast-namespace' ).castNamespace( context, data ); // eslint-disable-line global-require
+
+  const setA = await new Promise( resolve => {
+    colA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
+  } );
+
+  const setP = await new Promise( resolve => {
+    colP.child( namespace.profile.a ).update( castObjectPaths( namespace.profile ), () => resolve( 'set Profile' ) );
+  } );
+
+  const setE = await new Promise( resolve => {
+    colE.child( namespace.entity.a ).update( castObjectPaths( namespace.entity ), () => resolve( 'set Entity' ) );
+  } );
+  // console.log( setA, setP, setE );
+
+  /** Mixin the auth and return entity Doc */
+  namespace.entity.auth = namespace.auth;
+  return namespace.entity;
+
+}
+
+function initNamespaceFromClientData( context, data, col ) {
   return new Promise( resolve => {
     if ( data.c === 'Person' ) {
       // require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
@@ -206,7 +267,7 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
     objToUpdate.b.includes( '/e' ) &&
         ( data.m == '' || data.m )
   ) {
-    const title = require( './cast-title' ).castEntityTitle( data.m, 'Person' ); // eslint-disable-line global-require
+    const title = require( './cast-entity-title' ).castEntityTitle( data.m, data.c ); // eslint-disable-line global-require
     if ( !title.success ) {
       return Promise.resolve( { error: '-5003 ' + title.message, a: data.a } );
     }

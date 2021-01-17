@@ -351,12 +351,31 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castUuid( input ) {
     // creation adapted from https://github.com/uuidjs/uuid
     // encode/decode adapted from https://gist.github.com/brianboyko/1b652a1bf85c48bc982ab1f2352246c8
+    // btoa/atob from https://stackoverflow.com/questions/23097928/node-js-throws-btoa-is-not-defined-error/38446960#38446960
     // on 6th May 2020
+
+    const universalBtoa = str => {
+      try {
+        return btoa( str );
+      }
+      catch ( err ) {
+        return Buffer.from( str ).toString( 'base64' );
+      }
+    };
+
+    const universalAtob = b64Encoded => {
+      try {
+        return atob( b64Encoded );
+      }
+      catch ( err ) {
+        return Buffer.from( b64Encoded, 'base64' ).toString();
+      }
+    };
 
     // converts a UUID to a URL-safe version of base 64.
     const encode = uuid => {
       const stripped = uuid.replace( /-/g, '' ); // remove dashes from uuid
-      const true64 = btoa(
+      const true64 = universalBtoa(
         String.fromCharCode.apply(
           null,
           stripped
@@ -376,7 +395,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     // takes a URL-safe version of base 64 and converts it back to a UUID.
     const decode = url64 => {
       const true64 = url64.replace( /_/g, '/' ).replace( /-/g, '+' ); // replace url-safe characters with base 64 characters
-      const raw = atob( true64 ); // decode the raw base 64 into binary buffer.
+      const raw = universalAtob( true64 ); // decode the raw base 64 into binary buffer.
 
       let hex = ''; // create a string of length 0
       let hexChar; // mostly because you don't want to initialize a variable inside a loop.
@@ -395,7 +414,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     };
 
     if ( !input ) {
-      let uuidV4, encoded;
+      let uuidV4, encoded, nodeUuidV4;
 
       const bytesToUuid = ( buf, offset ) => {
         const i = offset || 0;
@@ -486,7 +505,22 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         return buf || bytesToUuid( rnds );
       };
 
-      uuidV4 = v4();
+      const universalV4 = () => {
+        try {
+
+          /** browser */
+          return v4();
+        }
+        catch ( err ) {
+
+          /** node */
+          !nodeUuidV4 ? { v4: nodeUuidV4 } = require( 'uuid' ) : null;
+          return nodeUuidV4();
+        }
+      };
+
+      uuidV4 = universalV4();
+
       encoded = encode( uuidV4 );
 
       while (
@@ -499,7 +533,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
         ['x', 'X'].includes( encoded.charAt( 1 ) )
       ) {
-        uuidV4 = v4();
+        uuidV4 = universalV4();
         encoded = encode( uuidV4 );
       }
 
@@ -525,43 +559,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     const incMinMax = Math.floor( Math.random() * ( max - min + 1 ) ) + min;
 
     return incMinMax;
-  }
-
-  function castTag() {
-    // debug
-    // return '#2121';
-
-    // for demo content creation
-    // if ( V.getSetting( 'demoContent' ) ) {
-    //   return '#2121';
-    // }
-
-    let continueDice = true;
-
-    while ( continueDice ) {
-      const number1 = String( castRandomInt( 2, 9 ) );
-      const number2 = String( castRandomInt( 1, 9 ) );
-      const number3 = String( castRandomInt( 2, 9 ) );
-
-      if (
-        number2 != number1 &&
-        number3 != number1 &&
-        number3 != number2 &&
-        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
-        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
-        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
-        number1 + number2 != '69' && // sexual reference
-        number3 + number2 != '69' &&
-        number1 + number2 != '13' && // bad luck in Germany
-        number3 + number2 != '13' &&
-        number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21'
-      ) {
-        continueDice = false;
-        const tag = '#' + number1 + number2 + number3 + number2;
-        return tag;
-      }
-    }
   }
 
   function getIcon( which ) {
@@ -646,7 +643,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;
-  V.castTag = castTag;
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
@@ -672,7 +668,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castShortAddress: castShortAddress,
     castUuid: castUuid,
     castRandomInt: castRandomInt,
-    castTag: castTag,
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,

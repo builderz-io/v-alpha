@@ -11,6 +11,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     entityDocVersion: '/e1/v0',
     profileDocVersion: '/p1/v0',
     authDocVersion: '/a1/v0',
+    daysToExpiry: 365 * 2,
     useWhitelist: true, // allow only chars in whitelist
     maxEntityWords: 7,  // max allowed words in entity names (not humans)
     maxHumanWords: 3,  // max allowed words in human entity names
@@ -70,7 +71,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     /** Check whether the target amount is valid. */
 
-    const target = castTarget( entityData );
+    const target = castTarget( entityData.target, entityData.unit, entityData.role );
 
     if ( !target.success ) {
       return target; // return the error object
@@ -78,7 +79,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     /** Cast tag and fullId. */
 
-    const tag = V.castTag();
+    const tag = castTag();
     const fullId = title.data[0] + ' ' + tag;
 
     /**
@@ -104,7 +105,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const uuidA = V.castUuid().base64Url;
     const unix = Math.floor( Date.now() / 1000 );
 
-    let geometry, uPhrase, creatorUuid, heldBy, block, rpc, contract, tinyImage, thumbnail, mediumImage;
+    let geometry = {};
+
+    let uPhrase, creatorUuid, heldBy, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
@@ -114,15 +117,15 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         rand: false,
       };
     }
-    else {
-      const gen = V.castRandLatLng();
-      geometry = {
-        coordinates: [ gen.lng, gen.lat ],
-        baseLocation: entityData.location || undefined,
-        type: 'Point',
-        rand: true,
-      };
-    }
+    // else {
+    //   const gen = V.castRandLatLng();
+    //   geometry = {
+    //     coordinates: [ gen.lng, gen.lat ],
+    //     // baseLocation: entityData.location || undefined,
+    //     type: 'Point',
+    //     rand: true,
+    //   };
+    // }
 
     if ( entityData.uPhrase ) {
       uPhrase = entityData.uPhrase; // for demo data
@@ -215,7 +218,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       issuer: window.location.host,
       unix: unix,
-      expires: unix + 60 * 60 * 24 * 365 * 2,
+      expires: unix + 60 * 60 * 24 * entitySetup.daysToExpiry,
 
       evmCredentials: {
         address: entityData.evmAddress,
@@ -234,7 +237,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: target.data[0],
         unit: entityData.unit || undefined,
         email: email,
-        prefLangs: undefined,
       },
 
       geometry: geometry,
@@ -262,43 +264,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       status: 'cast entity',
       data: [ entityCast ],
     };
-  }
-
-  function castTarget( entityData ) {
-    let error;
-
-    entityData.target == '' ? entityData.target = undefined : null;
-
-    if (  entityData.target ) {
-      entityData.unit == '' ? error = getString( ui.noUnit ) : null;
-      isNaN( entityData.target ) ? error = getString( ui.isNaN ) : null;
-    }
-
-    if ( ['pool'].includes( entityData.role ) ) {
-      entityData.unit == '' ? error = undefined : null;
-      !entityData.target ? error = getString( ui.noTarget ) : null;
-      // entityData.target.toLowerCase().trim() == getString( ui.free ).trim() ? entityData.target = 0 : null;
-    }
-
-    Number( entityData.target ) > 9999 || Number( entityData.target ) < 0 ? error = getString( ui.targetRange ) : null;
-
-    if ( error ) {
-      return {
-        success: false,
-        endpoint: 'entity',
-        status: 'invalid target',
-        message: error,
-      };
-    }
-    else {
-      return {
-        success: true,
-        endpoint: 'entity',
-        status: 'cast entity target',
-        data: [ Number( entityData.target ) ],
-      };
-    }
-
   }
 
   /* ================== public methods ================== */
@@ -354,6 +319,80 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         data: [ formattedTitle ],
       };
     }
+  }
+
+  function castTag() {
+    // debug
+    // return '#2121';
+
+    // for demo content creation
+    // if ( V.getSetting( 'demoContent' ) ) {
+    //   return '#2121';
+    // }
+
+    let continueDice = true;
+
+    while ( continueDice ) {
+      const number1 = String( V.castRandomInt( 2, 9 ) );
+      const number2 = String( V.castRandomInt( 1, 9 ) );
+      const number3 = String( V.castRandomInt( 2, 9 ) );
+
+      if (
+        number2 != number1 &&
+        number3 != number1 &&
+        number3 != number2 &&
+        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
+        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
+        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
+        number1 + number2 != '69' && // sexual reference
+        number3 + number2 != '69' &&
+        number1 + number2 != '13' && // bad luck in Germany
+        number3 + number2 != '13' &&
+        number1 + number2 != '21' && // special VI tag
+        number3 + number2 != '21'
+      ) {
+        continueDice = false;
+        const tag = '#' + number1 + number2 + number3 + number2;
+        return tag;
+      }
+    }
+  }
+
+  function castTarget( target, unit, role )  {
+    let error;
+
+    target == '' ? target = undefined : null;
+
+    if (  target ) {
+      unit == '' ? error = getString( ui.noUnit ) : null;
+      isNaN( target ) ? error = getString( ui.isNaN ) : null;
+    }
+
+    if ( ['Pool'].includes( role ) ) {
+      unit == '' ? error = undefined : null;
+      !target ? error = getString( ui.noTarget ) : null;
+      // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
+    }
+
+    Number( target ) > 9999 || Number( target ) < 0 ? error = getString( ui.targetRange ) : null;
+
+    if ( error ) {
+      return {
+        success: false,
+        endpoint: 'entity',
+        status: 'invalid target',
+        message: error,
+      };
+    }
+    else {
+      return {
+        success: true,
+        endpoint: 'entity',
+        status: 'cast entity target',
+        data: [ Number( target ) ],
+      };
+    }
+
   }
 
   async function getEntityBalance( entity = V.aE() ) {
@@ -547,6 +586,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.castEntityTitle = castEntityTitle;
+  V.castTag = castTag;
+  V.castTarget = castTarget;
   V.getEntity = getEntity;
   V.setEntity = setEntity;
   V.getEntityBalance = getEntityBalance;
@@ -554,6 +595,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     castEntityTitle: castEntityTitle,
+    castTag: castTag,
+    castTarget: castTarget,
     getEntity: getEntity,
     setEntity: setEntity,
     getEntityBalance: getEntityBalance,
