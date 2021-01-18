@@ -91,6 +91,7 @@ const types = {
   ProfileMixin: `
     {
       descr: String
+      email: String
       target: Int
       unit: String
       lngLat: [Float]

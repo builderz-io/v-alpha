@@ -8,7 +8,7 @@ const colP = profileDb.database().ref( 'profiles' );
 const colA = authDb.database().ref( 'authentication' );
 
 const settings = {
-  useClientData: true,
+  useClientData: false,
 };
 
 const resolvers = {
@@ -190,6 +190,10 @@ async function setFields( context, { input }, col ) {
 
 async function initNamespace( context, data ) {
 
+  if ( data.c === 'Person' ) {
+    // require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
+  }
+
   const VCore = require( './v-core' );
 
   /** Check whether the title is valid. */
@@ -245,6 +249,10 @@ async function initNamespace( context, data ) {
 
   /** Mixin the auth and return entity Doc */
   namespace.entity.auth = namespace.auth;
+
+  /** Track searchable fields in entity db */
+  trackSearchableFields( namespace.entity.a, namespace.profile );
+
   return namespace.entity;
 
 }

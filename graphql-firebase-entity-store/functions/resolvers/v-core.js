@@ -72,10 +72,10 @@ module.exports.castEntityTitle = ( title, role ) => {
   else {
 
     const formattedTitle = titleArray.map( function( string ) {
-      if ( string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+      if ( 'Person' == role && string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
       }
-      if ( string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+      if ( 'Person' == role && string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
       }
       else {
@@ -123,7 +123,7 @@ module.exports.castTarget = ( target, unit, role ) => {
       success: true,
       endpoint: 'entity',
       status: 'cast entity target',
-      data: [ Number( target ) ],
+      data: [ Number( target ) || undefined ],
     };
   }
 

@@ -8,7 +8,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const settings = {
-    useClientData: true,
+    useClientData: false,
     firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
   };
 
