@@ -115,9 +115,23 @@ function filterEntities( context, filter ) {
   return colE.once( 'value' )
     .then( snap => snap.val() )
     .then( val => Object.values( val ).filter( E => {
-      let strings = [ E.a, E.d, E.m, E.n, E.m, E.o, E.i ]; // title + tag AND title + special tag
-      strings = E.search ? strings.concat( [ E.search.a, E.search.b, E.search.c, E.search.d ] ) : strings;
-      const text = strings.join( ' ' ).toLowerCase();
+      let text;
+      if ( E.search && E.search.z && E.search.z.length ) {
+
+        /** uses keyword cache to filter */
+        text = E.search.z;
+      }
+      else {
+
+        /** creates a new keyword cache */
+        let strings = [ E.m, E.n ];
+        strings = E.o ? strings.concat( [ E.m, E.o ] ) : strings; // title + special tag
+        strings = E.search ? strings.concat( [ E.search.a, E.search.b, E.search.c, E.search.d ] ) : strings;
+        strings = strings.concat( [ E.i, E.a, E.d ] );
+        text = strings.join( ' ' );
+        colE.child( E.a ).update( { 'search/z': text } );
+      }
+      text = text.toLowerCase();
       const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;
       return role && text.includes( q ) && E.g == context.host;
     }
@@ -259,6 +273,9 @@ function initNamespaceFromClientData( context, data, col ) {
 
 async function updateInNamespace( context, data, objToUpdate, col ) {
 
+  /** Clear keyword cache */
+  colE.child( objToUpdate.b.includes( '/e' ) ? objToUpdate.a : objToUpdate.d ).update( { 'search/z': '' } );
+
   /** Track searchable fields in entity db */
   objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
 
@@ -267,7 +284,8 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
     objToUpdate.b.includes( '/e' ) &&
         ( data.m == '' || data.m )
   ) {
-    const title = require( './cast-entity-title' ).castEntityTitle( data.m, data.c ); // eslint-disable-line global-require
+    const title = require( './v-core' ).castEntityTitle( data.m, data.c ); // eslint-disable-line global-require
+
     if ( !title.success ) {
       return Promise.resolve( { error: '-5003 ' + title.message, a: data.a } );
     }

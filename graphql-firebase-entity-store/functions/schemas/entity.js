@@ -70,6 +70,7 @@ const types = {
       b: String       // email
       c: String       // base Location
       d: String       // image name on upload
+      z: String       // keyword cache
     }
   `,
   AuthMixin: `
