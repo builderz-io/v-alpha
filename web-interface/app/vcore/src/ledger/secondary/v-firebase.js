@@ -375,34 +375,36 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getEntities( data, whichEndpoint ) {
-    let queryE;
+    let where;
+
+    let queryE = `query GetEntity ( $where: WhereEntity ){
+        getEntity(where: $where) { ${ singleE } }
+      }`;
 
     if ( 'entity by role' == whichEndpoint ) {
       console.log( 111, 'by Role' );
-      queryE = `query GetEntitiesByRole {
-             getEntity { ${ previewsE } }
+      where = {};
+      queryE = `query GetEntitiesByRole ( $where: WhereEntity ){
+             getEntity(where: $where) { ${ previewsE } }
            }`;
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222, 'by EVM Address:', data );
-      queryE = `query GetEntityByEvmAddress {
-          getEntity (i:"${ data }") { ${ singleE } }
-        }`;
+      where = { i: data };
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
       console.log( 333, 'by FullId:', tT.title, tT.tag );
-      queryE = `query GetEntityByFullId {
-          getEntity (m:"${ tT.title }",n:"${ tT.tag }") { ${ singleE } }
-        }`;
+      where = { m: tT.title, n: tT.tag };
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
       console.log( 444, 'by uuidE:', data );
-      queryE = `query GetEntityByUuidE {
-          getEntity (a:"${ data }") { ${ singleE } }
-        }`;
+      where = { a: data };
     }
-    return fetchFirebase( queryE );
+    const variables = {
+      where: where,
+    };
+    return fetchFirebase( queryE, variables );
     // .then( res => {
     //   console.log( res );
     //   return res;
@@ -429,7 +431,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getEntityQuery( data ) {
     console.log( 100, 'by query' );
 
-    const queryS = `query GetEntitiesByQuery( $filter: TitleFilter! ) {
+    const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
                       getEntityQuery(filter: $filter) {
                         ${ previewsE }
                       }

@@ -14,14 +14,14 @@ const settings = {
 const resolvers = {
   Query: {
     getEntity: ( parent, args, context ) => {
-      if ( args.m && args.n ) {
-        return findByFullId( context, args.m, args.n );
+      if ( args.where.m && args.where.n ) {
+        return findByFullId( context, args.where.m, args.where.n );
       }
-      else if ( args.i ) {
-        return findByEvmAddress( context, args.i );
+      else if ( args.where.i ) {
+        return findByEvmAddress( context, args.where.i );
       }
-      else if ( args.a ) {
-        return findByUuide( context, args.a );
+      else if ( args.where.a ) {
+        return findByUuide( context, args.where.a );
       }
       else {
         return getAllEntities( context );

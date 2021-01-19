@@ -14,17 +14,24 @@ const Entity = require( './entity' );
 const ServerSideInputs = require( './server-side-inputs' );
 
 const Filters = `
-  input TitleFilter {
+  input Filter {
     query: String
     role: String
+  }
+
+  input WhereEntity {
+    a: String
+    m: String
+    n: String
+    i: String
   }
 `;
 
 const Queries = `
   type Query {
     getAuth(token: String!): [Auth]
-    getEntityQuery(filter: TitleFilter!): [Entity]
-    getEntity(a: String, m: String, n: String, i: String): [Entity]
+    getEntityQuery(filter: Filter!): [Entity]
+    getEntity(where: WhereEntity): [Entity]
     getProfiles(array: [String!]): [Profile]
   }
 `;
