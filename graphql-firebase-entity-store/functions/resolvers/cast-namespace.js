@@ -88,20 +88,20 @@ module.exports.castNamespace = ( context, data ) => {
       d: uuidE,
 
       m: {
-        a: data.profile.descr,
-        b: data.profile.email,
-        m: data.profile.target,
-        n: data.profile.unit,
+        a: data.profileInputServerSide.descr,
+        b: data.profileInputServerSide.email,
+        m: data.profileInputServerSide.target,
+        n: data.profileInputServerSide.unit,
       },
       n: {
-        a: data.profile.lngLat,
-        b: data.profile.loc,
+        a: data.profileInputServerSide.lngLat,
+        b: data.profileInputServerSide.loc,
       },
       o: {
-        a: data.profile.tinyImg,
-        b: data.profile.thumb,
-        c: data.profile.medImg,
-        n: data.profile.imgName,
+        a: data.profileInputServerSide.tinyImg,
+        b: data.profileInputServerSide.thumb,
+        c: data.profileInputServerSide.medImg,
+        n: data.profileInputServerSide.imgName,
       },
 
       x: {
@@ -119,8 +119,8 @@ module.exports.castNamespace = ( context, data ) => {
       d: uuidE,
       e: uuidP,
       f: uPhrase,
-      i: data.auth.i,
-      j: data.auth.j,
+      i: data.authInputServerSide.i,
+      j: data.authInputServerSide.j,
     },
   };
 };

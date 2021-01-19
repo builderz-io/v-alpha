@@ -1,6 +1,3 @@
-String.prototype.uncomment = function() {
-  return this.replace( /\s+\/\/\s.+/g, '' );
-};
 
 module.exports.castTypeAndInputDefs = ( which, schema, schemaTypes ) => {
   const clean = schema.uncomment().trim();
@@ -18,4 +15,13 @@ function castInput( which, schema, schemaTypes ) {
     } );
   }
   return 'input Input' + which + ' ' + schema + '\n';
+}
+
+module.exports.castInputServerSideDefs = ( which, schema, schemaTypes ) => {
+  const clean = schema.uncomment().trim();
+  return castInputServerSide( which, clean );
+};
+
+function castInputServerSide( which, schema ) {
+  return 'input ' + which + ' ' + schema + '\n';
 }

@@ -33,7 +33,7 @@ const types = {
       holders: [String]       // mixin of fullIds of holders
       holderOf: [String]      // mixin of fullIds of entities held
       auth: AuthMixin         // mixin of auth data - see note above
-      profile: ProfileMixin   // mixin of some profile data - see note above
+
       error: String           // mixin of error message, e.g. "not authorized to update"
     }
   `,
@@ -86,21 +86,6 @@ const types = {
       j: String        // evm address private key
 
       w: [String]      // auth log
-    }
-  `,
-  ProfileMixin: `
-    {
-      descr: String
-      email: String
-      target: Int
-      unit: String
-      lngLat: [Float]
-      loc: String,
-      locRand: Boolean
-      tinyImg: String
-      thumb: String
-      medImg: String
-      imgName: String
     }
   `,
 };

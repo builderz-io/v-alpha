@@ -105,7 +105,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setEntity( data ) {
 
-    const query = `mutation SetNewEntity( $input: InputEntity! ) {
+    const query = `mutation SetNewEntity( $input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }! ) {
                 setEntity(input: $input) {
                   ${ singleE }
                 }
@@ -170,7 +170,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     /**
-     * send a set of auth data together with entity data, in case
+     * cast a full set of auth data, in case
      * server-side initialisation of entity is disabled.
      */
 
@@ -185,11 +185,21 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     /**
-     * send the user-defined parts of the profile data together with entity data,
+     * cast a small set of auth data (evm creds only),
      * in case server-side initialisation of entity is enabled.
      */
 
-    const profile = {
+    const authInputServerSide = {
+      i: data.evmCredentials.address,
+      j: data.evmCredentials.privateKey || undefined,
+    };
+
+    /**
+     * cast the user-defined parts of the profile data,
+     * in case server-side initialisation of entity is enabled.
+     */
+
+    const profileInputServerSide = {
       descr: data.props.descr,
       email: data.props.email,
       target: data.props.target,
@@ -203,7 +213,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       evmIssuer: data.evmIssuer,
     };
 
-    return { a, b, c, d, e, g, i, j, m, n, x, y, auth, profile };
+    return settings.useClientData
+      ? { a, b, c, d, e, g, i, j, m, n, x, y, auth }
+      : { a: '-', c, i, j, m, authInputServerSide, profileInputServerSide }; // a is required, but flags "none"
+
   }
 
   function castNewProfileData( data ) {
@@ -286,7 +299,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: { a, c, j, m, y },
     };
 
-    const query = `mutation SetEntityUpdate( $input: InputEntity! ) {
+    const query = `mutation SetEntityUpdate( $input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }! ) {
                 setEntity(input: $input) {
                   ${ 'a error' /* a confirms successful response */ }
                 }
@@ -351,7 +364,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: { a, m, n, o, q },
     };
 
-    const query = `mutation SetProfileUpdate( $input: InputProfile! ) {
+    const query = `mutation SetProfileUpdate( $input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }! ) {
                 setProfile(input: $input) {
                   ${ 'a ' + returnFields + ' error'  /* a confirms successful response */ }
                 }

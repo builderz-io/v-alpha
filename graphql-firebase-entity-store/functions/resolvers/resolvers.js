@@ -8,7 +8,7 @@ const colP = profileDb.database().ref( 'profiles' );
 const colA = authDb.database().ref( 'authentication' );
 
 const settings = {
-  useClientData: false,
+  useClientData: false, // also change in typeDefs.js
 };
 
 const resolvers = {
@@ -150,8 +150,8 @@ async function setFields( context, { input }, col ) {
   const data = JSON.parse( JSON.stringify( input ) );
 
   /** Get the profile or entity object to be updated */
-  const objToUpdate = await col.child( data.a ).once( 'value' )
-    .then( snap => snap.val() );
+  const objToUpdate = data.a != '-' ? await col.child( data.a ).once( 'value' )
+    .then( snap => snap.val() ) : undefined;
 
   /** Determine set new or update action */
 
@@ -205,7 +205,7 @@ async function initNamespace( context, data ) {
 
   /** Check whether the target amount is valid. */
 
-  const target = VCore.castTarget( data.profile.target, data.profile.unit, data.c );
+  const target = VCore.castTarget( data.profileInputServerSide.target, data.profileInputServerSide.unit, data.c );
 
   if ( !target.success ) {
     return { error: '-5005 ' + target.message, a: data.a };
@@ -269,10 +269,9 @@ function initNamespaceFromClientData( context, data, col ) {
     /** Write auth data into auth db */
     data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
 
-    /** Then omit the auth and profile data and write entity data into entity db */
+    /** Then omit the auth data and write entity data into entity db */
     const omit = JSON.parse( JSON.stringify( data ) );
     delete omit.auth;
-    delete omit.profile;
 
     // TODO: post-write data should be resolved, not pre-write data
     col.child( data.a ).update( omit, () => resolve( data ) );

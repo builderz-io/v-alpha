@@ -1,8 +1,17 @@
+String.prototype.uncomment = function() {
+  return this.replace( /\s+\/\/\s.+/g, '' );
+};
+
+const settings = {
+  useClientData: false, // also change in resolvers.js
+};
+
 const { gql } = require( 'apollo-server-express' );
 
 const Profile = require( './profile' );
-const Entity = require( './entity' );
 const Auth = require( './auth' );
+const Entity = require( './entity' );
+const ServerSideInputs = require( './server-side-inputs' );
 
 const Filters = `
   input TitleFilter {
@@ -22,11 +31,11 @@ const Queries = `
 
 const Mutations = `
   type Mutation {
-    setEntity(input: InputEntity!): Entity
-    setProfile(input: InputProfile!): Profile
+    setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
+    setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }
 `;
 
-const allDefs = gql`${ Filters + Queries + Mutations + Profile + Entity + Auth }`;
+const allDefs = gql`${ Filters + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
 
 module.exports = allDefs;
