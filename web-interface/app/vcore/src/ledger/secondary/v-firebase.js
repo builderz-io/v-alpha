@@ -17,7 +17,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f j }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f i j }';
   const singleP = 'm { a b c m n } n { a b } o { a b c } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
@@ -85,6 +85,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       auth: {
         uPhrase: E.auth ? E.auth.f : undefined,
         evmCredentials: {
+          address: E.auth ? E.auth.i : undefined,
           privateKey: E.auth ? E.auth.j : undefined,
         },
       },

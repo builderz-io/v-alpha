@@ -23,7 +23,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   V.setCache( 'preview', { data: [] } );
 
-  V.getEntity( 'preview' ).then( res => {
+  V.getEntity().then( res => {
     V.setCache( 'preview', res.data );
   } );
 

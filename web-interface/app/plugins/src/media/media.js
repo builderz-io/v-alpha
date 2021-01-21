@@ -15,7 +15,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = CanvasComponents.list();
 
-    const entities = await V.getEntity( which == '/media/moocs' ? 'mooc' : 'media' );
+    const entities = await V.getEntity( which == '/media/moocs' ? 'Mooc' : 'MediaObject' );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
@@ -99,7 +99,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       //   use: {
       //     button: 'plus search',
       //     form: 'new entity',
-      //     role: 'mooc',
+      //     role: 'Mooc',
       //   },
       //   draw: function() {
       //     Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );

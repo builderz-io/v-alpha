@@ -72,7 +72,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( 'preview' ).then( res => {
+      query = await V.getEntity().then( res => {
         if ( res.success ) {
           V.setCache( 'preview', res.data );
           return res;

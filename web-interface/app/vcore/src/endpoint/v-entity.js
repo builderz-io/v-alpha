@@ -543,7 +543,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     else {
       Object.assign( data, {
         entity: whichEntity,
-        // auth: V.getCookie( 'last-active-uphrase' ) ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' ) : ''
       } );
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
         console.log( 'RESPONSE:', res );

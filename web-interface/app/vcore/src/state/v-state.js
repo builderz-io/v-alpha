@@ -28,10 +28,10 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function setState( which, data ) {
 
-    /**
-     * sync Cookies also for activeAddress and activeEntity
-     *
-     */
+    /** sync cookie also for activeAddress */
+    if ( which == 'activeAddress' ) {
+      setCookie( 'last-active-address', data );
+    }
 
     if ( data == 'clear' ) {
       delete state[which];
@@ -48,14 +48,6 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     else {
       state[which] = data;
     }
-
-    if ( which == 'activeAddress' ) {
-      setCookie( 'last-active-address', data );
-    }
-    else if ( which == 'activeEntity' && data && data.auth && data.auth.uPhrase ) {
-      setCookie( 'last-active-uphrase', data.auth.uPhrase );
-    }
-
   }
 
   function aE() {

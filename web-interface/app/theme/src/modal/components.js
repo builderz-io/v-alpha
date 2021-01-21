@@ -157,18 +157,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       evmAddress: V.aA(), // TODO: allow for other chains
     };
 
-    V.setState( 'activeEntity', 'clear' );
-
     console.log( 'about to set entity: ', entityData );
     V.setEntity( entityData ).then( res => {
       if ( res.success ) {
-        console.log( 'response: ', res );
+        console.log( 'successfully set entity: ', res );
+        V.setState( 'activeEntity', 'clear' );
+        V.setState( 'activeEntity', res.data[0] );
+        V.setCookie( 'last-active-uphrase', res.data[0].auth.uPhrase );
+        V.setCookie( 'last-active-address', res.data[0].auth.evmCredentials.address );
         V.setCache( 'entire cache', 'clear' );
         Navigation.drawEntityNavPill( res.data[0] );
-        setActiveEntityState( res );
+        Join.draw( 'new entity was set up' );
       }
       else {
-        console.log( 'response: ', res );
+        console.log( 'could not set entity: ', res );
         e.target.addEventListener( 'click', handleSetEntity );
         e.target.innerHTML = getString( ui.nameProfile );
         V.getNode( '.joinform__response' ).innerHTML = res.message;
