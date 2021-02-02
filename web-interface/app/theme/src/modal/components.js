@@ -117,7 +117,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleGetEntity() {
     V.getEntity( V.getNode( '#loginform__uphrase' ).value )
       .then( authDoc => {
-        V.setCookie( 'last-active-uphrase', authDoc.data[0].f );
+        V.setAuth( authDoc.data[0].f );
+        // V.setCookie( 'last-active-uphrase', authDoc.data[0].f );
         V.setCookie( 'last-active-address', authDoc.data[0].i );
         return authDoc.data[0].i;
       } )
@@ -161,10 +162,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setEntity( entityData ).then( res => {
       if ( res.success ) {
         console.log( 'successfully set entity: ', res );
+
+        /** automatically join */
+        V.setAuth( res.data[0].auth.uPhrase );
+
+        /** set states, cookies and cache */
         V.setState( 'activeEntity', 'clear' );
         V.setState( 'activeEntity', res.data[0] );
-        V.setCookie( 'last-active-uphrase', res.data[0].auth.uPhrase );
-        V.setCookie( 'last-active-address', res.data[0].auth.evmCredentials.address );
+        // V.setCookie( 'last-active-uphrase', res.data[0].auth.uPhrase );
+        V.setCookie( 'last-active-address', res.data[0].evmCredentials.address );
         V.setCache( 'entire cache', 'clear' );
         Navigation.drawEntityNavPill( res.data[0] );
         Join.draw( 'new entity was set up' );
@@ -245,7 +251,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleDisconnect() {
     V.setCookie( 'last-active-address', 'clear' );
-    V.setCookie( 'last-active-uphrase', 'clear' );
+    // V.setCookie( 'last-active-uphrase', 'clear' );
     window.location.href = '/';
   }
 

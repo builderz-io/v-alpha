@@ -27,6 +27,12 @@ const Filters = `
   }
 `;
 
+const Jwt = `
+  type Jwt {
+    jwt: String
+  }
+`;
+
 const Queries = `
   type Query {
     getAuth(token: String!): [Auth]
@@ -38,11 +44,12 @@ const Queries = `
 
 const Mutations = `
   type Mutation {
+    setAuth: Jwt
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }
 `;
 
-const allDefs = gql`${ Filters + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
+const allDefs = gql`${ Filters + Jwt + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
 
 module.exports = allDefs;

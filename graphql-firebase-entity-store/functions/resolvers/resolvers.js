@@ -1,3 +1,6 @@
+const credentials = require( '../credentials/credentials' );
+const { sign } = require( 'jsonwebtoken' );
+
 // Connect to firebase database
 const namespaceDb = require( '../resources/databases-setup' ).namespaceDb;
 const profileDb = require( '../resources/databases-setup' ).profileDb;
@@ -32,10 +35,28 @@ const resolvers = {
     getEntityQuery: ( parent, args, context ) => filterEntities( context, args.filter ),
   },
   Mutation: {
+    setAuth: ( parent, __, context ) => setAuth( context ),
     setEntity: ( parent, input, context ) => setFields( context, input, colE ),
     setProfile: ( parent, input, context ) => setFields( context, input, colP ),
   },
 };
+
+function setAuth( context ) {
+  return {
+    jwt: sign(
+      {
+        user: {
+          a: context.a,
+          d: context.d,
+        },
+      },
+      credentials.jwtSignature,
+      {
+        expiresIn: 60 * 5,
+      },
+    ),
+  };
+}
 
 function getAllEntities( context ) {
   return colE.once( 'value' )

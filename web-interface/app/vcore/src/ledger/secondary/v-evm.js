@@ -45,7 +45,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'activeEntity', 'clear' );
       V.setState( 'activeAddress', 'clear' );
       V.setCookie( 'last-active-address', 'clear' );
-      V.setCookie( 'last-active-uphrase', 'clear' );
+      // V.setCookie( 'last-active-uphrase', 'clear' );
       V.setCookie( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }

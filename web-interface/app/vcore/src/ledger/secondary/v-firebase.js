@@ -12,6 +12,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
   };
 
+  let jwt;
+
   /**
    * Single Entity View returns all relevant fields.
    * Fields may be undefined.
@@ -452,9 +454,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': V.getCookie( 'last-active-uphrase' )
-          ? V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
-          : '',
+        'Authorization': jwt ? 'Bearer ' + jwt : '',
       },
       body: JSON.stringify( {
         query,
@@ -583,14 +583,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function setJwt( whichJwt ) {
+    jwt = whichJwt;
+  }
+
   /* ====================== export ====================== */
 
   V.getFirebase = getFirebase;
   V.setFirebase = setFirebase;
+  V.setJwt = setJwt;
 
   return {
     getFirebase: getFirebase,
     setFirebase: setFirebase,
+    setJwt: setJwt,
   };
 
 } )();

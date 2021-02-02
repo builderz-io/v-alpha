@@ -4,6 +4,8 @@ module.exports.float = {
   privKey: '0x ...',
 };
 
+module.exports.jwtSignature = '...',
+
 module.exports.auth = {
   type: 'service_account',
   project_id: ' ... ',
