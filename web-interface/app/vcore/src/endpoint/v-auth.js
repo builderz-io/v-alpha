@@ -19,7 +19,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   function fetchAuth() {
     console.log( 666, 'fetchAuth' );
     const queryA = `mutation SetEntityAuth {
-            setAuth { jwt }
+            setAuth { success message uuidE exp jwt }
           }`;
 
     return fetchFirebase( queryA );
@@ -37,19 +37,35 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
         query,
         variables: variables,
       } ),
+      credentials: 'include',
     } )
       .then( r => r.json() );
   }
 
   /* ================== public methods ================== */
 
-  function setAuth( whichUphrase ) {
+  async function setAuth( whichUphrase ) {
 
     uPhrase = whichUphrase;
 
-    fetchAuth().then( res => {
-      V.setJwt( res.data.setAuth.jwt );
+    const data = await fetchAuth().then( res => {
+      if ( res.data.setAuth.success ) {
+
+        /** Set JWT for Authorization header */
+        V.setJwt( res.data.setAuth.jwt );
+
+        /** Renew JWT before expiration */
+        setTimeout( setAuth, ( res.data.setAuth.exp * 0.95 ) * 1000 );
+
+        /** return the setAuth object (mainly to get uuidE) */
+        return V.successTrue( 'set auth', res.data.setAuth );
+      }
+      else {
+        return V.successFalse( 'set auth', res.data.setAuth.message );
+      }
     } );
+
+    return data;
   }
 
   /* ====================== export ====================== */

@@ -353,6 +353,33 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function returningUser() {
     if( !V.aE() ) {
+      V.setAuth()
+        .then( data => {
+          if ( data.success ) {
+            console.log( 'auth success' );
+            V.getEntity( data.data[0].uuidE )
+              .then( entity => {
+                V.setState( 'activeEntity', entity.data[0] );
+                Join.draw( 'new entity was set up' );
+              } );
+          }
+          else {
+            console.log( 'auth unsuccessful' );
+            if ( V.getCookie( 'last-active-address' ) && window.ethereum ) {
+              Join.draw( 'authenticate' );
+            }
+            else {
+              Join.launch(); // sets node: join button
+            }
+          }
+        } );
+
+    }
+  }
+
+  /*
+  function returningUser() {
+    if( !V.aE() ) {
       const returningWallet = V.getCookie( 'last-active-address' );
       const returningUphrase = V.getCookie( 'last-active-uphrase' );
 
@@ -378,7 +405,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       }
     }
   }
-
+*/
   function handleKeyboard( array ) {
     array.some( elem => {
       if ( V.getVisibility( '#' + elem ) ) {

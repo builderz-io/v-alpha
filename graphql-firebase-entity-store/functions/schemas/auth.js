@@ -9,6 +9,7 @@ const types = {
       e: String        // related profile document
 
       f: String        // auth string
+      g: String        // refreshToken
 
       i: String        // evm address
       j: String        // evm address private key

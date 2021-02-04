@@ -29,6 +29,10 @@ const Filters = `
 
 const Jwt = `
   type Jwt {
+    success: Boolean
+    message: String
+    uuidE: String
+    exp: Int
     jwt: String
   }
 `;

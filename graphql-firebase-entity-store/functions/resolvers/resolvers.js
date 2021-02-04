@@ -12,11 +12,12 @@ const colA = authDb.database().ref( 'authentication' );
 
 const settings = {
   useClientData: false, // also change in typeDefs.js
+  jwtExpiry: 60 * 10, // seconds
 };
 
 const resolvers = {
   Query: {
-    getEntity: ( parent, args, context ) => {
+    getEntity: ( parent, args, { context } ) => {
       if ( args.where.m && args.where.n ) {
         return findByFullId( context, args.where.m, args.where.n );
       }
@@ -31,18 +32,51 @@ const resolvers = {
       }
     },
     getProfiles: ( parent, args ) => mapProfiles( args.array ),
-    getAuth: ( parent, args ) => findByToken( args.token ),
-    getEntityQuery: ( parent, args, context ) => filterEntities( context, args.filter ),
+    getAuth: ( parent, args ) => findByUphraseOrRefreshToken( args.token ),
+    getEntityQuery: ( parent, args, { context } ) => filterEntities( context, args.filter ),
   },
   Mutation: {
-    setAuth: ( parent, __, context ) => setAuth( context ),
-    setEntity: ( parent, input, context ) => setFields( context, input, colE ),
-    setProfile: ( parent, input, context ) => setFields( context, input, colP ),
+    setAuth: ( parent, __, { context, res } ) => setAuth( context, res ),
+    setEntity: ( parent, { input }, { context } ) => setFields( context, input, colE ),
+    setProfile: ( parent, { input }, { context } ) => setFields( context, input, colP ),
   },
 };
 
-function setAuth( context ) {
+async function setAuth( context, res ) {
+  // https://hasura.io/blog/best-practices-of-using-jwt-with-graphql
+
+  /**
+   * If first visit or user is logged out, no context can be set.
+   * Hence return early.
+   */
+
+  if ( !context.a ) {
+    return {
+      success: false,
+      message: 'could not find an entity for setting up the context object',
+    };
+  }
+
+  const VCore = require( './v-core' );
+  const newRefreshToken = 'REFR' + VCore.castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
+
+  await new Promise( resolve => {
+    colA.child( context.a ).update( castObjectPaths( { g: newRefreshToken } ), () => resolve( 'set newRefreshToken' ) );
+  } );
+
+  const options = {
+    httpOnly: true,
+    // maxAge: 60 * 60 * 24 * 5 * 1000,
+    // secure: true,
+  };
+
+  res.cookie( 'refresh_token', newRefreshToken, options );
+
   return {
+    success: true,
+    message: 'successfully set refreshToken and sent cookie',
+    exp: settings.jwtExpiry,
+    uuidE: context.d,
     jwt: sign(
       {
         user: {
@@ -52,7 +86,7 @@ function setAuth( context ) {
       },
       credentials.jwtSignature,
       {
-        expiresIn: 60 * 5,
+        expiresIn: settings.jwtExpiry,
       },
     ),
   };
@@ -125,10 +159,10 @@ async function getSingleEntity( context, match ) {
   return [entity];
 }
 
-function findByToken( token ) {
+function findByUphraseOrRefreshToken( token ) {
   return colA.once( 'value' )
     .then( snap => snap.val() )
-    .then( val => [ Object.values( val ).find( auth => auth.f == token ) ] );
+    .then( val => [ Object.values( val ).find( auth => [auth.f, auth.g].includes( token ) ) ] );
 }
 
 function filterEntities( context, filter ) {
@@ -165,7 +199,7 @@ function mapProfiles( a ) {
     .then( val => a.map( uuidP => val[uuidP] ) );
 }
 
-async function setFields( context, { input }, col ) {
+async function setFields( context, input, col ) {
 
   /** Cast a copy of input */
   const data = JSON.parse( JSON.stringify( input ) );
