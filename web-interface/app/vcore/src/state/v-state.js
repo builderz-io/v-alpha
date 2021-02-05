@@ -49,6 +49,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     delete data.auth;
     V.setState( 'activeEntity', 'clear' );
     V.setState( 'activeEntity', data );
+    console.log( 'set active entity' );
+
   }
 
   function aE() {

@@ -357,23 +357,31 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .then( data => {
           if ( data.success ) {
             console.log( 'auth success' );
-            V.getEntity( data.data[0].uuidE )
-              .then( entity => {
-                V.setActiveEntity( entity.data[0] );
-                Join.draw( 'new entity was set up' );
-              } );
+            return data.data[0].uuidE;
           }
           else {
-            console.log( 'auth unsuccessful' );
-            if ( V.getCookie( 'last-active-address' ) && window.ethereum ) {
-              Join.draw( 'authenticate' );
-            }
-            else {
-              Join.launch(); // sets node: join button
-            }
+            throw new Error( 'could not set auth' );
+          }
+        } )
+        .then( uuidE => V.getEntity( uuidE ) )
+        .then( entity => {
+          if ( entity.success ) {
+            V.setActiveEntity( entity.data[0] );
+            Join.draw( 'new entity was set up' );
+          }
+          else {
+            throw new Error( 'could not get entity after set auth' );
+          }
+        } )
+        .catch( () =>  {
+          console.log( 'auth unsuccessful' );
+          if ( V.getCookie( 'last-active-address' ) && window.ethereum ) {
+            Join.draw( 'authenticate' );
+          }
+          else {
+            Join.launch(); // sets node: join button
           }
         } );
-
     }
   }
 

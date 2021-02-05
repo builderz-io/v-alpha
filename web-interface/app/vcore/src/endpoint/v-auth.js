@@ -17,7 +17,6 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function fetchAuth() {
-    console.log( 666, 'fetchAuth' );
     const queryA = `mutation SetEntityAuth {
             setAuth { success message uuidE exp jwt }
           }`;
@@ -45,6 +44,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function setAuth( whichUphrase ) {
+    console.log( 666, 'setAuth' );
 
     uPhrase = whichUphrase;
 

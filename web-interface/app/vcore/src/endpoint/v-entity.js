@@ -484,12 +484,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       ) {
         filter = 'symbolAddress';
       }
-      else if (
-        which.substr( 0, 2 ) == 'vx' &&
-        which.length == 18
-      ) {
-        filter = 'uPhrase';
-      }
+      // else if (
+      //   which.substr( 0, 2 ) == 'vx' &&
+      //   which.length == 18
+      // ) {
+      //   filter = 'uPhrase';
+      // }
       else if (
         new RegExp( /\s#\d{4}/ ).test( which )
       ) {

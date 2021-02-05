@@ -115,15 +115,30 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity() {
-    V.getEntity( V.getNode( '#loginform__uphrase' ).value )
-      .then( authDoc => {
-        V.setAuth( authDoc.data[0].f );
-        return authDoc.data[0].i;
+
+    V.setAuth( V.getNode( '#loginform__uphrase' ).value )
+      .then( data => {
+        if ( data.success ) {
+          console.log( 'auth success' );
+          return data.data[0].uuidE;
+        }
+        else {
+          throw new Error( 'could not set auth' );
+        }
       } )
-      .then( evmAddress => V.getEntity( evmAddress ) )
+      .then( uuidE => V.getEntity( uuidE ) )
       .then( entity => {
-        V.setActiveEntity( entity.data[0] );
-        Join.draw( 'new entity was set up' );
+        if ( entity.success ) {
+          V.setActiveEntity( entity.data[0] );
+          Join.draw( 'new entity was set up' );
+        }
+        else {
+          throw new Error( 'could not get entity after set auth' );
+        }
+      } )
+      .catch( () => {
+        console.log( 'auth unsuccessful' );
+        Join.launch();
       } );
   }
 
@@ -165,7 +180,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         console.log( 'successfully set entity: ', res );
 
         /** automatically join */
-        V.setAuth( res.data[0].auth.uPhrase );
+        V.setAuth( res.data[0].auth.uPhrase )
+          .then( data => {
+            if ( data.success ) {
+              console.log( 'auth success' );
+            }
+            else {
+              console.log( 'could not set auth after setting new entity' );
+            }
+          } );
 
         /** set state and cache */
         V.setActiveEntity( res.data[0] );

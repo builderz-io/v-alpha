@@ -422,14 +422,14 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryP );
   }
 
-  function getAuth( data ) {
-    console.log( 555, 'by uPhrase / get auth Doc only' );
-    const queryA = `query GetEntityAuth {
-            getAuth (token:"${ data }") { f i j }
-          }`;
-
-    return fetchFirebase( queryA );
-  }
+  // function getAuth( data ) {
+  //   console.log( 555, 'by uPhrase / get auth Doc only' );
+  //   const queryA = `query GetEntityAuth {
+  //           getAuth (token:"${ data }") { f i j }
+  //         }`;
+  //
+  //   return fetchFirebase( queryA );
+  // }
 
   function getEntityQuery( data ) {
     console.log( 100, 'by query' );
@@ -472,16 +472,16 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     let E;
 
-    if ( 'entity by uPhrase' == whichEndpoint ) {
-      const auth = await getAuth( data );
-      if ( !auth.errors && auth.data.getAuth[0] != null ) {
-        return V.successTrue( 'got auth doc', auth.data.getAuth[0] );
-      }
-      else {
-        return V.successFalse( 'get auth doc' );
-      }
-    }
-    else if ( 'entity by query' == whichEndpoint ) {
+    // if ( 'entity by uPhrase' == whichEndpoint ) {
+    //   const auth = await getAuth( data );
+    //   if ( !auth.errors && auth.data.getAuth[0] != null ) {
+    //     return V.successTrue( 'got auth doc', auth.data.getAuth[0] );
+    //   }
+    //   else {
+    //     return V.successFalse( 'get auth doc' );
+    //   }
+    // }
+    if ( 'entity by query' == whichEndpoint ) {
       const search = await getEntityQuery( data );
 
       if ( !search.errors && search.data.getEntityQuery[0] != null ) {
