@@ -557,8 +557,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           ) {
             getEntity( V.aE().uuidE ).then( res => {
               if ( res.success ) {
-                V.setState( 'activeEntity', 'clear' );
-                V.setState( 'activeEntity', res.data[0] ); // pass object
+                V.setActiveEntity( res.data[0] ); // pass object
               }
             } );
           }
@@ -566,8 +565,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
             'MongoDB' == V.getSetting( 'entityLedger' ) &&
             V.aE().fullId == res.data[0].fullId
           ) {
-            V.setState( 'activeEntity', 'clear' );
-            V.setState( 'activeEntity', res.data[0] );
+            V.setActiveEntity( res.data[0] );
           }
         }
 

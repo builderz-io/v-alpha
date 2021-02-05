@@ -118,12 +118,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.getEntity( V.getNode( '#loginform__uphrase' ).value )
       .then( authDoc => {
         V.setAuth( authDoc.data[0].f );
-        // V.setCookie( 'last-active-uphrase', authDoc.data[0].f );
-        V.setCookie( 'last-active-address', authDoc.data[0].i );
         return authDoc.data[0].i;
       } )
       .then( evmAddress => V.getEntity( evmAddress ) )
-      .then( entity => setActiveEntityState( entity ) );
+      .then( entity => {
+        V.setActiveEntity( entity.data[0] );
+        Join.draw( 'new entity was set up' );
+      } );
   }
 
   function handleSetEntityForm() {
@@ -166,14 +167,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         /** automatically join */
         V.setAuth( res.data[0].auth.uPhrase );
 
-        /** set states, cookies and cache */
-        V.setState( 'activeEntity', 'clear' );
-        V.setState( 'activeEntity', res.data[0] );
-        // V.setCookie( 'last-active-uphrase', res.data[0].auth.uPhrase );
-        V.setCookie( 'last-active-address', res.data[0].evmCredentials.address );
+        /** set state and cache */
+        V.setActiveEntity( res.data[0] );
+        Join.draw( 'new entity was set up' );
+
         V.setCache( 'entire cache', 'clear' );
         Navigation.drawEntityNavPill( res.data[0] );
-        Join.draw( 'new entity was set up' );
       }
       else {
         console.log( 'could not set entity: ', res );
@@ -251,23 +250,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleDisconnect() {
     V.setCookie( 'last-active-address', 'clear' );
-    // V.setCookie( 'last-active-uphrase', 'clear' );
+
     window.location.href = '/';
   }
 
   /* ================== private methods ================= */
-
-  function setActiveEntityState( res ) {
-    if ( res.success ) {
-      V.setState( 'activeEntity', res.data[0] );
-      Join.draw( 'new entity was set up' );
-    }
-    else {
-      const $formField = V.getNode( '#loginform__uPhrase' ) || V.getNode( '#plusform__title' );
-      $formField.value = '';
-      $formField.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-    }
-  }
 
   /* ================== public methods ================== */
 

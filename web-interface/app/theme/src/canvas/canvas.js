@@ -359,7 +359,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
             console.log( 'auth success' );
             V.getEntity( data.data[0].uuidE )
               .then( entity => {
-                V.setState( 'activeEntity', entity.data[0] );
+                V.setActiveEntity( entity.data[0] );
                 Join.draw( 'new entity was set up' );
               } );
           }
@@ -390,7 +390,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         ( async () => {
           await V.getEntity( V.castJson( returningUphrase ) )
             .then( authDoc => {
-              V.setCookie( 'last-active-address', authDoc.data[0].i );
               return authDoc.data[0].i;
             } )
             .then( evmAddress => V.getEntity( evmAddress ) )

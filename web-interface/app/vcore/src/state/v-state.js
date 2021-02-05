@@ -28,11 +28,6 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function setState( which, data ) {
 
-    /** sync cookie also for activeAddress */
-    if ( which == 'activeAddress' ) {
-      setCookie( 'last-active-address', data );
-    }
-
     if ( data == 'clear' ) {
       delete state[which];
       return;
@@ -50,12 +45,19 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function setActiveEntity( data ) {
+    delete data.auth;
+    V.setState( 'activeEntity', 'clear' );
+    V.setState( 'activeEntity', data );
+  }
+
   function aE() {
     return getState( 'activeEntity' );
   }
 
   function aA() {
-    return getState( 'activeAddress' );
+    const aA = getCookie( 'last-active-address' );
+    return aA ? aA.replace( /"/g, '' ) : undefined;
   }
 
   function getViewed( which ) {
@@ -185,6 +187,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   V.getState = getState;
   V.setState = setState;
+  V.setActiveEntity = setActiveEntity;
   V.aE = aE;
   V.aA = aA;
   V.getViewed = getViewed;
@@ -199,6 +202,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   return {
     getState: getState,
     setState: setState,
+    setActiveEntity: setActiveEntity,
     aE: aE,
     aA: aA,
     getCache: getCache,

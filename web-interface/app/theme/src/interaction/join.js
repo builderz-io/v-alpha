@@ -49,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
-        V.setState( 'activeAddress', V.aE().symbolCredentials.address );
+        V.setCookie( 'last-active-address', V.aE().symbolCredentials.address );
         which = 'entity found';
       }
     }
@@ -121,12 +121,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
     return V.aA() ? V.getEntity( V.aA() ).then( async res => {
+
       if ( res.reset ) {
         return 'entity not found';
       }
       else if ( res.success ) {
 
-        V.setState( 'activeEntity', res.data[0] );
+        V.setActiveEntity( res.data[0] );
 
         const eB = await V.getEntityBalance( res.data[0] );
 
