@@ -273,8 +273,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleDisconnect() {
     V.setCookie( 'last-active-address', 'clear' );
-
-    window.location.href = '/';
+    V.setDisconnect().then( res => {
+      if ( res.data.setDisconnect.success ) {
+        window.location.href = '/';
+      }
+    } );
   }
 
   /* ================== private methods ================= */

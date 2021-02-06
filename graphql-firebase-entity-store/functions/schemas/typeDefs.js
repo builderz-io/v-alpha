@@ -35,11 +35,14 @@ const Jwt = `
     exp: Int
     jwt: String
   }
+  type Success {
+    success: Boolean
+  }
 `;
 
 const Queries = `
   type Query {
-    getAuth(token: String!): [Auth]
+    getAuth(token: String!): Success
     getEntityQuery(filter: Filter!): [Entity]
     getEntity(where: WhereEntity): [Entity]
     getProfiles(array: [String!]): [Profile]
@@ -49,6 +52,7 @@ const Queries = `
 const Mutations = `
   type Mutation {
     setAuth: Jwt
+    setDisconnect: Success
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }

@@ -43,8 +43,18 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
+  function setDisconnect() {
+    console.log( 777, 'setDisconnect' );
+
+    const queryD = `mutation SetDisconnect {
+            setDisconnect { success }
+          }`;
+
+    return fetchFirebase( queryD );
+  }
+
   async function setAuth( whichUphrase ) {
-    console.log( 666, 'setAuth' );
+    console.log( 888, 'setAuth' );
 
     uPhrase = whichUphrase;
 
@@ -71,9 +81,11 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.setAuth = setAuth;
+  V.setDisconnect = setDisconnect;
 
   return {
     setAuth: setAuth,
+    setDisconnect: setDisconnect,
   };
 
 } )();

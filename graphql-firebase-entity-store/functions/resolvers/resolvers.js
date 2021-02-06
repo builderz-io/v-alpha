@@ -37,6 +37,7 @@ const resolvers = {
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => setAuth( context, res ),
+    setDisconnect: ( parent, __, { context, res } ) => setDisconnect( context, res ),
     setEntity: ( parent, { input }, { context } ) => setFields( context, input, colE ),
     setProfile: ( parent, { input }, { context } ) => setFields( context, input, colP ),
   },
@@ -90,6 +91,23 @@ async function setAuth( context, res ) {
       },
     ),
   };
+}
+
+async function setDisconnect( context, res ) {
+
+  const disconnect = await new Promise( resolve => {
+    colA.child( context.a ).update( { g: null }, () => resolve( { success: true } ) );
+  } );
+
+  if ( disconnect.success ) {
+    res.clearCookie( 'refresh_token' );
+    return disconnect;
+  }
+  else {
+    return {
+      success: false,
+    };
+  }
 }
 
 function getAllEntities( context ) {
