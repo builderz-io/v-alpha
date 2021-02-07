@@ -116,31 +116,90 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
     const textColor = V.aA() ? 'txt-green' : 'txt-brand-primary';
 
-    return V.castNode( { // #1b1aff
+    return V.cN( { // #1b1aff
+      svg: true,
       tag: 'svg',
       a: {
         style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36',
       },
-      html: `<circle cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7" transform="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200"></circle>
-              <text class="font-medium fs-xxs ${ textColor } no-txt-select" x="50%" y="59%">${ balance }</text>`,
-      click: handleDrawUserNav,
-
+      k: handleDrawUserNav,
+      h: [
+        {
+          svg: true,
+          t: 'circle',
+          a: {
+            // todo   stroke-dasharray   should be in circle for lifetime display
+            'cx': '18',
+            'cy': '18',
+            'r': '15.91549430918954',
+            'fill': 'white',
+            'stroke': strokeColor,
+            'stroke-width': '2.7',
+            'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+            'stroke-dashoffset': '-200',
+          },
+        },
+        {
+          svg: true,
+          t: 'text',
+          c: `font-medium fs-xxs ${ textColor } no-txt-select`,
+          a: {
+            x: '50%',
+            y: '59%',
+          },
+          h: balance,
+        },
+      ],
     } );
-    // todo   stroke-dasharray   should be in circle for lifetime display
   }
 
   function accountBalance() {
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-    return V.castNode( {
+    return V.cN( {
       tag: 'li',
       class: 'txt-anchor-mid',
-      html: `<svg width="74px" viewBox="0 0 36 36"> +
-              <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
-              <text class="font-medium fs-xxs txt-green no-txt-select" x="50%" y="59%">3129</text>
-            </svg>`,
+      html: {
+        svg: true,
+        t: 'svg',
+        a: {
+          width: '74px',
+          viewBox: '0 0 36 37',
+        },
+        h: [
+          {
+            svg: true,
+            t: 'circle',
+            a: {
+              'stroke-dasharray': '100',
+              'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+              'stroke-dashoffset': '-200',
+              'cx': '18',
+              'cy': '18',
+              'r': '15.91549430918954',
+              'fill': 'white',
+              'stroke': strokeColor,
+              'stroke-width': '2.7',
+            },
+          },
+          {
+            svg: true,
+            t: 'text',
+            c: 'font-medium fs-xxs ${ textColor } no-txt-select',
+            a: {
+              x: '50%',
+              y: '59%',
+            },
+            h: 1234, // TODO: get balance
+          },
+        ],
+      },
+      // html: `<svg width="74px" viewBox="0 0 36 36"> +
+      //         <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
+      //         <text class="font-medium fs-xxs txt-green no-txt-select" x="50%" y="59%">3129</text>
+      //       </svg>`,
 
     } );
   }

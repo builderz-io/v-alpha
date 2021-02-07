@@ -563,10 +563,26 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   function getIcon( which ) {
     return which.match( new RegExp( socialMatch ) )
-      ? '<img src="/assets/icon/social/' + which + '.svg" height="28px">'
+      ? V.cN( {
+        t: 'img',
+        src: '/assets/icon/social/' + which + '.svg',
+        a: {
+          height: '28px',
+        },
+      } )
       : which == '+'
-        ? '<span class="plus-icon fs-l no-txt-select">+</span>'
-        : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+        ? V.cN( {
+          t: 'span',
+          c: 'plus-icon fs-l no-txt-select',
+          h: '+',
+        } )
+        : V.cN( {
+          t: 'img',
+          src: '/assets/icon/' + which + '-24px.svg',
+          a: {
+            height: '16px',
+          },
+        } );
 
   }
 

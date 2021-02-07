@@ -57,25 +57,28 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       return '';
     }
 
-    const tag = data.t ? data.t : data.tag;
+    const tag = data.t || data.tag;
 
     let $elem = document.createElement( tag );
 
-    if ( tag == 'svg' || data.type == 'svg' ) {
-      $elem = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
-      $elem.setAttribute( 'xmlns', 'http://www.w3.org/2000/svg' );
-      $elem.setAttribute( 'version', '1.1' );
+    if ( data.svg ) {
+      $elem = document.createElementNS( 'http://www.w3.org/2000/svg', tag );
+    }
+
+    if ( tag == 'svg' ) {
+      setAttr( $elem, 'xmlns', 'http://www.w3.org/2000/svg' );
+      setAttr( $elem, 'version', '1.1' );
     }
 
     for ( const key in data ) {
       if ( ['c', 'class', 'classes'].includes( key ) ) {
         if ( data[key] ) {
-          $elem.className = data[key];
+          setAttr( $elem, 'class', data[key] );
         }
       }
       else if ( ['h', 'html'].includes( key ) ) {
         if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
-          $elem.innerHTML = data[key];
+          $elem.appendChild( document.createTextNode( data[key] ) );
         }
         else if ( Array.isArray( data[key] ) ) {
           for ( let i = 0; i < data[key].length; i++ ) {
