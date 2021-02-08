@@ -59,7 +59,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( !formData.success ) {
-      V.getNode( '.form__response' ).innerHTML = formData.message;
+      V.getNode( '.form__response' ).textContent = formData.message;
     }
     else {
       const $form = InteractionComponents.form();

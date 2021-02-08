@@ -210,9 +210,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function reset() {
-    DOM.$topcontent.innerHTML = '';
-    DOM.$topslider.innerHTML = '';
-    DOM.$listings.innerHTML = '';
+    DOM.$topcontent.textContent = '';
+    DOM.$topslider.textContent = '';
+    DOM.$listings.textContent = '';
   }
 
   /* ============ public methods and exports ============ */

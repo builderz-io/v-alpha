@@ -108,7 +108,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSend() {
     V.setBrowserHistory( '/me/transfers' );
-    V.setState( 'active', { lastViewed: V.getNode( '.pill__replace' ).innerHTML } );
+    V.setState( 'active', { lastViewed: V.getNode( '.pill__replace' ).textContent } );
     Canvas.draw( { path: '/me/transfers' } );
   }
 

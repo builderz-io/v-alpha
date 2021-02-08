@@ -25,7 +25,7 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   } );
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.innerHTML );
+    const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );

@@ -11,7 +11,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function handleInputFocus() {
     const $response = V.getNode( '.messageform__response' );
-    $response.innerHTML = '';
+    $response.textContent = '';
   }
 
   function handleSetMessageBot() {
@@ -147,32 +147,32 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     if ( !t1 ) { return }
     const t2 = V.getNode( '#typing_on_2' );
 
-    const a = t1.innerHTML.split( ' ' )[0];
+    const a = t1.textContent.split( ' ' )[0];
 
     if ( user === false ) {
       resetTyping1();
       resetTyping2();
     }
     else if ( !a ) {
-      t1.innerHTML = user + ' is typing ...';
+      t1.textContent = user + ' is typing ...';
       setTimeout( resetTyping1, 4000 );
       resetTyping2();
     }
     else if ( user == a ) {
-      t1.innerHTML = user + ' is typing ...';
+      t1.textContent = user + ' is typing ...';
       setTimeout( resetTyping1, 4000 );
     }
     else {
-      t2.innerHTML = user + ' is typing ...';
+      t2.textContent = user + ' is typing ...';
       setTimeout( resetTyping2, 4000 );
     }
 
     function resetTyping1() {
-      t1.innerHTML = '';
+      t1.textContent = '';
     }
 
     function resetTyping2() {
-      t2.innerHTML = '';
+      t2.textContent = '';
     }
 
   }

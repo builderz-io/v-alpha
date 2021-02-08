@@ -57,7 +57,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.innerHTML );
+    const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -110,7 +110,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       balance = V.getNetVAmount( balance ).net;
-      balance = isNaN( balance ) ? '😷' : balance;
+      balance = isNaN( balance ) ? '😷' : String( balance );
     }
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';

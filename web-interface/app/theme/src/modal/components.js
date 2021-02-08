@@ -165,8 +165,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     e.stopPropagation();
 
     e.target.removeEventListener( 'click', handleSetEntity, false );
-    e.target.innerHTML = getString( ui.joining );
-    V.getNode( '.joinform__response' ).innerHTML = '';
+    e.target.textContent = getString( ui.joining );
+    V.getNode( '.joinform__response' ).textContent = '';
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
@@ -200,8 +200,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       else {
         console.log( 'could not set entity: ', res );
         e.target.addEventListener( 'click', handleSetEntity );
-        e.target.innerHTML = getString( ui.nameProfile );
-        V.getNode( '.joinform__response' ).innerHTML = res.message;
+        e.target.textContent = getString( ui.nameProfile );
+        V.getNode( '.joinform__response' ).textContent = res.message;
       }
     } );
   }
@@ -220,10 +220,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     $btn.style.background = 'white';
     $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
     if ( V.aA() ) {
-      $btn.innerHTML = getString( ui.confInWallet );
+      $btn.textContent = getString( ui.confInWallet );
     }
     else {
-      // $btn.innerHTML = getString( ui.submitted );
+      // $btn.textContent = getString( ui.submitted );
       Modal.draw( 'transaction sent' );
       V.drawHashConfirmation( String( V.getState( 'active' ).transaction.data[0].timeSecondsUNIX ) );
     }

@@ -142,12 +142,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleEditProfileDraw( e ) {
-    const path = V.castPathOrId( e.target.innerHTML );
+    const path = V.castPathOrId( e.target.textContent );
     User.draw( path );
   }
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.innerHTML );
+    const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -160,7 +160,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleViewKeyFocus( e ) {
     if ( this.type === 'password' ) {
       this.type = 'text';
-      this.previousSibling.innerHTML = '';
+      this.previousSibling.textContent = '';
       setTimeout( function() {
         e.target.setSelectionRange( 0, 9999 );
       }, 50 );
@@ -168,7 +168,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     else {
       const selection = window.getSelection();
       selection.removeAllRanges();
-      this.previousSibling.innerHTML = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
+      this.previousSibling.textContent = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
       this.type = 'password';
     }
   }
@@ -186,9 +186,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       behavior: 'smooth',
     } );
 
-    DOM.entry = this.value ? this.value : this.innerHTML;
+    DOM.entry = this.value ? this.value : this.textContent;
     if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
-      this.innerHTML = '';
+      this.textContent = '';
       this.value = '';
     }
   }
@@ -204,13 +204,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleActive() {
     setField( 'status.active', this.checked ? true : false ).then( () => {
-      V.getNode( '.active__title' ).innerHTML = this.checked ? ui.activated : ui.deactivated;
+      V.getNode( '.active__title' ).textContent = this.checked ? ui.activated : ui.deactivated;
     } );
   }
 
   function handleEntry() {
     let str, entry;
-    this.nodeName == 'TEXTAREA' ? str = this.value : str = this.innerHTML;
+    this.nodeName == 'TEXTAREA' ? str = this.value : str = this.textContent;
 
     str = V.stripHtml( str );
     const title = this.getAttribute( 'title' );
@@ -218,7 +218,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( str != DOM.entry ) {
       if ( str == '' ) {
-        this.innerHTML = getString( ui.edit );
+        this.textContent = getString( ui.edit );
         this.value = getString( ui.edit );
         setField( db + '.' + title, '' );
         return;
@@ -230,7 +230,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = split.pop().replace( '@', '' );
       }
       else if ( title == 'email' ) {
-        entry = str.includes( '@' ) ? str.includes( '.' ) ? str : getString( ui.invalid ) : str == '' ? '' : getString( ui.invalid );
+        const regex = new RegExp( /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ );
+        entry = regex.test( str ) ? str : getString( ui.invalid );
       }
       else if ( title == 'youtube' ) {
         // must be a channel, not a video
@@ -260,11 +261,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
 
       if ( entry == getString( ui.invalid ) ) {
-        this.innerHTML = getString( ui.invalid );
+        this.textContent = getString( ui.invalid );
         return;
       }
       else {
-        this.innerHTML = entry;
+        this.textContent = entry;
       }
       setField( db + '.' + title, entry );
     }
@@ -410,7 +411,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
             break;
           case 'email':
-            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
+            // linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
+            linkedInner = V.cN( {
+              t: 'a',
+              f: `mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }`,
+              h: inner,
+            } );
             break;
           case 'website':
             linkedInner = V.castLinks( inner ).links;
@@ -546,6 +552,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const descr = entity.properties ? entity.properties.description : undefined;
     if( descr || ( !descr && editable ) ) {
       const linkedDescr = V.castLinks( descr ? descr.replace( /\n/g, ' <br>' ) : '' ); // needs whitespace before <br>
+      const castDescr = V.castDescription( descr );
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
@@ -560,14 +567,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy w-full',
         h: [
           {
-            x: linkedDescr.socialLinksImages,
+            x: false, // linkedDescr.socialLinksImages,
             t: 'div',
             h: linkedDescr.socialLinksImages,
           },
           {
             t: 'div',
             c: 'mt-xs',
-            h: linkedDescr.omitOriginalSocialLinks,
+            h: castDescr, // linkedDescr.omitOriginalSocialLinks,
           },
         ],
       } );
@@ -1395,7 +1402,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               V.cN( {
                 t: 'a',
                 c: 'share-by-email font-bold',
-                r: `mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }`,
+                f: `mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }`,
                 h: '@',
               } ),
             ] ),

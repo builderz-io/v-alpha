@@ -317,7 +317,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function select( $item ) {
     const span = $item.getElementsByClassName( 'pill__initials' )[0];
     if ( span ) {
-      span.innerHTML = $item.getAttribute( 'fullId' );
+      span.textContent = $item.getAttribute( 'fullId' );
       span.previousSibling.style.display = 'none';
       span.classList.add( 'pill__replace' );
       span.classList.remove( 'pill__initials' );
@@ -332,7 +332,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       for ( let i = 0; i < $itemSelected.length; i++ ) {
         const span = $itemSelected[i].getElementsByClassName( 'pill__replace' )[0];
         if ( span ) {
-          span.innerHTML = $itemSelected[i].getAttribute( 'initials' );
+          span.textContent = $itemSelected[i].getAttribute( 'initials' );
           span.previousSibling.style.display = 'flex';
           span.classList.add( 'pill__initials' );
           span.classList.remove( 'pill__replace' );

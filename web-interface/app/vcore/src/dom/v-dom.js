@@ -34,7 +34,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         }
       } )( className );
 
-      if ( $customStyles.innerHTML.includes( formattedClassName ) ) {
+      if ( $customStyles.textContent.includes( formattedClassName ) ) {
         // TODO: should not just skip, but update
         continue;
       }
@@ -78,6 +78,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['h', 'html'].includes( key ) ) {
         if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
+          // $elem.innerHTML = data[key];
           $elem.appendChild( document.createTextNode( data[key] ) );
         }
         else if ( Array.isArray( data[key] ) ) {
@@ -165,7 +166,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
      */
 
     /**
-     * clear node or clear innerHTML of node
+     * clear node or clear inner content of node
      */
 
     if ( data && ( data == 'clear' || data.clear == true ) ) {
@@ -176,7 +177,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
     if ( typeof data == 'string' ) {
       const $elem = typeof targetNode != 'string' ? targetNode : document.querySelector( targetNode );
-      $elem ? $elem.innerHTML = data : null;
+      $elem ? $elem.textContent = data : null;
       return;
     }
 
@@ -313,13 +314,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     const $customStyles = document.getElementById( whichId );
 
     if ( typeof data == 'string' ) {
-      if ( !$customStyles.innerHTML.includes( data ) ) {
+      if ( !$customStyles.textContent.includes( data ) ) {
         // TODO: should not just skip, but update
-        $customStyles.innerHTML += data;
+        $customStyles.textContent += data;
       }
     }
     else if ( typeof data == 'object' ) {
-      $customStyles.innerHTML += writeStyle( data, $customStyles );
+      $customStyles.textContent += writeStyle( data, $customStyles );
     }
   }
 

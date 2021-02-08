@@ -25,7 +25,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
     if ( featureData.fade == 'in' || featureData.$content ) {
-      $feature.innerHTML = '';
+      $feature.textContent = '';
       V.setNode( $feature, featureData.$content );
       V.setAnimation( 'feature', 'fadeIn' );
     }
