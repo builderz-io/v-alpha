@@ -79,14 +79,14 @@ exports.updateEntities = function( req, res ) {
 
           telegramNotification( {
             msg: 'MongoDB transaction in',
-            network: systemInit.communityGovernance.commName
+            network: systemInit.communityGovernance.commName,
           } );
 
           res( {
             success: true,
             status: 'transaction successful',
             message: success,
-            ledger: 'MongoDB'
+            ledger: 'MongoDB',
           } );
         } );
 
@@ -99,7 +99,7 @@ exports.updateEntities = function( req, res ) {
         success: false,
         status: 'error',
         ledger: 'MongoDB',
-        message: err
+        message: err,
       } );
     } );
 
@@ -119,7 +119,7 @@ exports.findTransaction = function( req, res ) {
       res( {
         success: true,
         status: 'transactions retrieved from MongoDB',
-        data: entities[0].txHistory
+        data: entities[0].txHistory,
       } );
     }
   } );
@@ -128,7 +128,7 @@ exports.findTransaction = function( req, res ) {
 exports.adminNotify = function( txSuccess ) {
   telegramNotification( {
     msg: 'Someone ' + txSuccess + ' transacted funds in',
-    network: systemInit.communityGovernance.commName
+    network: systemInit.communityGovernance.commName,
   } );
 };
 
@@ -184,7 +184,7 @@ exports.managedTransaction = async function( req, res ) {
 
   const transaction = new Tx( rawTransaction, { chain: chain } );
 
-  transaction.sign( Buffer.from( getSender.private.evmCredentials.privateKey.slice( 2 ), 'hex' ) );
+  transaction.sign( Buffer.from( getSender.auth.evmCredentials.privateKey.slice( 2 ), 'hex' ) );
 
   web3.eth.sendSignedTransaction( '0x' + transaction.serialize().toString( 'hex' ) )
     .once( 'transactionHash', function( hash ) {
@@ -198,7 +198,7 @@ exports.managedTransaction = async function( req, res ) {
         success: false,
         status: error.code,
         message: error.message,
-        data: []
+        data: [],
       } );
 
     } )
@@ -207,7 +207,7 @@ exports.managedTransaction = async function( req, res ) {
       res( {
         success: true,
         status: 'transaction transmitted using managed private key',
-        data: [ receipt ]
+        data: [ receipt ],
       } );
     } );
 

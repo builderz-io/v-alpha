@@ -55,6 +55,18 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       ] );
       console.log( '*** 3Box scripts loaded ***' );
     }
+    else if ( V.getSetting( 'entityLedger' ) == 'MongoDB' ) {
+      await Promise.all( [
+        V.setScript( '/vcore/src/ledger/secondary/v-mongodb.js' )
+      ] );
+      console.log( '*** Firebase scripts loaded ***' );
+    }
+    else if ( V.getSetting( 'entityLedger' ) == 'Firebase' ) {
+      await Promise.all( [
+        V.setScript( '/vcore/src/ledger/secondary/v-firebase.js' )
+      ] );
+      console.log( '*** Firebase scripts loaded ***' );
+    }
 
     if ( [ V.getSetting( 'entityLedger' ), V.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
       await Promise.all( [
@@ -101,6 +113,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify( data ),
       }
@@ -130,12 +143,10 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
   function setData( data, whichEndpoint, whichLedger ) {
 
     if ( whichLedger == 'MongoDB' ) {
-      return new Promise( resolve => {
-        // MongoDB requires 'data' and 'whichEndpoint' switched
-        socket.emit( 'set ' + whichEndpoint, data, function( res ) {
-          resolve( res );
-        } );
-      } );
+      return V.setMongoDB( data, whichEndpoint );
+    }
+    else if ( whichLedger == 'Firebase' ) {
+      return V.setFirebase( data, whichEndpoint );
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {
@@ -172,12 +183,10 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   function getData( data, whichEndpoint, whichLedger ) {
     if ( whichLedger == 'MongoDB' ) {
-      return new Promise( resolve => {
-        // MongoDB requires 'data' and 'whichEndpoint' switched
-        socket.emit( 'get ' + whichEndpoint, data, function( res ) {
-          resolve( res );
-        } );
-      } );
+      return V.getMongoDB( data, whichEndpoint );
+    }
+    else if ( whichLedger == 'Firebase' ) {
+      return V.getFirebase( data, whichEndpoint );
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {

@@ -9,7 +9,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function view( which ) {
+  function view( which, data ) {
 
     const $modal = ModalComponents.modal();
 
@@ -18,7 +18,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
         V.aE(),
         V.aA(),
         V.getSetting( 'coinTicker' ),
-        V.getSetting( 'tokenTicker' )
+        V.getSetting( 'tokenTicker' ),
       ) );
     }
     else if ( which == 'entity not found' ) {
@@ -48,6 +48,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'loggedOut' ) );
     }
+    else if ( which == 'confirm uPhrase' ) {
+      V.setNode( $modal, ModalComponents.confirmUPhrase() );
+    }
     else if ( which == 'disconnect' ) {
       V.setNode( $modal, ModalComponents.disconnect() );
     }
@@ -72,6 +75,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == '404' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );
     }
+    else if ( which == 'title error' ) {
+      V.setNode( $modal, ModalComponents.titleError( data ) );
+    }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'error' ) );
     }
@@ -82,8 +88,8 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( which ) {
-    view( which );
+  function draw( which, data ) {
+    view( which, data );
   }
 
   return {

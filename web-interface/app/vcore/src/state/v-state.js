@@ -28,11 +28,6 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   function setState( which, data ) {
 
-    /**
-     * sync Cookies also for activeAddress and activeEntity
-     *
-     */
-
     if ( data == 'clear' ) {
       delete state[which];
       return;
@@ -48,13 +43,13 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     else {
       state[which] = data;
     }
+  }
 
-    if ( which == 'activeAddress' ) {
-      setCookie( 'last-active-address', data );
-    }
-    else if ( which == 'activeEntity' && data && data.private ) {
-      setCookie( 'last-active-uphrase', data.private.uPhrase );
-    }
+  function setActiveEntity( data ) {
+    delete data.auth;
+    V.setState( 'activeEntity', 'clear' );
+    V.setState( 'activeEntity', data );
+    console.log( 'set active entity' );
 
   }
 
@@ -63,7 +58,24 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function aA() {
-    return getState( 'activeAddress' );
+    const aA = getCookie( 'last-active-address' );
+    return aA ? aA.replace( /"/g, '' ) : undefined;
+  }
+
+  function getViewed( which ) {
+    return getCache().viewed
+      ? getCache().viewed.data.find( entity =>
+        which.includes( ' #' )
+          ? entity.fullId == which
+          : which.length == 22 && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
+            ? entity.uuidE == which
+            : entity.path == which
+      )
+      : undefined;
+  }
+
+  function getLastViewed() {
+    return getViewed( getState( 'active' ).lastViewedUuidE );
   }
 
   function getCache( which ) {
@@ -92,7 +104,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
         const obj = {
           timestamp: Date.now(),
           date: new Date(),
-          data: data
+          data: data,
         };
         Object.assign( cache[which], obj );
       }
@@ -177,8 +189,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   V.getState = getState;
   V.setState = setState;
+  V.setActiveEntity = setActiveEntity;
   V.aE = aE;
   V.aA = aA;
+  V.getViewed = getViewed;
+  V.getLastViewed = getLastViewed;
   V.getCache = getCache;
   V.setCache = setCache;
   V.getNavItem = getNavItem;
@@ -189,6 +204,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   return {
     getState: getState,
     setState: setState,
+    setActiveEntity: setActiveEntity,
     aE: aE,
     aA: aA,
     getCache: getCache,
@@ -196,7 +212,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     getNavItem: getNavItem,
     setNavItem: setNavItem,
     getCookie: getCookie,
-    setCookie: setCookie
+    setCookie: setCookie,
   };
 
 } )();

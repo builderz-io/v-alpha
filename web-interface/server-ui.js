@@ -1,6 +1,6 @@
 const settings = {
   port: 3123,
-  host: 'builderz.io'
+  host: 'builderz.io',
 };
 
 const http = require( 'http' );

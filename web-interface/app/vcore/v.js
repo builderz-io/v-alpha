@@ -22,13 +22,13 @@ const VInit = ( async function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   await Promise.all( [
-    setScript( '/vcore/v-config.js' )
+    setScript( '/vcore/v-config.js' ),
   ] );
   console.log( '*** configuration loaded ***' );
 
   if ( V.getSetting( 'useBuilds' ) ) {
     await Promise.all( [
-      setScript( '/vcore/builds/vcore.min.js' )
+      setScript( '/vcore/builds/vcore.min.js' ),
     ] );
     console.log( '*** vcore builds loaded ***' );
   }
@@ -36,17 +36,19 @@ const VInit = ( async function() { // eslint-disable-line no-unused-vars
     await Promise.all( [
       setScript( '/vcore/dependencies/primary/velocity.min.js' ),
       setScript( '/vcore/dependencies/primary/js.cookie.min.js' ),
-      setScript( '/vcore/dependencies/primary/universal-router.js' )
+      setScript( '/vcore/dependencies/primary/universal-router.js' ),
     ] );
     console.log( '*** vcore source dependencies loaded ***' );
 
     await Promise.all( [
       setScript( '/vcore/src/dom/v-dom.js' ),
       setScript( '/vcore/src/dom/v-route.js' ),
+      setScript( '/vcore/src/endpoint/v-auth.js' ),
       setScript( '/vcore/src/endpoint/v-entity.js' ),
       setScript( '/vcore/src/endpoint/v-message.js' ),
       setScript( '/vcore/src/endpoint/v-transaction.js' ),
       setScript( '/vcore/src/helper/v-debugger.js' ),
+      setScript( '/vcore/src/helper/v-description.js' ),
       setScript( '/vcore/src/helper/v-helper.js' ),
       setScript( '/vcore/src/ledger/primary/v-ledger.js' ),
       setScript( '/vcore/src/state/v-state.js' ),

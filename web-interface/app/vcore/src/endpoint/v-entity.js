@@ -1,30 +1,33 @@
 const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Core Module to manage entities
+   * V Core Module to create and manage entities
    *
    */
 
   'use strict';
 
   const entitySetup = {
+    entityDocVersion: '/e1/v0',
+    profileDocVersion: '/p1/v0',
+    authDocVersion: '/a1/v0',
+    daysToExpiry: 365 * 2,
     useWhitelist: true, // allow only chars in whitelist
-    // capWordLength: 7,  // a cap on the number of words in an entity name that the system can handle
-    maxEntityWords: 7,  // max allowed words in entity names (not humans) // MUST be less or equal to capWordLength
-    maxHumanWords: 3,  // max allowed words in human entity names // MUST be less or equal to capWordLength
-    maxWordLength: 13,  // max allowed length of each word in name
+    maxEntityWords: 7,  // max allowed words in entity names (not humans)
+    maxHumanWords: 3,  // max allowed words in human entity names
+    maxWordLength: 14,  // max allowed length of each word in name
   };
 
   const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
-  const charWhitelist = /[^0-9^a-z^A-Z^\s]/g;
+  const charWhitelist = /[^0-9^a-z^A-Z^\s^']/g;
 
   /* ============== user interface strings ============== */
 
   const ui = {
     invalidTitle: 'Invalid title',
     invalidChar: 'Title: invalid character',
-    maxLength: 'Title: max 12 characters in a word',
-    min2Adjecent: 'Title: min 2 adjecent letters',
+    maxLength: 'Title: max 14 characters in a word',
+    min2Adjecent: 'Title: min 2 adjacent letters',
     maxHuman: 'Title: max 3 words',
     maxEntity: 'Title: max 7 words',
     tooLong: 'Title: max 200 characters',
@@ -33,7 +36,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     targetRange: 'Target must be within 0 - 9999',
     isNaN: 'Target must be a number',
     noUnit: 'Please add a unit, such as "hour"',
-    noTarget: 'Please add a target'
+    noTarget: 'Please add a target',
   };
 
   function getString( string, scope ) {
@@ -44,35 +47,46 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   async function castEntity( entityData ) {
 
+    /**
+     * Check whether lat/lng are present,
+     * if the user entered a location.
+     */
+
     if ( entityData.location && !entityData.lat ) {
       return {
         success: false,
         endpoint: 'entity',
         status: 'no geo data',
-        message: 'could not attach geo data'
+        message: 'could not attach geo data',
       };
     }
 
-    // check whether we have a valid title
+    /** Check whether the title is valid. */
+
     const title = castEntityTitle( entityData.title, entityData.role );
 
     if ( !title.success ) {
-      return title; // error object
+      return title; // return the error object
     }
 
-    const target = castTarget( entityData );
+    /** Check whether the target amount is valid. */
+
+    const target = castTarget( entityData.target, entityData.unit, entityData.role );
 
     if ( !target.success ) {
-      return target; // error object
+      return target; // return the error object
     }
 
-    // cast tag and fullId
-    const tag = V.castTag();
-    const fullId = title.data[0] + ' ' + tag;
-    const slug = V.castSlugOrId( fullId );
-    const path = '/profile/' + slug;
+    /** Cast tag and fullId. */
 
-    // check whether this title and tag combination exists, otherwise start again
+    const tag = castTag();
+    const fullId = title.data[0] + ' ' + tag;
+
+    /**
+     * Check whether this title and tag combination exists,
+     * otherwise start again.
+     */
+
     const exists = await getEntity( fullId );
 
     if ( exists.success ) { // success is not a good thing here ;)
@@ -80,73 +94,74 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'entity exists',
-        data: [fullId]
+        data: [fullId],
       };
     }
 
-    const d = new Date();
-    const date = d.toString();
-    const unix = Date.now();
+    /** Prepare data */
 
-    let geometry, uPhrase, creator, creatorTag, block, rpc, contract, tinyImage, thumbnail, mediumImage;
+    const uuidE = V.castUuid().base64Url;
+    const uuidP = V.castUuid().base64Url;
+    const uuidA = V.castUuid().base64Url;
+    const unix = Math.floor( Date.now() / 1000 );
+
+    let geometry = {};
+
+    let uPhrase, creatorUuid, heldBy, block, rpc, contract, tinyImage, thumbnail, mediumImage;
 
     if ( entityData.location && entityData.lat ) {
       geometry = {
+        coordinates: [ Number( entityData.lng ), Number( entityData.lat ) ],
+        baseLocation: entityData.location || undefined,
+        type: 'Point',
         rand: false,
-        type: 'Point',
-        coordinates: [entityData.lng, entityData.lat],
       };
     }
-    else {
-      const gen = V.castRandLatLng();
-      geometry = {
-        rand: true,
-        type: 'Point',
-        coordinates: [ gen.lng, gen.lat ],
-      };
-    }
+    // else {
+    //   const gen = V.castRandLatLng();
+    //   geometry = {
+    //     coordinates: [ gen.lng, gen.lat ],
+    //     // baseLocation: entityData.location || undefined,
+    //     type: 'Point',
+    //     rand: true,
+    //   };
+    // }
 
     if ( entityData.uPhrase ) {
       uPhrase = entityData.uPhrase; // for demo data
     }
     else {
-      const gen = V.castUUID();
+      const gen = V.castUuid();
       uPhrase = 'vx' + gen.base64Url.slice( 0, 15 ) + 'X';
     }
 
-    if ( V.getState( 'tinyImageUpload' ) ) {
-      tinyImage = V.getState( 'tinyImageUpload' );
-      console.log( tinyImage );
-    }
+    const aE = V.getState( 'activeEntity' );
 
-    if ( V.getState( 'thumbnailUpload' ) ) {
-      thumbnail = V.getState( 'thumbnailUpload' );
-      console.log( thumbnail );
-    }
-
-    if ( V.getState( 'mediumImageUpload' ) ) {
-      mediumImage = V.getState( 'mediumImageUpload' );
-      console.log( mediumImage );
-    }
-
-    const activeEntity = V.getState( 'activeEntity' );
-
-    if ( activeEntity ) {
-      creator = activeEntity.profile.title;
-      creatorTag = activeEntity.profile.tag;
+    if ( aE ) {
+      heldBy = [uuidE, aE.uuidE];
+      creatorUuid = aE.uuidE;
     }
     else {
-      creator = title.data[0];
-      creatorTag = tag;
+      heldBy = [uuidE];
+      creatorUuid = uuidE;
     }
 
-    if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
+    const email = aE && aE.properties ? aE.properties.email || undefined : undefined;
+
+    V.getState( 'tinyImageUpload' ) ? tinyImage = V.getState( 'tinyImageUpload' ) : null;
+    V.getState( 'thumbnailUpload' ) ? thumbnail = V.getState( 'thumbnailUpload' ) : null;
+    V.getState( 'mediumImageUpload' ) ? mediumImage = V.getState( 'mediumImageUpload' ) : null;
+    V.setState( 'tinyImageUpload', 'clear' );
+    V.setState( 'thumbnailUpload', 'clear' );
+    V.setState( 'mediumImageUpload', 'clear' );
+
+    if ( 'EVM' == V.getSetting( 'transactionLedger' ) ) {
 
       if ( !entityData.evmAddress ) {
         const newEvmAccount = window.Web3Obj.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
-        entityData.evmIssuer = 'VDID';
+        entityData.evmIssuer = 'IDXNS';
       }
       else {
         entityData.evmIssuer = 'SELF';
@@ -170,144 +185,85 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         }
       } );
     }
-    else {
-      block = Math.floor( unix / 1000 );
-      rpc = 'none';
-      contract = 'none';
-    }
+    else if ( 'Symbol' == V.getSetting( 'transactionLedger' ) ) {
 
-    const host = window.location.host;
-
-    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
-
-      // TODO: sync with EVM
+      // EXPERIMENTAL
 
       const newSymbolAddress = await V.setActiveAddress();
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
 
-    const uuid = V.castUUID();
+    const entityCast = {
 
-    const email = activeEntity && activeEntity.social && activeEntity.social.email ? activeEntity.social.email : undefined;
+      contextE: entitySetup.entityDocVersion,
+      typeE: entityData.role,
+      uuidE: uuidE,
 
-    const newEntity = {
-      docVersion: V.getSetting( 'entityDocVersion' ),
-      fullId: fullId,
-      path: path,
-      private: {
-        uPhrase: uPhrase,
-        evmCredentials: {
-          address: entityData.evmAddress,
-          privateKey: entityData.evmPrivateKey,
-          issuer: entityData.evmIssuer,
-        }
-      },
-      profile: {
-        fullId: fullId,
-        title: title.data[0],
-        tag: tag,
-        creator: creator,
-        creatorTag: creatorTag,
-        role: entityData.role,
-        joined: {
-          date: date,
-          unix: unix,
-          network: {
-            host: host,
-            block: block,
-            rpc: rpc,
-            contract: contract,
-          }
-        },
-        uuidV4: uuid.v4,
-      },
-      paths: {
-        entity: path,
-        base64: '/' + uuid.base64Url
-      },
-      status: {
-        active: true,
-        verified: V.getSetting( 'defaultVerification' )
-      },
+      contextP: entitySetup.profileDocVersion,
+      uuidP: uuidP,
+
+      contextA: entitySetup.authDocVersion,
+      uuidA: uuidA,
+
+      active: true,
+      statusCode: 100,
+
+      title: title.data[0],
+      tag: tag,
+
+      creatorUuid: creatorUuid,
+      heldBy: heldBy,
+
+      uPhrase: uPhrase,
+
+      issuer: window.location.host,
+      unix: unix,
+      expires: unix + 60 * 60 * 24 * entitySetup.daysToExpiry,
+
       evmCredentials: {
         address: entityData.evmAddress,
-        issuer: entityData.evmIssuer,
+        privateKey: entityData.evmPrivateKey,
+        evmIssuer: entityData.evmIssuer,
+      },
+      symbolCredentials: entityData.symbolCredentials || {
+        address: undefined,
       },
       receivingAddresses: {
-        evm: entityData.evmReceivingAddress
+        evm: entityData.evmReceivingAddress,
       },
-      symbolCredentials: entityData.symbolCredentials || { address: undefined },
-      owners: [{
-        ownerName: creator,
-        ownerTag: creatorTag,
-      }],
-      admins: [{
-        adminName: creator,
-        adminTag: creatorTag,
-      }],
-      adminOf: [ fullId ],
-      properties: {
-        baseLocation: entityData.location || undefined,
-        description: entityData.description || undefined,
+
+      props: {
+        descr: entityData.description || undefined,
         target: target.data[0],
         unit: entityData.unit || undefined,
+        email: email,
       },
+
+      geometry: geometry,
+
+      imageName: thumbnail ? thumbnail.originalName : undefined,
+      tinyImageDU: tinyImage ? tinyImage.dataUrl : undefined,
+      thumbnailDU: thumbnail ? thumbnail.dataUrl : undefined,
+      mediumImageDU: mediumImage ? mediumImage.dataUrl : undefined,
+
+      // for backwards compatibility
       tinyImage: tinyImage,
       thumbnail: thumbnail,
       mediumImage: mediumImage,
-      geometry: geometry,
-      social: {
-        email: email,
-      }
-    };
+      // creator: creator,
+      // creatorTag: creatorTag,
+      block: block,
+      rpc: rpc,
+      contract: contract,
 
-    V.setState( 'tinyImageUpload', 'clear' );
-    V.setState( 'thumbnailUpload', 'clear' );
-    V.setState( 'mediumImageUpload', 'clear' );
+    };
 
     return {
       success: true,
       endpoint: 'entity',
       status: 'cast entity',
-      data: [ newEntity ]
+      data: [ entityCast ],
     };
-  }
-
-  function castTarget( entityData ) {
-    let error;
-
-    entityData.target == '' ? entityData.target = undefined : null;
-
-    if (  entityData.target ) {
-      entityData.unit == '' ? error = getString( ui.noUnit ) : null;
-      isNaN( entityData.target ) ? error = getString( ui.isNaN ) : null;
-    }
-
-    if ( ['pool'].includes( entityData.role ) ) {
-      entityData.unit == '' ? error = undefined : null;
-      !entityData.target ? error = getString( ui.noTarget ) : null;
-      // entityData.target.toLowerCase().trim() == getString( ui.free ).trim() ? entityData.target = 0 : null;
-    }
-
-    Number( entityData.target ) > 9999 || Number( entityData.target ) < 0 ? error = getString( ui.targetRange ) : null;
-
-    if ( error ) {
-      return {
-        success: false,
-        endpoint: 'entity',
-        status: 'invalid target',
-        message: error
-      };
-    }
-    else {
-      return {
-        success: true,
-        endpoint: 'entity',
-        status: 'cast entity target',
-        data: [ entityData.target ]
-      };
-    }
-
   }
 
   /* ================== public methods ================== */
@@ -317,23 +273,21 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const titleArray = title.trim().toLowerCase().split( ' ' );
 
     var checkLength = titleArray.length;
-    var wordLengthExeeded = titleArray.map( item => { return item.length > entitySetup.maxWordLength } );
+    var wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
 
     let error;
 
     ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
-    // ( systemInit.communityGovernance.excludeNames.includes( tools.constructUserName( title ) ) && !( entityData.firstRegistration ) )  ? error = getString( ui.invalidTitle ) : null;
+    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
     entitySetup.useWhitelist && title.match( charWhitelist ) ? error = getString( ui.invalidTitle ) : null;
     title.match( charBlacklist ) ? error = getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
     !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = getString( ui.min2Adjecent ) : null;
-    title.length > 200  ? error = getString( ui.tooLong ) : null;
-    title.length < 2 ? error = getString( ui.tooShort ) : null;
+    // title.length > 200  ? error = getString( ui.tooLong ) : null; // redundant rule
+    // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
     // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
-    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
     // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-    // checkLength > entitySetup.capWordLength ? error = getString( ui.invalidTitle ) : null;
-    ( [ 'member' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
-    ( [ 'member' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
+    ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+    ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
     wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
     if ( error ) {
@@ -341,16 +295,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'invalid title',
-        message: '🔮' + ' ' + error
+        message: '🔮' + ' ' + error,
       };
     }
     else {
 
       const formattedTitle = titleArray.map( function( string ) {
-        if ( string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+        if ( 'Person' == role && string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
           return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
         }
-        if ( string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+        if ( 'Person' == role && string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
           return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
         }
         else {
@@ -362,9 +316,83 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         endpoint: 'entity',
         status: 'cast entity title',
-        data: [ formattedTitle ]
+        data: [ formattedTitle ],
       };
     }
+  }
+
+  function castTag() {
+    // debug
+    // return '#2121';
+
+    // for demo content creation
+    // if ( V.getSetting( 'demoContent' ) ) {
+    //   return '#2121';
+    // }
+
+    let continueDice = true;
+
+    while ( continueDice ) {
+      const number1 = String( V.castRandomInt( 2, 9 ) );
+      const number2 = String( V.castRandomInt( 1, 9 ) );
+      const number3 = String( V.castRandomInt( 2, 9 ) );
+
+      if (
+        number2 != number1 &&
+        number3 != number1 &&
+        number3 != number2 &&
+        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
+        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
+        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
+        number1 + number2 != '69' && // sexual reference
+        number3 + number2 != '69' &&
+        number1 + number2 != '13' && // bad luck in Germany
+        number3 + number2 != '13' &&
+        number1 + number2 != '21' && // special VI tag
+        number3 + number2 != '21'
+      ) {
+        continueDice = false;
+        const tag = '#' + number1 + number2 + number3 + number2;
+        return tag;
+      }
+    }
+  }
+
+  function castTarget( target, unit, role )  {
+    let error;
+
+    target == '' ? target = undefined : null;
+
+    if (  target ) {
+      unit == '' ? error = getString( ui.noUnit ) : null;
+      isNaN( target ) ? error = getString( ui.isNaN ) : null;
+    }
+
+    if ( ['Pool'].includes( role ) ) {
+      unit == '' ? error = undefined : null;
+      !target ? error = getString( ui.noTarget ) : null;
+      // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
+    }
+
+    Number( target ) > 9999 || Number( target ) < 0 ? error = getString( ui.targetRange ) : null;
+
+    if ( error ) {
+      return {
+        success: false,
+        endpoint: 'entity',
+        status: 'invalid target',
+        message: error,
+      };
+    }
+    else {
+      return {
+        success: true,
+        endpoint: 'entity',
+        status: 'cast entity target',
+        data: [ Number( target ) || undefined ],
+      };
+    }
+
   }
 
   async function getEntityBalance( entity = V.aE() ) {
@@ -372,20 +400,20 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const tL = V.getSetting( 'transactionLedger' );
     const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
-    const returnFalse = ( tL, bal ) => {
-      return {
-        success: false,
-        endpoint: 'entity',
-        ledger: tL,
-        status: 'could not retrieve entity balance',
-        message: bal,
-        data: []
-      };
-    };
+    const returnFalse = ( tL, bal ) => ( {
+      success: false,
+      endpoint: 'entity',
+      ledger: tL,
+      status: 'could not retrieve entity balance',
+      message: bal,
+      data: [],
+    } );
 
     if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.aA() */ ) {
 
-      const bal = await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] );
+      const bal = entity[tL.toLowerCase() + 'Credentials']
+        ? await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] )
+        : { success: false };
 
       if ( bal.success ) {
         return  {
@@ -399,9 +427,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
               tokenBalance: bal.data[0].tokenBalance,
               liveBalance: bal.data[0].liveBalance,
               lastBlock: bal.data[0].lastBlock,
-              zeroBlock: bal.data[0].zeroBlock
-            }
-          ]
+              zeroBlock: bal.data[0].zeroBlock,
+            },
+          ],
         };
       }
       else {
@@ -422,8 +450,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
               tokenBalance: bal.data[0].onChain.balance,
               liveBalance: bal.data[0].onChain.balance, // TODO: this is the wrong live balance
               lastBlock: bal.data[0].onChain.lastMove,
-            }
-          ]
+            },
+          ],
         };
       }
       else {
@@ -438,26 +466,39 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   function getEntity(
     // defaults to searching all entities (via all roles)
     which = 'all',
-    filter = 'role'
+    filter = 'role',
   ) {
 
     const whichLedger = V.getSetting( 'entityLedger' );
 
-    if ( whichLedger == 'MongoDB' ) {
-      if ( which.substr( 0, 2 ) == '0x' ) {
+    if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
+      if (
+        which.substr( 0, 2 ) == '0x' &&
+        which.length == 42
+      ) {
         filter = 'evmAddress';
       }
-      if (
+      else if (
         which.substr( 0, 1 ) == 'T' &&
         which.length == 40
       ) {
         filter = 'symbolAddress';
       }
-      else if ( which.substr( 0, 2 ) == 'vx' ) {
-        filter = 'uPhrase';
-      }
-      else if ( new RegExp( /#\d{4}/ ).test( which ) ) {
+      // else if (
+      //   which.substr( 0, 2 ) == 'vx' &&
+      //   which.length == 18
+      // ) {
+      //   filter = 'uPhrase';
+      // }
+      else if (
+        new RegExp( /\s#\d{4}/ ).test( which )
+      ) {
         filter = 'fullId';
+      }
+      else if (
+        which.length == 22
+      ) {
+        filter = 'uuidE';
       }
     }
     else if ( whichLedger == '3Box' ) {
@@ -500,16 +541,36 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return V.setData( whichEntity, 'verification', V.getSetting( 'transactionLedger' ) );
     }
     else {
-      Object.assign( data, { entity: whichEntity } );
+      Object.assign( data, {
+        entity: whichEntity,
+      } );
       return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) ).then( res => {
+        console.log( 'RESPONSE:', res );
 
-        /* Only update state if activeEntity was edited, not a managed entity */
+        if ( res.success ) {
+          V.setCache( 'viewed', 'clear' ); // TODO: could be more granular
 
-        if ( V.getState( 'activeEntity' ).fullId == res.data[0].fullId ) {
-          V.setState( 'activeEntity', 'clear' );
-          V.setState( 'activeEntity', res.data[0] );
+          /** Only update state if activeEntity was edited, not a managed entity */
+          if (
+            'Firebase' == V.getSetting( 'entityLedger' ) &&
+            [ V.aE().uuidE, V.aE().uuidP ].includes( res.data[0].a )
+          ) {
+            getEntity( V.aE().uuidE ).then( res => {
+              if ( res.success ) {
+                V.setActiveEntity( res.data[0] ); // pass object
+              }
+            } );
+          }
+          else if (
+            'MongoDB' == V.getSetting( 'entityLedger' ) &&
+            V.aE().fullId == res.data[0].fullId
+          ) {
+            V.setActiveEntity( res.data[0] );
+          }
         }
+
         return res;
+
       } );
     }
 
@@ -522,6 +583,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.castEntityTitle = castEntityTitle;
+  V.castTag = castTag;
+  V.castTarget = castTarget;
   V.getEntity = getEntity;
   V.setEntity = setEntity;
   V.getEntityBalance = getEntityBalance;
@@ -529,10 +592,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     castEntityTitle: castEntityTitle,
+    castTag: castTag,
+    castTarget: castTarget,
     getEntity: getEntity,
     setEntity: setEntity,
     getEntityBalance: getEntityBalance,
-    getQuery: getQuery
+    getQuery: getQuery,
   };
 
 } )();

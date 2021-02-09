@@ -10,22 +10,25 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   V.setStyle( {
     'iframe-wrapper': {
       'position': 'relative',
-      'padding-bottom': '56.25%'
+      'padding-bottom': '56.25%',
+    },
+    'paragraph .iframe-wrapper': {
+      'margin-bottom': '20px',
     },
     'iframe-wrapper iframe': {
       position: 'absolute',
       top: '0',
       left: '0',
       width: '100%',
-      height: '100%'
+      height: '100%',
     },
     'media-text a': {
-      color: 'rgba(var(--link), 1)'
-    }
+      color: 'rgba(var(--link), 1)',
+    },
   } );
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.innerHTML );
+    const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -34,7 +37,7 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   function videoFeature( link ) {
     return V.castNode( {
       t: 'div',
-      h: V.castLinks( link ).iframes
+      h: V.castLinks( link ).iframes,
     } );
   }
 
@@ -51,19 +54,19 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'h2',
       c: 'font-bold fs-l pxy cursor-pointer',
       h: cardData.fullId,
-      k: handleProfileDraw
+      k: handleProfileDraw,
     } );
 
     const $video = V.castNode( {
       t: 'div',
       c: 'w-full',
-      h: linkedContent.firstIframe
+      h: linkedContent.firstIframe,
     } );
 
     const $text = V.castNode( {
       t: 'div',
       c: 'media-text pt-r',
-      h: linkedContent.links
+      h: linkedContent.links,
     } );
 
     V.setNode( $cardContent, [$title, $video, $text] );
@@ -73,14 +76,14 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function featureUl() {
     return V.cN( {
-      tag: 'ul'
+      tag: 'ul',
     } );
   }
 
   return {
     videoFeature: videoFeature,
     mediaCard: mediaCard,
-    featureUl: featureUl
+    featureUl: featureUl,
   };
 
 } )();

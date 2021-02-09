@@ -25,7 +25,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         lng: undefined,
         description: undefined,
         unit: undefined,
-        target: undefined
+        target: undefined,
       };
 
       const lastForm = V.castJson( V.getCookie( 'last-form' ) );
@@ -45,7 +45,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
     return {
       success: true,
       layout: which,
-      data: [values]
+      data: [values],
     };
   }
 
@@ -59,7 +59,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( !formData.success ) {
-      V.getNode( '.form__response' ).innerHTML = formData.message;
+      V.getNode( '.form__response' ).textContent = formData.message;
     }
     else {
       const $form = InteractionComponents.form();
@@ -77,8 +77,8 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
               InteractionComponents.formUploadImage(),
               InteractionComponents.formField( 'target', values.target ),
               InteractionComponents.formField( 'unit', values.unit ),
-            ]
-          } )
+            ],
+          } ),
         ] );
       }
       else if ( formData.layout == 'search' ) {
@@ -114,7 +114,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    draw: draw
+    draw: draw,
   };
 
 } )();

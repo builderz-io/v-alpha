@@ -65,12 +65,12 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
         'padding': '10px',
         'list-style': 'none',
         'max-height': '410px',
-        'overflow-y': 'scroll'
-      }
+        'overflow-y': 'scroll',
+      },
     },
     html: VDom.setNode( {
-      tag: 'ul'
-    } )
+      tag: 'ul',
+    } ),
   } );
 
   $debug.addEventListener( 'click', function() {
@@ -97,7 +97,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   V.debug = debug;
 
   return {
-    debug: debug
+    debug: debug,
   };
 
 } )();

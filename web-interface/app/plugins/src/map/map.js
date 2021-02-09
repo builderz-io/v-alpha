@@ -50,7 +50,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   function view( features ) {
 
-    if ( !features || !features.length ) {
+    if ( !features || !features.length || features[0] == undefined ) {
       return;
     }
 
@@ -61,7 +61,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
       weight: 0,
       opacity: 1,
-      fillOpacity: 0.9
+      fillOpacity: 0.9,
     };
 
     const popUpSettings = {
@@ -69,7 +69,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       closeButton: false,
       autoPanPaddingTopLeft: [100, 140],
       keepInView: true,
-      className: 'map__popup'
+      className: 'map__popup',
     };
 
     if ( featureLayer ) {
@@ -82,7 +82,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       },
       onEachFeature: function( feature, layer ) {
         layer.bindPopup( L.popup( popUpSettings ).setContent( castPopup( feature ) ) );
-      }
+      },
     } );
 
     const geo = features[0].geometry.coordinates;

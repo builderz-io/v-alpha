@@ -15,7 +15,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.getSetting( 'useBuilds' ) ) {
       await Promise.all( [
-        V.setStylesheet( '/css/builds/v.min.css' )
+        V.setStylesheet( '/css/builds/v.min.css' ),
       ] );
       console.log( '*** css builds loaded ***' );
     }
@@ -29,7 +29,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setStylesheet( '/css/src/3_0_utilities.css' ),
         V.setStylesheet( '/css/src/4_0_components.css' ),
         V.setStylesheet( '/css/src/8_0_overrides.css' ),
-        V.setStylesheet( '/css/src/9_0_leaflet.css' )
+        V.setStylesheet( '/css/src/9_0_leaflet.css' ),
       ] );
       console.log( '*** css source files loaded ***' );
     }
@@ -94,7 +94,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     if( V.getSetting( 'demoContent' ) ) {
       await Promise.all( [
-        V.setScript( '/assets/demo-content/demo-content.js' )
+        V.setScript( '/assets/demo-content/demo-content.js' ),
       ] );
       console.log( '*** demo content loaded ***' );
     }
@@ -120,20 +120,20 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         'font-family': 'IBM Plex Regular',
         'src': 'url(/assets/font/IBMPlexSans-Regular.ttf) format(\'truetype\')',
         'font-display': 'fallback',
-        'unicode-range': 'U+000-024F'
+        'unicode-range': 'U+000-024F',
       },
       '@font-face-2': {
         'font-family': 'IBM Plex Medium',
         'src': 'url(/assets/font/IBMPlexSans-Medium.ttf) format(\'truetype\')',
         'font-display': 'fallback',
-        'unicode-range': 'U+000-024F'
+        'unicode-range': 'U+000-024F',
       },
       '@font-face-3': {
         'font-family': 'IBM Plex Bold',
         'src': 'url(/assets/font/IBMPlexSans-Bold.ttf) format(\'truetype\')',
         'font-display': 'fallback',
-        'unicode-range': 'U+000-024F'
-      }
+        'unicode-range': 'U+000-024F',
+      },
     } );
   }
 
@@ -166,15 +166,15 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         state.screen.height
       - state.page.topSelected
       // - state.page.detach
-      - ( state.screen.width < 600 ? state.screen.width : 600 ) * 9/16
-      )
+      - ( state.screen.width < 600 ? state.screen.width : 600 ) * 9/16,
+      ),
     } );
     V.setState( 'page', { featureDimensions: {
       width: state.screen.width < 600 ? state.screen.width : 495,
       height: Math.floor(
-        ( state.screen.width < 600 ? state.screen.width : 495 ) * 9/16
-      )
-    }
+        ( state.screen.width < 600 ? state.screen.width : 495 ) * 9/16,
+      ),
+    },
     } );
 
     V.setState( 'header', {
@@ -254,7 +254,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function view(
     historyState,
-    path = historyState ? historyState.path : ''
+    path = historyState ? historyState.path : '',
   ) {
 
     /**
@@ -274,7 +274,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       .then( (
         x,
         status = x.status,
-        which = x.data[0]
+        which = x.data[0],
       ) => {
         if ( ['home'].includes( status ) ) {
           // V.setState( 'page', { rectOffset: 0 } ); // getBoundingClientRect-for-pill-bug-mitigation
@@ -326,11 +326,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( V.getSetting( 'demoContent' ) ) {
-      ( async () => {
-        for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
-          await V.setEntity( DemoContent.mongoArr[i] );
-        }
-      } )();
+      V.setEntity( DemoContent.mongoArr[4] );
+      // ( async () => {
+      //   for ( let i = 0; i < DemoContent.mongoArr.length; i++ ) {
+      //     await V.setEntity( DemoContent.mongoArr[i] );
+      //   }
+      // } )();
     }
   }
 
@@ -352,17 +353,58 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function returningUser() {
     if( !V.aE() ) {
+      V.setAuth()
+        .then( data => {
+          if ( data.success ) {
+            console.log( 'auth success' );
+            return data.data[0].uuidE;
+          }
+          else {
+            throw new Error( 'could not set auth' );
+          }
+        } )
+        .then( uuidE => V.getEntity( uuidE ) )
+        .then( entity => {
+          if ( entity.success ) {
+            V.setActiveEntity( entity.data[0] );
+            Join.draw( 'new entity was set up' );
+          }
+          else {
+            throw new Error( 'could not get entity after set auth' );
+          }
+        } )
+        .catch( () =>  {
+          console.log( 'auth unsuccessful' );
+          if ( V.getCookie( 'last-active-address' ) && window.ethereum ) {
+            Join.draw( 'authenticate' );
+          }
+          else {
+            Join.launch(); // sets node: join button
+          }
+        } );
+    }
+  }
+
+  /*
+  function returningUser() {
+    if( !V.aE() ) {
       const returningWallet = V.getCookie( 'last-active-address' );
       const returningUphrase = V.getCookie( 'last-active-uphrase' );
 
-      if ( returningWallet ) {
+      if ( returningWallet && window.ethereum ) {
         Join.draw( 'authenticate' );
       }
       else if ( returningUphrase ) {
         ( async () => {
-          const returningEntity = await V.getEntity( V.castJson( returningUphrase ) );
-          V.setState( 'activeEntity', returningEntity.data[0] );
-          Join.draw( 'new entity was set up' );
+          await V.getEntity( V.castJson( returningUphrase ) )
+            .then( authDoc => {
+              return authDoc.data[0].i;
+            } )
+            .then( evmAddress => V.getEntity( evmAddress ) )
+            .then( entity => {
+              V.setState( 'activeEntity', entity.data[0] );
+              Join.draw( 'new entity was set up' );
+            } );
         } )();
       }
       else {
@@ -370,7 +412,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       }
     }
   }
-
+*/
   function handleKeyboard( array ) {
     array.some( elem => {
       if ( V.getVisibility( '#' + elem ) ) {
@@ -399,7 +441,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    draw: draw
+    draw: draw,
   };
 
 } )();

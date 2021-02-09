@@ -59,23 +59,26 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
           tinyImage.canvas.toBlob( tinyBlob => {
             V.setState( 'tinyImageUpload', {
+              dataUrl: tinyImage.canvas.toDataURL( 'image/jpeg' ),
               blob: tinyBlob,
               contentType: tinyBlob.type,
-              originalName: e.target.files[0].name
+              originalName: e.target.files[0].name,
             } );
 
             thumbnail.canvas.toBlob( thumbBlob => {
               V.setState( 'thumbnailUpload', {
+                dataUrl: thumbnail.canvas.toDataURL( 'image/jpeg' ),
                 blob: thumbBlob,
                 contentType: thumbBlob.type,
-                originalName: e.target.files[0].name
+                originalName: e.target.files[0].name,
               } );
 
               mediumImage.canvas.toBlob( mediumBlob => {
                 V.setState( 'mediumImageUpload', {
+                  dataUrl: mediumImage.canvas.toDataURL( 'image/jpeg' ),
                   blob: mediumBlob,
                   contentType: mediumBlob.type,
-                  originalName: e.target.files[0].name
+                  originalName: e.target.files[0].name,
                 } );
 
                 resolve( {
@@ -97,7 +100,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         reject( {
           success: false,
           status: 'could not prepare image for upload',
-          message: error
+          message: error,
         } );
       };
     } );
@@ -114,7 +117,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       c: 'max-w-full',
       a: {
         src: src,
-        alt: thumbnailData.entity + ' ' + 'Title Image' + ' - ' + thumbnailData.originalName
+        alt: thumbnailData.entity + ' ' + 'Title Image' + ' - ' + thumbnailData.originalName,
       },
       // TODO: revokeObjectURL
       // e: {
@@ -124,7 +127,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
     return {
       img: $img,
-      src: src
+      src: src,
     };
   }
 
@@ -209,7 +212,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         else {
           iframeLinks.push( '<a href="' + replace + '" >' + anchorText + '</a>' );
         }
-        iframes = iframes.split( linksFound[i] ).map( item => { return iframeLinks[i].includes( 'iframe' ) ? item.trim() : item } ).join( iframeLinks[i] );
+        iframes = iframes.split( linksFound[i] ).map( item => iframeLinks[i].includes( 'iframe' ) ? item.trim() : item ).join( iframeLinks[i] );
         links = links.split( linksFound[i] ).join( regularLinks[i] );
       } // end loop over linksFound
 
@@ -234,7 +237,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         socialLinksHandles: socialLinksHandles,
         omitOriginalSocialLinks: omitOriginalSocialLinks,
         iframes: iframes,
-        firstIframe: iframeLinks[0]
+        firstIframe: iframeLinks[0],
       };
 
     }
@@ -246,7 +249,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         socialLinksHandles: which,
         omitOriginalSocialLinks: which,
         iframes: which,
-        firstIframe: iframeLinks[0]
+        firstIframe: iframeLinks[0],
       };
     }
   }
@@ -258,16 +261,16 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   function castRandLatLng() {
     return {
-      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ),
-      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1
+      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1,
+      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1,
     };
   }
 
   function castInitials( which ) {
-    const initials = which ? which.split( ' ' ).filter( item => { return isNaN( item.replace( '#', '' ) ) } ) : [];
+    const initials = which ? which.split( ' ' ).filter( item => isNaN( item.replace( '#', '' ) ) ) : [];
     if ( initials.length ) {
       const first = initials[0].charAt( 0 );
-      const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => { return ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 } )[0];
+      const firstConsonant = initials[0].substr( 1 ).split( '' ).filter( letter => ['a', 'e', 'i', 'o', 'u'].indexOf( letter ) == -1 )[0];
       const second = initials[1] ? initials[1].charAt( 0 ) : firstConsonant ? firstConsonant.toUpperCase() : '';
       return first + second;
     }
@@ -279,7 +282,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castCamelCase( which ) {
 
     /* by @smilyface on stackoverflow */
-    return which.toLowerCase().replace( /[^a-zA-Z0-9]+(.)/g, ( m, chr ) => {return chr.toUpperCase()} );
+    return which.toLowerCase().replace( /[^a-zA-Z0-9]+(.)/g, ( m, chr ) => chr.toUpperCase() );
   }
 
   function castSlugOrId( which ) {
@@ -317,6 +320,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castFullId( title, tag ) {
+    const split = title.split( '#' );
+    return tag ? title + ' ' + tag : { title: split[0].trim(), tag: '#' + split[1] };
+  }
+
   function castJson( data, clone ) {
 
     if ( !data || data === 'undefined' ) {
@@ -340,23 +348,42 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
 
-  function castUUID( input ) {
+  function castUuid( input ) {
     // creation adapted from https://github.com/uuidjs/uuid
     // encode/decode adapted from https://gist.github.com/brianboyko/1b652a1bf85c48bc982ab1f2352246c8
+    // btoa/atob from https://stackoverflow.com/questions/23097928/node-js-throws-btoa-is-not-defined-error/38446960#38446960
     // on 6th May 2020
+
+    const universalBtoa = str => {
+      try {
+        return btoa( str );
+      }
+      catch ( err ) {
+        return Buffer.from( str ).toString( 'base64' );
+      }
+    };
+
+    const universalAtob = b64Encoded => {
+      try {
+        return atob( b64Encoded );
+      }
+      catch ( err ) {
+        return Buffer.from( b64Encoded, 'base64' ).toString();
+      }
+    };
 
     // converts a UUID to a URL-safe version of base 64.
     const encode = uuid => {
       const stripped = uuid.replace( /-/g, '' ); // remove dashes from uuid
-      const true64 = btoa(
+      const true64 = universalBtoa(
         String.fromCharCode.apply(
           null,
           stripped
             .replace( /\r|\n/g, '' )
             .replace( /([\da-fA-F]{2}) ?/g, '0x$1 ' )
             .replace( / +$/, '' )
-            .split( ' ' )
-        )
+            .split( ' ' ),
+        ),
       ); // turn uuid into base 64
       const url64 = true64
         .replace( /\//g, '_' )
@@ -368,7 +395,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     // takes a URL-safe version of base 64 and converts it back to a UUID.
     const decode = url64 => {
       const true64 = url64.replace( /_/g, '/' ).replace( /-/g, '+' ); // replace url-safe characters with base 64 characters
-      const raw = atob( true64 ); // decode the raw base 64 into binary buffer.
+      const raw = universalAtob( true64 ); // decode the raw base 64 into binary buffer.
 
       let hex = ''; // create a string of length 0
       let hexChar; // mostly because you don't want to initialize a variable inside a loop.
@@ -387,7 +414,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     };
 
     if ( !input ) {
-      let uuidV4, encoded;
+      let uuidV4, encoded, nodeUuidV4;
 
       const bytesToUuid = ( buf, offset ) => {
         const i = offset || 0;
@@ -478,20 +505,35 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         return buf || bytesToUuid( rnds );
       };
 
-      uuidV4 = v4();
+      const universalV4 = () => {
+        try {
+
+          /** browser */
+          return v4();
+        }
+        catch ( err ) {
+
+          /** node */
+          !nodeUuidV4 ? { v4: nodeUuidV4 } = require( 'uuid' ) : null;
+          return nodeUuidV4();
+        }
+      };
+
+      uuidV4 = universalV4();
+
       encoded = encode( uuidV4 );
 
-      while ( uuidV4.charAt( 0 ) == '0' ||
-              encoded.includes( '-' ) ||
-              encoded.includes( '_' ) ||
-              encoded.includes( 'O' ) ||
-              ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
-              ['x', 'X'].includes( encoded.charAt( 1 ) ) ||
-              // !encoded.charAt( 0 ).match( /[0-9]/ ) ||
-              !encoded.charAt( 0 ).match( /[A-Z]/ ) ||
-              !encoded.charAt( 1 ).match( /[A-Z]/ )
+      while (
+        // uuidV4.charAt( 0 ) == '0' ||
+        !encoded.charAt( 0 ).match( /[a-z]/ ) ||
+        !encoded.charAt( 1 ).match( /[a-z]/ ) ||
+        encoded.charAt( 0 ) == encoded.charAt( 1 ) ||
+        encoded.includes( '-' ) ||
+        encoded.includes( '_' ) ||
+        ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
+        ['x', 'X'].includes( encoded.charAt( 1 ) )
       ) {
-        uuidV4 = v4();
+        uuidV4 = universalV4();
         encoded = encode( uuidV4 );
       }
 
@@ -519,49 +561,28 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return incMinMax;
   }
 
-  function castTag() {
-    // debug
-    // return '#2121';
-
-    // for demo content creation
-    // if ( V.getSetting( 'demoContent' ) ) {
-    //   return '#2121';
-    // }
-
-    let continueDice = true;
-
-    while ( continueDice ) {
-      const number1 = String( castRandomInt( 2, 9 ) );
-      const number2 = String( castRandomInt( 1, 9 ) );
-      const number3 = String( castRandomInt( 2, 9 ) );
-
-      if (
-        number2 != number1 &&
-        number3 != number1 &&
-        number3 != number2 &&
-        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
-        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
-        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
-        number1 + number2 != '69' && // sexual reference
-        number3 + number2 != '69' &&
-        number1 + number2 != '13' && // bad luck in Germany
-        number3 + number2 != '13' &&
-        number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21'
-      ) {
-        continueDice = false;
-        const tag = '#' + number1 + number2 + number3 + number2;
-        return tag;
-      }
-    }
-  }
-
   function getIcon( which ) {
     return which.match( new RegExp( socialMatch ) )
-      ? '<img src="/assets/icon/social/' + which + '.svg" height="28px">'
+      ? V.cN( {
+        t: 'img',
+        src: '/assets/icon/social/' + which + '.svg',
+        a: {
+          height: '28px',
+        },
+      } )
       : which == '+'
-        ? '<span class="plus-icon fs-l no-txt-select">+</span>'
-        : '<img src="/assets/icon/' + which + '-24px.svg" height="16px">';
+        ? V.cN( {
+          t: 'span',
+          c: 'plus-icon fs-l no-txt-select',
+          h: '+',
+        } )
+        : V.cN( {
+          t: 'img',
+          src: '/assets/icon/' + which + '-24px.svg',
+          a: {
+            height: '16px',
+          },
+        } );
 
   }
 
@@ -576,7 +597,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
      * https://medium.com/javascript-scene/reduce-composing-software-fe22f0c39a1d
      */
 
-    return ( x ) => {return functions.reduce( ( v, f ) => {return f( v )}, x )};
+    return ( x ) => functions.reduce( ( v, f ) => f( v ), x );
   }
 
   function getTranslation( which, whichContext, whichDescr = '' ) {
@@ -600,7 +621,25 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function sleep( ms ) {
-    return new Promise( resolve => {return setTimeout( resolve, ms )} );
+    return new Promise( resolve => setTimeout( resolve, ms ) );
+  }
+
+  function successFalse( msg, err, data ) {
+    return {
+      success: false,
+      status: -500,
+      message: `could not ${ msg }: ${ err || 'no error message' }`,
+      data: [ data ],
+    };
+  }
+
+  function successTrue( msg, data ) {
+    return {
+      success: true,
+      status: 100,
+      message: `successfully ${ msg }`,
+      data: Array.isArray( data ) ? data : [ data ],
+    };
   }
 
   /* ====================== export ====================== */
@@ -615,17 +654,19 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castCamelCase = castCamelCase;
   V.castSlugOrId = castSlugOrId;
   V.castPathOrId = castPathOrId;
+  V.castFullId = castFullId;
   V.castJson = castJson;
   V.castShortAddress = castShortAddress;
-  V.castUUID = castUUID;
+  V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;
-  V.castTag = castTag;
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
   V.getTranslation = getTranslation;
   V.i18n = i18n;
   V.sleep = sleep;
+  V.successFalse = successFalse;
+  V.successTrue = successTrue;
 
   return {
     castImageUpload: castImageUpload,
@@ -638,17 +679,19 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castCamelCase: castCamelCase,
     castSlugOrId: castSlugOrId,
     castPathOrId: castPathOrId,
+    castFullId: castFullId,
     castJson: castJson,
     castShortAddress: castShortAddress,
-    castUUID: castUUID,
+    castUuid: castUuid,
     castRandomInt: castRandomInt,
-    castTag: castTag,
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,
     getTranslation: getTranslation,
     i18n: i18n,
-    sleep: sleep
+    sleep: sleep,
+    successFalse: successFalse,
+    successTrue: successTrue,
   };
 
 } )();

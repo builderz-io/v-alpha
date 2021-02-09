@@ -14,7 +14,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
     if ( !V.aE() ) {
       return {
         success: false,
-        status: ''
+        status: '',
       };
     }
 
@@ -32,8 +32,6 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
     else {
       for ( let i = 0; i < V.aE().adminOf.length; i++ ) {
         const query = await V.getEntity( V.aE().adminOf[i] );
-        query.data[0].type = 'Feature'; // needed to populate entity on map
-        query.data[0].properties ? null : query.data[0].properties = {};
         entitiesAdmined.push( query.data[0] );
       }
 
@@ -51,13 +49,13 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           entity: V.aE(),
           entitiesAdmined: entitiesAdmined,
-        }]
+        }],
       };
     }
     else {
       return {
         success: null,
-        status: 'cound not retrieve entities'
+        status: 'cound not retrieve entities',
       };
     }
   }
@@ -70,7 +68,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
       UserComponents.setData( {
         entity: viewData.data[0].entity,
-        editable: true
+        editable: true,
       } );
 
       $list = CanvasComponents.list( 'narrow' );
@@ -78,7 +76,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
       for ( let i = 0; i < viewData.data[0].entitiesAdmined.length; i++ ) {
         V.setNode( $list, [
-          UserComponents.entityListCard( viewData.data[0].entitiesAdmined[i] )
+          UserComponents.entityListCard( viewData.data[0].entitiesAdmined[i] ),
         ] );
       }
 

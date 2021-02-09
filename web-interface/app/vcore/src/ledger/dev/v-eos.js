@@ -25,15 +25,15 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
     const account = 'todo...';
 
-    V.setState( 'activeAddress', 'todo...' );
+    V.setCookie( 'last-active-address', 'todo...' );
 
     return {
       success: true,
       status: 'EOS credentials created',
       data: [ {
         address: account.address,
-        privateKey: account.privateKey
-      } ]
+        privateKey: account.privateKey,
+      } ],
     };
   }
 
@@ -53,7 +53,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           tokenBalance: bal[0].toFixed( 0 ),
           liveBalance: bal[0].toFixed( 0 ),
-        }]
+        }],
       };
     }
     else {
@@ -105,7 +105,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'transactions retrieved',
         ledger: 'EOS',
-        data: [ filteredTransfers ]
+        data: [ filteredTransfers ],
       };
     }
     else {
@@ -135,7 +135,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
             quantity: '0.0001 SYS',
             memo: '',
           },
-        }]
+        }],
       }, {
         blocksBehind: 3,
         expireSeconds: 30,

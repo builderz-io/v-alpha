@@ -11,7 +11,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   function handleInputFocus() {
     const $response = V.getNode( '.messageform__response' );
-    $response.innerHTML = '';
+    $response.textContent = '';
   }
 
   function handleSetMessageBot() {
@@ -40,10 +40,10 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
             messageform__respinner: {
               color: 'red',
               background: 'white',
-              padding: '2px 8px'
-            }
+              padding: '2px 8px',
+            },
           },
-          h: res.status
+          h: res.status,
         } ) );
       }
     } );
@@ -62,14 +62,14 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           messages: [],
           aE: V.aE() || undefined,
-        }]
+        }],
       };
     }
     else if ( !V.aE() && path != '/chat/everyone' ) {
       return {
         success: false,
         status: 'not logged in',
-        data: []
+        data: [],
       };
     }
     else {
@@ -79,7 +79,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           messages: messages.data[0],
           aE: V.aE() || undefined,
-        }]
+        }],
       };
     }
   }
@@ -116,7 +116,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       topcontent: $topcontent,
       listings: $list,
       position: 'top', // set again to trigger scroll
-      scroll: 'bottom'
+      scroll: 'bottom',
     } );
     Chat.drawMessageForm();
   }
@@ -147,32 +147,32 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     if ( !t1 ) { return }
     const t2 = V.getNode( '#typing_on_2' );
 
-    const a = t1.innerHTML.split( ' ' )[0];
+    const a = t1.textContent.split( ' ' )[0];
 
     if ( user === false ) {
       resetTyping1();
       resetTyping2();
     }
     else if ( !a ) {
-      t1.innerHTML = user + ' is typing ...';
+      t1.textContent = user + ' is typing ...';
       setTimeout( resetTyping1, 4000 );
       resetTyping2();
     }
     else if ( user == a ) {
-      t1.innerHTML = user + ' is typing ...';
+      t1.textContent = user + ' is typing ...';
       setTimeout( resetTyping1, 4000 );
     }
     else {
-      t2.innerHTML = user + ' is typing ...';
+      t2.textContent = user + ' is typing ...';
       setTimeout( resetTyping2, 4000 );
     }
 
     function resetTyping1() {
-      t1.innerHTML = '';
+      t1.textContent = '';
     }
 
     function resetTyping2() {
-      t2.innerHTML = '';
+      t2.textContent = '';
     }
 
   }
@@ -187,8 +187,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         path: '/chat/everyone',
         draw: function() {
           Chat.draw( '/chat/everyone' );
-        }
-      }
+        },
+      },
     ] );
 
     if ( V.getSetting( 'chatLedger' ) == 'MongoDB' ) {
@@ -213,8 +213,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
-
-    // V.setState( 'active', { lastViewed: undefined } );
 
     V.setNode( $form, [ $response, $input, $send ] );
     V.setNode( 'page', $form );

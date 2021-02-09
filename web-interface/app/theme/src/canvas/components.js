@@ -11,9 +11,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   V.setStyle( {
 
-  /* Cross-browser bottom list padding */
+    /* Cross-browser bottom list padding */
     'list > *:last-child': {
-      'padding-bottom': '160px'
+      'padding-bottom': '160px',
     },
     'card__top-left': {
       width: cardLeftWidth + '%',
@@ -31,34 +31,34 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       width: 100 - cardLeftWidth - 6 + '%',
     },
     'card__unit': {
-      width: '100%'
+      width: '100%',
     },
     'card__container': {
       'max-width': '360px',
-      'flex-wrap': 'wrap'
+      'flex-wrap': 'wrap',
     },
     'background': {
       'background': 'rgba(211,232,235,1)',
       // 'background': 'rgba(115,182,230,1)',
       'height': '100vh', // 'calc(var(--screen-height) - var(--page-position-closed))',
-      'z-index': -2
+      'z-index': -2,
     },
     'haze': {
       'top': 0,
       'height': '45vh',
-      'z-index': -1
+      'z-index': -1,
     },
     'handle': {
       'padding-top': '12px',
       'height': '26px',
-      'display': 'block'
+      'display': 'block',
     },
     'handle__bar': {
       'margin-left': 'auto',
       'margin-right': 'auto',
       'height': '4px',
       'width': '5%',
-      'max-width': '40px'
+      'max-width': '40px',
     },
     'page': {
       bottom: 0,
@@ -67,11 +67,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     'page-full-screen': {
       top: 0,
       bottom: '0 !important',
-      height: 'unset !important'
+      height: 'unset !important',
     },
     'network-logo': {
       height: '18px',
-    }
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -82,7 +82,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     entity: 'No entities found',
     marketplace: 'No network items found',
     media: 'No media items found',
-    close: 'close'
+    close: 'close',
   };
 
   function getString( string, scope ) {
@@ -95,7 +95,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.leaflet-popup-pane', '' );
     if ( V.getVisibility( '.popup' ) ) {
       V.setAnimation( '.popup', {
-        opacity: 0
+        opacity: 0,
       }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
         V.setNode( '.popup-content', '' );
       } );
@@ -108,7 +108,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'p',
       c: 'pxy',
-      h: getString( ui[which] )
+      h: getString( ui[which] ),
     } );
   }
 
@@ -117,14 +117,14 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'background',
       id: 'background',
       k: handleClosePopup,
-      c: 'background fixed w-screen'
+      c: 'background fixed w-screen',
     } );
   }
 
   function haze() {
     return V.setNode( {
       t: 'haze',
-      c: 'haze fixed w-screen bkg-white hidden'
+      c: 'haze fixed w-screen bkg-white hidden',
     } );
   }
 
@@ -138,9 +138,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
           top: 'var(--page-position-top-selected)',
           height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
           width: dimensions.width + 'px',
-          background: 'white'
+          background: 'white',
         },
-      }
+      },
     } );
   }
 
@@ -150,7 +150,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setNode( {
       t: 'balance',
       c: 'balance fixed cursor-pointer txt-anchor-mid',
-      y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' }
+      y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
     } );
   }
 
@@ -164,13 +164,13 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         interactions: {
           top: sc.width > 800 ? '23px' : '11px',
           right: 0,
-          width: '45%'
+          width: '45%',
         },
       },
       h: {
         t: 'ul',
-        c: 'flex items-center justify-end'
-      }
+        c: 'flex items-center justify-end',
+      },
     } );
   }
 
@@ -180,27 +180,27 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'handle',
       h: {
         t: 'div',
-        c: 'handle__bar rounded-full bkg-offblack'
-      }
+        c: 'handle__bar rounded-full bkg-offblack',
+      },
     } );
   }
 
   function topSlider() {
     return V.setNode( {
-      t: 'topslider'
+      t: 'topslider',
     } );
   }
 
   function slider() {
     return V.castNode( {
       t: 'slider',
-      c: 'flex overflow-x-scroll list-none pb-s'
+      c: 'flex overflow-x-scroll list-none pb-s',
     } );
   }
 
   function listings() {
     return V.setNode( {
-      t: 'listings'
+      t: 'listings',
     } );
   }
 
@@ -230,9 +230,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'card__container flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
           { t: 'h2', c: 'w-full font-bold pxy capitalize', h: cardTitle },
-          $cardContent
-        ] : $cardContent
-      }
+          $cardContent,
+        ] : $cardContent,
+      },
     } );
   }
 
@@ -245,19 +245,19 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function page() {
     return V.setNode( {
       t: 'page',
-      c: 'page fixed w-screen bkg-white pill-shadow overflow-hidden'
+      c: 'page fixed w-screen bkg-white pill-shadow overflow-hidden',
     } );
   }
 
   function content() {
     return V.setNode( {
-      t: 'content'
+      t: 'content',
     } );
   }
 
   function topContent() {
     return V.setNode( {
-      t: 'topcontent'
+      t: 'topcontent',
     } );
   }
 
@@ -282,20 +282,20 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
               // },
               {
                 t: 'div',
-                c: 'popup-content'
-              }
-            ]
+                c: 'popup-content',
+              },
+            ],
           },
           {
             t: 'div',
             c: 'popup-tip-container',
             h: {
               t: 'div',
-              c: 'popup-tip'
-            }
-          }
-        ]
-      }
+              c: 'popup-tip',
+            },
+          },
+        ],
+      },
     } );
   }
 
@@ -303,7 +303,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'img',
       c: 'network-logo',
-      src: '/assets/img/builderz-logo.png'
+      src: '/assets/img/builderz-logo.png',
     } );
   }
 
@@ -328,7 +328,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     topContent: topContent,
     logo: logo,
     networkLogo: networkLogo,
-    handleClosePopup: handleClosePopup
+    handleClosePopup: handleClosePopup,
   };
 
 } )();

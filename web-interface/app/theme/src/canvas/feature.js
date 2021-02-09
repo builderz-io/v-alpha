@@ -13,7 +13,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
     const $content = typeof options == 'object' ? options : options.content ? options.content : undefined;
     return {
       $content: $content,
-      fade: options.fade
+      fade: options.fade,
     };
 
   }
@@ -25,7 +25,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
     if ( featureData.fade == 'in' || featureData.$content ) {
-      $feature.innerHTML = '';
+      $feature.textContent = '';
       V.setNode( $feature, featureData.$content );
       V.setAnimation( 'feature', 'fadeIn' );
     }
@@ -40,7 +40,7 @@ const Feature = ( function() { // eslint-disable-line no-unused-vars
   function draw( options ) {
     V.setPipe(
       presenter,
-      view
+      view,
     )( options );
   }
 

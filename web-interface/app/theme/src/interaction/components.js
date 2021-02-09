@@ -49,9 +49,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         y: {
           'max-width': '25px',
           'max-height': '20px',
-          'margin-left': '10px'
+          'margin-left': '10px',
         },
-        src: res.src
+        src: res.src,
       } ) );
     } );
   }
@@ -79,7 +79,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     return V.cN( {
       t: 'div',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white transition pill-shadow' + ( css ? ' ' + css : '' ),
-      h: V.getIcon( icon )
+      h: V.getIcon( icon ),
     } );
   }
 
@@ -92,7 +92,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'filter',
       c: btnClasses,
-      h: img( 'filter_list' )
+      h: img( 'filter_list' ),
     } );
   }
 
@@ -101,7 +101,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'search',
       c: btnClasses,
-      h: img( 'search' )
+      h: img( 'search' ),
     } );
   }
 
@@ -113,8 +113,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       h: {
         t: 'div',
         c: 'create-btn pxy',
-        h: getString( ui.query )
-      } // img( 'search' )
+        h: getString( ui.query ),
+      }, // img( 'search' )
     } );
   }
 
@@ -123,7 +123,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'plus',
       c: btnClasses,
-      h: img( '+' )
+      h: img( '+' ),
     } );
   }
 
@@ -132,7 +132,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'close',
       c: btnClasses,
-      h: img( 'close' )
+      h: img( 'close' ),
     } );
   }
 
@@ -144,8 +144,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       h: {
         t: 'div',
         c: 'create-btn pxy',
-        h: getString( ui.create )
-      } // img( 'send' )
+        h: getString( ui.create ),
+      }, // img( 'send' )
     } );
   }
 
@@ -154,7 +154,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'li',
       id: 'send',
       c: btnClasses,
-      h: img( 'send' )
+      h: img( 'send' ),
     } );
   }
 
@@ -172,10 +172,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             left: '1px',
             top: '1px',
             opacity: '0.75',
-          }
+          },
         },
-        h: V.getIcon( 'send' )
-      } )
+        h: V.getIcon( 'send' ),
+      } ),
     } );
   }
 
@@ -189,14 +189,14 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         form: {
           'padding-top': 'calc(var(--page-position-top-selected) + 5px) !important',
           'height': '100%',
-          'z-index': -1
-        }
+          'z-index': -1,
+        },
       },
       h: {
         t: 'div',
         c: 'form__response pxy txt-red',
         // h: 'test response msg'
-      }
+      },
     } );
   }
 
@@ -208,8 +208,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         inputId: 'loginform__uphrase',
         attributes: {
           type: 'password',
-          autocomplete: 'off'
-        }
+          autocomplete: 'off',
+        },
       },
       title: {
         label: getString( ui.title ),
@@ -219,8 +219,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          spellcheck: 'false'
-        }
+          spellcheck: 'false',
+        },
       },
       location: {
         label: getString( ui.loc ),
@@ -229,23 +229,23 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           value: whichValue,
           lat: lat,
           lng: lng,
-          autocomplete: 'off'
-        }
+          autocomplete: 'off',
+        },
       },
       description: {
         label: getString( ui.descr ),
         inputId: 'plusform__descr',
-        multiline: true
+        multiline: true,
       },
       target: {
         label: getString( ui.target ),
         inputId: 'plusform__target',
-        fieldClasses: 'flex-grow w-30%'
+        fieldClasses: 'flex-grow w-30%',
       },
       unit: {
         label: getString( ui.unit ),
         inputId: 'plusform__unit',
-        fieldClasses: 'flex-grow w-30%'
+        fieldClasses: 'flex-grow w-30%',
       },
       search: {
         label: getString( ui.search ),
@@ -254,9 +254,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          spellcheck: 'false'
-        }
-      }
+          spellcheck: 'false',
+        },
+      },
     };
 
     function autoHeight() {
@@ -291,9 +291,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         h: {
           t: 'span',
           c: 'label__content',
-          h: fields[whichField].label
-        }
-      }
+          h: fields[whichField].label,
+        },
+      },
     } );
 
     const $input = V.cN( {
@@ -302,9 +302,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       id: fields[whichField].inputId,
       e: {
         focus: handleFocus,
-        blur: handleBlur
+        blur: handleBlur,
       },
-      a: fields[whichField].attributes || { value: whichValue }
+      a: fields[whichField].attributes || { value: whichValue },
     } );
 
     const $textarea = V.cN( {
@@ -318,8 +318,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       e: {
         input: autoHeight,
         focus: handleFocus,
-        blur: handleBlur
-      }
+        blur: handleBlur,
+      },
     } );
 
     if ( fields[whichField].multiline ) {
@@ -341,9 +341,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         h: {
           t: 'div',
           c: 'field__internal',
-          h: $inputContainer
-        }
-      }
+          h: $inputContainer,
+        },
+      },
     } );
   }
 
@@ -362,11 +362,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             'border-radius': '2px',
             'color': '#6F7287',
             'font-size': '14px',
-            'transition': 'border 240ms cubic-bezier(0.4, 0, 0.3, 1)'
+            'transition': 'border 240ms cubic-bezier(0.4, 0, 0.3, 1)',
           },
           'upload-field:hover': {
-            border: '1px solid #A9A8B3'
-          }
+            border: '1px solid #A9A8B3',
+          },
         },
         c: 'upload-field relative flex flex-grow',
         h: [
@@ -377,7 +377,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             a: {
               for: 'img-upload__file',
             },
-            h: getString( ui.image )
+            h: getString( ui.image ),
           },
           {
             t: 'input',
@@ -385,22 +385,22 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             c: 'hidden',
             a: {
               type: 'file',
-              accept: 'image/*'
+              accept: 'image/*',
             },
             e: {
-              change: handleImageUpload
-            }
+              change: handleImageUpload,
+            },
           },
           {
             t: 'div',
             i: 'img-upload__preview',
             y: {
               position: 'absolute',
-              right: '10px'
+              right: '10px',
             },
           },
-        ]
-      }
+        ],
+      },
     } );
   }
 
@@ -411,7 +411,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         {
           t: 'p',
           c: 'pxy',
-          h: getString( ui.titleOrCity )
+          h: getString( ui.titleOrCity ),
         },
         // V.cN( {
         //   t: 'search-filter-nav',
@@ -443,7 +443,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         //     ]
         //   } )
         // } )
-      ]
+      ],
     } );
   }
 
@@ -459,42 +459,37 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
       h: {
-        tag: 'svg',
+        svg: true,
+        t: 'svg',
         a: {
           width: sc.width > 800 ? '66px' : '54px',
-          viewBox: '0 0 36 36'
+          viewBox: '0 0 36 36',
         },
-        // h: [
-        //   V.cN( {
-        //     type: 'svg',
-        //     t: 'circle',
-        //     a: {
-        //       'stroke-dasharray': '100',
-        //       'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
-        //       'stroke-dashoffset': '-200',
-        //       'cx': '18',
-        //       'cy': '18',
-        //       'r': '15.91549430918954',
-        //       'fill': '#ffa41b',
-        //       'stroke': '#ffa41b',
-        //       'stroke-width': '2.7'
-        //     }
-        //   } ),
-        //   V.cN( {
-        //     type: 'svg',
-        //     t: 'text',
-        //     c: 'font-medium fs-xs',
-        //     a: { x: '50%', y: '59%' },
-        //     h: 'Join'
-        //   } )
-        // ]
-        h: `<circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)"
-                       stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="${colorBkg}"
-                       stroke="${colorBkg}" stroke-width="2.7">
-                </circle>
-                <text class="font-medium fs-xs txt-button" x="50%" y="59%">Join</text>`
-
-      }
+        h: [
+          {
+            svg: true,
+            t: 'circle',
+            a: {
+              'stroke-dasharray': '100',
+              'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+              'stroke-dashoffset': '-200',
+              'cx': '18',
+              'cy': '18',
+              'r': '15.91549430918954',
+              'fill': colorBkg,
+              'stroke': colorBkg,
+              'stroke-width': '2.7',
+            },
+          },
+          {
+            svg: true,
+            t: 'text',
+            c: 'font-medium fs-xs txt-button',
+            a: { x: '50%', y: '59%' },
+            h: 'Join',
+          },
+        ],
+      },
     } );
   }
 
@@ -510,7 +505,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.connectWallet, 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + getString( ui.connectWallet, 'onboarding call to action' ) + '</p>',
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -522,19 +517,19 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( !balanceCheck && V.aE().profile.role == 'member' ) { // wallet balance is 0
+      else if ( !balanceCheck && V.aE().role == 'Person' ) { // wallet balance is 0
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.progressVerification, 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + getString( ui.progressVerification, 'onboarding call to action' ) + '</p>',
         } );
         return CanvasComponents.card( $cardContent );
       }
-      else if ( balanceCheck && V.aE().profile.role == 'member' ) { // no brightID connected
+      else if ( balanceCheck && V.aE().role == 'Person' ) { // no brightID connected
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.brightId, 'onboarding call to action' ) + '</p>'
+          html: '<p>' + '👋 ' + getString( ui.brightId, 'onboarding call to action' ) + '</p>',
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
         return CanvasComponents.card( $cardContent );
@@ -557,11 +552,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           background: 'rgb(255,112,148)',
           color: 'white',
           // border: '2px solid blue',
-        }
+        },
       },
       c: 'pill getstarted flex justify-center items-center rounded-full cursor-pointer no-txt-select whitespace-no-wrap',
       h: getString( ui.getStarted ),
-      k: handleGetStarted
+      k: handleGetStarted,
     } );
   }
 
@@ -582,7 +577,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     formSearchFilter: formSearchFilter,
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,
-    getStarted: getStarted
+    getStarted: getStarted,
   };
 
 } )();

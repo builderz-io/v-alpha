@@ -9,6 +9,7 @@ const VKey = ( function() { // eslint-disable-line no-unused-vars
   const apiKeys = {
     googlePlaces: 'YOUR API KEY HERE',
     mapBox: 'YOUR API KEY HERE',
+    rpc: 'YOUR API KEY HERE',
   };
 
   /* ================== public methods ================== */

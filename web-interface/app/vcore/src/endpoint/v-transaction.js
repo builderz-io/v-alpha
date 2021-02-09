@@ -38,7 +38,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.notActive )
+        status: getString( ui.notActive ),
       };
     }
 
@@ -83,14 +83,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.invalidAmount )
+        status: getString( ui.invalidAmount ),
       };
     }
     else if ( amount % 1 != 0 ) {
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.noDecimals )
+        status: getString( ui.noDecimals ),
       };
     }
 
@@ -100,7 +100,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.noRecipient )
+        status: getString( ui.noRecipient ),
       };
     }
 
@@ -145,7 +145,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.noRecipientAddress )
+        status: getString( ui.noRecipientAddress ),
       };
     }
 
@@ -176,15 +176,15 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         fromEntity: initiator.fullId,
         toEntity: recipient,
         title: recipient,
-        txType: 'out'
-      }]
+        txType: 'out',
+      }],
     };
 
   }
 
   function castRecipient( messageParts ) {
     const tag = messageParts.pop();
-    return VEntity.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
+    return V.castEntityTitle( messageParts.join( ' ' ) ).data[0] + ' ' + tag;
   }
 
   function reduceNumbers( array ) {
@@ -214,7 +214,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function getTransaction(
-    which = V.aE().fullId // for MongoDB
+    which = V.aE().fullId, // for MongoDB
   ) {
     const choice = V.aA() ? 'transactionLedger' : 'transactionLedger'; // 'transactionLedgerWeb2';
     return V.getData( which, 'transaction', V.getSetting( choice ) );
@@ -290,7 +290,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     setTransactionConfirmation: setTransactionConfirmation,
     setTransaction: setTransaction,
     drawHashConfirmation: drawHashConfirmation,
-    drawTxConfirmation: drawTxConfirmation
+    drawTxConfirmation: drawTxConfirmation,
   };
 
 } )();

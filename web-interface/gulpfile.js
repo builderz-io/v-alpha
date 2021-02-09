@@ -42,8 +42,8 @@ function vcore() {
     .pipe( concat( 'vcore.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/vcore/builds' ) );
@@ -59,8 +59,8 @@ function vevm() {
     .pipe( concat( 'vevm.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/vcore/builds' ) );
@@ -74,8 +74,8 @@ function vtheme() {
     .pipe( concat( 'vtheme.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/theme/builds' ) );
@@ -89,8 +89,8 @@ function vplugins() {
     .pipe( concat( 'vplugins.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/plugins/builds' ) );

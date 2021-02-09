@@ -23,7 +23,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
     const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
 
-    V.setState( 'activeAddress', account.address.address );
+    V.setCookie( 'last-active-address', account.address.address );
 
     return {
       success: true,
@@ -31,8 +31,8 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
       data: [ {
         rawAddress: account.address.pretty(),
         address: account.address.address,
-        privateKey: account.privateKey
-      } ]
+        privateKey: account.privateKey,
+      } ],
     };
   }
 
@@ -58,7 +58,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           tokenBalance: bal[0].toFixed( 0 ),
           liveBalance: bal[0].toFixed( 0 ),
-        }]
+        }],
       };
     }
     else {
@@ -123,7 +123,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'transactions retrieved',
         ledger: 'Symbol',
-        data: [ filteredTransfers ]
+        data: [ filteredTransfers ],
       };
     }
     else {
@@ -165,9 +165,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
       .subscribe( ( x ) => {
         Modal.draw( 'transaction sent' );
         return console.log( x );
-      }, ( err ) => {
-        return console.error( err );
-      } );
+      }, ( err ) => console.error( err ) );
 
   }
 
@@ -182,7 +180,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
     setActiveAddress: setActiveAddress,
     getAddressState: getAddressState,
     setMosaicTransaction: setMosaicTransaction,
-    getAddressHistory: getAddressHistory
+    getAddressHistory: getAddressHistory,
   };
 
 } )();

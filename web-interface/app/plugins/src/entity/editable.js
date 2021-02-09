@@ -11,49 +11,23 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( path ) {
     let query;
-    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
-      return entity.path == path;
-    } ) : undefined;
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == path ) : undefined;
 
     if ( !V.aE() ) {
       return {
         success: false,
-        status: ''
+        status: '',
       };
     }
     if ( inCache ) {
       query = {
         success: true,
-        data: [inCache]
+        data: [inCache],
       };
     }
-    // else if ( path == '/me/profile' ) {
-    //   V.setState( 'active', { lastViewed: V.aE().fullId } );
-    //
-    //   return {
-    //     success: true,
-    //     status: 'active entity retrieved',
-    //     data: [{
-    //       entity: V.aE(),
-    //       drawNav: true,
-    //       mapData: [
-    //         {
-    //           type: 'Feature',
-    //           geometry: V.aE().geometry,
-    //           profile: V.aE().profile,
-    //           thumbnail: V.aE().thumbnail,
-    //           path: V.aE().path
-    //         }
-    //       ]
-    //     }]
-    //   };
-    // }
     else {
       query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
         if ( res.success ) {
-
-          res.data[0].type = 'Feature'; // needed to populate entity on map
-          res.data[0].properties ? null : res.data[0].properties = {};
 
           V.setCache( 'viewed', res.data );
 
@@ -68,12 +42,16 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       const entity = query.data[0];
 
-      V.setState( 'active', { lastViewed: entity.fullId } );
+      V.setState( 'active', {
+        lastViewed: entity.fullId,
+        lastViewedUuidE: entity.uuidE,
+        lastViewedUuidP: entity.uuidP,
+      } );
 
       return {
         success: true,
         status: 'editable entity retrieved',
-        data: [entity]
+        data: [entity],
       };
     }
   }
@@ -85,7 +63,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     if ( viewData.success ) {
       UserComponents.setData( {
         entity: viewData.data[0],
-        editable: true
+        editable: true,
       } );
 
       $list = CanvasComponents.list( 'narrow' );
@@ -106,7 +84,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmReceiverAddressCard(),
         UserComponents.accessKeysCard(),
         UserComponents.managementCard(),
-        UserComponents.adminOfCard(),
+        // UserComponents.adminOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 
@@ -132,12 +110,12 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function preview( path ) {
+  function preview( /* path */ ) {
     Button.draw( 'all', { fade: 'out' } );
 
-    if ( path == '/me/profile' ) {
-      Navigation.draw( path );
-    }
+    // if ( path == '/me/profile' ) {
+    //   Navigation.draw( path );
+    // }
 
     Page.draw( {
       position: 'top',
@@ -148,16 +126,16 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     V.setNavItem( 'userNav', [
-      {
-        title: 'Edit',
-        path: '/me/edit',
-        use: {
-          button: 'plus search',
-        },
-        draw: function( path ) {
-          EntityList.draw( path );
-        }
-      },
+      // {
+      //   title: 'Edit',
+      //   path: '/me/edit',
+      //   use: {
+      //     button: 'plus search',
+      //   },
+      //   draw: function( path ) {
+      //     EntityList.draw( path );
+      //   },
+      // },
       {
         title: 'Transfers',
         path: '/me/transfers',
@@ -166,7 +144,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Account.draw( path );
-        }
+        },
       },
       // {
       //   title: 'Profile',
@@ -186,15 +164,15 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Settings.draw( path );
-        }
+        },
       },
       {
         title: 'Disconnect',
         path: '/me/disconnect',
         draw: function( path ) {
           User.draw( path );
-        }
-      }
+        },
+      },
     ] );
   }
 
@@ -210,7 +188,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     draw: draw,
-    launch: launch
+    launch: launch,
   };
 
 } )();

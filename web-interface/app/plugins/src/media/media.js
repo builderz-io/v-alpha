@@ -15,7 +15,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const $list = CanvasComponents.list();
 
-    const entities = await V.getEntity( which == '/media/moocs' ? 'mooc' : 'media' );
+    const entities = await V.getEntity( which == '/media/moocs' ? 'Mooc' : 'MediaObject' );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
@@ -43,7 +43,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     const pageData = {
       feature: $featureUl,
-      position: 'feature'
+      position: 'feature',
     };
 
     return Promise.resolve( pageData );
@@ -87,11 +87,11 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'media',
+          role: 'MediaObject',
         },
         draw: function() {
           Media.draw( '/media', { feature: 'https://vimeo.com/236725407' } ); // 'https://youtu.be/kJbto4TISKA'
-        }
+        },
       },
       // {
       //   title: 'Moocs',
@@ -99,7 +99,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       //   use: {
       //     button: 'plus search',
       //     form: 'new entity',
-      //     role: 'mooc',
+      //     role: 'Mooc',
       //   },
       //   draw: function() {
       //     Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
