@@ -392,24 +392,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
         if ( inner ) {
           switch ( title ) {
-          case 'facebook':
-            linkedInner = '<a href="https://facebook.com/' + inner + '">' + inner + '</a>';
-            break;
-          case 'twitter':
-            linkedInner = '<a href="https://twitter.com/' + inner + '">' + inner + '</a>';
-            break;
-          case 'telegram':
-            linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
-            break;
-          case 'instagram':
-            linkedInner = '<a href="https://www.instagram.com/' + inner + '">' + inner + '</a>';
-            break;
-          case 'tiktok':
-            linkedInner = '<a href="https://tiktok.com/@' + inner + '">' + inner + '</a>';
-            break;
-          case 'youtube':
-            linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
-            break;
+          // case 'facebook':
+          //   linkedInner = '<a href="https://facebook.com/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'twitter':
+          //   linkedInner = '<a href="https://twitter.com/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'telegram':
+          //   linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'instagram':
+          //   linkedInner = '<a href="https://www.instagram.com/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'tiktok':
+          //   linkedInner = '<a href="https://tiktok.com/@' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'youtube':
+          //   linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
+          //   break;
           case 'email':
             // linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
             linkedInner = V.cN( {
@@ -418,9 +418,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               h: inner,
             } );
             break;
-          case 'website':
-            linkedInner = V.castLinks( inner ).links;
-            break;
+          // case 'website':
+          //   linkedInner = V.castLinks( inner ).links;
+          //   break;
           default:
             linkedInner = inner;
           }
@@ -551,7 +551,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
     if( descr || ( !descr && editable ) ) {
-      const linkedDescr = V.castLinks( descr ? descr.replace( /\n/g, ' <br>' ) : '' ); // needs whitespace before <br>
       const castDescr = V.castDescription( descr );
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
@@ -566,16 +565,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'div',
         c: 'pxy w-full',
         h: [
-          {
-            x: false, // linkedDescr.socialLinksImages,
-            t: 'div',
-            h: linkedDescr.socialLinksImages,
-          },
-          {
-            t: 'div',
-            c: 'mt-xs',
-            h: castDescr, // linkedDescr.omitOriginalSocialLinks,
-          },
+          castDescr.$feature,
+          castDescr.$socialUl,
+          castDescr.$description,
         ],
       } );
       return castCard( $innerContent, editable ? getString( ui.description ) : entity.role );

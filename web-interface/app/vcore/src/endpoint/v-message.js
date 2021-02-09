@@ -98,9 +98,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
       else {
 
         if ( triggers.commandsHelp.indexOf( caseArray[0] ) != -1 ) {   // does message include trigger word "help"?
-          $( '.notification-container' ).remove();
-          $( '#messages-ul' ).append( '<li class="notification-container highlight" onclick="$(this).slideUp( 100, function() {})">' + str10110 + '<span class="close-x"><i class="fas fa-times-circle close-x"></i></span></li>' );
-          autoScroll();
+          // todo
         }
         else if ( triggers.commandsSearch.indexOf( caseArray[0] ) != -1 ) {   // does message include trigger word "search"?
           findAndDisplayEntity( message );

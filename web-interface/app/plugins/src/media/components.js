@@ -12,6 +12,9 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
       'position': 'relative',
       'padding-bottom': '56.25%',
     },
+    'paragraph .iframe-wrapper': {
+      'margin-bottom': '20px',
+    },
     'iframe-wrapper iframe': {
       position: 'absolute',
       top: '0',
