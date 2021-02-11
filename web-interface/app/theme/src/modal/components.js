@@ -364,10 +364,24 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $txDetails = V.cN( {
       t: 'p',
       c: 'modal__p',
-      h: `<p>Amount: ${tx.amount}</p>
-      <p>Fee: ${tx.feeAmount}</p>
-      <p>Contribution: ${tx.contribution}</p>
-      <p>Total: ${tx.txTotal}</p>`,
+      h: [
+        {
+          t: 'p',
+          h: `Amount: ${tx.amount}`,
+        },
+        {
+          t: 'p',
+          h: `Fee: ${tx.feeAmount}`,
+        },
+        {
+          t: 'p',
+          h: `Contribution: ${tx.contribution}`,
+        },
+        {
+          t: 'p',
+          h: `Total: ${tx.txTotal}`,
+        },
+      ],
     } );
     const $confirm = V.cN( {
       t: 'div',

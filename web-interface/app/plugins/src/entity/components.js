@@ -275,7 +275,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
     const value = this.value;
-    V.getNode( '.location__curr' ).value = this.value;
+    // V.getNode( '.location__curr' ).value = this.value;
 
     if ( DOM.location.length && value == '' ) {
       const gen = V.castRandLatLng();
@@ -830,27 +830,27 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
             ],
           },
-          {
-            t: 'tr',
-            h: [
-              { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
-              editable ? {
-                t: 'input',
-                c: 'location__curr pxy w-full txt-right',
-                a: {
-                  value: loc,
-                },
-                e: {
-                // focus: handleBaseLocationFocus,
-                // blur: handleBaseLocation
-                },
-              } : {
-                t: 'p',
-                c: 'location__curr pxy txt-right',
-                h: loc,
-              },
-            ],
-          },
+          // {
+          //   t: 'tr',
+          //   h: [
+          //     { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
+          //     editable ? {
+          //       t: 'input',
+          //       c: 'location__curr pxy w-full txt-right',
+          //       a: {
+          //         value: loc,
+          //       },
+          //       e: {
+          //       // focus: handleBaseLocationFocus,
+          //       // blur: handleBaseLocation
+          //       },
+          //     } : {
+          //       t: 'p',
+          //       c: 'location__curr pxy txt-right',
+          //       h: loc,
+          //     },
+          //   ],
+          // },
           // {
           //   t: 'tr',
           //   h: [
@@ -920,6 +920,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'td',
               c: 'txt-right',
               h: entity.tag,
+            },
+          ],
+        },
+        {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+            },
+            {
+              t: 'td',
+              c: 'txt-right',
+              h: entity.role,
             },
           ],
         },
@@ -1393,7 +1406,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             .concat( [
               V.cN( {
                 t: 'a',
-                c: 'share-by-email font-bold',
+                c: 'share-by-email inline-block pxy font-bold',
                 f: `mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }`,
                 h: '@',
               } ),

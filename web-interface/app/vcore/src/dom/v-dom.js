@@ -78,7 +78,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['h', 'html'].includes( key ) ) {
         if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
-          // $elem.innerHTML = data[key];
           $elem.appendChild( document.createTextNode( data[key] ) );
         }
         else if ( Array.isArray( data[key] ) ) {
@@ -137,6 +136,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['v', 'value'].includes( key ) ) {
         setAttr( $elem, 'value', data[key] );
+      }
+      else if ( ['innerHtml'].includes( key ) ) {
+        $elem.innerHTML = data[key];
       }
     }
     return $elem;

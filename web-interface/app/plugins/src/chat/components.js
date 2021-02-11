@@ -290,13 +290,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     live( 'ac-suggestion', 'mouseout', function() {
       const sel = sc.querySelector( '.ac-suggestion.selected' );
-      if ( sel ) {setTimeout( function() { sel.className = sel.className.replace( 'selected', '' ) }, 20 )}
+      if ( sel ) { setTimeout( function() { sel.classList.remove( 'selected' ) }, 20 )}
     }, sc );
 
     live( 'ac-suggestion', 'mouseover', function() {
       const sel = sc.querySelector( '.ac-suggestion.selected' );
-      if ( sel ) {sel.className = sel.className.replace( 'selected', '' )}
-      this.className += ' selected';
+      if ( sel ) { sel.classList.remove( 'selected' ) }
+      this.classList.add( 'selected' );
       // considerSelection(sc.querySelector('.ac-suggestion.selected').getAttribute('data-val'), permanentString, this);
     }, sc );
 
@@ -399,7 +399,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       a: {
         'data-val': name + ' ' + tag,
       },
-      h: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' <span class="user-tag">' + tag + '</span>',
+      innerHtml: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' ' + tag,
     } );
 
   }
@@ -452,12 +452,33 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         id: msg._id,
       },
       y: style,
-      html: '<message style="background:' + background + '" class="message__container flex card-shadow rounded bkg-white pxy">' +
-                  '<div class="font-medium pxy">' +
-                    ( msg.sender == 'Me' || msg.hideSender ? '' : '<p onclick="Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')" >' + msg.sender + '</p>' ) +
-                    '<p class="chat-link">' + linkedMsg.iframes + '</p>' +
-                  '</div>' +
-              '</message>',
+      h: {
+        t: 'message',
+        c: 'message__container flex card-shadow rounded bkg-white pxy',
+        y: {
+          background: background,
+        },
+        h: {
+          t: 'div',
+          c: 'font-medium pxy',
+          h: [
+            {
+              x: msg.sender == 'Me' || msg.hideSender ? false : true,
+              t: 'p',
+              c: 'cursor-pointer',
+              a: {
+                onclick: msg.sender == 'Me' || msg.hideSender ? '' : 'Profile.draw(\'' + V.castPathOrId( msg.sender ) + '\')',
+              },
+              h: msg.sender,
+            },
+            {
+              t: 'p',
+              c: 'chat-link',
+              h: linkedMsg.iframes,
+            },
+          ],
+        },
+      },
     } );
   }
 
