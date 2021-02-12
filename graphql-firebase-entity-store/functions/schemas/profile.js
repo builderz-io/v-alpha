@@ -17,7 +17,6 @@ const types = {
       y: DatesP
       z: ChangeLogP
 
-      error: String     // mixin of error message, e.g. "not authorized to update"
     }
   `,
   Properties: `

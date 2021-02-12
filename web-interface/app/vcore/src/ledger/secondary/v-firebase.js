@@ -287,16 +287,18 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
      *  Mimics the server response on unsuccessful validation.
      */
 
+    /*
     if ( m || m == '' ) {
       const title = V.castEntityTitle( m );
       if ( !title.success ) {
         return Promise.resolve( {
           data: {
-            setEntity: { a: a, error: '-5003 ' + title.message },
+            setEntity: { a: a },
           },
         } );
       }
     }
+    */
 
     const variables = {
       input: { a, c, j, m, y },
@@ -304,7 +306,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetEntityUpdate( $input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }! ) {
                 setEntity(input: $input) {
-                  ${ 'a error' /* a confirms successful response */ }
+                  ${ 'a' /* a confirms successful response */ }
                 }
               }
             `;
@@ -369,7 +371,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetProfileUpdate( $input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }! ) {
                 setProfile(input: $input) {
-                  ${ 'a ' + returnFields + ' error'  /* a confirms successful response */ }
+                  ${ 'a ' + returnFields  /* a confirms successful response */ }
                 }
               }
             `;
@@ -558,11 +560,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         return setEntityField( data )
           .then( E => {
             E = E.data.setEntity;
-            if ( !E.error ) {
+            if ( !E.errors ) {
               return V.successTrue( 'updated entity', E );
             }
             else {
-              return V.successFalse( 'update entity', E.error, E );
+              return V.successFalse( 'update entity', E.errors[0].message, E );
             }
           } )
           .catch( err => V.successFalse( 'update entity', err ) );
@@ -571,11 +573,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         return setProfileField( data )
           .then( P => {
             P = P.data.setProfile;
-            if ( !P.error ) {
+            if ( !P.errors ) {
               return V.successTrue( 'updated profile', P );
             }
             else {
-              return V.successFalse( 'update profile', P.error, P );
+              return V.successFalse( 'update profile', P.errors[0].message, P );
             }
           } )
           .catch( err => V.successFalse( 'update profile', err ) );

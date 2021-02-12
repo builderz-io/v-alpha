@@ -48,8 +48,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   async function castEntity( entityData ) {
 
     /**
-     * Check whether lat/lng are present,
-     * if the user entered a location.
+     * Perfrom some initial input validation already client side,
+     * so that we don't even hit the server:
+     *
+     * - Is lat/lng are present, if the user entered a location?
+     * - Is the title valid?
+     * - Are target and unit valid?
      */
 
     if ( entityData.location && !entityData.lat ) {
@@ -57,19 +61,19 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'no geo data',
-        message: 'could not attach geo data',
+        message: 'geoData is incomplete - select from suggestions',
       };
     }
 
-    /** Check whether the title is valid. */
+    // const title = { data: [entityData.title] }; // test server response
 
-    const title = castEntityTitle( entityData.title, entityData.role );
+    const title = castEntityTitle( entityData.title.toLowerCase(), entityData.role );
 
     if ( !title.success ) {
       return title; // return the error object
     }
 
-    /** Check whether the target amount is valid. */
+    // const target = { data: [ Number( entityData.target ) ] }; // test server response
 
     const target = castTarget( entityData.target, entityData.unit, entityData.role );
 
@@ -77,26 +81,28 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return target; // return the error object
     }
 
-    /** Cast tag and fullId. */
+    /** Cast a tag */
 
     const tag = castTag();
-    const fullId = title.data[0] + ' ' + tag;
 
     /**
      * Check whether this title and tag combination exists,
      * otherwise start again.
+     *
+     * NOTE: now server side
      */
 
-    const exists = await getEntity( fullId );
+    // const fullId = title.data[0] + ' ' + tag;
+    // const exists = await getEntity( fullId );
 
-    if ( exists.success ) { // success is not a good thing here ;)
-      return {
-        success: false,
-        endpoint: 'entity',
-        status: 'entity exists',
-        data: [fullId],
-      };
-    }
+    // if ( exists.success ) { // success is not a good thing here ;)
+    //   return {
+    //     success: false,
+    //     endpoint: 'entity',
+    //     status: 'entity exists',
+    //     data: [fullId],
+    //   };
+    // }
 
     /** Prepare data */
 
@@ -115,6 +121,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         baseLocation: entityData.location || undefined,
         type: 'Point',
         rand: false,
+      };
+    }
+    else if ( entityData.location && !entityData.lat ) {
+      geometry = {
+        baseLocation: entityData.location || undefined,
       };
     }
     // else {
@@ -270,10 +281,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   function castEntityTitle( title, role ) {
 
-    const titleArray = title.trim().toLowerCase().split( ' ' );
+    title = title.trim().toLowerCase();
 
-    var checkLength = titleArray.length;
-    var wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+    const titleArray = title.split( ' ' );
+    const checkLength = titleArray.length;
+    const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
 
     let error;
 

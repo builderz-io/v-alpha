@@ -41,10 +41,11 @@ function getString( string ) {
 
 module.exports.castEntityTitle = ( title, role ) => {
 
-  const titleArray = title.trim().toLowerCase().split( ' ' );
+  title = title.trim().toLowerCase();
 
-  var checkLength = titleArray.length;
-  var wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+  const titleArray = title.split( ' ' );
+  const checkLength = titleArray.length;
+  const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
 
   let error;
 
@@ -90,43 +91,6 @@ module.exports.castEntityTitle = ( title, role ) => {
       data: [ formattedTitle ],
     };
   }
-};
-
-module.exports.castTarget = ( target, unit, role ) => {
-  let error;
-
-  target == '' ? target = undefined : null;
-
-  if (  target ) {
-    unit == '' ? error = getString( ui.noUnit ) : null;
-    isNaN( target ) ? error = getString( ui.isNaN ) : null;
-  }
-
-  if ( ['Pool'].includes( role ) ) {
-    unit == '' ? error = undefined : null;
-    !target ? error = getString( ui.noTarget ) : null;
-    // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
-  }
-
-  Number( target ) > 9999 || Number( target ) < 0 ? error = getString( ui.targetRange ) : null;
-
-  if ( error ) {
-    return {
-      success: false,
-      endpoint: 'entity',
-      status: 'invalid target',
-      message: error,
-    };
-  }
-  else {
-    return {
-      success: true,
-      endpoint: 'entity',
-      status: 'cast entity target',
-      data: [ Number( target ) || undefined ],
-    };
-  }
-
 };
 
 module.exports.castTag = () => {

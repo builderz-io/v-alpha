@@ -16,9 +16,9 @@ const entitySetup = {
   daysToExpiry: 365 * 2,
 };
 
-const castUuid = require( './v-core' ).castUuid;
+const { castUuid } = require( './v-core' );
 
-module.exports.castNamespace = ( context, data ) => {
+module.exports = ( context, data ) => {
 
   /** Prepare data */
 

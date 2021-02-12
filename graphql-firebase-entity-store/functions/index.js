@@ -11,7 +11,7 @@ const credentials = require( './credentials/credentials' );
 const typeDefs = require( './schemas/typeDefs' );
 
 // Provide resolver functions for your schema fields
-const resolvers = require( './resolvers/resolvers' );
+const { resolvers } = require( './resolvers/resolvers' );
 
 // Create GraphQL express server
 const { ApolloServer } = require( 'apollo-server-express' );

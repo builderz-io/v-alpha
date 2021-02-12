@@ -1,5 +1,3 @@
-const credentials = require( '../credentials/credentials' );
-const { sign } = require( 'jsonwebtoken' );
 
 // Connect to firebase database
 const namespaceDb = require( '../resources/databases-setup' ).namespaceDb;
@@ -19,7 +17,7 @@ const resolvers = {
   Query: {
     getEntity: ( parent, args, { context } ) => {
       if ( args.where.m && args.where.n ) {
-        return findByFullId( context, args.where.m, args.where.n );
+        return module.exports.findByFullId( context, args.where.m, args.where.n );
       }
       else if ( args.where.i ) {
         return findByEvmAddress( context, args.where.i );
@@ -58,8 +56,11 @@ async function setAuth( context, res ) {
     };
   }
 
-  const VCore = require( './v-core' );
-  const newRefreshToken = 'REFR' + VCore.castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
+  const { jwtSignature } = require( '../credentials/credentials' ); // eslint-disable-line global-require
+  const { sign } = require( 'jsonwebtoken' ); // eslint-disable-line global-require
+  const { castUuid } = require( './v-core' ); // eslint-disable-line global-require
+
+  const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
 
   await new Promise( resolve => {
     colA.child( context.a ).update( castObjectPaths( { g: newRefreshToken } ), () => resolve( 'set newRefreshToken' ) );
@@ -85,7 +86,7 @@ async function setAuth( context, res ) {
           d: context.d,
         },
       },
-      credentials.jwtSignature,
+      jwtSignature,
       {
         expiresIn: settings.jwtExpiry,
       },
@@ -116,12 +117,12 @@ function getAllEntities( context ) {
     .then( val => Object.values( val ).filter( E => E.g == context.host ) );
 }
 
-function findByFullId( context, m, n ) {
+module.exports.findByFullId = ( context, m, n ) => {
   const match = function( E ) {
     return E.m == m && E.n == n;
   };
   return getSingleEntity( context, match );
-}
+};
 
 function findByEvmAddress( context, i ) {
   const match = function( E ) {
@@ -254,10 +255,12 @@ async function setFields( context, input, col ) {
     return updateInNamespace( context, data, objToUpdate, col );
   }
   else if ( !context.a ) {
-    return Promise.resolve( { error: '-5001 not authenticated to update', a: data.a } );
+    throw new Error( '-5001 not authenticated to update' );
+    // return Promise.resolve( { error: '-5001 not authenticated to update', a: data.a } );
   }
   else {
-    return Promise.resolve( { error: '-5002 not authorized to update', a: data.a } );
+    throw new Error( '-5002 not authorized to update' );
+    // return Promise.resolve( { error: '-5002 not authorized to update', a: data.a } );
   }
 }
 
@@ -267,45 +270,11 @@ async function initNamespace( context, data ) {
     // require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
   }
 
-  const VCore = require( './v-core' );
-
-  /** Check whether the title is valid. */
-
-  const title = VCore.castEntityTitle( data.m, data.c ); // eslint-disable-line global-require
-  if ( !title.success ) {
-    return { error: '-5003 ' + title.message, a: data.a };
-  }
-
-  /** Check whether the target amount is valid. */
-
-  const target = VCore.castTarget( data.profileInputServerSide.target, data.profileInputServerSide.unit, data.c );
-
-  if ( !target.success ) {
-    return { error: '-5005 ' + target.message, a: data.a };
-  }
-
-  /** Cast tag and check whether the title and tag combi exist. */
-
-  let tag = VCore.castTag(); // eslint-disable-line global-require
-  let exists = await findByFullId( context, data.m, tag );
-  let counter = 0;
-
-  while ( exists[0].a && counter <= 10 ) {
-    counter += 1;
-    tag = VCore.castTag(); // eslint-disable-line global-require
-    exists = await findByFullId( context, data.m, tag );
-  }
-
-  if ( counter == 10 ) {
-    return { error: '-5003 combination of title and tag already exists', a: data.a };
-  }
-  else {
-    data.n = tag;
-  }
+  /** Validate, cast and set inputs */
+  await require( './validation/validate' )( context, data ); // eslint-disable-line global-require
 
   /** Cast full set of namespace fields and store in DB. */
-
-  const namespace = require( './cast-namespace' ).castNamespace( context, data ); // eslint-disable-line global-require
+  const namespace = require( './cast-namespace' )( context, data ); // eslint-disable-line global-require
 
   const setA = await new Promise( resolve => {
     colA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
@@ -320,11 +289,11 @@ async function initNamespace( context, data ) {
   } );
   // console.log( setA, setP, setE );
 
-  /** Mixin the auth and return entity Doc */
-  namespace.entity.auth = namespace.auth;
-
   /** Track searchable fields in entity db */
   trackSearchableFields( namespace.entity.a, namespace.profile );
+
+  /** Mixin the auth, set success and return entity Doc */
+  namespace.entity.auth = namespace.auth;
 
   return namespace.entity;
 
@@ -359,7 +328,16 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
   /** Track searchable fields in entity db */
   objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
 
-  /** If title in entity is being updated, run title validation checks */
+  /** Validate inputs */
+
+  await require( './validation/validate' )( context, data, objToUpdate ); // eslint-disable-line global-require
+
+  // if ( !validation.success ) {
+  //   throw new Error( validation.error );
+  // }
+
+  /*
+  /** If title in entity is being updated, run title validation checks
   if (
     objToUpdate.b.includes( '/e' ) &&
         ( data.m == '' || data.m )
@@ -369,13 +347,14 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
     if ( !title.success ) {
       return Promise.resolve( { error: '-5003 ' + title.message, a: data.a } );
     }
-    const exists = await findByFullId( context, data.m, objToUpdate.n );
+    const exists = await module.exports.findByFullId( context, data.m, objToUpdate.n );
     if ( exists[0].a ) {
       return Promise.resolve( { error: '-5003 combination of title and tag already exists', a: data.a } );
     }
 
     data.m = title.data[0]; // overwrite field with formattedTitle
   }
+  */
 
   const fields = castObjectPaths( data );
 
@@ -443,4 +422,4 @@ function setNewExpiryDate( context ) {
   setFields( colE, input, context );
 }
 
-module.exports = resolvers;
+module.exports.resolvers = resolvers;

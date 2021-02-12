@@ -32,9 +32,9 @@ const types = {
 
       holders: [String]       // mixin of fullIds of holders
       holderOf: [String]      // mixin of fullIds of entities held
+
       auth: AuthMixin         // mixin of auth data - see note above
 
-      error: String           // mixin of error message, e.g. "not authorized to update"
     }
   `,
   RelationsE: `
