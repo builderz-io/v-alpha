@@ -1,8 +1,8 @@
 
 // Connect to firebase database
-const namespaceDb = require( '../resources/databases-setup' ).namespaceDb;
-const profileDb = require( '../resources/databases-setup' ).profileDb;
-const authDb = require( '../resources/databases-setup' ).authDb;
+const namespaceDb = require( '../../resources/databases-setup' ).namespaceDb;
+const profileDb = require( '../../resources/databases-setup' ).profileDb;
+const authDb = require( '../../resources/databases-setup' ).authDb;
 
 const colE = namespaceDb.database().ref( 'entities' ); // col as in "collection"
 const colP = profileDb.database().ref( 'profiles' );
@@ -56,9 +56,9 @@ async function setAuth( context, res ) {
     };
   }
 
-  const { jwtSignature } = require( '../credentials/credentials' ); // eslint-disable-line global-require
+  const { jwtSignature } = require( '../../credentials/credentials' ); // eslint-disable-line global-require
   const { sign } = require( 'jsonwebtoken' ); // eslint-disable-line global-require
-  const { castUuid } = require( './v-core' ); // eslint-disable-line global-require
+  const { castUuid } = require( '../../resources/v-core' ); // eslint-disable-line global-require
 
   const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
 
@@ -135,29 +135,40 @@ function findByUuide( context, a ) {
   const match = function( E ) {
     return E.a == a;
   };
-  return getSingleEntity( context, match );
+  return getSingleEntity( context, match, a );
 }
 
-async function getSingleEntity( context, match ) {
+async function getSingleEntity( context, match, uuidE ) {
 
-  /** retrieve the entity */
   const DB = await colE.once( 'value' )
     .then( snap => snap.val() )
     .then( val => val ? Object.values( val ) : null );
 
-  const entity = DB ? DB.find( match ) : null;
+  let entity;
+  if ( uuidE ) {
+    entity = await colE.child( uuidE ).once( 'value' )
+      .then( snap => snap.val() );
+  }
+  else {
+    entity = DB ? DB.find( match ) : null;
+  }
 
   if ( !entity ) {
-    return Promise.resolve( [{
+    return [{
       success: false,
-    }] );
+    }];
   }
 
   /**
    * mixin the fullIds of the current entity holders
    */
-  const holdersFullIds = DB.filter( item => entity.x.b.includes( item.a ) ).map( item => item.m + ' ' + item.n );
-  Object.assign( entity, { holders: holdersFullIds } );
+  if ( entity.x.b.length > 1 ) {
+    const holdersFullIds = DB.filter( item => entity.x.b.includes( item.a ) ).map( item => item.m + ' ' + item.n );
+    Object.assign( entity, { holders: holdersFullIds } );
+  }
+  else {
+    Object.assign( entity, { holders: [entity.m + ' ' + entity.n] } );
+  }
 
   /**
    * mixin the fullIds of entities held
@@ -175,6 +186,7 @@ async function getSingleEntity( context, match ) {
     /** add auth token to entity object */
     Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
+
   return [entity];
 }
 
@@ -267,11 +279,11 @@ async function setFields( context, input, col ) {
 async function initNamespace( context, data ) {
 
   if ( data.c === 'Person' ) {
-    // require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
+    // require( '../../resources/auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
   }
 
   /** Validate, cast and set inputs */
-  await require( './validation/validate' )( context, data ); // eslint-disable-line global-require
+  await require( '../validation/validate' )( context, data ); // eslint-disable-line global-require
 
   /** Cast full set of namespace fields and store in DB. */
   const namespace = require( './cast-namespace' )( context, data ); // eslint-disable-line global-require
@@ -330,7 +342,7 @@ async function updateInNamespace( context, data, objToUpdate, col ) {
 
   /** Validate inputs */
 
-  await require( './validation/validate' )( context, data, objToUpdate ); // eslint-disable-line global-require
+  await require( '../validation/validate' )( context, data, objToUpdate ); // eslint-disable-line global-require
 
   // if ( !validation.success ) {
   //   throw new Error( validation.error );

@@ -1,5 +1,5 @@
-const { castTag } = require( '../v-core' );
-const { findByFullId } = require( '../resolvers' );
+const { castTag } = require( '../../resources/v-core' );
+const { findByFullId } = require( '../resolve/resolve' );
 
 let tag, exists, counter = 1;
 

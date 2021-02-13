@@ -1,4 +1,4 @@
-const { castEntityTitle } = require( '../v-core' );
+const { castEntityTitle } = require( '../../resources/v-core' );
 
 module.exports = data => {
 
