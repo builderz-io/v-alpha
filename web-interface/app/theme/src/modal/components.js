@@ -195,6 +195,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         Join.draw( 'new entity was set up' );
 
         V.setCache( 'entire cache', 'clear' );
+        // V.setCache( 'viewed', res.data[0] );
+
         Navigation.drawEntityNavPill( res.data[0] );
       }
       else {
