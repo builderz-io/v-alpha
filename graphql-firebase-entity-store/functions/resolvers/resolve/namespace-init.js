@@ -38,7 +38,7 @@ module.exports = async ( context, data ) => {
   /** Track searchable fields in entity db */
   trackSearchableFields( namespace.entity.a, namespace.profile );
 
-  /** Mixin the auth, set success and return entity Doc */
+  /** Mixin the auth and return entity Doc */
   namespace.entity.auth = namespace.auth;
 
   return namespace.entity;

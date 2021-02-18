@@ -1,3 +1,5 @@
+/* eslint global-require: "off" */
+
 // Connect to firebase database
 const { namespaceDb } = require( '../../resources/databases-setup' );
 const colE = namespaceDb.database().ref( 'entities' );
@@ -8,14 +10,13 @@ const trackSearchableFields = require( './utils/track-searchable-fields' );
 module.exports = async ( context, data, objToUpdate, col ) => {
 
   /** Clear keyword cache */
-  colE.child( objToUpdate.b.includes( '/e' ) ? objToUpdate.a : objToUpdate.d ).update( { 'search/z': '' } );
+  colE.child( objToUpdate.b.includes( '/e' ) ? objToUpdate.a : objToUpdate.d ).update( { 'search/z': null } );
+
+  /** Validate inputs */
+  await require( '../validate/validate' )( context, data, objToUpdate );
 
   /** Track searchable fields in entity db */
   objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
-
-  /** Validate inputs */
-
-  await require( '../validate/validate' )( context, data, objToUpdate ); // eslint-disable-line global-require
 
   // if ( !validation.success ) {
   //   throw new Error( validation.error );

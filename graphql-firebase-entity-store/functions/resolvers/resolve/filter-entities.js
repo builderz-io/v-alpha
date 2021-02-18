@@ -8,7 +8,7 @@ module.exports = ( context, filter ) => {
     .then( snap => snap.val() )
     .then( val => Object.values( val ).filter( E => {
       let text;
-      if ( E.search && E.search.z && E.search.z.length ) {
+      if ( E.search && E.search.z ) {
 
         /** uses keyword cache to filter */
         text = E.search.z;

@@ -7,6 +7,8 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  let tempAuth;
+
   /* ================== private methods ================= */
 
   function view( which, data ) {
@@ -14,12 +16,16 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     const $modal = ModalComponents.modal();
 
     if ( which == 'entity found' ) {
+
       V.setNode( $modal, ModalComponents.entityFound(
         V.aE(),
         V.aA(),
+        tempAuth ? tempAuth.uPhrase : false,
         V.getSetting( 'coinTicker' ),
         V.getSetting( 'tokenTicker' ),
       ) );
+
+      tempAuth = undefined; // reset after joining
     }
     else if ( which == 'entity not found' ) {
       V.setNode( $modal, ModalComponents.entityNotFound() );
@@ -75,8 +81,8 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == '404' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );
     }
-    else if ( which == 'title error' ) {
-      V.setNode( $modal, ModalComponents.titleError( data ) );
+    else if ( which == 'validation error' ) {
+      V.setNode( $modal, ModalComponents.validationError( data ) );
     }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'error' ) );
@@ -92,8 +98,13 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     view( which, data );
   }
 
+  function setTempAuth( data ) {
+    tempAuth = data;
+  }
+
   return {
     draw: draw,
+    setTempAuth: setTempAuth,
   };
 
 } )();

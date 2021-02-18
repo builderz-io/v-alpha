@@ -1,7 +1,7 @@
 /* eslint global-require: "off" */
 
 const settings = {
-  useClientData: false, // also change in typeDefs.js
+  useClientData: false, // also change in typeDefs.js + in frontend
 };
 
 module.exports = async ( context, input, whichCol ) => {
@@ -52,11 +52,11 @@ module.exports = async ( context, input, whichCol ) => {
     return require( './namespace-update' )( context, data, objToUpdate, col );
   }
   else if ( !context.a ) {
-    throw new Error( '-5001 not authenticated to update' );
+    throw new Error( '-2001 not authenticated to update' );
     // return Promise.resolve( { error: '-5001 not authenticated to update', a: data.a } );
   }
   else {
-    throw new Error( '-5002 not authorized to update' );
+    throw new Error( '-2002 not authorized to update' );
     // return Promise.resolve( { error: '-5002 not authorized to update', a: data.a } );
   }
 };

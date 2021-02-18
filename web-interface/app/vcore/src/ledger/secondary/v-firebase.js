@@ -20,7 +20,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f i j }';
-  const singleP = 'm { a b c m n } n { a b } o { a b c } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a b } o { a b c } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -29,7 +29,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const previewsE = 'a c d m n';
-  const previewsP = 'm { a } n { a } o { b }';
+  const previewsP = 'm { a r } n { a } o { b }';
 
   /* ================== private methods ================= */
 
@@ -55,6 +55,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       path: V.castPathOrId( fullId ),
       properties: {
         description: P.m ? P.m.a : undefined,
+        filteredDescription: P.m ? P.m.r : undefined,
         preferredLangs: P.m ? P.m.c : undefined,
         target: P.m ? P.m.m : undefined,
         unit: P.m ? P.m.n : undefined,
@@ -242,7 +243,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const n = {
       a: data.geometry.coordinates,
       b: data.geometry.baseLocation,
-      z: data.geometry.rand,
     };
     const o = {
       a: data.tinyImageDU,
@@ -347,12 +347,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       break;
 
     case 'geometry.baseLocation':
-      n = {
+      n = data.data.value ? {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
         b: data.data.value,
-        z: data.data.rand,
-      };
-      returnFields = 'n { a b z }';
+      } : null;
+      returnFields = 'n { a b }';
       break;
 
     case 'images':
@@ -559,12 +558,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       if ( ['profile.title', 'receivingAddresses.evm', 'status.active'].includes( data.field ) ) {
         return setEntityField( data )
           .then( E => {
-            E = E.data.setEntity;
             if ( !E.errors ) {
-              return V.successTrue( 'updated entity', E );
+              return V.successTrue( 'updated entity', E.data.setEntity );
             }
             else {
-              return V.successFalse( 'update entity', E.errors[0].message, E );
+              return V.successFalse( 'update entity', E.errors[0].message, E.data.setEntity );
             }
           } )
           .catch( err => V.successFalse( 'update entity', err ) );
@@ -572,12 +570,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       else {
         return setProfileField( data )
           .then( P => {
-            P = P.data.setProfile;
             if ( !P.errors ) {
-              return V.successTrue( 'updated profile', P );
+              return V.successTrue( 'updated profile', P.data.setProfile );
             }
             else {
-              return V.successFalse( 'update profile', P.errors[0].message, P );
+              return V.successFalse( 'update profile', P.errors[0].message, P.data.setProfile );
             }
           } )
           .catch( err => V.successFalse( 'update profile', err ) );

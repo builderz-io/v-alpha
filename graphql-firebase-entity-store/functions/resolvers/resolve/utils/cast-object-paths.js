@@ -8,20 +8,26 @@ module.exports = ( data ) => {
 
   const newObj = {};
   for ( const k in data ) {
-    if ( typeof data[k] == 'object' ) {
-      for ( const k2 in data[k] ) {
-        if ( typeof data[k][k2] == 'object' ) {
-          for ( const k3 in data[k][k2] ) {
-            data[k][k2][k3] != undefined ? newObj[k + '/' + k2 + '/' + k3] = data[k][k2][k3] : null;
+    if ( data.hasOwnProperty( k ) ) {
+      if ( typeof data[k] == 'object' && data[k] != null ) {
+        for ( const k2 in data[k] ) {
+          if ( data[k].hasOwnProperty( k2 ) ) {
+            if ( typeof data[k][k2] == 'object' && data[k][k2] != null ) {
+              for ( const k3 in data[k][k2] ) {
+                if ( data[k][k2].hasOwnProperty( k3 ) ) {
+                  data[k][k2][k3] !== undefined ? newObj[k + '/' + k2 + '/' + k3] = data[k][k2][k3] : null;
+                }
+              }
+            }
+            else {
+              data[k][k2] !== undefined ? newObj[k + '/' + k2] = data[k][k2] : null;
+            }
           }
         }
-        else {
-          data[k][k2] != undefined ? newObj[k + '/' + k2] = data[k][k2] : null;
-        }
       }
-    }
-    else {
-      data[k] != undefined ? newObj[k] = data[k] : null;
+      else {
+        data[k] !== undefined ? newObj[k] = data[k] : null;
+      }
     }
   }
 

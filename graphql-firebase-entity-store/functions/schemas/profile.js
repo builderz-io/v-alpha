@@ -26,6 +26,7 @@ const types = {
       c: String       // preferred languages
       m: Int          // target
       n: String       // unit
+      r: String       // filtered description
     }
   `,
   Geometry: `
@@ -34,7 +35,6 @@ const types = {
       b: String       // base Location
       c: [Float]      // current coordinates
       d: String       // current Location
-      z: Boolean      // allocated
     }
   `,
   Images: `

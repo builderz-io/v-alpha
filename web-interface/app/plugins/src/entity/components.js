@@ -278,12 +278,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // V.getNode( '.location__curr' ).value = this.value;
 
     if ( DOM.location.length && value == '' ) {
-      const gen = V.castRandLatLng();
       setField( 'geometry.baseLocation', {
-        lat: gen.lat,
-        lng: gen.lng,
-        value: '',
-        rand: true,
+        value: null,
       } );
     }
     else if ( lat ) {
@@ -291,14 +287,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         lat: lat,
         lng: lng,
         value: value,
-        rand: false,
       } ).then( res => {
 
         /** Draw the new map position */
         if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
           VMap.draw( res.data );
         }
-        if ( 'Firebase' == V.getSetting( 'entityLedger' ) ) {
+        if ( 'Firebase' == V.getSetting( 'entityLedger' ) && res.data[0] && res.data[0].n ) {
 
           /** Create GeoJSON object and mixin data from active entity */
           VMap.draw( [{
@@ -484,11 +479,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         updateEntityInCaches( res );
       }
       if ( !res.success /*res.data && res.data[0].error */ ) {
-        if ( res.message.includes( '-5003' ) ) {
-          Modal.draw( 'title error', res.message );
+        if ( res.message.includes( '-200' ) ) {
+          Modal.draw( 'confirm uPhrase' );
         }
         else {
-          Modal.draw( 'confirm uPhrase' );
+          Modal.draw( 'validation error', res.message );
         }
       }
       return res;
@@ -524,7 +519,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             type: 'password',
           },
           y: {
-            width: '190px',
+            width: '230px',
             padding: 0,
           },
           e: {
@@ -550,8 +545,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
+    const filteredDescr = entity.properties ? entity.properties.filteredDescription : undefined;
     if( descr || ( !descr && editable ) ) {
-      const castDescr = V.castDescription( descr );
+      const castDescr = V.castDescription( filteredDescr || descr );
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
@@ -583,8 +579,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     let count = 0;
 
-    for ( const k in responses ) {
-      responses[k] ? count += 1 : null;
+    for ( const question in responses ) {
+      if ( responses.hasOwnProperty( question ) ) {
+        responses[question] ? count += 1 : null;
+      }
     }
 
     if ( ['Business', 'Institution'].includes( entity.role ) && ( count || editable ) ) {
@@ -616,7 +614,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 x: !editable && response,
                 t: 'div',
                 c: 'pxy CCC',
-                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).iframes,
+                h: response, // V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).links,
               },
             ],
           } );

@@ -3,7 +3,7 @@ String.prototype.uncomment = function() {
 };
 
 const settings = {
-  useClientData: false, // also change in resolvers.js
+  useClientData: false, // also change in set-namespace.js + in frontend
 };
 
 const { gql } = require( 'apollo-server-express' );

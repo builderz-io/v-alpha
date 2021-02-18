@@ -4,10 +4,13 @@ const colA = authDb.database().ref( 'authentication' );
 
 const trackSearchableFields = require( './utils/track-searchable-fields' );
 
-module.exports = ( context, data, col ) => new Promise( resolve => {
+module.exports = ( context, data, col ) => new Promise( async resolve => {
   if ( data.c === 'Person' ) {
     // require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
   }
+
+  /** Validate, cast and set inputs */
+  await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
 
   /** Track searchable fields in entity db */
   data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;

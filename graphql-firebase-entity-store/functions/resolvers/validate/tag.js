@@ -6,7 +6,7 @@ let tag, exists, counter = 1;
 module.exports = async ( context, data, objToUpdate ) => {
 
   if ( !data.m ) {
-    throw new Error( '-5141 ' + 'title must be present when casting tag' );
+    throw new Error( '-5131 ' + 'title must be present when casting tag' );
   }
 
   await checkTitleTagCombination( context, data, objToUpdate );
@@ -17,7 +17,7 @@ module.exports = async ( context, data, objToUpdate ) => {
   }
 
   if ( exists[0].a ) {
-    throw new Error( '-5140 ' + 'combination of title and tag already exists' );
+    throw new Error( '-5130 ' + 'combination of title and tag already exists' );
   }
   else {
     data.n = tag;

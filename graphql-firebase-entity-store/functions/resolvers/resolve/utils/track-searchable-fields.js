@@ -7,10 +7,10 @@ const castObjectPaths = require( './cast-object-paths' );
 module.exports = ( uuidE, data ) => {
   const track = {
     search: {
-      a: data.m ? data.m.a : undefined,  // description
-      b: data.m ? data.m.b : undefined,  // email
-      c: data.n ? data.n.b : undefined,  // base Location
-      d: data.o ? data.o.n : undefined,  // image name on upload
+      a: data.m ? data.m.r ? data.m.r : data.m.a : null,  // description
+      b: data.m ? data.m.b : null,  // email
+      c: data.n ? data.n.b : null,  // base Location
+      d: data.o ? data.o.n : null,  // image name on upload
     },
   };
 

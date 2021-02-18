@@ -161,6 +161,16 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   function cardContent( cardData ) {
 
+    const text = cardData.properties
+      ? cardData.properties.filteredDescription
+        ? cardData.properties.filteredDescription
+        : cardData.properties.description
+          ? cardData.properties.description
+          : false
+      : false;
+
+    const castDescr = V.castDescription( text );
+
     const $cardContentFrame = V.cN( {
       t: 'div',
       c: 'contents',
@@ -207,7 +217,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       c: 'card__bottom-right pxy',
       h: [
         { t: 'p', c: 'pxy capitalize', h: cardData.role },
-        { t: 'p', c: 'pxy', h: cardData.properties && cardData.properties.description ? V.castLinks( cardData.properties.description.substr( 0, 160 ) ).links : '' },
+        { x: text, t: 'p', c: 'pxy', h: castDescr.$intro },
         { t: 'p', c: 'pxy', h: cardData.geometry && cardData.geometry.baseLocation ? cardData.geometry.baseLocation : '' },
       ],
       k: handleProfileDraw.bind( cardData.path ),
@@ -220,7 +230,20 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function popupContent( entity ) {
-    const descr = entity.properties && entity.properties.description ? V.castLinks( entity.properties.description ).links : undefined;
+    // const descr = entity.properties && entity.properties.description ? V.castDescription(entity.properties.description) : undefined;
+    // const filteredDescr = entity.properties && entity.properties.filteredDescription ? entity.properties.filteredDescription : undefined;
+    // const text = filteredDescr ? filteredDescr : descr;
+
+    const text = entity.properties
+      ? entity.properties.filteredDescription
+        ? entity.properties.filteredDescription
+        : entity.properties.description
+          ? entity.properties.description
+          : false
+      : false;
+
+    const castDescr = V.castDescription( text );
+
     return V.cN( {
       t: 'div',
       a: { path: entity.path },
@@ -238,9 +261,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           h: entity.role,
         },
         {
+          x: text,
           t: 'p',
           c: 'pxy fs-s break-words',
-          h: descr ? descr.length > 170 ? descr.substr( 0, 170 ) + ' ...' : descr : '',
+          h: castDescr.$intro, // text ? text.length > 170 ? text.substr( 0, 170 ) + ' ...' : text : '',
         },
       ],
     } );
