@@ -488,7 +488,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function getTransactionLog( uuidP ) {
     const queryT = `query GetTransactionLog {
-           getProfiles (array: ${ V.castJson( [uuidP] ) }) { p { a { a b g h i j m n o p s t } z } }
+           getProfiles (array: ${ V.castJson( [uuidP] ) }) {
+             p { a { a b c g h i j m n o p q r s t u v } z } 
+           }
          }`;
     return fetchFirebase( queryT );
   }
