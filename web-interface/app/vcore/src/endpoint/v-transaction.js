@@ -213,11 +213,12 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
-  async function getTransaction(
-    which = V.aE().fullId, // for MongoDB
+  async function getTransactions(
+    data
+    // which = V.aE().fullId, // for MongoDB
   ) {
     const choice = V.aA() ? 'transactionLedger' : 'transactionLedger'; // 'transactionLedgerWeb2';
-    return V.getData( which, 'transaction', V.getSetting( choice ) );
+    return V.getData( data, 'transaction', V.getSetting( choice ) );
   }
 
   async function setTransactionConfirmation( which ) {
@@ -238,6 +239,20 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     else {
       return Promise.resolve( txData );
     }
+  }
+
+  async function setTransactionLog( data ) {
+    if ( data.success ) {
+      data.field = 'transaction.log';
+      data.activeProfile = V.aE().uuidP;
+      return V.setData( data, 'entity update', V.getSetting( 'entityLedger' ) );
+    }
+  }
+
+  async function getTransactionLog(
+    uuidP = V.aE().uuidP
+  ) {
+    return V.getData( uuidP, 'transaction log', V.getSetting( 'entityLedger' ) );
   }
 
   function drawHashConfirmation( hash ) {
@@ -279,16 +294,20 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  V.getTransaction = getTransaction;
+  V.getTransactions = getTransactions;
   V.setTransactionConfirmation = setTransactionConfirmation;
   V.setTransaction = setTransaction;
+  V.setTransactionLog = setTransactionLog;
+  V.getTransactionLog = getTransactionLog;
   V.drawHashConfirmation = drawHashConfirmation;
   V.drawTxConfirmation = drawTxConfirmation;
 
   return {
-    getTransaction: getTransaction,
+    getTransactions: getTransactions,
     setTransactionConfirmation: setTransactionConfirmation,
     setTransaction: setTransaction,
+    setTransactionLog: setTransactionLog,
+    getTransactionLog: getTransactionLog,
     drawHashConfirmation: drawHashConfirmation,
     drawTxConfirmation: drawTxConfirmation,
   };

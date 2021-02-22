@@ -18,6 +18,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     community: 'Community',
     fee: 'Transaction Fee',
+    unknown: 'unknown',
   };
 
   function getString( string, scope ) {
@@ -312,13 +313,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function getAddressHistory(
-    which = V.aA() || V.aE().evmCredentials.address,
-    data = { fromBlock: 0, toBlock: 'latest' },
-    whichEvent = 'TransferSummary'
+  async function getAddressHistory( data
+    // which = V.aA() || V.aE().evmCredentials.address,
+    // data = { fromBlock: 0, toBlock: 'latest' },
+    // whichEvent = 'TransferSummary'
   ) {
 
-    const transfers = await contract.getPastEvents( whichEvent, {
+    const transfers = await contract.getPastEvents( 'TransferSummary', {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
       fromBlock: data.fromBlock,
       toBlock: data.toBlock,
@@ -335,7 +336,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const filteredAndEnhanced = await castTransfers( transfers, which );
+    const filteredAndEnhanced = await castTransfers( transfers, data.address );
 
     return {
       success: true,
@@ -527,8 +528,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
       txData.blockDate = blockDetails.timestamp;
 
-      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
-      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
+      await addEntityData( txData, 'from' );
+      await addEntityData( txData, 'to' );
 
       txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
 
@@ -552,6 +553,24 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const a = await Promise.all( filteredAndEnhanced );
     // console.log( a );
     return a;
+  }
+
+  async function addEntityData( txData, which ) {
+    if ( txData[which + 'Address'] == V.aE().evmCredentials.address ) {
+      txData[which + 'Entity'] = V.aE().fullId;
+      txData[which + 'UuidE'] = V.aE().uuidE;
+    }
+    else {
+      const entity = await V.getEntity( txData[which + 'Address'] );
+      if ( entity.success ) {
+        txData[which + 'Entity'] = entity.data[0].fullId;
+        txData[which + 'UuidE'] = entity.data[0].uuidE;
+      }
+      else {
+        txData[which + 'Entity'] = V.castShortAddress( txData[which + 'Address'] );
+        txData[which + 'UuidE'] = getString( ui.unknown );
+      }
+    }
   }
 
   // previous versions

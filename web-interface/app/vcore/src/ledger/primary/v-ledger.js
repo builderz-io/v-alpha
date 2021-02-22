@@ -176,7 +176,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {
-        return V.getAddressHistory();
+        return V.getAddressHistory( data );
       }
     }
     else if ( whichLedger == 'Symbol' ) {
