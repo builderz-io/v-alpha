@@ -86,11 +86,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
-  async function castEntityName( address ) {
-    const entity = await V.getEntity( address );
-    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
-  }
-
   /* ================== public methods  ================= */
 
   async function getWeb3Provider() {
@@ -201,6 +196,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       // ganache remote
       const blockNumber = contract.methods.getBlockNumber().call();
+      const payout = contract.methods.getGenerationAmount.call().call();
+      const interval = contract.methods.getGenerationPeriod.call().call();
+      const lifetime = contract.methods.getLifetime.call().call();
       const fee = contract.methods.getTransactionFee.call().call();
       const contribution = contract.methods.getCommunityContribution.call().call();
       const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
@@ -223,13 +221,25 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       //     } ).reverse();
       //   } );
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility /*, allEvents */ ] )
+      const all = await Promise.all( [
+        blockNumber,
+        fee,
+        contribution,
+        divisibility,
+        payout,
+        interval,
+        lifetime,
+        // allEvents,
+      ] )
         .catch( err => { console.log( err ) } );
 
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
+        console.log( 'Payout: ', all[4] / 10**18 );
+        console.log( 'Interval: ', all[5] );
+        console.log( 'Lifetime: ', all[6] );
         console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
         console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
         console.log( 'Divisibility: ', all[3] );
@@ -245,7 +255,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           divisibility: all[3],
           contract: contract._address,
           network: V.getNetwork(),
-          allEvents: all[4],
+          // allEvents: all[4],
         };
 
         V.setState( 'contract', data );
@@ -281,18 +291,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       window.Web3Obj.eth.getBalance( which ),
       contract.methods.liveBalanceOf( which ).call(),
       contract.methods.getDetails( which ).call(),
+      contract.methods.getBlockNumber().call(),
     ] ).catch( err => {
       console.warn( 'Could not get address state' );
       return err;
     } );
 
-    if ( all && all[0] && all[1] && all[2] ) {
+    if ( all && all[0] && all[1] && all[2] && all[3] ) {
       const data = {
         coinBalance: castEthBalance( all[0] ),
         liveBalance: castTokenBalance( all[1] ),
         tokenBalance: castTokenBalance( all[2]._balance ),
         lastBlock: all[2]._lastBlock,
         zeroBlock: all[2]._zeroBlock,
+        currentBlock: all[3],
       };
 
       return {

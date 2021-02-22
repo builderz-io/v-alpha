@@ -434,13 +434,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           ledger: tL,
           status: 'entity balance retrieved',
           data: [
-            {
-              coinBalance: bal.data[0].coinBalance,
-              tokenBalance: bal.data[0].tokenBalance,
-              liveBalance: bal.data[0].liveBalance,
-              lastBlock: bal.data[0].lastBlock,
-              zeroBlock: bal.data[0].zeroBlock,
-            },
+            bal.data[0],
           ],
         };
       }

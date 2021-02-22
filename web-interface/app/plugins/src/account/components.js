@@ -24,6 +24,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     eth: 'ETH',
     chain: 'On Chain',
     noBal: 'no balance details',
+    lastBlock: 'last block',
+    zeroBlock: 'zero block',
+    currentBlock: 'now block',
+    currentDate: 'now date',
   };
 
   function getString( string, scope ) {
@@ -84,6 +88,10 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             [ getString( ui.gross ), bal.data[0].liveBalance ],
             [ getString( ui.chain ), bal.data[0].tokenBalance ],
             [ getString( ui.eth ), bal.data[0].coinBalance ],
+            [ getString( ui.lastBlock ), bal.data[0].lastBlock ],
+            [ getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
+            [ getString( ui.currentBlock ), bal.data[0].currentBlock  ],
+            [ getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
           ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
             t: 'tr',
             h: [
