@@ -5,7 +5,9 @@ const colA = authDb.database().ref( 'authentication' );
 module.exports = async ( context, res ) => {
 
   const disconnect = await new Promise( resolve => {
-    colA.child( context.a ).update( { g: null }, () => resolve( { success: true } ) );
+    context.a
+      ? colA.child( context.a ).update( { g: null }, () => resolve( { success: true } ) )
+      : resolve( { success: false } );
   } );
 
   if ( disconnect.success ) {

@@ -49,11 +49,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       Join.draw( 'logged out' );
     }
     else if ( currentActiveAddress != V.aA() ) {
-      V.setCookie( 'last-active-address', currentActiveAddress.toLowerCase() );
-      V.setState( 'activeEntity', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
-      Join.draw( 'new entity was set up' );
-      Marketplace.draw();
+      // V.setCookie( 'last-active-address', currentActiveAddress.toLowerCase() );
+      // V.setState( 'activeEntity', 'clear' );
+      // V.setCookie( 'welcome-modal', 1 );
+      // Join.draw( 'new entity was set up' );
+      Join.draw( 'disconnect' );
+      // Marketplace.draw();
     }
 
   }
@@ -95,6 +96,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
       V.setState( 'browserWallet', true );
+      if ( window.ethereum.isMetaMask ) {
+        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+      }
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
@@ -166,9 +170,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       V.setCookie( 'last-active-address', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
 
       /* listen to change of address in MetaMask */
-      if ( window.ethereum && window.ethereum.on ) {
-        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
-      }
+      // if ( window.ethereum && window.ethereum.on ) {
+      //   window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+      // }
 
       setEventSubscription( 'TransferSummary' );
       return {
