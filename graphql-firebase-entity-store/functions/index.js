@@ -33,8 +33,8 @@ const server = new ApolloServer( {
   resolvers,
   playground: false,
   context: async ( { req, res } ) => {
-
     const auth = req.headers.authorization;
+    const lastActiveAddress = req.headers['last-active-address'];
     const refreshToken = req.headers.cookie ? req.headers.cookie.split( '=' )[1] : undefined;
     const host = req.headers.referer.split( '/' )[2];
 
@@ -48,7 +48,17 @@ const server = new ApolloServer( {
     }
     else if ( auth.includes( 'uPhrase' ) ) {
       const user = await resolvers.Query.getAuth( undefined, { token: auth.replace( 'uPhrase ', '' ) } );
-      user[0] ? Object.assign( context, user[0] ) : null;
+      if ( user[0] ) {
+
+        /** If an address is set, uPhrase must match entity address */
+        if ( lastActiveAddress != 'not set' ) {
+          user[0].i == lastActiveAddress ? Object.assign( context, user[0] ) : null;
+        }
+        else {
+          Object.assign( context, user[0] );
+        }
+      }
+      // user[0] ? Object.assign( context, user[0] ) : null;
     }
     else if ( auth.includes( 'Bearer' ) ) {
       try {

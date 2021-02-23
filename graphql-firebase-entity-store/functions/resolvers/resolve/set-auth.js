@@ -21,10 +21,11 @@ module.exports = async ( context, res ) => {
    */
 
   if ( !context.a ) {
-    return {
-      success: false,
-      message: 'could not find an entity for setting up the context object',
-    };
+    throw new Error( 'could not match an entity for setting up the context object' );
+    // return {
+    //   success: false,
+    //   message: 'could not find an entity for setting up the context object',
+    // };
   }
 
   const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt

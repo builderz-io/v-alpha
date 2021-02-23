@@ -12,7 +12,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
   };
 
-  let uPhrase;
+  let uPhrase, lastActiveAddress;
 
   /* ================== private methods ================= */
 
@@ -31,6 +31,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': uPhrase ? 'uPhrase ' + uPhrase : '',
+        'Last-Active-Address': lastActiveAddress ? lastActiveAddress : 'not set',
       },
       body: JSON.stringify( {
         query,
@@ -57,9 +58,11 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     console.log( 888, 'setAuth' );
 
     uPhrase = whichUphrase;
+    lastActiveAddress = V.getCookie( 'last-active-address' ).replace( /"/g, '' );
 
     const data = await fetchAuth().then( res => {
-      if ( res.data.setAuth.success ) {
+      console.log( res );
+      if ( !res.errors ) {
 
         /** Set JWT for Authorization header */
         V.setJwt( res.data.setAuth.jwt );
@@ -71,7 +74,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
         return V.successTrue( 'set auth', res.data.setAuth );
       }
       else {
-        return V.successFalse( 'set auth', res.data.setAuth.message );
+        return V.successFalse( 'set auth', res.errors[0].message );
       }
     } );
 
