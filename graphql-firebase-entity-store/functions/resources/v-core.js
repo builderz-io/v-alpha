@@ -27,6 +27,7 @@ const ui = {
   maxEntity: 'Title: max 7 words',
   tooLong: 'Title: max 200 characters',
   tooShort: 'Title: min 2 characters',
+  noNumbers: 'Title: Your personal name can not include a number',
   free: 'free',
   targetRange: 'Target must be within 0 - 9999',
   isNaN: 'Target must be a number',
@@ -59,6 +60,7 @@ module.exports.castEntityTitle = ( title, role ) => {
   // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
   // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
   ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+  ( [ 'Person' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
   ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
   wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
