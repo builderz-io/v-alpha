@@ -58,7 +58,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     console.log( 888, 'setAuth' );
 
     uPhrase = whichUphrase;
-    lastActiveAddress = V.getCookie( 'last-active-address' ).replace( /"/g, '' );
+    lastActiveAddress = V.getCookie( 'last-active-address' ) ? V.getCookie( 'last-active-address' ).replace( /"/g, '' ) : undefined;
 
     const data = await fetchAuth().then( res => {
       console.log( res );
