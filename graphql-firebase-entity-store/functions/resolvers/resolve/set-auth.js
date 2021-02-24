@@ -1,6 +1,6 @@
 // https://hasura.io/blog/best-practices-of-using-jwt-with-graphql
 
-const { jwtSignature } = require( '../../credentials/credentials' );
+const { jwtSignature, jwtRefreshSignature } = require( '../../credentials/credentials' );
 const { sign } = require( 'jsonwebtoken' );
 const { castUuid } = require( '../../resources/v-core' );
 const castObjectPaths = require( './utils/cast-object-paths' );
@@ -29,6 +29,19 @@ module.exports = async ( context, res ) => {
   }
 
   const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
+
+  // const newRefreshToken = sign(
+  //   {
+  //     user: {
+  //       a: context.a,
+  //       d: context.d,
+  //     },
+  //   },
+  //   jwtRefreshSignature,
+  //   {
+  //     expiresIn: settings.jwtExpiry,
+  //   },
+  // );
 
   await new Promise( resolve => {
     colA.child( context.a ).update( castObjectPaths( { g: newRefreshToken } ), () => resolve( 'set newRefreshToken' ) );

@@ -43,6 +43,14 @@ const server = new ApolloServer( {
     };
 
     if ( refreshToken ) {
+      // try {
+      //   const jwt = verify( refreshToken, credentials.jwtRefreshSignature );
+      //   console.log( jwt );
+      // }
+      // catch ( err ) {
+      //   console.log( err );
+      // }
+
       const user = await resolvers.Query.getAuth( undefined, { token: refreshToken } );
       user[0] ? Object.assign( context, user[0] ) : null;
     }
