@@ -80,7 +80,7 @@ module.exports = async ( context, data, objToUpdate ) => {
         data.m.a = require( '../../resources/max-chars' )( data.m.a, 2200 );
 
         /** Check for spammy links. */
-        const filteredText = await require( '../utils/link-blocker' )( data.m.a );
+        const filteredText = await require( './utils/link-blocker' )( data.m.a );
 
         /**
          * If links were blocked, also store a filtered version of the description,
@@ -138,7 +138,7 @@ module.exports = async ( context, data, objToUpdate ) => {
     }
 
     if ( data.q ) {
-      const checkLinks = require( '../utils/link-blocker' );
+      const checkLinks = require( './utils/link-blocker' );
       for ( const question in data.q ) {
         if ( data.q.hasOwnProperty( question ) ) {
           const checked = await checkLinks( data.q[question] );
