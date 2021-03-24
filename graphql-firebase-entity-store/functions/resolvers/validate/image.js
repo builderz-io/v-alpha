@@ -3,6 +3,8 @@ var Jimp = require( 'jimp' );
 
 module.exports = async base64ImgString => {
 
+  if ( !base64ImgString ) { return }
+
   const base64Img = base64ImgString.split( ',' )[1];
   const buffer = new Buffer.from( base64Img, 'base64' );
 

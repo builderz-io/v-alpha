@@ -62,13 +62,13 @@ module.exports = ( context, data ) => {
       c: data.c,
       d: uuidP,
       e: uuidA,
-      g: context.host,
+      g: data.gImporter || context.host,
 
       i: data.i,
       j: data.j,
 
       m: data.m,
-      n: data.n,
+      n: data.nImporter || data.n,
 
       x: {
         a: creatorUuid,
@@ -119,7 +119,7 @@ module.exports = ( context, data ) => {
       b: entitySetup.authDocVersion,
       d: uuidE,
       e: uuidP,
-      f: uPhrase,
+      f: data.authInputServerSide.fImporter || uPhrase,
       i: data.authInputServerSide.i,
       j: data.authInputServerSide.j,
     },
