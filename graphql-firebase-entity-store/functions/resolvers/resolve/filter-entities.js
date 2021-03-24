@@ -25,7 +25,7 @@ module.exports = ( context, filter ) => {
       }
       text = text.toLowerCase();
       const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;
-      return role && text.includes( q ) && E.g == context.host;
+      return role && text.includes( q ) && context.host.includes( 'localhost' ) ? true : E.g == context.host; // return all for localhost
     }
     ) );
 };
