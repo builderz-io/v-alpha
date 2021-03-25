@@ -8,8 +8,8 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const settings = {
-    // firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/getSessionToken',
-    firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    // firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
   };
 
   let uPhrase, lastActiveAddress;

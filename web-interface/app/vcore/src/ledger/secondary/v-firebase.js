@@ -9,7 +9,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     useClientData: false,
-    firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    // firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
   };
 
   let jwt;
@@ -489,7 +490,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getTransactionLog( uuidP ) {
     const queryT = `query GetTransactionLog {
            getProfiles (array: ${ V.castJson( [uuidP] ) }) {
-             p { a { a b c g h i j m n o p q r s t u v } z } 
+             p { a { a b c g h i j m n o p q r s t u v } z }
            }
          }`;
     return fetchFirebase( queryT );
