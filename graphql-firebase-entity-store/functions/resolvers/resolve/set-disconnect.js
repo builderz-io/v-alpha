@@ -11,7 +11,7 @@ module.exports = async ( context, res ) => {
   } );
 
   if ( disconnect.success ) {
-    res.clearCookie( 'refresh_token' );
+    // res.clearCookie( 'refresh_token' );
     return disconnect;
   }
   else {

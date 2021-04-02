@@ -34,6 +34,7 @@ const Jwt = `
     uuidE: String
     exp: Int
     jwt: String
+    tempRefresh: String
   }
   type Success {
     success: Boolean

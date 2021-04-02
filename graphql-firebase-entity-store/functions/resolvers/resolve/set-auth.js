@@ -53,13 +53,14 @@ module.exports = async ( context, res ) => {
     // secure: true,
   };
 
-  res.cookie( 'refresh_token', newRefreshToken, options );
+  // res.cookie( 'refresh_token', newRefreshToken, options );
 
   return {
     success: true,
     message: 'successfully set refreshToken and sent cookie',
     exp: settings.jwtExpiry,
     uuidE: context.d,
+    tempRefresh: newRefreshToken,
     jwt: sign(
       {
         user: {

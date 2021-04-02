@@ -33,9 +33,16 @@ const server = new ApolloServer( {
   resolvers,
   playground: false,
   context: async ( { req, res } ) => {
+
     const auth = req.headers.authorization;
     const lastActiveAddress = req.headers['last-active-address'];
-    const refreshToken = req.headers.cookie ? req.headers.cookie.split( '=' )[1] : undefined;
+
+    const refreshToken = req.headers.cookie
+      ? req.headers.cookie.split( '=' )[1]
+      : req.headers['temp-refresh'] != 'not set'
+        ? req.headers['temp-refresh']
+        : undefined;
+
     const host = req.headers.referer.split( '/' )[2];
 
     const context = {
@@ -50,7 +57,6 @@ const server = new ApolloServer( {
       // catch ( err ) {
       //   console.log( err );
       // }
-
       const user = await resolvers.Query.getAuth( undefined, { token: refreshToken } );
       user[0] ? Object.assign( context, user[0] ) : null;
     }
