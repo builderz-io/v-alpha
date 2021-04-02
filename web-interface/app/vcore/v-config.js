@@ -14,7 +14,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
+    socketHost: production ? 'https://trinitymongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
     socketPort: production ? 443 : 6022,
 
     // socketHost: 'https://buildersmongo.valueinstrument.org',
