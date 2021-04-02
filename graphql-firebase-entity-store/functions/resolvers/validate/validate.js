@@ -95,6 +95,8 @@ module.exports = async ( context, data, objToUpdate ) => {
       }
 
       if ( data.m.c ) {
+        data.m.c = data.m.c.trim();
+
         data.m.c = require( '../../resources/max-chars' )( data.m.c, 100 );
         require( './preferred-langs' )( data.m.c );
       }
