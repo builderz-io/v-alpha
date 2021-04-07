@@ -19,8 +19,20 @@ const { ApolloServer } = require( 'apollo-server-express' );
 // Setup express cloud function
 const app = express();
 
+const whitelist = ['http://localhost:3124', 'https://faithfinance.app'];
+
 const corsConfig = {
-  origin: 'http://localhost:3123',
+  origin: ( origin, callback ) => {
+
+    /** https://www.positronx.io/express-cors-tutorial/ */
+    // allow requests with no origin
+    if( !origin ) { return callback( null, true ) }
+    if( whitelist.indexOf( origin ) === -1 ) {
+      const message = 'The CORS policy for this origin does not allow access from ' + origin;
+      return callback( new Error( message ), false );
+    }
+    return callback( null, true );
+  },
   credentials: true,
 };
 
