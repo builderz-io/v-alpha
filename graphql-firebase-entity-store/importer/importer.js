@@ -12,7 +12,6 @@ const sourceData = JSON.parse( sourceFile );
 
 const namespaceInit = require( '../functions/resolvers/resolve/namespace-init' );
 const findByFullId = require( '../functions/resolvers/resolve/find-by-fullid' );
-const namespaceUpdate = require( '../functions/resolvers/resolve/namespace-update' );
 
 /** STEP A */
 // runBaseImport();
@@ -42,7 +41,7 @@ async function runBaseImport() {
     const compatibleData = {
       b: '', // added to pass validation
       c: x.profile.role,
-      gImporter: 'neighborhoodeconomics.trnty.edu',
+      gImporter: 'faithfinance.app',
       i: x.private.evmCredentials.address,
       j: x.receivingAddresses ? x.receivingAddresses.evm : null,
       m: x.profile.title,
