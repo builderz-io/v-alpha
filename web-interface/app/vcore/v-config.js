@@ -14,7 +14,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 
-    socketHost: production ? 'https://cocooonmongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
+    socketHost: production ? 'https://trinitymongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
     socketPort: production ? 443 : 6022,
 
     // socketHost: 'https://buildersmongo.valueinstrument.org',
@@ -49,7 +49,9 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
-    appVersion: 'v2 0.8.6',
+    appVersion: 'v3 0.1.0',
+
+    logo: '/assets/img/faithfinance-logo.png',
 
     neQuestionnaire: [
 

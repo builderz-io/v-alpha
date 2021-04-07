@@ -16,9 +16,9 @@ const entitySetup = {
   daysToExpiry: 365 * 2,
 };
 
-const castUuid = require( './v-core' ).castUuid;
+const { castUuid } = require( '../../../resources/v-core' );
 
-module.exports.castNamespace = ( context, data ) => {
+module.exports = ( context, data ) => {
 
   /** Prepare data */
 
@@ -62,13 +62,13 @@ module.exports.castNamespace = ( context, data ) => {
       c: data.c,
       d: uuidP,
       e: uuidA,
-      g: context.host,
+      g: data.gImporter || context.host,
 
       i: data.i,
       j: data.j,
 
       m: data.m,
-      n: data.n,
+      n: data.nImporter || data.n,
 
       x: {
         a: creatorUuid,
@@ -92,6 +92,7 @@ module.exports.castNamespace = ( context, data ) => {
         b: data.profileInputServerSide.email,
         m: data.profileInputServerSide.target,
         n: data.profileInputServerSide.unit,
+        r: data.profileInputServerSide.filteredDescr,
       },
       n: {
         a: data.profileInputServerSide.lngLat,
@@ -118,7 +119,7 @@ module.exports.castNamespace = ( context, data ) => {
       b: entitySetup.authDocVersion,
       d: uuidE,
       e: uuidP,
-      f: uPhrase,
+      f: data.authInputServerSide.fImporter || uPhrase,
       i: data.authInputServerSide.i,
       j: data.authInputServerSide.j,
     },

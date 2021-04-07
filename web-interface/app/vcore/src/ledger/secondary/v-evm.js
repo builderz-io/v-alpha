@@ -18,6 +18,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     community: 'Community',
     fee: 'Transaction Fee',
+    unknown: 'unknown',
   };
 
   function getString( string, scope ) {
@@ -48,11 +49,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       Join.draw( 'logged out' );
     }
     else if ( currentActiveAddress != V.aA() ) {
-      V.setCookie( 'last-active-address', currentActiveAddress.toLowerCase() );
-      V.setState( 'activeEntity', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
-      Join.draw( 'new entity was set up' );
-      Marketplace.draw();
+      // V.setCookie( 'last-active-address', currentActiveAddress.toLowerCase() );
+      // V.setState( 'activeEntity', 'clear' );
+      // V.setCookie( 'welcome-modal', 1 );
+      // Join.draw( 'new entity was set up' );
+      Join.draw( 'disconnect' );
+      // Marketplace.draw();
     }
 
   }
@@ -85,11 +87,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
-  async function castEntityName( address ) {
-    const entity = await V.getEntity( address );
-    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
-  }
-
   /* ================== public methods  ================= */
 
   async function getWeb3Provider() {
@@ -99,6 +96,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
       V.setState( 'browserWallet', true );
+      if ( window.ethereum.isMetaMask ) {
+        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+      }
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
@@ -170,9 +170,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       V.setCookie( 'last-active-address', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
 
       /* listen to change of address in MetaMask */
-      if ( window.ethereum && window.ethereum.on ) {
-        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
-      }
+      // if ( window.ethereum && window.ethereum.on ) {
+      //   window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+      // }
 
       setEventSubscription( 'TransferSummary' );
       return {
@@ -200,6 +200,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       // ganache remote
       const blockNumber = contract.methods.getBlockNumber().call();
+      const payout = contract.methods.getGenerationAmount.call().call();
+      const interval = contract.methods.getGenerationPeriod.call().call();
+      const lifetime = contract.methods.getLifetime.call().call();
       const fee = contract.methods.getTransactionFee.call().call();
       const contribution = contract.methods.getCommunityContribution.call().call();
       const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
@@ -222,13 +225,25 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       //     } ).reverse();
       //   } );
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility /*, allEvents */ ] )
+      const all = await Promise.all( [
+        blockNumber,
+        fee,
+        contribution,
+        divisibility,
+        payout,
+        interval,
+        lifetime,
+        // allEvents,
+      ] )
         .catch( err => { console.log( err ) } );
 
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
         console.log( 'Current Block: ', all[0] );
+        console.log( 'Payout: ', all[4] / 10**18 );
+        console.log( 'Interval: ', all[5] );
+        console.log( 'Lifetime: ', all[6] );
         console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
         console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
         console.log( 'Divisibility: ', all[3] );
@@ -244,7 +259,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           divisibility: all[3],
           contract: contract._address,
           network: V.getNetwork(),
-          allEvents: all[4],
+          // allEvents: all[4],
         };
 
         V.setState( 'contract', data );
@@ -280,18 +295,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       window.Web3Obj.eth.getBalance( which ),
       contract.methods.liveBalanceOf( which ).call(),
       contract.methods.getDetails( which ).call(),
+      contract.methods.getBlockNumber().call(),
     ] ).catch( err => {
       console.warn( 'Could not get address state' );
       return err;
     } );
 
-    if ( all && all[0] && all[1] && all[2] ) {
+    if ( all && all[0] && all[1] && all[2] && all[3] ) {
       const data = {
         coinBalance: castEthBalance( all[0] ),
         liveBalance: castTokenBalance( all[1] ),
         tokenBalance: castTokenBalance( all[2]._balance ),
         lastBlock: all[2]._lastBlock,
         zeroBlock: all[2]._zeroBlock,
+        currentBlock: all[3],
       };
 
       return {
@@ -312,13 +329,13 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function getAddressHistory(
-    which = V.aA() || V.aE().evmCredentials.address,
-    data = { fromBlock: 0, toBlock: 'latest' },
-    whichEvent = 'TransferSummary'
+  async function getAddressHistory( data
+    // which = V.aA() || V.aE().evmCredentials.address,
+    // data = { fromBlock: 0, toBlock: 'latest' },
+    // whichEvent = 'TransferSummary'
   ) {
 
-    const transfers = await contract.getPastEvents( whichEvent, {
+    const transfers = await contract.getPastEvents( 'TransferSummary', {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
       fromBlock: data.fromBlock,
       toBlock: data.toBlock,
@@ -335,7 +352,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const filteredAndEnhanced = await castTransfers( transfers, which );
+    const filteredAndEnhanced = await castTransfers( transfers, data.address );
 
     return {
       success: true,
@@ -527,8 +544,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
       txData.blockDate = blockDetails.timestamp;
 
-      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
-      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
+      await addEntityData( txData, 'from' );
+      await addEntityData( txData, 'to' );
 
       txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
 
@@ -552,6 +569,24 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const a = await Promise.all( filteredAndEnhanced );
     // console.log( a );
     return a;
+  }
+
+  async function addEntityData( txData, which ) {
+    if ( txData[which + 'Address'] == V.aE().evmCredentials.address ) {
+      txData[which + 'Entity'] = V.aE().fullId;
+      txData[which + 'UuidE'] = V.aE().uuidE;
+    }
+    else {
+      const entity = await V.getEntity( txData[which + 'Address'] );
+      if ( entity.success ) {
+        txData[which + 'Entity'] = entity.data[0].fullId;
+        txData[which + 'UuidE'] = entity.data[0].uuidE;
+      }
+      else {
+        txData[which + 'Entity'] = V.castShortAddress( txData[which + 'Address'] );
+        txData[which + 'UuidE'] = getString( ui.unknown );
+      }
+    }
   }
 
   // previous versions

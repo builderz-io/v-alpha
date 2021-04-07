@@ -627,7 +627,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function successFalse( msg, err, data ) {
     return {
       success: false,
-      status: -500,
       message: `could not ${ msg }: ${ err || 'no error message' }`,
       data: [ data ],
     };
@@ -636,7 +635,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function successTrue( msg, data ) {
     return {
       success: true,
-      status: 100,
       message: `successfully ${ msg }`,
       data: Array.isArray( data ) ? data : [ data ],
     };

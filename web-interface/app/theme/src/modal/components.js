@@ -191,10 +191,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           } );
 
         /** set state and cache */
+        Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
         V.setActiveEntity( res.data[0] );
         Join.draw( 'new entity was set up' );
 
         V.setCache( 'entire cache', 'clear' );
+        // V.setCache( 'viewed', res.data[0] );
+
         Navigation.drawEntityNavPill( res.data[0] );
       }
       else {
@@ -272,12 +275,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDisconnect() {
-    V.setCookie( 'last-active-address', 'clear' );
-    V.setDisconnect().then( res => {
-      if ( res.data.setDisconnect.success ) {
-        window.location.href = '/';
-      }
-    } );
+    V.setDisconnect();
   }
 
   /* ================== private methods ================= */
@@ -317,7 +315,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
-  function titleError( text ) {
+  function validationError( text ) {
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
@@ -364,10 +362,24 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $txDetails = V.cN( {
       t: 'p',
       c: 'modal__p',
-      h: `<p>Amount: ${tx.amount}</p>
-      <p>Fee: ${tx.feeAmount}</p>
-      <p>Contribution: ${tx.contribution}</p>
-      <p>Total: ${tx.txTotal}</p>`,
+      h: [
+        {
+          t: 'p',
+          h: `Amount: ${tx.amount}`,
+        },
+        {
+          t: 'p',
+          h: `Fee: ${tx.feeAmount}`,
+        },
+        {
+          t: 'p',
+          h: `Contribution: ${tx.contribution}`,
+        },
+        {
+          t: 'p',
+          h: `Total: ${tx.txTotal}`,
+        },
+      ],
     } );
     const $confirm = V.cN( {
       t: 'div',
@@ -485,7 +497,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
-  function entityFound( activeEntity, activeAddress, coinTicker, tokenTicker ) {
+  function entityFound( activeEntity, activeAddress, uPhrase, coinTicker, tokenTicker ) {
     const $content = modalContent();
 
     const $welcome = V.cN( {
@@ -507,40 +519,50 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       ],
     } );
 
-    const $uPhrase = V.cN( {
-      t: 'div',
-      c: 'txt-center',
-      h: [
-        { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
-        UserComponents.castAccessKeyNode( activeEntity.auth ? activeEntity.auth.uPhrase : '', 'txt-red fs-l' ),
-        { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) },
-      ],
-    } );
+    if ( uPhrase ) {
 
-    // let $balance;
-    //
-    // const x = activeEntity.balance;
-    // if ( x ) {
-    //   $balance = V.cN( {
-    //     t: 'p',
-    //     c: 'modal__details',
-    //     h: `
-    //     ${tokenTicker} ${ getString( ui.liveBalance ) }: ${ x.liveBalance }<br>
-    //     ${coinTicker}: ${ x.coinBalance }<br>
-    //     `
-    //   } );
+      const $uPhrase = V.cN( {
+        t: 'div',
+        c: 'txt-center',
+        y: {
+          'background': 'aquamarine',
+          'border-radius': '3px',
+        },
+        h: [
+          { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
+          UserComponents.castAccessKeyNode( uPhrase ? uPhrase : '', 'txt-red fs-l' ),
+          { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) },
+        ],
+      } );
+
+      // let $balance;
+      //
+      // const x = activeEntity.balance;
+      // if ( x ) {
+      //   $balance = V.cN( {
+      //     t: 'p',
+      //     c: 'modal__details',
+      //     h: `
+      //     ${tokenTicker} ${ getString( ui.liveBalance ) }: ${ x.liveBalance }<br>
+      //     ${coinTicker}: ${ x.coinBalance }<br>
+      //     `
+      //   } );
+      // }
+      // else {
+      //   $balance = V.cN( {
+      //     t: 'p',
+      //     h: getString( ui.notRetrieved )
+      //   } );
+      // }
+      // if ( activeAddress ) {
+      //   V.setNode( $content, $welcome );
+      // }
+      // else {
+      V.setNode( $content, [$welcome, $uPhrase /*, $balance */] );
     // }
-    // else {
-    //   $balance = V.cN( {
-    //     t: 'p',
-    //     h: getString( ui.notRetrieved )
-    //   } );
-    // }
-    if ( activeAddress ) {
-      V.setNode( $content, $welcome );
     }
     else {
-      V.setNode( $content, [$welcome, $uPhrase /*, $balance */] );
+      V.setNode( $content, $welcome );
     }
 
     return $content;
@@ -580,7 +602,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     modal: modal,
     modalContent: modalContent,
     simpleMessage: simpleMessage,
-    titleError: titleError,
+    validationError: validationError,
     getMetaMask: getMetaMask,
     confirmTransaction: confirmTransaction,
     web3Join: web3Join,

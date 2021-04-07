@@ -1,6 +1,6 @@
 const settings = {
-  port: 3123,
-  host: 'builderz.io',
+  port: 3124,
+  host: 'faithfinance.app',
 };
 
 const http = require( 'http' );
@@ -17,7 +17,7 @@ server.listen( settings.port, function( err ) {
 } );
 
 app.get( '/logo', function( req, res ) {
-  res.sendFile( __dirname + '/app/assets/img/builderz-logo.png' );
+  res.sendFile( __dirname + '/app/assets/img/faithfinance-logo.png' );
 } );
 
 app.get( '*', function( req, res ) {

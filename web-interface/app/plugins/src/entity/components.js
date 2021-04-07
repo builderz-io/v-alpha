@@ -275,15 +275,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
     const value = this.value;
-    V.getNode( '.location__curr' ).value = this.value;
+    // V.getNode( '.location__curr' ).value = this.value;
 
     if ( DOM.location.length && value == '' ) {
-      const gen = V.castRandLatLng();
       setField( 'geometry.baseLocation', {
-        lat: gen.lat,
-        lng: gen.lng,
-        value: '',
-        rand: true,
+        value: null,
       } );
     }
     else if ( lat ) {
@@ -291,14 +287,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         lat: lat,
         lng: lng,
         value: value,
-        rand: false,
       } ).then( res => {
 
         /** Draw the new map position */
         if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
           VMap.draw( res.data );
         }
-        if ( 'Firebase' == V.getSetting( 'entityLedger' ) ) {
+        if ( 'Firebase' == V.getSetting( 'entityLedger' ) && res.data[0] && res.data[0].n ) {
 
           /** Create GeoJSON object and mixin data from active entity */
           VMap.draw( [{
@@ -484,11 +479,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         updateEntityInCaches( res );
       }
       if ( !res.success /*res.data && res.data[0].error */ ) {
-        if ( res.message.includes( '-5003' ) ) {
-          Modal.draw( 'title error', res.message );
+        if ( res.message.includes( '-200' ) ) {
+          Modal.draw( 'confirm uPhrase' );
         }
         else {
-          Modal.draw( 'confirm uPhrase' );
+          Modal.draw( 'validation error', res.message );
         }
       }
       return res;
@@ -524,7 +519,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             type: 'password',
           },
           y: {
-            width: '190px',
+            width: '230px',
             padding: 0,
           },
           e: {
@@ -550,8 +545,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
+    const filteredDescr = entity.properties ? entity.properties.filteredDescription : undefined;
     if( descr || ( !descr && editable ) ) {
-      const castDescr = V.castDescription( descr );
+      const castDescr = V.castDescription( filteredDescr || descr );
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
@@ -583,8 +579,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     let count = 0;
 
-    for ( const k in responses ) {
-      responses[k] ? count += 1 : null;
+    for ( const question in responses ) {
+      if ( responses.hasOwnProperty( question ) ) {
+        responses[question] ? count += 1 : null;
+      }
     }
 
     if ( ['Business', 'Institution'].includes( entity.role ) && ( count || editable ) ) {
@@ -616,7 +614,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 x: !editable && response,
                 t: 'div',
                 c: 'pxy CCC',
-                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).iframes,
+                h: response, // V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).links,
               },
             ],
           } );
@@ -830,27 +828,27 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
             ],
           },
-          {
-            t: 'tr',
-            h: [
-              { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
-              editable ? {
-                t: 'input',
-                c: 'location__curr pxy w-full txt-right',
-                a: {
-                  value: loc,
-                },
-                e: {
-                // focus: handleBaseLocationFocus,
-                // blur: handleBaseLocation
-                },
-              } : {
-                t: 'p',
-                c: 'location__curr pxy txt-right',
-                h: loc,
-              },
-            ],
-          },
+          // {
+          //   t: 'tr',
+          //   h: [
+          //     { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
+          //     editable ? {
+          //       t: 'input',
+          //       c: 'location__curr pxy w-full txt-right',
+          //       a: {
+          //         value: loc,
+          //       },
+          //       e: {
+          //       // focus: handleBaseLocationFocus,
+          //       // blur: handleBaseLocation
+          //       },
+          //     } : {
+          //       t: 'p',
+          //       c: 'location__curr pxy txt-right',
+          //       h: loc,
+          //     },
+          //   ],
+          // },
           // {
           //   t: 'tr',
           //   h: [
@@ -920,6 +918,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'td',
               c: 'txt-right',
               h: entity.tag,
+            },
+          ],
+        },
+        {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+            },
+            {
+              t: 'td',
+              c: 'txt-right',
+              h: entity.role,
             },
           ],
         },
@@ -1316,7 +1327,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function socialShareButtons() {
     // https://sharingbuttons.io/
-    const subject = `${entity.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
+    const subject = ( `${entity.title}%20${ getString( ui.socialSubject ) }${ window.location.hostname }` ).replace( /\s/g, '%20' ); // getString adds a whitespace
     const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.path}`;
     const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
@@ -1347,15 +1358,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               icon: 'M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z',
             },
             {
-              link: `https://twitter.com/intent/tweet/?text=${ subject }&amp;url=${ profileLink }`,
+              link: `https://twitter.com/intent/tweet/?text=${ subject }&url=${ profileLink }`,
               icon: 'M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z',
             },
             {
-              link: `https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2F${ window.location.hostname }&amp;title=${ subject }&amp;summary=${ subject }&amp;source=${ profileLink }`,
+              link: `https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2F${ window.location.hostname }&amp;title=${ subject }&amp;summary=${ subject }&amp;source=${ profileLink }`,
               icon: 'M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z',
             },
             {
-              link: `https://telegram.me/share/url?text=${ subject }&amp;url=${ profileLink }`,
+              link: `https://telegram.me/share/url?text=${ subject }&url=${ profileLink }`,
               icon: 'M.707 8.475C.275 8.64 0 9.508 0 9.508s.284.867.718 1.03l5.09 1.897 1.986 6.38a1.102 1.102 0 0 0 1.75.527l2.96-2.41a.405.405 0 0 1 .494-.013l5.34 3.87a1.1 1.1 0 0 0 1.046.135 1.1 1.1 0 0 0 .682-.803l3.91-18.795A1.102 1.102 0 0 0 22.5.075L.706 8.475z',
             },
           ]
@@ -1393,8 +1404,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             .concat( [
               V.cN( {
                 t: 'a',
-                c: 'share-by-email font-bold',
-                f: `mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }`,
+                c: 'share-by-email inline-block pxy font-bold',
+                f: `mailto:?subject=${ subject }&body=Profile:%20${ profileLink }${ activeUserLink }`,
                 h: '@',
               } ),
             ] ),

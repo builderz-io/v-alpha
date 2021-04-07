@@ -32,6 +32,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     maxEntity: 'Title: max 7 words',
     tooLong: 'Title: max 200 characters',
     tooShort: 'Title: min 2 characters',
+    noNumbers: 'Title: Your personal name can not include a number',
     free: 'free',
     targetRange: 'Target must be within 0 - 9999',
     isNaN: 'Target must be a number',
@@ -48,8 +49,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   async function castEntity( entityData ) {
 
     /**
-     * Check whether lat/lng are present,
-     * if the user entered a location.
+     * Perfrom some initial input validation already client side,
+     * so that we don't even hit the server:
+     *
+     * - Is lat/lng are present, if the user entered a location?
+     * - Is the title valid?
+     * - Are target and unit valid?
      */
 
     if ( entityData.location && !entityData.lat ) {
@@ -57,19 +62,19 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'entity',
         status: 'no geo data',
-        message: 'could not attach geo data',
+        message: 'geoData is incomplete - select from suggestions',
       };
     }
 
-    /** Check whether the title is valid. */
+    // const title = { data: [entityData.title] }; // test server response
 
-    const title = castEntityTitle( entityData.title, entityData.role );
+    const title = castEntityTitle( entityData.title.toLowerCase(), entityData.role );
 
     if ( !title.success ) {
       return title; // return the error object
     }
 
-    /** Check whether the target amount is valid. */
+    // const target = { data: [ Number( entityData.target ) ] }; // test server response
 
     const target = castTarget( entityData.target, entityData.unit, entityData.role );
 
@@ -77,26 +82,28 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       return target; // return the error object
     }
 
-    /** Cast tag and fullId. */
+    /** Cast a tag */
 
     const tag = castTag();
-    const fullId = title.data[0] + ' ' + tag;
 
     /**
      * Check whether this title and tag combination exists,
      * otherwise start again.
+     *
+     * NOTE: now server side
      */
 
-    const exists = await getEntity( fullId );
+    // const fullId = title.data[0] + ' ' + tag;
+    // const exists = await getEntity( fullId );
 
-    if ( exists.success ) { // success is not a good thing here ;)
-      return {
-        success: false,
-        endpoint: 'entity',
-        status: 'entity exists',
-        data: [fullId],
-      };
-    }
+    // if ( exists.success ) { // success is not a good thing here ;)
+    //   return {
+    //     success: false,
+    //     endpoint: 'entity',
+    //     status: 'entity exists',
+    //     data: [fullId],
+    //   };
+    // }
 
     /** Prepare data */
 
@@ -115,6 +122,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         baseLocation: entityData.location || undefined,
         type: 'Point',
         rand: false,
+      };
+    }
+    else if ( entityData.location && !entityData.lat ) {
+      geometry = {
+        baseLocation: entityData.location || undefined,
       };
     }
     // else {
@@ -270,10 +282,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   function castEntityTitle( title, role ) {
 
-    const titleArray = title.trim().toLowerCase().split( ' ' );
+    title = title.trim().toLowerCase();
 
-    var checkLength = titleArray.length;
-    var wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+    const titleArray = title.split( ' ' );
+    const checkLength = titleArray.length;
+    const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
 
     let error;
 
@@ -287,6 +300,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
     // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
     ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+    ( [ 'Person' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
     ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
     wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
@@ -422,13 +436,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           ledger: tL,
           status: 'entity balance retrieved',
           data: [
-            {
-              coinBalance: bal.data[0].coinBalance,
-              tokenBalance: bal.data[0].tokenBalance,
-              liveBalance: bal.data[0].liveBalance,
-              lastBlock: bal.data[0].lastBlock,
-              zeroBlock: bal.data[0].zeroBlock,
-            },
+            bal.data[0],
           ],
         };
       }

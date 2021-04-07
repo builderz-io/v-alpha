@@ -53,7 +53,7 @@ const types = {
       m: InputProperties
       n: InputGeometry
       o: InputImages
-
+      p: InputTransactionLog
       q: InputQuestionnaire
     }
   `,

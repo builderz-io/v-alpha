@@ -9,7 +9,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     useClientData: false,
-    firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    // firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
   };
 
   let jwt;
@@ -20,7 +21,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f i j }';
-  const singleP = 'm { a b c m n } n { a b } o { a b c } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a b } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -29,7 +30,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const previewsE = 'a c d m n';
-  const previewsP = 'm { a } n { a } o { b }';
+  const previewsP = 'm { a r } n { a } o { b }';
 
   /* ================== private methods ================= */
 
@@ -55,6 +56,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       path: V.castPathOrId( fullId ),
       properties: {
         description: P.m ? P.m.a : undefined,
+        filteredDescription: P.m ? P.m.r : undefined,
         preferredLangs: P.m ? P.m.c : undefined,
         target: P.m ? P.m.m : undefined,
         unit: P.m ? P.m.n : undefined,
@@ -91,6 +93,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
           privateKey: E.auth ? E.auth.j : undefined,
         },
       },
+      transactions: {
+        lastBlock: P.p ? P.p.z : undefined,
+      },
       questionnaire: {
         q1: P.q ? P.q.q1 : undefined,
         q2: P.q ? P.q.q2 : undefined,
@@ -103,6 +108,32 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         q9: P.q ? P.q.q9 : undefined,
         q10: P.q ? P.q.q10 : undefined,
       },
+    };
+  }
+
+  function castReturnedTransferData( tx ) {
+    return {
+      txType: tx.a,     // txType: "out"
+      title: tx.b,     // title: "0x7dce ... d1eb2d"
+      // message: tx.c,     // message: "n/a"
+
+      amount: tx.g,     // amount: "27"
+      feeAmount: tx.h,    // feeAmount: "8.10"
+      contribution: tx.i,     // contribution: "0.90"
+      payout: tx.j,    // payout: "160"
+
+      fromAddress: tx.m,    // fromAddress: "0xac6d20f6da9edc85647c8608cb6064794e20ca26"
+      fromUuidE: tx.n,    // fromUuidE: "Account One #9383"
+      fromEntity: tx.o,    // fromEntity: "Account One #9383"
+
+      toAddress: tx.p,     // toAddress: "0x7dce8dd8a0dd6fe300beda9f1f8f87ecc3d1eb2d"
+      toUuidE: tx.q,     // toUuidE: "0x7dce ... d1eb2d"
+      toEntity: tx.r,     // toEntity: "0x7dce ... d1eb2d"
+
+      hash: tx.s,    // hash: "0xfd5b20bc5acdb7bb02f415562c847eb7b1bb961f81b405576be2a42ba3177b0f"
+      block: tx.t,    // block: 7587068
+      blockDate: tx.u,    // blockDate: 1605964950
+      logIndex: tx.v,  // logIndex: 40
     };
   }
 
@@ -242,7 +273,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const n = {
       a: data.geometry.coordinates,
       b: data.geometry.baseLocation,
-      z: data.geometry.rand,
     };
     const o = {
       a: data.tinyImageDU,
@@ -261,6 +291,32 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     return { a, b, d, m, n, o, x, y };
+  }
+
+  function castNewTransferData( array ) {
+    return array.map( tx => ( {
+      a: tx.txType,
+      b: tx.title,
+      // c: tx.message,
+
+      g: tx.amount,
+      h: tx.feeAmount,
+      i: tx.contribution,
+      j: tx.payout,
+
+      m: tx.fromAddress,
+      n: tx.fromUuidE,
+      o: tx.fromEntity,
+
+      p: tx.toAddress,
+      q: tx.toUuidE,
+      r: tx.toEntity,
+
+      s: tx.hash,
+      t: tx.block,
+      u: tx.blockDate,
+      v: tx.logIndex,
+    } ) );
   }
 
   function setEntityField( data ) {
@@ -287,16 +343,18 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
      *  Mimics the server response on unsuccessful validation.
      */
 
+    /*
     if ( m || m == '' ) {
       const title = V.castEntityTitle( m );
       if ( !title.success ) {
         return Promise.resolve( {
           data: {
-            setEntity: { a: a, error: '-5003 ' + title.message },
+            setEntity: { a: a },
           },
         } );
       }
     }
+    */
 
     const variables = {
       input: { a, c, j, m, y },
@@ -304,7 +362,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const query = `mutation SetEntityUpdate( $input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }! ) {
                 setEntity(input: $input) {
-                  ${ 'a error' /* a confirms successful response */ }
+                  ${ 'a' /* a confirms successful response */ }
                 }
               }
             `;
@@ -314,9 +372,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function setProfileField( data ) {
     console.log( 'UPDATING PROFILE: ', data );
-    const a = V.getState( 'active' ).lastViewedUuidP;
+    const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidP;
 
-    let m, n, o, q;
+    let m, n, o, p, q;
     let returnFields = '';
 
     if ( data.field.includes( 'questionnaire' ) ) {
@@ -345,12 +403,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       break;
 
     case 'geometry.baseLocation':
-      n = {
+      n = data.data.value ? {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
         b: data.data.value,
-        z: data.data.rand,
-      };
-      returnFields = 'n { a b z }';
+      } : null;
+      returnFields = 'n { a b }';
       break;
 
     case 'images':
@@ -361,15 +418,23 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         n: data.data.thumb.originalName,
       };
       break;
+
+    case 'transaction.log':
+      p = {
+        a: castNewTransferData( data.data ),
+        z: data.lastBlock, // 7530929, //
+      };
+      returnFields = 'p { z }'; // p { a { a b g h i j m n o p s t } z }
+      break;
     }
 
     const variables = {
-      input: { a, m, n, o, q },
+      input: { a, m, n, o, p, q },
     };
 
     const query = `mutation SetProfileUpdate( $input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }! ) {
                 setProfile(input: $input) {
-                  ${ 'a ' + returnFields + ' error'  /* a confirms successful response */ }
+                  ${ 'a ' + returnFields  /* a confirms successful response */ }
                 }
               }
             `;
@@ -415,11 +480,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getProfiles( array ) {
-    const uuidEs = array.map( item => item.d );
+    const uuidPs = array.map( item => item.d );
     const queryP = `query GetProfiles {
-           getProfiles (array: ${ V.castJson( uuidEs ) }) { ${ array.length == 1 ? singleP : previewsP } }
+           getProfiles (array: ${ V.castJson( uuidPs ) }) { ${ array.length == 1 ? singleP : previewsP } }
          }`;
     return fetchFirebase( queryP );
+  }
+
+  function getTransactionLog( uuidP ) {
+    const queryT = `query GetTransactionLog {
+           getProfiles (array: ${ V.castJson( [uuidP] ) }) {
+             p { a { a b c g h i j m n o p q r s t u v } z }
+           }
+         }`;
+    return fetchFirebase( queryT );
   }
 
   // function getAuth( data ) {
@@ -472,15 +546,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     let E;
 
-    // if ( 'entity by uPhrase' == whichEndpoint ) {
-    //   const auth = await getAuth( data );
-    //   if ( !auth.errors && auth.data.getAuth[0] != null ) {
-    //     return V.successTrue( 'got auth doc', auth.data.getAuth[0] );
-    //   }
-    //   else {
-    //     return V.successFalse( 'get auth doc' );
-    //   }
-    // }
     if ( 'entity by query' == whichEndpoint ) {
       const search = await getEntityQuery( data );
 
@@ -489,6 +554,21 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
         return V.successFalse( 'get entities by query' );
+      }
+    }
+    else if ( 'transaction log' == whichEndpoint ) {
+      const transactionLog = await getTransactionLog( data ); // data is uuidP
+      if ( !transactionLog.errors &&
+        transactionLog.data.getProfiles[0].p != null &&
+        transactionLog.data.getProfiles[0].p.a != null
+      ) {
+        const castTx = transactionLog.data.getProfiles[0].p.a.map(
+          tx => castReturnedTransferData( tx )
+        );
+        return V.successTrue( 'got transfer log', castTx );
+      }
+      else {
+        return V.successFalse( 'get transfer log' );
       }
     }
     else {
@@ -557,12 +637,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       if ( ['profile.title', 'receivingAddresses.evm', 'status.active'].includes( data.field ) ) {
         return setEntityField( data )
           .then( E => {
-            E = E.data.setEntity;
-            if ( !E.error ) {
-              return V.successTrue( 'updated entity', E );
+            if ( !E.errors ) {
+              return V.successTrue( 'updated entity', E.data.setEntity );
             }
             else {
-              return V.successFalse( 'update entity', E.error, E );
+              return V.successFalse( 'update entity', E.errors[0].message, E.data.setEntity );
             }
           } )
           .catch( err => V.successFalse( 'update entity', err ) );
@@ -570,12 +649,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       else {
         return setProfileField( data )
           .then( P => {
-            P = P.data.setProfile;
-            if ( !P.error ) {
-              return V.successTrue( 'updated profile', P );
+            if ( !P.errors ) {
+              return V.successTrue( 'updated profile', P.data.setProfile );
             }
             else {
-              return V.successFalse( 'update profile', P.error, P );
+              return V.successFalse( 'update profile', P.errors[0].message, P.data.setProfile );
             }
           } )
           .catch( err => V.successFalse( 'update profile', err ) );

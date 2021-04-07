@@ -71,7 +71,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $list, [
         // InteractionComponents.onboardingCard(),
-        UserComponents.roleCard(),
+        // UserComponents.roleCard(),
         UserComponents.addOrChangeImage(),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
@@ -93,7 +93,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       // }
 
       Page.draw( {
-        topcontent: $topcontent,
+        // topcontent: $topcontent,
         listings: $list,
       } ).then( () => {
         Google.launch().then( () => { // adds places lib script

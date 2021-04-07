@@ -3,7 +3,7 @@ String.prototype.uncomment = function() {
 };
 
 const settings = {
-  useClientData: false, // also change in resolvers.js
+  useClientData: false, // also change in set-namespace.js + in frontend
 };
 
 const { gql } = require( 'apollo-server-express' );
@@ -34,6 +34,7 @@ const Jwt = `
     uuidE: String
     exp: Int
     jwt: String
+    tempRefresh: String
   }
   type Success {
     success: Boolean

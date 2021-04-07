@@ -14,7 +14,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       if ( V.getSetting( 'useBuilds' ) ) {
         await Promise.all( [
-          V.setScript( '/vcore/builds/vevm.min.js' )
+          V.setScript( '/vcore/builds/vevm.min.js' ),
         ] );
         console.log( '*** vevm builds loaded ***' );
       }
@@ -22,7 +22,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         await Promise.all( [
           V.setScript( '/vcore/dependencies/secondary/web3.min.js' ),
           V.setScript( '/vcore/src/ledger/secondary/v-evm-abi.js' ),
-          V.setScript( '/vcore/src/ledger/secondary/v-evm.js' )
+          V.setScript( '/vcore/src/ledger/secondary/v-evm.js' ),
         ] );
         console.log( '*** vcore source web3 and evm scripts loaded ***' );
       }
@@ -30,54 +30,46 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       await V.getWeb3Provider();
 
     }
-
-    if ( V.getSetting( 'transactionLedger' ) == 'EOS' ) {
+    else if ( V.getSetting( 'transactionLedger' ) == 'EOS' ) {
       await Promise.all( [
         V.setScript( '/vcore/dependencies/eosjs-api.js' ),
         V.setScript( '/vcore/dependencies/eosjs-jsonrpc.js' ),
         V.setScript( '/vcore/dependencies/eosjs-jssig.js' ),
-        V.setScript( '/vcore/dependencies/eosjs-numeric.js' )
+        V.setScript( '/vcore/dependencies/eosjs-numeric.js' ),
       ] );
 
       console.log( '*** eos scripts loaded ***' );
     }
-
-    if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
+    else if ( V.getSetting( 'transactionLedger' ) == 'Symbol' ) {
       await V.setScript( '/vcore/dependencies/symbol-sdk-0.17.5-alpha.js' );
       await V.setScript( '/vcore/src/ledger/v-symbol.js' );
       console.log( '*** symbol scripts loaded ***' );
     }
 
-    if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
+    if ( V.getSetting( 'entityLedger' ) == 'Firebase' ) {
+      await Promise.all( [
+        V.setScript( '/vcore/src/ledger/secondary/v-firebase.js' ),
+      ] );
+      console.log( '*** Firebase scripts loaded ***' );
+    }
+    else if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
       await Promise.all( [
         V.setScript( '/vcore/dependencies/3box.min.js' ),
-        V.setScript( '/vcore/src/ledger/v-3box.js' )
+        V.setScript( '/vcore/src/ledger/v-3box.js' ),
       ] );
       console.log( '*** 3Box scripts loaded ***' );
-    }
-    else if ( V.getSetting( 'entityLedger' ) == 'MongoDB' ) {
-      await Promise.all( [
-        V.setScript( '/vcore/src/ledger/secondary/v-mongodb.js' )
-      ] );
-      console.log( '*** Firebase scripts loaded ***' );
-    }
-    else if ( V.getSetting( 'entityLedger' ) == 'Firebase' ) {
-      await Promise.all( [
-        V.setScript( '/vcore/src/ledger/secondary/v-firebase.js' )
-      ] );
-      console.log( '*** Firebase scripts loaded ***' );
     }
 
     if ( [ V.getSetting( 'entityLedger' ), V.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
       await Promise.all( [
+        V.setScript( '/vcore/src/ledger/secondary/v-mongodb.js' ),
         V.setScript( '/vcore/dependencies/secondary/socket.io.min.js' ),
       ] );
-      console.log( '*** vcore source socket scripts loaded ***' );
+      console.log( '*** MongoDB and socket.io scripts loaded ***' );
       await setSocket().then( res => {
         console.log( res );
       } );
     }
-
   }
 
   async function setSocket() {
@@ -89,7 +81,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
       const socketSettings = {
         // transports: ['websocket'],
-        secure: true
+        secure: true,
       };
 
       window.socket = io.connect( connection, socketSettings );
@@ -120,22 +112,16 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       : { method: 'GET' };
 
     return fetch( which, options )
-      .then( ( response ) => {
-        return response.json();
-      } )
-      .then( ( data ) => {
-        return {
-          success: true,
-          status: 'fetch success',
-          data: [ data ] };
-      } )
-      .catch( ( error ) => {
-        return {
-          success: false,
-          status: 'fetch error',
-          message: error
-        };
-      } );
+      .then( ( response ) => response.json() )
+      .then( ( data ) => ( {
+        success: true,
+        status: 'fetch success',
+        data: [ data ] } ) )
+      .catch( ( error ) => ( {
+        success: false,
+        status: 'fetch error',
+        message: error,
+      } ) );
   }
 
   /* ============ public methods and exports ============ */
@@ -190,7 +176,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {
-        return V.getAddressHistory();
+        return V.getAddressHistory( data );
       }
     }
     else if ( whichLedger == 'Symbol' ) {
@@ -204,9 +190,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( whichLedger == '3Box' ) {
-      return V.get3BoxSpace( data ).then( res => {
-        return res;
-      } );
+      return V.get3BoxSpace( data ).then( res => res );
     }
     else if ( whichLedger == 'http' ) {
       return http( data );
@@ -227,7 +211,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
   return {
     launch: launch,
     getData: getData,
-    setData: setData
+    setData: setData,
   };
 
 } )();

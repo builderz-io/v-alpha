@@ -27,6 +27,7 @@ const ui = {
   maxEntity: 'Title: max 7 words',
   tooLong: 'Title: max 200 characters',
   tooShort: 'Title: min 2 characters',
+  noNumbers: 'Title: Your personal name can not include a number',
   free: 'free',
   targetRange: 'Target must be within 0 - 9999',
   isNaN: 'Target must be a number',
@@ -41,10 +42,11 @@ function getString( string ) {
 
 module.exports.castEntityTitle = ( title, role ) => {
 
-  const titleArray = title.trim().toLowerCase().split( ' ' );
+  title = title.trim().toLowerCase();
 
-  var checkLength = titleArray.length;
-  var wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+  const titleArray = title.split( ' ' );
+  const checkLength = titleArray.length;
+  const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
 
   let error;
 
@@ -58,6 +60,7 @@ module.exports.castEntityTitle = ( title, role ) => {
   // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
   // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
   ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+  ( [ 'Person' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
   ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
   wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
@@ -90,43 +93,6 @@ module.exports.castEntityTitle = ( title, role ) => {
       data: [ formattedTitle ],
     };
   }
-};
-
-module.exports.castTarget = ( target, unit, role ) => {
-  let error;
-
-  target == '' ? target = undefined : null;
-
-  if (  target ) {
-    unit == '' ? error = getString( ui.noUnit ) : null;
-    isNaN( target ) ? error = getString( ui.isNaN ) : null;
-  }
-
-  if ( ['Pool'].includes( role ) ) {
-    unit == '' ? error = undefined : null;
-    !target ? error = getString( ui.noTarget ) : null;
-    // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
-  }
-
-  Number( target ) > 9999 || Number( target ) < 0 ? error = getString( ui.targetRange ) : null;
-
-  if ( error ) {
-    return {
-      success: false,
-      endpoint: 'entity',
-      status: 'invalid target',
-      message: error,
-    };
-  }
-  else {
-    return {
-      success: true,
-      endpoint: 'entity',
-      status: 'cast entity target',
-      data: [ Number( target ) || undefined ],
-    };
-  }
-
 };
 
 module.exports.castTag = () => {

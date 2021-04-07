@@ -13,6 +13,55 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  async function transactionLogger() {
+
+    let all = [];
+
+    const loggedTx = await V.getTransactionLog();
+
+    if ( loggedTx.success ) {
+      all = loggedTx.data;
+    }
+
+    const currentBlock = await V.getContractState()
+      .then( data => data.data[0].currentBlock );
+
+    const lastBlock = V.getState( 'lastBlock' )
+      ? V.getState( 'lastBlock' )
+      : V.aE().transactions
+        ? V.aE().transactions.lastBlock || 0
+        : 0;
+
+    const newTx = await V.getTransactions( {
+      address: V.aA() || V.aE().evmCredentials.address,
+      fromBlock: lastBlock + 1,
+      toBlock: currentBlock,
+    } );
+
+    if( newTx.success ) {
+      all = all.concat( newTx.data );
+    }
+
+    const setTxLog = await V.setTransactionLog( {
+      success: true,
+      lastBlock: currentBlock,
+      data: all,
+    } );
+
+    if ( !setTxLog.success ) {
+      return {
+        success: false,
+        message: setTxLog.message,
+      };
+    }
+
+    return {
+      success: true,
+      data: all,
+      currentBlock: currentBlock,
+    };
+  }
+
   async function presenter() {
 
     if ( !V.aE() ) {
@@ -22,15 +71,18 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const transactions = await V.getTransaction();
+    const txList = await transactionLogger();
 
-    if( !transactions.success || !transactions.data.length ) {
+    if( !txList.success ) {
       return {
         success: false,
+        message: txList.message,
         aE: V.aE(),
         entityBalance: null,
       };
     }
+
+    V.setState( 'lastBlock', txList.currentBlock );
 
     const bal = await V.getEntityBalance();
 
@@ -41,7 +93,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
-      for ( const txData of transactions.data ) {
+      for ( const txData of txList.data ) {
         if ( txData.txType == 'fee' ) {
           txData.title = 'Transaction Fee';
         }
@@ -55,14 +107,19 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       success: true,
       aE: V.aE(),
       entityBalance: bal,
-      data: transactions.data,
+      data: txList.data,
     };
 
   }
 
   function view( viewData ) {
+
+    if ( viewData.message && viewData.message.includes( '-200' ) ) {
+      Modal.draw( 'confirm uPhrase' );
+    }
+
     const $list = CanvasComponents.list( 'narrow' );
-    if ( viewData.success ) {
+    if ( viewData.success && viewData.data.length ) {
 
       const $topcontent = AccountComponents.topcontent( viewData.aE.fullId, viewData.entityBalance );
 

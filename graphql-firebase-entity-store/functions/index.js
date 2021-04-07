@@ -11,7 +11,7 @@ const credentials = require( './credentials/credentials' );
 const typeDefs = require( './schemas/typeDefs' );
 
 // Provide resolver functions for your schema fields
-const resolvers = require( './resolvers/resolvers' );
+const resolvers = require( './resolvers/resolve/resolve' );
 
 // Create GraphQL express server
 const { ApolloServer } = require( 'apollo-server-express' );
@@ -19,8 +19,20 @@ const { ApolloServer } = require( 'apollo-server-express' );
 // Setup express cloud function
 const app = express();
 
+const whitelist = ['http://localhost:3124', 'https://faithfinance.app'];
+
 const corsConfig = {
-  origin: 'http://localhost:3123',
+  origin: ( origin, callback ) => {
+
+    /** https://www.positronx.io/express-cors-tutorial/ */
+    // allow requests with no origin
+    if( !origin ) { return callback( null, true ) }
+    if( whitelist.indexOf( origin ) === -1 ) {
+      const message = 'The CORS policy for this origin does not allow access from ' + origin;
+      return callback( new Error( message ), false );
+    }
+    return callback( null, true );
+  },
   credentials: true,
 };
 
@@ -35,7 +47,14 @@ const server = new ApolloServer( {
   context: async ( { req, res } ) => {
 
     const auth = req.headers.authorization;
-    const refreshToken = req.headers.cookie ? req.headers.cookie.split( '=' )[1] : undefined;
+    const lastActiveAddress = req.headers['last-active-address'];
+
+    const refreshToken = req.headers.cookie
+      ? req.headers.cookie.split( '=' )[1]
+      : req.headers['temp-refresh'] != 'not set'
+        ? req.headers['temp-refresh']
+        : undefined;
+
     const host = req.headers.referer.split( '/' )[2];
 
     const context = {
@@ -43,12 +62,29 @@ const server = new ApolloServer( {
     };
 
     if ( refreshToken ) {
+      // try {
+      //   const jwt = verify( refreshToken, credentials.jwtRefreshSignature );
+      //   console.log( jwt );
+      // }
+      // catch ( err ) {
+      //   console.log( err );
+      // }
       const user = await resolvers.Query.getAuth( undefined, { token: refreshToken } );
       user[0] ? Object.assign( context, user[0] ) : null;
     }
     else if ( auth.includes( 'uPhrase' ) ) {
       const user = await resolvers.Query.getAuth( undefined, { token: auth.replace( 'uPhrase ', '' ) } );
-      user[0] ? Object.assign( context, user[0] ) : null;
+      if ( user[0] ) {
+
+        /** If an address is set, uPhrase must match entity address */
+        if ( lastActiveAddress != 'not set' ) {
+          user[0].i == lastActiveAddress ? Object.assign( context, user[0] ) : null;
+        }
+        else {
+          Object.assign( context, user[0] );
+        }
+      }
+      // user[0] ? Object.assign( context, user[0] ) : null;
     }
     else if ( auth.includes( 'Bearer' ) ) {
       try {

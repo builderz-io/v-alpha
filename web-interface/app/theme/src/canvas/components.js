@@ -303,7 +303,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'img',
       c: 'network-logo',
-      src: '/assets/img/builderz-logo.png',
+      src: V.getSetting( 'logo' ),
     } );
   }
 

@@ -9,6 +9,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     maxTextLength: 2000, // including links
+    maxIntroLength: 200, // including links
     maxLinkCount: 12,
     maxVideoIframeCount: 3, // including featured
     maxPodcastIframeCount: 2,
@@ -24,7 +25,8 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     videoIframeCount,
     podcastIframeCount;
 
-  let $description,
+  let $intro,
+    $description,
     $paragraph,
     $socialUl,
     $feature;
@@ -39,6 +41,11 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     linkCount = 0;
     videoIframeCount = 0;
     podcastIframeCount = 0;
+
+    $intro = V.cN( {
+      t: 'div',
+      c: 'intro',
+    } );
 
     $description = V.cN( {
       t: 'div',
@@ -116,14 +123,12 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   function castFromItemsArray( items ) {
     for ( let i = 0; i < items.length; i++ ) {
 
-      charCount += items[i].length;
-
-      if ( items[i] == '' ) {
+      if ( items[i] == '' || items[i] > settings.maxTextLength ) {
         continue;
       }
       else if ( items[i] == 'pEnd' || charCount > settings.maxTextLength ) {
         if ( charCount > settings.maxTextLength ) {
-          $paragraph.appendChild( castSpan( '[text shortened]' ) );
+          $paragraph.appendChild( castSpan( '*text shortened*' ) );
         }
         if ( $paragraph.childNodes.length ) {
 
@@ -142,10 +147,35 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       placeNodes( items[i] );
+      charCount += items[i].length;
     }
   }
 
-  function placeNodes( item ) {
+  function castIntroFromItemsArray( items ) {
+
+    /** reset */
+    charCount = 0;
+    $paragraph = V.cN( {
+      t: 'p',
+      c: 'paragraph pb-r',
+    } );
+
+    for ( let i = 0; i < items.length; i++ ) {
+      if ( items[i] == 'pEnd' || charCount > settings.maxIntroLength ) {
+        break;
+      }
+      if ( items[i] == '' || items[i] > settings.maxIntroLength ) {
+        continue;
+      }
+      placeNodes( items[i], 'isIntro' );
+      charCount += items[i].length;
+    }
+
+    $intro.appendChild( $paragraph );
+
+  }
+
+  function placeNodes( item, isIntro ) {
 
     /** append nodes to paragraph, feature or social ul as per item type */
 
@@ -158,7 +188,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     linkCount += 1;
 
     if ( linkCount > settings.maxLinkCount ) {
-      $paragraph.appendChild( castSpan( '[link omitted (max links)]' ) );
+      $paragraph.appendChild( castSpan( '*link omitted (max links)*' ) );
       return;
     }
 
@@ -167,7 +197,10 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     let host = link.split( '/' )[2];
     host = host.replace( 'www.', '' );
 
-    if ( host.match( new RegExp( settings.socialMatches ) ) ) {
+    if ( isIntro ) {
+      $paragraph.appendChild( castRegularLink( link, host ) );
+    }
+    else if ( host.match( new RegExp( settings.socialMatches ) ) ) {
       $socialUl.appendChild( castSocialLinkImg( link, host ) );
     }
     else if ( host.match( new RegExp( settings.videoMatches ) ) ) {
@@ -222,7 +255,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       feature = true;
       $feature = $iframe;
       $paragraph.appendChild( castRegularLink( link, host ) );
-      $paragraph.appendChild( castSpan( '(featured above)' ) );
+      $paragraph.appendChild( castSpan( ' *featured above*' ) );
     }
     else {
       $paragraph.appendChild( $iframe );
@@ -230,7 +263,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castSpan( text ) {
-    if ( text.match( /^\s+/ ) ) {
+    if ( text.match( /^\s{2,}$/ ) ) {
       return false;
     }
     return V.cN( {
@@ -319,11 +352,13 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     setupModule();
     castItemsArray( whichText );
     castFromItemsArray( items );
+    castIntroFromItemsArray( items );
 
     return {
       $feature: $feature || false,
       $description: $description,
       $socialUl: $socialUl,
+      $intro: $intro,
     };
 
   }

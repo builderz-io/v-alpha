@@ -4,6 +4,9 @@ entity-namespace-creds.json
 entity-profile-creds.json
 entity-authentication-creds.json
 
+#database import file
+trinity-entities-mongo.json
+
 # Logs
 logs
 *.log

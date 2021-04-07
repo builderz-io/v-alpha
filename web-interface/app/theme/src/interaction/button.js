@@ -40,7 +40,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     else {
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
-          console.log( res.status, res.message );
+          console.log( res.message );
           e.target.addEventListener( 'click', handleSetEntity );
           V.setCache( 'all', 'clear' );
           V.setCache( res.data[0].role, 'clear' );
@@ -70,7 +70,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         else {
           Form.draw( 'error', res );
           e.target.addEventListener( 'click', handleSetEntity );
-          console.error( res.status );
+          console.error( res );
         }
       } );
       V.setCookie( 'last-form', undefined );
