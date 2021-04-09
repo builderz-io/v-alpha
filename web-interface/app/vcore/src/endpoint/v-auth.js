@@ -59,6 +59,10 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     return '';
   }
 
+  function deleteTempRefreshCookie() {
+    document.cookie = 'temp_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+  }
+
   /* ================== public methods ================== */
 
   function setDisconnect() {
@@ -72,7 +76,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
     return fetchFirebase( queryD ).then( () => {
       // if ( res.data.setDisconnect.success ) {
-      document.cookie = 'temp_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+      deleteTempRefreshCookie();
       V.setCookie( 'last-active-address', 'clear' );
       V.setCookie( 'welcome-modal', 1 );
       // V.setState( 'activeEntity', 'clear' );
@@ -91,6 +95,8 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     const data = await fetchAuth().then( res => {
 
       if ( !res.errors ) {
+
+        deleteTempRefreshCookie();
 
         /** Set temp refresh token */
         document.cookie = 'temp_refresh=' + res.data.setAuth.tempRefresh;
