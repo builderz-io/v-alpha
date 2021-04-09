@@ -2,9 +2,9 @@
 const { namespaceDb } = require( '../../resources/databases-setup' );
 const colE = namespaceDb.database().ref( 'entities' );
 
-module.exports = ( context, filter ) => {
+module.exports = async ( context, filter ) => {
   const q = filter.query.toLowerCase();
-  return colE.once( 'value' )
+  const filtered = await colE.once( 'value' )
     .then( snap => snap.val() )
     .then( val => Object.values( val ).filter( E => {
       let text;
@@ -25,7 +25,9 @@ module.exports = ( context, filter ) => {
       }
       text = text.toLowerCase();
       const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;
-      return role && text.includes( q ) && context.host.includes( 'localhost' ) ? true : E.g == context.host; // return all for localhost
-    }
-    ) );
+      const isLocalHost = context.host.includes( 'localhost' ) ? true : false; // always return results when localhost
+      const isNetworkNative = E.g == context.host;
+      return role && text.includes( q ) && ( isLocalHost || isNetworkNative );
+    } ) );
+  return filtered;
 };
