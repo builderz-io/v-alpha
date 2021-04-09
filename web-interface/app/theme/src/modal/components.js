@@ -114,8 +114,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: getString( ui.useKey ),
     } );
 
+    const $response = V.sN( {
+      t: 'div',
+      c: 'form__response pxy txt-red',
+    } );
+
     V.sN( '.modal__content', '' );
-    V.setNode( '.modal__content', [$input, $new] );
+    V.setNode( '.modal__content', [$input, $response, $new] );
   }
 
   function handleGetEntity() {
@@ -127,7 +132,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           return data.data[0].uuidE;
         }
         else {
-          throw new Error( 'could not set auth' );
+          throw new Error( data.message );
         }
       } )
       .then( uuidE => V.getEntity( uuidE ) )
@@ -140,8 +145,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           throw new Error( 'could not get entity after set auth' );
         }
       } )
-      .catch( () => {
-        console.log( 'auth unsuccessful' );
+      .catch( err => {
+        console.log( 'auth unsuccessful -', err );
+        V.getNode( '.form__response' ).textContent = err;
+        V.setNode( '.confirm-click-spinner', 'clear' );
         Join.launch();
       } );
   }
