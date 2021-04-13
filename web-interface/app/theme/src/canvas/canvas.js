@@ -373,8 +373,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
             throw new Error( 'could not get entity after set auth' );
           }
         } )
-        .catch( () =>  {
-          console.log( 'auth unsuccessful' );
+        .catch( err =>  {
+          V.deleteTempRefreshCookie();
+          console.log( 'auth unsuccessful -', err );
           if ( V.getCookie( 'last-active-address' ) && window.ethereum ) {
             Join.draw( 'authenticate' );
           }

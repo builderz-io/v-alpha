@@ -122,10 +122,12 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
   V.setAuth = setAuth;
   V.setDisconnect = setDisconnect;
+  V.deleteTempRefreshCookie = deleteTempRefreshCookie;
 
   return {
     setAuth: setAuth,
     setDisconnect: setDisconnect,
+    deleteTempRefreshCookie: deleteTempRefreshCookie,
   };
 
 } )();
