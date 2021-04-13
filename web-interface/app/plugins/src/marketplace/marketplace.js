@@ -11,7 +11,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( whichPath, search ) {
 
-    const whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
+    let whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
+
+    /** Combines 'PersonMapped' with 'Person' */
+    whichRole = whichRole.replace( 'Mapped', '' );
 
     let query, isSearch = false;
 
@@ -126,7 +129,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'search' );
       }
 
-      if ( !( ['/network/all', '/network/members'].includes( viewData.whichPath ) ) ) {
+      if ( !( ['/network/all'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
@@ -252,11 +255,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       },
       {
         title: 'People',
-        path: '/network/members',
+        path: '/network/people',
         divertFundsToOwner: false,
         use: {
           button: 'search',
-          role: 'Person',
+          form: 'new entity',
+          role: 'PersonMapped',
         },
         draw: function( path ) {
           Marketplace.draw( path );

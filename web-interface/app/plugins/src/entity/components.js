@@ -123,6 +123,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     img: 'Image',
     holder: 'Holder',
     holderOf: 'Holder of',
+    mappedBy: 'Mapped by',
     accessKeys: 'Access Keys',
     notAuthenticated: 'not authorized to view',
     deactivated: 'activate',
@@ -940,7 +941,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             {
               t: 'td',
-              h: getString( ui.holder ),
+              h: entity.role == 'Person' ? getString( ui.mappedBy ) : getString( ui.holder ),
             },
             {
               t: 'td',

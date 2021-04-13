@@ -41,6 +41,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
           console.log( res.message );
+          console.log( 'set uuidE:', res.data[0].uuidE );
           e.target.addEventListener( 'click', handleSetEntity );
           V.setCache( 'all', 'clear' );
           V.setCache( res.data[0].role, 'clear' );

@@ -45,7 +45,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return {
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
-      role: E.c,
+      role: E.c.replace( 'Mapped', '' ), // combines 'PersonMapped' and 'Person'
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
