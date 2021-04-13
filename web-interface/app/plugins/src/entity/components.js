@@ -1329,7 +1329,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // https://sharingbuttons.io/
     const subject = ( `${entity.title}%20${ getString( ui.socialSubject ) }${ window.location.hostname }` ).replace( /\s/g, '%20' ); // getString adds a whitespace
     const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.path}`;
-    const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
+    // const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
     return V.cN( {
       t: 'div',
@@ -1405,7 +1405,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               V.cN( {
                 t: 'a',
                 c: 'share-by-email inline-block pxy font-bold',
-                f: `mailto:?subject=${ subject }&body=Profile:%20${ profileLink }${ activeUserLink }`,
+                f: `mailto:?subject=${ subject }&body=Profile:%20${ profileLink }`, // optionally add ${ activeUserLink }
                 h: '@',
               } ),
             ] ),
