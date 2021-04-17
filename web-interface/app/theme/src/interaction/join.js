@@ -22,7 +22,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
             const check = await ckeckEntityStoreByAddress();
 
             if ( which.includes( 'existing entity' ) ) {
-              V.setCookie( 'welcome-modal', 1 );
+              V.setLocal( 'welcome-modal', 1 );
               which = 'authenticate existing entity';
             }
             else {
@@ -49,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
-        V.setCookie( 'last-active-address', V.aE().symbolCredentials.address );
+        V.setLocal( 'last-active-address', V.aE().symbolCredentials.address );
         which = 'entity found';
       }
     }
@@ -75,9 +75,9 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( '.modal', 'clear' );
 
-      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+      if ( V.getLocal( 'welcome-modal' ) == 1 ) {
         Modal.draw( which );
-        V.setCookie( 'welcome-modal', 0 );
+        V.setLocal( 'welcome-modal', 0 );
       }
 
       const bal = V.aE().balance;
@@ -156,13 +156,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     // sets the view on launch (the header "Join" button)
-    if( !V.getCookie( 'browser-id' ) ) {
+    if( !V.getLocal( 'browser-id' ) ) {
       const brid = 'BRID' + V.castUuid().base64Url.substr( 1, 16 ); // e.g. BRIDdlvboP9QBioaDvm7
-      V.setCookie( 'browser-id', brid );
+      V.setLocal( 'browser-id', brid );
     }
     if ( !V.getNode( 'join' ) ) {
       V.setNode( 'balance > svg', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
+      V.setLocal( 'welcome-modal', 1 );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
         Join.draw( 'initialize join' );

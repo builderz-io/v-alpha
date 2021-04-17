@@ -58,7 +58,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function aA() {
-    const aA = getCookie( 'last-active-address' );
+    const aA = getLocal( 'last-active-address' );
     return aA ? aA.replace( /"/g, '' ) : undefined;
   }
 
@@ -165,19 +165,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function getCookie( which ) {
-    // return Cookies.get( which );
+  function getLocal( which ) {
     return localStorage.getItem( which );
-
   }
 
-  function setCookie( which, data ) {
-    // if ( data == 'clear' ) {
-    //   Cookies.remove( which );
-    //   return;
-    // }
-    // Cookies.set( which, JSON.stringify( data ) );
-
+  function setLocal( which, data ) {
     if ( data == 'clear' ) {
       localStorage.removeItem( which );
       return;
@@ -198,8 +190,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   V.setCache = setCache;
   V.getNavItem = getNavItem;
   V.setNavItem = setNavItem;
-  V.getCookie = getCookie;
-  V.setCookie = setCookie;
+  V.getLocal = getLocal;
+  V.setLocal = setLocal;
 
   return {
     getState: getState,
@@ -211,8 +203,8 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     setCache: setCache,
     getNavItem: getNavItem,
     setNavItem: setNavItem,
-    getCookie: getCookie,
-    setCookie: setCookie,
+    getLocal: getLocal,
+    setLocal: setLocal,
   };
 
 } )();

@@ -25,7 +25,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
     const account = 'todo...';
 
-    V.setCookie( 'last-active-address', 'todo...' );
+    V.setLocal( 'last-active-address', 'todo...' );
 
     return {
       success: true,

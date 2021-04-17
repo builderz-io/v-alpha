@@ -43,15 +43,15 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     // console.log( V.aA() );
 
     if ( currentActiveAddress == null ) {
-      V.setCookie( 'last-active-address', 'clear' );
+      V.setLocal( 'last-active-address', 'clear' );
       V.setState( 'activeEntity', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
+      V.setLocal( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
     else if ( currentActiveAddress != V.aA() ) {
-      // V.setCookie( 'last-active-address', currentActiveAddress.toLowerCase() );
+      // V.setLocal( 'last-active-address', currentActiveAddress.toLowerCase() );
       // V.setState( 'activeEntity', 'clear' );
-      // V.setCookie( 'welcome-modal', 1 );
+      // V.setLocal( 'welcome-modal', 1 );
       // Join.draw( 'new entity was set up' );
       Join.draw( 'disconnect' );
       // Marketplace.draw();
@@ -167,7 +167,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       const activeAddress = await window.Web3Obj.eth.getAccounts();
       // const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-      V.setCookie( 'last-active-address', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
+      V.setLocal( 'last-active-address', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
 
       /* listen to change of address in MetaMask */
       // if ( window.ethereum && window.ethereum.on ) {

@@ -34,7 +34,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
-      V.setCookie( 'last-form', entityData );
+      V.setLocal( 'last-form', entityData );
       Join.draw( 'authenticate' );
     }
     else {
@@ -74,7 +74,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           console.error( res );
         }
       } );
-      V.setCookie( 'last-form', undefined );
+      V.setLocal( 'last-form', undefined );
     }
 
   }

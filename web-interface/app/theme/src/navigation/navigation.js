@@ -25,7 +25,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNavOrder = V.castJson( V.getLocal( 'entity-nav-order' ) || '{}' );
     V.getState( 'entityNav' ) ? null : V.setState( 'entityNav', {} ); // ensure entityNav-state exists
     const entityNav = V.getState( 'entityNav' );
 
@@ -68,7 +68,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     syncNavOrder( entityNavOrder, entityNav );
 
-    V.setCookie( 'entity-nav-order', entityNavOrder );
+    V.setLocal( 'entity-nav-order', entityNavOrder );
 
     /**
      * Check whether we have to also update the other navs
@@ -97,12 +97,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const serviceNavOrder = V.castJson( V.getCookie( 'service-nav-order' ) || '{}' );
+    const serviceNavOrder = V.castJson( V.getLocal( 'service-nav-order' ) || '{}' );
     const serviceNav = V.getState( 'serviceNav' );
 
     syncNavOrder( serviceNavOrder, serviceNav );
 
-    V.setCookie( 'service-nav-order', serviceNavOrder );
+    V.setLocal( 'service-nav-order', serviceNavOrder );
 
     /**
      * Update userNavOrder (always)
@@ -110,12 +110,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const userNavOrder = V.castJson( V.getCookie( 'user-nav-order' ) || '{}' );
+    const userNavOrder = V.castJson( V.getLocal( 'user-nav-order' ) || '{}' );
     const userNav = V.getState( 'userNav' );
 
     syncNavOrder( userNavOrder, userNav );
 
-    V.setCookie( 'user-nav-order', userNavOrder );
+    V.setLocal( 'user-nav-order', userNavOrder );
 
     return {
       success: true,
@@ -261,7 +261,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function setCountAndLastIndex( row ) {
     const $rowAfter = V.getNode( row + ' > ul' ).childNodes;
-    const navOrder = V.castJson( V.getCookie( row + '-order' ) );
+    const navOrder = V.castJson( V.getLocal( row + '-order' ) );
 
     for ( let i = 0; i < $rowAfter.length - 1; i++ ) { // -1 to ignore placeholder pill
       const $li = $rowAfter[i];
@@ -274,10 +274,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     }
 
-    V.setCookie( row + '-order', navOrder );
+    V.setLocal( row + '-order', navOrder );
 
     // debug
-    // const debug = V.castJson( V.getCookie( row + '-order' ) );
+    // const debug = V.castJson( V.getLocal( row + '-order' ) );
     // for( const item in debug ) {
     //   console.log( /*'key', item, 'value', */ debug[item] );
     // }
@@ -390,7 +390,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     /* shorten entityNav */
 
-    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNavOrder = V.castJson( V.getLocal( 'entity-nav-order' ) || '{}' );
 
     const entitiesViewed = Object.keys( entityNavOrder );
 
@@ -401,7 +401,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
           delete entityNavOrder[entityPath];
         }
       } );
-      V.setCookie( 'entity-nav-order', entityNavOrder );
+      V.setLocal( 'entity-nav-order', entityNavOrder );
     }
 
     Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
@@ -533,10 +533,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'entityNav', obj );
 
     /** Update cookies */
-    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNavOrder = V.castJson( V.getLocal( 'entity-nav-order' ) || '{}' );
     const entityNav = V.getState( 'entityNav' );
     syncNavOrder( entityNavOrder, entityNav );
-    V.setCookie( 'entity-nav-order', entityNavOrder );
+    V.setLocal( 'entity-nav-order', entityNavOrder );
 
     /** Place into view */
     const $pill = NavComponents.entityPill( obj );

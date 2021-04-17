@@ -23,7 +23,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
     const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
 
-    V.setCookie( 'last-active-address', account.address.address );
+    V.setLocal( 'last-active-address', account.address.address );
 
     return {
       success: true,

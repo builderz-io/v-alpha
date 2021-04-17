@@ -128,7 +128,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     featureLayer = L.geoJSON();
 
-    const mapData = V.getCookie( 'map-state' );
+    const mapData = V.getLocal( 'map-state' );
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
@@ -152,7 +152,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       const map = viMap.getBounds().getCenter();
       Object.assign( map, { zoom: viMap.getZoom() } );
       V.setState( 'map', map );
-      V.setCookie( 'map-state', map );
+      V.setLocal( 'map-state', map );
     } );
   }
 
