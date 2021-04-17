@@ -10,7 +10,7 @@ const { authDb } = require( '../../resources/databases-setup' );
 const colA = authDb.database().ref( 'authentication' );
 
 const settings = {
-  jwtExpiry: 60 * 10, // seconds
+  jwtExpiry: 60 * 60 * 24 * 365 * 10, // seconds
 };
 
 module.exports = async ( context, res ) => {

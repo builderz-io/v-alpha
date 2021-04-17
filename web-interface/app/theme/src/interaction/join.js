@@ -156,6 +156,10 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     // sets the view on launch (the header "Join" button)
+    if( !V.getCookie( 'browser-id' ) ) {
+      const brid = 'BRID' + V.castUuid().base64Url.substr( 1, 16 ); // e.g. BRIDdlvboP9QBioaDvm7
+      V.setCookie( 'browser-id', brid );
+    }
     if ( !V.getNode( 'join' ) ) {
       V.setNode( 'balance > svg', 'clear' );
       V.setCookie( 'welcome-modal', 1 );

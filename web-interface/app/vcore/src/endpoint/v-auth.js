@@ -33,6 +33,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
         'Authorization': uPhrase ? 'uPhrase ' + uPhrase : '',
         'Last-Active-Address': lastActiveAddress ? lastActiveAddress : 'not set',
         'Temp-Refresh': tempRefresh ? tempRefresh : 'not set',
+        'Browser-ID': V.getCookie( 'browser-id' ).replace( /"/g, '' ),
       },
       body: JSON.stringify( {
         query,
@@ -43,24 +44,13 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
       .then( r => r.json() );
   }
 
-  function getTempRefreshCookie( cname = 'temp_refresh' ) {
-    const name = cname + '=';
-    const decodedCookie = decodeURIComponent( document.cookie );
-    const ca = decodedCookie.split( ';' );
-    for( let i = 0; i <ca.length; i++ ) {
-      let c = ca[i];
-      while ( c.charAt( 0 ) == ' ' ) {
-        c = c.substring( 1 );
-      }
-      if ( c.indexOf( name ) == 0 ) {
-        return c.substring( name.length, c.length );
-      }
-    }
-    return '';
+  function setTempRefreshToken( token ) {
+    V.setCookie( 'temp-refresh', token || 'clear' );
   }
 
-  function deleteTempRefreshCookie() {
-    document.cookie = 'temp_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+  function getTempRefreshToken() {
+    const x = V.getCookie( 'temp-refresh' );
+    return x ? x.replace( /"/g, '' ) : undefined;
   }
 
   /* ================== public methods ================== */
@@ -68,7 +58,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   function setDisconnect() {
     console.log( 777, 'setDisconnect' );
 
-    tempRefresh = getTempRefreshCookie();
+    tempRefresh = getTempRefreshToken();
 
     const queryD = `mutation SetDisconnect {
             setDisconnect { success }
@@ -76,7 +66,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
     return fetchFirebase( queryD ).then( () => {
       // if ( res.data.setDisconnect.success ) {
-      deleteTempRefreshCookie();
+      setTempRefreshToken(); // clears temp_refresh
       V.setCookie( 'last-active-address', 'clear' );
       V.setCookie( 'welcome-modal', 1 );
       // V.setState( 'activeEntity', 'clear' );
@@ -90,27 +80,29 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
     uPhrase = whichUphrase;
     lastActiveAddress = V.getCookie( 'last-active-address' ) ? V.getCookie( 'last-active-address' ).replace( /"/g, '' ) : undefined;
-    tempRefresh = getTempRefreshCookie();
+    tempRefresh = getTempRefreshToken();
 
     const data = await fetchAuth().then( res => {
 
       if ( !res.errors ) {
 
-        deleteTempRefreshCookie();
-
         /** Set temp refresh token */
-        document.cookie = 'temp_refresh=' + res.data.setAuth.tempRefresh;
+        // setTempRefreshToken(); // clears temp_refresh
+        setTempRefreshToken( res.data.setAuth.tempRefresh );
+        // document.cookie = 'temp_refresh=' + res.data.setAuth.tempRefresh;
 
         /** Set JWT for Authorization header */
         V.setJwt( res.data.setAuth.jwt );
 
         /** Renew JWT before expiration */
-        setTimeout( setAuth, ( res.data.setAuth.exp * 0.95 ) * 1000 );
+        // setTimeout( setAuth, /* ( res.data.setAuth.exp * 0.95 ) * 1000 */ 15000 );
 
         /** return the setAuth object (mainly to get uuidE) */
         return V.successTrue( 'set auth', res.data.setAuth );
       }
       else {
+        setTempRefreshToken(); // clears temp_refresh
+
         return V.successFalse( 'set auth', res.errors[0].message );
       }
     } );
@@ -122,12 +114,12 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
   V.setAuth = setAuth;
   V.setDisconnect = setDisconnect;
-  V.deleteTempRefreshCookie = deleteTempRefreshCookie;
+  V.setTempRefreshToken = setTempRefreshToken;
 
   return {
     setAuth: setAuth,
     setDisconnect: setDisconnect,
-    deleteTempRefreshCookie: deleteTempRefreshCookie,
+    setTempRefreshToken: setTempRefreshToken,
   };
 
 } )();

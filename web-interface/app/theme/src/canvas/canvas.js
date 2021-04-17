@@ -374,7 +374,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           }
         } )
         .catch( err =>  {
-          V.deleteTempRefreshCookie();
+          V.setTempRefreshToken(); // clears temp_refresh
           console.log( 'auth unsuccessful -', err );
           if ( V.getCookie( 'last-active-address' ) && window.ethereum ) {
             Join.draw( 'authenticate' );

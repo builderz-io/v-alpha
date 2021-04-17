@@ -48,8 +48,9 @@ const server = new ApolloServer( {
 
     const auth = req.headers.authorization;
     const lastActiveAddress = req.headers['last-active-address'];
+    const browserId = req.headers['browser-id'];
 
-    const refreshToken = req.headers.cookie
+    const tempRefresh = req.headers.cookie
       ? req.headers.cookie.split( '=' )[1]
       : req.headers['temp-refresh'] != 'not set'
         ? req.headers['temp-refresh']
@@ -59,17 +60,18 @@ const server = new ApolloServer( {
 
     const context = {
       host: host,
+      browserId: browserId,
     };
 
-    if ( refreshToken ) {
+    if ( tempRefresh ) {
       // try {
-      //   const jwt = verify( refreshToken, credentials.jwtRefreshSignature );
+      //   const jwt = verify( tempRefresh, credentials.jwtRefreshSignature );
       //   console.log( jwt );
       // }
       // catch ( err ) {
       //   console.log( err );
       // }
-      const user = await resolvers.Query.getAuth( undefined, { token: refreshToken } );
+      const user = await resolvers.Query.getAuth( undefined, { token: tempRefresh } );
       user[0] ? Object.assign( context, user[0] ) : null;
     }
     else if ( auth.includes( 'uPhrase' ) ) {
