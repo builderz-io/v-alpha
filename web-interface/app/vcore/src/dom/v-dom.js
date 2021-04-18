@@ -75,6 +75,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         if ( data[key] ) {
           setAttr( $elem, 'class', data[key] );
         }
+        continue;
       }
       else if ( ['h', 'html'].includes( key ) ) {
         if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
@@ -97,21 +98,25 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
           }
           $elem.appendChild( data[key] );
         }
+        continue;
       }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in data[key] ) {
           setAttr( $elem, attr, data[key][attr] );
         }
+        continue;
       }
       else if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
         if ( data[key] ) {
           setStyle( data[key] );
         }
+        continue;
       }
       else if ( ['k', 'click'].includes( key ) ) {
         if ( data[key] ) {
           $elem.addEventListener( 'click', data[key] );
         }
+        continue;
       }
       else if ( ['e', 'event', 'events'].includes( key ) ) {
         for ( const evt in data[key] ) {
@@ -119,23 +124,29 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
             $elem.addEventListener( evt, data[key][evt] );
           }
         }
+        continue;
       }
       else if ( ['y', 'style', 'styles'].includes( key ) ) {
         if ( data[key] ) {
           Object.assign( $elem.style, data[key] );
         }
+        continue;
       }
       else if ( ['i', 'id'].includes( key ) ) {
         setAttr( $elem, 'id', data[key] );
+        continue;
       }
       else if ( ['f', 'href'].includes( key ) ) {
         setAttr( $elem, 'href', data[key] );
+        continue;
       }
       else if ( ['r', 'src'].includes( key ) ) {
         setAttr( $elem, 'src', data[key] );
+        continue;
       }
       else if ( ['v', 'value'].includes( key ) ) {
         setAttr( $elem, 'value', data[key] );
+        continue;
       }
       else if ( ['innerHtml'].includes( key ) ) {
         $elem.innerHTML = data[key];
