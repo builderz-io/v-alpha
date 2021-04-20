@@ -28,7 +28,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
         target: undefined,
       };
 
-      const lastForm = V.castJson( V.getCookie( 'last-form' ) );
+      const lastForm = V.castJson( V.getLocal( 'last-form' ) );
 
       if ( lastForm ) {
         values.title = lastForm.title;

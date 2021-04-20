@@ -1,5 +1,6 @@
 const roles = [
-  'Person', 'Business', 'Institution', 'NGO', 'GOV', 'Network',
+  'Person', 'PersonMapped',
+  'Business', 'Institution', 'NGO', 'GOV', 'Network',
   'Skill', 'Task',
   'Place', 'Event',
   'MediaObject', 'Dataset',

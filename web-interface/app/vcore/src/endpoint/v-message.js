@@ -202,6 +202,8 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
     if ( V.aE() ) {
       msgData.sender = V.aE().fullId;
+      msgData.uuidE = V.aE().uuidE;
+      msgData.time = Date.now();
       return V.setData( msgData, 'message', V.getSetting( 'chatLedger' ) );
     }
     else {

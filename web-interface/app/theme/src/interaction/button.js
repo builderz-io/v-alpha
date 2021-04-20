@@ -34,13 +34,14 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
-      V.setCookie( 'last-form', entityData );
+      V.setLocal( 'last-form', entityData );
       Join.draw( 'authenticate' );
     }
     else {
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
           console.log( res.message );
+          console.log( 'set uuidE:', res.data[0].uuidE );
           e.target.addEventListener( 'click', handleSetEntity );
           V.setCache( 'all', 'clear' );
           V.setCache( res.data[0].role, 'clear' );
@@ -73,7 +74,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           console.error( res );
         }
       } );
-      V.setCookie( 'last-form', undefined );
+      V.setLocal( 'last-form', undefined );
     }
 
   }

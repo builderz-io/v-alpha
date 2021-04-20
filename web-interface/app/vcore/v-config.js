@@ -10,7 +10,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   const settings = {
 
     entityLedger: 'Firebase', // choices are: 'MongoDB' or '3Box' (case sensitive)
-    chatLedger: 'MongoDB',
+    chatLedger: 'Firebase',
     transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
     transactionLedgerWeb2: 'MongoDB',
 

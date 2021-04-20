@@ -60,6 +60,15 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       console.log( '*** 3Box scripts loaded ***' );
     }
 
+    if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
+      await Promise.all( [
+        V.setScript( '/vcore/dependencies/secondary/firebase-app.js' ),
+        V.setScript( '/vcore/dependencies/secondary/firebase-database.js' ),
+      ] );
+      await V.setScript( '/vcore/dependencies/secondary/firebase-init.js' );
+      console.log( '*** Firebase Chat scripts loaded ***' );
+    }
+
     if ( [ V.getSetting( 'entityLedger' ), V.getSetting( 'chatLedger' ) ].includes( 'MongoDB' ) ) {
       await Promise.all( [
         V.setScript( '/vcore/src/ledger/secondary/v-mongodb.js' ),

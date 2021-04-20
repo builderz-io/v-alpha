@@ -246,11 +246,11 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const key = window.event ? e.keyCode : e.which;
 
     if ( key != 13 ) {
-      if ( V.aE() && this.value.substring( 0, 4 ) != 'send' ) {
+      if ( window.socket && V.aE() && this.value.substring( 0, 4 ) != 'send' ) {
         window.socket.emit( 'user is typing', V.aE().fullId.split( ' ' )[0] );
       }
     }
-    if ( key == 13 ) {
+    if ( window.socket && key == 13 ) {
       e.preventDefault();
       window.socket.emit( 'user is typing', false );
     }
@@ -449,7 +449,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       tag: 'li',
       classes: 'w-screen pxy',
       a: {
-        id: msg._id,
+        uuidE: msg.uuidE || msg._id, // _id in MongoDB
+        time: msg.time || 'na',
       },
       y: style,
       h: {

@@ -14,7 +14,6 @@ const maybePorn = new RegExp( /\ssex\s|\sxxx\s|\sanal\s|\sass\s|\scum\s|\swebcam
 let fetch;
 
 module.exports = async ( text ) => {
-
   // const text = ( ' ' + whichText ).slice( 1 );
 
   const linksFound = text.match( /(?:www|https?)[^\s!,]+/gi );
@@ -80,13 +79,17 @@ async function getLinkContent( link ) {
 }
 
 function matchContent( content ) {
+
   const clearMatch = content.match( clearlyPorn );
   if ( clearMatch ) {
+    console.log( 'Matched clearly:', clearMatch[0] );
     return true;
   }
   else {
     const maybeMatch = content.match( maybePorn );
+
     if ( maybeMatch && maybeMatch.length > 5 ) {
+      console.log( 'Matched maybe:', maybeMatch[0] );
       return true;
     }
   }

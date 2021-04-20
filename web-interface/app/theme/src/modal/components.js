@@ -15,7 +15,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     connectWallet: 'Connect wallet',
     useKey: 'Use key',
     nameProfile: 'Name profile',
-    joining: 'Joining ... ',
+    joining: 'Joining',
     welcome: 'Welcome',
     connectedAddress: 'Address connected',
     confInWallet: 'Confirm in wallet ... ',
@@ -86,9 +86,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     'modal-pos-3': {
       top: '15vh',
     },
+    'confirm-click-spinner': {
+      'margin-left': '14px',
+    },
   } );
 
-  const buttonClasses = 'relative bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
+  const buttonClasses = 'relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
   const altButtonClasses = 'relative cursor-pointer txt-center';
 
   /* ================== event handlers ================== */
@@ -105,17 +108,23 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( 'uPhrase' );
     const $new = V.cN( {
       t: 'div',
+      i: 'use-key-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntity,
       h: getString( ui.useKey ),
     } );
 
+    const $response = V.sN( {
+      t: 'div',
+      c: 'form__response pxy txt-red',
+    } );
+
     V.sN( '.modal__content', '' );
-    V.setNode( '.modal__content', [$input, $new] );
+    V.setNode( '.modal__content', [$input, $response, $new] );
   }
 
   function handleGetEntity() {
-
+    V.setNode( '#use-key-btn', clickConfirmSpinner() );
     V.setAuth( V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
         if ( data.success ) {
@@ -123,7 +132,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           return data.data[0].uuidE;
         }
         else {
-          throw new Error( 'could not set auth' );
+          throw new Error( data.message );
         }
       } )
       .then( uuidE => V.getEntity( uuidE ) )
@@ -136,8 +145,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           throw new Error( 'could not get entity after set auth' );
         }
       } )
-      .catch( () => {
-        console.log( 'auth unsuccessful' );
+      .catch( err => {
+        console.log( 'auth unsuccessful -', err );
+        V.getNode( '.form__response' ).textContent = err;
+        V.setNode( '.confirm-click-spinner', 'clear' );
         Join.launch();
       } );
   }
@@ -146,7 +157,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( 'title' );
     const $new = V.cN( {
       t: 'div',
-      i: 'name-new',
+      i: 'name-profile-btn',
       c: buttonClasses, //+ ' modal-pos-1',
       k: handleSetEntity,
       h: getString( ui.nameProfile ),
@@ -163,9 +174,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSetEntity( e ) {
     e.stopPropagation();
-
     e.target.removeEventListener( 'click', handleSetEntity, false );
     e.target.textContent = getString( ui.joining );
+    V.setNode( '#name-profile-btn', clickConfirmSpinner() );
     V.getNode( '.joinform__response' ).textContent = '';
 
     const entityData = {
@@ -211,6 +222,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleWeb3Join( e ) {
     e.stopPropagation();
+    V.setNode( '#connectwallet-btn', clickConfirmSpinner() );
     Join.draw( 'authenticate' );
   }
 
@@ -275,6 +287,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDisconnect() {
+    V.setNode( '#disconnect-btn', clickConfirmSpinner() );
     V.setDisconnect();
   }
 
@@ -396,6 +409,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $new = V.cN( {
       t: 'div',
+      i: 'connectwallet-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleWeb3Join,
       h: getString( ui.connectWallet ),
@@ -450,6 +464,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $disc = V.cN( {
       t: 'div',
+      i: 'disconnect-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleDisconnect,
       h: getString( ui.disconnect ),
@@ -594,6 +609,40 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $content, [$new, $descr] );
     }
     return $content;
+  }
+
+  function clickConfirmSpinner() {
+    return V.cN( {
+      svg: true,
+      t: 'svg',
+      c: 'confirm-click-spinner',
+      a: {
+        width: '18',
+        height: '18',
+        viewBox: '0 0 50 50',
+      },
+      h: [
+        {
+          svg: true,
+          t: 'path',
+          a: {
+            d: 'M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z',
+          },
+          h: {
+            svg: true,
+            t: 'animateTransform',
+            a: {
+              attributeName: 'transform',
+              type: 'rotate',
+              from: '0 25 25',
+              to: '360 25 25',
+              dur: '0.7s',
+              repeatCount: 'indefinite',
+            },
+          },
+        },
+      ],
+    } );
   }
 
   /* ====================== export ====================== */

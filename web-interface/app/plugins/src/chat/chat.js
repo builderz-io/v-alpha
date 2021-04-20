@@ -108,6 +108,18 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $list, $card );
       } );
     }
+    else if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
+      V.setNode( 'listings', $list );
+      NetworkMainRoom.on( 'child_added', function( snap ) {
+        const res = snap.val();
+        drawMessage( {
+          time: res.a,
+          uuidE: res.i,
+          sender: res.j,
+          msg: res.m,
+        } );
+      } );
+    }
     else {
       V.setNode( $topcontent, CanvasComponents.notFound( 'message' ) );
     }
