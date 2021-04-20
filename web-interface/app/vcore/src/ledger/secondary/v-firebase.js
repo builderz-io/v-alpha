@@ -14,6 +14,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     // firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1', // production
   };
 
+  /** In-memory jwt */
+
   let jwt;
 
   /**
@@ -539,6 +541,17 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       .then( r => r.json() );
   }
 
+  function setChatMessage( data ) {
+    return new Promise( resolve => {
+      NetworkMainRoom.child( data.time ).update( {
+        a: data.time,
+        i: data.uuidE,
+        j: data.sender,
+        m: data.message,
+      }, () => { resolve( { success: true } ) } );
+    } );
+  }
+
   /* ================== public methods ================== */
 
   async function getFirebase( data, whichEndpoint ) {
@@ -659,6 +672,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
           } )
           .catch( err => V.successFalse( 'update profile', err ) );
       }
+    }
+    else if ( 'message' == whichEndpoint ) {
+      return setChatMessage( data );
     }
   }
 
