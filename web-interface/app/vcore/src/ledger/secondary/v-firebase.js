@@ -9,8 +9,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     useClientData: false,
-    // firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
-    firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
+    // firebaseEndpoint: 'http://localhost:5001/entity-namespace/us-central1/api/v1', // local
+    firebaseEndpoint: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1', // testing & development
+    // firebaseEndpoint: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1', // production
   };
 
   let jwt;

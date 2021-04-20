@@ -19,7 +19,11 @@ const { ApolloServer } = require( 'apollo-server-express' );
 // Setup express cloud function
 const app = express();
 
-const whitelist = ['http://localhost:3124', 'https://faithfinance.app'];
+const whitelist = [
+  'http://localhost:3124',
+  'https://dev.valueinstrument.org',
+  'https://faithfinance.app',
+];
 
 const corsConfig = {
   origin: ( origin, callback ) => {
