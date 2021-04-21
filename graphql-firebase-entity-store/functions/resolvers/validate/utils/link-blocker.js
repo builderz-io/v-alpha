@@ -6,7 +6,10 @@
  * returns null
  */
 
-const whiteList = 'youtu|vimeo|soundcloud|facebook|twitter|linkedin|t.me|medium|instagram|tiktok';
+const whiteList = [
+  'faithfinance.app',
+  'youtu.be', 'youtube.com', 'vimeo.com', 'soundcloud.com', 'facebook.com', 'twitter.com', 'linkedin.com', 't.me', 'medium.com', 'instagram.com', 'tiktok.com',
+];
 
 const clearlyPorn = new RegExp( /porn|bbw|blowjob|handjob|facial|gangbang|fisting|bondage|bukkake|busty|cumshot|big\stits|big\sdick/, 'i' );
 const maybePorn = new RegExp( /\ssex\s|\sxxx\s|\sanal\s|\sass\s|\scum\s|\swebcams?\s/, 'gi' );
@@ -30,7 +33,10 @@ module.exports = async ( text ) => {
   for ( let i = 0; i < linksFound.length; i++ ) {
 
     /** skip links in whiteList */
-    if ( linksFound[i].match( new RegExp( whiteList ) ) ) {
+    const host = linksFound[i].split( '/' )[2].replace( 'www.', '' );
+
+    if ( whiteList.includes( host ) ) {
+      // console.log( host, 'is whitelisted' );
       continue;
     }
 
