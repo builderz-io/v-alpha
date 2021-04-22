@@ -501,7 +501,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       let $cardContent;
       const balanceCheck = V.aE().balance && V.aE().balance.balance.liveBalance > 0 ? true : false;
 
-      if ( !V.aA() ) { // no wallet in use
+      if ( !V.cA() ) { // no wallet in use
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',

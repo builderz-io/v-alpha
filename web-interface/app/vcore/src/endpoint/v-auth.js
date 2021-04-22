@@ -11,7 +11,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     firebaseEndpoint: V.getSetting( 'firebaseEndpoint' ),
   };
 
-  let uPhrase, lastActiveAddress, tempRefresh;
+  let uPhrase, lastConnectedAddress, tempRefresh;
 
   /* ================== private methods ================= */
 
@@ -30,7 +30,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': uPhrase ? 'uPhrase ' + uPhrase : '',
-        'Last-Active-Address': lastActiveAddress ? lastActiveAddress : 'not set',
+        'Last-Connected-Address': lastConnectedAddress ? lastConnectedAddress : 'not set',
         'Temp-Refresh': tempRefresh ? tempRefresh : 'not set',
         'Browser-ID': V.getLocal( 'browser-id' ).replace( /"/g, '' ),
       },
@@ -66,7 +66,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryD ).then( () => {
       // if ( res.data.setDisconnect.success ) {
       setTempRefreshToken(); // clears temp_refresh
-      V.setLocal( 'last-active-address', 'clear' );
+      V.setLocal( 'last-connected-address', 'clear' );
       V.setLocal( 'welcome-modal', 1 );
       // V.setState( 'activeEntity', 'clear' );
       window.location.href = '/';
@@ -78,7 +78,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     console.log( 888, 'setAuth' );
 
     uPhrase = whichUphrase;
-    lastActiveAddress = V.getLocal( 'last-active-address' ) ? V.getLocal( 'last-active-address' ).replace( /"/g, '' ) : undefined;
+    lastConnectedAddress = V.getLocal( 'last-connected-address' ) ? V.getLocal( 'last-connected-address' ).replace( /"/g, '' ) : undefined;
     tempRefresh = getTempRefreshToken();
 
     const data = await fetchAuth().then( res => {

@@ -57,9 +57,9 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     return getState( 'activeEntity' );
   }
 
-  function aA() {
-    const aA = getLocal( 'last-active-address' );
-    return aA ? aA.replace( /"/g, '' ) : undefined;
+  function cA() {
+    const cA = getLocal( 'last-connected-address' );
+    return cA ? cA.replace( /"/g, '' ) : undefined;
   }
 
   function getViewed( which ) {
@@ -183,7 +183,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   V.setState = setState;
   V.setActiveEntity = setActiveEntity;
   V.aE = aE;
-  V.aA = aA;
+  V.cA = cA;
   V.getViewed = getViewed;
   V.getLastViewed = getLastViewed;
   V.getCache = getCache;
@@ -198,7 +198,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     setState: setState,
     setActiveEntity: setActiveEntity,
     aE: aE,
-    aA: aA,
+    cA: cA,
     getCache: getCache,
     setCache: setCache,
     getNavItem: getNavItem,

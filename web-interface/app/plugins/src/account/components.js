@@ -122,7 +122,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-    const textColor = V.aA() ? 'txt-green' : 'txt-brand-primary';
+    const textColor = V.cA() ? 'txt-green' : 'txt-brand-primary';
 
     return V.cN( { // #1b1aff
       svg: true,

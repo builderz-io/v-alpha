@@ -39,7 +39,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         if ( V.aE() && V.aE().fullId ) {
           which = 'entity found';
         }
-        else if ( V.aA() ) {
+        else if ( V.cA() ) {
           which = await ckeckEntityStoreByAddress();
         }
       }
@@ -49,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
-        V.setLocal( 'last-active-address', V.aE().symbolCredentials.address );
+        V.setLocal( 'last-connected-address', V.aE().symbolCredentials.address );
         which = 'entity found';
       }
     }
@@ -120,7 +120,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    return V.aA() ? V.getEntity( V.aA() ).then( async res => {
+    return V.cA() ? V.getEntity( V.cA() ).then( async res => {
 
       if ( res.reset ) {
         return 'entity not found';

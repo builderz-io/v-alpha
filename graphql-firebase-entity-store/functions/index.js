@@ -51,7 +51,7 @@ const server = new ApolloServer( {
   context: async ( { req, res } ) => {
 
     const auth = req.headers.authorization;
-    const lastActiveAddress = req.headers['last-active-address'];
+    const lastConnectedAddress = req.headers['last-connected-address'];
     const browserId = req.headers['browser-id'];
 
     const tempRefresh = req.headers.cookie
@@ -83,8 +83,8 @@ const server = new ApolloServer( {
       if ( user[0] ) {
 
         /** If an address is set, uPhrase must match entity address */
-        if ( lastActiveAddress != 'not set' ) {
-          user[0].i == lastActiveAddress ? Object.assign( context, user[0] ) : null;
+        if ( lastConnectedAddress != 'not set' ) {
+          user[0].i == lastConnectedAddress ? Object.assign( context, user[0] ) : null;
         }
         else {
           Object.assign( context, user[0] );

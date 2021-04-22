@@ -23,7 +23,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
     const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
 
-    V.setLocal( 'last-active-address', account.address.address );
+    V.setLocal( 'last-connected-address', account.address.address );
 
     return {
       success: true,
@@ -37,7 +37,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );
@@ -72,7 +72,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );

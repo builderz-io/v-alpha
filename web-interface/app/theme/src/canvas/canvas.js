@@ -376,7 +376,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .catch( err =>  {
           V.setTempRefreshToken(); // clears temp_refresh
           console.log( 'auth unsuccessful -', err );
-          if ( V.getLocal( 'last-active-address' ) && window.ethereum ) {
+          if ( V.getLocal( 'last-connected-address' ) && window.ethereum ) {
             Join.draw( 'authenticate' );
           }
           else {
@@ -389,7 +389,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   /*
   function returningUser() {
     if( !V.aE() ) {
-      const returningWallet = V.getLocal( 'last-active-address' );
+      const returningWallet = V.getLocal( 'last-connected-address' );
       const returningUphrase = V.getLocal( 'last-active-uphrase' );
 
       if ( returningWallet && window.ethereum ) {

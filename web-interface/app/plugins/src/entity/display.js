@@ -70,7 +70,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
       if ( entity.role == 'Pool' ) {
-        if ( V.aA() || !V.aE() ) {
+        if ( V.cA() || !V.aE() ) {
           if ( entity.evmCredentials ) {
             txHistory = await V.getAddressHistory( entity.evmCredentials.address );
             if ( txHistory.success && txHistory.data.length ) {

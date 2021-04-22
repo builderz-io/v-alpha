@@ -423,7 +423,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       data: [],
     } );
 
-    if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.aA() */ ) {
+    if ( ['EVM', 'Symbol'].includes( tL ) && V.aE() /* && V.cA() */ ) {
 
       const bal = entity[tL.toLowerCase() + 'Credentials']
         ? await V.getAddressState( entity[tL.toLowerCase() + 'Credentials']['address'] )
@@ -467,7 +467,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else {
-      return returnFalse( tL, 'no aA and no aE' );
+      return returnFalse( tL, 'no cA and no aE' );
     }
   }
 
