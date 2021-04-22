@@ -12,7 +12,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const network = V.getNetwork();
+  const network = V.getTokenContract();
   const rpc = new eosjs_jsonrpc.JsonRpc( network.rpc );
   const signatureProvider = new eosjs_jssig.JsSignatureProvider( [network.privKey] );
   const EOS = new eosjs_api.Api( { rpc, signatureProvider } );

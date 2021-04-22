@@ -96,7 +96,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     ],
   };
 
-  const networks = {
+  const tokenContracts = {
 
     choice: 'rinkeby1',
 
@@ -160,13 +160,13 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     return settings[which];
   }
 
-  function getNetwork( which ) {
+  function getTokenContract( which ) {
     if ( which ) {
-      return networks[which];
+      return tokenContracts[which];
     }
     else {
-      const obj = networks[networks.choice];
-      obj.network = networks.choice;
+      const obj = tokenContracts[tokenContracts.choice];
+      obj.network = tokenContracts.choice;
       return obj;
     }
   }
@@ -174,10 +174,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.getSetting = getSetting;
-  V.getNetwork = getNetwork;
+  V.getTokenContract = getTokenContract;
 
   return {
     getSetting: getSetting,
-    getNetwork: getNetwork,
+    getTokenContract: getTokenContract,
   };
 } )();

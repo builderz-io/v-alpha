@@ -122,7 +122,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
 
     window.Web3Obj = new Web3( provider );
-    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
+    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getTokenContract().contractAddress );
 
     const state = await V.getContractState();
 
@@ -248,7 +248,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
         console.log( 'Divisibility: ', all[3] );
         console.log( 'Contract: ', contract._address );
-        console.log( 'Network: ', V.getNetwork().network );
+        console.log( 'Network: ', V.getTokenContract().network );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
@@ -258,7 +258,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           contribution: all[2],
           divisibility: all[3],
           contract: contract._address,
-          network: V.getNetwork(),
+          network: V.getTokenContract(),
           // allEvents: all[4],
         };
 
