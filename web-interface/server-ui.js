@@ -1,6 +1,7 @@
 const settings = {
   port: 3124,
-  host: 'faithfinance.app',
+  network: 'builderz',
+  // network: 'faithfinance',
 };
 
 const http = require( 'http' );
@@ -13,7 +14,7 @@ app.use( express.static( 'app' ) );
 
 server.listen( settings.port, function( err ) {
   if ( err ) {throw err}
-  console.log( 'App server for ' + settings.host + ' listening on port', settings.port );
+  console.log( 'App server for ' + settings.network + ' listening on port', settings.port );
 } );
 
 app.get( '/logo', function( req, res ) {
@@ -21,5 +22,5 @@ app.get( '/logo', function( req, res ) {
 } );
 
 app.get( '*', function( req, res ) {
-  res.sendFile( __dirname + '/app/app.html' );
+  res.sendFile( __dirname + '/app/app-' + settings.network + '.html' );
 } );

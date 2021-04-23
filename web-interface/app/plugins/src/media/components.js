@@ -35,10 +35,12 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function videoFeature( link ) {
-    return V.castNode( {
-      t: 'div',
-      h: V.castLinks( link ).iframes,
-    } );
+    if ( link.match( /youtu/ ) ) {
+      return V.castYouTubeIframe( link );
+    }
+    else if ( link.match( /vimeo/ ) ) {
+      return V.castVimeoIframe( link );
+    }
   }
 
   function mediaCard( cardData ) {

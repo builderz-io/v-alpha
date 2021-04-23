@@ -318,11 +318,14 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function setNavStates() {
     if( !V.getState( 'serviceNav' ) ) {
-      Chat.launch(); // sets navItem & sets socket.on
-      Marketplace.launch(); // sets navItem
-      Media.launch(); // sets navItem
-      Data.launch(); // sets navItem
-      User.launch(); // sets user navItems (transfer, settings ...)
+
+      /** if the plugin choice is available, execute its .launch method */
+      const pluginChoices = Object.keys( V.getSetting( 'plugins' ) );
+      const availablePlugins = V.getState( 'availablePlugins' );
+      pluginChoices.map( choice => availablePlugins[choice] ? availablePlugins[choice]() : null );
+
+      /** launch the user navigation (transfer, settings ...) */
+      User.launch();
     }
 
     if ( V.getSetting( 'demoContent' ) ) {

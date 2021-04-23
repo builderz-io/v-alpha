@@ -4,8 +4,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   * V Plugin driving the Map
   *
   * List of tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
-  * Locations: Map Center [ 43.776, 4.63 ], Berlin [ 52.522, 13.383 ], Geneva [ 46.205, 6.141 ]
-  *            Chicago [41.858, -87.964]
+  *
   */
 
   'use strict';
@@ -29,6 +28,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   /* cartodb voyager with lables (max zoom 19) */
   const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+  const mapDefaults = {
+    atlantic: {
+      lng: -27.070, // lesser numbers = move map west
+      lat: 14, // lesser numbers = move map south
+      zoom: 3,
+    },
+    berlin: {
+      lng: 13.383,
+      lat: 52.522,
+      zoom: 9,
+    },
+    chicago: {
+      lng: -87.964,
+      lat: 41.858,
+      zoom: 8,
+    },
+  };
 
   let viMap, featureLayer;
 
@@ -119,9 +136,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
 
     const mapSettings = {
-      lat: 6.9728, // lesser numbers = move map south
-      lng: -22.685, // lesser numbers = move map west
-      zoom: sc.height > 1200 ? 3 : 2,
+      lat: getMapDefault().lat,
+      lng: getMapDefault().lng,
+      zoom: sc.height > 1200
+        ? getMapDefault().zoom + 1
+        : getMapDefault().zoom,
       maxZoom: 16,
       minZoom: sc.height > 1200 ? 3 : 2,
     };
@@ -154,6 +173,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'map', map );
       V.setLocal( 'map-state', map );
     } );
+  }
+
+  function getMapDefault(
+    which = V.getSetting( 'mapDefault' )
+  ) {
+    return mapDefaults[which];
   }
 
   /* ============ public methods and exports ============ */

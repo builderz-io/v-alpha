@@ -35,7 +35,7 @@ const VInit = ( async function() { // eslint-disable-line no-unused-vars
   else {
     await Promise.all( [
       setScript( '/vcore/dependencies/primary/velocity.min.js' ),
-      setScript( '/vcore/dependencies/primary/js.cookie.min.js' ),
+      // setScript( '/vcore/dependencies/primary/js.cookie.min.js' ),
       setScript( '/vcore/dependencies/primary/universal-router.js' ),
     ] );
     console.log( '*** vcore source dependencies loaded ***' );

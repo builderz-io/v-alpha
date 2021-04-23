@@ -240,8 +240,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    const navArray = [
-      {
+    const navItems = {
+      localEconomy: {
         title: 'Local Economy',
         path: '/network/all',
         divertFundsToOwner: false,
@@ -253,7 +253,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      people: {
         title: 'People',
         path: '/network/people',
         divertFundsToOwner: false,
@@ -266,7 +266,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      businesses: {
         title: 'Businesses',
         path: '/network/businesses',
         use: {
@@ -278,7 +278,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      ngos: {
         title: 'NGO',
         path: '/network/non-profits',
         use: {
@@ -290,7 +290,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      publicSector: {
         title: 'Public Sector',
         path: '/network/public-sector',
         use: {
@@ -302,7 +302,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      anchors: {
         title: 'Anchor Institutions',
         path: '/network/institutions',
         use: {
@@ -314,7 +314,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      networks: {
         title: 'Networks',
         path: '/network/networks',
         use: {
@@ -326,7 +326,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      skills: {
         title: 'Skills',
         path: '/network/skills',
         use: {
@@ -338,7 +338,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      tasks: {
         title: 'Tasks',
         path: '/network/tasks',
         use: {
@@ -350,19 +350,19 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      // {
-      //   title: 'Crowdfunding',
-      //   path: '/pools',
-      //   use: {
-      //     button: 'search',
-      //     form: 'new entity',
-      //     role: 'ResourcePool'
-      //   },
-      //   draw: function( path ) {
-      //     Marketplace.draw( path );
-      //   }
-      // },
-      {
+      pools: {
+        title: 'Crowdfunding',
+        path: '/network/pools',
+        use: {
+          button: 'search',
+          form: 'new entity',
+          role: 'ResourcePool',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        },
+      },
+      places: {
         title: 'Places',
         path: '/network/places',
         use: {
@@ -374,7 +374,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-      {
+      events: {
         title: 'Events',
         path: '/network/events',
         use: {
@@ -386,21 +386,31 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           Marketplace.draw( path );
         },
       },
-    ];
-    V.setNavItem( 'serviceNav', navArray );
+    };
 
-    const routeFundsForRoles = {};
-    navArray.forEach( navItem => {
-      if ( navItem.divertFundsToOwner === false ) { return }
-      routeFundsForRoles[navItem.use.role] = navItem.use.role;
-    } );
-    V.setState( 'rolesWithReceivingAddress', routeFundsForRoles );
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => navItems[item] ) );
+
+    /**
+     * pick out which roles have funds received diverted to owner as default
+     * and set state with these roles
+     */
+
+    const divertFundsForRoles = {};
+    for( const navItem in navItems ) {
+      if ( navItems[navItem].divertFundsToOwner === false ) { continue }
+      divertFundsForRoles[navItems[navItem].use.role] = navItems[navItem].use.role;
+    }
+
+    V.setState( 'rolesWithReceivingAddress', divertFundsForRoles );
+
   }
 
   function draw( whichPath, search ) {
     preview( whichPath, search );
     presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
+
+  V.setState( 'availablePlugins', { marketplace: function() { Marketplace.launch() } } );
 
   return {
     launch: launch,

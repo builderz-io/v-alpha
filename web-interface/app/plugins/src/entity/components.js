@@ -575,7 +575,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function questionnaireCard() {
-    const questions = V.getSetting( 'neQuestionnaire' );
+    const questions = V.getSetting( 'questionnaire' );
+
+    if ( !questions ) { return '' }
+
     const responses = entity.questionnaire;
 
     let count = 0;
