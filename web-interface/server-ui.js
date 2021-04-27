@@ -1,6 +1,6 @@
 const settings = {
-  port: 3124,
-  network: 'builderz',
+  port: 4021, // development 4021
+  network: 'development',
   // network: 'faithfinance',
 };
 

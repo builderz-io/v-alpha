@@ -28,23 +28,28 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    entityLedger: getNetworkSetting( 'entityLedger' ),
-    chatLedger: getNetworkSetting( 'chatLedger' ),
-    transactionLedger: getNetworkSetting( 'transactionLedger' ),
-    transactionLedgerWeb2: getNetworkSetting( 'transactionLedgerWeb2' ),
+    appVersion: 'Alpha 3.2.0',
 
-    socketHost: mongodbEndpoints[ getNetworkSetting( 'mongodbEndpoint' ) ].host,
-    socketPort: mongodbEndpoints[ getNetworkSetting( 'mongodbEndpoint' ) ].port,
+    entityLedger: VNetworkInit.entityLedger,
+    chatLedger: VNetworkInit.chatLedger,
+    transactionLedger: VNetworkInit.transactionLedger,
+    transactionLedgerWeb2: VNetworkInit.transactionLedgerWeb2,
 
-    firebaseEndpoint: firebaseEndpoints[ getNetworkSetting( 'firebaseEndpoint' ) ],
+    socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
+    socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
-    logo: getNetworkSetting( 'logo' ),
-    mapDefault: getNetworkSetting( 'mapDefault' ),
-    questionnaire: getNetworkSetting( 'questionnaire' ),
-    featureVideo: getNetworkSetting( 'featureVideo' ),
-    plugins: getNetworkSetting( 'plugins' ),
+    firebaseEndpoint: firebaseEndpoints[ VNetworkInit.firebaseEndpoint ],
 
-    useBuilds: false,
+    sourceEndpoint: VNetworkInit.sourceEndpoint,
+
+    logo: VNetworkInit.logo,
+    mapDefault: VNetworkInit.mapDefault,
+    questionnaire: VNetworkInit.questionnaire,
+    featureVideo: VNetworkInit.featureVideo,
+    plugins: VNetworkInit.plugins,
+
+    useBuilds: VNetworkInit.useBuilds,
+    buildsHost: 'https://production.valueinstrument.org',
 
     sendLogsToServer: false,
 
@@ -72,8 +77,6 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     tokenDivisibility: 18,
     transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
-
-    appVersion: 'v3 0.1.0',
 
   };
 
@@ -142,7 +145,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getTokenContract(
-    which = getNetworkSetting( 'tokenContract' )
+    which = VNetworkInit.tokenContract
   ) {
     if ( which ) {
       return tokenContracts[which];
@@ -154,19 +157,13 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function getNetworkSetting( which ) {
-    return networkSettings[which]; // networkSettings is in global scope, set in html file
-  }
-
   /* ====================== export ====================== */
 
   V.getSetting = getSetting;
   V.getTokenContract = getTokenContract;
-  V.getNetworkSetting = getNetworkSetting;
 
   return {
     getSetting: getSetting,
     getTokenContract: getTokenContract,
-    getNetworkSetting: getNetworkSetting,
   };
 } )();

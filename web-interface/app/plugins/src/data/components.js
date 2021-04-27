@@ -26,7 +26,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
           'text-align': '-moz-center',
         },
       },
-      html: '<div class="card__top-left flex justify-center items-center">' +
+      innerHtml: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-3 flex justify-center items-center rounded-full" style="background: antiquewhite; background-position: center center; background-size: cover;">' +
                   '<div class="card__initials font-bold fs-xxl txt-white"><img src="' + cardData.iconUrl + '"></div>' +
                 '</div>' +
@@ -132,7 +132,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
           'text-align': '-moz-center',
         },
       },
-      html: '<div class="card__top-left flex justify-center items-center">' +
+      innerHtml: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-2 flex justify-center items-center rounded-full" style="background-color: ' + level( cardData.pollution.aqius ).c + ';background-position: center center; background-size: cover;">' +
                 '</div>' +
               '</div>' +

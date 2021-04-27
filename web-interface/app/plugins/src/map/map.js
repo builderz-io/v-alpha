@@ -127,7 +127,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   // async function launch() {
-  //   await V.setScript( '/plugins/dependencies/leaflet.js' );
+  //   await V.setScript( V.getSetting( 'sourceEndpoint' ) + '/plugins/dependencies/leaflet.js' );
   //   console.log( '*** leaflet library loaded ***' );
   // }
 

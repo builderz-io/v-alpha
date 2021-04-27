@@ -227,12 +227,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       const all = await Promise.all( [
         blockNumber,
-        fee,
-        contribution,
-        divisibility,
-        payout,
-        interval,
-        lifetime,
+        // fee,
+        // contribution,
+        // divisibility,
+        // payout,
+        // interval,
+        // lifetime,
         // allEvents,
       ] )
         .catch( err => { console.log( err ) } );
@@ -240,15 +240,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
-        console.log( 'Current Block: ', all[0] );
-        console.log( 'Payout: ', all[4] / 10**18 );
-        console.log( 'Interval: ', all[5] );
-        console.log( 'Lifetime: ', all[6] );
-        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        console.log( 'Divisibility: ', all[3] );
         console.log( 'Contract: ', contract._address );
-        console.log( 'Network: ', V.getTokenContract().network );
+        console.log( 'Current Block: ', all[0] );
+        // console.log( 'Payout: ', all[4] / 10**18 );
+        // console.log( 'Interval: ', all[5] );
+        // console.log( 'Lifetime: ', all[6] );
+        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        // console.log( 'Divisibility: ', all[3] );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 

@@ -20,8 +20,9 @@ const { ApolloServer } = require( 'apollo-server-express' );
 const app = express();
 
 const whitelist = [
-  'http://localhost:3124',
+  'http://localhost:4021',
   'https://dev.valueinstrument.org',
+  'http://staging.builderz.io',
   'https://faithfinance.app',
 ];
 

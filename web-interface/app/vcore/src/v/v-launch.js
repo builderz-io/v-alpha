@@ -37,13 +37,14 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   if( V.getSetting( 'useBuilds' ) ) {
     await Promise.all( [
-      V.setScript( '/theme/builds/vtheme.min.js' ),
-    ] );
-    console.log( '*** theme builds loaded ***' );
+      V.setScript( V.getSetting( 'sourceEndpoint' ) + '/theme/builds/vtheme.min.js' ),
+    ] )
+      .then( () => console.log( 'Success loading theme build' ) )
+      .catch( () => console.error( 'Error loading theme build' ) );
   }
   else {
     await Promise.all( [
-      V.setScript( '/theme/src/canvas/canvas.js' ),
+      V.setScript( V.getSetting( 'sourceEndpoint' ) + '/theme/src/canvas/canvas.js' ),
     ] );
   }
 
