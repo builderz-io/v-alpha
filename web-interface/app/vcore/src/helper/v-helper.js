@@ -565,7 +565,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return which.match( new RegExp( socialMatch ) )
       ? V.cN( {
         t: 'img',
-        src: '/assets/icon/social/' + which + '.svg',
+        src: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/social/' + which + '.svg',
         a: {
           height: '28px',
         },
@@ -578,7 +578,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         } )
         : V.cN( {
           t: 'img',
-          src: '/assets/icon/' + which + '-24px.svg',
+          src: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/' + which + '-24px.svg',
           a: {
             height: '16px',
           },

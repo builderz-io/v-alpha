@@ -182,7 +182,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
       role: 'Person',
-      evmAddress: V.aA(), // TODO: allow for other chains
+      evmAddress: V.cA(), // TODO: allow for other chains
     };
 
     console.log( 'about to set entity: ', entityData );
@@ -234,7 +234,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $btn = V.getNode( '#sign-transaction' );
     $btn.style.background = 'white';
     $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
-    if ( V.aA() ) {
+    if ( V.cA() ) {
       $btn.textContent = getString( ui.confInWallet );
     }
     else {
@@ -273,7 +273,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       V.setEntity( V.aE().fullId, {
         field: 'evmCredentials.address',
-        data: V.aA(),
+        data: V.cA(),
         role: V.aE().role,
       } ).then( () => {
         Join.draw( 'authenticate' );

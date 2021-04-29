@@ -12,7 +12,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const network = V.getNetwork();
+  const network = V.getTokenContract();
   const rpc = new eosjs_jsonrpc.JsonRpc( network.rpc );
   const signatureProvider = new eosjs_jssig.JsSignatureProvider( [network.privKey] );
   const EOS = new eosjs_api.Api( { rpc, signatureProvider } );
@@ -25,7 +25,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
     const account = 'todo...';
 
-    V.setLocal( 'last-active-address', 'todo...' );
+    V.setLocal( 'last-connected-address', 'todo...' );
 
     return {
       success: true,
@@ -38,7 +38,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = 'todo...';
@@ -67,7 +67,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = 'todo...';

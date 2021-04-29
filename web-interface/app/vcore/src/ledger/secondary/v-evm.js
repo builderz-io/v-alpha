@@ -28,7 +28,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleTransferSummaryEvent( eventData ) {
-    if ( V.aA() && ( eventData.to.toLowerCase() == V.aA() || eventData.from.toLowerCase() == V.aA() ) ) {
+    if ( V.cA() && ( eventData.to.toLowerCase() == V.cA() || eventData.from.toLowerCase() == V.cA() ) ) {
       // TODO
     }
   }
@@ -40,16 +40,16 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     var currentActiveAddress = window.ethereum.selectedAddress;
     // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
     // console.log( currentActiveAddress );
-    // console.log( V.aA() );
+    // console.log( V.cA() );
 
     if ( currentActiveAddress == null ) {
-      V.setLocal( 'last-active-address', 'clear' );
+      V.setLocal( 'last-connected-address', 'clear' );
       V.setState( 'activeEntity', 'clear' );
       V.setLocal( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
-    else if ( currentActiveAddress != V.aA() ) {
-      // V.setLocal( 'last-active-address', currentActiveAddress.toLowerCase() );
+    else if ( currentActiveAddress != V.cA() ) {
+      // V.setLocal( 'last-connected-address', currentActiveAddress.toLowerCase() );
       // V.setState( 'activeEntity', 'clear' );
       // V.setLocal( 'welcome-modal', 1 );
       // Join.draw( 'new entity was set up' );
@@ -122,7 +122,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
 
     window.Web3Obj = new Web3( provider );
-    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
+    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getTokenContract().contractAddress );
 
     const state = await V.getContractState();
 
@@ -165,9 +165,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
     if ( window.Web3Obj ) {
 
-      const activeAddress = await window.Web3Obj.eth.getAccounts();
-      // const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-      V.setLocal( 'last-active-address', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
+      const connectedAddress = await window.Web3Obj.eth.getAccounts();
+      // const connectedAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+      V.setLocal( 'last-connected-address', connectedAddress[0] ? connectedAddress[0].toLowerCase() : false );
 
       /* listen to change of address in MetaMask */
       // if ( window.ethereum && window.ethereum.on ) {
@@ -227,12 +227,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       const all = await Promise.all( [
         blockNumber,
-        fee,
-        contribution,
-        divisibility,
-        payout,
-        interval,
-        lifetime,
+        // fee,
+        // contribution,
+        // divisibility,
+        // payout,
+        // interval,
+        // lifetime,
         // allEvents,
       ] )
         .catch( err => { console.log( err ) } );
@@ -240,15 +240,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
-        console.log( 'Current Block: ', all[0] );
-        console.log( 'Payout: ', all[4] / 10**18 );
-        console.log( 'Interval: ', all[5] );
-        console.log( 'Lifetime: ', all[6] );
-        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        console.log( 'Divisibility: ', all[3] );
         console.log( 'Contract: ', contract._address );
-        console.log( 'Network: ', V.getNetwork().network );
+        console.log( 'Current Block: ', all[0] );
+        // console.log( 'Payout: ', all[4] / 10**18 );
+        // console.log( 'Interval: ', all[5] );
+        // console.log( 'Lifetime: ', all[6] );
+        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        // console.log( 'Divisibility: ', all[3] );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
@@ -258,7 +257,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           contribution: all[2],
           divisibility: all[3],
           contract: contract._address,
-          network: V.getNetwork(),
+          network: V.getTokenContract(),
           // allEvents: all[4],
         };
 
@@ -330,7 +329,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory( data
-    // which = V.aA() || V.aE().evmCredentials.address,
+    // which = V.cA() || V.aE().evmCredentials.address,
     // data = { fromBlock: 0, toBlock: 'latest' },
     // whichEvent = 'TransferSummary'
   ) {
@@ -365,7 +364,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   function setAddressVerification( which ) {
     console.log( 'verify:', which );
-    return contract.methods.verifyAccount( which ).send( { from: V.aA(), gas: 6001000 } )
+    return contract.methods.verifyAccount( which ).send( { from: V.cA(), gas: 6001000 } )
       .on( 'transactionHash', ( hash ) => {
         console.log( 'Hash: ', hash );
         // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {

@@ -121,7 +121,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
     const tL = V.getSetting( 'transactionLedger' );
 
-    if ( tL == 'EVM' /* && V.aA() */ ) {
+    if ( tL == 'EVM' /* && V.cA() */ ) {
       const rD = recipientData.data[0];
 
       rD.evmCredentials ? rD.evmCredentials.address ?
@@ -136,12 +136,12 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
       // signature = initiator.evmCredentials.privateKey;
     }
-    else if ( tL == 'Symbol' && V.aA() ) {
+    else if ( tL == 'Symbol' && V.cA() ) {
       recipientAddress = recipientData.data[0].symbolCredentials.address;
       signature = initiator.symbolCredentials.privateKey;
     }
 
-    if ( V.aA() && !recipientAddress ) {
+    if ( V.cA() && !recipientAddress ) {
       return {
         success: false,
         endpoint: 'transaction',
@@ -162,9 +162,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         currency: currency,
         command: command,
         initiator: initiator.fullId,
-        initiatorAddress: V.aA() || V.aE().evmCredentials.address,
+        initiatorAddress: V.cA() || V.aE().evmCredentials.address,
         sender: initiator.fullId, // currently the same as initiator
-        senderAddress: V.aA() || V.aE().evmCredentials.address, // currently the same as initiator
+        senderAddress: V.cA() || V.aE().evmCredentials.address, // currently the same as initiator
         recipient: recipient,
         recipientAddress: recipientAddress,
         reference: reference || 'no reference given',
@@ -197,7 +197,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   async function setNewTxNode( txSummary, id ) {
     let $cardContent;
     if ( txSummary.blockNumber ) {
-      const filteredAndEnhanced = await V.castTransfers( [ txSummary ], V.aA() || V.aE().evmCredentials.address );
+      const filteredAndEnhanced = await V.castTransfers( [ txSummary ], V.cA() || V.aE().evmCredentials.address );
       $cardContent = AccountComponents.accountCard( filteredAndEnhanced[0] );
     }
     else {
@@ -217,7 +217,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     data
     // which = V.aE().fullId, // for MongoDB
   ) {
-    const choice = V.aA() ? 'transactionLedger' : 'transactionLedger'; // 'transactionLedgerWeb2';
+    const choice = V.cA() ? 'transactionLedger' : 'transactionLedger'; // 'transactionLedgerWeb2';
     return V.getData( data, 'transaction', V.getSetting( choice ) );
   }
 
@@ -228,8 +228,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      // const choice = V.aA() ? 'transactionLedger' : 'transactionLedgerWeb2';
-      if ( V.aA() ) {
+      // const choice = V.cA() ? 'transactionLedger' : 'transactionLedgerWeb2';
+      if ( V.cA() ) {
         return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
       }
       else {

@@ -366,9 +366,13 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.castDescription = castDescription;
+  V.castYouTubeIframe = castYouTubeIframe;
+  V.castVimeoIframe = castVimeoIframe;
 
   return {
     castDescription: castDescription,
+    castYouTubeIframe: castYouTubeIframe,
+    castVimeoIframe: castVimeoIframe,
   };
 
 } )();

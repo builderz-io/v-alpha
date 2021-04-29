@@ -5,26 +5,55 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const production = true;
+  const firebaseEndpoints = {
+    local: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+    development: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
+    production: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
+  };
+
+  const mongodbEndpoints = {
+    trinity: {
+      host: 'https://trinitymongo.valueinstrument.org',
+      port: 443,
+    },
+    builderz: {
+      host: 'https://buildersmongo.valueinstrument.org', // with 's', not 'z'
+      port: 443,
+    },
+    local: {
+      host: 'http://localhost',
+      port: 6022,
+    },
+  };
 
   const settings = {
 
-    entityLedger: 'Firebase', // choices are: 'MongoDB' or '3Box' (case sensitive)
-    chatLedger: 'Firebase',
-    transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
-    transactionLedgerWeb2: 'MongoDB',
+    appVersion: 'Alpha 3.2.0',
 
-    socketHost: production ? 'https://trinitymongo.valueinstrument.org' : 'http://localhost', // omit trailing slash
-    socketPort: production ? 443 : 6022,
+    entityLedger: VNetworkInit.entityLedger,
+    chatLedger: VNetworkInit.chatLedger,
+    transactionLedger: VNetworkInit.transactionLedger,
+    transactionLedgerWeb2: VNetworkInit.transactionLedgerWeb2,
 
-    // socketHost: 'https://buildersmongo.valueinstrument.org',
-    // socketPort: 443,
+    socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
+    socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
-    useBuilds: production ? false : false,
+    firebaseEndpoint: firebaseEndpoints[ VNetworkInit.firebaseEndpoint ],
 
-    sendLogsToServer: production ? false : false,
+    sourceEndpoint: VNetworkInit.sourceEndpoint,
 
-    drawMap: production ? true : true,
+    logo: VNetworkInit.logo,
+    mapDefault: VNetworkInit.mapDefault,
+    questionnaire: VNetworkInit.questionnaire,
+    featureVideo: VNetworkInit.featureVideo,
+    plugins: VNetworkInit.plugins,
+
+    useBuilds: VNetworkInit.useBuilds,
+    buildsHost: 'https://production.valueinstrument.org',
+
+    sendLogsToServer: false,
+
+    drawMap: true,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
@@ -49,52 +78,11 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
     communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
 
-    appVersion: 'v3 0.1.0',
-
-    logo: '/assets/img/faithfinance-logo.png',
-
-    neQuestionnaire: [
-
-      /*
-       * do not change the qid of the question once used in production,
-       * max 10 questions
-       *
-       */
-
-      {
-        q: 'What is the project about',
-        qid: 1,
-      },
-      {
-        q: 'How is the system broken',
-        qid: 2,
-      },
-      {
-        q: 'What is the goal',
-        qid: 3,
-      },
-      {
-        q: 'What is the system',
-        qid: 4,
-      },
-      {
-        q: 'What is the shape of capital that is needed',
-        qid: 5,
-      },
-      {
-        q: 'What is the point of leverage',
-        qid: 6,
-      },
-      {
-        q: 'What is the trim tab, the thing that it changes, catalyses a system shift or phase change',
-        qid: 7,
-      },
-    ],
   };
 
-  const networks = {
+  const tokenContracts = {
 
-    choice: 'rinkeby1',
+    default: 'rinkeby1',
 
     trufflePAV1: {
       contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
@@ -156,13 +144,15 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     return settings[which];
   }
 
-  function getNetwork( which ) {
+  function getTokenContract(
+    which = VNetworkInit.tokenContract
+  ) {
     if ( which ) {
-      return networks[which];
+      return tokenContracts[which];
     }
     else {
-      const obj = networks[networks.choice];
-      obj.network = networks.choice;
+      const obj = tokenContracts[tokenContracts.default];
+      obj.network = tokenContracts.default;
       return obj;
     }
   }
@@ -170,10 +160,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.getSetting = getSetting;
-  V.getNetwork = getNetwork;
+  V.getTokenContract = getTokenContract;
 
   return {
     getSetting: getSetting,
-    getNetwork: getNetwork,
+    getTokenContract: getTokenContract,
   };
 } )();

@@ -4,6 +4,8 @@
 For production env run -> firebase use entity-namespace
 For development env run -> firebase use entity-profile
 
+to list projects run -> firebase projects:list
+
 2. set production true/false below
 
 */

@@ -1,9 +1,9 @@
 /** testing the link checker locally */
 
-const linkChecker = require( './link-blocker' );
+const linkBlocker = require( './link-blocker' );
 
 async function runCheck() {
-  return linkChecker( 'https://www.grassrootseconomics.org/' );
+  return linkBlocker( 'https://linkedin.com/' );
 }
 
 runCheck().then( res => {

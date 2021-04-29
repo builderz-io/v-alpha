@@ -19,7 +19,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( $modal, ModalComponents.entityFound(
         V.aE(),
-        V.aA(),
+        V.cA(),
         tempAuth ? tempAuth.uPhrase : false,
         V.getSetting( 'coinTicker' ),
         V.getSetting( 'tokenTicker' ),

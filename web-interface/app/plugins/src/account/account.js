@@ -33,7 +33,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
         : 0;
 
     const newTx = await V.getTransactions( {
-      address: V.aA() || V.aE().evmCredentials.address,
+      address: V.cA() || V.aE().evmCredentials.address,
       fromBlock: lastBlock + 1,
       toBlock: currentBlock,
     } );
@@ -86,7 +86,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
     const bal = await V.getEntityBalance();
 
-    if ( !V.aA() ) {
+    if ( !V.cA() ) {
 
       /**
        * enhance MongoDB transfers

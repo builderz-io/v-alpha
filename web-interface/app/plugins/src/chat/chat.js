@@ -236,6 +236,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     presenter( path ).then( viewData => { view( viewData ) } );
   }
 
+  V.setState( 'availablePlugins', { chat: function() { Chat.launch() } } );
+
   /* ====================== export ====================== */
 
   return {

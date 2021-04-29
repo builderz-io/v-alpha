@@ -131,6 +131,8 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
+  V.setState( 'availablePlugins', { data: function() { Data.launch() } } );
+
   return {
     launch: launch,
     draw: draw,

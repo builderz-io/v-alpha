@@ -8,7 +8,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const Symbol = require( '/node_modules/symbol-sdk' ); // eslint-disable-line global-require
-  const network = V.getNetwork();
+  const network = V.getTokenContract();
   const repositoryFactory = new Symbol.RepositoryFactoryHttp( network.rpc );
   const accountHttp = repositoryFactory.createAccountRepository();
   const transactionHttp = repositoryFactory.createTransactionRepository();
@@ -23,7 +23,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
     const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
 
-    V.setLocal( 'last-active-address', account.address.address );
+    V.setLocal( 'last-connected-address', account.address.address );
 
     return {
       success: true,
@@ -37,7 +37,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );
@@ -72,7 +72,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );
