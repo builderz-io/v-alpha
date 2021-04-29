@@ -1,6 +1,7 @@
 const settings = {
-  port: 3123,
-  host: 'builderz.io'
+  port: 4021, // development 4021
+  network: 'development',
+  // network: 'faithfinance',
 };
 
 const http = require( 'http' );
@@ -13,13 +14,13 @@ app.use( express.static( 'app' ) );
 
 server.listen( settings.port, function( err ) {
   if ( err ) {throw err}
-  console.log( 'App server for ' + settings.host + ' listening on port', settings.port );
+  console.log( 'App server for ' + settings.network + ' listening on port', settings.port );
 } );
 
 app.get( '/logo', function( req, res ) {
-  res.sendFile( __dirname + '/app/assets/img/builderz-logo.png' );
+  res.sendFile( __dirname + '/app/assets/img/faithfinance-logo.png' );
 } );
 
 app.get( '*', function( req, res ) {
-  res.sendFile( __dirname + '/app/app.html' );
+  res.sendFile( __dirname + '/app/app-' + settings.network + '.html' );
 } );

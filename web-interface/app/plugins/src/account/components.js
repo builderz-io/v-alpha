@@ -23,7 +23,11 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     gross: 'Gross',
     eth: 'ETH',
     chain: 'On Chain',
-    noBal: 'no balance details'
+    noBal: 'no balance details',
+    lastBlock: 'last block',
+    zeroBlock: 'zero block',
+    currentBlock: 'now block',
+    currentDate: 'now date',
   };
 
   function getString( string, scope ) {
@@ -57,7 +61,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.innerHTML );
+    const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -73,7 +77,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'h1',
           c: 'font-bold txt-center pxy',
           k: handleOpenTokenAccountDetails,
-          h: fullId
+          h: fullId,
         },
         !bal ? { t: 'p', c: 'hidden', h: getString( ui.noBal ) } : {
           t: 'table',
@@ -84,24 +88,26 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             [ getString( ui.gross ), bal.data[0].liveBalance ],
             [ getString( ui.chain ), bal.data[0].tokenBalance ],
             [ getString( ui.eth ), bal.data[0].coinBalance ],
-          ].filter( index => { return Array.isArray( index ) } ).map( row => {
-            return V.cN( {
-              t: 'tr',
-              h: [
-                {
-                  t: 'td',
-                  h: row[0]
-                },
-                {
-                  t: 'td',
-                  c: 'txt-right',
-                  h: row[1]
-                }
-              ]
-            } );
-          } )
-        }
-      ]
+            [ getString( ui.lastBlock ), bal.data[0].lastBlock ],
+            [ getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
+            [ getString( ui.currentBlock ), bal.data[0].currentBlock  ],
+            [ getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
+          ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
+            t: 'tr',
+            h: [
+              {
+                t: 'td',
+                h: row[0],
+              },
+              {
+                t: 'td',
+                c: 'txt-right',
+                h: row[1],
+              },
+            ],
+          } ) ),
+        },
+      ],
 
     } );
   }
@@ -112,37 +118,96 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       balance = V.getNetVAmount( balance ).net;
-      balance = isNaN( balance ) ? '😷' : balance;
+      balance = isNaN( balance ) ? '😷' : String( balance );
     }
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-    const textColor = V.aA() ? 'txt-green' : 'txt-brand-primary';
+    const textColor = V.cA() ? 'txt-green' : 'txt-brand-primary';
 
-    return V.castNode( { // #1b1aff
+    return V.cN( { // #1b1aff
+      svg: true,
       tag: 'svg',
       a: {
         style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',
-        viewBox: '0 0 36 36'
+        viewBox: '0 0 36 36',
       },
-      html: `<circle cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7" transform="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200"></circle>
-              <text class="font-medium fs-xxs ${ textColor } no-txt-select" x="50%" y="59%">${ balance }</text>`,
-      click: handleDrawUserNav
-
+      k: handleDrawUserNav,
+      h: [
+        {
+          svg: true,
+          t: 'circle',
+          a: {
+            // todo   stroke-dasharray   should be in circle for lifetime display
+            'cx': '18',
+            'cy': '18',
+            'r': '15.91549430918954',
+            'fill': 'white',
+            'stroke': strokeColor,
+            'stroke-width': '2.7',
+            'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+            'stroke-dashoffset': '-200',
+          },
+        },
+        {
+          svg: true,
+          t: 'text',
+          c: `font-medium fs-xxs ${ textColor } no-txt-select`,
+          a: {
+            x: '50%',
+            y: '59%',
+          },
+          h: balance,
+        },
+      ],
     } );
-    // todo   stroke-dasharray   should be in circle for lifetime display
   }
 
   function accountBalance() {
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
-    return V.castNode( {
+    return V.cN( {
       tag: 'li',
       class: 'txt-anchor-mid',
-      html: `<svg width="74px" viewBox="0 0 36 36"> +
-              <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
-              <text class="font-medium fs-xxs txt-green no-txt-select" x="50%" y="59%">3129</text>
-            </svg>`
+      html: {
+        svg: true,
+        t: 'svg',
+        a: {
+          width: '74px',
+          viewBox: '0 0 36 37',
+        },
+        h: [
+          {
+            svg: true,
+            t: 'circle',
+            a: {
+              'stroke-dasharray': '100',
+              'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
+              'stroke-dashoffset': '-200',
+              'cx': '18',
+              'cy': '18',
+              'r': '15.91549430918954',
+              'fill': 'white',
+              'stroke': strokeColor,
+              'stroke-width': '2.7',
+            },
+          },
+          {
+            svg: true,
+            t: 'text',
+            c: 'font-medium fs-xxs ${ textColor } no-txt-select',
+            a: {
+              x: '50%',
+              y: '59%',
+            },
+            h: 1234, // TODO: get balance
+          },
+        ],
+      },
+      // html: `<svg width="74px" viewBox="0 0 36 36"> +
+      //         <circle stroke-dasharray="100" transform ="rotate(-90, 18, 18) translate(0, 36) scale(1, -1)" stroke-dashoffset="-200" cx="18" cy="18" r="15.91549430918954" fill="white" stroke="${strokeColor}" stroke-width="2.7"></circle>
+      //         <text class="font-medium fs-xxs txt-green no-txt-select" x="50%" y="59%">3129</text>
+      //       </svg>`,
 
     } );
   }
@@ -156,7 +221,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
               <div class="flex justify-center items-center circle-2 rounded-full border-shadow font-medium no-txt-select">
                 ${accountData[variable]}
               </div>
-            </div>`
+            </div>`,
     } );
   }
 
@@ -183,7 +248,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $cardContentFrame = V.cN( {
       t: 'div',
-      c: 'contents'
+      c: 'contents',
     } );
 
     const $topLeft = V.cN( {
@@ -193,15 +258,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'div',
         c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
         a: {
-          style: `background:${background}`
+          style: `background:${background}`,
         },
         k: handleOpenTxDetails,
         h: {
           t: 'div',
           c: 'card__initials font-medium fs-xl txt-white no-txt-select',
-          h: txData.amount
-        }
-      }
+          h: txData.amount,
+        },
+      },
     } );
 
     const $topRight = V.cN( {
@@ -211,14 +276,14 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
         k: handleOpenTxDetails, // handleProfileDraw,
-        h: txData.title
-      }
+        h: txData.title,
+      },
     } );
 
     const $bottomLeft = V.cN( {
       t: 'div',
       c: 'card__bottom-left items-center',
-      h: ''
+      h: '',
     } );
 
     const $bottomRight = V.cN( {
@@ -236,24 +301,22 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           txData.txType == 'out' ? [ getString( ui.fees ), txData.feeAmount ] : [ getString( ui.fees ), '0' ],
           txData.txType == 'out' ?  [ getString( ui.contr ), txData.contribution ] : [ getString( ui.contr ), '0' ],
           txData.payout ? [ getString( ui.payout ), txData.payout ] : undefined,
-        ].filter( index => { return Array.isArray( index ) } ).map( row => {
-          return V.cN( {
-            t: 'tr',
-            h: [
-              {
-                t: 'td',
-                h: row[0]
-              },
-              {
-                t: 'td',
-                c: 'txt-right' + ( row[2] ? ' cursor-pointer' : '' ),
-                h: row[1],
-                k: row[2]
-              }
-            ]
-          } );
-        } )
-      }
+        ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: row[0],
+            },
+            {
+              t: 'td',
+              c: 'txt-right' + ( row[2] ? ' cursor-pointer' : '' ),
+              h: row[1],
+              k: row[2],
+            },
+          ],
+        } ) ),
+      },
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
@@ -266,7 +329,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $cardContentFrame = V.cN( {
       t: 'div',
-      c: 'contents placeholder'
+      c: 'contents placeholder',
     } );
 
     const $topLeft = V.cN( {
@@ -286,7 +349,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         'width': '200px',
         'top': '25px',
         'left': '8px',
-        'border-radius': '4px'
+        'border-radius': '4px',
       },
       // h: {
       //   t: 'h2',
@@ -309,7 +372,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     accountBalance: accountBalance,
     accountSmallCard: accountSmallCard,
     accountCard: accountCard,
-    accountPlaceholderCard: accountPlaceholderCard
+    accountPlaceholderCard: accountPlaceholderCard,
   };
 
 } )();

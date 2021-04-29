@@ -23,10 +23,10 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         forecast: {
           'width': '57px',
-          'text-align': '-moz-center'
-        }
+          'text-align': '-moz-center',
+        },
       },
-      html: '<div class="card__top-left flex justify-center items-center">' +
+      innerHtml: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-3 flex justify-center items-center rounded-full" style="background: antiquewhite; background-position: center center; background-size: cover;">' +
                   '<div class="card__initials font-bold fs-xxl txt-white"><img src="' + cardData.iconUrl + '"></div>' +
                 '</div>' +
@@ -70,7 +70,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
                   '</div>' +
                 '</div>' +
       // '<p>' + cardData.sunrise + '<br/>' + cardData.sunset + '</p>' +
-              '</div>'
+              '</div>',
     } );
   }
 
@@ -82,7 +82,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
       orange: '#FF7E00',
       red: '#FF0000',
       purple: 'rgb(143, 63, 151)',
-      maroon: '#7E0023'
+      maroon: '#7E0023',
     };
 
     const aConcern = {
@@ -91,7 +91,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
       m150: 'Unhealthy for Sensitive Groups',
       m200: 'Unhealthy',
       m300: 'Very Unhealthy',
-      m500: 'Hazardous'
+      m500: 'Hazardous',
     };
 
     const level = ( value ) => {
@@ -129,10 +129,10 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         forecast: {
           'width': '57px',
-          'text-align': '-moz-center'
+          'text-align': '-moz-center',
         },
       },
-      html: '<div class="card__top-left flex justify-center items-center">' +
+      innerHtml: '<div class="card__top-left flex justify-center items-center">' +
                 '<div class="circle-2 flex justify-center items-center rounded-full" style="background-color: ' + level( cardData.pollution.aqius ).c + ';background-position: center center; background-size: cover;">' +
                 '</div>' +
               '</div>' +
@@ -145,13 +145,13 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
               '</div>' +
               '<div class="card__bottom-right pxy">' +
                 '<p>' + level( cardData.pollution.aqius ).h + '</p>' +
-              '</div>'
+              '</div>',
     } );
   }
 
   return {
     weatherCard: weatherCard,
-    airCard: airCard
+    airCard: airCard,
   };
 
 } )();

@@ -12,7 +12,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  const network = V.getNetwork();
+  const network = V.getTokenContract();
   const rpc = new eosjs_jsonrpc.JsonRpc( network.rpc );
   const signatureProvider = new eosjs_jssig.JsSignatureProvider( [network.privKey] );
   const EOS = new eosjs_api.Api( { rpc, signatureProvider } );
@@ -25,20 +25,20 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
     const account = 'todo...';
 
-    V.setState( 'activeAddress', 'todo...' );
+    V.setLocal( 'last-connected-address', 'todo...' );
 
     return {
       success: true,
       status: 'EOS credentials created',
       data: [ {
         address: account.address,
-        privateKey: account.privateKey
-      } ]
+        privateKey: account.privateKey,
+      } ],
     };
   }
 
   async function getAddressState(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = 'todo...';
@@ -53,7 +53,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           tokenBalance: bal[0].toFixed( 0 ),
           liveBalance: bal[0].toFixed( 0 ),
-        }]
+        }],
       };
     }
     else {
@@ -67,7 +67,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.aA()
+    which = V.cA()
   ) {
 
     const address = 'todo...';
@@ -105,7 +105,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         status: 'transactions retrieved',
         ledger: 'EOS',
-        data: [ filteredTransfers ]
+        data: [ filteredTransfers ],
       };
     }
     else {
@@ -135,7 +135,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
             quantity: '0.0001 SYS',
             memo: '',
           },
-        }]
+        }],
       }, {
         blocksBehind: 3,
         expireSeconds: 30,

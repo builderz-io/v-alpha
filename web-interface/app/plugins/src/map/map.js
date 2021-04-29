@@ -4,8 +4,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   * V Plugin driving the Map
   *
   * List of tile providers: http://leaflet-extras.github.io/leaflet-providers/preview/
-  * Locations: Map Center [ 43.776, 4.63 ], Berlin [ 52.522, 13.383 ], Geneva [ 46.205, 6.141 ]
-  *            Chicago [41.858, -87.964]
+  *
   */
 
   'use strict';
@@ -30,6 +29,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
   const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
+  const mapDefaults = {
+    atlantic: {
+      lng: -27.070, // lesser numbers = move map west
+      lat: 14, // lesser numbers = move map south
+      zoom: 3,
+    },
+    berlin: {
+      lng: 13.383,
+      lat: 52.522,
+      zoom: 9,
+    },
+    chicago: {
+      lng: -87.964,
+      lat: 41.858,
+      zoom: 8,
+    },
+  };
+
   let viMap, featureLayer;
 
   /* ================== private methods ================= */
@@ -50,7 +67,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   function view( features ) {
 
-    if ( !features || !features.length ) {
+    if ( !features || !features.length || features[0] == undefined ) {
       return;
     }
 
@@ -61,7 +78,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
       weight: 0,
       opacity: 1,
-      fillOpacity: 0.9
+      fillOpacity: 0.9,
     };
 
     const popUpSettings = {
@@ -69,7 +86,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       closeButton: false,
       autoPanPaddingTopLeft: [100, 140],
       keepInView: true,
-      className: 'map__popup'
+      className: 'map__popup',
     };
 
     if ( featureLayer ) {
@@ -82,7 +99,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       },
       onEachFeature: function( feature, layer ) {
         layer.bindPopup( L.popup( popUpSettings ).setContent( castPopup( feature ) ) );
-      }
+      },
     } );
 
     const geo = features[0].geometry.coordinates;
@@ -110,7 +127,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   // async function launch() {
-  //   await V.setScript( '/plugins/dependencies/leaflet.js' );
+  //   await V.setScript( V.getSetting( 'sourceEndpoint' ) + '/plugins/dependencies/leaflet.js' );
   //   console.log( '*** leaflet library loaded ***' );
   // }
 
@@ -119,16 +136,18 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
 
     const mapSettings = {
-      lat: 6.9728, // lesser numbers = move map south
-      lng: -22.685, // lesser numbers = move map west
-      zoom: sc.height > 1200 ? 3 : 2,
+      lat: getMapDefault().lat,
+      lng: getMapDefault().lng,
+      zoom: sc.height > 1200
+        ? getMapDefault().zoom + 1
+        : getMapDefault().zoom,
       maxZoom: 16,
       minZoom: sc.height > 1200 ? 3 : 2,
     };
 
     featureLayer = L.geoJSON();
 
-    const mapData = V.getCookie( 'map-state' );
+    const mapData = V.getLocal( 'map-state' );
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
@@ -152,8 +171,14 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       const map = viMap.getBounds().getCenter();
       Object.assign( map, { zoom: viMap.getZoom() } );
       V.setState( 'map', map );
-      V.setCookie( 'map-state', map );
+      V.setLocal( 'map-state', map );
     } );
+  }
+
+  function getMapDefault(
+    which = V.getSetting( 'mapDefault' )
+  ) {
+    return mapDefaults[which];
   }
 
   /* ============ public methods and exports ============ */

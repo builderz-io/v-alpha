@@ -9,13 +9,18 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  const featureVideos = {
+    faithfinance: 'https://vimeo.com/236725407',
+    builderz: 'https://youtu.be/kJbto4TISKA',
+  };
+
   /* ================== private methods ================= */
 
   async function presenter( which ) {
 
     const $list = CanvasComponents.list();
 
-    const entities = await V.getEntity( which == '/media/moocs' ? 'mooc' : 'media' );
+    const entities = await V.getEntity( which == '/media/moocs' ? 'Mooc' : 'MediaObject' );
 
     if ( entities.data ) {
       entities.data.forEach( cardData => {
@@ -38,12 +43,12 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   function featurePresenter( options ) {
     const $featureUl = MediaComponents.featureUl();
-    const $videoFeature = MediaComponents.videoFeature( options && options.feature ? options.feature : 'https://vimeo.com/236725407' /* 'https://youtu.be/ygJ4uu4XNM8' */ );
+    const $videoFeature = MediaComponents.videoFeature( options && options.feature ? options.feature : getFeatureVideo() );
     V.setNode( $featureUl, $videoFeature );
 
     const pageData = {
       feature: $featureUl,
-      position: 'feature'
+      position: 'feature',
     };
 
     return Promise.resolve( pageData );
@@ -77,35 +82,42 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
+  function getFeatureVideo(
+    which = V.getSetting( 'featureVideo' )
+  ) {
+    return featureVideos[which];
+  }
+
   /* ============ public methods and exports ============ */
 
   function launch() {
-    V.setNavItem( 'serviceNav', [
-      {
+    const navItems = {
+      media: {
         title: 'Media',
         path: '/media',
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'media',
+          role: 'MediaObject',
         },
         draw: function() {
-          Media.draw( '/media', { feature: 'https://vimeo.com/236725407' } ); // 'https://youtu.be/kJbto4TISKA'
-        }
+          Media.draw( '/media', { feature: getFeatureVideo() } );
+        },
       },
-      // {
-      //   title: 'Moocs',
-      //   path: '/media/moocs',
-      //   use: {
-      //     button: 'plus search',
-      //     form: 'new entity',
-      //     role: 'mooc',
-      //   },
-      //   draw: function() {
-      //     Media.draw( '/media/moocs', { feature: 'https://youtu.be/ygJ4uu4XNM8' } );
-      //   }
-      // }
-    ] );
+      moocs: {
+        title: 'Moocs',
+        path: '/media/moocs',
+        use: {
+          button: 'plus search',
+          form: 'new entity',
+          role: 'Mooc',
+        },
+        draw: function() {
+          Media.draw( '/media/moocs', { feature: getFeatureVideo() } );
+        },
+      },
+    };
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).media.map( item => navItems[item] ) );
   }
 
   function draw( which, options ) {
@@ -116,6 +128,8 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     setTimeout( delayContentLoad, 2000, which );
 
   }
+
+  V.setState( 'availablePlugins', { media: function() { Media.launch() } } );
 
   return {
     launch: launch,

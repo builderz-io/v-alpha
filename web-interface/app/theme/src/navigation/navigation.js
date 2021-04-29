@@ -11,7 +11,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function presenter(
     data,
-    whichPath = typeof data == 'object' ? data.paths.entity : data
+    whichPath = typeof data == 'object' ? data.path : data,
   ) {
 
     /**
@@ -25,18 +25,23 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNavOrder = V.castJson( V.getLocal( 'entity-nav-order' ) || '{}' );
     V.getState( 'entityNav' ) ? null : V.setState( 'entityNav', {} ); // ensure entityNav-state exists
     const entityNav = V.getState( 'entityNav' );
 
     if ( data && data.tinyImage && entityNavOrder[data.path] ) { // update the clicked entity tinyImage if available
       entityNavOrder[data.path].tinyImage = JSON.stringify( data.tinyImage );
     }
+    else if ( data && data.images && data.images.tinyImage && entityNavOrder[data.path] ) { // new model
+      entityNavOrder[data.path].tinyImage = data.images.tinyImage;
+      entityNavOrder[data.path].useDataUrl = true; // flag to create image from dataUrl in component
+    }
 
     for ( const item in entityNavOrder ) {
 
       if ( !entityNav[item] ) {
         const obj = {
+          uuidE: entityNavOrder[item].uuidE,
           title: entityNavOrder[item].title,
           tag: entityNavOrder[item].tag,
           initials: entityNavOrder[item].initials,
@@ -50,9 +55,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
-        title: data.profile.title,
-        tag: data.profile.tag,
-        initials: V.castInitials( data.profile.title ),
+        uuidE: data.uuidE,
+        title: data.title,
+        tag: data.tag,
+        initials: V.castInitials( data.title ),
         path: data.path,
         draw: function( path ) { Profile.draw( path ) },
       };
@@ -62,7 +68,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     syncNavOrder( entityNavOrder, entityNav );
 
-    V.setCookie( 'entity-nav-order', entityNavOrder );
+    V.setLocal( 'entity-nav-order', entityNavOrder );
 
     /**
      * Check whether we have to also update the other navs
@@ -80,8 +86,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         status: 'navigation does not need updating',
         data: [{
-          which: whichPath
-        }]
+          which: whichPath,
+        }],
       };
     }
 
@@ -91,12 +97,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const serviceNavOrder = V.castJson( V.getCookie( 'service-nav-order' ) || '{}' );
+    const serviceNavOrder = V.castJson( V.getLocal( 'service-nav-order' ) || '{}' );
     const serviceNav = V.getState( 'serviceNav' );
 
     syncNavOrder( serviceNavOrder, serviceNav );
 
-    V.setCookie( 'service-nav-order', serviceNavOrder );
+    V.setLocal( 'service-nav-order', serviceNavOrder );
 
     /**
      * Update userNavOrder (always)
@@ -104,12 +110,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const userNavOrder = V.castJson( V.getCookie( 'user-nav-order' ) || '{}' );
+    const userNavOrder = V.castJson( V.getLocal( 'user-nav-order' ) || '{}' );
     const userNav = V.getState( 'userNav' );
 
     syncNavOrder( userNavOrder, userNav );
 
-    V.setCookie( 'user-nav-order', userNavOrder );
+    V.setLocal( 'user-nav-order', userNavOrder );
 
     return {
       success: true,
@@ -119,8 +125,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         entityNav: entityNavOrder,
         userNav: userNavOrder,
         serviceNav: serviceNavOrder,
-        keep: 5
-      }]
+        keep: 5,
+      }],
     };
   }
 
@@ -220,10 +226,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     for ( const newKey in b ) {
       if( !a.hasOwnProperty( newKey ) ) {
         a[b[newKey].path] = {
+          uuidE: b[newKey].uuidE,
           title: b[newKey].title,
           tag: b[newKey].tag,
           initials: b[newKey].initials,
-          path: b[newKey].path
+          path: b[newKey].path,
         };
 
         b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
@@ -239,16 +246,22 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
+      const uuidE = $itemClicked.getAttribute( 'uuide' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( path );
-      V.getNavItem( 'active', ['serviceNav', 'entityNav', 'userNav'] ).draw( path );
+      if ( uuidE ) { // entity pill
+        V.getNavItem( 'active', ['entityNav'] ).draw( uuidE );
+      }
+      else {
+        V.getNavItem( 'active', ['serviceNav', 'userNav'] ).draw( path );
+      }
     }
 
   }
 
   function setCountAndLastIndex( row ) {
     const $rowAfter = V.getNode( row + ' > ul' ).childNodes;
-    const navOrder = V.castJson( V.getCookie( row + '-order' ) );
+    const navOrder = V.castJson( V.getLocal( row + '-order' ) );
 
     for ( let i = 0; i < $rowAfter.length - 1; i++ ) { // -1 to ignore placeholder pill
       const $li = $rowAfter[i];
@@ -261,10 +274,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     }
 
-    V.setCookie( row + '-order', navOrder );
+    V.setLocal( row + '-order', navOrder );
 
     // debug
-    // const debug = V.castJson( V.getCookie( row + '-order' ) );
+    // const debug = V.castJson( V.getLocal( row + '-order' ) );
     // for( const item in debug ) {
     //   console.log( /*'key', item, 'value', */ debug[item] );
     // }
@@ -290,9 +303,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     V.setAnimation( $tempMover, {
       top: menuStateObj.entityNavTop + 4,
-      left: menuStateObj.entityNavLeft + 3
+      left: menuStateObj.entityNavLeft + 3,
     }, {
-      duration: 2
+      duration: 2,
     } ).then( () => {
       $itemToAnimate.style.visibility = 'visible';
       $tempMover.remove();
@@ -304,7 +317,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function select( $item ) {
     const span = $item.getElementsByClassName( 'pill__initials' )[0];
     if ( span ) {
-      span.innerHTML = $item.getAttribute( 'fullId' );
+      span.textContent = $item.getAttribute( 'fullId' );
       span.previousSibling.style.display = 'none';
       span.classList.add( 'pill__replace' );
       span.classList.remove( 'pill__initials' );
@@ -319,7 +332,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       for ( let i = 0; i < $itemSelected.length; i++ ) {
         const span = $itemSelected[i].getElementsByClassName( 'pill__replace' )[0];
         if ( span ) {
-          span.innerHTML = $itemSelected[i].getAttribute( 'initials' );
+          span.textContent = $itemSelected[i].getAttribute( 'initials' );
           span.previousSibling.style.display = 'flex';
           span.classList.add( 'pill__initials' );
           span.classList.remove( 'pill__replace' );
@@ -377,7 +390,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     /* shorten entityNav */
 
-    const entityNavOrder = V.castJson( V.getCookie( 'entity-nav-order' ) || '{}' );
+    const entityNavOrder = V.castJson( V.getLocal( 'entity-nav-order' ) || '{}' );
 
     const entitiesViewed = Object.keys( entityNavOrder );
 
@@ -388,7 +401,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
           delete entityNavOrder[entityPath];
         }
       } );
-      V.setCookie( 'entity-nav-order', entityNavOrder );
+      V.setLocal( 'entity-nav-order', entityNavOrder );
     }
 
     Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
@@ -421,13 +434,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( 'service-nav' ).scrollLeft = 0;
 
     V.setAnimation( 'entity-nav', {
-      width: width
+      width: width,
     }, { duration: 1.5 } );
 
     V.setAnimation( 'service-nav', {
       width: width,
       top: menuStateObj.serviceNavTop,
-      left: menuStateObj.serviceNavLeft
+      left: menuStateObj.serviceNavLeft,
     }, { duration: 2.5 } );
 
     Form.draw( 'all', { fade: 'out' } );
@@ -478,7 +491,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.setAnimation( nav, {
       width: itemClickedRect.width + 11 /* + V.getState( 'page' ).rectOffset */,
       top: menuStateObj.entityNavTop,
-      left: menuStateObj.entityNavLeft
+      left: menuStateObj.entityNavLeft,
     }, { duration: 1 } );
 
     // V.setState( 'page', { rectOffset: 0 } ); // resets the offset to 0 after first page load
@@ -497,9 +510,43 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     reset();
   }
 
+  function drawEntityNavPill( data ) {
+
+    /**
+     * In case Navigation.draw() is not called, this function
+     * can draw an entity item (e.g. on entity initialisation)
+     *
+     */
+
+    /** Create nav object */
+    const obj = {
+      uuidE: data.uuidE,
+      title: data.title,
+      tag: data.tag,
+      initials: V.castInitials( data.title ),
+      path: data.path,
+      draw: function( path ) { Profile.draw( path ) },
+    };
+    data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+
+    /** Set object into state */
+    V.setNavItem( 'entityNav', obj );
+
+    /** Update cookies */
+    const entityNavOrder = V.castJson( V.getLocal( 'entity-nav-order' ) || '{}' );
+    const entityNav = V.getState( 'entityNav' );
+    syncNavOrder( entityNavOrder, entityNav );
+    V.setLocal( 'entity-nav-order', entityNavOrder );
+
+    /** Place into view */
+    const $pill = NavComponents.entityPill( obj );
+    V.getNode( 'entity-nav > ul' ).prepend( $pill );
+  }
+
   return {
     draw: draw,
     drawReset: drawReset,
+    drawEntityNavPill: drawEntityNavPill,
   };
 
 } )();

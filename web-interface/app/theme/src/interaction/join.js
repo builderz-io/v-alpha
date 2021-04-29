@@ -22,7 +22,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
             const check = await ckeckEntityStoreByAddress();
 
             if ( which.includes( 'existing entity' ) ) {
-              V.setCookie( 'welcome-modal', 1 );
+              V.setLocal( 'welcome-modal', 1 );
               which = 'authenticate existing entity';
             }
             else {
@@ -36,11 +36,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which == 'new entity was set up' ) {
         // Modal.draw( 'please wait' );
-        if ( V.aA() ) {
-          which = await ckeckEntityStoreByAddress();
-        }
-        else if ( V.aE().fullId ) {
+        if ( V.aE() && V.aE().fullId ) {
           which = 'entity found';
+        }
+        else if ( V.cA() ) {
+          which = await ckeckEntityStoreByAddress();
         }
       }
     }
@@ -49,7 +49,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
         which = 'web2 login';
       }
       else if ( which == 'new entity was set up' ) {
-        V.setState( 'activeAddress', V.aE().symbolCredentials.address );
+        V.setLocal( 'last-connected-address', V.aE().symbolCredentials.address );
         which = 'entity found';
       }
     }
@@ -75,9 +75,9 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( '.modal', 'clear' );
 
-      if ( V.getCookie( 'welcome-modal' ) == 1 ) {
+      if ( V.getLocal( 'welcome-modal' ) == 1 ) {
         Modal.draw( which );
-        V.setCookie( 'welcome-modal', 0 );
+        V.setLocal( 'welcome-modal', 0 );
       }
 
       const bal = V.aE().balance;
@@ -120,26 +120,27 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    return V.aA() ? V.getEntity( V.aA() ).then( async res => {
+    return V.cA() ? V.getEntity( V.cA() ).then( async res => {
+
       if ( res.reset ) {
         return 'entity not found';
       }
       else if ( res.success ) {
 
-        V.setState( 'activeEntity', res.data[0] );
+        V.setActiveEntity( res.data[0] );
 
         const eB = await V.getEntityBalance( res.data[0] );
 
         if ( eB.success ) {
           V.setState( 'activeEntity', { balance: {
             success: true,
-            balance: eB.data[0]
+            balance: eB.data[0],
           } } );
         }
         else {
           V.setState( 'activeEntity', { balance: {
             success: false,
-            message: eB.message.message.message
+            message: eB.message.message.message,
           } } );
         }
 
@@ -155,9 +156,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     // sets the view on launch (the header "Join" button)
+    if( !V.getLocal( 'browser-id' ) ) {
+      const brid = 'BRID' + V.castUuid().base64Url.substr( 1, 16 ); // e.g. BRIDdlvboP9QBioaDvm7
+      V.setLocal( 'browser-id', brid );
+    }
     if ( !V.getNode( 'join' ) ) {
       V.setNode( 'balance > svg', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
+      V.setLocal( 'welcome-modal', 1 );
       const $join = InteractionComponents.joinBtn();
       $join.addEventListener( 'click', function joinHandler() {
         Join.draw( 'initialize join' );

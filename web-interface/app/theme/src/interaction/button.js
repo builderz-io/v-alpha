@@ -23,7 +23,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       lng: location.value ? location.getAttribute( 'lng' ) || undefined : undefined,
       description: form.getNode( '#plusform__descr' ).value,
       unit: form.getNode( '#plusform__unit' ).value,
-      target: form.getNode( '#plusform__target' ).value
+      target: form.getNode( '#plusform__target' ).value,
     };
 
     if ( !V.aE() ) {
@@ -34,17 +34,19 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
-      V.setCookie( 'last-form', entityData );
+      V.setLocal( 'last-form', entityData );
       Join.draw( 'authenticate' );
     }
     else {
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
-          console.log( res.status );
+          console.log( res.message );
+          console.log( 'set uuidE:', res.data[0].uuidE );
           e.target.addEventListener( 'click', handleSetEntity );
           V.setCache( 'all', 'clear' );
-          V.setCache( res.data[0].profile.role, 'clear' );
+          V.setCache( res.data[0].role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
+          Navigation.drawEntityNavPill( res.data[0] );
           User.draw( res.data[0].path );
           Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
@@ -54,11 +56,12 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
            *
            */
 
-          V.setEntity( V.aE().fullId, {
-            field: 'adminOf',
-            data: res.data[0].fullId,
-            auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
-          } );
+          if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
+            V.setEntity( V.aE().fullId, {
+              field: 'adminOf',
+              data: res.data[0].fullId,
+            } );
+          }
 
           /* update cache with new entity */
 
@@ -68,10 +71,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         else {
           Form.draw( 'error', res );
           e.target.addEventListener( 'click', handleSetEntity );
-          console.error( res.status );
+          console.error( res );
         }
       } );
-      V.setCookie( 'last-form', undefined );
+      V.setLocal( 'last-form', undefined );
     }
 
   }
@@ -106,7 +109,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSend() {
     V.setBrowserHistory( '/me/transfers' );
-    V.setState( 'active', { lastViewed: V.getNode( '.pill__replace' ).innerHTML } );
+    V.setState( 'active', { lastViewed: V.getNode( '.pill__replace' ).textContent } );
     Canvas.draw( { path: '/me/transfers' } );
   }
 
@@ -158,7 +161,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    draw: draw
+    draw: draw,
   };
 
 } )();

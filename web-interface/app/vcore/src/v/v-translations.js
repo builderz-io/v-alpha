@@ -3,190 +3,190 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'navigation': {
     Data: {
       en_US: 'Data',
-      de_DE: 'Daten'
+      de_DE: 'Daten',
     },
     Marketplace: {
       en_US: 'Marketplace',
-      de_DE: 'Marktplatz'
+      de_DE: 'Marktplatz',
     },
     Economy: {
       en_US: 'Economy',
-      de_DE: 'Economy'
+      de_DE: 'Economy',
     },
     Network: {
       en_US: 'Network',
-      de_DE: 'Netzwerk'
+      de_DE: 'Netzwerk',
     },
     Jobs: {
       en_US: 'Jobs',
-      de_DE: 'Jobs'
+      de_DE: 'Jobs',
     },
     Tasks: {
       en_US: 'Tasks',
-      de_DE: 'Tasks'
+      de_DE: 'Tasks',
     },
     Skills: {
       en_US: 'Skills',
-      de_DE: 'Services'
+      de_DE: 'Services',
     },
     Media: {
       en_US: 'Media',
-      de_DE: 'Medien'
+      de_DE: 'Medien',
     },
     Moocs: {
       en_US: 'Moocs',
-      de_DE: 'Onlinekurse'
+      de_DE: 'Onlinekurse',
     },
     Chat: {
       en_US: 'Chat',
-      de_DE: 'Chat'
+      de_DE: 'Chat',
     },
     Account: {
       en_US: 'Account',
-      de_DE: 'Konto'
+      de_DE: 'Konto',
     },
     Profile: {
       en_US: 'Profile',
-      de_DE: 'Profil'
+      de_DE: 'Profil',
     },
     Settings: {
       en_US: 'Settings',
-      de_DE: 'Einstellungen'
+      de_DE: 'Einstellungen',
     },
     Entities: {
       en_US: 'Entities',
-      de_DE: 'Entitäten'
+      de_DE: 'Entitäten',
     },
     Disconnect: {
       en_US: 'Disconnect',
-      de_DE: 'Abmelden'
-    }
+      de_DE: 'Abmelden',
+    },
   },
   'profile': {
     'title': {
       en_US: 'title',
-      de_DE: 'titel'
+      de_DE: 'titel',
     },
     'tag': {
       en_US: 'title tag',
-      de_DE: 'Titel-Tag'
+      de_DE: 'Titel-Tag',
     },
     'ownerName': {
       en_US: 'Holder',
-      de_DE: 'Eigentümer'
+      de_DE: 'Eigentümer',
     },
     'ownerTag': {
       en_US: 'Holder Tag',
-      de_DE: 'Eigentümer-Tag'
+      de_DE: 'Eigentümer-Tag',
     },
     'role': {
       en_US: 'role',
-      de_DE: 'Rolle'
+      de_DE: 'Rolle',
     },
     'Entity': {
       en_US: 'Entity',
-      de_DE: 'Konto'
+      de_DE: 'Konto',
     },
     'Holder': {
       en_US: 'Holder',
-      de_DE: 'Eigentümer'
+      de_DE: 'Eigentümer',
     },
     'base location': {
       en_US: 'base location',
-      de_DE: 'Hauptstandort'
+      de_DE: 'Hauptstandort',
     },
     'current location': {
       en_US: 'current location',
-      de_DE: 'Aktueller Standort'
+      de_DE: 'Aktueller Standort',
     },
     'current UTC offset': {
       en_US: 'current UTC offset',
-      de_DE: 'Aktuelle UTC Zeitdifferenz'
+      de_DE: 'Aktuelle UTC Zeitdifferenz',
     },
     'Location': {
       en_US: 'Location',
-      de_DE: 'Standort'
+      de_DE: 'Standort',
     },
     'Description': {
       en_US: 'Introduction',
-      de_DE: 'Beschreibung'
+      de_DE: 'Beschreibung',
     },
     'Questionnaire': {
       en_US: 'Questionnaire',
-      de_DE: 'Fragebogen'
+      de_DE: 'Fragebogen',
     },
     'Preferred Languages': {
       en_US: 'Preferred Languages',
-      de_DE: 'Bevorzugte Sprachen'
+      de_DE: 'Bevorzugte Sprachen',
     },
     'target': {
       en_US: 'target',
-      de_DE: 'Ziel'
+      de_DE: 'Ziel',
     },
     'unit': {
       en_US: 'unit',
-      de_DE: 'Einheit'
+      de_DE: 'Einheit',
     },
     'Financial': {
       en_US: 'Financial',
-      de_DE: 'Finanzen'
+      de_DE: 'Finanzen',
     },
     'facebook': {
       en_US: 'facebook',
-      de_DE: ''
+      de_DE: '',
     },
     'twitter': {
       en_US: 'twitter',
-      de_DE: ''
+      de_DE: '',
     },
     'telegram': {
       en_US: 'telegram',
-      de_DE: ''
+      de_DE: '',
     },
     'website': {
       en_US: 'website',
-      de_DE: 'webseite'
+      de_DE: 'webseite',
     },
     'email': {
       en_US: 'email',
-      de_DE: 'Email'
+      de_DE: 'Email',
     },
     'Social': {
       en_US: 'Social',
-      de_DE: 'Kontakt'
+      de_DE: 'Kontakt',
     },
     'Entity Ethereum Address': {
       en_US: 'Entity Ethereum Address',
-      de_DE: 'Ethereum Addresse'
+      de_DE: 'Ethereum Addresse',
     },
     'Receiving Ethereum Address': {
       en_US: 'Receiving Ethereum Address',
-      de_DE: 'Ethereum Addresse (eingehend)'
+      de_DE: 'Ethereum Addresse (eingehend)',
     },
     'App Language': {
       en_US: 'App Language',
-      de_DE: 'App Sprache'
-    }
+      de_DE: 'App Sprache',
+    },
   },
   'interaction': {
     'Connect a crypto wallet': {
       en_US: 'Connect a crypto wallet',
-      de_DE: 'Verbinde Dein Crypto Wallet'
+      de_DE: 'Verbinde Dein Crypto Wallet',
     },
     'Ask a friend to transfer 1 VALUE to progress your verification.': {
       en_US: 'Ask a friend to transfer 1 VALUE to progress your verification.',
-      de_DE: 'Bitte eine_n Freund_in 1 VALUE zu überweisen, um Deine Verifizierung weiter zu bringen.'
+      de_DE: 'Bitte eine_n Freund_in 1 VALUE zu überweisen, um Deine Verifizierung weiter zu bringen.',
     },
     'Verify with BrightID to receive VALUE basic income.': {
       en_US: 'Verify with BrightID to receive VALUE basic income.',
-      de_DE: 'Verifiziere Deine BrightID, um VALUE Grundeinkommen zu erhalten.'
+      de_DE: 'Verifiziere Deine BrightID, um VALUE Grundeinkommen zu erhalten.',
     },
   },
   'placeholder': {
     'Send message or funds': {
       en_US: 'Send message or funds',
-      de_DE: 'Nachricht oder Betrag senden'
-    }
+      de_DE: 'Nachricht oder Betrag senden',
+    },
   },
   'app': {
 
@@ -197,7 +197,7 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'modal': {
     close: {
       en_US: 'close',
-      de_DE: 'schließen'
+      de_DE: 'schließen',
     },
   },
   'trigger': {
@@ -206,20 +206,20 @@ const VTranslations = // eslint-disable-line no-unused-vars
   'account': {
     from: {
       en_US: 'From',
-      de_DE: 'Von'
+      de_DE: 'Von',
     },
     to: {
       en_US: 'To',
-      de_DE: 'An'
+      de_DE: 'An',
     },
     date: {
       en_US: 'Date',
-      de_DE: 'Datum'
+      de_DE: 'Datum',
     },
     block: {
       en_US: 'Block',
-      de_DE: 'Block'
-    }
+      de_DE: 'Block',
+    },
   },
   'chat': {
 
@@ -238,6 +238,6 @@ const VTranslations = // eslint-disable-line no-unused-vars
   },
   'launch': {
 
-  }
+  },
 
 };

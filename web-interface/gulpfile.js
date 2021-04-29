@@ -29,6 +29,7 @@ const gulp = require( 'gulp' ),
 
 function vcore() {
   return gulp.src( [
+    './app/vcore/src/v/v-config.js',
     './app/vcore/dependencies/primary/*.js',
     './app/vcore/src/dom/*.js',
     './app/vcore/src/endpoint/*.js',
@@ -42,8 +43,8 @@ function vcore() {
     .pipe( concat( 'vcore.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/vcore/builds' ) );
@@ -59,8 +60,25 @@ function vevm() {
     .pipe( concat( 'vevm.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
+    } ) )
+    // .pipe( gzip() )
+    .pipe( gulp.dest( './app/vcore/builds' ) );
+  // .pipe( browsersync.stream() );
+}
+
+function vchat() {
+  return gulp.src( [
+    './app/vcore/dependencies/secondary/firebase-app.js',
+    './app/vcore/dependencies/secondary/firebase-database.js',
+    './app/vcore/dependencies/secondary/firebase-chat-init.js',
+  ] )
+    .pipe( concat( 'vchat.min.js' ) )
+    .pipe( terser( {
+      mangle: {
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/vcore/builds' ) );
@@ -74,8 +92,8 @@ function vtheme() {
     .pipe( concat( 'vtheme.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/theme/builds' ) );
@@ -84,13 +102,14 @@ function vtheme() {
 
 function vplugins() {
   return gulp.src( [
+    './app/plugins/dependencies/leaflet.js',
     './app/plugins/src/**/*.js',
   ] )
     .pipe( concat( 'vplugins.min.js' ) )
     .pipe( terser( {
       mangle: {
-        toplevel: false
-      }
+        toplevel: false,
+      },
     } ) )
     // .pipe( gzip() )
     .pipe( gulp.dest( './app/plugins/builds' ) );
@@ -128,6 +147,10 @@ function watchVEvm() {
   gulp.watch( './app/vcore/src/ledger/secondary/*.js', vevm );
 }
 
+function watchVChat() {
+  gulp.watch( './app/vcore/src/ledger/secondary/*.js', vchat );
+}
+
 function watchVTheme() {
   gulp.watch( './app/theme/src/**/*.js', vtheme );
 }
@@ -143,6 +166,7 @@ function watchCss() {
 gulp.task( 'default', gulp.parallel(
   gulp.series( vcore, watchVCore ),
   gulp.series( vevm, watchVEvm ),
+  gulp.series( vchat, watchVChat ),
   gulp.series( vtheme, watchVTheme ),
   gulp.series( vplugins, watchVPlugins ),
   gulp.series( css, watchCss ),
@@ -150,6 +174,7 @@ gulp.task( 'default', gulp.parallel(
 
 gulp.task( 'vcore', gulp.series( vcore, watchVCore ) );
 gulp.task( 'vevm', gulp.series( vevm, watchVEvm ) );
+gulp.task( 'vchat', gulp.series( vchat, watchVChat ) );
 gulp.task( 'vtheme', gulp.series( vtheme, watchVTheme ) );
 gulp.task( 'vplugins', gulp.series( vplugins, watchVPlugins ) );
 gulp.task( 'css', gulp.series( css, watchCss ) );

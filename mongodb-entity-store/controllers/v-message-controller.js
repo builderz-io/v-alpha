@@ -14,12 +14,12 @@ exports.set = function( req, res ) {
     msg: message,
     sender: sender,
     // senderTag: 'test', //socket.userTag,
-    time: date
+    time: date,
   } );
 
   telegramNotification( {
     msg: 'Someone wrote in',
-    network: systemInit.communityGovernance.commName
+    network: systemInit.communityGovernance.commName,
   } );
 
   newMessage.save( function( err ) {
@@ -35,7 +35,7 @@ exports.set = function( req, res ) {
 
       res( {
         success: true,
-        status: 'new message saved'
+        status: 'new message saved',
       } );
     }
   } );
@@ -55,7 +55,7 @@ exports.get = function( req, res ) {
       res( {
         success: true,
         status: 'messages retrieved',
-        data: [messages]
+        data: [messages],
       } );
     }
   } );

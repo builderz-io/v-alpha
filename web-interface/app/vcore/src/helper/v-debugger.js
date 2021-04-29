@@ -24,11 +24,12 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   const sessionNr = Date.now();
 
-  console.log( 'NEW SESSION' );
-  console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
-  console.log( '', new Date().toString() );
+  console.log( '*** NEW SESSION ***' );
   console.log( '', window.location.href );
+  console.log( '', new Date().toString() );
   console.log( '', navigator.userAgent );
+  console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '*** NEW SESSION END ***' );
 
   function handleConsoleMessage( msg, data ) {
     queue.push( ' ' + msg + ( typeof data == 'string' ? data : data ? JSON.stringify( data ) : '' ) );
@@ -65,12 +66,12 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
         'padding': '10px',
         'list-style': 'none',
         'max-height': '410px',
-        'overflow-y': 'scroll'
-      }
+        'overflow-y': 'scroll',
+      },
     },
     html: VDom.setNode( {
-      tag: 'ul'
-    } )
+      tag: 'ul',
+    } ),
   } );
 
   $debug.addEventListener( 'click', function() {
@@ -97,7 +98,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   V.debug = debug;
 
   return {
-    debug: debug
+    debug: debug,
   };
 
 } )();

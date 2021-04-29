@@ -24,8 +24,8 @@ var txSchema = mongoose.Schema( {
     txType: String,
     title: String,
     fromAddress: String,
-    toAddress: String
-  }]
+    toAddress: String,
+  }],
 } );
 
 module.exports = mongoose.model( 'Transaction', txSchema );

@@ -7,19 +7,25 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  let tempAuth;
+
   /* ================== private methods ================= */
 
-  function view( which ) {
+  function view( which, data ) {
 
     const $modal = ModalComponents.modal();
 
     if ( which == 'entity found' ) {
+
       V.setNode( $modal, ModalComponents.entityFound(
         V.aE(),
-        V.aA(),
+        V.cA(),
+        tempAuth ? tempAuth.uPhrase : false,
         V.getSetting( 'coinTicker' ),
-        V.getSetting( 'tokenTicker' )
+        V.getSetting( 'tokenTicker' ),
       ) );
+
+      tempAuth = undefined; // reset after joining
     }
     else if ( which == 'entity not found' ) {
       V.setNode( $modal, ModalComponents.entityNotFound() );
@@ -48,6 +54,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'loggedOut' ) );
     }
+    else if ( which == 'confirm uPhrase' ) {
+      V.setNode( $modal, ModalComponents.confirmUPhrase() );
+    }
     else if ( which == 'disconnect' ) {
       V.setNode( $modal, ModalComponents.disconnect() );
     }
@@ -72,6 +81,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == '404' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );
     }
+    else if ( which == 'validation error' ) {
+      V.setNode( $modal, ModalComponents.validationError( data ) );
+    }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'error' ) );
     }
@@ -82,12 +94,17 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( which ) {
-    view( which );
+  function draw( which, data ) {
+    view( which, data );
+  }
+
+  function setTempAuth( data ) {
+    tempAuth = data;
   }
 
   return {
     draw: draw,
+    setTempAuth: setTempAuth,
   };
 
 } )();

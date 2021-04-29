@@ -210,9 +210,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function reset() {
-    DOM.$topcontent.innerHTML = '';
-    DOM.$topslider.innerHTML = '';
-    DOM.$listings.innerHTML = '';
+    DOM.$topcontent.textContent = '';
+    DOM.$topslider.textContent = '';
+    DOM.$listings.textContent = '';
   }
 
   /* ============ public methods and exports ============ */
@@ -227,7 +227,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    draw: draw
+    draw: draw,
   };
 
 } )();

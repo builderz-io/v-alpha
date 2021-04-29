@@ -9,8 +9,8 @@ var entitySchema = mongoose.Schema( {
     evmCredentials: {
       address: String,
       privateKey: String,
-      issuer: String
-    }
+      issuer: String,
+    },
   },
   profile: {
     fullId: String, // name + tag, e.g. 'Jane Wood #2121'
@@ -27,13 +27,13 @@ var entitySchema = mongoose.Schema( {
         block: Number,
         rpc: String,
         contract: String,
-      }
+      },
     },
-    uuidV4: String
+    uuidV4: String,
   },
   paths: {
     entity: String, // name + tag in path format, e.g. '/profile/jane-wood-2121'
-    base64: String // shall be immutable, the uuidV4 encoded as base64, e.g. '/eBp0cCNDT1aBZqTu4mFeFQ'
+    base64: String, // shall be immutable, the uuidV4 encoded as base64, e.g. '/eBp0cCNDT1aBZqTu4mFeFQ'
   },
   status: {
     active: Boolean,
@@ -44,7 +44,7 @@ var entitySchema = mongoose.Schema( {
   },
   evmCredentials: {
     address: String,
-    issuer: String
+    issuer: String,
   },
   symbolCredentials: {
     rawAddress: String,
@@ -113,7 +113,7 @@ var entitySchema = mongoose.Schema( {
     confirmation: {
       time: Number,
       sixDigit: Number,
-    }
+    },
   },
   questionnaire: {
     q1: String,

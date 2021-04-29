@@ -16,12 +16,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'display': 'flex',
       'justify-content': 'space-evenly',
       'width': '190px',
-      'padding': '25px 0'
+      'padding': '25px 0',
     },
     'pool__funding-pie': {
       'stroke-width': '50',
       'fill': '#ddd',
-      'stroke': 'rgb(65, 183, 135)'
+      'stroke': 'rgb(65, 183, 135)',
     },
     'pool__funding-chart': {
       'margin': '23px 0 0 4px',
@@ -33,7 +33,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'pool__spending-pie': {
       'stroke-width': '50',
       'fill': '#ddd',
-      'stroke': 'rgb(99, 82, 185)'
+      'stroke': 'rgb(99, 82, 185)',
     },
     'pool__spending-chart': {
       'margin': '23px 0 0 4px',
@@ -43,7 +43,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': '#ddd',
     },
     'td-right': {
-      'max-width': '205px'
+      'max-width': '205px',
     },
     'share-by-email': {
       color: 'gray',
@@ -54,7 +54,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'toggle-switch__input': {
       height: 0,
       width: 0,
-      visibility: 'hidden'
+      visibility: 'hidden',
     },
     'toggle-switch': {
       'cursor': 'pointer',
@@ -78,15 +78,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       'transition': '0.3s',
     },
     'toggle-switch__input:checked + .toggle-switch': {
-      background: '#bada55'
+      background: '#bada55',
     },
     'toggle-switch__input:checked + .toggle-switch:after': {
       left: 'calc(100% - 5px)',
-      transform: 'translateX(-100%)'
+      transform: 'translateX(-100%)',
     },
     'toggle-switch:active:after': {
-      width: '130px'
-    }
+      width: '130px',
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -102,6 +102,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     successFunded: 'Successfully funded',
     noneSpent: 'None yet spent',
     spent: 'Budget spent',
+
+    title: 'Title',
+    tag: 'Tag',
 
     description: 'Description',
     questionnaire: 'Questionnaire',
@@ -120,7 +123,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     img: 'Image',
     holder: 'Holder',
     holderOf: 'Holder of',
+    mappedBy: 'Mapped by',
     accessKeys: 'Access Keys',
+    notAuthenticated: 'not authorized to view',
     deactivated: 'activate',
     activated: 'activated',
     viewMode: 'edit',
@@ -128,7 +133,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     emailSubject: 'Contacting you via',
     emailGreeting: 'Dear',
-    socialSubject: 'is on'
+    socialSubject: 'is on',
   };
 
   function getString( string, scope ) {
@@ -138,12 +143,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleEditProfileDraw( e ) {
-    const path = V.castPathOrId( e.target.innerHTML );
+    const path = V.castPathOrId( e.target.textContent );
     User.draw( path );
   }
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.innerHTML );
+    const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -156,7 +161,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleViewKeyFocus( e ) {
     if ( this.type === 'password' ) {
       this.type = 'text';
-      this.previousSibling.innerHTML = '';
+      this.previousSibling.textContent = '';
       setTimeout( function() {
         e.target.setSelectionRange( 0, 9999 );
       }, 50 );
@@ -164,7 +169,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     else {
       const selection = window.getSelection();
       selection.removeAllRanges();
-      this.previousSibling.innerHTML = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
+      this.previousSibling.textContent = this.value.length > 18 ? '0x' : this.value.length ? 'vx' : '';
       this.type = 'password';
     }
   }
@@ -179,12 +184,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     $list.scrollTo( {
       top: offset,
-      behavior: 'smooth'
+      behavior: 'smooth',
     } );
 
-    DOM.entry = this.value ? this.value : this.innerHTML;
+    DOM.entry = this.value ? this.value : this.textContent;
     if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
-      this.innerHTML = '';
+      this.textContent = '';
       this.value = '';
     }
   }
@@ -199,14 +204,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ============ event handlers (edit entity) ========== */
 
   function handleActive() {
-    setField( 'status.active', this.checked ? true : false ).then( res => {
-      V.getNode( '.active__title' ).innerHTML = this.checked ? ui.activated : ui.deactivated;
+    setField( 'status.active', this.checked ? true : false ).then( () => {
+      V.getNode( '.active__title' ).textContent = this.checked ? ui.activated : ui.deactivated;
     } );
   }
 
   function handleEntry() {
     let str, entry;
-    this.nodeName == 'TEXTAREA' ? str = this.value : str = this.innerHTML;
+    this.nodeName == 'TEXTAREA' ? str = this.value : str = this.textContent;
 
     str = V.stripHtml( str );
     const title = this.getAttribute( 'title' );
@@ -214,7 +219,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( str != DOM.entry ) {
       if ( str == '' ) {
-        this.innerHTML = getString( ui.edit );
+        this.textContent = getString( ui.edit );
         this.value = getString( ui.edit );
         setField( db + '.' + title, '' );
         return;
@@ -226,7 +231,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = split.pop().replace( '@', '' );
       }
       else if ( title == 'email' ) {
-        entry = str.includes( '@' ) ? str.includes( '.' ) ? str : getString( ui.invalid ) : str == '' ? '' : getString( ui.invalid );
+        const regex = new RegExp( /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ );
+        entry = regex.test( str ) ? str : getString( ui.invalid );
       }
       else if ( title == 'youtube' ) {
         // must be a channel, not a video
@@ -256,11 +262,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
 
       if ( entry == getString( ui.invalid ) ) {
-        this.innerHTML = getString( ui.invalid );
+        this.textContent = getString( ui.invalid );
         return;
       }
       else {
-        this.innerHTML = entry;
+        this.textContent = entry;
       }
       setField( db + '.' + title, entry );
     }
@@ -270,25 +276,47 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
     const value = this.value;
-    V.getNode( '.location__curr' ).value = this.value;
+    // V.getNode( '.location__curr' ).value = this.value;
 
     if ( DOM.location.length && value == '' ) {
-      const gen = V.castRandLatLng();
-      setField( 'properties.baseLocation', {
-        lat: gen.lat,
-        lng: gen.lng,
-        value: undefined,
-        rand: true
+      setField( 'geometry.baseLocation', {
+        value: null,
       } );
     }
     else if ( lat ) {
-      setField( 'properties.baseLocation', {
+      setField( 'geometry.baseLocation', {
         lat: lat,
         lng: lng,
         value: value,
-        rand: false
       } ).then( res => {
-        VMap.draw( res.data );
+
+        /** Draw the new map position */
+        if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
+          VMap.draw( res.data );
+        }
+        if ( 'Firebase' == V.getSetting( 'entityLedger' ) && res.data[0] && res.data[0].n ) {
+
+          /** Create GeoJSON object and mixin data from active entity */
+          VMap.draw( [{
+            fullId: V.aE().fullId,
+            path: V.aE().path,
+            profile: {
+              role: V.aE().role,
+            },
+            properties: {
+              description: V.aE().properties.description,
+            },
+            images: {
+              thumbnail: V.aE().images.thumbnail,
+            },
+            geometry: {
+              coordinates: res.data[0].n.a,
+              type: 'Point',
+              rand: false,
+            },
+            type: 'Feature',
+          }] );
+        }
       } );
       // delete lat and lng in order for "if" to work
       this.removeAttribute( 'lat' );
@@ -306,21 +334,40 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleImageUpload( e ) {
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
-        setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
-          setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
-            setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
-              V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
-              V.setNode( '#img-upload-profile__preview', '' );
-              V.setNode( '#img-upload-profile__preview', V.cN( {
-                t: 'img',
-                y: {
-                  'max-width': '100%'
-                },
-                src: res.src
-              } ) );
+        if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
+          setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
+            setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
+              setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
+                V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+                V.setNode( '#img-upload-profile__preview', '' );
+                V.setNode( '#img-upload-profile__preview', V.cN( {
+                  t: 'img',
+                  y: {
+                    'max-width': '100%',
+                  },
+                  src: res.src,
+                } ) );
+              } );
             } );
           } );
-        } );
+        }
+        else if ( 'Firebase' == V.getSetting( 'entityLedger' ) ) {
+          setField( 'images', {
+            tiny: V.getState( 'tinyImageUpload' ),
+            thumb: V.getState( 'thumbnailUpload' ),
+            medium: V.getState( 'mediumImageUpload' ),
+          } ).then( () => {
+            V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+            V.setNode( '#img-upload-profile__preview', '' );
+            V.setNode( '#img-upload-profile__preview', V.cN( {
+              t: 'img',
+              y: {
+                'max-width': '100%',
+              },
+              src: V.getState( 'mediumImageUpload' ).dataUrl,
+            } ) );
+          } );
+        }
       }
     } );
   }
@@ -341,30 +388,35 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
         if ( inner ) {
           switch ( title ) {
-          case 'facebook':
-            linkedInner = '<a href="https://facebook.com/' + inner + '">' + inner + '</a>';
-            break;
-          case 'twitter':
-            linkedInner = '<a href="https://twitter.com/' + inner + '">' + inner + '</a>';
-            break;
-          case 'telegram':
-            linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
-            break;
-          case 'instagram':
-            linkedInner = '<a href="https://www.instagram.com/' + inner + '">' + inner + '</a>';
-            break;
-          case 'tiktok':
-            linkedInner = '<a href="https://tiktok.com/@' + inner + '">' + inner + '</a>';
-            break;
-          case 'youtube':
-            linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
-            break;
+          // case 'facebook':
+          //   linkedInner = '<a href="https://facebook.com/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'twitter':
+          //   linkedInner = '<a href="https://twitter.com/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'telegram':
+          //   linkedInner = '<a href="https://t.me/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'instagram':
+          //   linkedInner = '<a href="https://www.instagram.com/' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'tiktok':
+          //   linkedInner = '<a href="https://tiktok.com/@' + inner + '">' + inner + '</a>';
+          //   break;
+          // case 'youtube':
+          //   linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
+          //   break;
           case 'email':
-            linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.profile.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
+            // linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
+            linkedInner = V.cN( {
+              t: 'a',
+              f: `mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }`,
+              h: inner,
+            } );
             break;
-          case 'website':
-            linkedInner = V.castLinks( inner ).links;
-            break;
+          // case 'website':
+          //   linkedInner = V.castLinks( inner ).links;
+          //   break;
           default:
             linkedInner = inner;
           }
@@ -377,24 +429,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'capitalize',
-              h: getString( title )
+              h: getString( title ),
             },
             setEditable( {
               x: editable,
               t: 'td',
               c: 'td-right txt-right break-words',
               a: { title: title, db: db },
-              h: inner
+              h: inner,
             } ),
             {
               x: !editable,
               t: 'td',
               c: 'td-right txt-right break-words' + ( css ? ' ' + css : '' ),
-              h: inner ? linkedInner : ''
-            }
-          ]
+              h: inner ? linkedInner : '',
+            },
+          ],
         } );
-      } ).filter( item => {return item != ''} )
+      } ).filter( item => item != '' ),
     } );
 
     return $table.firstChild ? $table : null;
@@ -403,7 +455,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function setEditable( obj ) {
     obj.e = {
       focus: handleEntryFocus,
-      blur: handleEntry
+      blur: handleEntry,
     };
     if ( obj.a ) {
       Object.assign( obj.a, { contenteditable: 'true' } );
@@ -421,15 +473,20 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.setEntity( V.getState( 'active' ).lastViewed, {
       field: field,
       data: data,
-      auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
     } ).then( res => {
+      if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
 
-      res.data[0].type = 'Feature'; // needed to populate entity on map
-      res.data[0].properties ? null : res.data[0].properties = {};
-
-      /* also update caches after an edit */
-      updateEntityInCaches( res );
-
+        /* also update caches after an edit */
+        updateEntityInCaches( res );
+      }
+      if ( !res.success /*res.data && res.data[0].error */ ) {
+        if ( res.message.includes( '-200' ) ) {
+          Modal.draw( 'confirm uPhrase' );
+        }
+        else {
+          Modal.draw( 'validation error', res.message );
+        }
+      }
       return res;
     } );
   }
@@ -437,7 +494,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function updateEntityInCaches( response ) {
     ['managedEntities', 'preview', 'viewed'].forEach( cache => {
       if ( !V.getCache( cache ) ) {return}
-      const index = V.getCache( cache ).data.findIndex( item => {return item.fullId == V.getState( 'active' ).lastViewed} );
+      const index = V.getCache( cache ).data.findIndex( item => item.fullId == V.getState( 'active' ).lastViewed );
       V.getCache( cache ).data.splice( index, 1, response.data[0] );
     } );
   }
@@ -449,12 +506,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     editable = data.editable ? true : false;
   }
 
-  function castUphraseNode( phrase, css = '' ) {
+  function castAccessKeyNode( phrase, css = '' ) {
     return V.cN( {
       t: 'div',
       c: 'pxy fs-s' + css,
       h: [
-        { t: 'span', h: phrase.length > 18 ? '0x' : phrase.length ? 'vx' : '' },
+        { t: 'span', h: phrase ? phrase.length > 18 ? '0x' : 'vx' : '' },
         {
           t: 'input',
           c: css,
@@ -463,15 +520,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             type: 'password',
           },
           y: {
-            width: '190px',
-            padding: 0
+            width: '230px',
+            padding: 0,
           },
           e: {
             focus: handleViewKeyFocus,
             blur: handleViewKeyFocus,
-          }
-        }
-      ]
+          },
+        },
+      ],
     } );
 
   }
@@ -483,40 +540,34 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         tag: 'h1',
         class: 'font-bold txt-center pxy',
         html: entity.fullId,
-      }
+      },
     } );
   }
 
   function descriptionCard() {
     const descr = entity.properties ? entity.properties.description : undefined;
+    const filteredDescr = entity.properties ? entity.properties.filteredDescription : undefined;
     if( descr || ( !descr && editable ) ) {
-      const linkedDescr = V.castLinks( descr ? descr.replace( /\n/g, ' <br>' ) : '' ); // needs whitespace before <br>
+      const castDescr = V.castDescription( filteredDescr || descr );
       const $innerContent = V.cN( editable ? {
         t: 'textarea',
         c: 'w-full pxy',
         a: { rows: '8', title: 'description', db: 'properties' },
         e: {
           focus: handleEntryFocus,
-          blur: handleEntry
+          blur: handleEntry,
         },
         h: descr ? descr : getString( ui.edit ),
       } : {
         t: 'div',
         c: 'pxy w-full',
         h: [
-          {
-            x: linkedDescr.socialLinksImages,
-            t: 'div',
-            h: linkedDescr.socialLinksImages
-          },
-          {
-            t: 'div',
-            c: 'mt-xs',
-            h: linkedDescr.omitOriginalSocialLinks
-          }
-        ]
+          castDescr.$feature,
+          castDescr.$socialUl,
+          castDescr.$description,
+        ],
       } );
-      return castCard( $innerContent, editable ? getString( ui.description ) : entity.profile.role );
+      return castCard( $innerContent, editable ? getString( ui.description ) : entity.role );
     }
     else {
       return '';
@@ -524,14 +575,25 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function questionnaireCard() {
-    const questions = V.getSetting( 'neQuestionnaire' );
+    const questions = V.getSetting( 'questionnaire' );
+
+    if ( !questions ) { return '' }
+
     const responses = entity.questionnaire;
 
-    if ( ['business', 'institution'].includes( entity.profile.role ) && ( responses || editable ) ) {
+    let count = 0;
+
+    for ( const question in responses ) {
+      if ( responses.hasOwnProperty( question ) ) {
+        responses[question] ? count += 1 : null;
+      }
+    }
+
+    if ( ['Business', 'Institution'].includes( entity.role ) && ( count || editable ) ) {
       const $innerContent = V.cN( {
         t: 'div',
         h: questions.map( question => {
-          const response = responses ? responses['q' + question.qid] || false : false;
+          const response = responses['q' + question.qid] || false;
           return V.cN( {
             t: 'div',
             h: [
@@ -539,7 +601,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 x: editable || response,
                 t: 'h3',
                 c: 'font-bold pxy AAA',
-                h: question.q
+                h: question.q,
               },
               {
                 x: editable,
@@ -548,7 +610,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: { title: 'q' + question.qid, db: 'questionnaire' },
                 e: {
                   focus: handleEntryFocus,
-                  blur: handleEntry
+                  blur: handleEntry,
                 },
                 h: response ? response : getString( ui.edit ),
               },
@@ -556,11 +618,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 x: !editable && response,
                 t: 'div',
                 c: 'pxy CCC',
-                h: V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).iframes,
-              }
-            ]
+                h: response, // V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).links,
+              },
+            ],
           } );
-        } )
+        } ),
       } );
       return castCard( $innerContent, getString( ui.questionnaire ) );
     }
@@ -593,8 +655,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function managementCard() {
     if (
-      V.getState( 'activeEntity' ) &&
-      V.getState( 'activeEntity' ).adminOf.includes( V.getState( 'active' ).lastViewed )
+      V.aE() &&
+      (
+        V.getLastViewed().holders.includes( V.aE().fullId ) // || // new model
+        // V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
+      )
     ) {
 
       const active = entity.status.active;
@@ -613,24 +678,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'toggle-switch__input',
                 a: {
                   type: 'checkbox',
-                  checked: active ? true : false
+                  checked: active ? true : false,
                 },
                 e: {
-                  change: handleActive
-                }
+                  change: handleActive,
+                },
               },
               {
                 t: 'label',
                 c: 'toggle-switch',
                 a: { for: 'active' },
-                h: 'toggle'
+                h: 'toggle',
               },
               {
                 t: 'p',
                 c: 'active__title fs-xs pxy',
-                h: getString( active ? ui.activated : ui.deactivated )
+                h: getString( active ? ui.activated : ui.deactivated ),
               },
-            ]
+            ],
           },
           {
             t: 'div',
@@ -642,26 +707,26 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'toggle-switch__input',
                 a: {
                   type: 'checkbox',
-                  checked: editable ? true : false
+                  checked: editable ? true : false,
                 },
                 e: {
-                  change: handleViewMode
-                }
+                  change: handleViewMode,
+                },
               },
               {
                 t: 'label',
                 c: 'toggle-switch',
                 a: { for: 'view-mode' },
-                h: 'toggle'
+                h: 'toggle',
               },
               {
                 t: 'p',
                 c: 'active__title fs-xs pxy',
-                h: getString( editable ? ui.editMode : ui.viewMode )
+                h: getString( editable ? ui.editMode : ui.viewMode ),
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       } ) );
 
       return castCard( $innerContent, getString( ui.management ) );
@@ -672,13 +737,20 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function accessKeysCard() {
-    const uPhrase = entity.private.uPhrase;
+    const uPhrase = entity.auth ? entity.auth.uPhrase : undefined;
+    const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
+
     const $innerContent = V.cN( { t: 'div' } );
 
     if( uPhrase ) {
-      V.setNode( $innerContent, V.cN( { t: 'div', h: castUphraseNode( uPhrase ) } ) );
+      V.setNode( $innerContent, V.cN( { t: 'div', h: castAccessKeyNode( uPhrase ) } ) );
     }
-
+    else {
+      V.setNode( $innerContent, V.cN( { t: 'div', c: 'pxy fs-s', h: getString( ui.notAuthenticated ) } ) );
+    }
+    if( privateKey ) {
+      V.setNode( $innerContent, V.cN( { t: 'div', h: castAccessKeyNode( privateKey ) } ) );
+    }
     return castCard( $innerContent, getString( ui.accessKeys ) );
   }
 
@@ -733,7 +805,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function locationCard() {
-    const loc = entity.properties ? entity.properties.baseLocation || entity.properties.currentLocation : undefined;
+    const loc = entity.geometry ? entity.geometry.baseLocation || entity.geometry.currentLocation : undefined;
 
     if( loc || ( !loc && editable ) ) {
       const $innerContent = V.cN( {
@@ -751,36 +823,36 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: { value: loc },
                 e: {
                   focus: handleBaseLocationFocus,
-                  blur: handleBaseLocation
-                }
+                  blur: handleBaseLocation,
+                },
               } : {
                 t: 'p',
                 c: 'location__base pxy txt-right',
-                h: loc
+                h: loc,
               },
-            ]
+            ],
           },
-          {
-            t: 'tr',
-            h: [
-              { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
-              editable ? {
-                t: 'input',
-                c: 'location__curr pxy w-full txt-right',
-                a: {
-                  value: loc
-                },
-                e: {
-                // focus: handleBaseLocationFocus,
-                // blur: handleBaseLocation
-                }
-              } : {
-                t: 'p',
-                c: 'location__curr pxy txt-right',
-                h: loc
-              },
-            ]
-          },
+          // {
+          //   t: 'tr',
+          //   h: [
+          //     { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
+          //     editable ? {
+          //       t: 'input',
+          //       c: 'location__curr pxy w-full txt-right',
+          //       a: {
+          //         value: loc,
+          //       },
+          //       e: {
+          //       // focus: handleBaseLocationFocus,
+          //       // blur: handleBaseLocation
+          //       },
+          //     } : {
+          //       t: 'p',
+          //       c: 'location__curr pxy txt-right',
+          //       h: loc,
+          //     },
+          //   ],
+          // },
           // {
           //   t: 'tr',
           //   h: [
@@ -797,7 +869,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           //     },
           //   ]
           // }
-        ]
+        ],
       } );
       return castCard( $innerContent, getString( ui.loc ) );
     }
@@ -807,62 +879,136 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityCard() {
-    const titles = ['title', 'tag' /*, 'role' */];
-    const db = 'profile';
-    const $innerContent = castTableNode( titles, db, false, 'capitalize' );
+    // const titles = ['title', 'tag' /*, 'role' */];
+    // const db = 'profile';
+    // const $innerContent = castTableNode( titles, db, false, 'capitalize' );
+    const holders = V.castJson( entity.holders, 'clone' );
+    holders.splice( holders.indexOf( entity.fullId ), 1 );
 
-    // get owner into view
-    let $owner;
-    if (
-      entity.profile.title != entity.owners[0].ownerName &&
-      entity.profile.tag != entity.owners[0].ownerTag
-    ) {
-      $owner = V.cN( {
-        t: 'table',
-        c: 'pxy w-full',
-        h: {
+    const $innerContent = V.cN( {
+      t: 'table',
+      c: 'pxy w-full',
+      h: [
+        {
           t: 'tr',
           h: [
             {
               t: 'td',
-              h: getString( ui.holder )
+              h: getString( ui.title ),
+            },
+            setEditable( {
+              x: editable,
+              t: 'td',
+              c: 'txt-right',
+              h: entity.title,
+              a: { title: 'title', db: 'profile' },
+            } ),
+            {
+              x: !editable,
+              t: 'td',
+              c: 'txt-right',
+              h: entity.title,
+            },
+          ],
+        },
+        {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: getString( ui.tag ),
+            },
+            {
+              t: 'td',
+              c: 'txt-right',
+              h: entity.tag,
+            },
+          ],
+        },
+        {
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+            },
+            {
+              t: 'td',
+              c: 'txt-right',
+              h: entity.role,
+            },
+          ],
+        },
+        {
+          x: holders.length >= 1,
+          t: 'tr',
+          h: [
+            {
+              t: 'td',
+              h: entity.role == 'Person' ? getString( ui.mappedBy ) : getString( ui.holder ),
             },
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
-              h: entity.owners[0].ownerName + ' ' + entity.owners[0].ownerTag,
-              k: handleProfileDraw
-            }
-          ]
-        }
-      } );
-    }
-    else {
-      $owner = '';
-    }
-    const $combined = V.cN( { t: 'div', c: 'w-full' } );
-    V.setNode( $combined, [$innerContent, $owner] );
+              h: holders.join( ' & ' ),
+              k: handleProfileDraw,
+            },
+          ],
+        },
+      ],
+    } );
 
-    return castCard( $combined, getString( ui.entity ) );
+    // get holders into view
+    // const holders = V.castJson( entity.holders, 'clone' );
+    // holders.splice( holders.indexOf( entity.fullId ), 1 );
+    // let $holders;
+    // if (
+    //   holders.length
+    // ) {
+    //   $holders = V.cN( {
+    //     t: 'table',
+    //     c: 'pxy w-full',
+    //     h: {
+    //       t: 'tr',
+    //       h: [
+    //         {
+    //           t: 'td',
+    //           h: getString( ui.holder ),
+    //         },
+    //         {
+    //           t: 'td',
+    //           c: 'txt-right cursor-pointer',
+    //           h: holders.join( ' & ' ),
+    //           k: handleProfileDraw,
+    //         },
+    //       ],
+    //     },
+    //   } );
+    // }
+    // else {
+    //   $holders = '';
+    // }
+    // const $combined = V.cN( { t: 'div', c: 'w-full' } );
+    // V.setNode( $combined, [$innerContent, $holders] );
+
+    return castCard( $innerContent, getString( ui.entity ) );
   }
 
-  function adminOfCard() {
-    const adminOf = entity.adminOf.slice( 1 );
+  function holderOfCard() {
+    const holderOf = V.castJson( entity.holderOf, 'clone' );
+    holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
 
-    if ( !adminOf.length ) {
+    if ( !holderOf.length ) {
       return '';
     }
 
     const $innerContent = V.cN( {
       t: 'div',
-      h: adminOf.map( item => {
-        return V.cN( {
-          t: 'p',
-          c: 'pxy cursor-pointer',
-          h: item,
-          k: handleProfileDraw
-        } );
-      } )
+      h: holderOf.map( item => V.cN( {
+        t: 'p',
+        c: 'pxy cursor-pointer',
+        h: item,
+        k: handleProfileDraw,
+      } ) ),
     } );
     return castCard( $innerContent, getString( ui.holderOf ) );
   }
@@ -882,19 +1028,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function socialCard() {
-    const titles = [/*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */ 'email'];
-    const db = 'social';
+    const titles = ['email' /*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */];
+    const db = 'properties';
     const $innerContent = castTableNode( titles, db, editable );
     return $innerContent ? castCard( $innerContent, getString( ui.contact ) ) : '';
   }
 
   function entityListCard( entity ) {
-    const uPhrase = entity.private.uPhrase;
-    const privateKey = entity.private.evmCredentials ? entity.private.evmCredentials.privateKey || '' : '';
+    const uPhrase = entity.auth ? entity.auth.uPhrase : '';
+    const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
 
     const $cardContentFrame = V.cN( {
       t: 'div',
-      c: 'contents'
+      c: 'contents',
     } );
 
     const $topLeft = V.cN( {
@@ -905,9 +1051,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'pxy fs-s font-bold capitalize cursor-pointer',
-          h: entity.profile.role,
+          h: entity.role,
         },
-      ]
+      ],
     } );
 
     const $topRight = V.cN( {
@@ -918,16 +1064,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'h2',
           c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
-          k: handleEditProfileDraw
+          k: handleEditProfileDraw,
         },
         {
           t: 'p',
           c: 'pxy fs-s capitalize',
           h: getString( ui.accessKeys ),
         },
-        castUphraseNode( uPhrase ),
-        castUphraseNode( privateKey )
-      ]
+        castAccessKeyNode( uPhrase ),
+        castAccessKeyNode( privateKey ),
+      ],
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight ] );
@@ -951,13 +1097,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               value: 'en_US',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'en_US' ? true : false
+              checked: appLang == 'en_US' ? true : false,
             },
-            k: handleRadioEntry
+            k: handleRadioEntry,
           },
           {
             t: 'span',
-            h: '🇬🇧'
+            h: '🇬🇧',
           },
           {
             t: 'input',
@@ -967,15 +1113,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               value: 'de_DE',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'de_DE' ? true : false
+              checked: appLang == 'de_DE' ? true : false,
             },
-            k: handleRadioEntry
+            k: handleRadioEntry,
           },
           {
             t: 'span',
-            h: '🇩🇪'
+            h: '🇩🇪',
           },
-        ]
+        ],
       } );
       return castCard( $innerContent, getString( ui.lang ) );
     }
@@ -991,7 +1137,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    if ( entity.profile.role == 'pool' ) {
+    if ( entity.role == 'Pool' ) {
 
       const i18n = {
         strPfPg432: getString( ui.notFunded ),
@@ -1035,13 +1181,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'tr',
-            h: [ { t: 'td', h: svgFunded }, { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ]
+            h: [ { t: 'td', h: svgFunded }, { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ],
           },
           {
             t: 'tr',
-            h: [ { t: 'td', h: svgSpent }, { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ]
-          }
-        ]
+            h: [ { t: 'td', h: svgSpent }, { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ],
+          },
+        ],
       } );
 
       return castCard( $innerContent, getString( ui.funding ) );
@@ -1056,9 +1202,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const $img = V.castEntityThumbnail( entity.mediumImage  ).img;
       return V.cN( {
         t: 'li',
-        h: $img
+        h: $img,
       } );
       // return castCard( $img, '' );
+    }
+    else if ( entity.images.mediumImage ) { // new model
+      return V.cN( {
+        t: 'li',
+        h: {
+          t: 'img',
+          src: entity.images.mediumImage,
+        },
+      } );
     }
     else {
       return '';
@@ -1072,16 +1227,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'h3',
         c: 'pxy txt-center capitalize',
-        h: entity.profile.role
-      }
+        h: entity.role,
+      },
     } );
   }
 
   function addOrChangeImage() {
     let $innerContent;
 
-    if( entity.mediumImage ) {
-      const img = V.castEntityThumbnail( entity.mediumImage ).img;
+    if( entity.mediumImage || ( entity.images && entity.images.mediumImage ) ) {
+      // const img = V.castEntityThumbnail( entity.mediumImage ).img;
       $innerContent = V.castNode( {
         t: 'div',
         c: 'pxy',
@@ -1089,7 +1244,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'div',
             i: 'img-upload-profile__preview',
-            h: img
+            h: entity.mediumImage
+              ? V.castEntityThumbnail( entity.mediumImage ).img
+              : {
+                t: 'img',
+                y: {
+                  'max-width': '100%',
+                },
+                src: entity.images.mediumImage,
+              },
           },
           {
             t: 'div',
@@ -1102,7 +1265,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   for: 'img-upload-profile__file',
                 },
-                h: getString( ui.chgImg )
+                h: getString( ui.chgImg ),
               },
               {
                 t: 'input',
@@ -1110,13 +1273,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'hidden',
                 a: {
                   type: 'file',
-                  accept: 'image/*'
+                  accept: 'image/*',
                 },
                 e: {
-                  change: handleImageUpload
-                }
-              }
-            ]
+                  change: handleImageUpload,
+                },
+              },
+            ],
           },
           // {
           //   t: 'p',
@@ -1140,7 +1303,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               for: 'img-upload-profile__file',
             },
-            h: getString( ui.edit )
+            h: getString( ui.edit ),
           },
           {
             t: 'input',
@@ -1148,17 +1311,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             c: 'hidden',
             a: {
               type: 'file',
-              accept: 'image/*'
+              accept: 'image/*',
             },
             e: {
-              change: handleImageUpload
-            }
+              change: handleImageUpload,
+            },
           },
           {
             t: 'div',
             i: 'img-upload-profile__preview',
-          }
-        ]
+          },
+        ],
       } );
     }
 
@@ -1168,9 +1331,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function socialShareButtons() {
     // https://sharingbuttons.io/
-    const subject = `${entity.profile.title}%20${ getString( ui.socialSubject.replace( ' ', '%20' ) ) }%20${ window.location.hostname }`;
-    const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.paths.entity}`;
-    const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
+    const subject = ( `${entity.title}%20${ getString( ui.socialSubject ) }${ window.location.hostname }` ).replace( /\s/g, '%20' ); // getString adds a whitespace
+    const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.path}`;
+    // const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
     return V.cN( {
       t: 'div',
@@ -1179,7 +1342,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'pxy fs-s txt-center',
-          h: 'share this profile on'
+          h: 'share this profile on',
         },
         {
           t: 'div',
@@ -1187,46 +1350,71 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             'sharing-button__icon svg': {
               'width': '1em',
               'height': '1em',
-              'margin-right': '1.4em'
+              'margin-right': '1.4em',
             },
             'sharing-button__icon--solid': {
-              fill: 'rgba(var(--brandPrimary), 1)'
-            }
+              fill: 'rgba(var(--brandPrimary), 1)',
+            },
           },
-          h: `
-
-      <a class="inline-block pxy" href="https://facebook.com/sharer/sharer.php?u=${ profileLink }" target="_blank" rel="noopener">
-        <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
-          </div>
-        </div>
-      </a>
-
-      <a class="inline-block pxy" href="https://twitter.com/intent/tweet/?text=${ subject }&amp;url=${ profileLink }" target="_blank" rel="noopener">
-        <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
-          </div>
-        </div>
-      </a>
-
-      <a class="inline-block pxy" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2F${ window.location.hostname }&amp;title=${ subject }&amp;summary=${ subject }&amp;source=${ profileLink }" target="_blank" rel="noopener">
-        <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z"/></svg>
-          </div>
-        </div>
-      </a>
-
-      <a class="inline-block pxy" href="https://telegram.me/share/url?text=${ subject }&amp;url=${ profileLink }" target="_blank" rel="noopener">
-        <div class="pxy"><div aria-hidden="true" class="sharing-button__icon sharing-button__icon--solid">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.707 8.475C.275 8.64 0 9.508 0 9.508s.284.867.718 1.03l5.09 1.897 1.986 6.38a1.102 1.102 0 0 0 1.75.527l2.96-2.41a.405.405 0 0 1 .494-.013l5.34 3.87a1.1 1.1 0 0 0 1.046.135 1.1 1.1 0 0 0 .682-.803l3.91-18.795A1.102 1.102 0 0 0 22.5.075L.706 8.475z"/></svg>
-          </div>
-        </div>
-      </a>
-
-      <a class="share-by-email font-bold" href="mailto:?subject=${ subject }&amp;body=Profile:%20${ profileLink }${ activeUserLink }">@</a>
-
- `
-        }]
+          h: [
+            {
+              link: `https://facebook.com/sharer/sharer.php?u=${ profileLink }`,
+              icon: 'M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z',
+            },
+            {
+              link: `https://twitter.com/intent/tweet/?text=${ subject }&url=${ profileLink }`,
+              icon: 'M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z',
+            },
+            {
+              link: `https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2F${ window.location.hostname }&amp;title=${ subject }&amp;summary=${ subject }&amp;source=${ profileLink }`,
+              icon: 'M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z',
+            },
+            {
+              link: `https://telegram.me/share/url?text=${ subject }&url=${ profileLink }`,
+              icon: 'M.707 8.475C.275 8.64 0 9.508 0 9.508s.284.867.718 1.03l5.09 1.897 1.986 6.38a1.102 1.102 0 0 0 1.75.527l2.96-2.41a.405.405 0 0 1 .494-.013l5.34 3.87a1.1 1.1 0 0 0 1.046.135 1.1 1.1 0 0 0 .682-.803l3.91-18.795A1.102 1.102 0 0 0 22.5.075L.706 8.475z',
+            },
+          ]
+            .map( network => ( {
+              t: 'a',
+              c: 'inline-block pxy',
+              f: network.link,
+              a: {
+                target: '_blank',
+                rel: 'noopener',
+              },
+              h: {
+                t: 'div',
+                c: 'pxy',
+                h: {
+                  t: 'div',
+                  c: 'sharing-button__icon sharing-button__icon--solid',
+                  h: {
+                    svg: true,
+                    t: 'svg',
+                    a: {
+                      viewBox: '0 0 24 24',
+                    },
+                    h: {
+                      svg: true,
+                      t: 'path',
+                      a: {
+                        d: network.icon,
+                      },
+                    },
+                  },
+                },
+              },
+            } ) )
+            .concat( [
+              V.cN( {
+                t: 'a',
+                c: 'share-by-email inline-block pxy font-bold',
+                f: `mailto:?subject=${ subject }&body=Profile:%20${ profileLink }`, // optionally add ${ activeUserLink }
+                h: '@',
+              } ),
+            ] ),
+        },
+      ],
     } );
   }
 
@@ -1239,7 +1427,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     setData: setData,
-    castUphraseNode: castUphraseNode,
+    castAccessKeyNode: castAccessKeyNode,
     topcontent: topcontent,
     descriptionCard: descriptionCard,
     questionnaireCard: questionnaireCard,
@@ -1249,7 +1437,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     evmReceiverAddressCard: evmReceiverAddressCard,
     locationCard: locationCard,
     entityCard: entityCard,
-    adminOfCard: adminOfCard,
+    holderOfCard: holderOfCard,
     entityListCard: entityListCard,
     financialCard: financialCard,
     socialCard: socialCard,
@@ -1259,7 +1447,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     mediumImageCard: mediumImageCard,
     roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,
-    socialShareButtons: socialShareButtons
+    socialShareButtons: socialShareButtons,
   };
 
 } )();

@@ -11,39 +11,38 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
+    // if (
+    //   isNaN( Number( which.slice( -4 ) ) ) ||
+    //   which.slice( -5, -4 ) != '-'
+    // ) {
+    //   return V.successFalse( 'validate profile link' );
+    // }
+    const cache = V.getCache( 'viewed' );
+    const now = Date.now();
+
     if (
-      isNaN( Number( which.slice( -4 ) ) ) ||
-      which.slice( -5, -4 ) != '-'
+      cache &&
+      ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
     ) {
-      return {
-        success: null,
-        status: 'not a valid profile link'
-      };
+      V.setCache( 'viewed', 'clear' );
     }
-
-    const fullId = V.castPathOrId( which );
-
-    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => {
-      return entity.path == which;
-    } ) : undefined;
 
     let query;
 
+    const inCache = V.getViewed( which );
+
     if ( inCache ) {
-      query = {
-        success: true,
-        message: 'cache used',
-        data: [inCache]
-      };
+      query = V.successTrue( 'used cache', inCache );
     }
     else {
-      query = await V.getEntity( fullId ).then( res => {
+      query = await V.getEntity(
+        which.length == 22 && // checks whether which is a uuidE or a path
+        isNaN( Number( which.slice( -5 ) ) )
+          ? which
+          : V.castPathOrId( which )
+      ).then( res => {
         if ( res.success ) {
-
-          res.data[0].type = 'Feature'; // needed to populate entity on map
-          res.data[0].properties ? null : res.data[0].properties = {};
-
-          V.setCache( 'viewed', res.data );
+          V.setCache( 'viewed', res.data ); // pass array
 
           return res;
         }
@@ -57,7 +56,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       const entity = query.data[0];
 
-      V.setState( 'active', { lastViewed: entity.fullId } );
+      V.setState( 'active', {
+        lastViewed: entity.fullId,
+        lastViewedUuidE: entity.uuidE,
+        lastViewedUuidP: entity.uuidP,
+      } );
 
       /*
        * Pool data
@@ -66,8 +69,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
-      if ( entity.profile.role == 'pool' ) {
-        if ( V.aA() || !V.aE() ) {
+      if ( entity.role == 'Pool' ) {
+        if ( V.cA() || !V.aE() ) {
           if ( entity.evmCredentials ) {
             txHistory = await V.getAddressHistory( entity.evmCredentials.address );
             if ( txHistory.success && txHistory.data.length ) {
@@ -92,23 +95,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           receiveVolume = entity.stats.receiveVolume;
         }
       }
-
-      return {
-        success: true,
-        status: 'entities retrieved',
-        data: [{
-          which: which,
-          entity: entity,
-          sendVolume: sendVolume,
-          receiveVolume: receiveVolume,
-        }]
+      const data = {
+        which: which,
+        entity: entity,
+        sendVolume: sendVolume,
+        receiveVolume: receiveVolume,
       };
+
+      return V.successTrue( 'retrieved entities', data );
     }
     else {
-      return {
-        success: null,
-        status: 'cound not retrieve entities'
-      };
+      return V.successFalse( 'retrieve entities' );
     }
   }
 
@@ -125,7 +122,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       UserComponents.setData( {
         entity: data.data[0].entity,
-        editable: false
+        editable: false,
       } );
 
       $list = CanvasComponents.list( 'narrow' );
@@ -144,7 +141,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.evmAddressCard(),
         UserComponents.evmReceiverAddressCard(),
         UserComponents.managementCard(),
-        UserComponents.adminOfCard(),
+        UserComponents.holderOfCard(),
         UserComponents.socialShareButtons(),
       ] );
 

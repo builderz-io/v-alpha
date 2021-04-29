@@ -11,7 +11,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( whichPath, search ) {
 
-    const whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
+    let whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
+
+    /** Combines 'PersonMapped' with 'Person' */
+    whichRole = whichRole.replace( 'Mapped', '' );
 
     let query, isSearch = false;
 
@@ -21,56 +24,62 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( search && search.query ) {
       Object.assign( search, { role: whichRole } );
       isSearch = true;
-      query = await V.getQuery( search ).then( res => {
-        if ( res.success ) {
-          res.data.forEach( entity => {
-            entity.type = 'Feature'; // needed to populate entity on map
-            entity.properties ? null : entity.properties = {};
-          } );
-        }
-        return res;
-      } );
+      query = await V.getQuery( search );
+      // .then( res => {
+      //   if ( res.success ) {
+      //     return res;
+      //   }
+      // } );
     }
     else if ( cache && !cache.data.length ) {
+      let counter = 0;
       const polledCache = await new Promise( resolve => {
         const polling = setInterval( () => {
+          counter += 1;
           const cache = V.getCache( 'preview' );
-          if ( cache.data.length ) {
+          if ( cache && cache.data.length ) {
             clearInterval( polling );
             resolve( cache );
           }
+          else if ( counter > 299 ) {
+            clearInterval( polling );
+            resolve( false );
+          }
         }, 70 );
       } );
-      query = {
-        success: true,
-        status: 'polled cache used',
-        elapsed: now - cache.timestamp,
-        data: V.castJson( polledCache.data, 'clone' )
-      };
+
+      if ( polledCache ) {
+        query = {
+          success: true,
+          status: 'polled cache used',
+          elapsed: now - cache.timestamp,
+          data: V.castJson( polledCache.data, 'clone' ),
+        };
+      }
+      else {
+        query = {
+          success: false,
+          status: 'cache empty',
+        };
+      }
     }
     else if (
       cache &&
-      ( now - cache.timestamp ) < ( V.getSetting( 'marketCacheDuration' ) * 60 * 1000 )
+      ( now - cache.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )
     ) {
       query = {
         success: true,
         status: 'cache used',
         elapsed: now - cache.timestamp,
-        data: V.castJson( cache.data, 'clone' )
+        data: V.castJson( cache.data, 'clone' ),
       };
     }
     else {
-      query = await V.getEntity( 'preview' ).then( res => {
+      query = await V.getEntity().then( res => {
         if ( res.success ) {
-          res.data.forEach( entity => {
-            entity.path = V.castPathOrId( entity.fullId );
-            entity.type = 'Feature'; // needed to populate entity on map
-            entity.properties ? null : entity.properties = {};
-          } );
           V.setCache( 'preview', res.data );
+          return res;
         }
-
-        return res;
       } );
     }
 
@@ -79,9 +88,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       let filtered = query.data;
 
       if ( whichRole != 'all' ) {
-        filtered = query.data.filter( item => {
-          return item.profile.role == whichRole;
-        } );
+        filtered = query.data.filter( item => item.role == whichRole );
       }
 
       return {
@@ -91,7 +98,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           whichPath: whichPath,
           entities: filtered,
-        }]
+        }],
       };
     }
     else {
@@ -102,7 +109,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         data: [{
           whichPath: whichPath,
           entities: query.data,
-        }]
+        }],
       };
     }
 
@@ -122,7 +129,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         Button.draw( 'search' );
       }
 
-      if ( !( ['/network/all', '/network/members'].includes( viewData.whichPath ) ) ) {
+      if ( !( ['/network/all'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
@@ -135,8 +142,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
         setSliderContent( last );
 
-        const hasThumbnail = viewData.entities.filter( item => {return item.thumbnail != undefined} );
-        const hasNoThumbnail = viewData.entities.filter( item => { return item.thumbnail === undefined } );
+        const hasThumbnail = viewData.entities.filter( item => item.thumbnail != undefined );
+        const hasNoThumbnail = viewData.entities.filter( item => item.thumbnail === undefined );
 
         hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
           setListContent( cardData );
@@ -233,8 +240,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    const navArray = [
-      {
+    const navItems = {
+      localEconomy: {
         title: 'Local Economy',
         path: '/network/all',
         divertFundsToOwner: false,
@@ -244,155 +251,166 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      people: {
         title: 'People',
-        path: '/network/members',
+        path: '/network/people',
         divertFundsToOwner: false,
         use: {
           button: 'search',
-          role: 'member',
+          form: 'new entity',
+          role: 'PersonMapped',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      businesses: {
         title: 'Businesses',
         path: '/network/businesses',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'business'
+          role: 'Business',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      ngos: {
         title: 'NGO',
         path: '/network/non-profits',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'nonprofit'
+          role: 'NGO',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      publicSector: {
         title: 'Public Sector',
         path: '/network/public-sector',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'publicsector'
+          role: 'GOV',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      anchors: {
         title: 'Anchor Institutions',
         path: '/network/institutions',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'institution'
+          role: 'Institution',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      networks: {
         title: 'Networks',
         path: '/network/networks',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'network'
+          role: 'Network',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      skills: {
         title: 'Skills',
         path: '/network/skills',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'skill'
+          role: 'Skill',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      tasks: {
         title: 'Tasks',
         path: '/network/tasks',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'task'
+          role: 'Task',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      // {
-      //   title: 'Crowdfunding',
-      //   path: '/pools',
-      //   use: {
-      //     button: 'search',
-      //     form: 'new entity',
-      //     role: 'pool'
-      //   },
-      //   draw: function( path ) {
-      //     Marketplace.draw( path );
-      //   }
-      // },
-      {
+      pools: {
+        title: 'Crowdfunding',
+        path: '/network/pools',
+        use: {
+          button: 'search',
+          form: 'new entity',
+          role: 'ResourcePool',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path );
+        },
+      },
+      places: {
         title: 'Places',
         path: '/network/places',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'place'
+          role: 'Place',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
+        },
       },
-      {
+      events: {
         title: 'Events',
         path: '/network/events',
         use: {
           button: 'search',
           form: 'new entity',
-          role: 'event'
+          role: 'Event',
         },
         draw: function( path ) {
           Marketplace.draw( path );
-        }
-      }
-    ];
-    V.setNavItem( 'serviceNav', navArray );
+        },
+      },
+    };
 
-    const routeFundsForRoles = {};
-    navArray.forEach( navItem => {
-      if ( navItem.divertFundsToOwner === false ) { return }
-      routeFundsForRoles[navItem.use.role] = navItem.use.role;
-    } );
-    V.setState( 'rolesWithReceivingAddress', routeFundsForRoles );
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => navItems[item] ) );
+
+    /**
+     * pick out which roles have funds received diverted to owner as default
+     * and set state with these roles
+     */
+
+    const divertFundsForRoles = {};
+    for( const navItem in navItems ) {
+      if ( navItems[navItem].divertFundsToOwner === false ) { continue }
+      divertFundsForRoles[navItems[navItem].use.role] = navItems[navItem].use.role;
+    }
+
+    V.setState( 'rolesWithReceivingAddress', divertFundsForRoles );
+
   }
 
   function draw( whichPath, search ) {
     preview( whichPath, search );
     presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
+
+  V.setState( 'availablePlugins', { marketplace: function() { Marketplace.launch() } } );
 
   return {
     launch: launch,

@@ -15,7 +15,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     connectWallet: 'Connect wallet',
     useKey: 'Use key',
     nameProfile: 'Name profile',
-    joining: 'Joining ... ',
+    joining: 'Joining',
     welcome: 'Welcome',
     connectedAddress: 'Address connected',
     confInWallet: 'Confirm in wallet ... ',
@@ -36,6 +36,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     fourOfour: '404 - Page not found',
 
     loggedOut: 'You are logged out',
+    entityExists: 'This combination of title and tag already exists or is invalid',
     txSent: '✅ Sent to network',
     txSuccess: '✅ Transaction successful',
     error: 'An error occured. Maybe the wallet is locked?',
@@ -56,7 +57,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       right: '0',
       bottom: '0',
       left: '0',
-      background: 'rgba(0,0,0,0.8)'
+      background: 'rgba(0,0,0,0.8)',
     },
     'modal__content': {
       'background': 'white',
@@ -71,10 +72,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'right': '1rem',
       'top': '1rem',
       'text-decoration': 'none',
-      'color': 'white'
+      'color': 'white',
     },
     'modal__uphrase': {
-      color: 'red'
+      color: 'red',
     },
     'modal-pos-1': {
       top: '5vh',
@@ -85,9 +86,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     'modal-pos-3': {
       top: '15vh',
     },
+    'confirm-click-spinner': {
+      'margin-left': '14px',
+    },
   } );
 
-  const buttonClasses = 'relative bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
+  const buttonClasses = 'relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
   const altButtonClasses = 'relative cursor-pointer txt-center';
 
   /* ================== event handlers ================== */
@@ -104,29 +108,59 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( 'uPhrase' );
     const $new = V.cN( {
       t: 'div',
+      i: 'use-key-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntity,
-      h: getString( ui.useKey )
+      h: getString( ui.useKey ),
+    } );
+
+    const $response = V.sN( {
+      t: 'div',
+      c: 'form__response pxy txt-red',
     } );
 
     V.sN( '.modal__content', '' );
-    V.setNode( '.modal__content', [$input, $new] );
+    V.setNode( '.modal__content', [$input, $response, $new] );
   }
 
   function handleGetEntity() {
-    V.getEntity( V.getNode( '#loginform__uphrase' ).value ).then( res => {
-      setActiveEntityState( res );
-    } );
+    V.setNode( '#use-key-btn', clickConfirmSpinner() );
+    V.setAuth( V.getNode( '#loginform__uphrase' ).value )
+      .then( data => {
+        if ( data.success ) {
+          console.log( 'auth success' );
+          return data.data[0].uuidE;
+        }
+        else {
+          throw new Error( data.message );
+        }
+      } )
+      .then( uuidE => V.getEntity( uuidE ) )
+      .then( entity => {
+        if ( entity.success ) {
+          V.setActiveEntity( entity.data[0] );
+          Join.draw( 'new entity was set up' );
+        }
+        else {
+          throw new Error( 'could not get entity after set auth' );
+        }
+      } )
+      .catch( err => {
+        console.log( 'auth unsuccessful -', err );
+        V.getNode( '.form__response' ).textContent = err;
+        V.setNode( '.confirm-click-spinner', 'clear' );
+        Join.launch();
+      } );
   }
 
   function handleSetEntityForm() {
     const $input = InteractionComponents.formField( 'title' );
     const $new = V.cN( {
       t: 'div',
-      i: 'name-new',
+      i: 'name-profile-btn',
       c: buttonClasses, //+ ' modal-pos-1',
       k: handleSetEntity,
-      h: getString( ui.nameProfile )
+      h: getString( ui.nameProfile ),
     } );
 
     const $response = V.sN( {
@@ -140,37 +174,55 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSetEntity( e ) {
     e.stopPropagation();
-
     e.target.removeEventListener( 'click', handleSetEntity, false );
-    e.target.innerHTML = getString( ui.joining );
-    V.getNode( '.joinform__response' ).innerHTML = '';
+    e.target.textContent = getString( ui.joining );
+    V.setNode( '#name-profile-btn', clickConfirmSpinner() );
+    V.getNode( '.joinform__response' ).textContent = '';
 
     const entityData = {
       title: V.getNode( '#plusform__title' ).value,
-      role: 'member',
-      evmAddress: V.aA(), // TODO: allow for other chains
+      role: 'Person',
+      evmAddress: V.cA(), // TODO: allow for other chains
     };
-
-    V.setState( 'activeEntity', 'clear' );
 
     console.log( 'about to set entity: ', entityData );
     V.setEntity( entityData ).then( res => {
       if ( res.success ) {
-        console.log( 'response: ', res );
+        console.log( 'successfully set entity: ', res );
+
+        /** automatically join */
+        V.setAuth( res.data[0].auth.uPhrase )
+          .then( data => {
+            if ( data.success ) {
+              console.log( 'auth success' );
+            }
+            else {
+              console.log( 'could not set auth after setting new entity' );
+            }
+          } );
+
+        /** set state and cache */
+        Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
+        V.setActiveEntity( res.data[0] );
+        Join.draw( 'new entity was set up' );
+
         V.setCache( 'entire cache', 'clear' );
-        setActiveEntityState( res );
+        // V.setCache( 'viewed', res.data[0] );
+
+        Navigation.drawEntityNavPill( res.data[0] );
       }
       else {
-        console.log( 'response: ', res );
+        console.log( 'could not set entity: ', res );
         e.target.addEventListener( 'click', handleSetEntity );
-        e.target.innerHTML = getString( ui.nameProfile );
-        V.getNode( '.joinform__response' ).innerHTML = res.message;
+        e.target.textContent = getString( ui.nameProfile );
+        V.getNode( '.joinform__response' ).textContent = res.message;
       }
     } );
   }
 
   function handleWeb3Join( e ) {
     e.stopPropagation();
+    V.setNode( '#connectwallet-btn', clickConfirmSpinner() );
     Join.draw( 'authenticate' );
   }
 
@@ -182,11 +234,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $btn = V.getNode( '#sign-transaction' );
     $btn.style.background = 'white';
     $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
-    if ( V.aA() ) {
-      $btn.innerHTML = getString( ui.confInWallet );
+    if ( V.cA() ) {
+      $btn.textContent = getString( ui.confInWallet );
     }
     else {
-      // $btn.innerHTML = getString( ui.submitted );
+      // $btn.textContent = getString( ui.submitted );
       Modal.draw( 'transaction sent' );
       V.drawHashConfirmation( String( V.getState( 'active' ).transaction.data[0].timeSecondsUNIX ) );
     }
@@ -221,9 +273,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'transactionLedger' ) == 'EVM' ) {
       V.setEntity( V.aE().fullId, {
         field: 'evmCredentials.address',
-        data: V.aA(),
-        role: V.aE().profile.role,
-        auth: V.getCookie( 'last-active-uphrase' ).replace( /"/g, '' )
+        data: V.cA(),
+        role: V.aE().role,
       } ).then( () => {
         Join.draw( 'authenticate' );
       } );
@@ -236,24 +287,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDisconnect() {
-    V.setCookie( 'last-active-address', 'clear' );
-    V.setCookie( 'last-active-uphrase', 'clear' );
-    window.location.href = '/';
+    V.setNode( '#disconnect-btn', clickConfirmSpinner() );
+    V.setDisconnect();
   }
 
   /* ================== private methods ================= */
-
-  function setActiveEntityState( res ) {
-    if ( res.success ) {
-      V.setState( 'activeEntity', res.data[0] );
-      Join.draw( 'new entity was set up' );
-    }
-    else {
-      const $formField = V.getNode( '#loginform__uPhrase' ) || V.getNode( '#plusform__title' );
-      $formField.value = '';
-      $formField.setAttribute( 'placeholder', V.i18n( res.status, 'placeholder' ) );
-    }
-  }
 
   /* ================== public methods ================== */
 
@@ -266,9 +304,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         i: 'modal-close',
         c: 'modal__close',
         h: getString( ui.close ),
-        k: handleModalClose
+        k: handleModalClose,
       },
-      k: handleModalClose
+      k: handleModalClose,
     } );
   }
 
@@ -276,7 +314,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'div',
       c: 'modal__content relative',
-      k: handleStopPropagation
+      k: handleStopPropagation,
     } );
   }
 
@@ -284,7 +322,17 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
-      h: getString( ui[text] )
+      h: getString( ui[text] ),
+    } );
+    V.setNode( $content, $msg );
+    return $content;
+  }
+
+  function validationError( text ) {
+    const $content = modalContent();
+    const $msg = V.cN( {
+      t: 'p',
+      h: text,
     } );
     V.setNode( $content, $msg );
     return $content;
@@ -296,24 +344,24 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $msg = V.cN( {
       t: 'p',
       c: 'txt-center',
-      h: getString( ui.enableWallet ) + ' ' + metaMaskLink
+      h: getString( ui.enableWallet ) + ' ' + metaMaskLink,
     } );
     const $fox = V.cN( {
       t: 'div',
       c: 'mt-r mb-r ml-auto mr-auto',
       y: {
-        width: '108px'
+        width: '108px',
       },
       h: {
         t: 'img',
-        src: '/assets/img/metamask-fox.png'
-      }
+        src: '/assets/img/metamask-fox.png',
+      },
     } );
     const $metaMask = V.cN( {
       t: 'div',
       c: buttonClasses,
       k: handleGetMetaMask,
-      h: getString( ui.getMetaMask )
+      h: getString( ui.getMetaMask ),
     } );
     V.setNode( $content, [$msg, $fox, $metaMask] );
     return $content;
@@ -327,17 +375,31 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $txDetails = V.cN( {
       t: 'p',
       c: 'modal__p',
-      h: `<p>Amount: ${tx.amount}</p>
-      <p>Fee: ${tx.feeAmount}</p>
-      <p>Contribution: ${tx.contribution}</p>
-      <p>Total: ${tx.txTotal}</p>`
+      h: [
+        {
+          t: 'p',
+          h: `Amount: ${tx.amount}`,
+        },
+        {
+          t: 'p',
+          h: `Fee: ${tx.feeAmount}`,
+        },
+        {
+          t: 'p',
+          h: `Contribution: ${tx.contribution}`,
+        },
+        {
+          t: 'p',
+          h: `Total: ${tx.txTotal}`,
+        },
+      ],
     } );
     const $confirm = V.cN( {
       t: 'div',
       i: 'sign-transaction',
       c: buttonClasses + ' modal-pos-1',
       k: handleTransaction,
-      h: getString( ui.signTx )
+      h: getString( ui.signTx ),
     } );
     V.setNode( $content, [$txDetails, $confirm]  );
     return $content;
@@ -347,21 +409,22 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $new = V.cN( {
       t: 'div',
+      i: 'connectwallet-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleWeb3Join,
-      h: getString( ui.connectWallet )
+      h: getString( ui.connectWallet ),
     } );
     const $newName = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: getString( ui.newNameOnly )
+      h: getString( ui.newNameOnly ),
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile )
+      h: getString( ui.manageProfile ),
     } );
     V.setNode( $content, [$new, $newName, $key] );
     return $content;
@@ -373,15 +436,27 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: getString( ui.newName )
+      h: getString( ui.newName ),
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile )
+      h: getString( ui.manageProfile ),
     } );
     V.setNode( $content, [$new, $key] );
+    return $content;
+  }
+
+  function confirmUPhrase() {
+    const $content = modalContent();
+    const $key = V.cN( {
+      t: 'div',
+      c: buttonClasses + ' modal-pos-1',
+      k: handleGetEntityForm,
+      h: getString( ui.manageProfile ),
+    } );
+    V.setNode( $content, $key );
     return $content;
   }
 
@@ -389,9 +464,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $disc = V.cN( {
       t: 'div',
+      i: 'disconnect-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleDisconnect,
-      h: getString( ui.disconnect )
+      h: getString( ui.disconnect ),
     } );
     V.setNode( $content, $disc );
     return $content;
@@ -405,14 +481,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'div',
-          c: 'preloader__ring'
+          c: 'preloader__ring',
         },
         {
           t: 'loader',
           c: 'preloader__text',
-          h: getString( ui.connectingWallet )
-        }
-      ]
+          h: getString( ui.connectingWallet ),
+        },
+      ],
     } );
     V.setNode( $content, $connect );
     return $content;
@@ -424,19 +500,19 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleAddressMapping,
-      h: getString( ui.useProfile )
+      h: getString( ui.useProfile ),
     } );
     const $new = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleSetEntityForm,
-      h: getString( ui.newName )
+      h: getString( ui.newName ),
     } );
     V.setNode( $content, [$current, $new] );
     return $content;
   }
 
-  function entityFound( activeEntity, activeAddress, coinTicker, tokenTicker ) {
+  function entityFound( activeEntity, activeAddress, uPhrase, coinTicker, tokenTicker ) {
     const $content = modalContent();
 
     const $welcome = V.cN( {
@@ -447,51 +523,61 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'font-medium fs-l pxy',
-          h: activeEntity.fullId
+          h: activeEntity.fullId,
         },
         { t: 'p', h: activeAddress ? getString( ui.connectedAddress ) : '' },
         {
           t: 'p',
           c: 'fs-s pxy',
-          h: activeAddress
-        }
-      ]
+          h: activeAddress,
+        },
+      ],
     } );
 
-    const $uPhrase = V.cN( {
-      t: 'div',
-      c: 'txt-center',
-      h: [
-        { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
-        UserComponents.castUphraseNode( activeEntity.private.uPhrase, 'txt-red fs-l' ),
-        { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) }
-      ]
-    } );
+    if ( uPhrase ) {
 
-    // let $balance;
-    //
-    // const x = activeEntity.balance;
-    // if ( x ) {
-    //   $balance = V.cN( {
-    //     t: 'p',
-    //     c: 'modal__details',
-    //     h: `
-    //     ${tokenTicker} ${ getString( ui.liveBalance ) }: ${ x.liveBalance }<br>
-    //     ${coinTicker}: ${ x.coinBalance }<br>
-    //     `
-    //   } );
+      const $uPhrase = V.cN( {
+        t: 'div',
+        c: 'txt-center',
+        y: {
+          'background': 'aquamarine',
+          'border-radius': '3px',
+        },
+        h: [
+          { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
+          UserComponents.castAccessKeyNode( uPhrase ? uPhrase : '', 'txt-red fs-l' ),
+          { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) },
+        ],
+      } );
+
+      // let $balance;
+      //
+      // const x = activeEntity.balance;
+      // if ( x ) {
+      //   $balance = V.cN( {
+      //     t: 'p',
+      //     c: 'modal__details',
+      //     h: `
+      //     ${tokenTicker} ${ getString( ui.liveBalance ) }: ${ x.liveBalance }<br>
+      //     ${coinTicker}: ${ x.coinBalance }<br>
+      //     `
+      //   } );
+      // }
+      // else {
+      //   $balance = V.cN( {
+      //     t: 'p',
+      //     h: getString( ui.notRetrieved )
+      //   } );
+      // }
+      // if ( activeAddress ) {
+      //   V.setNode( $content, $welcome );
+      // }
+      // else {
+      V.setNode( $content, [$welcome, $uPhrase /*, $balance */] );
     // }
-    // else {
-    //   $balance = V.cN( {
-    //     t: 'p',
-    //     h: getString( ui.notRetrieved )
-    //   } );
-    // }
-    if ( activeAddress ) {
-      V.setNode( $content, $welcome );
     }
     else {
-      V.setNode( $content, [$welcome, $uPhrase /*, $balance */] );
+      V.setNode( $content, $welcome );
     }
 
     return $content;
@@ -503,18 +589,18 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleSetEntityForm,
-      h: getString( ui.newName )
+      h: getString( ui.newName ),
     } );
     const $current = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleAddressMapping,
-      h: getString( ui.useProfile )
+      h: getString( ui.useProfile ),
     } );
     const $descr = V.cN( {
       t: 'p',
       c: 'modal-pos-3 relative txt-center',
-      h: getString( ui.newNameExplain )
+      h: getString( ui.newNameExplain ),
     } );
     if ( V.aE() ) {
       V.setNode( $content, [$new, $current, $descr] );
@@ -525,16 +611,52 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return $content;
   }
 
+  function clickConfirmSpinner() {
+    return V.cN( {
+      svg: true,
+      t: 'svg',
+      c: 'confirm-click-spinner',
+      a: {
+        width: '18',
+        height: '18',
+        viewBox: '0 0 50 50',
+      },
+      h: [
+        {
+          svg: true,
+          t: 'path',
+          a: {
+            d: 'M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z',
+          },
+          h: {
+            svg: true,
+            t: 'animateTransform',
+            a: {
+              attributeName: 'transform',
+              type: 'rotate',
+              from: '0 25 25',
+              to: '360 25 25',
+              dur: '0.7s',
+              repeatCount: 'indefinite',
+            },
+          },
+        },
+      ],
+    } );
+  }
+
   /* ====================== export ====================== */
 
   return {
     modal: modal,
     modalContent: modalContent,
     simpleMessage: simpleMessage,
+    validationError: validationError,
     getMetaMask: getMetaMask,
     confirmTransaction: confirmTransaction,
     web3Join: web3Join,
     web2Join: web2Join,
+    confirmUPhrase: confirmUPhrase,
     disconnect: disconnect,
     connectWallet: connectWallet,
     mapAddress: mapAddress,

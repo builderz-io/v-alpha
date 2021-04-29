@@ -30,7 +30,7 @@ async function findEntity( query, filter ) {
         resolve( {
           success: true,
           status: 'entities retrieved',
-          data: entities
+          data: entities,
         } );
       }
     } );
@@ -49,21 +49,21 @@ exports.findByRole = async function( req, res ) {
       'thumbnail': 1,
       'geometry': 1,
       'properties.description': 1,
-      '_id': 0
+      '_id': 0,
     };
   }
   else if ( req == 'all' ) {
     find = {};
     filter = {
       private: 0,
-      _id: 0
+      _id: 0,
     };
   }
   else {
     find = { 'profile.role': req };
     filter = {
       private: 0,
-      _id: 0
+      _id: 0,
     };
   }
 
@@ -116,9 +116,9 @@ exports.findByQuery = async function( req, res ) {
       { $or: [
         { 'profile.title': regex },
         { 'properties.baseLocation': regex },
-        { 'properties.description': regex }
-      ] }
-    ]
+        { 'properties.description': regex },
+      ] },
+    ],
   };
 
   res( await findEntity( find ) );
@@ -132,10 +132,10 @@ exports.register = function( req, res ) {
    *
    */
 
-  if ( req.profile.role == 'member' ) {
+  if ( req.profile.role == 'Person' ) {
     telegramNotification( {
       msg: 'New registration at',
-      network: systemInit.communityGovernance.commName
+      network: systemInit.communityGovernance.commName,
     } );
     autoFloat( req.evmCredentials.address );
   }
@@ -148,7 +148,7 @@ exports.register = function( req, res ) {
   req.onChain = {
     balance: initialBalance, // TODO: depends on entity role, was "entityData.initialBalance"
     lastMove: Number( Math.floor( date / 1000 ) ),
-    timeToZero: baseTimeToZero
+    timeToZero: baseTimeToZero,
   };
 
   const newEntity = new EntityDB( req );
@@ -192,8 +192,8 @@ exports.register = function( req, res ) {
           txType: 'generated',
           title: commName + ' ' + commTag,
           fromAddress: 'none',
-          toAddress: 'none'
-        }
+          toAddress: 'none',
+        },
       } );
 
       newEntityInitialTx.save( ( err ) => {
@@ -208,7 +208,7 @@ exports.register = function( req, res ) {
           res( {
             success: true,
             status: 'new entity and inital transaction registered',
-            data: [ newEntity ]
+            data: [ newEntity ],
           } );
         }
       } ); // end newEntityInitialTx save
@@ -221,7 +221,7 @@ exports.register = function( req, res ) {
 exports.update = async function( req, cb ) {
   let how;
 
-  if ( req.field == 'evmCredentials.address' && req.role == 'member' ) {
+  if ( req.field == 'evmCredentials.address' && req.role == 'Person' ) {
     autoFloat( req.data );
   }
 
@@ -247,8 +247,8 @@ exports.update = async function( req, cb ) {
       $set: {
         'evmCredentials.address': req.data,
         'evmCredentials.privateKey': undefined,
-        'receivingAddresses.evm': undefined
-      }
+        'receivingAddresses.evm': undefined,
+      },
     };
   }
   else if ( req.field == 'adminOf' ) {
@@ -273,17 +273,17 @@ exports.update = async function( req, cb ) {
         return cb( {
           success: false,
           status: 'error in updating',
-          message: err
+          message: err,
         } );
       }
       else {
         return cb( {
           success: true,
           status: 'entity updated',
-          data: [ res ]
+          data: [ res ],
         } );
       }
-    }
+    },
   );
 };
 //

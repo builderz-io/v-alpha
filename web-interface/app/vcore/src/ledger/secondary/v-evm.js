@@ -18,6 +18,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     community: 'Community',
     fee: 'Transaction Fee',
+    unknown: 'unknown',
   };
 
   function getString( string, scope ) {
@@ -27,7 +28,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleTransferSummaryEvent( eventData ) {
-    if ( V.aA() && ( eventData.to.toLowerCase() == V.aA() || eventData.from.toLowerCase() == V.aA() ) ) {
+    if ( V.cA() && ( eventData.to.toLowerCase() == V.cA() || eventData.from.toLowerCase() == V.cA() ) ) {
       // TODO
     }
   }
@@ -39,29 +40,28 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     var currentActiveAddress = window.ethereum.selectedAddress;
     // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
     // console.log( currentActiveAddress );
-    // console.log( V.aA() );
+    // console.log( V.cA() );
 
     if ( currentActiveAddress == null ) {
+      V.setLocal( 'last-connected-address', 'clear' );
       V.setState( 'activeEntity', 'clear' );
-      V.setState( 'activeAddress', 'clear' );
-      V.setCookie( 'last-active-address', 'clear' );
-      V.setCookie( 'last-active-uphrase', 'clear' );
-      V.setCookie( 'welcome-modal', 1 );
+      V.setLocal( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
-    else if ( currentActiveAddress != V.aA() ) {
-      V.setCookie( 'welcome-modal', 1 );
-      V.setState( 'activeEntity', 'clear' );
-      V.setState( 'activeAddress', currentActiveAddress.toLowerCase() );
-      Join.draw( 'new entity was set up' );
-      Marketplace.draw();
+    else if ( currentActiveAddress != V.cA() ) {
+      // V.setLocal( 'last-connected-address', currentActiveAddress.toLowerCase() );
+      // V.setState( 'activeEntity', 'clear' );
+      // V.setLocal( 'welcome-modal', 1 );
+      // Join.draw( 'new entity was set up' );
+      Join.draw( 'disconnect' );
+      // Marketplace.draw();
     }
 
   }
 
   function setEventSubscription( whichEvent ) {
     // https://medium.com/coinmonks/how-to-subscribe-smart-contract-events-using-web3-1-0-93e996c06af2
-    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => { return o.name === whichEvent && o.type === 'event' } );
+    const eventJsonInterface = window.Web3Obj.utils._.find( contract._jsonInterface, o => o.name === whichEvent && o.type === 'event' );
     /* const subscription = */ window.Web3Obj.eth.subscribe( 'logs', {
       address: contract.options.address,
       topics: [eventJsonInterface.signature]  },
@@ -87,11 +87,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
-  async function castEntityName( address ) {
-    const entity = await V.getEntity( address );
-    return entity.success ? entity.data[0].fullId : V.castShortAddress( address );
-  }
-
   /* ================== public methods  ================= */
 
   async function getWeb3Provider() {
@@ -101,6 +96,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // console.log( 'ethereum is there' );
       provider = window.ethereum;
       V.setState( 'browserWallet', true );
+      if ( window.ethereum.isMetaMask ) {
+        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+      }
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
@@ -115,7 +113,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
       // console.log( 'local network may be there' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
-      provider = new Web3.providers.HttpProvider(  V.getNetwork().rpc );
+      provider = new Web3.providers.HttpProvider(  V.getApiKey( 'rpc' ) );
       V.setState( 'browserWallet', false );
       // return {
       //   success: false,
@@ -124,7 +122,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
 
     window.Web3Obj = new Web3( provider );
-    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getNetwork().contractAddress );
+    contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getTokenContract().contractAddress );
 
     const state = await V.getContractState();
 
@@ -167,14 +165,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
     if ( window.Web3Obj ) {
 
-      const activeAddress = await window.Web3Obj.eth.getAccounts();
-      // const activeAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-      V.setState( 'activeAddress', activeAddress[0] ? activeAddress[0].toLowerCase() : false );
+      const connectedAddress = await window.Web3Obj.eth.getAccounts();
+      // const connectedAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
+      V.setLocal( 'last-connected-address', connectedAddress[0] ? connectedAddress[0].toLowerCase() : false );
 
       /* listen to change of address in MetaMask */
-      if ( window.ethereum && window.ethereum.on ) {
-        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
-      }
+      // if ( window.ethereum && window.ethereum.on ) {
+      //   window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+      // }
 
       setEventSubscription( 'TransferSummary' );
       return {
@@ -202,6 +200,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       // ganache remote
       const blockNumber = contract.methods.getBlockNumber().call();
+      const payout = contract.methods.getGenerationAmount.call().call();
+      const interval = contract.methods.getGenerationPeriod.call().call();
+      const lifetime = contract.methods.getLifetime.call().call();
       const fee = contract.methods.getTransactionFee.call().call();
       const contribution = contract.methods.getCommunityContribution.call().call();
       const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
@@ -224,18 +225,29 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       //     } ).reverse();
       //   } );
 
-      const all = await Promise.all( [ blockNumber, fee, contribution, divisibility /*, allEvents */ ] )
+      const all = await Promise.all( [
+        blockNumber,
+        // fee,
+        // contribution,
+        // divisibility,
+        // payout,
+        // interval,
+        // lifetime,
+        // allEvents,
+      ] )
         .catch( err => { console.log( err ) } );
 
       if ( all && all[0] ) {
 
         console.log( '*** CONTRACT STATE ***' );
-        console.log( 'Current Block: ', all[0] );
-        console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        console.log( 'Divisibility: ', all[3] );
         console.log( 'Contract: ', contract._address );
-        console.log( 'Network: ', V.getNetwork().network );
+        console.log( 'Current Block: ', all[0] );
+        // console.log( 'Payout: ', all[4] / 10**18 );
+        // console.log( 'Interval: ', all[5] );
+        // console.log( 'Lifetime: ', all[6] );
+        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        // console.log( 'Divisibility: ', all[3] );
         // console.log( 'All Events:', all[4] );
         console.log( '*** CONTRACT STATE END ***' );
 
@@ -245,8 +257,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           contribution: all[2],
           divisibility: all[3],
           contract: contract._address,
-          network: V.getNetwork(),
-          allEvents: all[4],
+          network: V.getTokenContract(),
+          // allEvents: all[4],
         };
 
         V.setState( 'contract', data );
@@ -254,7 +266,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         return {
           success: true,
           status: 'contract state retrieved',
-          data: [ data ]
+          data: [ data ],
         };
       }
       else {
@@ -264,7 +276,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         return {
           success: false,
           status: 'contract state not retrieved',
-          message: all
+          message: all,
         };
       }
     }
@@ -281,26 +293,28 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const all = await Promise.all( [
       window.Web3Obj.eth.getBalance( which ),
       contract.methods.liveBalanceOf( which ).call(),
-      contract.methods.getDetails( which ).call()
+      contract.methods.getDetails( which ).call(),
+      contract.methods.getBlockNumber().call(),
     ] ).catch( err => {
       console.warn( 'Could not get address state' );
       return err;
     } );
 
-    if ( all && all[0] && all[1] && all[2] ) {
+    if ( all && all[0] && all[1] && all[2] && all[3] ) {
       const data = {
         coinBalance: castEthBalance( all[0] ),
         liveBalance: castTokenBalance( all[1] ),
         tokenBalance: castTokenBalance( all[2]._balance ),
         lastBlock: all[2]._lastBlock,
         zeroBlock: all[2]._zeroBlock,
+        currentBlock: all[3],
       };
 
       return {
         success: true,
         status: 'address state retrieved',
         ledger: 'EVM',
-        data: [data]
+        data: [data],
       };
     }
     else {
@@ -308,28 +322,26 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         status: 'could not retrieve address state',
         message: all,
-        ledger: 'EVM'
+        ledger: 'EVM',
       };
     }
 
   }
 
-  async function getAddressHistory(
-    which = V.aA() || V.aE().evmCredentials.address,
-    data = { fromBlock: 0, toBlock: 'latest' },
-    whichEvent = 'TransferSummary'
+  async function getAddressHistory( data
+    // which = V.cA() || V.aE().evmCredentials.address,
+    // data = { fromBlock: 0, toBlock: 'latest' },
+    // whichEvent = 'TransferSummary'
   ) {
 
-    const transfers = await contract.getPastEvents( whichEvent, {
+    const transfers = await contract.getPastEvents( 'TransferSummary', {
       // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
       fromBlock: data.fromBlock,
-      toBlock: data.toBlock
+      toBlock: data.toBlock,
     }, ( error ) => {
       error ? console.error( error ) : null;
     } )
-      .then( ( events ) => {
-        return events;
-      } );
+      .then( ( events ) => events );
 
     if ( !transfers.length ) {
       return {
@@ -339,20 +351,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       };
     }
 
-    const filteredAndEnhanced = await castTransfers( transfers, which );
+    const filteredAndEnhanced = await castTransfers( transfers, data.address );
 
     return {
       success: true,
       status: 'transactions retrieved',
       ledger: 'EVM',
-      data: filteredAndEnhanced
+      data: filteredAndEnhanced,
     };
 
   }
 
   function setAddressVerification( which ) {
     console.log( 'verify:', which );
-    return contract.methods.verifyAccount( which ).send( { from: V.aA(), gas: 6001000 } )
+    return contract.methods.verifyAccount( which ).send( { from: V.cA(), gas: 6001000 } )
       .on( 'transactionHash', ( hash ) => {
         console.log( 'Hash: ', hash );
         // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {
@@ -400,7 +412,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         return {
           success: true,
           status: 'last eth transaction successful',
-          data: [ receipt ]
+          data: [ receipt ],
 
         };
 
@@ -413,38 +425,36 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const sender = data.initiatorAddress;
     const amount = window.Web3Obj.utils.toWei( String( data.txTotal /* * 10**div */ ) );
-    const txFunction = await new Promise( ( resolve, reject ) => {
-      return contract.methods.transfer( recipient, amount ).send( { from: sender } )
-        .once( 'transactionHash', function( hash ) {
-          console.log( 'Transaction Hash: ' + hash );
-          V.drawHashConfirmation( hash );
-        } )
-        // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
-        // .on( 'confirmation', function( confNumber, receipt ) {
-        //   console.log( 'Confirmation Number: ' + JSON.stringify( confNumber ) );
-        //   console.log( 'Receipt B: ' + JSON.stringify( receipt ) );
-        // } )
-        .on( 'error', function( error ) {
-          console.log( 'Transaction Error: ' + JSON.stringify( error ) );
+    const txFunction = await new Promise( ( resolve, reject ) => contract.methods.transfer( recipient, amount ).send( { from: sender } )
+      .once( 'transactionHash', function( hash ) {
+        console.log( 'Transaction Hash: ' + hash );
+        V.drawHashConfirmation( hash );
+      } )
+    // .once( 'receipt', function( receipt ) { console.log( 'Receipt A: ' + JSON.stringify( receipt ) ) } )
+    // .on( 'confirmation', function( confNumber, receipt ) {
+    //   console.log( 'Confirmation Number: ' + JSON.stringify( confNumber ) );
+    //   console.log( 'Receipt B: ' + JSON.stringify( receipt ) );
+    // } )
+      .on( 'error', function( error ) {
+        console.log( 'Transaction Error: ' + JSON.stringify( error ) );
 
-          reject( {
-            success: false,
-            status: error.code,
-            message: error.message,
-            data: []
-          } );
-
-        } )
-        .then( function( receipt ) {
-          console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
-          resolve( {
-            success: true,
-            status: 'last token transaction successful',
-            data: [ receipt ]
-          } );
-
+        reject( {
+          success: false,
+          status: error.code,
+          message: error.message,
+          data: [],
         } );
-    } );
+
+      } )
+      .then( function( receipt ) {
+        console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
+        resolve( {
+          success: true,
+          status: 'last token transaction successful',
+          data: [ receipt ],
+        } );
+
+      } ) );
 
     return txFunction;
   }
@@ -462,7 +472,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       net: net,
       gross: amount,
       contribution: contribution,
-      feeAmount: feeAmount
+      feeAmount: feeAmount,
     };
   }
 
@@ -491,7 +501,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       net: amount,
       gross: gross,
       contribution: contribution,
-      feeAmount: feeAmount
+      feeAmount: feeAmount,
     };
 
     return data;
@@ -533,8 +543,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const blockDetails = await window.Web3Obj.eth.getBlock( txData.block );
       txData.blockDate = blockDetails.timestamp;
 
-      txData.fromEntity = txData.fromAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.fromAddress );
-      txData.toEntity = txData.toAddress == V.aA() ? V.aE().fullId : await castEntityName( txData.toAddress );
+      await addEntityData( txData, 'from' );
+      await addEntityData( txData, 'to' );
 
       txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
 
@@ -558,6 +568,24 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const a = await Promise.all( filteredAndEnhanced );
     // console.log( a );
     return a;
+  }
+
+  async function addEntityData( txData, which ) {
+    if ( txData[which + 'Address'] == V.aE().evmCredentials.address ) {
+      txData[which + 'Entity'] = V.aE().fullId;
+      txData[which + 'UuidE'] = V.aE().uuidE;
+    }
+    else {
+      const entity = await V.getEntity( txData[which + 'Address'] );
+      if ( entity.success ) {
+        txData[which + 'Entity'] = entity.data[0].fullId;
+        txData[which + 'UuidE'] = entity.data[0].uuidE;
+      }
+      else {
+        txData[which + 'Entity'] = V.castShortAddress( txData[which + 'Address'] );
+        txData[which + 'UuidE'] = getString( ui.unknown );
+      }
+    }
   }
 
   // previous versions
@@ -621,7 +649,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     setTokenTransaction: setTokenTransaction,
     getNetVAmount: getNetVAmount,
     getGrossVAmount: getGrossVAmount,
-    castTransfers: castTransfers
+    castTransfers: castTransfers,
   };
 
 } )();
