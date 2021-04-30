@@ -11,8 +11,8 @@
 
           // START editing
 
-          sourceEndpoint: 'production',
-          useBuilds: true,
+          sourceEndpoint: 'github', // choices are 'local', 'development', 'production' and 'github'
+          useBuilds: false,
 
           firebaseEndpoint: 'development',
           mongodbEndpoint: 'builderz',
@@ -69,13 +69,19 @@
         }
 
         const sourceEndpoints = {
-          production: 'https://production.valueinstrument.org',
-          development: 'https://dev.valueinstrument.org',
           local: 'http://localhost:4021',
+          development: 'https://dev.valueinstrument.org',
+          production: 'https://production.valueinstrument.org',
+          github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha-2/web-interface/app',
         }
 
-        /** overwrite sourceEndpoint setting with actual link */
-        settings.sourceEndpoint = sourceEndpoints[settings.sourceEndpoint]
+        /**
+         * overwrite sourceEndpoint setting with actual link
+         * and ensure builds are used with github
+         */
+
+        settings.sourceEndpoint == 'github' ? settings.useBuilds = true : null;
+        settings.sourceEndpoint = sourceEndpoints[settings.sourceEndpoint];
 
         /** kick off the loading of the entire app */
         setInitScript( settings.sourceEndpoint + '/vcore/src/v/v.js' )
