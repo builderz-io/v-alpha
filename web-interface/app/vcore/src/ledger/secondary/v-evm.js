@@ -83,7 +83,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTokenBalance( balance, decimals ) {
-    const divisibility = V.getState( 'contract' ).divisibility;
+    const divisibility = V.getState( 'contract' ).divisibility || 18;
     return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
@@ -227,8 +227,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       const all = await Promise.all( [
         blockNumber,
-        // fee,
-        // contribution,
+        fee,
+        contribution,
         // divisibility,
         // payout,
         // interval,

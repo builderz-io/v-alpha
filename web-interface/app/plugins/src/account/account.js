@@ -169,9 +169,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawBalance( balance ) {
+    balance = Number( balance );
     if ( session.balance != balance ) {
-      session.balance = Number( balance );
-      const $navBal = AccountComponents.headerBalance( balance );
+      session.balance = balance;
+      const $navBal = AccountComponents.headerBalance( session.balance );
       V.setNode( 'balance', '' );
       V.setNode( 'balance', $navBal );
     }
