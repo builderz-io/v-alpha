@@ -201,7 +201,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       // EXPERIMENTAL
 
-      const newSymbolAddress = await V.setActiveAddress();
+      const newSymbolAddress = await V.setConnectedAddress();
       entityData.symbolCredentials ? null : entityData.symbolCredentials = newSymbolAddress.data[0];
     }
 

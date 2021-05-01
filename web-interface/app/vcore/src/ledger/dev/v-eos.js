@@ -21,7 +21,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods  ================= */
 
-  function setActiveAddress() {
+  function setConnectedAddress() {
 
     const account = 'todo...';
 
@@ -153,13 +153,13 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export  ===================== */
 
-  V.setActiveAddress = setActiveAddress;
+  V.setConnectedAddress = setConnectedAddress;
   V.getAddressState = getAddressState;
   V.getAddressHistory = getAddressHistory;
   V.setEOSTransaction = setEOSTransaction;
 
   return {
-    setActiveAddress: setActiveAddress,
+    setConnectedAddress: setConnectedAddress,
     getAddressState: getAddressState,
     getAddressHistory: getAddressHistory,
     setEOSTransaction: setEOSTransaction,
