@@ -55,7 +55,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     setStyle: {
       debug: {
         'position': 'fixed',
-        'top': '7rem',
+        'top': '10rem',
         'margin': '6px',
         'font-size': '0.9rem',
         'cursor': 'pointer',
@@ -90,6 +90,12 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
         $debug.appendChild( V.setNode( { tag: 'li', html: JSON.stringify( item ) } ) );
       }
     } );
+
+    setTimeout( setDebugNode, 3000 );
+
+  }
+
+  function setDebugNode() {
     V.setNode( 'body', $debug );
   }
 

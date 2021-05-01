@@ -91,9 +91,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   async function getWeb3Provider() {
     let provider;
+    // V.debug( 'run provider check' );
     if ( window.ethereum ) {
       // Modern dapp browsers
-      // console.log( 'ethereum is there' );
+      // V.debug( 'window.ethereum found' );
       provider = window.ethereum;
       V.setState( 'browserWallet', true );
       if ( window.ethereum.isMetaMask ) {
@@ -102,7 +103,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
-      // console.log( 'web3 is there' );
+      // V.debug( 'Legacy dapp browser found' );
       // provider = window.web3.currentProvider;
       return {
         success: false,
@@ -111,7 +112,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
-      // console.log( 'local network may be there' );
+      // V.debug( 'no injected web3 instance' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
       provider = new Web3.providers.HttpProvider(  V.getApiKey( 'rpc' ) );
       V.setState( 'browserWallet', false );
@@ -152,7 +153,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       try {
         // Request account access
-        await window.ethereum.enable();
+        await window.ethereum.request( {
+          method: 'eth_requestAccounts',
+        } ).then( res => { console.log( 'eth_requestAccounts:', res ) } );
       }
       catch ( error ) {
         // User denied account access...
