@@ -246,12 +246,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const aTx = V.getState( 'active' ).transaction;
 
     const adminNotify = status => {
-      V.setData( status, 'transaction admin notification', V.getSetting( 'transactionLedgerWeb2' ) );
+      console.log( status );
+      // V.setData( status, 'transaction admin notification', V.getSetting( 'notificationServer' ) );
     };
 
     V.setTransaction( aTx )
       .then( ( res ) => {
-        if ( res.success ) {
+        console.log( res );
+        if ( res.data.setTransaction.success || res.success ) { // res.success for backwards compatibility
           V.drawTxConfirmation( res.data[0] );
           Account.drawHeaderBalance();
           adminNotify( 'successfully' );

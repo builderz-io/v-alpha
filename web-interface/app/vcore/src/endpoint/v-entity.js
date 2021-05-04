@@ -412,7 +412,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   async function getEntityBalance( entity = V.aE() ) {
 
     const tL = V.getSetting( 'transactionLedger' );
-    const tLWeb2 = V.getSetting( 'transactionLedgerWeb2' );
 
     const returnFalse = ( tL, bal ) => ( {
       success: false,
@@ -444,14 +443,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return returnFalse( tL, bal );
       }
     }
-    else if ( tLWeb2 == 'MongoDB' && V.aE() ) {
+    else if ( tL == 'MongoDB' && V.aE() ) {
       const bal = await getEntity( entity.fullId );
 
       if ( bal.success ) {
         return  {
           success: true,
           endpoint: 'entity',
-          ledger: tLWeb2,
+          ledger: tL,
           status: 'entity balance retrieved',
           data: [
             {

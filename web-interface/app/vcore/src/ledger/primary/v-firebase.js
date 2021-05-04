@@ -523,6 +523,27 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryS, variables );
   }
 
+  function setManagedTransaction( data ) {
+    console.log( 'send managed transaction' );
+
+    const queryS = `mutation SetTransaction( $tx: InputTransaction! ) {
+                      setTransaction(tx: $tx) {
+                        success
+                      }
+                    }
+                  `;
+
+    const variables = {
+      tx: {
+        initiatorAddress: data.initiatorAddress,
+        recipientAddress: data.recipientAddress,
+        txTotal: String( data.txTotal ),
+      },
+    };
+
+    return fetchFirebase( queryS, variables );
+  }
+
   function fetchFirebase( query, variables ) {
     return fetch( settings.firebaseEndpoint, {
       method: 'POST',
@@ -673,6 +694,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'message' == whichEndpoint ) {
       return setChatMessage( data );
+    }
+    else if ( 'managed transaction' == whichEndpoint ) {
+      return setManagedTransaction( data );
     }
   }
 

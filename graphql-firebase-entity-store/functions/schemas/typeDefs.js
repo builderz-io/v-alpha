@@ -27,6 +27,14 @@ const Filters = `
   }
 `;
 
+const Transaction = `
+  input InputTransaction {
+    initiatorAddress: String
+    recipientAddress: String
+    txTotal: String
+  }
+`;
+
 const Jwt = `
   type Jwt {
     success: Boolean
@@ -54,11 +62,12 @@ const Mutations = `
   type Mutation {
     setAuth: Jwt
     setDisconnect: Success
+    setTransaction(tx: InputTransaction!): Success
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }
 `;
 
-const allDefs = gql`${ Filters + Jwt + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
+const allDefs = gql`${ Filters + Transaction + Jwt + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
 
 module.exports = allDefs;
