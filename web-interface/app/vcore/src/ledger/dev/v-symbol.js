@@ -19,7 +19,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods  ================= */
 
-  function setActiveAddress() {
+  function setConnectedAddress() {
 
     const account = Symbol.Account.generateNewAccount( Symbol.NetworkType[network.type] );
 
@@ -171,13 +171,13 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export  ===================== */
 
-  V.setActiveAddress = setActiveAddress;
+  V.setConnectedAddress = setConnectedAddress;
   V.getAddressState = getAddressState;
   V.setMosaicTransaction = setMosaicTransaction;
   V.getAddressHistory = getAddressHistory;
 
   return {
-    setActiveAddress: setActiveAddress,
+    setConnectedAddress: setConnectedAddress,
     getAddressState: getAddressState,
     setMosaicTransaction: setMosaicTransaction,
     getAddressHistory: getAddressHistory,

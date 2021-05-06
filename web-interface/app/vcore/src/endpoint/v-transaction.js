@@ -215,10 +215,8 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   async function getTransactions(
     data
-    // which = V.aE().fullId, // for MongoDB
   ) {
-    const choice = V.cA() ? 'transactionLedger' : 'transactionLedger'; // 'transactionLedgerWeb2';
-    return V.getData( data, 'transaction', V.getSetting( choice ) );
+    return V.getData( data, 'transaction', V.getSetting( 'transactionLedger' ) );
   }
 
   async function setTransactionConfirmation( which ) {
@@ -228,12 +226,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      // const choice = V.cA() ? 'transactionLedger' : 'transactionLedgerWeb2';
       if ( V.cA() ) {
         return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
       }
       else {
-        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'transactionLedgerWeb2' ) );
+        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'managedTransactionLedger' ) );
       }
     }
     else {
