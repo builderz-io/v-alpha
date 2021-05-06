@@ -11,8 +11,9 @@
 
           // START editing
 
-          sourceEndpoint: 'local', // choices are 'local', 'development', 'production' and 'github'
-          useBuilds: false,
+          sourceEndpoint: 'github', // choices are 'local', 'development', 'production' and 'github'
+          appVersion: '', // e.g. '3.1.0' or '' for latest version
+          useBuilds: true,
 
           firebaseEndpoint: 'development',
           mongodbEndpoint: 'builderz',
@@ -69,11 +70,11 @@
 
         }
 
-        const sourceEndpoints = {
-          local: 'http://localhost:4021',
-          development: 'https://dev.valueinstrument.org',
-          production: 'https://production.valueinstrument.org',
-          github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha-2/web-interface/app',
+        if ( !window.location.host.includes( 'localhost' ) && window.location.protocol != 'https:') {
+          setTimeout(() => {
+            document.body.innerHTML = '<p>Https is required to run the app</p>'
+          }, 1500)
+          return
         }
 
         /**
@@ -81,8 +82,16 @@
          * and ensure builds are used with github
          */
 
+         const sourceEndpoints = {
+           local: 'http://localhost:4021',
+           development: 'https://dev.valueinstrument.org',
+           production: 'https://production.valueinstrument.org',
+           github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha-2' +( settings.appVersion ? `@${ settings.appVersion }` : '' ) + '/web-interface/app',
+         }
+
         settings.sourceEndpoint == 'github' ? settings.useBuilds = true : null;
         settings.sourceEndpoint = sourceEndpoints[settings.sourceEndpoint];
+
 
         /** kick off the loading of the entire app */
         setInitScript( settings.sourceEndpoint + '/vcore/src/v/v.js' )

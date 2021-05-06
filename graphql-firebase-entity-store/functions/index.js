@@ -22,7 +22,9 @@ const app = express();
 const whitelist = [
   'http://localhost:4021',
   'https://dev.valueinstrument.org',
-  'http://staging.builderz.io',
+  'https://staging.valueinstrument.org',
+  'https://staging.builderz.io',
+  'https://staging.coindashboards.com',
   'https://faithfinance.app',
 ];
 
@@ -115,7 +117,7 @@ console.log( ' ***  Started Apollo Server at', new Date().toString().split( ' ' 
 //   initiatorAddress: '0x04330b0c2b00e069d69066aeeb84e09b46526495',
 //   recipientAddress: '0x891a949adf13890c981f5e64d272fc2d861a1f8c',
 //   // recipientAddress: '0xac6d20f6da9edc85647c8608cb6064794e20ca26',
-//   txTotal: '13.33',
-// }, 'managed' ).then( res => console.log( 'res:', Date.now(), res ) );
+//   txTotal: '1',
+// }, 'float' ).then( res => console.log( 'res:', Date.now(), JSON.stringify( res )  ) );
 
 exports.api = functions.https.onRequest( app );

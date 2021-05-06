@@ -23,7 +23,7 @@ module.exports = {
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),
     setDisconnect: ( parent, __, { context, res } ) => require( './set-disconnect' )( context, res ),
-    setTransaction: ( parent, { tx }, { context } ) => require( './set-transaction' )( context, tx ),
+    setTransaction: ( parent, { tx }, { context } ) => require( './set-transaction' )( context, tx, 'managed' ),
     setEntity: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'entity' ),
     setProfile: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'profile' ),
   },

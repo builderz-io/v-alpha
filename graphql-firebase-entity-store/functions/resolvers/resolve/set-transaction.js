@@ -1,6 +1,6 @@
 const settings = {
-  floatEthAmount: 10000,
-  autoVerify: true,
+  floatEthAmount: 0.05,
+  autoVerify: false,
 };
 
 const findEntity = require( './find-by-evmaddress' );
@@ -80,7 +80,7 @@ async function managedTransaction( txData ) {
       console.log( 'Managed Transaction Success' /* + JSON.stringify( receipt ) */ );
       return {
         success: true,
-        message: receipt,
+        data: receipt,
       };
     } )
     .catch( error => {
@@ -99,7 +99,7 @@ async function managedTransaction( txData ) {
 }
 
 async function floatEth( which ) {
-  console.log( 'Address to float: ', which );
+  console.log( 'Float address: ', which );
 
   const txObject = {
     from: web3.eth.defaultAccount,
@@ -125,7 +125,7 @@ async function floatEth( which ) {
       else {
         return {
           success: true,
-          message: receipt,
+          data: receipt,
         };
       }
     } )
@@ -145,7 +145,7 @@ async function floatEth( which ) {
 }
 
 function verify( which ) {
-  console.log( 'Address to verify: ', which );
+  console.log( 'Verification address: ', which );
   return contract.methods.verifyAccount( which ).send( { from: web3.eth.defaultAccount, gas: 6001000 } )
     .once( 'transactionHash', ( hash ) => {
       console.log( 'Verification Hash: ', hash );

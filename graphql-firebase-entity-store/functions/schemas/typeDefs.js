@@ -33,6 +33,15 @@ const Transaction = `
     recipientAddress: String
     txTotal: String
   }
+  type SuccessTx {
+    success: Boolean
+    error: String
+    data: ReceiptTx
+  }
+  type ReceiptTx {
+    blockNumber: Int
+    transactionHash: String
+  }
 `;
 
 const Jwt = `
@@ -62,7 +71,7 @@ const Mutations = `
   type Mutation {
     setAuth: Jwt
     setDisconnect: Success
-    setTransaction(tx: InputTransaction!): Success
+    setTransaction(tx: InputTransaction!): SuccessTx
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }

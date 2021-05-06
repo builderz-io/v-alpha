@@ -253,14 +253,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         console.log( res );
-        if ( res.data.setTransaction.success || res.success ) { // res.success for backwards compatibility
-          V.drawTxConfirmation( res.data[0] );
+        if ( res.success || res.data.setTransaction.success ) { // res.success for connected wallet
+          V.drawTxConfirmation( res.data.setTransaction ? res.data.setTransaction.data : res.data[0] );
           Account.drawHeaderBalance();
           adminNotify( 'successfully' );
         }
         else {
           Modal.draw( 'error' );
-          console.log( res );
           adminNotify( 'unsuccessfully' );
         }
       } )

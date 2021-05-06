@@ -528,7 +528,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const queryS = `mutation SetTransaction( $tx: InputTransaction! ) {
                       setTransaction(tx: $tx) {
-                        success
+                        success error data { blockNumber transactionHash }
                       }
                     }
                   `;
@@ -540,7 +540,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         txTotal: String( data.txTotal ),
       },
     };
-
     return fetchFirebase( queryS, variables );
   }
 
