@@ -246,19 +246,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const aTx = V.getState( 'active' ).transaction;
 
     const adminNotify = status => {
-      V.setData( status, 'transaction admin notification', V.getSetting( 'transactionLedgerWeb2' ) );
+      console.log( status );
+      // V.setData( status, 'transaction admin notification', V.getSetting( 'notificationServer' ) );
     };
 
     V.setTransaction( aTx )
       .then( ( res ) => {
-        if ( res.success ) {
-          V.drawTxConfirmation( res.data[0] );
+        console.log( res );
+        if ( res.success || res.data.setTransaction.success ) { // res.success for connected wallet
+          V.drawTxConfirmation( res.data.setTransaction ? res.data.setTransaction.data : res.data[0] );
           Account.drawHeaderBalance();
           adminNotify( 'successfully' );
         }
         else {
           Modal.draw( 'error' );
-          console.log( res );
           adminNotify( 'unsuccessfully' );
         }
       } )

@@ -16,7 +16,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( which.includes( 'authenticate' ) ) {
         // Modal.draw( 'please wait' );
-        await V.setActiveAddress().then( async res => {
+        await V.setConnectedAddress().then( async res => {
           if ( res.success ) {
 
             const check = await ckeckEntityStoreByAddress();

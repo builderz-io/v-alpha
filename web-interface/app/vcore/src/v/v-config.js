@@ -33,7 +33,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
     transactionLedger: VNetworkInit.transactionLedger,
-    transactionLedgerWeb2: VNetworkInit.transactionLedgerWeb2,
+    managedTransactionLedger: VNetworkInit.managedTransactionLedger,
+    notificationServer: VNetworkInit.notificationServer,
 
     socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
     socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,

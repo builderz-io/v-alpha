@@ -35,21 +35,22 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function setNewActiveAddress() {
+  function setNewConnectedAddress() {
 
-    var currentActiveAddress = window.ethereum.selectedAddress;
-    // var currentActiveAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-    // console.log( currentActiveAddress );
-    // console.log( V.cA() );
+    const sA = window.ethereum.selectedAddress;
 
-    if ( currentActiveAddress == null ) {
+    if ( V.cA() == undefined ) {
+      console.log( 'set initial connected address', sA );
+      V.setLocal( 'last-connected-address', sA );
+    }
+    else if ( sA == null ) {
       V.setLocal( 'last-connected-address', 'clear' );
       V.setState( 'activeEntity', 'clear' );
       V.setLocal( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
-    else if ( currentActiveAddress != V.cA() ) {
-      // V.setLocal( 'last-connected-address', currentActiveAddress.toLowerCase() );
+    else if ( sA != V.cA() ) {
+      // V.setLocal( 'last-connected-address', sA.toLowerCase() );
       // V.setState( 'activeEntity', 'clear' );
       // V.setLocal( 'welcome-modal', 1 );
       // Join.draw( 'new entity was set up' );
@@ -91,18 +92,19 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   async function getWeb3Provider() {
     let provider;
+    // V.debug( 'run provider check' );
     if ( window.ethereum ) {
       // Modern dapp browsers
-      // console.log( 'ethereum is there' );
+      // V.debug( 'window.ethereum found' );
       provider = window.ethereum;
       V.setState( 'browserWallet', true );
       if ( window.ethereum.isMetaMask ) {
-        window.ethereum.on( 'accountsChanged', setNewActiveAddress );
+        window.ethereum.on( 'accountsChanged', setNewConnectedAddress );
       }
     }
     else if ( window.web3 ) {
       // Legacy dapp browsers
-      // console.log( 'web3 is there' );
+      // V.debug( 'Legacy dapp browser found' );
       // provider = window.web3.currentProvider;
       return {
         success: false,
@@ -111,7 +113,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       // If no injected web3 instance is detected, fall back to Truffel/Ganache
-      // console.log( 'local network may be there' );
+      // V.debug( 'no injected web3 instance' );
       // provider = new Web3.providers.HttpProvider( 'http://localhost:9545' );
       provider = new Web3.providers.HttpProvider(  V.getApiKey( 'rpc' ) );
       V.setState( 'browserWallet', false );
@@ -142,17 +144,16 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function setActiveAddress() {
+  async function setConnectedAddress() {
 
-    if ( window.ethereum && !window.ethereum.selectedAddress ) {
-
-      // Join.draw( 'wallet locked' );
-
-      // await V.sleep( 1500 );
-
+    if ( window.ethereum /* && !window.ethereum.selectedAddress */ ) {
       try {
         // Request account access
-        await window.ethereum.enable();
+        await window.ethereum.request( {
+          method: 'eth_requestAccounts',
+        } ).then( () => {
+          setNewConnectedAddress();
+        } );
       }
       catch ( error ) {
         // User denied account access...
@@ -164,16 +165,6 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     if ( window.Web3Obj ) {
-
-      const connectedAddress = await window.Web3Obj.eth.getAccounts();
-      // const connectedAddress = window.Web3Obj.currentProvider.publicConfigStore._state.selectedAddress;
-      V.setLocal( 'last-connected-address', connectedAddress[0] ? connectedAddress[0].toLowerCase() : false );
-
-      /* listen to change of address in MetaMask */
-      // if ( window.ethereum && window.ethereum.on ) {
-      //   window.ethereum.on( 'accountsChanged', setNewActiveAddress );
-      // }
-
       setEventSubscription( 'TransferSummary' );
       return {
         success: true,
@@ -627,7 +618,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export  ===================== */
 
   V.getWeb3Provider = getWeb3Provider;
-  V.setActiveAddress = setActiveAddress;
+  V.setConnectedAddress = setConnectedAddress;
   V.getContractState = getContractState;
   V.getAddressState = getAddressState;
   V.getAddressHistory = getAddressHistory;
@@ -640,7 +631,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     getWeb3Provider: getWeb3Provider,
-    setActiveAddress: setActiveAddress,
+    setConnectedAddress: setConnectedAddress,
     getContractState: getContractState,
     getAddressState: getAddressState,
     getAddressHistory: getAddressHistory,

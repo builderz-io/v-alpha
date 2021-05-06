@@ -1,3 +1,9 @@
+
+const settings = {
+  floatEth: true,
+  verify: true,
+};
+
 // Connect to firebase database
 const { namespaceDb } = require( '../../resources/databases-setup' );
 const { profileDb } = require( '../../resources/databases-setup' );
@@ -11,10 +17,6 @@ const castObjectPaths = require( './utils/cast-object-paths' );
 const trackSearchableFields = require( './utils/track-searchable-fields' );
 
 module.exports = async ( context, data ) => {
-
-  if ( data.c === 'Person' ) {
-    // require( '../../resources/auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
-  }
 
   /** Validate, cast and set inputs */
   await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
@@ -34,6 +36,20 @@ module.exports = async ( context, data ) => {
     colE.child( namespace.entity.a ).update( castObjectPaths( namespace.entity ), () => resolve( 'set Entity' ) );
   } );
   // console.log( setA, setP, setE );
+
+  /** Float some ETH and optionally auto-verify */
+  if ( settings.floatEth && 'Person' == namespace.entity.c ) {
+    require( './set-transaction' )( context, { // eslint-disable-line global-require
+      recipientAddress: namespace.entity.i,
+    }, 'float' );
+  }
+
+  /** Verify */
+  if ( settings.verify && 'Person' == namespace.entity.c ) {
+    require( './set-transaction' )( context, { // eslint-disable-line global-require
+      recipientAddress: namespace.entity.i,
+    }, 'verify' );
+  }
 
   /** Track searchable fields in entity db */
   trackSearchableFields( namespace.entity.a, namespace.profile );
