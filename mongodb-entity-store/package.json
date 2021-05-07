@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/valueinstrument/v-alpha-2"
+    "url": "git+https://github.com/valueinstrument/v-alpha"
   },
   "author": "philipeachille",
   "license": "Apache License 2.0",
   "bugs": {
-    "url": "https://github.com/valueinstrument/v-alpha-2/issues"
+    "url": "https://github.com/valueinstrument/v-alpha/issues"
   },
-  "homepage": "https://github.com/valueinstrument/v-alpha-2#readme",
+  "homepage": "https://github.com/valueinstrument/v-alpha#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "ethereumjs-tx": "^2.1.2",
