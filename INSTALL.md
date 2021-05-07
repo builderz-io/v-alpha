@@ -71,7 +71,7 @@ Open a Terminal window and run the following commands.
 Clone the repository into a local folder. A new folder will be created.
 
 ```
-git clone https://github.com/valueinstrument/v-alpha-2.git
+git clone https://github.com/valueinstrument/v-alpha.git
 ```
 
 Navigate to the new folder
