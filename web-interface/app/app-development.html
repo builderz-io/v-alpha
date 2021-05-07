@@ -11,8 +11,8 @@
 
           // START editing
 
-          sourceEndpoint: 'github', // choices are 'local', 'development', 'production' and 'github'
-          appVersion: '', // e.g. '3.1.0' or '' for latest version
+          sourceEndpoint: 'local', // choices are 'local', 'development', 'production' and 'github'
+          appVersion: '3.2.1', // e.g. '3.2.1' or '' for latest version
           useBuilds: true,
 
           firebaseEndpoint: 'development',
@@ -86,7 +86,7 @@
            local: 'http://localhost:4021',
            development: 'https://dev.valueinstrument.org',
            production: 'https://production.valueinstrument.org',
-           github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha-2' +( settings.appVersion ? `@${ settings.appVersion }` : '' ) + '/web-interface/app',
+           github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha' + ( settings.appVersion ? `@${ settings.appVersion }` : '' ) + '/web-interface/app',
          }
 
         settings.sourceEndpoint == 'github' ? settings.useBuilds = true : null;

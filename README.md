@@ -1,4 +1,4 @@
-# Value Instrument Alpha - Version 2
+# Value Instrument Alpha
 
 ### Integrating with
 
@@ -32,7 +32,7 @@
 
 This repository contains five distinct code bases:
 
-🔸 **Web Interface** [View a code example](https://github.com/valueinstrument/v-alpha-2/blob/master/web-interface/app/plugins/src/marketplace/marketplace.js)
+🔸 **Web Interface** [View a code example](https://github.com/valueinstrument/v-alpha/blob/master/web-interface/app/plugins/src/marketplace/marketplace.js)
 
 Modules to connect to distributed ledger technologies and distributed identity mechanisms, and build user interfaces around these technologies. All web interface modules are written in plain Javascript.
 
@@ -43,7 +43,7 @@ Modules to connect to distributed ledger technologies and distributed identity m
 **VPlugins** create and display various content. Plugins control what and how content is displayed in the VTheme. Included are our first plugins to manage a marketplace, display the map, chat and entity management.
 
 
-🔸 **Smart Contract** [View the code](https://github.com/valueinstrument/v-alpha-2/blob/master/smart-contract/contracts/VICoin.sol)
+🔸 **Smart Contract** [View the code](https://github.com/valueinstrument/v-alpha/blob/master/smart-contract/contracts/VICoin.sol)
 
 The VToken concept cast into a smart contract, which can be setup on Ethereum and EVM-compatible ledgers. This is a special kind of token with several customizable properties, which can be set to the initiators liking.
 
@@ -72,17 +72,17 @@ The GraphQL/Firebase Entity Store is an API that manages entity names and their 
 
 ## Installation
 
-Please refer to the [INSTALL](https://github.com/valueinstrument/v-alpha-2/blob/development/INSTALL.md) file.
+Please refer to the [INSTALL](https://github.com/valueinstrument/v-alpha/blob/development/INSTALL.md) file.
 
 
 ## Documentation
 
-Please visit the [Wiki](https://github.com/valueinstrument/v-alpha-2/wiki) here on GitHub to find the documentation.
+Please visit the [Wiki](https://github.com/valueinstrument/v-alpha/wiki) here on GitHub to find the documentation.
 
 
 ## Contribute
 
-Visit the [Issues](https://github.com/valueinstrument/v-alpha-2/issues) to find a selection of tasks in need of attention. The issues listed mainly provide a global overview. We do not currently track detailed issues or the project roadmap here on GitHub.
+Visit the [Issues](https://github.com/valueinstrument/v-alpha/issues) to find a selection of tasks in need of attention. The issues listed mainly provide a global overview. We do not currently track detailed issues or the project roadmap here on GitHub.
 
 
 ## Intro Video

@@ -9,7 +9,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   const urlCreator = window.URL || window.webkitURL;
 
-  const socialMatch = 'facebook|twitter|linkedin|t.me|instagram|tiktok';
+  const socialMatch = 'facebook|twitter|linkedin|t.me|instagram|tiktok|medium';
 
   /* ================== private methods ================= */
 
