@@ -9,9 +9,9 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( path ) {
+  async function presenter( which ) {
     let query;
-    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == path ) : undefined;
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == which ) : undefined;
 
     if ( !V.aE() ) {
       return {
@@ -26,7 +26,12 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
+      query = await V.getEntity(
+        which.length == 22 && // checks whether which is a uuidE or a path
+        isNaN( Number( which.slice( -5 ) ) )
+          ? which
+          : V.castPathOrId( which )
+      ).then( res => {
         if ( res.success ) {
 
           V.setCache( 'viewed', res.data );

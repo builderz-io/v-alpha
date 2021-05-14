@@ -1,7 +1,6 @@
 
 const settings = {
   floatEth: true,
-  verify: true,
 };
 
 // Connect to firebase database
@@ -38,17 +37,11 @@ module.exports = async ( context, data ) => {
   // console.log( setA, setP, setE );
 
   /** Float some ETH and optionally auto-verify */
+  // "awaiting" this would make the joining slow for the user
   if ( settings.floatEth && 'Person' == namespace.entity.c ) {
     require( './set-transaction' )( context, { // eslint-disable-line global-require
       recipientAddress: namespace.entity.i,
     }, 'float' );
-  }
-
-  /** Verify */
-  if ( settings.verify && 'Person' == namespace.entity.c ) {
-    require( './set-transaction' )( context, { // eslint-disable-line global-require
-      recipientAddress: namespace.entity.i,
-    }, 'verify' );
   }
 
   /** Track searchable fields in entity db */

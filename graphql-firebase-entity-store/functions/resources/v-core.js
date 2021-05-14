@@ -59,9 +59,9 @@ module.exports.castEntityTitle = ( title, role ) => {
   // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
   // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
   // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-  ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
-  ( [ 'Person' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
-  ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
+  ( [ 'Person', 'PersonMapped' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+  ( [ 'Person', 'PersonMapped' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
+  ( [ 'Person', 'PersonMapped' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
   wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
   if ( error ) {
@@ -75,10 +75,10 @@ module.exports.castEntityTitle = ( title, role ) => {
   else {
 
     const formattedTitle = titleArray.map( function( string ) {
-      if ( 'Person' == role && string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+      if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
       }
-      if ( 'Person' == role && string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+      if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
       }
       else {

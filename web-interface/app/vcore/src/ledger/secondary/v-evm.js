@@ -286,6 +286,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       contract.methods.liveBalanceOf( which ).call(),
       contract.methods.getDetails( which ).call(),
       contract.methods.getBlockNumber().call(),
+      contract.methods.accountApproved( which ).call(),
     ] ).catch( err => {
       console.warn( 'Could not get address state' );
       return err;
@@ -299,6 +300,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         lastBlock: all[2]._lastBlock,
         zeroBlock: all[2]._zeroBlock,
         currentBlock: all[3],
+        isVerified: all[4],
       };
 
       return {

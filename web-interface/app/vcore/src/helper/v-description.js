@@ -12,7 +12,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     maxIntroLength: 200, // including links
     maxLinkCount: 12,
     maxVideoIframeCount: 3, // including featured
-    maxPodcastIframeCount: 2,
+    maxPodcastIframeCount: 2, // TODO: currently unused, rework this functionality
     videoMatches: 'youtu|vimeo',
     socialMatches: 'facebook|twitter|linkedin|t.me|medium|instagram|tiktok',
   };
@@ -71,10 +71,9 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     /**
      * Find links and ignore some common sentence endings
-     * TODO: ignore "." here also and not in for loop
      */
 
-    const linksFound = text.match( /(?:www|https?)[^\s!?,]+/gi );
+    const linksFound = text.match( /(?:www|https?)[^\s!,]+/gi );
 
     /**  If no links were found, just add paragraphs */
 
@@ -116,7 +115,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     items.push( 'pEnd' );
 
-  // console.log('items', items);
+    // console.log( 'items', items );
 
   }
 
@@ -196,7 +195,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     let host = link.split( '/' )[2];
     host = host.replace( 'www.', '' );
-
+    console.log( host );
     if ( isIntro ) {
       $paragraph.appendChild( castRegularLink( link, host ) );
     }
@@ -220,15 +219,27 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( host.match( /soundcloud/ ) ) {
       const scId = link.split( '/' ).pop(); // example 933028357
-      if ( isNaN( scId ) || podcastIframeCount >= settings.maxPodcastIframeCount ) {
+      if ( isNaN( scId ) || podcastIframeCount >= 1 ) {
         $paragraph.appendChild( castRegularLink( link, host ) );
       }
       else {
-        podcastIframeCount += 1;
-
         const $iframe = castSoundcloudIframe( scId );
         setFeature( $iframe, link, host );
+
+        podcastIframeCount += 1;
       }
+    }
+    else if ( host.match( /anchor/ ) && podcastIframeCount < 1 ) {
+      const $iframe = castAnchorFmIframe( link.replace( '/episodes', '/embed/episodes' ) );
+      setFeature( $iframe, link, host );
+
+      podcastIframeCount += 1;
+    }
+    else if ( host.match( /podcasts.apple/ ) && podcastIframeCount < 1 ) {
+      const $iframe = castApplePodcastIframe( link.replace( 'podcasts.apple', 'embed.podcasts.apple' ) );
+      setFeature( $iframe, link, host );
+
+      podcastIframeCount += 1;
     }
     else {
       $paragraph.appendChild( castRegularLink( link, host ) );
@@ -254,8 +265,8 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     if ( !feature ) {
       feature = true;
       $feature = $iframe;
-      $paragraph.appendChild( castRegularLink( link, host ) );
-      $paragraph.appendChild( castSpan( ' *featured above*' ) );
+      link ? $paragraph.appendChild( castRegularLink( link, host ) ) : null;
+      // $paragraph.appendChild( castSpan( ' *featured above*' ) );
     }
     else {
       $paragraph.appendChild( $iframe );
@@ -293,8 +304,63 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function castSoundcloudIframe( scId ) {
+    return V.cN( {
+      t: 'div',
+      c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${ scId }&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`,
+        a: {
+          width: '100%',
+          height: '166',
+          scrolling: 'no',
+          frameborder: 'no',
+          allow: 'autoplay',
+        },
+      },
+    } );
+  }
+
+  function castAnchorFmIframe( afmEmbedLink ) {
+    return V.cN( {
+      t: 'div',
+      // c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: afmEmbedLink,
+        a: {
+          width: '100%',
+          height: '102px',
+          scrolling: 'no',
+          frameborder: '0',
+        },
+      },
+    } );
+  }
+
+  function castApplePodcastIframe( appleLink ) {
+    return V.cN( {
+      t: 'div',
+      // c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: appleLink,
+        a: {
+          allow: 'autoplay *; encrypted-media *; fullscreen *',
+          frameborder: '0',
+          height: '175',
+          style: 'width:100%;max-width:660px;overflow:hidden;background:transparent;',
+          sandbox: 'allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation',
+        },
+      },
+    } );
+  }
+
+  /* ================== public methods ================== */
+
   function castYouTubeIframe( link ) {
-  // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
+    // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
     const youtubeId = link.split( '/' ).pop();
     return V.cN( {
       t: 'div',
@@ -328,26 +394,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function castSoundcloudIframe( scId ) {
-    return V.cN( {
-      t: 'div',
-      c: 'iframe-wrapper w-full',
-      h: {
-        t: 'iframe',
-        r: `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${ scId }&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`,
-        a: {
-          width: '100%',
-          height: '166',
-          scrolling: 'no',
-          frameborder: 'no',
-          allow: 'autoplay',
-        },
-      },
-    } );
-  }
-
-  /* ================== public methods ================== */
-
   function castDescription( whichText ) {
     setupModule();
     castItemsArray( whichText );
@@ -365,14 +411,14 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  V.castDescription = castDescription;
   V.castYouTubeIframe = castYouTubeIframe;
   V.castVimeoIframe = castVimeoIframe;
+  V.castDescription = castDescription;
 
   return {
-    castDescription: castDescription,
     castYouTubeIframe: castYouTubeIframe,
     castVimeoIframe: castVimeoIframe,
+    castDescription: castDescription,
   };
 
 } )();

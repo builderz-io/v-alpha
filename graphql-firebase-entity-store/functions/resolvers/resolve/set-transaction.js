@@ -1,6 +1,6 @@
 const settings = {
   floatEthAmount: 0.05,
-  autoVerify: false,
+  autoVerify: true,
 };
 
 const findEntity = require( './find-by-evmaddress' );

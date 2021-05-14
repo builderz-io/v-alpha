@@ -7,8 +7,11 @@
  */
 
 const whiteList = [
-  'faithfinance.app',
-  'youtu.be', 'youtube.com', 'vimeo.com', 'soundcloud.com', 'facebook.com', 'twitter.com', 'linkedin.com', 't.me', 'medium.com', 'instagram.com', 'tiktok.com',
+  /* networks */ 'faithfinance.app',
+  /* podcasts */ 'anchor.fm', 'podcasts.apple.com',
+  /* videos   */ 'youtu.be', 'youtube.com', 'vimeo.com', 'soundcloud.com',
+  /* social   */ 'facebook.com', 'twitter.com', 'linkedin.com', 't.me', 'medium.com', 'instagram.com', 'tiktok.com',
+  /* largest  */ 'google.com',
 ];
 
 const clearlyPorn = new RegExp( /porn|bbw|blowjob|handjob|facial|gangbang|fisting|bondage|bukkake|busty|cumshot|big\stits|big\sdick/, 'i' );

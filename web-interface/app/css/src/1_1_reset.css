@@ -57,6 +57,10 @@ body {
             user-select: none;
 }
 
+p {
+  word-break: break-word;
+}
+
 h2:before {
   /* https://codyhouse.co/blog/post/line-height-crop */
   content: '';

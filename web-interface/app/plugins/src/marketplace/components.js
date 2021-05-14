@@ -10,10 +10,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   /* ================== event handlers ================== */
 
   function handleProfileDraw() {
-    const path = this;
-    V.setState( 'active', { navItem: path } );
-    V.setBrowserHistory( path );
-    Profile.draw( path );
+    V.setState( 'active', { navItem: this.path } );
+    V.setBrowserHistory( this.path );
+    Profile.draw( this.uuidE );
   }
 
   function handleEditProfileDraw() {
@@ -26,18 +25,18 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
     if (
       V.getState( 'page' ).height > V.getState( 'page' ).peek ||
-      ( pathOfOpen && pathOfOpen == this )
+      ( pathOfOpen && pathOfOpen == this.path )
     ) {
       // V.setAnimation( '.popup', {
       //   opacity: 0
       // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
       //   V.setNode( '.popup-content', '' );
       // } );
-      V.setBrowserHistory( this );
-      Profile.draw( this );
+      V.setBrowserHistory( this.path );
+      Profile.draw( this.uuidE );
       return;
     }
-    const entity = V.getCache( 'preview' ).data.find( item => item.path == this );
+    const entity = V.getCache( 'preview' ).data.find( item => item.path == this.path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );
@@ -95,10 +94,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       },
       e: {
         click: whichHandler == 'editable' ?
-          handleEditProfileDraw.bind( circleData.path ) :
+          handleEditProfileDraw.bind( circleData.uuidE ) :
           whichHandler == 'popup' ?
-            handlePopup.bind( circleData.path ) :
-            handleProfileDraw.bind( circleData.path ),
+            handlePopup.bind( { path: circleData.path, uuidE: circleData.uuidE } ) :
+            handleProfileDraw.bind( { path: circleData.path, uuidE: circleData.uuidE } ),
       },
     } );
   }
@@ -180,7 +179,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: castCircle( cardData ),
-      k: handleProfileDraw.bind( cardData.path ),
+      // k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
     } );
 
     const $topRight = V.cN( {
@@ -190,7 +189,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
         h: cardData.fullId,
-        k: handleProfileDraw.bind( cardData.path ),
+        k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
       },
     } );
 
@@ -202,7 +201,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
           h: cardData.properties.target || '',
-          k: handleProfileDraw.bind( cardData.path ),
+          k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
         },
         {
           t: 'p',
@@ -220,7 +219,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         { x: text, t: 'p', c: 'pxy', h: castDescr.$intro },
         { t: 'p', c: 'pxy', h: cardData.geometry && cardData.geometry.baseLocation ? cardData.geometry.baseLocation : '' },
       ],
-      k: handleProfileDraw.bind( cardData.path ),
+      k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
@@ -252,7 +251,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'p',
           c: 'pxy txt-center font-bold cursor-pointer',
           h: entity.fullId,
-          k: handleProfileDraw.bind( entity.path ),
+          k: handleProfileDraw.bind( { path: entity.path, uuidE: entity.uuidE } ),
         },
         castCircle( entity ),
         {
