@@ -1,11 +1,13 @@
 node_modules/
 credentials.js
+credentials.json
 entity-namespace-creds.json
 entity-profile-creds.json
 entity-authentication-creds.json
 
 #database import file
 trinity-entities-mongo.json
+mh-entities.json
 
 # Logs
 logs

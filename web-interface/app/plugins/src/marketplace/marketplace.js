@@ -242,6 +242,175 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     const navItems = {
+      tagEnergyTransportation: {
+        title: 'Energy & Transportation',
+        path: '/tag/energy-transportation',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#Energy',
+          } );
+        },
+      },
+      tagIndigenousValues: {
+        title: 'Indigenous Values',
+        path: '/tag/indigenous-values',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#IndigenousValues',
+          } );
+        },
+      },
+      tagCommonsCommunitiesGovernance: {
+        title: 'Commons, Communities & Governance',
+        path: '/tag/commons-communities-governance',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#Governance',
+          } );
+        },
+      },
+      tagEducationCollectiveIntelligence: {
+        title: 'Education & Collective Intelligence',
+        path: '/tag/education-collective-intelligence',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#Education',
+          } );
+        },
+      },
+      tagEconomicsCurrencies: {
+        title: 'Economics & Currencies',
+        path: '/tag/economics-currencies',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#Economics',
+          } );
+        },
+      },
+      tagCounteringAnthropogenicMindsets: {
+        title: 'Countering Anthropogenic Mindsets',
+        path: '/tag/countering-anthropogenic-mindsets',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#CounteringAnthropogenicMindsets',
+          } );
+        },
+      },
+      tagNewNarratives: {
+        title: 'New Narratives',
+        path: '/tag/new-narratives',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#NewNarratives',
+          } );
+        },
+      },
+      tagBiosphereRegeneration: {
+        title: 'Biosphere Regeneration',
+        path: '/tag/biosphere-regeneration',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#BiosphereRegeneration',
+          } );
+        },
+      },
+      tagCounteringIdentityPolitics: {
+        title: 'Countering Identity Politics',
+        path: '/tag/countering-identity-politics',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#CounteringIdentityPolitics',
+          } );
+        },
+      },
+      tagGlobalIntegralHealth: {
+        title: 'Global Integral Health',
+        path: '/tag/global-integral-health',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#GlobalIntegralHealth',
+          } );
+        },
+      },
+      tagFoodWater: {
+        title: 'Food & Water',
+        path: '/tag/food-water',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#FoodWater',
+          } );
+        },
+      },
+      tagEmergentOther: {
+        title: 'Emergent Other',
+        path: '/tag/emergent-other',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#EmergentOther',
+          } );
+        },
+      },
+      tagSystemicApproaches: {
+        title: 'Systemic Approaches',
+        path: '/tag/systemic-approaches',
+        use: {
+          button: 'search',
+          role: 'all',
+        },
+        draw: function( path ) {
+          Marketplace.draw( path, {
+            query: '#SystemicApproaches',
+          } );
+        },
+      },
       localEconomy: {
         title: 'Local Economy',
         path: '/network/all',

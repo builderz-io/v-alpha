@@ -68,7 +68,7 @@ module.exports = ( context, data ) => {
       j: data.j,
 
       m: data.m,
-      n: data.nImporter || data.n,
+      n: data.n,
 
       x: {
         a: creatorUuid,
@@ -90,6 +90,7 @@ module.exports = ( context, data ) => {
       m: {
         a: data.profileInputServerSide.descr,
         b: data.profileInputServerSide.email,
+        c: data.prefLangImporter,
         m: data.profileInputServerSide.target,
         n: data.profileInputServerSide.unit,
         r: data.profileInputServerSide.filteredDescr,

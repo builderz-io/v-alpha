@@ -45,7 +45,7 @@ async function runBaseImport() {
       i: x.private.evmCredentials.address,
       j: x.receivingAddresses ? x.receivingAddresses.evm : null,
       m: x.profile.title,
-      nImporter: x.profile.tag,
+      n: x.profile.tag,
       profileInputServerSide: {
         descr: x.properties ? x.properties.description : null,
         email: x.social ? x.social.email : null,
