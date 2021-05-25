@@ -110,7 +110,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       items.push( linksFound[i] );
 
     }
-
     addParagraphEnds( arrayBuffer[1] );
 
     items.push( 'pEnd' );
@@ -195,7 +194,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     let host = link.split( '/' )[2];
     host = host.replace( 'www.', '' );
-    console.log( host );
+
     if ( isIntro ) {
       $paragraph.appendChild( castRegularLink( link, host ) );
     }
@@ -210,7 +209,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
         ? castYouTubeIframe( link )
         : castVimeoIframe( link );
 
-      if ( videoIframeCount <= settings.maxVideoIframeCount ) {
+      if ( $iframe && videoIframeCount <= settings.maxVideoIframeCount ) {
         setFeature( $iframe, link, host );
       }
       else {
@@ -247,6 +246,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function addParagraphEnds( item ) {
+    if ( !item ) { return }
     if ( item.includes( '\n\n' ) ) {
       const split = item.split( '\n\n' );
       for ( let i = 0; i < split.length; i++ ) {
@@ -362,6 +362,9 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   function castYouTubeIframe( link ) {
     // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
     const youtubeId = link.split( '/' ).pop();
+    if ( isNaN( youtubeId ) ) {
+      return null;
+    }
     return V.cN( {
       t: 'div',
       c: 'iframe-wrapper w-full',
@@ -379,6 +382,9 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   function castVimeoIframe( link ) {
     const vimeoId = link.split( '/' ).pop();
+    if ( isNaN( vimeoId ) ) {
+      return null;
+    }
     return V.cN( {
       t: 'div',
       c: 'iframe-wrapper w-full',

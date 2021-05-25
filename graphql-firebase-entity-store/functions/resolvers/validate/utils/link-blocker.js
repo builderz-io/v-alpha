@@ -8,14 +8,14 @@
 
 const whiteList = [
   /* networks */ 'faithfinance.app',
-  /* podcasts */ 'anchor.fm', 'podcasts.apple.com',
-  /* videos   */ 'youtu.be', 'youtube.com', 'vimeo.com', 'soundcloud.com',
+  /* podcasts */ 'soundcloud.com', 'anchor.fm', 'podcasts.apple.com',
+  /* videos   */ 'youtu.be', 'youtube.com', 'vimeo.com',
   /* social   */ 'facebook.com', 'twitter.com', 'linkedin.com', 't.me', 'medium.com', 'instagram.com', 'tiktok.com',
-  /* largest  */ 'google.com',
+  /* largest  */ 'google.com', 'scholar.google.com', 'en.wikipedia.org', 'amazon.com',
 ];
 
-const clearlyPorn = new RegExp( /porn|bbw|blowjob|handjob|facial|gangbang|fisting|bondage|bukkake|busty|cumshot|big\stits|big\sdick/, 'i' );
-const maybePorn = new RegExp( /\ssex\s|\sxxx\s|\sanal\s|\sass\s|\scum\s|\swebcams?\s/, 'gi' );
+const clearlyPorn = new RegExp( /bbw|blowjob|handjob|facial|gangbang|fisting|bondage|bukkake|busty|cumshot|big\stits|big\sdick/, 'gi' );
+const maybePorn = new RegExp( /\sporn\s|\ssex\s|\sxxx\s|\sanal\s|\sass\s|\scum\s|\swebcams?\s/, 'gi' );
 
 let fetch;
 
@@ -48,6 +48,7 @@ module.exports = async ( text ) => {
     /** block links with query strings */
     if ( linksFound[i].match( /\?/ ) ) {
       blockLink = true;
+      console.log( 'Matched query string in', linksFound[i] );
     }
     else {
 
@@ -63,7 +64,7 @@ module.exports = async ( text ) => {
         blockedLinksCount += 1;
       }
       else {
-        blockLink = matchContent( content );
+        blockLink = matchContent( content, link );
       }
     }
     if ( blockLink ) {
@@ -81,24 +82,27 @@ async function getLinkContent( link ) {
     content = await response.text();
   }
   catch ( err ) {
+    console.log( 'Link error:', err.message, 'CODE:', err.code );
     return 'link_error';
   }
   // console.log(content);
   return content;
 }
 
-function matchContent( content ) {
-
+function matchContent( content, link ) {
   const clearMatch = content.match( clearlyPorn );
-  if ( clearMatch ) {
-    console.log( 'Matched clearly:', clearMatch[0] );
+
+  if ( clearMatch && clearMatch.length > 3 ) {
+    console.log( 'Matched clearly:', clearMatch[0], 'in', link, '(', clearMatch.length, 'matches)' );
+    console.log( clearMatch );
     return true;
   }
   else {
     const maybeMatch = content.match( maybePorn );
 
     if ( maybeMatch && maybeMatch.length > 5 ) {
-      console.log( 'Matched maybe:', maybeMatch[0] );
+      console.log( 'Matched maybe:', maybeMatch[0], 'in', link, '(', maybeMatch.length, 'matches)'  );
+      console.log( maybeMatch );
       return true;
     }
   }

@@ -24,7 +24,7 @@ module.exports = async ( context, filter ) => {
         colE.child( E.a ).update( { 'search/z': text } );
       }
       text = text.toLowerCase();
-      const role = filter.role != E.c ? filter.role == 'all' ? true : false : true;
+      const role = filter.role != E.c.replace( 'Mapped', '' ) ? filter.role == 'all' ? true : false : true;
       const isLocalHost = context.host.includes( 'localhost' ) ? true : false; // always return results when localhost
       const isNetworkNative = E.g == context.host;
       return role && text.includes( q ) && ( isLocalHost || isNetworkNative );
