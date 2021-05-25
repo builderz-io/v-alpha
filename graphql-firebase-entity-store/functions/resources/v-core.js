@@ -13,8 +13,8 @@ const entitySetup = {
   maxWordLength: 14,  // max allowed length of each word in name
 };
 
-const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
-const charWhitelist = /[^0-9^a-z^A-Z^\s^']/g;
+const charBlacklist = /[.,;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
+const charWhitelist = /[^0-9^a-z^A-Z^\s^'-–]/g;
 
 /* ============== error strings ============== */
 
@@ -44,9 +44,10 @@ module.exports.castEntityTitle = ( title, role ) => {
 
   title = title.trim().toLowerCase();
 
-  const titleArray = title.split( ' ' );
-  const checkLength = titleArray.length;
-  const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+  /* Remove the dashes in title for checking and formatting to work */
+  const titleNoDashArray = title.replace( /[-–]/g, ' ' ).split( ' ' );
+  const checkLength = titleNoDashArray.length;
+  const wordLengthExeeded = titleNoDashArray.map( item => item.length > entitySetup.maxWordLength );
 
   let error;
 
@@ -74,7 +75,7 @@ module.exports.castEntityTitle = ( title, role ) => {
   }
   else {
 
-    const formattedTitle = titleArray.map( function( string ) {
+    let formattedTitle = titleNoDashArray.map( function( string ) {
       if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
       }
@@ -85,6 +86,14 @@ module.exports.castEntityTitle = ( title, role ) => {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
       }
     } ).join( ' ' );
+
+    /* bring back the dash if originally found in title */
+    if ( title.indexOf( '-' ) != -1 || title.indexOf( '–' ) != -1 ) {
+      const index = title.indexOf( '-' ) + title.indexOf( '–' ) + 1;
+      const x = formattedTitle.split( '' );
+      x[index] = '-';
+      formattedTitle = x.join( '' );
+    }
 
     return {
       success: true,
