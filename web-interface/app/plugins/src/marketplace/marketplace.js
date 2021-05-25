@@ -233,6 +233,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       topslider: $slider,
       position: whichPath ? 'peek' : 'closed',
+      navReset: false,
     } );
 
   }

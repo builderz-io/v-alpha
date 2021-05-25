@@ -67,6 +67,13 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   function view( features ) {
 
+    if ( features && features.resetZoom ) {
+      // const loc = getMapDefault( 'atlantic' );
+      const loc = V.getState( 'map' );
+      viMap.setView( [loc.lat, loc.lng], loc.zoom - 4 );
+      return;
+    }
+
     if ( !features || !features.length || features[0] == undefined ) {
       return;
     }
@@ -74,7 +81,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
 
     const geojsonMarkerSettings = {
-      radius: 10,
+      radius: 9,
       fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
       weight: 0,
       opacity: 1,

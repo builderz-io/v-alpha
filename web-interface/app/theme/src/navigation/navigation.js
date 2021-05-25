@@ -134,7 +134,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.success ) {
 
-      !viewData.data[0].which ? reset() : null;
+      // !viewData.data[0].which ? reset() : null;
 
       /**
        * draw serviceNav
@@ -397,7 +397,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( entitiesViewed.length >= 50 ) {
       entitiesViewed.forEach( entityPath => {
         if ( entityNavOrder[entityPath].l > 40 ) {
-          console.log( entityPath );
           delete entityNavOrder[entityPath];
         }
       } );
@@ -445,6 +444,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     Form.draw( 'all', { fade: 'out' } );
     Button.draw( 'all', { fade: 'out' } );
+
+    /* return to the full market view and reset the map (zoom) */
+    Marketplace.draw();
+    VMap.draw( { resetZoom: true } );
 
   }
 
