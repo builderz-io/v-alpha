@@ -36,7 +36,14 @@ module.exports = async ( text ) => {
   for ( let i = 0; i < linksFound.length; i++ ) {
 
     /** skip links in whiteList */
-    const host = linksFound[i].split( '/' )[2].replace( 'www.', '' );
+    const split = linksFound[i].split( '/' );
+
+    if ( !split[2] ) { // This could be the case when importing data
+      console.log( 'Not a valid link', linksFound[i] );
+      continue;
+    }
+
+    const host = split[2].replace( 'www.', '' );
 
     if ( whiteList.includes( host ) ) {
       // console.log( host, 'is whitelisted' );

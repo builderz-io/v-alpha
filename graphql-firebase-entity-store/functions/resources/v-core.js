@@ -10,7 +10,7 @@ const entitySetup = {
   useWhitelist: true, // allow only chars in whitelist
   maxEntityWords: 7,  // max allowed words in entity names (not humans)
   maxHumanWords: 3,  // max allowed words in human entity names
-  maxWordLength: 14,  // max allowed length of each word in name
+  maxWordLength: 16,  // max allowed length of each word in name
 };
 
 const charBlacklist = /[.,;/!?:@=&"<>#%(){}[\]|\\^~`]/g;

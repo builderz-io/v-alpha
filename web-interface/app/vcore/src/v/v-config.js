@@ -6,7 +6,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const firebaseEndpoints = {
-    local: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+
+    /* for development, firebase function is deployed to "entity-profile"-project */
+    local: 'http://localhost:5001/entity-profile/us-central1/api/v1',
+    staging: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     development: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     production: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
   };
