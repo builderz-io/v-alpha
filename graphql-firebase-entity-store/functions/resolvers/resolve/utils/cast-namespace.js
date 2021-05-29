@@ -31,11 +31,11 @@ module.exports = ( context, data ) => {
   let creatorUuid, heldBy;
 
   if ( context.a ) {
-    heldBy = [uuidE, context.d];
+    heldBy = context.d;
     creatorUuid = context.d;
   }
   else {
-    heldBy = [uuidE];
+    // heldBy = [uuidE];
     creatorUuid = uuidE;
   }
 
@@ -72,7 +72,7 @@ module.exports = ( context, data ) => {
 
       x: {
         a: creatorUuid,
-        b: heldBy,
+        m: heldBy,
       },
 
       y: {
@@ -108,7 +108,7 @@ module.exports = ( context, data ) => {
 
       x: {
         a: creatorUuid,
-        b: heldBy,
+        m: heldBy,
       },
 
       y: {

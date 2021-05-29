@@ -1,8 +1,8 @@
 const getSingleEntity = require( './get-single-entity' );
 
 module.exports = ( context, a ) => {
-  const match = function( E ) {
-    return E.a == a;
+  const match = {
+    uuidE: a,
   };
-  return getSingleEntity( context, match, a );
+  return getSingleEntity( context, match );
 };

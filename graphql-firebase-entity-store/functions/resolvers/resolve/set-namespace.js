@@ -47,7 +47,10 @@ module.exports = async ( context, input, whichCol ) => {
    */
 
   else if (
-    context.a && objToUpdate.x.b.includes( context.d )
+    context.a &&
+    ( objToUpdate.a == context.d || // user updating self
+      ( objToUpdate.x && objToUpdate.x.m == context.d ) // user updating held entity
+    )
   ) {
     return require( './namespace-update' )( context, data, objToUpdate, col );
   }

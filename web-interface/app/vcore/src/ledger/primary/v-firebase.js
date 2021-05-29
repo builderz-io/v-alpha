@@ -194,7 +194,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const x = {
       a: data.creatorUuid,
-      b: data.heldBy,
+      m: data.heldBy,
     };
 
     const y = {
@@ -284,7 +284,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const x = {
       a: data.creatorUuid,
-      b: data.heldBy,
+      m: data.heldBy,
     };
 
     const y = {

@@ -882,8 +882,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const titles = ['title', 'tag' /*, 'role' */];
     // const db = 'profile';
     // const $innerContent = castTableNode( titles, db, false, 'capitalize' );
-    const holders = V.castJson( entity.holders, 'clone' );
-    holders.splice( holders.indexOf( entity.fullId ), 1 );
+    // const holders = V.castJson( entity.holders, 'clone' );
+    // holders.splice( holders.indexOf( entity.fullId ), 1 );
 
     const $innerContent = V.cN( {
       t: 'table',
@@ -939,7 +939,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           ],
         },
         {
-          x: holders.length >= 1,
+          // x: holders.length >= 1,
+          x: entity.holders[0] != entity.fullId,
           t: 'tr',
           h: [
             {
@@ -949,7 +950,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
-              h: holders.join( ' & ' ),
+              h: entity.holders.join( ' & ' ),
               k: handleProfileDraw,
             },
           ],
@@ -994,16 +995,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function holderOfCard() {
-    const holderOf = V.castJson( entity.holderOf, 'clone' );
-    holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
+    // const holderOf = V.castJson( entity.holderOf, 'clone' );
+    // holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
 
-    if ( !holderOf.length ) {
+    if ( !entity.holderOf.length ) {
       return '';
     }
 
     const $innerContent = V.cN( {
       t: 'div',
-      h: holderOf.map( item => V.cN( {
+      h: entity.holderOf.map( item => V.cN( {
         t: 'p',
         c: 'pxy cursor-pointer',
         h: item,

@@ -3,8 +3,7 @@ const settings = {
   autoVerify: true,
 };
 
-const findEntity = require( './find-by-evmaddress' );
-const findAuth = require( './find-by-auth-doc' );
+const findAuth = require( './find-by-auth' );
 
 // setup web3 stuff
 const credentials = require( '../../credentials/credentials' );
@@ -45,11 +44,8 @@ module.exports = async ( context, tx, type ) => {
 
 async function managedTransaction( txData ) {
 
-  const getSenderAuth = await new Promise( resolve => {
-    findEntity( {}, txData.initiatorAddress )
-      .then( entity => findAuth( entity[0].e ) )
-      .then( authDoc => resolve( authDoc[0] ) );
-  } );
+  let getSenderAuth = await findAuth( txData.initiatorAddress );
+  getSenderAuth = getSenderAuth[0];
 
   const txCount = await web3.eth.getTransactionCount( getSenderAuth.i );
 

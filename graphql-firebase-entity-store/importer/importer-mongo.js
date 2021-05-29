@@ -97,7 +97,6 @@ async function updateFieldsInX() {
         const targetEntityTitle = sourceData[i].adminOf[j].split( ' #' )[0];
         const targetEntityTag = '#' + sourceData[i].adminOf[j].split( ' #' )[1];
         const targetEntity = await findByFullId( {}, targetEntityTitle, targetEntityTag );
-        // console.log( targetEntity[0], JSON.stringify( targetEntity[0].x.b ) );
         const newArrayP = [targetEntity[0].d, creator[0].a];
         const newArrayE = [targetEntity[0].a, creator[0].a];
         await new Promise( resolve => {
