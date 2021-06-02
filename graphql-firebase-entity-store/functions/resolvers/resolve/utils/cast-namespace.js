@@ -31,13 +31,13 @@ module.exports = ( context, data ) => {
   let creatorUuid, heldBy;
 
   if ( context.a ) {
-    heldBy = context.d;
+    // heldBy = context.d;
     creatorUuid = context.d;
   }
-  else {
-    // heldBy = [uuidE];
-    creatorUuid = uuidE;
-  }
+  // else {
+  //   heldBy = [uuidE];
+  //   creatorUuid = uuidE;
+  // }
 
   // let block, rpc, contract;
 

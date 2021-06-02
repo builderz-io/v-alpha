@@ -4,7 +4,7 @@ const colE = namespaceDb.database().ref( 'entities' );
 
 module.exports = async ( context, filter ) => {
   const q = filter.query.toLowerCase();
-  const filtered = await colE.once( 'value' )
+  const filtered = await colE.orderByChild( 'g' ).equalTo( context.host ).once( 'value' )
     .then( snap => snap.val() )
     .then( val => Object.values( val ).filter( E => {
       let text;

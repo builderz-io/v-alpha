@@ -42,8 +42,8 @@ module.exports = async ( context, match ) => {
    * - cache this ?
    */
 
-  if ( entity.x && entity.x.m ) {
-    const firstHolder = await colE.child( entity.x.m ).once( 'value' )
+  if ( entity.x ) {
+    const firstHolder = await colE.child( entity.x.m || entity.x.a ).once( 'value' )
       .then( snap => snap.val() )
       .then( entity => entity.m + ' ' + entity.n );
     Object.assign( entity, { holders: [ firstHolder ] } );
@@ -59,19 +59,29 @@ module.exports = async ( context, match ) => {
    * - cache this ?
    */
 
-  const heldFullIds = await colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' )
+  const heldFullIdsXM = await colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' )
     .then( snap => {
       const data = snap.val();
       return data ? Object.values( data ) : [];
-    } )
-    .then( entities => entities.map( item => item.m + ' ' + item.n ) );
+    } );
 
-  Object.assign( entity, { holderOf: heldFullIds } );
+  const heldFullIdsXA = await colE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' )
+    .then( snap => {
+      const data = snap.val();
+      return data ? Object.values( data ) : [];
+    } );
+    // .then( entities => entities.map( item => item.m + ' ' + item.n ) );
+
+  const allFullIds = heldFullIdsXA.concat( heldFullIdsXM ).map( item => item.m + ' ' + item.n );
+
+  Object.assign( entity, { holderOf: allFullIds } );
 
   /** authorize the mixin of private data for authenticated user */
   if (
     context.a &&
-    ( entity.a == context.d || // user is entity
+    (
+      entity.a == context.d || // user is entity
+      ( entity.x && entity.x.a == context.d && !entity.x.m ) || // user is creator of entity
       ( entity.x && entity.x.m == context.d ) // user is holder of entity
     )
   ) {

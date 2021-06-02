@@ -150,13 +150,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const aE = V.getState( 'activeEntity' );
 
     if ( aE ) {
-      heldBy = [uuidE, aE.uuidE];
+      // heldBy = aE.uuidE;
       creatorUuid = aE.uuidE;
     }
-    else {
-      heldBy = [uuidE];
-      creatorUuid = uuidE;
-    }
+    // else {
+    //   heldBy = [uuidE];
+    //   creatorUuid = uuidE;
+    // }
 
     const email = aE && aE.properties ? aE.properties.email || undefined : undefined;
 

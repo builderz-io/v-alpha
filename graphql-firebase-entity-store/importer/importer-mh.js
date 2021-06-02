@@ -28,13 +28,13 @@
 
 */
 
-const dryrun = false;
+const dryrun = true;
 
 const onlyCreator = false; // !! creator must be placed first in JSON source file
 const creatorUuidE = 'ecKSw5rCmMOiZkIfwrV3w5'; // fill after creator import
 
-const startIndex = 51; // >= 1
-const endIndex = 'all'; // >= 2 or 'all'
+const startIndex = 1; // >= 1
+const endIndex = 10; // >= 2 or 'all'
 
 const Web3 = require( 'web3' );
 const web3 = new Web3();
