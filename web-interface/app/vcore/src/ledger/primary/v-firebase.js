@@ -22,7 +22,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a b } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -74,7 +74,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
-        baseLocation: P.n ? P.n.b : undefined,
+        baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
@@ -273,7 +273,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
     const n = {
       a: data.geometry.coordinates,
-      b: data.geometry.baseLocation,
+      c: data.geometry.baseLocation,
     };
     const o = {
       a: data.tinyImageDU,
@@ -406,9 +406,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'geometry.baseLocation':
       n = data.data.value ? {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
-        b: data.data.value,
+        c: data.data.value,
       } : null;
-      returnFields = 'n { a b }';
+      returnFields = 'n { a c }';
       break;
 
     case 'images':

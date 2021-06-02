@@ -32,9 +32,11 @@ const types = {
   Geometry: `
     {
       a: [Float]      // base coordinates
-      b: String       // base Location
-      c: [Float]      // current coordinates
-      d: String       // current Location
+      b: String       // geo hash
+      c: String       // base Location
+      g: [Float]      // current coordinates
+      h: String       // geo hash
+      i: String       // current Location
     }
   `,
   Images: `

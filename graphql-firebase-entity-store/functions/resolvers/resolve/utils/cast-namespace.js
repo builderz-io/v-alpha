@@ -28,7 +28,7 @@ module.exports = ( context, data ) => {
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
 
-  let creatorUuid, heldBy;
+  let creatorUuid, heldBy, geoHash;
 
   if ( context.a ) {
     // heldBy = context.d;
@@ -38,6 +38,13 @@ module.exports = ( context, data ) => {
   //   heldBy = [uuidE];
   //   creatorUuid = uuidE;
   // }
+
+  if ( data.profileInputServerSide.lngLat ) {
+    geoHash = require( 'geofire-common' ).geohashForLocation( [
+      data.profileInputServerSide.lngLat[1],
+      data.profileInputServerSide.lngLat[0],
+    ] );
+  }
 
   // let block, rpc, contract;
 
@@ -97,7 +104,8 @@ module.exports = ( context, data ) => {
       },
       n: {
         a: data.profileInputServerSide.lngLat,
-        b: data.profileInputServerSide.loc,
+        b: geoHash,
+        c: data.profileInputServerSide.loc,
       },
       o: {
         a: data.profileInputServerSide.tinyImg,

@@ -18,6 +18,11 @@ module.exports = async ( context, data, objToUpdate, col ) => {
   /** Track searchable fields in entity db */
   objToUpdate.b.includes( '/p' ) ? trackSearchableFields( objToUpdate.d, data ) : null;
 
+  /** Generate geohash */
+  if ( objToUpdate.b.includes( '/p' ) && data.n ) {
+    data.n.b = require( 'geofire-common' ).geohashForLocation( [ data.n.a[1], data.n.a[0] ] );
+  }
+
   const fields = castObjectPaths( data );
 
   /** Never update uuid */
