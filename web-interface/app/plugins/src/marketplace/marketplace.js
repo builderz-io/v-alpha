@@ -75,11 +75,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity().then( res => {
+      query = await V.getEntity( 'highlight' ).then( res => {
         if ( res.success ) {
           V.setCache( 'preview', res.data );
-          return res;
         }
+        return res;
+
       } );
     }
 

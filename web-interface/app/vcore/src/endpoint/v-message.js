@@ -19,7 +19,7 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
     commandsSearch: ['search', 'suche', 'find', 'finde', 'fx', 'f!', 'view'],
 
-    commands: ['nukeme', 'crashapp', 'verify', 'disable', 'enable', 'makeadmin', 'revokeadmin', 'analyse', 'a!', 'payouttokennow'],
+    commands: ['nukeme', 'crashapp', 'verify', 'disable', 'enable', 'makeadmin', 'revokeadmin', 'analyse', 'a!', 'payouttokennow', 'highlight', 'h!', 'revokehighlight', 'rh!'],
     commandsEN: ['+', '-', 'pay', 'send', 'request', 'transfer', 'sx', 's!', 'rx', 'r!', 'tx', 't!'],
     commandsDE: ['zahle', 'sende', 'empfange', 'leite', 'zahlen', 'senden', 'empfangen', 'leiten'],
     commandsKO: ['더하기', '지불하다', '전송', '요청'], // TODO: add 'transfer' and check sychronicity of 'request' and 'transfer' with backend translation file
@@ -97,18 +97,28 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
 
+        const uuidE = V.getState( 'active' ).autofillUuidE || V.getState( 'active' ).lastViewedUuidE;
+
         if ( triggers.commandsHelp.indexOf( caseArray[0] ) != -1 ) {   // does message include trigger word "help"?
           // todo
         }
         else if ( triggers.commandsSearch.indexOf( caseArray[0] ) != -1 ) {   // does message include trigger word "search"?
           findAndDisplayEntity( message );
         }
-        else if ( caseArray[0] === 'nukeme' ) {
-          return V.setData( 'nukeme' );
+        else if ( ['highlight', 'h!'].includes( caseArray[0] ) ) {
+          return V.setEntity( uuidE, 'highlight' )
+            .then( res => res );
         }
-        else if ( caseArray[0] === 'crashapp' ) {
-          return V.setData( 'crash-app' );
+        else if ( ['revokehighlight', 'rh!'].includes( caseArray[0] ) ) {
+          return V.setEntity( uuidE, 'revokehighlight' )
+            .then( res => res );
         }
+        // else if ( caseArray[0] === 'nukeme' ) {
+        //   return V.setData( 'nukeme' );
+        // }
+        // else if ( caseArray[0] === 'crashapp' ) {
+        //   return V.setData( 'crash-app' );
+        // }
         // TODO:
         // else if ( caseArray[0] === 'analyse' ||  caseArray[0] === 'a!' ) {
         //   socket.emit( 'analyse', [caseArray, Cookies.get( 'uPhrase' )], function( callback ) {

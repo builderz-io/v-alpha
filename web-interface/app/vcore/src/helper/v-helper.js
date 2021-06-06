@@ -561,6 +561,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return incMinMax;
   }
 
+  function castUnix() {
+    return Math.floor( Date.now() / 1000 );
+  }
+
   function getIcon( which ) {
     return which.match( new RegExp( socialMatch ) )
       ? V.cN( {
@@ -657,6 +661,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;
+  V.castUnix = castUnix;
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
@@ -682,6 +687,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castShortAddress: castShortAddress,
     castUuid: castUuid,
     castRandomInt: castRandomInt,
+    castUnix: castUnix,
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,

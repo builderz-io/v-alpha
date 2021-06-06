@@ -21,11 +21,11 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   await VLedger.launch();
 
-  V.setCache( 'preview', { data: [] } );
-
-  V.getEntity().then( res => {
-    V.setCache( 'preview', res.data );
-  } );
+  // V.setCache( 'preview', { data: [] } );
+  //
+  // V.getEntity().then( res => {
+  //   V.setCache( 'preview', res.data );
+  // } );
 
   /**
    * Also load the canvas script (the first theme script)

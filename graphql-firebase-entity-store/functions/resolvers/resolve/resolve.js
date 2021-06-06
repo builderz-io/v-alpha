@@ -19,6 +19,7 @@ module.exports = {
     getProfiles: ( parent, args ) => require( './map-profiles' )( args.array ),
     getAuth: ( parent, args ) => require( './find-by-auth' )( args.token ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
+    getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),
@@ -26,6 +27,7 @@ module.exports = {
     setTransaction: ( parent, { tx }, { context } ) => require( './set-transaction' )( context, tx, 'managed' ),
     setEntity: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'entity' ),
     setProfile: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'profile' ),
+    setHighlight: ( parent, { input }, { context } ) => require( './set-highlight' )( context, input ),
   },
 };
 

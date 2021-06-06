@@ -20,10 +20,20 @@ const Filters = `
   }
 
   input WhereEntity {
-    a: String
+    a: [String]
     m: String
     n: String
     i: String
+  }
+
+  type Highlight {
+    a: String
+    y: Int
+  }
+
+  input InputHighlight {
+    a: String
+    y: Int
   }
 `;
 
@@ -62,6 +72,7 @@ const Queries = `
   type Query {
     getAuth(token: String!): Success
     getEntityQuery(filter: Filter!): [Entity]
+    getHighlights: [Highlight]
     getEntity(where: WhereEntity): [Entity]
     getProfiles(array: [String!]): [Profile]
   }
@@ -72,6 +83,7 @@ const Mutations = `
     setAuth: Jwt
     setDisconnect: Success
     setTransaction(tx: InputTransaction!): SuccessTx
+    setHighlight(input: InputHighlight!): Highlight
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }

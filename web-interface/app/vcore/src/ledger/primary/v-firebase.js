@@ -457,6 +457,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
              getEntity(where: $where) { ${ previewsE } }
            }`;
     }
+    else if ( 'entity by uuidE' == whichEndpoint ) {
+      console.log( 444, 'by uuidE:', data );
+      where = { a: data == 'string' ? [data] : data };
+    }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222, 'by EVM Address:', data );
       where = { i: data };
@@ -465,10 +469,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       const tT = V.castFullId( data );
       console.log( 333, 'by FullId:', tT.title, tT.tag );
       where = { m: tT.title, n: tT.tag };
-    }
-    else if ( 'entity by uuidE' == whichEndpoint ) {
-      console.log( 444, 'by uuidE:', data );
-      where = { a: data };
     }
     const variables = {
       where: where,
@@ -497,15 +497,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryT );
   }
 
-  // function getAuth( data ) {
-  //   console.log( 555, 'by uPhrase / get auth Doc only' );
-  //   const queryA = `query GetEntityAuth {
-  //           getAuth (token:"${ data }") { f i j }
-  //         }`;
-  //
-  //   return fetchFirebase( queryA );
-  // }
-
   function getEntityQuery( data ) {
     console.log( 100, 'by query' );
 
@@ -521,6 +512,38 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     return fetchFirebase( queryS, variables );
+  }
+
+  function getHighlights() {
+    console.log( 200, 'by highlight' );
+
+    const queryH = `query GetHighlights {
+                      getHighlights {
+                        a
+                      }
+                    }
+                  `;
+
+    return fetchFirebase( queryH );
+  }
+
+  function setHighlight( which, whichEndpoint ) {
+    const query = `mutation SetHighlight( $input: InputHighlight! ) {
+                setHighlight(input: $input) {
+                  a
+                }
+              }
+            `;
+
+    const expiry = whichEndpoint == 'highlight'
+      ? V.castUnix() + 60 * 60 * 24 * 60
+      : V.castUnix() - 1;
+
+    const variables = {
+      input: { a: which, y: expiry },
+    };
+
+    return fetchFirebase( query, variables );
   }
 
   function setManagedTransaction( data ) {
@@ -578,7 +601,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     let E;
 
-    if ( 'entity by query' == whichEndpoint ) {
+    if ( 'entity by highlight' == whichEndpoint ) {
+      const highlightedE = await getHighlights();
+      if ( !highlightedE.errors && highlightedE.data.getHighlights[0] != null ) {
+        const highlights = highlightedE.data.getHighlights.map( item => item.a );
+
+        E = await getEntities( highlights, 'entity by uuidE' );
+
+      }
+      else {
+        return V.successFalse( 'get entities by highlight' );
+      }
+
+    }
+    else if ( 'entity by query' == whichEndpoint ) {
       const search = await getEntityQuery( data );
 
       if ( !search.errors && search.data.getEntityQuery[0] != null ) {
@@ -693,6 +729,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'message' == whichEndpoint ) {
       return setChatMessage( data );
+    }
+    else if ( whichEndpoint.includes( 'highlight' ) ) {
+      return setHighlight( data, whichEndpoint );
     }
     else if ( 'managed transaction' == whichEndpoint ) {
       return setManagedTransaction( data );

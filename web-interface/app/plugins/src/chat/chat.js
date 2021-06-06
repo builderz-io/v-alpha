@@ -21,8 +21,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const message = $form.value;
 
     V.setMessageBot( message ).then( res => {
-      if ( res.success ) {
-        V.sN( $response, '' );
+      V.sN( $response, '' );
+      V.setState( 'active', { autofillUuidE: undefined } );
+      if ( res.success || ( res.data.setHighlight && res.data.setHighlight.a ) ) {
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
@@ -32,7 +33,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else {
-        V.sN( $response, '' );
         $response.append( V.sN( {
           t: 'div',
           c: 'messageform__respinner',
@@ -43,7 +43,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
               padding: '2px 8px',
             },
           },
-          h: res.status,
+          h: res.status || res.errors[0].message,
         } ) );
       }
     } );

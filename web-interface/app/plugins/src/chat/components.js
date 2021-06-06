@@ -122,10 +122,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     else if ( ( key == 13 || key == 9 || key == 39 ) && autoCompleteActive ) {
       e.preventDefault();
       if ( sc.childElementCount == 1 ) {
-        placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ),
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'uuide' ),
+          permanentString,
+          this
+        );
       }
       else if ( sel ) {
-        placeSelection( sel.getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sel.getAttribute( 'data-val' ),
+          sel.getAttribute( 'uuide' ),
+          permanentString,
+          this
+        );
       }
     }
     // esc
@@ -268,10 +278,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
       // const sel = sc.querySelector( '.ac-suggestion.selected' );
       if ( sc.childElementCount == 1 ) {
-        placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ),
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'uuide' ),
+          permanentString,
+          this
+        );
       }
       else if ( sel ) {
-        placeSelection( sel.getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sel.getAttribute( 'data-val' ),
+          sel.getAttribute( 'uuide' ),
+          permanentString,
+          this
+        );
       }
       else {
         revertAutoComplete();
@@ -302,7 +322,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     live( 'ac-suggestion', 'mousedown', function() {
       if ( hasAutoCompleteClass( this, 'ac-suggestion' ) ) { // else outside click
-        placeSelection( this.getAttribute( 'data-val' ), permanentString, $textarea );
+        placeSelection(
+          this.getAttribute( 'data-val' ),
+          this.getAttribute( 'uuide' ),
+          permanentString,
+          $textarea
+        );
       }
     }, sc );
 
@@ -333,7 +358,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     $elem.value = completeString;
   }
 
-  function placeSelection( selectedEntity, permanentString, $elem ) {
+  function placeSelection( selectedEntity, selectedUuide, permanentString, $elem ) {
+    V.setState( 'active', { autofillUuidE: selectedUuide } );
     considerSelection( selectedEntity, permanentString, $elem );
     revertAutoComplete();
     window.setTimeout( function() { $elem.focus() }, 10 );
@@ -390,16 +416,17 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function castSuggestion( entity, stringToComplete ) {
     const search = stringToComplete.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
     const re = new RegExp( '(' + search.split( ' ' ).join( '|' ) + ')', 'gi' );
-    const name = entity.title;
+    const title = entity.title;
     const tag = entity.tag;
 
     return V.cN( {
       t: 'div',
       c: 'ac-suggestion',
       a: {
-        'data-val': name + ' ' + tag,
+        'data-val': title + ' ' + tag,
+        'uuidE': entity.uuidE,
       },
-      innerHtml: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' ' + tag,
+      innerHtml: title.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' ' + tag,
     } );
 
   }
