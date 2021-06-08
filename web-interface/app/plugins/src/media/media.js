@@ -66,7 +66,6 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     //   Navigation.draw();
     // }
     Page.draw( pageData );
-    VMap.draw();
   }
 
   function preview( path ) {

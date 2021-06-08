@@ -139,8 +139,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       position: 'top',
     } );
-
-    VMap.draw();
   }
 
   function drawMessage( cardData ) {
