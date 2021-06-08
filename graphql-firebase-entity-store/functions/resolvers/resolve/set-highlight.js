@@ -17,6 +17,10 @@ module.exports = async ( context, input ) => {
   const admins = await colA.child( network ).once( 'value' )
     .then( snap => snap.val() );
 
+  if ( !admins ) {
+    throw new Error( '-2005 no admin set' );
+  }
+
   if ( admins.includes( context.d ) ) {
     return new Promise( resolve => {
       colH.child( input.a ).update( input, () => resolve( input ) );

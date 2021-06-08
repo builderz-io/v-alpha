@@ -5,9 +5,12 @@ entity-namespace-creds.json
 entity-profile-creds.json
 entity-authentication-creds.json
 
-#database import file
+#database import files
 trinity-entities-mongo.json
 mh-entities.json
+
+#local test database export
+export
 
 # Logs
 logs

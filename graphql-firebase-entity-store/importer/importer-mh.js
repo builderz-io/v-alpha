@@ -28,10 +28,10 @@
 
 */
 
-const dryrun = true;
+const dryrun = false;
 
 const onlyCreator = false; // !! creator must be placed first in JSON source file
-const creatorUuidE = 'ecKSw5rCmMOiZkIfwrV3w5'; // fill after creator import
+const creatorUuidE = 'woLDp8KieMKQw4tNN8KWw4'; // fill after creator import
 
 const startIndex = 1; // >= 1
 const endIndex = 10; // >= 2 or 'all'

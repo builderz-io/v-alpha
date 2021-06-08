@@ -1,6 +1,6 @@
 
 const settings = {
-  floatEth: true,
+  floatEth: false,
 };
 
 // Connect to firebase database
