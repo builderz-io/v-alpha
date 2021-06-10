@@ -47,22 +47,20 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     },
   };
 
-  let viMap, featureLayer;
+  let viMap, featureLayer, pointLayer;
+
+  const popUpSettings = {
+    maxWidth: 150,
+    closeButton: false,
+    autoPanPaddingTopLeft: [100, 140],
+    keepInView: true,
+    className: 'map__popup',
+  };
 
   /* ================== private methods ================= */
 
   function presenter( features ) {
     return Promise.resolve( features );
-    // if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
-    // }
-    // else {
-    //   return launch()
-    //     .then( () => {
-    //       setMap();
-    //       return features;
-    //     } );
-    // }
-
   }
 
   function view( features ) {
@@ -80,20 +78,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     const sc = V.getState( 'screen' );
 
-    const geojsonMarkerSettings = {
-      radius: 9,
-      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
+    const geojsonFeatureMarker = {
+      radius: 8,
+      fillColor: 'rgba(' + sc.brandSecondary + ', 1)',
       weight: 0,
       opacity: 1,
-      fillOpacity: 0.9,
-    };
-
-    const popUpSettings = {
-      maxWidth: 150,
-      closeButton: false,
-      autoPanPaddingTopLeft: [100, 140],
-      keepInView: true,
-      className: 'map__popup',
+      fillOpacity: 1,
     };
 
     if ( featureLayer ) {
@@ -102,7 +92,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     featureLayer = L.geoJSON( features, {
       pointToLayer: function( feature, latlng ) {
-        return L.circleMarker( latlng, geojsonMarkerSettings );
+        return L.circleMarker( latlng, geojsonFeatureMarker );
       },
       onEachFeature: function( feature, layer ) {
         layer.bindPopup( L.popup( popUpSettings ).setContent( castPopup( feature ) ) );
@@ -152,7 +142,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       minZoom: sc.height > 1200 ? 3 : 2,
     };
 
-    featureLayer = L.geoJSON();
+    // featureLayer = L.geoJSON();
 
     const mapData = V.getLocal( 'map-state' );
 
@@ -174,18 +164,104 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       // accessToken: 'your.mapbox.access.token'
     } ).addTo( viMap );
 
-    viMap.on( 'moveend', function() {
-      const map = viMap.getBounds().getCenter();
-      Object.assign( map, { zoom: viMap.getZoom() } );
-      V.setState( 'map', map );
-      V.setLocal( 'map-state', map );
-    } );
+    getPoints()
+      .then( res => setPoints( res ) );
+
+  //  viMap.on( 'moveend', handleMapMoveEnd );
+
+  /*
+
+  .on( 'moveend' ) has bugs: causes exceeded stack + point rendering incomplete and too small
+
+  Uncaught (in promise) RangeError: Maximum call stack size exceeded
+      at i._update (leaflet.js:93)
+      at i._update (leaflet.js:99)
+      at i.fire (leaflet.js:20)
+      at i._moveEnd (leaflet.js:55)
+      at i._resetView (leaflet.js:55)
+      at i.panBy (leaflet.js:52)
+      at i._adjustPan (leaflet.js:81)
+      at i.fire (leaflet.js:20)
+      at i._moveEnd (leaflet.js:55)
+      at i._resetView (leaflet.js:55)
+
+      */
+
   }
 
   function getMapDefault(
     which = V.getSetting( 'mapDefault' )
   ) {
     return mapDefaults[which];
+  }
+
+  function getPoints() {
+    return V.getEntity( 'point' ).then( res => {
+      if ( res.success ) {
+        V.setCache( 'points', res.data );
+      }
+      return res;
+
+    } );
+
+  }
+
+  function setPoints( points ) {
+    const sc = V.getState( 'screen' );
+
+    const geojsonPointMarker = {
+      radius: 7,
+      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
+      weight: 0,
+      opacity: 1,
+      fillOpacity: 0.8,
+    };
+
+    const mappedPoints = points.data.map( item => ( {
+      uuidE: item.d,
+      geometry: {
+        coordinates: item.n && item.n.a ? item.n.a : V.castRandLatLng().lngLat,
+        rand: item.n && item.n.a ? false : true,
+        type: 'Point',
+      },
+      type: 'Feature',
+    } ) );
+
+    pointLayer = L.geoJSON( mappedPoints, {
+      pointToLayer: function( feature, latlng ) {
+        return L.circleMarker( latlng, geojsonPointMarker );
+      },
+    } );
+
+    pointLayer.on( 'click', function( e ) {
+      var uuidE = e.layer.feature.uuidE;
+      V.getEntity( uuidE )
+        .then( res => {
+          if ( res.success ) {
+            V.setCache( 'viewed', res.data );
+            e.layer
+              .bindPopup( L.popup( popUpSettings ).setContent( castPopup( res.data[0] ) ) )
+              .openPopup();
+          }
+        } );
+
+    } );
+
+    pointLayer.addTo( viMap );
+  }
+
+  function handleMapMoveEnd() {
+    console.log( 'map moved' );
+    viMap.off( 'moveend' );
+    setMapPositionInState();
+    viMap.on( 'moveend', handleMapMoveEnd );
+  }
+
+  function setMapPositionInState() {
+    const map = viMap.getCenter();
+    Object.assign( map, { zoom: viMap.getZoom() } );
+    V.setState( 'map', map );
+    V.setLocal( 'map-state', map );
   }
 
   /* ============ public methods and exports ============ */

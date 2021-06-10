@@ -514,6 +514,21 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryS, variables );
   }
 
+  function getPoints( data ) {
+    console.log( 300, 'by point' );
+
+    const query = `query GetPoints {
+                      getPoints {
+                        d n { a }
+                      }
+                    }
+                  `;
+
+    const variables = {};
+
+    return fetchFirebase( query, variables );
+  }
+
   function getHighlights() {
     console.log( 200, 'by highlight' );
 
@@ -601,7 +616,16 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     let E;
 
-    if ( 'entity by highlight' == whichEndpoint ) {
+    if ( 'entity by point' == whichEndpoint ) {
+      const points = await getPoints( data );
+      if ( !points.errors && points.data.getPoints[0] != null ) {
+        return V.successTrue( 'got points', points.data.getPoints );
+      }
+      else {
+        return V.successFalse( 'get entities by point' );
+      }
+    }
+    else if ( 'entity by highlight' == whichEndpoint ) {
       const highlightedE = await getHighlights();
       if ( !highlightedE.errors && highlightedE.data.getHighlights[0] != null ) {
         const highlights = highlightedE.data.getHighlights.map( item => item.a );

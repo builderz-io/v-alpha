@@ -491,6 +491,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       if ( 'highlight' == which ) {
         filter = which;
       }
+      if ( 'point' == which ) {
+        filter = which;
+      }
       else if (
         which.length == 22
       ) {

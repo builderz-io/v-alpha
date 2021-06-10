@@ -260,9 +260,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castRandLatLng() {
+    const lat = ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1;
+    const lng = ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1;
     return {
-      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1,
-      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1,
+      lat: lat,
+      lng: lng,
+      latLng: [lat, lng],
+      lngLat: [lng, lat],
     };
   }
 
