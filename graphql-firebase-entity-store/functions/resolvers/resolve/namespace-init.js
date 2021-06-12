@@ -18,7 +18,9 @@ const trackSearchableFields = require( './utils/track-searchable-fields' );
 module.exports = async ( context, data ) => {
 
   /** Validate, cast and set inputs */
-  await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
+  if ( !context.doNotValidate ) { // option when running importer
+    await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
+  }
 
   /** Cast full set of namespace fields and store in DB. */
   const namespace = require( './utils/cast-namespace' )( context, data ); // eslint-disable-line global-require

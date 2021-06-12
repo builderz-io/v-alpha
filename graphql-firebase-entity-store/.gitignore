@@ -7,10 +7,11 @@ entity-authentication-creds.json
 
 #database import files
 trinity-entities-mongo.json
-mh-entities.json
+mh-entities*
+geocoding-data*
 
 #local test database export
-export
+export*
 
 # Logs
 logs
