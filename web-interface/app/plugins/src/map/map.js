@@ -47,15 +47,16 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     },
   };
 
-  let viMap, featureLayer, pointLayer;
-
   const popUpSettings = {
-    maxWidth: 150,
+    maxWidth: 160,
+    minWidth: 130,
     closeButton: false,
     autoPanPaddingTopLeft: [100, 140],
     keepInView: true,
     className: 'map__popup',
   };
+
+  let viMap, highlightLayer, pointLayer, lastViewedLayer;
 
   /* ================== private methods ================= */
 
@@ -64,6 +65,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( features ) {
+
+    if ( lastViewedLayer ) {
+      lastViewedLayer.remove();
+    }
 
     if ( features && features.resetZoom ) {
       // const loc = getMapDefault( 'atlantic' );
@@ -76,46 +81,38 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
 
-    const sc = V.getState( 'screen' );
-
-    const geojsonFeatureMarker = {
-      radius: 8,
-      fillColor: 'rgba(' + sc.brandSecondary + ', 1)',
-      weight: 0,
-      opacity: 1,
-      fillOpacity: 1,
-    };
-
-    if ( featureLayer ) {
-      featureLayer.remove();
-    }
-
-    featureLayer = L.geoJSON( features, {
-      pointToLayer: function( feature, latlng ) {
-        return L.circleMarker( latlng, geojsonFeatureMarker );
-      },
-      onEachFeature: function( feature, layer ) {
-        layer.bindPopup( L.popup( popUpSettings ).setContent( castPopup( feature ) ) );
-      },
-    } );
-
     const geo = features[0].geometry.coordinates;
 
     if ( features.length == 1 ) {
+
+      lastViewedLayer = castLayer( 'lastViewed', features );
+
+      const sc = V.getState( 'screen' );
+
       const rand = features[0].geometry.rand;
       const offset = sc.width < 800 ? 0 : rand ? 45 : 0.35;
       const zoom = rand ? 3 : 10;
 
       viMap.setView( [geo[1], geo[0] - offset], zoom );
-      setTimeout( () => {featureLayer.addTo( viMap )}, 1000 );
+
+      setTimeout( () => {
+        lastViewedLayer
+          .addTo( viMap );
+      }, 800 );
     }
     else {
+
+      if ( highlightLayer ) {
+        highlightLayer.remove();
+      }
+      highlightLayer = castLayer( 'highlights', features );
+
       if( !viMap.getZoom() == 3 ) {
         viMap.setView( [geo[1] - 9, geo[0]], 3 );
       // viMap.setView( [41.858, -87.964], 8 );
       }
 
-      featureLayer.addTo( viMap );
+      highlightLayer.addTo( viMap );
     }
   }
 
@@ -127,6 +124,48 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   //   await V.setScript( V.getSetting( 'sourceEndpoint' ) + '/plugins/dependencies/leaflet.js' );
   //   console.log( '*** leaflet library loaded ***' );
   // }
+
+  function castLayer( whichLayer, features ) {
+    const sc = V.getState( 'screen' );
+
+    const marker = {
+      radius: 5,
+      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
+      weight: 0,
+      opacity: 0.8,
+      fillOpacity: 0.8,
+    };
+
+    switch ( whichLayer ) {
+    // case 'points':
+    //   marker.fillColor = 'rgba(' + sc.brandPrimary + ', 1)';
+    //   break;
+    case 'highlights':
+      marker.fillColor = 'rgba(' + sc.brandSecondary + ', 1)';
+      marker.radius = 7;
+      marker.fillOpacity = 1;
+      break;
+    case 'lastViewed':
+      marker.radius = 7;
+      marker.fillColor = 'blue';
+      break;
+    }
+
+    const exec = {
+      pointToLayer: function( feature, latlng ) {
+        return L.circleMarker( latlng, marker );
+      },
+    };
+
+    if ( 'highlights' == whichLayer ) {
+      exec.onEachFeature = function( feature, layer ) {
+        layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
+      };
+    }
+
+    return L.geoJSON( features, exec );
+
+  }
 
   function setMap() {
 
@@ -141,8 +180,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       maxZoom: 16,
       minZoom: sc.height > 1200 ? 3 : 2,
     };
-
-    // featureLayer = L.geoJSON();
 
     const mapData = V.getLocal( 'map-state' );
 
@@ -207,15 +244,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setPoints( points ) {
-    const sc = V.getState( 'screen' );
-
-    const geojsonPointMarker = {
-      radius: 7,
-      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
-      weight: 0,
-      opacity: 1,
-      fillOpacity: 0.8,
-    };
 
     const mappedPoints = points.data.map( item => ( {
       uuidE: item.d,
@@ -227,23 +255,54 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       type: 'Feature',
     } ) );
 
-    pointLayer = L.geoJSON( mappedPoints, {
-      pointToLayer: function( feature, latlng ) {
-        return L.circleMarker( latlng, geojsonPointMarker );
-      },
-    } );
+    pointLayer = castLayer( 'points', mappedPoints );
 
-    pointLayer.on( 'click', function( e ) {
-      var uuidE = e.layer.feature.uuidE;
-      V.getEntity( uuidE )
-        .then( res => {
-          if ( res.success ) {
-            V.setCache( 'viewed', res.data );
-            e.layer
-              .bindPopup( L.popup( popUpSettings ).setContent( castPopup( res.data[0] ) ) )
-              .openPopup();
-          }
-        } );
+    pointLayer.on( 'click', async function( e ) {
+      const uuidE = e.layer.feature.uuidE;
+      const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
+      // e.layer.setStyle( {
+      //   fillColor: 'blue',
+      //   stroke: true,
+      //   color: 'pink',
+      //   weight: 2,
+      // } );
+      e.layer
+        .bringToFront()
+        .setStyle( {
+          fillColor: 'blue',
+          radius: 7,
+          // stroke: true,
+          // color: 'pink',
+          // weight: 2,
+        } )
+        .bindPopup( popup, popUpSettings )
+        .openPopup();
+
+      let entity;
+
+      const inCache = V.getViewed( uuidE );
+
+      if ( inCache ) {
+        entity = V.successTrue( 'used cache', inCache );
+      }
+      else {
+
+        entity = await V.getEntity( uuidE )
+          .then( res => {
+            if ( res.success ) {
+              V.setCache( 'viewed', res.data );
+              return V.successTrue( 'fetched entity', res.data );
+            }
+          } );
+      }
+
+      /* fill popup with content,
+       * needs timeout for popup to be ready
+       */
+      setTimeout( function setPopupContent() {
+        V.setNode( '#' + uuidE + '-map-popup', '' );
+        V.setNode( '#' + uuidE + '-map-popup', castPopup( entity.data[0] ) );
+      }, 200 );
 
     } );
 

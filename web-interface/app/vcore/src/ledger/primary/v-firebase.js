@@ -447,7 +447,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     let where;
 
     let queryE = `query GetEntity ( $where: WhereEntity ){
-        getEntity(where: $where) { ${ singleE } }
+        getEntity(where: $where) { ${ typeof data == 'string' ? singleE : previewsE } }
       }`;
 
     if ( 'entity by role' == whichEndpoint ) {
@@ -459,7 +459,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
       console.log( 444, 'by uuidE:', data );
-      where = { a: data == 'string' ? [data] : data };
+      where = { a: typeof data == 'string' ? [data] : data };
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222, 'by EVM Address:', data );

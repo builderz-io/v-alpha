@@ -233,6 +233,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     // const filteredDescr = entity.properties && entity.properties.filteredDescription ? entity.properties.filteredDescription : undefined;
     // const text = filteredDescr ? filteredDescr : descr;
 
+    const isPreview = entity.path ? false : true;
+
     const text = entity.properties
       ? entity.properties.filteredDescription
         ? entity.properties.filteredDescription
@@ -243,30 +245,44 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
     const castDescr = V.castDescription( text );
 
-    return V.cN( {
-      t: 'div',
-      a: { path: entity.path },
-      h: [
-        {
-          t: 'p',
-          c: 'pxy txt-center font-bold cursor-pointer',
-          h: entity.fullId,
-          k: handleProfileDraw.bind( { path: entity.path, uuidE: entity.uuidE } ),
+    if ( isPreview ) {
+      return V.cN( {
+        t: 'div',
+        i: entity.uuidE + '-map-popup',
+        c: 'flex justify-center',
+        y: {
+          'min-height': '320px',
         },
-        castCircle( entity ),
-        {
-          t: 'p',
-          c: 'pxy fs-s capitalize txt-center',
-          h: entity.role,
-        },
-        {
-          x: text,
-          t: 'p',
-          c: 'pxy fs-s break-words',
-          h: castDescr.$intro, // text ? text.length > 170 ? text.substr( 0, 170 ) + ' ...' : text : '',
-        },
-      ],
-    } );
+        h: entitiesPlaceholder(),
+      } );
+    }
+    else {
+      return V.cN( {
+        t: 'div',
+        c: 'map-popup-inner',
+        a: { path: entity.path },
+        h: [
+          {
+            t: 'p',
+            c: 'pxy txt-center font-bold cursor-pointer',
+            h: entity.fullId,
+            k: handleProfileDraw.bind( { path: entity.path, uuidE: entity.uuidE } ),
+          },
+          castCircle( entity ),
+          {
+            t: 'p',
+            c: 'pxy fs-s capitalize txt-center',
+            h: entity.role,
+          },
+          {
+            x: text,
+            t: 'p',
+            c: 'pxy fs-s break-words',
+            h: castDescr.$intro, // text ? text.length > 170 ? text.substr( 0, 170 ) + ' ...' : text : '',
+          },
+        ],
+      } );
+    }
   }
 
   /* ====================== export ====================== */
