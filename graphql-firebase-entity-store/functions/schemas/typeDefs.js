@@ -72,7 +72,6 @@ const Queries = `
   type Query {
     getAuth(token: String!): Success
     getEntityQuery(filter: Filter!): [Entity]
-    getPoints: [Profile]
     getHighlights: [Highlight]
     getEntity(where: WhereEntity): [Entity]
     getProfiles(array: [String!]): [Profile]

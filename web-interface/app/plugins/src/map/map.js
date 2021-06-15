@@ -246,10 +246,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function setPoints( points ) {
 
     const mappedPoints = points.data.map( item => ( {
-      uuidE: item.d,
+      uuidE: item.a,
       geometry: {
-        coordinates: item.n && item.n.a ? item.n.a : V.castRandLatLng().lngLat,
-        rand: item.n && item.n.a ? false : true,
+        coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
+        rand: item.zz && item.zz.i ? false : true,
         type: 'Point',
       },
       type: 'Feature',
