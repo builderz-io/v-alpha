@@ -7,15 +7,15 @@ const settings = {
 const { authDb } = require( '../../resources/databases-setup' );
 const colA = authDb.database().ref( 'authentication' );
 
-const trackSearchableFields = require( './utils/track-searchable-fields' );
+const trackProfileFields = require( './utils/track-profile-fields' );
 
 module.exports = ( context, data, col ) => new Promise( async resolve => {
 
   /** Validate, cast and set inputs */
   await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
 
-  /** Track searchable fields in entity db */
-  data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;
+  /** Track profile fields in entity db */
+  data.b.includes( '/p' ) ? trackProfileFields( data.d, data ) : null;
 
   if ( data.b.includes( '/e' ) ) {
 

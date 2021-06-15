@@ -28,13 +28,27 @@ const types = {
       y: DatesE      // dates and status
       z: ChangeLogE
 
-      search: Search        // track searchable profile fields
+      zz: Tracked    // track certain profile fields
 
       holders: [String]       // mixin of fullIds of holders
       holderOf: [String]      // mixin of fullIds of entities held
 
       auth: AuthMixin         // mixin of auth data - see note above
 
+    }
+  `,
+  Tracked: `
+    {
+      a: String       // description
+      b: String       // email
+      c: String       // base Location
+      d: String       // image name on upload
+
+      i: [Float]      // base coordinates
+      j: String       // geo hash
+      k: String       // base Location
+
+      z: String       // keyword cache
     }
   `,
   RelationsE: `
@@ -64,15 +78,6 @@ const types = {
   ChangeLogE: `
     {
       a: [EntryE]      // logging changes to this document // ONLY on first change
-    }
-  `,
-  Search: `
-    {
-      a: String       // description
-      b: String       // email
-      c: String       // base Location
-      d: String       // image name on upload
-      z: String       // keyword cache
     }
   `,
   AuthMixin: `

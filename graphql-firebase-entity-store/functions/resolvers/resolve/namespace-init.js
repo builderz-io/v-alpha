@@ -13,7 +13,7 @@ const colP = profileDb.database().ref( 'profiles' );
 const colA = authDb.database().ref( 'authentication' );
 
 const castObjectPaths = require( './utils/cast-object-paths' );
-const trackSearchableFields = require( './utils/track-searchable-fields' );
+const trackProfileFields = require( './utils/track-profile-fields' );
 
 module.exports = async ( context, data ) => {
 
@@ -46,8 +46,8 @@ module.exports = async ( context, data ) => {
     }, 'float' );
   }
 
-  /** Track searchable fields in entity db */
-  trackSearchableFields( namespace.entity.a, namespace.profile );
+  /** Track profile fields in entity db */
+  trackProfileFields( namespace.entity.a, namespace.profile );
 
   /** Mixin the auth and return entity Doc */
   namespace.entity.auth = namespace.auth;

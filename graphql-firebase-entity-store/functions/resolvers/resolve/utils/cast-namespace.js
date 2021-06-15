@@ -88,6 +88,12 @@ module.exports = ( context, data ) => {
         m: true,
         z: 100,
       },
+
+      zz: {
+        i: data.profileInputServerSide.lngLat,
+        j: geoHash,
+        k: data.profileInputServerSide.loc,
+      },
     },
     profile: {
       a: uuidP,
