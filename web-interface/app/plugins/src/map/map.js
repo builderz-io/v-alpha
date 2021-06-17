@@ -56,15 +56,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     className: 'map__popup',
   };
 
-  let viMap, highlightLayer, pointLayer, lastViewedLayer;
+  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer;
 
   /* ================== private methods ================= */
 
-  function view( data ) {
+  function view( data, options ) {
 
     if ( Array.isArray( data ) ) {
-      setLastViewed( data );
+      if ( options && options.isSearch ) {
+        setSearch( data );
+      }
+      else {
+        setLastViewed( data );
+      }
       return;
+    }
+
+    if ( searchLayer ) {
+      searchLayer.remove();
     }
 
     /**
@@ -122,8 +131,13 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       marker.radius = 7;
       marker.fillOpacity = 1;
       break;
-    case 'lastViewed':
+    case 'search':
+      marker.fillColor = 'red';
       marker.radius = 7;
+      marker.fillOpacity = 1;
+      break;
+    case 'lastViewed':
+      marker.radius = 9;
       marker.fillColor = 'blue';
       break;
     }
@@ -134,7 +148,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       },
     };
 
-    if ( 'highlights' == whichLayer ) {
+    if ( ['search', 'highlights'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, layer ) {
         layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
       };
@@ -147,7 +161,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function castReturnedPointData( item ) {
     return {
       uuidE: item.a,
-      role: item.c,
+      role: item.c.replace( 'Mapped', '' ),
       geometry: {
         coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
         rand: item.zz && item.zz.i ? false : true,
@@ -263,7 +277,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
      */
 
     filtered.forEach( highlight => {
-      highlight.geometry = V.getCache( 'points' ).data.find( point => point.uuidE == highlight.uuidE ).geometry;
+      const point = V.getCache( 'points' ).data.find( point => point.uuidE == highlight.uuidE );
+      if ( point ) {
+        highlight.geometry = point.geometry;
+      }
     } );
 
     highlightLayer = castLayer( 'highlights', filtered );
@@ -278,12 +295,37 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     highlightLayer.addTo( viMap );
   }
 
-  function setLastViewed( features ) {
-    // if ( lastViewedLayer ) {
-    //   lastViewedLayer.remove();
+  function setSearch( features ) {
+    if ( searchLayer ) {
+      searchLayer.remove();
+    }
+
+    features.forEach( feature => {
+      const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
+      if ( point ) {
+        feature.geometry = point.geometry;
+      }
+    } );
+
+    searchLayer = castLayer( 'search', features );
+
+    searchLayer.on( 'click', handleHighlightClick );
+
+    // if( !viMap.getZoom() == 3 ) {
+    //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
+    // // viMap.setView( [41.858, -87.964], 8 );
     // }
 
-    // lastViewedLayer = castLayer( 'lastViewed', features );
+    searchLayer.addTo( viMap );
+
+  }
+
+  function setLastViewed( features ) {
+    if ( lastViewedLayer ) {
+      lastViewedLayer.remove();
+    }
+
+    lastViewedLayer = castLayer( 'lastViewed', features );
 
     const sc = V.getState( 'screen' );
 
@@ -296,10 +338,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     viMap.setView( [geo[1], geo[0] - offset], zoom );
 
-    // setTimeout( () => {
-    //   lastViewedLayer
-    //     .addTo( viMap );
-    // }, 800 );
+    setTimeout( () => {
+      lastViewedLayer
+        .addTo( viMap );
+    }, 500 );
   }
 
   function handleHighlightClick( e ) {
@@ -380,9 +422,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( data ) {
+  function draw( data, options ) {
     if ( V.getSetting( 'drawMap' ) ) {
-      view( data );
+      view( data, options );
     }
   }
 

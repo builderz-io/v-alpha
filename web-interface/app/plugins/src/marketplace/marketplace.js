@@ -13,6 +13,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
 
+    /** Combines 'PersonMapped' with 'Person' */
+    whichRole = whichRole.replace( 'Mapped', '' );
+
     let query, isSearch = false;
 
     const cachedHighlights = V.getCache( 'highlights' );
@@ -20,17 +23,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     if ( search && search.query ) {
 
-      /** Combines 'PersonMapped' with 'Person' */
-      whichRole = whichRole.replace( 'Mapped', '' );
-
       Object.assign( search, { role: whichRole } );
       isSearch = true;
-      query = await V.getQuery( search );
-      // .then( res => {
-      //   if ( res.success ) {
-      //     return res;
-      //   }
-      // } );
+      query = await V.getQuery( search ).then( res => {
+        if ( res.success ) {
+          V.setCache( 'highlights', res.data );
+        }
+        return res;
+      } );
     }
     // else if ( cache && !cache.data.length ) {
     //   let counter = 0;
@@ -185,7 +185,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       listings: $list,
     } );
 
-    VMap.draw( viewData.whichRole );
+    if ( data.isSearch ) {
+      VMap.draw( viewData.entities, { isSearch: true } );
+    }
+    else {
+      VMap.draw( viewData.whichRole );
+    }
 
     // View methods
 
