@@ -13,15 +13,16 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
 
-    /** Combines 'PersonMapped' with 'Person' */
-    whichRole = whichRole.replace( 'Mapped', '' );
-
     let query, isSearch = false;
 
-    const cache = V.getCache( 'preview' );
+    const cachedHighlights = V.getCache( 'highlights' );
     const now = Date.now();
 
     if ( search && search.query ) {
+
+      /** Combines 'PersonMapped' with 'Person' */
+      whichRole = whichRole.replace( 'Mapped', '' );
+
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search );
@@ -31,56 +32,56 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       //   }
       // } );
     }
-    else if ( cache && !cache.data.length ) {
-      let counter = 0;
-      const polledCache = await new Promise( resolve => {
-        const polling = setInterval( () => {
-          counter += 1;
-          const cache = V.getCache( 'preview' );
-          if ( cache && cache.data.length ) {
-            clearInterval( polling );
-            resolve( cache );
-          }
-          else if ( counter > 299 ) {
-            clearInterval( polling );
-            resolve( false );
-          }
-        }, 70 );
-      } );
-
-      if ( polledCache ) {
-        query = {
-          success: true,
-          status: 'polled cache used',
-          elapsed: now - cache.timestamp,
-          data: V.castJson( polledCache.data, 'clone' ),
-        };
-      }
-      else {
-        query = {
-          success: false,
-          status: 'cache empty',
-        };
-      }
-    }
+    // else if ( cache && !cache.data.length ) {
+    //   let counter = 0;
+    //   const polledCache = await new Promise( resolve => {
+    //     const polling = setInterval( () => {
+    //       counter += 1;
+    //       const cache = V.getCache( 'highlights' );
+    //       if ( cache && cache.data.length ) {
+    //         clearInterval( polling );
+    //         resolve( cache );
+    //       }
+    //       else if ( counter > 299 ) {
+    //         clearInterval( polling );
+    //         resolve( false );
+    //       }
+    //     }, 70 );
+    //   } );
+    //
+    //   if ( polledCache ) {
+    //     query = {
+    //       success: true,
+    //       status: 'polled cache used',
+    //       elapsed: now - cache.timestamp,
+    //       data: V.castJson( polledCache.data, 'clone' ),
+    //     };
+    //   }
+    //   else {
+    //     query = {
+    //       success: false,
+    //       status: 'cache empty',
+    //     };
+    //   }
+    // }
     else if (
-      cache &&
-      ( now - cache.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )
+      cachedHighlights
+      && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )
     ) {
       query = {
         success: true,
-        status: 'cache used',
-        elapsed: now - cache.timestamp,
-        data: V.castJson( cache.data, 'clone' ),
+        status: 'cachedHighlights used',
+        elapsed: now - cachedHighlights.timestamp,
+        data: V.castJson( cachedHighlights.data, 'clone' ),
       };
     }
     else {
+      V.setCache( 'highlights', 'clear' );
       query = await V.getEntity( 'highlight' ).then( res => {
         if ( res.success ) {
-          V.setCache( 'preview', res.data );
+          V.setCache( 'highlights', res.data );
         }
         return res;
-
       } );
     }
 
@@ -97,6 +98,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         status: 'entities retrieved and filtered',
         isSearch: isSearch,
         data: [{
+          whichRole: whichRole,
           whichPath: whichPath,
           entities: filtered,
         }],
@@ -108,6 +110,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         status: 'cound not retrieve any entities',
         isSearch: isSearch,
         data: [{
+          whichRole: whichRole,
           whichPath: whichPath,
           entities: query.data,
         }],
@@ -170,6 +173,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     }
     else {
+      if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
+        const $addcard = MarketplaceComponents.entitiesAddCard();
+        V.setNode( $slider, $addcard );
+      }
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
     }
 
@@ -178,7 +185,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       listings: $list,
     } );
 
-    VMap.draw( viewData.entities );
+    VMap.draw( viewData.whichRole );
 
     // View methods
 

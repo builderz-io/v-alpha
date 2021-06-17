@@ -36,7 +36,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       Profile.draw( this.uuidE );
       return;
     }
-    const entity = V.getCache( 'preview' ).data.find( item => item.path == this.path );
+    const entity = V.getCache( 'highlights' ).data.find( item => item.path == this.path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );

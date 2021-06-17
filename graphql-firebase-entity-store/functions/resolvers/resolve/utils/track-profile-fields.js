@@ -12,9 +12,9 @@ module.exports = ( uuidE, data ) => {
 
       d: data.o ? data.o.n : undefined,  // image name on upload
 
-      i: data.n ? data.n.a : undefined,  // geolocation
-      j: data.n ? data.n.b : undefined,  // geohash
-      k: data.n ? data.n.c : undefined,  // location
+      i: data.n ? data.n.a : data.n == null ? data.n : undefined,  // geolocation
+      j: data.n ? data.n.b : data.n == null ? data.n : undefined,  // geohash
+      k: data.n ? data.n.c : data.n == null ? data.n : undefined,  // location
     },
   };
 

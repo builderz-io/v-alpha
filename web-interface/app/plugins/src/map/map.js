@@ -60,60 +60,37 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function presenter( features ) {
-    return Promise.resolve( features );
-  }
+  function view( data ) {
 
-  function view( features ) {
-
-    if ( lastViewedLayer ) {
-      lastViewedLayer.remove();
+    if ( Array.isArray( data ) ) {
+      setLastViewed( data );
+      return;
     }
 
-    if ( features && features.resetZoom ) {
+    /**
+     * at this point data is a string, such as "Business",
+     * defining a role by which to filter entities
+     */
+
+    const whichRole = data ? data : 'all';
+
+    if ( 'all' == whichRole ) {
       // const loc = getMapDefault( 'atlantic' );
       const loc = V.getState( 'map' );
       viMap.setView( [loc.lat, loc.lng], loc.zoom - 4 );
-      return;
     }
 
-    if ( !features || !features.length || features[0] == undefined ) {
-      return;
-    }
+    setPoints( whichRole );
+    setHighlights( whichRole );
 
-    const geo = features[0].geometry.coordinates;
+    // if ( !features || !features.length || features[0] == undefined ) {
+    //   return;
+    // }
+    //
+    // if ( features.length == 1 ) {
+    //   setLastViewed();
+    // }
 
-    if ( features.length == 1 ) {
-
-      lastViewedLayer = castLayer( 'lastViewed', features );
-
-      const sc = V.getState( 'screen' );
-
-      const rand = features[0].geometry.rand;
-      const offset = sc.width < 800 ? 0 : rand ? 45 : 0.35;
-      const zoom = rand ? 3 : 10;
-
-      viMap.setView( [geo[1], geo[0] - offset], zoom );
-
-      setTimeout( () => {
-        lastViewedLayer
-          .addTo( viMap );
-      }, 800 );
-    }
-    else {
-
-      if ( highlightLayer ) {
-        highlightLayer.remove();
-      }
-      highlightLayer = castLayer( 'highlights', features );
-
-      if( !viMap.getZoom() == 3 ) {
-        viMap.setView( [geo[1] - 9, geo[0]], 3 );
-      // viMap.setView( [41.858, -87.964], 8 );
-      }
-
-      highlightLayer.addTo( viMap );
-    }
   }
 
   function castPopup( feature ) {
@@ -167,6 +144,19 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function castReturnedPointData( item ) {
+    return {
+      uuidE: item.a,
+      role: item.c,
+      geometry: {
+        coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
+        rand: item.zz && item.zz.i ? false : true,
+        type: 'Point',
+      },
+      type: 'Feature',
+    };
+  }
+
   function setMap() {
 
     const sc = V.getState( 'screen' );
@@ -202,27 +192,15 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     } ).addTo( viMap );
 
     getPoints()
-      .then( res => setPoints( res ) );
+      .then( () => setPoints( 'all' ) );
 
-  //  viMap.on( 'moveend', handleMapMoveEnd );
+    // viMap.on( 'moveend', handleMapMoveEnd );
 
   /*
-
-  .on( 'moveend' ) has bugs: causes exceeded stack + point rendering incomplete and too small
-
-  Uncaught (in promise) RangeError: Maximum call stack size exceeded
-      at i._update (leaflet.js:93)
-      at i._update (leaflet.js:99)
-      at i.fire (leaflet.js:20)
-      at i._moveEnd (leaflet.js:55)
-      at i._resetView (leaflet.js:55)
-      at i.panBy (leaflet.js:52)
-      at i._adjustPan (leaflet.js:81)
-      at i.fire (leaflet.js:20)
-      at i._moveEnd (leaflet.js:55)
-      at i._resetView (leaflet.js:55)
-
-      */
+   .on( 'moveend' ) has bugs:
+     - causes point rendering incomplete and too small
+     - exceeded stack
+  */
 
   }
 
@@ -235,78 +213,155 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function getPoints() {
     return V.getEntity( 'point' ).then( res => {
       if ( res.success ) {
-        V.setCache( 'points', res.data );
+        const castPoints = res.data.map( item => castReturnedPointData( item ) );
+        V.setCache( 'points', castPoints );
       }
-      return res;
-
     } );
-
   }
 
-  function setPoints( points ) {
+  function setPoints( whichRole ) {
 
-    const mappedPoints = points.data.map( item => ( {
-      uuidE: item.a,
-      geometry: {
-        coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
-        rand: item.zz && item.zz.i ? false : true,
-        type: 'Point',
-      },
-      type: 'Feature',
-    } ) );
+    if ( pointLayer ) {
+      pointLayer.remove();
+    }
 
-    pointLayer = castLayer( 'points', mappedPoints );
+    const cache = V.getCache( 'points' );
 
-    pointLayer.on( 'click', async function( e ) {
-      const uuidE = e.layer.feature.uuidE;
-      const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
-      // e.layer.setStyle( {
-      //   fillColor: 'blue',
-      //   stroke: true,
-      //   color: 'pink',
-      //   weight: 2,
-      // } );
-      e.layer
-        .bringToFront()
-        .setStyle( {
-          fillColor: 'blue',
-          radius: 7,
-          // stroke: true,
-          // color: 'pink',
-          // weight: 2,
-        } )
-        .bindPopup( popup, popUpSettings )
-        .openPopup();
+    if ( !cache ) { return }
 
-      let entity;
+    let filtered = cache.data;
 
-      const inCache = V.getViewed( uuidE );
+    if ( whichRole != 'all' ) {
+      filtered = filtered.filter( item => item.role == whichRole );
+    }
+    // console.log( 'filtered points', filtered );
+    pointLayer = castLayer( 'points', filtered );
 
-      if ( inCache ) {
-        entity = V.successTrue( 'used cache', inCache );
-      }
-      else {
-
-        entity = await V.getEntity( uuidE )
-          .then( res => {
-            if ( res.success ) {
-              V.setCache( 'viewed', res.data );
-              return V.successTrue( 'fetched entity', res.data );
-            }
-          } );
-      }
-
-      /* fill popup with content,
-       * needs timeout for popup to be ready
-       */
-      setTimeout( function setPopupContent() {
-        V.setNode( '#' + uuidE + '-map-popup', '' );
-        V.setNode( '#' + uuidE + '-map-popup', castPopup( entity.data[0] ) );
-      }, 200 );
-
-    } );
+    pointLayer.on( 'click', handlePointClick );
 
     pointLayer.addTo( viMap );
+  }
+
+  function setHighlights( whichRole ) {
+    if ( highlightLayer ) {
+      highlightLayer.remove();
+    }
+
+    const cache = V.getCache( 'highlights' );
+
+    if ( !cache ) { return }
+
+    let filtered = cache.data;
+
+    if ( whichRole != 'all' ) {
+      filtered = filtered.filter( item => item.role == whichRole );
+    }
+    // console.log( 'filtered highlights', filtered );
+
+    /**
+     * ensure highlights have same geolocation as their point
+     */
+
+    filtered.forEach( highlight => {
+      highlight.geometry = V.getCache( 'points' ).data.find( point => point.uuidE == highlight.uuidE ).geometry;
+    } );
+
+    highlightLayer = castLayer( 'highlights', filtered );
+
+    highlightLayer.on( 'click', handleHighlightClick );
+
+    // if( !viMap.getZoom() == 3 ) {
+    //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
+    // // viMap.setView( [41.858, -87.964], 8 );
+    // }
+
+    highlightLayer.addTo( viMap );
+  }
+
+  function setLastViewed( features ) {
+    // if ( lastViewedLayer ) {
+    //   lastViewedLayer.remove();
+    // }
+
+    // lastViewedLayer = castLayer( 'lastViewed', features );
+
+    const sc = V.getState( 'screen' );
+
+    const geo = V.getState( 'active' ).lastLngLat // is available when user came here though a popup in the map (only!)
+    || features[0].geometry.coordinates;
+
+    const rand = features[0].geometry.rand;
+    const offset = sc.width < 800 ? 0 : rand ? 45 : 0.35;
+    const zoom = rand ? 3 : 10;
+
+    viMap.setView( [geo[1], geo[0] - offset], zoom );
+
+    // setTimeout( () => {
+    //   lastViewedLayer
+    //     .addTo( viMap );
+    // }, 800 );
+  }
+
+  function handleHighlightClick( e ) {
+
+    /**
+     * make the coordinates of the clicked point available in state,
+     * which ensures that the correct latLng is used in "setLastViewed",
+     * otherwise a random geolocation will be rendered again, leading to a map crash
+     */
+    V.setState( 'active', {
+      lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
+    } );
+  }
+
+  async function handlePointClick( e ) {
+
+    /**
+     * see comment in handleHighlightClick
+     */
+
+    V.setState( 'active', {
+      lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
+    } );
+
+    const uuidE = e.layer.feature.uuidE;
+    const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
+
+    e.layer
+      .bringToFront()
+      .setStyle( {
+        fillColor: 'blue',
+        radius: 7,
+      } )
+      .bindPopup( popup, popUpSettings )
+      .openPopup();
+
+    let entity;
+
+    const inCache = V.getViewed( uuidE );
+
+    if ( inCache ) {
+      entity = V.successTrue( 'used cache', inCache );
+    }
+    else {
+
+      entity = await V.getEntity( uuidE )
+        .then( res => {
+          if ( res.success ) {
+            V.setCache( 'viewed', res.data );
+            return V.successTrue( 'fetched entity', res.data );
+          }
+        } );
+    }
+
+    /* fill popup with content,
+     * needs timeout for popup to be ready
+     */
+    setTimeout( function setPopupContent() {
+      V.setNode( '#' + uuidE + '-map-popup', '' );
+      V.setNode( '#' + uuidE + '-map-popup', castPopup( entity.data[0] ) );
+    }, 200 );
+
   }
 
   function handleMapMoveEnd() {
@@ -325,9 +380,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function draw( features ) {
+  function draw( data ) {
     if ( V.getSetting( 'drawMap' ) ) {
-      presenter( features ).then( features => { view( features ) } );
+      view( data );
     }
   }
 

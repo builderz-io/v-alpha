@@ -472,7 +472,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function setField( field, data ) {
     return V.setEntity( V.getState( 'active' ).lastViewed, {
       field: field,
-      data: data,
+      data: data === '' ? null : data,
     } ).then( res => {
       if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
 

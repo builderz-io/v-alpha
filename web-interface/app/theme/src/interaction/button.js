@@ -65,7 +65,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
           /* update cache with new entity */
 
-          V.setCache( 'preview', res.data );
+          V.setCache( 'highlights', res.data );
 
         }
         else {

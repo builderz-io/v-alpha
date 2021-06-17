@@ -447,7 +447,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     /* return to the full market view and reset the map (zoom) */
     Marketplace.draw();
-    VMap.draw( { resetZoom: true } );
+    // VMap.draw( { reset: true } );
 
   }
 
