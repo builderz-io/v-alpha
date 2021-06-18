@@ -21,6 +21,29 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     const cachedHighlights = V.getCache( 'highlights' );
     const now = Date.now();
 
+    /* Mixin a few extra highlighted points on first load */
+    if ( !cachedHighlights ) {
+      let counter = 0;
+      const polledPointsCache = await new Promise( resolve => {
+        const polling = setInterval( () => {
+          counter += 1;
+          const cache = V.getCache( 'points' );
+          if ( cache && cache.data.length ) {
+            clearInterval( polling );
+            resolve( cache );
+          }
+          else if ( counter > 299 ) {
+            clearInterval( polling );
+            resolve( false );
+          }
+        }, 70 );
+      } );
+
+      if ( polledPointsCache ) {
+        V.setCache( 'mixin-highlights', polledPointsCache.data.slice( 0, 10 ).map( item => item.uuidE ) );
+      }
+    }
+
     if ( search && search.query ) {
 
       Object.assign( search, { role: whichRole } );
@@ -32,38 +55,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         return res;
       } );
     }
-    // else if ( cache && !cache.data.length ) {
-    //   let counter = 0;
-    //   const polledCache = await new Promise( resolve => {
-    //     const polling = setInterval( () => {
-    //       counter += 1;
-    //       const cache = V.getCache( 'highlights' );
-    //       if ( cache && cache.data.length ) {
-    //         clearInterval( polling );
-    //         resolve( cache );
-    //       }
-    //       else if ( counter > 299 ) {
-    //         clearInterval( polling );
-    //         resolve( false );
-    //       }
-    //     }, 70 );
-    //   } );
-    //
-    //   if ( polledCache ) {
-    //     query = {
-    //       success: true,
-    //       status: 'polled cache used',
-    //       elapsed: now - cache.timestamp,
-    //       data: V.castJson( polledCache.data, 'clone' ),
-    //     };
-    //   }
-    //   else {
-    //     query = {
-    //       success: false,
-    //       status: 'cache empty',
-    //     };
-    //   }
-    // }
     else if (
       cachedHighlights
       && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )

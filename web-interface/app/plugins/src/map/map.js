@@ -33,7 +33,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     atlantic: {
       lng: -27.070, // lesser numbers = move map west
       lat: 14, // lesser numbers = move map south
-      zoom: 5,
+      zoom: 3,
     },
     berlin: {
       lng: 13.383,

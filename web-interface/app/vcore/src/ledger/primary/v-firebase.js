@@ -625,11 +625,20 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'entity by highlight' == whichEndpoint ) {
       const highlightedE = await getHighlights();
+      const mixin = V.getCache( 'mixin-highlights' ); // from points
+
       if ( !highlightedE.errors && highlightedE.data.getHighlights[0] != null ) {
-        const highlights = highlightedE.data.getHighlights.map( item => item.a );
+        let highlights = highlightedE.data.getHighlights.map( item => item.a );
+
+        if ( mixin ) {
+          highlights = [...new Set( highlights.concat( mixin.data ) )];
+        }
 
         E = await getEntities( highlights, 'entity by uuidE' );
 
+      }
+      else if ( mixin ) {
+        E = await getEntities( mixin.data, 'entity by uuidE' );
       }
       else {
         return V.successFalse( 'get entities by highlight' );
