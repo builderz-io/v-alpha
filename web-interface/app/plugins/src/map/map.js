@@ -89,9 +89,14 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const whichRole = data ? data : 'all';
 
     if ( 'all' == whichRole ) {
-      // const loc = getMapDefault( 'atlantic' );
-      const loc = V.getState( 'map' );
-      viMap.setView( [loc.lat, loc.lng], loc.zoom - 4 );
+      const lastLngLat = V.getState( 'active' ).lastLngLat;
+      if ( lastLngLat ) {
+        viMap.setView( [lastLngLat[1], lastLngLat[0]], viMap.getZoom() - 5 );
+      }
+      else {
+        const loc = V.getState( 'map' );
+        viMap.setView( [loc.lat, loc.lng], loc.zoom - 4 );
+      }
     }
 
     setPoints( whichRole );
