@@ -33,17 +33,22 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     atlantic: {
       lng: -27.070, // lesser numbers = move map west
       lat: 14, // lesser numbers = move map south
-      zoom: 3,
+      zoom: 5,
     },
     berlin: {
       lng: 13.383,
       lat: 52.522,
-      zoom: 9,
+      zoom: 13,
     },
     chicago: {
       lng: -87.964,
       lat: 41.858,
-      zoom: 8,
+      zoom: 13,
+    },
+    nyc: {
+      lng: -73.958,
+      lat: 40.792,
+      zoom: 13,
     },
   };
 
@@ -128,17 +133,20 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     //   break;
     case 'highlights':
       marker.fillColor = 'rgba(' + sc.brandSecondary + ', 1)';
-      marker.radius = 7;
+      marker.radius = 6;
       marker.fillOpacity = 1;
       break;
     case 'search':
       marker.fillColor = 'red';
-      marker.radius = 7;
+      marker.radius = 6;
       marker.fillOpacity = 1;
       break;
     case 'lastViewed':
       marker.radius = 9;
       marker.fillColor = 'blue';
+      marker.stroke = true;
+      marker.weight = 3;
+      marker.color = 'lightblue';
       break;
     }
 

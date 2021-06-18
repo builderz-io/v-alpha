@@ -203,7 +203,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const which = viewData.data[0].which;
 
     if ( which ) {
-      animate( which );
+
+      /**
+       * timeout ensures that popup is removed from DOM,
+       * to avoid conflicting node being found in $itemToAnimate in animate
+       */
+      setTimeout( () => ( animate( which ) ), 8 );
     }
 
   }
