@@ -17,6 +17,7 @@ const Filters = `
   input Filter {
     query: String
     role: String
+    field: String
   }
 
   input WhereEntity {

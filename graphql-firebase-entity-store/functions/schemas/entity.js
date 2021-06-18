@@ -41,7 +41,7 @@ const types = {
     {
       a: String       // description
       b: String       // email
-      c: String       // base Location
+
       d: String       // image name on upload
 
       i: [Float]      // base coordinates

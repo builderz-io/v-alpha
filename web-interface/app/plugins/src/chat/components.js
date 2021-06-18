@@ -217,12 +217,14 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
         if ( stringToComplete.length == 2 && stringToComplete != V.i18n( 'for', 'trigger' ) ) {
 
-          V.getQuery( { query: stringToComplete, role: 'all' } ).then( res => {
-            dbEntries = res.data;
-            if ( res.success ) {
-              setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
-            }
-          } );
+          V.getQuery( { query: stringToComplete, role: 'all', field: 'title' } )
+            .then( res => {
+              console.log( res );
+              dbEntries = res.data;
+              if ( res.success ) {
+                setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
+              }
+            } );
 
           // socket.emit( 'get all entities', [stringToComplete, $( '#header-svg' ).attr( 'fullid' )], function( callback ) {
           //   dbEntries = callback.sort();
