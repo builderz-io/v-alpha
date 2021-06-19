@@ -27,7 +27,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       query = await V.getEntity(
-        which.length == 22 && // checks whether which is a uuidE or a path
+        which.length == V.getSetting( 'uuidStringLength' ) && // checks whether which is a uuidE or a path
         isNaN( Number( which.slice( -5 ) ) )
           ? which
           : V.castPathOrId( which )

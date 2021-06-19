@@ -67,7 +67,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
       ? getCache().viewed.data.find( entity =>
         which.includes( ' #' )
           ? entity.fullId == which
-          : which.length == 22 && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
+          : which.length == V.getSetting( 'uuidStringLength' ) && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
             ? entity.uuidE == which
             : entity.path == which
       )

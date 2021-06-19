@@ -528,10 +528,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       encoded = encode( uuidV4 );
 
       while (
-        // uuidV4.charAt( 0 ) == '0' ||
-        !encoded.charAt( 0 ).match( /[a-z]/ ) ||
-        !encoded.charAt( 1 ).match( /[a-z]/ ) ||
-        encoded.charAt( 0 ) == encoded.charAt( 1 ) ||
+        !encoded.charAt( 0 ).match( /[A-Z]/ ) ||
         encoded.includes( '-' ) ||
         encoded.includes( '_' ) ||
         ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
@@ -544,9 +541,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return {
         v4: uuidV4,
         base64Url: encoded,
+        short: encoded.substr( 0, 11 ),
       };
     }
-    else if ( input.length == 22 ) {
+    else if ( input.length == V.getSetting( 'uuidStringLength' ) ) {
       return decode( input );
     }
     else {

@@ -107,9 +107,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     /** Prepare data */
 
-    const uuidE = V.castUuid().base64Url;
-    const uuidP = V.castUuid().base64Url;
-    const uuidA = V.castUuid().base64Url;
+    const uuidE = V.castUuid().short + 'e';
+    const uuidP = V.castUuid().short + 'p';
+    const uuidA = V.castUuid().short + 'a';
     const unix = V.castUnix();
 
     let geometry = {};
@@ -495,7 +495,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         filter = which;
       }
       else if (
-        which.length == 22
+        which.length == V.getSetting( 'uuidStringLength' )
       ) {
         filter = 'uuidE';
       }

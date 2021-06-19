@@ -4,9 +4,9 @@ const geoCodingRun = false;
 const doNotValidate = true;
 
 const onlyCreator = false; // !! creator must be placed first in JSON source file
-const creatorUuidE = 'wpPDlMKEEgN7SnTCm2pKw7'; // fill after creator import
+const creatorUuidE = 'IhDDgsK9wr7e'; // fill after creator import
 
-const startIndex = 1; // >= 1
+const startIndex = 11; // >= 1
 const endIndex = 'all'; // >= 2 or 'all'
 
 const Web3 = require( 'web3' );
@@ -119,8 +119,8 @@ async function runBaseImport() {
     else {
       if( sourceDataGeo[i].fn == x['First Name'] && sourceDataGeo[i].ln == x['Last Name'] ) {
         compatibleData.profileInputServerSide.lngLat = [
-          sourceDataGeo[i].geo.lng,
-          sourceDataGeo[i].geo.lat,
+          sourceDataGeo[i].geo.lng.toFixed( 4 ) * 1,
+          sourceDataGeo[i].geo.lat.toFixed( 4 ) * 1,
         ];
         compatibleData.profileInputServerSide.loc = sourceDataGeo[i].formatted_address;
       }

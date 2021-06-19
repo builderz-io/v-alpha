@@ -67,6 +67,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     previewCacheDuration: 3, // in minutes
     viewedCacheDuration: 10, // in minutes
     managedEntitiesCacheDuration: 5, // in minutes
+    uuidStringLength: 12,
 
     tinyImageWidth: 40, // Numbers in px
     tinyImageQuality: 0.93, // Number from 0 to 1
