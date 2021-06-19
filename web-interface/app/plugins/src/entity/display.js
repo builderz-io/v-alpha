@@ -42,6 +42,13 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           : V.castPathOrId( which )
       ).then( res => {
         if ( res.success ) {
+          const point = V.getCache( 'points' ).data.find( point => point.uuidE == res.data[0].uuidE );
+          if ( point ) {
+            res.data[0].geometry = point.geometry;
+          }
+          else {
+            V.setCache( 'points', res.data );
+          }
           V.setCache( 'viewed', res.data ); // pass array
 
           return res;
