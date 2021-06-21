@@ -98,6 +98,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
         viMap.setView( [loc.lat, loc.lng], loc.zoom - 4 );
       }
     }
+    else {
+      if ( lastViewedLayer ) {
+        lastViewedLayer.remove();
+      }
+    }
 
     setPoints( whichRole );
     setHighlights( whichRole );
@@ -160,6 +165,21 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
         return L.circleMarker( latlng, marker );
       },
     };
+
+    /**
+     * ensure features written to layers
+     * have same geolocation as their point
+     * (relevant for randomly generated locations)
+     */
+
+    if ( whichLayer != 'points' ) {
+      features.forEach( feature => {
+        const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
+        if ( point ) {
+          feature.geometry = point.geometry;
+        }
+      } );
+    }
 
     if ( ['search', 'highlights'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, layer ) {
@@ -285,17 +305,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
     // console.log( 'filtered highlights', filtered );
 
-    /**
-     * ensure highlights have same geolocation as their point
-     */
-
-    filtered.forEach( highlight => {
-      const point = V.getCache( 'points' ).data.find( point => point.uuidE == highlight.uuidE );
-      if ( point ) {
-        highlight.geometry = point.geometry;
-      }
-    } );
-
     highlightLayer = castLayer( 'highlights', filtered );
 
     highlightLayer.on( 'click', handleHighlightClick );
@@ -312,13 +321,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     if ( searchLayer ) {
       searchLayer.remove();
     }
-
-    features.forEach( feature => {
-      const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
-      if ( point ) {
-        feature.geometry = point.geometry;
-      }
-    } );
 
     searchLayer = castLayer( 'search', features );
 

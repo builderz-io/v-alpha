@@ -98,23 +98,49 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
     if ( Array.isArray( data ) ) {
       if ( cache[which].timestamp ) {
-        cache[which].data = [].concat( cache[which].data, data );
+        if ( data.length == 1 ) {
+          setOrUpdateOneInCache( which, data[0] );
+        }
+        else {
+          cache[which].data = [].concat( cache[which].data, data );
+        }
       }
       else {
-        const obj = {
-          timestamp: Date.now(),
-          date: new Date(),
-          data: data,
-        };
-        Object.assign( cache[which], obj );
+        setNewCache( which, data );
       }
     }
     else if ( typeof data == 'object' ) {
-      Object.assign( cache[which], data );
+      if ( cache[which].timestamp ) {
+        setOrUpdateOneInCache( which, data );
+      }
+      else {
+        setNewCache( which, [data] );
+      }
+    }
+  }
+
+  function setOrUpdateOneInCache( which, entity ) {
+
+    const index = cache[which].data.findIndex( item => item.uuidE == entity.uuidE );
+
+    if ( index != -1 ) {
+      if ( 'points' == which ) {
+        delete entity.geometry;
+      }
+      Object.assign( cache[which].data[index], entity );
     }
     else {
-      cache[which] = data;
+      cache[which].data.push( entity );
     }
+  }
+
+  function setNewCache( which, data ) {
+    const obj = {
+      timestamp: Date.now(),
+      date: new Date(),
+      data: data,
+    };
+    Object.assign( cache[which], obj );
   }
 
   function getNavItem( whichItem, whichNav ) {

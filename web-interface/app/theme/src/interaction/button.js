@@ -10,7 +10,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleSetEntity( e ) {
-    // e.target.removeEventListener( 'click', handleSetEntity );
+    e.target.removeEventListener( 'click', handleSetEntity );
 
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
@@ -43,8 +43,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           console.log( res.message );
           console.log( 'set uuidE:', res.data[0].uuidE );
           e.target.addEventListener( 'click', handleSetEntity );
-          V.setCache( 'all', 'clear' );
-          V.setCache( res.data[0].role, 'clear' );
+          // V.setCache( 'points', res.data );
+          // V.setCache( 'points', res.data );
+          // V.setCache( 'all', 'clear' );
+          // V.setCache( res.data[0].role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
           Navigation.drawEntityNavPill( res.data[0] );
           User.draw( res.data[0].path );
@@ -65,7 +67,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
           /* update cache with new entity */
 
-          V.setCache( 'highlights', res.data );
+          // V.setCache( 'highlights', res.data );
 
         }
         else {

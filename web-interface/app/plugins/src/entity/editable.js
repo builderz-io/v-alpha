@@ -33,9 +33,8 @@ const User = ( function() { // eslint-disable-line no-unused-vars
           : V.castPathOrId( which )
       ).then( res => {
         if ( res.success ) {
-
+          V.setCache( 'points', res.data );
           V.setCache( 'viewed', res.data );
-
           return res;
         }
         else {
