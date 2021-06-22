@@ -4,9 +4,9 @@ const geoCodingRun = false;
 const doNotValidate = true;
 
 const onlyCreator = false; // !! creator must be placed first in JSON source file
-const creatorUuidE = 'IhDDgsK9wr7e'; // fill after creator import
+const creatorUuidE = 'LMK0fcOORcOe'; // fill after creator import
 
-const startIndex = 11; // >= 1
+const startIndex = 1; // >= 1
 const endIndex = 'all'; // >= 2 or 'all'
 
 const Web3 = require( 'web3' );
@@ -22,7 +22,7 @@ const castEntityTitle = require( '../functions/resolvers/validate/title' );
 
 const sourceFile = fs.readFileSync( './source/mh-entities-cleaned.json', { encoding: 'utf8', flag: 'r' }, ( err, data ) => data );
 const sourceData = JSON.parse( sourceFile );
-const sourceFileGeo = fs.readFileSync( './source/geocoding-data-all.json', { encoding: 'utf8', flag: 'r' }, ( err, data ) => data );
+const sourceFileGeo = fs.readFileSync( './source/geocoding-data-citylevel.json', { encoding: 'utf8', flag: 'r' }, ( err, data ) => data );
 const sourceDataGeo = JSON.parse( sourceFileGeo );
 const sourceCreds = fs.readFileSync( './source/credentials.json', { encoding: 'utf8', flag: 'r' }, ( err, data ) => data );
 const credentials = JSON.parse( sourceCreds );
@@ -101,19 +101,21 @@ async function runBaseImport() {
     };
 
     if ( geoCodingRun ) {
-      const location = ( x['LocationC'] || x['Location'] ).replace( /,\s,/g, ',' ) + ', ' + x['Continent'];
+      // const location = ( x['LocationC'] || x['Location'] ).replace( /,\s,/g, ',' ) + ', ' + x['Continent'];
+      const location = x['City'] + ', ' + x['Country/Region'] + ', ' + x['Continent'];
+
       const geo = await googleGeocodingAPI( location );
 
       if ( geo && geo.results[0] ) {
-        geoData.push( { success: true, index: i, fn: x['First Name'], ln: x['Last Name'], geo: geo.results[0].geometry.location, formatted_address: geo.results[0].formatted_address } );
+        geoData.push( { success: true, index: i, fn: x['First Name'], ln: x['Last Name'], geo: geo.results[0].geometry.location, location: location, formatted_address: geo.results[0].formatted_address } );
       }
       else {
-        geoData.push( { success: false, index: i, fn: x['First Name'], ln: x['Last Name'], err: geo } );
+        geoData.push( { success: false, index: i, fn: x['First Name'], ln: x['Last Name'], err: geo, location: location } );
       // compatibleData.profileInputServerSide.lngLat = castRandLatLngArray();
       }
 
       console.log( i, title, geo );
-      fs.writeFileSync( './source/geocoding-data.json', JSON.stringify( geoData ) );
+      fs.writeFileSync( './source/geocoding-data-citylevel-c.json', JSON.stringify( geoData ) );
       continue;
     }
     else {
