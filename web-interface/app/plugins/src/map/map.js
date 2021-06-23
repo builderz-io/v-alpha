@@ -63,6 +63,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer;
 
+  const coordinatesCache = [];
+
   /* ================== private methods ================= */
 
   function view( data, options ) {
@@ -260,7 +262,20 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function getPoints() {
     return V.getEntity( 'point' ).then( res => {
       if ( res.success ) {
-        const castPoints = res.data.map( item => castReturnedPointData( item ) );
+        const castPoints = res.data.map( item => {
+          if ( item.zz && item.zz.i ) {
+            const geoStr = JSON.stringify( item.zz.i );
+            if ( coordinatesCache.includes( geoStr ) ) {
+              item.zz.i[0] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+              item.zz.i[1] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+              coordinatesCache.push( JSON.stringify( item.zz.i ) );
+            }
+            else {
+              coordinatesCache.push( geoStr );
+            }
+          }
+          return castReturnedPointData( item );
+        } );
         V.setCache( 'points', castPoints );
       }
     } );
