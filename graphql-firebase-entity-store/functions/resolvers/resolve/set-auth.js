@@ -22,11 +22,9 @@ module.exports = async ( context, res ) => {
 
   if ( !context.a ) {
     throw new Error( 'could not match an entity for setting up the context object' );
-    // return {
-    //   success: false,
-    //   message: 'could not find an entity for setting up the context object',
-    // };
   }
+
+  let networksArr, refreshTokensArr;
 
   const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
 
@@ -43,8 +41,33 @@ module.exports = async ( context, res ) => {
   //   },
   // );
 
+  const authDoc = await colA.child( context.a ).once( 'value' )
+    .then( snap => snap.val() );
+
+  if ( authDoc.errors ) {
+    throw new Error( 'could not match an entity for setting up refresh token' );
+  }
+
+  if ( authDoc.g ) {
+    const networkIndex = authDoc.g.indexOf( context.host );
+    if ( networkIndex != -1 ) {
+      authDoc.h[networkIndex] = newRefreshToken;
+      refreshTokensArr = authDoc.h;
+    }
+    else {
+      authDoc.g.push( context.host );
+      authDoc.h.push( newRefreshToken );
+      networksArr = authDoc.g;
+      refreshTokensArr = authDoc.h;
+    }
+  }
+  else {
+    networksArr = [context.host];
+    refreshTokensArr = [newRefreshToken];
+  }
+
   await new Promise( resolve => {
-    colA.child( context.a ).update( castObjectPaths( { g: newRefreshToken } ), () => resolve( 'set newRefreshToken' ) );
+    colA.child( context.a ).update( castObjectPaths( { g: networksArr, h: refreshTokensArr } ), () => resolve( 'set newRefreshToken' ) );
   } );
 
   const options = {
