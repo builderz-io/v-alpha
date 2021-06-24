@@ -22,9 +22,9 @@ module.exports = ( context, data ) => {
 
   /** Prepare data */
 
-  const uuidE = castUuid().short + 'e';
-  const uuidP = castUuid().short + 'p';
-  const uuidA = castUuid().short + 'a';
+  const uuidE = castUuid().short;
+  const uuidP = castUuid().short;
+  const uuidA = castUuid().short;
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
 

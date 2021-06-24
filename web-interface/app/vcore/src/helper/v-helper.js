@@ -541,7 +541,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return {
         v4: uuidV4,
         base64Url: encoded,
-        short: encoded.substr( 0, 11 ),
+        short: encoded.substr( 0, 10 ),
       };
     }
     else if ( input.length == V.getSetting( 'uuidStringLength' ) ) {
