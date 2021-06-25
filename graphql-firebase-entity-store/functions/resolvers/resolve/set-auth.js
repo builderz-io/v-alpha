@@ -26,27 +26,17 @@ module.exports = async ( context, res ) => {
 
   let networksArr, refreshTokensArr;
 
-  const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
-
-  // const newRefreshToken = sign(
-  //   {
-  //     user: {
-  //       a: context.a,
-  //       d: context.d,
-  //     },
-  //   },
-  //   jwtRefreshSignature,
-  //   {
-  //     expiresIn: settings.jwtExpiry,
-  //   },
-  // );
-
   const authDoc = await colA.child( context.a ).once( 'value' )
     .then( snap => snap.val() );
 
   if ( authDoc.errors ) {
     throw new Error( 'could not match an entity for setting up refresh token' );
   }
+
+  const newRefreshToken = 'REFR'
+  + castUuid().base64Url.substr( 1, 16 )
+  + '--'
+  + authDoc.a;
 
   if ( authDoc.g ) {
     const networkIndex = authDoc.g.indexOf( context.host );
