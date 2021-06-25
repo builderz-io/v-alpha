@@ -77,6 +77,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       if ( V.getLocal( 'welcome-modal' ) == 1 ) {
         Modal.draw( which );
+        Navigation.drawEntityNavPill( V.getState( 'activeEntity' ) );
         V.setLocal( 'welcome-modal', 0 );
       }
 

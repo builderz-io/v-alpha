@@ -130,7 +130,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       position: 'top', // set again to trigger scroll
       scroll: 'bottom',
     } );
-    Chat.drawMessageForm();
+    Chat.drawMessageForm( 'no-prefill' );
   }
 
   function preview( path ) {
@@ -210,10 +210,11 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawMessageForm( options ) {
+
     V.setNode( '.messageform', 'clear' );
     if ( options == 'clear' ) { return }
 
-    const prefill = V.getState( 'active' ).lastViewed;
+    const prefill = options == 'no-prefill' ? '' : V.getState( 'active' ).lastViewed;
 
     const $form = ChatComponents.messageForm();
     const $input = ChatComponents.messageInput( prefill );

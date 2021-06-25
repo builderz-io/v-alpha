@@ -114,16 +114,16 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $list;
 
     if ( data.success ) {
-      if ( window.location.host.includes( 'localhost' ) ) {
-        V.getAddressState( data.data[0].entity.evmCredentials.address )
-          .then( res => {
-            console.log( '*** ADDRESS STATE *** ' );
-            for ( const key in res.data[0] ) {
-              console.log( key, ':', res.data[0][key] );
-            }
-            console.log( '*** ADDRESS STATE END *** ' );
-          } );
-      }
+      // if ( window.location.host.includes( 'localhost' ) ) {
+      //   V.getAddressState( data.data[0].entity.evmCredentials.address )
+      //     .then( res => {
+      //       console.log( '*** ADDRESS STATE *** ' );
+      //       for ( const key in res.data[0] ) {
+      //         console.log( key, ':', res.data[0][key] );
+      //       }
+      //       console.log( '*** ADDRESS STATE END *** ' );
+      //     } );
+      // }
 
       /**
        * sets up the profile data for use in components

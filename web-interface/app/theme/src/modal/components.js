@@ -209,7 +209,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         // V.setCache( 'entire cache', 'clear' );
         // V.setCache( 'viewed', res.data[0] );
 
-        Navigation.drawEntityNavPill( res.data[0] );
+        // Navigation.drawEntityNavPill( res.data[0] );
       }
       else {
         console.log( 'could not set entity: ', res );
