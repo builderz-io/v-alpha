@@ -43,10 +43,10 @@ async function runBaseImport() {
     // castEntityTitle( { m: title, c: 'Person' } );
     // continue;
 
-    x.role = 'PersonMapped';
+    x.role = 'ab'; // PersonMapped
 
     if ( onlyCreator ) {
-      x.role = 'Person';
+      x.role = 'aa'; // Person
     }
 
     const newEvmAccount = web3.eth.accounts.create();

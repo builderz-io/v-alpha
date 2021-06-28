@@ -46,7 +46,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return {
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
-      role: E.c.replace( 'Mapped', '' ), // combines 'PersonMapped' and 'Person'
+      role: switchRole( E.c.replace( 'Mapped', '' ) ), // combines 'PersonMapped' and 'Person'
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -181,7 +181,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const a = data.uuidE;
     const b = data.contextE;
-    const c = data.typeE;
+    const c = switchRole( data.typeE );
     const d = data.uuidP;
     const e = data.uuidA;
     const g = data.issuer;
@@ -318,6 +318,37 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       u: tx.blockDate,
       v: tx.logIndex,
     } ) );
+  }
+
+  function switchRole( role ) {
+    switch ( role ) {
+    case 'Person' : return 'aa';
+    case 'aa' : return 'Person';
+    case 'PersonMapped' : return 'ab';
+    case 'ab' : return 'PersonMapped';
+    case 'Business' : return 'ac';
+    case 'ac' : return 'Business';
+    case 'Institution' : return 'ad';
+    case 'ad' : return 'Institution';
+    case 'NGO' : return 'ae';
+    case 'ae' : return 'NGO';
+    case 'GOV' : return 'af';
+    case 'af' : return 'GOV';
+    case 'Network' : return 'ag';
+    case 'ag' : return 'Network';
+    case 'Skill' : return 'ah';
+    case 'ah' : return 'Skill';
+    case 'Task' : return 'ai';
+    case 'ai' : return 'Task';
+    case 'Place' : return 'aj';
+    case 'aj' : return 'Place';
+    case 'Event' : return 'ak';
+    case 'ak' : return 'Event';
+    case 'MediaObject' : return 'al';
+    case 'al' : return 'MediaObject';
+    case 'Dataset' : return 'am';
+    case 'am' : return 'Dataset';
+    }
   }
 
   function setEntityField( data ) {

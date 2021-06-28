@@ -8,7 +8,7 @@ module.exports = async ( context, data, objToUpdate ) => {
 
     /** Check whether the role is valid. */
 
-    require( './role' )( data );
+    // require( './role' )( data );
 
     /** Check whether the title is valid. */
 

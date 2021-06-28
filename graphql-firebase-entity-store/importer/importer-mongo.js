@@ -25,16 +25,16 @@ async function runBaseImport() {
     const x = sourceData[i];
     switch ( x.profile.role ) {
     case 'member':
-      x.profile.role = 'Person';
+      x.profile.role = 'aa';
       break;
     case 'network':
-      x.profile.role = 'Network';
+      x.profile.role = 'ag';
       break;
     case 'business':
-      x.profile.role = 'Business';
+      x.profile.role = 'ac';
       break;
     case 'nonprofit':
-      x.profile.role = 'NGO';
+      x.profile.role = 'ae';
       break;
     }
 
