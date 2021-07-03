@@ -35,6 +35,10 @@ module.exports = async ( context, match ) => {
     }];
   }
 
+  if ( match.noMixins ) {
+    return [entity];
+  }
+
   /**
    * mixin the fullId of the first "external" entity holder, if available
    * TODO:
@@ -59,22 +63,28 @@ module.exports = async ( context, match ) => {
    * - cache this ?
    */
 
-  const heldFullIdsXM = await colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' )
+  const heldXM = await colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' )
     .then( snap => {
       const data = snap.val();
       return data ? Object.values( data ) : [];
     } );
 
-  const heldFullIdsXA = await colE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' )
+  const heldXA = await colE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' )
     .then( snap => {
       const data = snap.val();
       return data ? Object.values( data ) : [];
     } );
     // .then( entities => entities.map( item => item.m + ' ' + item.n ) );
 
-  const allFullIds = heldFullIdsXA.concat( heldFullIdsXM ).map( item => item.m + ' ' + item.n );
+  const points = heldXA.concat( heldXM )
+    .map( item => ( {
+      a: item.a,
+      c: item.c,
+      fullId: item.m + ' ' + item.n,
+      geo: item.zz && item.zz.i ? item.zz.i : null,
+    } ) );
 
-  Object.assign( entity, { holderOf: allFullIds } );
+  Object.assign( entity, { holderOf: points } );
 
   /** authorize the mixin of private data for authenticated user */
   if (

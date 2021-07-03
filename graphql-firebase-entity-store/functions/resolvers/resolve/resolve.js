@@ -17,9 +17,9 @@ module.exports = {
       }
     },
     getProfiles: ( parent, args ) => require( './map-profiles' )( args.array ),
-    getAuth: ( parent, args ) => require( './find-by-auth' )( args.token ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
     getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
+    getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),

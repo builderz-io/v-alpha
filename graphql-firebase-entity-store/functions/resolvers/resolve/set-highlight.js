@@ -1,20 +1,18 @@
-// Connect to auth firebase database
-const { authDb } = require( '../../resources/databases-setup' );
-const colA = authDb.database().ref( 'admins' );
 
-// Connect to highlights firebase database
+// Connect to namespace firebase database
 const { namespaceDb } = require( '../../resources/databases-setup' );
-const colH = namespaceDb.database().ref( 'highlights' );
 
 module.exports = async ( context, input ) => {
+
+  const network = context.host.replace( /\./g, '_' ).replace( ':', '_' );
+  const colHighlights = namespaceDb.database().ref( 'networks/' + network + '/highlights' );
+  const colAdmins = namespaceDb.database().ref( 'networks/' + network + '/admins' );
 
   if ( !context.a ) {
     throw new Error( '-2003 not authenticated to set highlight' );
   }
 
-  const network = context.host.replace( '.', '_' ).replace( ':', '_' );
-
-  const admins = await colA.child( network ).once( 'value' )
+  const admins = await colAdmins.once( 'value' )
     .then( snap => snap.val() );
 
   if ( !admins ) {
@@ -23,7 +21,7 @@ module.exports = async ( context, input ) => {
 
   if ( admins.includes( context.d ) ) {
     return new Promise( resolve => {
-      colH.child( input.a ).update( input, () => resolve( input ) );
+      colHighlights.child( input.a ).update( input, () => resolve( input ) );
     } );
   }
   else {

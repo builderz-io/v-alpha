@@ -120,7 +120,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setOrUpdateOneInCache( which, entity ) {
-
+    entity = V.castJson( entity, 'clone' );
     const index = cache[which].data.findIndex( item => item.uuidE == entity.uuidE );
 
     if ( index != -1 ) {

@@ -6,6 +6,7 @@ const colE = namespaceDb.database().ref( 'entities' );
 
 const castObjectPaths = require( './utils/cast-object-paths' );
 const trackProfileFields = require( './utils/track-profile-fields' );
+const setNetwork = require( './utils/set-network' );
 
 module.exports = async ( context, data, objToUpdate, col ) => {
 
@@ -29,8 +30,13 @@ module.exports = async ( context, data, objToUpdate, col ) => {
   delete fields.a;
 
   /** Update single fields */
-  return new Promise( resolve => {
+  await new Promise( resolve => {
     col.child( data.a ).update( fields, () => resolve( data ) );
   } );
+
+  /** Update the network cluster and point-cache */
+  setNetwork( context );
+
+  return data;
 
 };

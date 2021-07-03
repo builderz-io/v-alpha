@@ -317,11 +317,11 @@ module.exports.castUuid = ( input ) => {
     encoded = encode( uuidV4 );
 
     while (
-      !encoded.charAt( 0 ).match( /[A-Z]/ ) ||
-      encoded.includes( '-' ) ||
-      encoded.includes( '_' ) ||
-      ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
-      ['x', 'X'].includes( encoded.charAt( 1 ) )
+      !encoded.charAt( 0 ).match( /[A-Z]/ )
+      || encoded.includes( '-' )
+      || encoded.includes( '_' )
+      // || ['v', 'V'].includes( encoded.charAt( 0 ) )
+      // || ['x', 'X'].includes( encoded.charAt( 1 ) )
     ) {
       uuidV4 = universalV4();
       encoded = encode( uuidV4 );

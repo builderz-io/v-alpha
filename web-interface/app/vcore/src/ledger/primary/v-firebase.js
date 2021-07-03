@@ -21,7 +21,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f i j }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
   const singleP = 'm { a b c m n r } n { a c } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
@@ -46,7 +46,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return {
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
-      role: switchRole( E.c.replace( 'Mapped', '' ) ), // combines 'PersonMapped' and 'Person'
+      role: switchRole( E.c ),
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -80,7 +80,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
       holders: E.holders,
-      holderOf: E.holderOf,
+      holderOf: E.holderOf ? E.holderOf.map( item => item.fullId ) : undefined,
       evmCredentials: {
         address: E.i,
       },
@@ -325,7 +325,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'Person' : return 'aa';
     case 'aa' : return 'Person';
     case 'PersonMapped' : return 'ab';
-    case 'ab' : return 'PersonMapped';
+    case 'ab' : return 'Person'; // combine "PersonMapped" with "Person" on retrieval
     case 'Business' : return 'ac';
     case 'ac' : return 'Business';
     case 'Institution' : return 'ad';
@@ -548,8 +548,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getPoints( data ) {
     console.log( 300, 'by point' );
 
-    const query = `query GetEntitiesByPoint ( $where: WhereEntity ){
-                 getEntity(where: $where) { a c zz { i } }
+    const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
+                 getPoints(where: $where) { a c zz { i } }
                }`;
 
     const variables = {
@@ -584,7 +584,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       : V.castUnix() - 1;
 
     const variables = {
-      input: { a: which, y: expiry },
+      input: { a: which, y: { c: expiry } },
     };
 
     return fetchFirebase( query, variables );
@@ -647,8 +647,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     if ( 'entity by point' == whichEndpoint ) {
       const points = await getPoints( data );
-      if ( !points.errors && points.data.getEntity[0] != null ) {
-        return V.successTrue( 'got points', points.data.getEntity );
+      if ( !points.errors && points.data.getPoints[0] != null ) {
+        return V.successTrue( 'got points', points.data.getPoints );
       }
       else {
         return V.successFalse( 'get entities by point' );

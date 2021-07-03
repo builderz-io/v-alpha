@@ -178,7 +178,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       features.forEach( feature => {
         const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
         if ( point ) {
-          feature.geometry = point.geometry;
+          Object.assign( feature.geometry, point.geometry );
         }
       } );
     }

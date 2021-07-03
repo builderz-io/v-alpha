@@ -27,6 +27,10 @@ const Filters = `
     i: String
   }
 
+  input WhereGeo {
+    i: String
+  }
+
   type Highlight {
     a: String
     y: Int
@@ -34,7 +38,21 @@ const Filters = `
 
   input InputHighlight {
     a: String
-    y: Int
+    y: InputHighlightY
+  }
+
+  input InputHighlightY {
+    c: Int
+  }
+
+  type Point {
+    a: String
+    c: String
+    zz: PointZz
+  }
+
+  type PointZz {
+    i: [Float]
   }
 `;
 
@@ -71,10 +89,10 @@ const Jwt = `
 
 const Queries = `
   type Query {
-    getAuth(token: String!): Success
     getEntityQuery(filter: Filter!): [Entity]
     getHighlights: [Highlight]
     getEntity(where: WhereEntity): [Entity]
+    getPoints(where: WhereGeo): [Point]
     getProfiles(array: [String!]): [Profile]
   }
 `;

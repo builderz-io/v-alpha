@@ -491,7 +491,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       if ( 'highlight' == which ) {
         filter = which;
       }
-      if ( 'point' == which ) {
+      else if ( 'point' == which ) {
         filter = which;
       }
       else if (
@@ -505,8 +505,14 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         filter = 'fullId';
       }
       else if (
-        '0x' == which.substr( 0, 2 ) &&
-        which.length == 42
+        '0x' == which.substr( 0, 2 )
+        && which.length == 42
+      ) {
+        filter = 'evmAddress';
+      }
+      else if (
+        'JOIN' == which.substr( 0, 4 )
+        && which.length == 48
       ) {
         filter = 'evmAddress';
       }

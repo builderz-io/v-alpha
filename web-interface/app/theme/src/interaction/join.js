@@ -121,7 +121,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    return V.cA() ? V.getEntity( V.cA() ).then( async res => {
+    return V.cA() ? V.getEntity( 'JOIN' + '--' + V.cA() ).then( async res => {
 
       if ( res.reset ) {
         return 'entity not found';

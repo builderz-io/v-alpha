@@ -1,4 +1,8 @@
 
+/**
+ * This module is out of date and untested
+ */
+
 const settings = {
   floatEth: true,
 };

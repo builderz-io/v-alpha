@@ -44,8 +44,8 @@ module.exports = async ( context, tx, type ) => {
 
 async function managedTransaction( txData ) {
 
-  let getSenderAuth = await findAuth( txData.initiatorAddress );
-  getSenderAuth = getSenderAuth[0];
+  const getSenderAuth = await findAuth( txData.initiatorAddress );
+  // getSenderAuth = getSenderAuth[0];
 
   const txCount = await web3.eth.getTransactionCount( getSenderAuth.i );
 

@@ -13,8 +13,9 @@ module.exports = async ( context, a ) => {
     for ( let i = 0; i < a.length; i++ ) {
       const match = {
         uuidE: a[i],
+        noMixins: true,
       };
-      const entity = await getSingleEntity( context, match );
+      const entity = await getSingleEntity( {}, match );
       entities.push( entity[0] );
     }
     return entities;

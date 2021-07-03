@@ -4,9 +4,11 @@ const geoCodingRun = false;
 const doNotValidate = true;
 
 const onlyCreator = false; // !! creator must be placed first in JSON source file
-const creatorUuidE = 'LMK0fcOORcOe'; // fill after creator import
+const creatorUuidE = 'XCxTOMOH'; // 'Nj3DisOY'; // fill after creator import
 
-const startIndex = 1; // >= 1
+const issuer = 'localhost:4021';
+
+const startIndex = 31; // >= 1
 const endIndex = 'all'; // >= 2 or 'all'
 
 const Web3 = require( 'web3' );
@@ -76,7 +78,7 @@ async function runBaseImport() {
     const compatibleData = {
       b: '', // added to pass validation
       c: x.role,
-      gImporter: 'staging.valueinstrument.org',
+      gImporter: issuer,
       i: newEvmAccount.address.toLowerCase(),
       // j: null,
       m: title,
@@ -144,6 +146,7 @@ async function runBaseImport() {
         a: onlyCreator ? false : true,
         d: creatorUuidE,
         doNotValidate: doNotValidate,
+        host: issuer,
       };
 
       await namespaceInit( context, compatibleData );

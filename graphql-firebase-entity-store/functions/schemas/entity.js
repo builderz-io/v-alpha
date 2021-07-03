@@ -30,8 +30,8 @@ const types = {
 
       zz: Tracked    // track certain profile fields
 
-      holders: [String]       // mixin of fullIds of holders
-      holderOf: [String]      // mixin of fullIds of entities held
+      holders: [String]          // mixin of fullIds of holders
+      holderOf: [PointMixin]     // mixin of point-data and fullId of entities held
 
       auth: AuthMixin         // mixin of auth data - see note above
 
@@ -93,6 +93,14 @@ const types = {
       j: String        // evm address private key
 
       w: [String]      // auth log
+    }
+  `,
+  PointMixin: `
+    {
+      a: String
+      c: String
+      fullId: String
+      geo: [Float]
     }
   `,
 };
