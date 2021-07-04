@@ -53,6 +53,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
+    // add new
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
         uuidE: data.uuidE,
@@ -62,7 +63,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         path: data.path,
         draw: function( path ) { Profile.draw( path ) },
       };
-      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+      if ( data.tinyImage ) { // old model
+        obj.tinyImage = JSON.stringify( data.tinyImage );
+      }
+      else if ( data.images && data.images.tinyImage ) { // new model
+        obj.tinyImage = data.images.tinyImage;
+        obj.useDataUrl = true;
+      }
       V.setNavItem( 'entityNav', obj );
     }
 
@@ -239,6 +246,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         };
 
         b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
+        b[newKey].useDataUrl ? a[b[newKey].path].useDataUrl = b[newKey].useDataUrl : null;
 
       }
     }
