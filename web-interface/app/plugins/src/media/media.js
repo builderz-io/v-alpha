@@ -16,69 +16,74 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  async function presenter( which ) {
+  async function presenter() {
 
+    const mediaPoints = V.getCache( 'points' ).data
+      .filter( item => item.role == 'al' );
+
+    if ( !mediaPoints ) {
+      return {
+        success: false,
+      };
+    }
+
+    const entities = await V.getEntity( mediaPoints.map( item => item.uuidE ) );
+
+    return entities;
+  }
+
+  function view( mediaData ) {
     const $list = CanvasComponents.list();
-
-    const entities = await V.getEntity( which == '/media/moocs' ? 'Mooc' : 'MediaObject' );
-
-    if ( entities.data ) {
-      entities.data.forEach( cardData => {
+    if ( mediaData.data[0] ) {
+      mediaData.data.forEach( cardData => {
         const $cardContent = MediaComponents.mediaCard( cardData );
         const $card = CanvasComponents.card( $cardContent );
         V.setNode( $list, $card );
+
       } );
     }
     else {
       V.setNode( $list, CanvasComponents.notFound( 'media' ) );
     }
 
-    const pageData = {
-      which: which,
+    Page.draw( {
       listings: $list,
-    };
-
-    return pageData;
-  }
-
-  function featurePresenter( options ) {
-    const $featureUl = MediaComponents.featureUl();
-    const $videoFeature = MediaComponents.videoFeature( options && options.feature ? options.feature : getFeatureVideo() );
-    V.setNode( $featureUl, $videoFeature );
-
-    const pageData = {
-      feature: $featureUl,
       position: 'feature',
-    };
-
-    return Promise.resolve( pageData );
-  }
-
-  function view( pageData ) {
-    if ( pageData.which ) {
-      // Navigation.draw( pageData.which );
-      Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
-    }
-    if ( pageData.feature ) {
-      Feature.draw( pageData.feature );
-    }
-    // else {
-    //   Navigation.draw();
-    // }
-    Page.draw( pageData );
+    } );
   }
 
   function preview( path ) {
-    // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
     Navigation.draw( path );
 
-    // Page.draw( {
-    //   position: 'feature',
-    // } );
+    featurePresenterAndView();
+
+    const $list = CanvasComponents.list();
+
+    for ( let i = 0; i < 8; i++ ) {
+      const $ph = AccountComponents.accountPlaceholderCard();
+      const $card = CanvasComponents.card( $ph );
+
+      V.setNode( $list, $card );
+    }
+
+    Page.draw( {
+      listings: $list,
+      position: 'feature',
+    } );
   }
 
-  function delayContentLoad( which ) {
-    presenter( which ).then( viewData => { view( viewData ) } );
+  function featurePresenterAndView() {
+    // presenter
+    const $featureUl = MediaComponents.featureUl();
+    const $videoFeature = MediaComponents.videoFeature( getFeatureVideo() );
+    V.setNode( $featureUl, $videoFeature );
+    // view
+    Feature.draw( $featureUl );
+  }
+
+  function delayContentLoad() {
+    presenter().then( viewData => { view( viewData ) } );
   }
 
   function getFeatureVideo(
@@ -94,6 +99,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       media: {
         title: 'Media',
         path: '/media',
+        divertFundsToOwner: true,
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -106,6 +112,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       moocs: {
         title: 'Moocs',
         path: '/media/moocs',
+        divertFundsToOwner: true,
         use: {
           button: 'plus search',
           form: 'new entity',
@@ -119,13 +126,9 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).media.map( item => navItems[item] ) );
   }
 
-  function draw( which, options ) {
-    preview( which );
-
-    featurePresenter( options ).then( viewData => { view( viewData ) } );
-
-    setTimeout( delayContentLoad, 2000, which );
-
+  function draw( path ) {
+    preview( path );
+    setTimeout( delayContentLoad, 2000 );
   }
 
   V.setState( 'availablePlugins', { media: function() { Media.launch() } } );

@@ -46,7 +46,12 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setActiveEntity( data ) {
-    delete data.auth;
+    if ( data.auth.uPhrase ) {
+      data.auth = true;
+    }
+    else {
+      data.auth = false;
+    }
     V.setState( 'activeEntity', 'clear' );
     V.setState( 'activeEntity', data );
     console.log( 'set active entity' );
@@ -179,6 +184,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
           obj[item.path] = item;
           setState( whichNav, obj );
+          if ( item.use && item.divertFundsToOwner ) {
+            const obj = {};
+            obj[item.use.role] = item.use.role;
+            setState( 'rolesWithReceivingAddress', obj );
+          }
         }
         else {
           throw new Error( 'Title too long (max ' + maxLength + ', has ' + item.title.length + '): ' + item.title );

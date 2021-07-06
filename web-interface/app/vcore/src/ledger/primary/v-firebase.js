@@ -345,7 +345,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'Event' : return 'ak';
     case 'ak' : return 'Event';
     case 'MediaObject' : return 'al';
-    case 'al' : return 'MediaObject';
+    case 'al' : return 'Media'; // "Media" reads nicer in UI
     case 'Dataset' : return 'am';
     case 'am' : return 'Dataset';
     }

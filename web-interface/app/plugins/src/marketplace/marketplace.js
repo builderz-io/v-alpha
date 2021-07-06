@@ -418,7 +418,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       localEconomy: {
         title: 'Local Economy',
         path: '/network/all',
-        divertFundsToOwner: false,
         use: {
           button: 'search',
           role: 'all', // 'all' is used here to enable search within all entities
@@ -430,7 +429,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       people: {
         title: 'People',
         path: '/network/people',
-        divertFundsToOwner: false,
         use: {
           button: 'search',
           form: 'new entity',
@@ -443,6 +441,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       businesses: {
         title: 'Businesses',
         path: '/network/businesses',
+        divertFundsToOwner: true,
         use: {
           button: 'search',
           form: 'new entity',
@@ -503,6 +502,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       skills: {
         title: 'Skills',
         path: '/network/skills',
+        divertFundsToOwner: true,
         use: {
           button: 'search',
           form: 'new entity',
@@ -515,6 +515,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       tasks: {
         title: 'Tasks',
         path: '/network/tasks',
+        divertFundsToOwner: true,
         use: {
           button: 'search',
           form: 'new entity',
@@ -563,19 +564,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     };
 
     V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => navItems[item] ) );
-
-    /**
-     * pick out which roles have funds received diverted to owner as default
-     * and set state with these roles
-     */
-
-    const divertFundsForRoles = {};
-    for( const navItem in navItems ) {
-      if ( navItems[navItem].divertFundsToOwner === false ) { continue }
-      divertFundsForRoles[navItems[navItem].use.role] = navItems[navItem].use.role;
-    }
-
-    V.setState( 'rolesWithReceivingAddress', divertFundsForRoles );
 
   }
 

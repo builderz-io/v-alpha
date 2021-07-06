@@ -362,9 +362,9 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   function castYouTubeIframe( link ) {
     // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
     const youtubeId = link.split( '/' ).pop();
-    if ( isNaN( youtubeId ) ) {
-      return null;
-    }
+    // if ( isNaN( youtubeId ) ) {
+    //   return null;
+    // }
     return V.cN( {
       t: 'div',
       c: 'iframe-wrapper w-full',

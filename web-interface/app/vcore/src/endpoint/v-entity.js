@@ -488,7 +488,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const whichLedger = V.getSetting( 'entityLedger' );
 
     if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
-      if ( 'highlight' == which ) {
+
+      if ( Array.isArray( which ) ) {
+        filter = 'uuidE';
+      }
+      else if ( 'highlight' == which ) {
         filter = which;
       }
       else if ( 'point' == which ) {

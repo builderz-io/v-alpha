@@ -26,7 +26,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       target: form.getNode( '#plusform__target' ).value,
     };
 
-    if ( !V.aE() ) {
+    if ( !V.aE() || V.aE().auth == false ) {
 
       /**
        * ask user to authenticate first
@@ -35,14 +35,17 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
        */
 
       V.setLocal( 'last-form', entityData );
-      Join.draw( 'authenticate' );
+      Modal.draw( 'confirm uPhrase' );
+      // Join.draw( 'authenticate' );
+      e.target.addEventListener( 'click', handleSetEntity );
     }
     else {
       V.setEntity( entityData ).then( res => {
         if ( res.success ) {
+          V.setLocal( 'last-form', undefined );
           console.log( res.message );
           console.log( 'set uuidE:', res.data[0].uuidE );
-          e.target.addEventListener( 'click', handleSetEntity );
+          // e.target.addEventListener( 'click', handleSetEntity );
           // V.setCache( 'points', res.data );
           // V.setCache( 'points', res.data );
           // V.setCache( 'all', 'clear' );
@@ -72,11 +75,10 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
         }
         else {
           Form.draw( 'error', res );
-          e.target.addEventListener( 'click', handleSetEntity );
+          // e.target.addEventListener( 'click', handleSetEntity );
           console.error( res );
         }
       } );
-      V.setLocal( 'last-form', undefined );
     }
 
   }
@@ -160,6 +162,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   function draw( which, options ) {
     view( which, options );
   }
+
+  V.handleSetEntity = handleSetEntity;
 
   return {
     launch: launch,
