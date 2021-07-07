@@ -103,7 +103,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         use: {
           button: 'plus search',
           form: 'new entity',
-          role: 'MediaObject',
+          role: 'Media',
         },
         draw: function() {
           Media.draw( '/media', { feature: getFeatureVideo() } );

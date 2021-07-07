@@ -36,7 +36,14 @@ module.exports = async ( context, filter ) => {
       }
 
       text = text.toLowerCase();
-      const role = filter.role != E.c.replace( 'Mapped', '' ) ? filter.role == 'all' ? true : false : true;
+
+      const role =
+      filter.role == 'all'
+      || filter.role == E.c
+        ? true
+        : filter.role == 'aa'
+          ? ['aa', 'ab'].includes( E.c )
+          :  false;
 
       return role && text.includes( q );
 

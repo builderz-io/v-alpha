@@ -344,8 +344,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'aj' : return 'Place';
     case 'Event' : return 'ak';
     case 'ak' : return 'Event';
-    case 'MediaObject' : return 'al';
-    case 'al' : return 'Media'; // "Media" reads nicer in UI
+    case 'Media' : return 'al';
+    case 'al' : return 'Media';
     case 'Dataset' : return 'am';
     case 'am' : return 'Dataset';
     }
@@ -530,6 +530,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function getEntityQuery( data ) {
     console.log( 100, 'by query' );
+
+    data.role = switchRole( data.role );
 
     const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
                       getEntityQuery(filter: $filter) {
