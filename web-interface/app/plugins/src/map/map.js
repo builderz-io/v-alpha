@@ -68,7 +68,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function view( data, options ) {
-
+    console.log( data );
     if ( Array.isArray( data ) ) {
       if ( options && options.isSearch ) {
         setSearch( data );
@@ -293,8 +293,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     let filtered = cache.data;
 
-    if ( whichRole != 'all' ) {
-      filtered = filtered.filter( item => item.role == whichRole );
+    if ( 'Person' == whichRole ) {
+      filtered = filtered.filter( item => ['aa', 'ab'].includes( item.role ) );
+    }
+    else if ( 'all' != whichRole ) {
+      filtered = filtered.filter( item => item.role == V.castRole( whichRole ) );
     }
     // console.log( 'filtered points', filtered );
     pointLayer = castLayer( 'points', filtered );

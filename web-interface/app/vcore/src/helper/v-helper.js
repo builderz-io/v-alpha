@@ -329,6 +329,39 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return tag ? title + ' ' + tag : { title: split[0].trim(), tag: '#' + split[1] };
   }
 
+  function castRole( role ) {
+    switch ( role ) {
+    case 'all' : return 'all';
+    case 'Person' : return 'aa';
+    case 'aa' : return 'Person';
+    case 'PersonMapped' : return 'ab';
+    case 'ab' : return 'Person'; // combine "PersonMapped" with "Person" on retrieval
+    case 'Business' : return 'ac';
+    case 'ac' : return 'Business';
+    case 'Institution' : return 'ad';
+    case 'ad' : return 'Institution';
+    case 'NGO' : return 'ae';
+    case 'ae' : return 'NGO';
+    case 'GOV' : return 'af';
+    case 'af' : return 'GOV';
+    case 'Network' : return 'ag';
+    case 'ag' : return 'Network';
+    case 'Skill' : return 'ah';
+    case 'ah' : return 'Skill';
+    case 'Task' : return 'ai';
+    case 'ai' : return 'Task';
+    case 'Place' : return 'aj';
+    case 'aj' : return 'Place';
+    case 'Event' : return 'ak';
+    case 'ak' : return 'Event';
+    case 'Media' : return 'al';
+    case 'al' : return 'Media';
+    case 'Dataset' : return 'am';
+    case 'am' : return 'Dataset';
+    default: return role;
+    }
+  }
+
   function castJson( data, clone ) {
 
     if ( !data || data === 'undefined' ) {
@@ -658,6 +691,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castSlugOrId = castSlugOrId;
   V.castPathOrId = castPathOrId;
   V.castFullId = castFullId;
+  V.castRole = castRole;
   V.castJson = castJson;
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
@@ -684,6 +718,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castSlugOrId: castSlugOrId,
     castPathOrId: castPathOrId,
     castFullId: castFullId,
+    castRole: castRole,
     castJson: castJson,
     castShortAddress: castShortAddress,
     castUuid: castUuid,

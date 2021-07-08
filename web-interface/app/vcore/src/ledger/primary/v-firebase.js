@@ -46,7 +46,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return {
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
-      role: switchRole( E.c ),
+      role: V.castRole( E.c ),
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -181,7 +181,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const a = data.uuidE;
     const b = data.contextE;
-    const c = switchRole( data.typeE );
+    const c = V.castRole( data.typeE );
     const d = data.uuidP;
     const e = data.uuidA;
     const g = data.issuer;
@@ -318,39 +318,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       u: tx.blockDate,
       v: tx.logIndex,
     } ) );
-  }
-
-  function switchRole( role ) {
-    switch ( role ) {
-    case 'all' : return 'all';
-    case 'Person' : return 'aa';
-    case 'aa' : return 'Person';
-    case 'PersonMapped' : return 'ab';
-    case 'ab' : return 'Person'; // combine "PersonMapped" with "Person" on retrieval
-    case 'Business' : return 'ac';
-    case 'ac' : return 'Business';
-    case 'Institution' : return 'ad';
-    case 'ad' : return 'Institution';
-    case 'NGO' : return 'ae';
-    case 'ae' : return 'NGO';
-    case 'GOV' : return 'af';
-    case 'af' : return 'GOV';
-    case 'Network' : return 'ag';
-    case 'ag' : return 'Network';
-    case 'Skill' : return 'ah';
-    case 'ah' : return 'Skill';
-    case 'Task' : return 'ai';
-    case 'ai' : return 'Task';
-    case 'Place' : return 'aj';
-    case 'aj' : return 'Place';
-    case 'Event' : return 'ak';
-    case 'ak' : return 'Event';
-    case 'Media' : return 'al';
-    case 'al' : return 'Media';
-    case 'Dataset' : return 'am';
-    case 'am' : return 'Dataset';
-    default: return role;
-    }
   }
 
   function setEntityField( data ) {
@@ -533,7 +500,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getEntityQuery( data ) {
     console.log( 100, 'by query' );
 
-    data.role = switchRole( data.role );
+    data.role = V.castRole( data.role );
 
     const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
                       getEntityQuery(filter: $filter) {
