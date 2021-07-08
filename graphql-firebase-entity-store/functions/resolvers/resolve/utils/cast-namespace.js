@@ -14,6 +14,7 @@ const entitySetup = {
   profileDocVersion: '/p1/v0',
   authDocVersion: '/a1/v0',
   daysToExpiry: 365 * 2,
+  uuidStringLength: 10,
 };
 
 const { castUuid } = require( '../../../resources/v-core' );
@@ -22,9 +23,9 @@ module.exports = ( context, data ) => {
 
   /** Prepare data */
 
-  const uuidE = castUuid().short;
-  const uuidP = castUuid().short;
-  const uuidA = castUuid().short;
+  const uuidE = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
+  const uuidP = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
+  const uuidA = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
 

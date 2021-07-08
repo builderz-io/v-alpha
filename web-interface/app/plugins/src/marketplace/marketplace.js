@@ -45,7 +45,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( search && search.query ) {
-
       Object.assign( search, { role: whichRole } );
       isSearch = true;
       query = await V.getQuery( search ).then( res => {
@@ -57,7 +56,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     else if (
       cachedHighlights
-      && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )
+      && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'highlightsCacheDuration' ) * 60 * 1000 )
     ) {
       query = {
         success: true,
@@ -137,8 +136,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
         setSliderContent( last );
 
-        const hasThumbnail = viewData.entities.filter( item => item.thumbnail != undefined );
-        const hasNoThumbnail = viewData.entities.filter( item => item.thumbnail === undefined );
+        const hasThumbnail = viewData.entities.filter( item => item.images.thumbnail != undefined );
+        const hasNoThumbnail = viewData.entities.filter( item => item.images.thumbnail === undefined );
 
         hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
           setListContent( cardData );

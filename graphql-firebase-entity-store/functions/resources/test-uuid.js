@@ -1,6 +1,6 @@
 /** testing the uuid generation locally */
 
-const runXTimes = 5;
+const runXTimes = 100;
 const outputLength = 10;
 
 const uuid = require( './v-core' ).castUuid;
@@ -12,7 +12,7 @@ for ( let i = 0; i < runXTimes; i++ ) {
 
   const str = uuid().base64Url;
 
-  const char1 = str.substr( 0, 1 );
+  const char1 = str.substr( 3, 1 );
 
   if ( !startsWith[char1] ) {
     startsWith[char1] = 0;
@@ -31,10 +31,12 @@ for ( let i = 0; i < runXTimes; i++ ) {
 
 }
 
-// console.log( startsWith );
+console.log( startsWith );
+console.log( Object.keys( startsWith ).length );
+console.log( Object.keys( startsWith ).sort() );
 // console.log( has );
-console.log( Object.keys( has ).length );
-console.log( 62**outputLength * 25 * 3 );
+// console.log( Object.keys( has ).length );
+// console.log( 62**outputLength * 25 * 3 );
 
 /*
 100000 runs of old version

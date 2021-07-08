@@ -107,9 +107,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     /** Prepare data */
 
-    const uuidE = V.castUuid().short;
-    const uuidP = V.castUuid().short;
-    const uuidA = V.castUuid().short;
+    const uuidE = V.castUuid().base64Url.substr( 3, V.getSetting( 'uuidStringLength' ) );
+    const uuidP = V.castUuid().base64Url.substr( 3, V.getSetting( 'uuidStringLength' ) );
+    const uuidA = V.castUuid().base64Url.substr( 3, V.getSetting( 'uuidStringLength' ) );
     const unix = V.castUnix();
 
     let geometry = {};

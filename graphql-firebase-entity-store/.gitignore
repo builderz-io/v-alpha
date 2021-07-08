@@ -5,13 +5,20 @@ entity-namespace-creds.json
 entity-profile-creds.json
 entity-authentication-creds.json
 
+
 #database import files
 trinity-entities-mongo.json
 mh-entities*
 geocoding-data*
-
+entity-namespace*
+entity-profile*
 #local test database export
 export*
+
+
+# all import scripts
+importer
+
 
 # Logs
 logs

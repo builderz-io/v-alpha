@@ -64,10 +64,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    previewCacheDuration: 3, // in minutes
-    viewedCacheDuration: 10, // in minutes
-    managedEntitiesCacheDuration: 5, // in minutes
-    uuidStringLength: 8,
+    highlightsCacheDuration: 60 * 8, // in minutes
+    viewedCacheDuration: 60 * 8, // in minutes
+
+    uuidStringLength: 10,
 
     tinyImageWidth: 40, // Numbers in px
     tinyImageQuality: 0.93, // Number from 0 to 1

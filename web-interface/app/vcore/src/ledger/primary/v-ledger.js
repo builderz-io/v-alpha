@@ -77,6 +77,8 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       else {
         await Promise.all( [
           V.setScript( host + '/vcore/dependencies/secondary/firebase-app.js' ),
+        ] );
+        await Promise.all( [
           V.setScript( host + '/vcore/dependencies/secondary/firebase-database.js' ),
         ] )
           .then( () => console.log( 'Success loading firebase chat' ) )

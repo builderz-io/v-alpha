@@ -22,7 +22,7 @@ module.exports = async ( token ) => {
 
   else if (
     'REFR' == token.substr( 0, 4 )
-    && token.length == 38
+    && token.length == 40
   ) {
 
     token = token.split( '--' );

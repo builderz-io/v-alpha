@@ -322,6 +322,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   function switchRole( role ) {
     switch ( role ) {
+    case 'all' : return 'all';
     case 'Person' : return 'aa';
     case 'aa' : return 'Person';
     case 'PersonMapped' : return 'ab';
@@ -348,6 +349,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'al' : return 'Media';
     case 'Dataset' : return 'am';
     case 'am' : return 'Dataset';
+    default: return role;
     }
   }
 
