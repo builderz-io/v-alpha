@@ -10,7 +10,7 @@ module.exports = ( context ) => {
   }
   else {
     return colE.orderByChild( 'g' ).equalTo( context.host )
-      .limitToLast( 100 ).once( 'value' )
+      .limitToLast( 1000 ).once( 'value' )
       .then( snap => Object.values( snap.val() ) );
   }
 

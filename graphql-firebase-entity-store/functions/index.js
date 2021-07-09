@@ -26,8 +26,8 @@ const whitelist = [
   'https://dev.valueinstrument.org',
   'https://staging.valueinstrument.org',
   'https://staging.builderz.io',
-  'https://staging.coindashboards.com',
   'https://faithfinance.app',
+  'https://society4.valueinstrument.org',
 ];
 
 const corsConfig = {

@@ -384,7 +384,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         },
         draw: function( path ) {
           Marketplace.draw( path, {
-            query: '#FoodWater',
+            query: '#Food',
           } );
         },
       },
