@@ -21,8 +21,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders holderOf auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a b } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
+  const singleP = 'm { a b c m n r } n { a c } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -46,7 +46,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return {
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
-      role: E.c.replace( 'Mapped', '' ), // combines 'PersonMapped' and 'Person'
+      role: V.castRole( E.c ),
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -74,13 +74,13 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
-        baseLocation: P.n ? P.n.b : undefined,
+        baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
       holders: E.holders,
-      holderOf: E.holderOf,
+      holderOf: E.holderOf ? E.holderOf.map( item => item.fullId ) : undefined,
       evmCredentials: {
         address: E.i,
       },
@@ -181,7 +181,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const a = data.uuidE;
     const b = data.contextE;
-    const c = data.typeE;
+    const c = V.castRole( data.typeE );
     const d = data.uuidP;
     const e = data.uuidA;
     const g = data.issuer;
@@ -194,7 +194,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const x = {
       a: data.creatorUuid,
-      b: data.heldBy,
+      m: data.heldBy,
     };
 
     const y = {
@@ -273,7 +273,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
     const n = {
       a: data.geometry.coordinates,
-      b: data.geometry.baseLocation,
+      c: data.geometry.baseLocation,
     };
     const o = {
       a: data.tinyImageDU,
@@ -284,7 +284,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const x = {
       a: data.creatorUuid,
-      b: data.heldBy,
+      m: data.heldBy,
     };
 
     const y = {
@@ -406,9 +406,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     case 'geometry.baseLocation':
       n = data.data.value ? {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
-        b: data.data.value,
+        c: data.data.value,
       } : null;
-      returnFields = 'n { a b }';
+      returnFields = 'n { a c }';
       break;
 
     case 'images':
@@ -447,7 +447,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     let where;
 
     let queryE = `query GetEntity ( $where: WhereEntity ){
-        getEntity(where: $where) { ${ singleE } }
+        getEntity(where: $where) { ${ typeof data == 'string' ? singleE : previewsE } }
       }`;
 
     if ( 'entity by role' == whichEndpoint ) {
@@ -457,6 +457,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
              getEntity(where: $where) { ${ previewsE } }
            }`;
     }
+    else if ( 'entity by uuidE' == whichEndpoint ) {
+      console.log( 444, 'by uuidE:', data );
+      where = { a: typeof data == 'string' ? [data] : data };
+    }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
       console.log( 222, 'by EVM Address:', data );
       where = { i: data };
@@ -465,10 +469,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       const tT = V.castFullId( data );
       console.log( 333, 'by FullId:', tT.title, tT.tag );
       where = { m: tT.title, n: tT.tag };
-    }
-    else if ( 'entity by uuidE' == whichEndpoint ) {
-      console.log( 444, 'by uuidE:', data );
-      where = { a: data };
     }
     const variables = {
       where: where,
@@ -497,17 +497,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryT );
   }
 
-  // function getAuth( data ) {
-  //   console.log( 555, 'by uPhrase / get auth Doc only' );
-  //   const queryA = `query GetEntityAuth {
-  //           getAuth (token:"${ data }") { f i j }
-  //         }`;
-  //
-  //   return fetchFirebase( queryA );
-  // }
-
   function getEntityQuery( data ) {
     console.log( 100, 'by query' );
+
+    data.role = V.castRole( data.role );
 
     const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
                       getEntityQuery(filter: $filter) {
@@ -521,6 +514,51 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     };
 
     return fetchFirebase( queryS, variables );
+  }
+
+  function getPoints( data ) {
+    console.log( 300, 'by point' );
+
+    const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
+                 getPoints(where: $where) { a c zz { i } }
+               }`;
+
+    const variables = {
+      where: {},
+    };
+    return fetchFirebase( query, variables );
+  }
+
+  function getHighlights() {
+    console.log( 200, 'by highlight' );
+
+    const queryH = `query GetHighlights {
+                      getHighlights {
+                        a
+                      }
+                    }
+                  `;
+
+    return fetchFirebase( queryH );
+  }
+
+  function setHighlight( which, whichEndpoint ) {
+    const query = `mutation SetHighlight( $input: InputHighlight! ) {
+                setHighlight(input: $input) {
+                  a
+                }
+              }
+            `;
+
+    const expiry = whichEndpoint == 'highlight'
+      ? V.castUnix() + 60 * 60 * 24 * 60
+      : V.castUnix() - 1;
+
+    const variables = {
+      input: { a: which, y: { c: expiry } },
+    };
+
+    return fetchFirebase( query, variables );
   }
 
   function setManagedTransaction( data ) {
@@ -578,7 +616,38 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     let E;
 
-    if ( 'entity by query' == whichEndpoint ) {
+    if ( 'entity by point' == whichEndpoint ) {
+      const points = await getPoints( data );
+      if ( !points.errors && points.data.getPoints[0] != null ) {
+        return V.successTrue( 'got points', points.data.getPoints );
+      }
+      else {
+        return V.successFalse( 'get entities by point' );
+      }
+    }
+    else if ( 'entity by highlight' == whichEndpoint ) {
+      const highlightedE = await getHighlights();
+      const mixin = V.getCache( 'mixin-highlights' ); // from points
+
+      if ( !highlightedE.errors && highlightedE.data.getHighlights[0] != null ) {
+        let highlights = highlightedE.data.getHighlights.map( item => item.a );
+
+        if ( mixin ) {
+          highlights = [...new Set( highlights.concat( mixin.data ) )];
+        }
+
+        E = await getEntities( highlights, 'entity by uuidE' );
+
+      }
+      else if ( mixin ) {
+        E = await getEntities( mixin.data, 'entity by uuidE' );
+      }
+      else {
+        return V.successFalse( 'get entities by highlight' );
+      }
+
+    }
+    else if ( 'entity by query' == whichEndpoint ) {
       const search = await getEntityQuery( data );
 
       if ( !search.errors && search.data.getEntityQuery[0] != null ) {
@@ -693,6 +762,9 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'message' == whichEndpoint ) {
       return setChatMessage( data );
+    }
+    else if ( whichEndpoint.includes( 'highlight' ) ) {
+      return setHighlight( data, whichEndpoint );
     }
     else if ( 'managed transaction' == whichEndpoint ) {
       return setManagedTransaction( data );

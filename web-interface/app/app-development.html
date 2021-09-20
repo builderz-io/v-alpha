@@ -11,14 +11,14 @@
 
           // START editing
 
-          sourceEndpoint: 'local', // choices are 'local', 'development', 'production' and 'github'
-          appVersion: '3.2.1', // e.g. '3.2.1' or '' for latest version
-          useBuilds: true,
+          sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
+          useAppVersion: '3.2.2', // e.g. '3.2.1' or '' for latest version
+          useBuilds: false,
 
-          firebaseEndpoint: 'development',
+          firebaseEndpoint: 'local',
           mongodbEndpoint: 'builderz',
 
-          mapDefault: 'berlin',
+          mapDefault: 'atlantic',
           featureVideo: 'builderz',
           questionnaire: false,
 
@@ -35,18 +35,32 @@
 
             chat: [],
             marketplace: [
-              'localEconomy',
+              'tagEnergyTransportation',
+              'tagIndigenousValues',
+              'tagCommonsCommunitiesGovernance',
+              'tagEducationCollectiveIntelligence',
+              'tagEconomicsCurrencies',
+              'tagCounteringAnthropogenicMindsets',
+              'tagNewNarratives',
+              'tagBiosphereRegeneration',
+              'tagCounteringIdentityPolitics',
+              'tagGlobalIntegralHealth',
+              'tagFoodWater',
+              'tagEmergentOther',
+              'tagSystemicApproaches',
+
+              // 'localEconomy',
               'people',
               'businesses',
-              'ngos',
-              'publicSector',
-              'anchors',
-              'networks',
+              // 'ngos',
+              // 'publicSector',
+              // 'anchors',
+              // 'networks',
               'skills',
-              'tasks',
+              // 'tasks',
               // 'pools',
-              'places',
-              'events',
+              // 'places',
+              // 'events',
             ],
             media: [
               'media',
@@ -85,8 +99,9 @@
          const sourceEndpoints = {
            local: 'http://localhost:4021',
            development: 'https://dev.valueinstrument.org',
+           staging: 'https://staging.valueinstrument.org',
            production: 'https://production.valueinstrument.org',
-           github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha' + ( settings.appVersion ? `@${ settings.appVersion }` : '' ) + '/web-interface/app',
+           github: 'https://cdn.jsdelivr.net/gh/valueinstrument/v-alpha' + ( settings.useAppVersion ? `@${ settings.useAppVersion }` : '' ) + '/web-interface/app',
          }
 
         settings.sourceEndpoint == 'github' ? settings.useBuilds = true : null;

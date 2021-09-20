@@ -53,6 +53,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
+    // add new
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
         uuidE: data.uuidE,
@@ -62,7 +63,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         path: data.path,
         draw: function( path ) { Profile.draw( path ) },
       };
-      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+      if ( data.tinyImage ) { // old model
+        obj.tinyImage = JSON.stringify( data.tinyImage );
+      }
+      else if ( data.images && data.images.tinyImage ) { // new model
+        obj.tinyImage = data.images.tinyImage;
+        obj.useDataUrl = true;
+      }
       V.setNavItem( 'entityNav', obj );
     }
 
@@ -134,7 +141,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.success ) {
 
-      !viewData.data[0].which ? reset() : null;
+      // !viewData.data[0].which ? reset() : null;
 
       /**
        * draw serviceNav
@@ -203,7 +210,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const which = viewData.data[0].which;
 
     if ( which ) {
-      animate( which );
+
+      /**
+       * timeout ensures that popup is removed from DOM,
+       * to avoid conflicting node being found in $itemToAnimate in animate
+       */
+      setTimeout( () => ( animate( which ) ), 8 );
     }
 
   }
@@ -234,6 +246,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         };
 
         b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
+        b[newKey].useDataUrl ? a[b[newKey].path].useDataUrl = b[newKey].useDataUrl : null;
 
       }
     }
@@ -397,7 +410,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( entitiesViewed.length >= 50 ) {
       entitiesViewed.forEach( entityPath => {
         if ( entityNavOrder[entityPath].l > 40 ) {
-          console.log( entityPath );
           delete entityNavOrder[entityPath];
         }
       } );
@@ -445,6 +457,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     Form.draw( 'all', { fade: 'out' } );
     Button.draw( 'all', { fade: 'out' } );
+
+    /* return to the full market view and reset the map (zoom) */
+    Marketplace.draw();
+    // VMap.draw( { reset: true } );
 
   }
 

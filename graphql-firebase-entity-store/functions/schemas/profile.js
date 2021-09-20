@@ -32,9 +32,11 @@ const types = {
   Geometry: `
     {
       a: [Float]      // base coordinates
-      b: String       // base Location
-      c: [Float]      // current coordinates
-      d: String       // current Location
+      b: String       // geo hash
+      c: String       // base Location
+      g: [Float]      // current coordinates
+      h: String       // geo hash
+      i: String       // current Location
     }
   `,
   Images: `
@@ -62,7 +64,9 @@ const types = {
   RelationsP: `
     {
       a: String      // creator uuid
-      b: [String]    // owned by
+      m: String      // held by (1)
+      n: String      // held by (2)
+      o: String      // held by (3)
     }
   `,
   DatesP: `

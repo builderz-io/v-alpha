@@ -10,10 +10,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   /* ================== event handlers ================== */
 
   function handleProfileDraw() {
-    const path = this;
-    V.setState( 'active', { navItem: path } );
-    V.setBrowserHistory( path );
-    Profile.draw( path );
+    V.setState( 'active', { navItem: this.path } );
+    V.setBrowserHistory( this.path );
+    Profile.draw( this.uuidE );
   }
 
   function handleEditProfileDraw() {
@@ -26,18 +25,18 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
     if (
       V.getState( 'page' ).height > V.getState( 'page' ).peek ||
-      ( pathOfOpen && pathOfOpen == this )
+      ( pathOfOpen && pathOfOpen == this.path )
     ) {
       // V.setAnimation( '.popup', {
       //   opacity: 0
       // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
       //   V.setNode( '.popup-content', '' );
       // } );
-      V.setBrowserHistory( this );
-      Profile.draw( this );
+      V.setBrowserHistory( this.path );
+      Profile.draw( this.uuidE );
       return;
     }
-    const entity = V.getCache( 'preview' ).data.find( item => item.path == this );
+    const entity = V.getCache( 'highlights' ).data.find( item => item.path == this.path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );
@@ -95,10 +94,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       },
       e: {
         click: whichHandler == 'editable' ?
-          handleEditProfileDraw.bind( circleData.path ) :
+          handleEditProfileDraw.bind( circleData.uuidE ) :
           whichHandler == 'popup' ?
-            handlePopup.bind( circleData.path ) :
-            handleProfileDraw.bind( circleData.path ),
+            handlePopup.bind( { path: circleData.path, uuidE: circleData.uuidE } ) :
+            handleProfileDraw.bind( { path: circleData.path, uuidE: circleData.uuidE } ),
       },
     } );
   }
@@ -141,20 +140,38 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function entitiesPlaceholder() {
+  function entitiesPlaceholder( options ) {
     return V.cN( {
       t: 'li',
       c: 'pxy',
       h: {
         t: 'smallcard',
         c: 'smallcard__container txt-center rounded bkg-white',
-        h: V.cN( {
-          t: 'div',
-          c: 'circle-3 rounded-full animated-background',
+        h: [
+          {
+            t: 'div',
+            c: 'circle-3 rounded-full animated-background',
+            y: {
+              'margin-bottom': '20px',
+            },
           // a: {
           //   style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
           // },
-        } ),
+          },
+          {
+            x: options ? options.showProgress : false,
+            t: 'div',
+            c: 'progress-bar',
+            h: {
+              t: 'span',
+              c: 'bar',
+              h: {
+                t: 'span',
+                c: 'progress',
+              },
+            },
+          },
+        ],
       },
     } );
   }
@@ -180,7 +197,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: castCircle( cardData ),
-      k: handleProfileDraw.bind( cardData.path ),
+      // k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
     } );
 
     const $topRight = V.cN( {
@@ -190,7 +207,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
         h: cardData.fullId,
-        k: handleProfileDraw.bind( cardData.path ),
+        k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
       },
     } );
 
@@ -202,7 +219,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
           h: cardData.properties.target || '',
-          k: handleProfileDraw.bind( cardData.path ),
+          k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
         },
         {
           t: 'p',
@@ -220,7 +237,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         { x: text, t: 'p', c: 'pxy', h: castDescr.$intro },
         { t: 'p', c: 'pxy', h: cardData.geometry && cardData.geometry.baseLocation ? cardData.geometry.baseLocation : '' },
       ],
-      k: handleProfileDraw.bind( cardData.path ),
+      k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
@@ -234,6 +251,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     // const filteredDescr = entity.properties && entity.properties.filteredDescription ? entity.properties.filteredDescription : undefined;
     // const text = filteredDescr ? filteredDescr : descr;
 
+    const isPreview = entity.path ? false : true;
+
     const text = entity.properties
       ? entity.properties.filteredDescription
         ? entity.properties.filteredDescription
@@ -244,30 +263,44 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
     const castDescr = V.castDescription( text );
 
-    return V.cN( {
-      t: 'div',
-      a: { path: entity.path },
-      h: [
-        {
-          t: 'p',
-          c: 'pxy txt-center font-bold cursor-pointer',
-          h: entity.fullId,
-          k: handleProfileDraw.bind( entity.path ),
+    if ( isPreview ) {
+      return V.cN( {
+        t: 'div',
+        i: entity.uuidE + '-map-popup',
+        c: 'map-popup-inner flex justify-center',
+        y: {
+          'min-height': '320px',
         },
-        castCircle( entity ),
-        {
-          t: 'p',
-          c: 'pxy fs-s capitalize txt-center',
-          h: entity.role,
-        },
-        {
-          x: text,
-          t: 'p',
-          c: 'pxy fs-s break-words',
-          h: castDescr.$intro, // text ? text.length > 170 ? text.substr( 0, 170 ) + ' ...' : text : '',
-        },
-      ],
-    } );
+        h: entitiesPlaceholder( { showProgress: true } ),
+      } );
+    }
+    else {
+      return V.cN( {
+        t: 'div',
+        c: 'map-popup-inner',
+        a: { path: entity.path },
+        h: [
+          {
+            t: 'p',
+            c: 'pxy txt-center font-bold cursor-pointer',
+            h: entity.fullId,
+            k: handleProfileDraw.bind( { path: entity.path, uuidE: entity.uuidE } ),
+          },
+          castCircle( entity ),
+          {
+            t: 'p',
+            c: 'pxy fs-s capitalize txt-center',
+            h: entity.role,
+          },
+          {
+            x: text,
+            t: 'p',
+            c: 'pxy fs-s break-words',
+            h: castDescr.$intro,
+          },
+        ],
+      } );
+    }
   }
 
   /* ====================== export ====================== */

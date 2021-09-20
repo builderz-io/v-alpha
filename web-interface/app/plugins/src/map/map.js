@@ -38,88 +38,94 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     berlin: {
       lng: 13.383,
       lat: 52.522,
-      zoom: 9,
+      zoom: 13,
     },
     chicago: {
       lng: -87.964,
       lat: 41.858,
-      zoom: 8,
+      zoom: 13,
+    },
+    nyc: {
+      lng: -73.958,
+      lat: 40.792,
+      zoom: 13,
+    },
+    lowerafrica: {
+      lng: 18,
+      lat: -15,
+      zoom: 4,
     },
   };
 
-  let viMap, featureLayer;
+  const popUpSettings = {
+    maxWidth: 180,
+    minWidth: 130,
+    closeButton: false,
+    autoPanPaddingTopLeft: [100, 180],
+    keepInView: true,
+    className: 'map__popup',
+  };
+
+  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer;
+
+  const coordinatesCache = [];
 
   /* ================== private methods ================= */
 
-  function presenter( features ) {
-    return Promise.resolve( features );
-    // if ( /*V.getNode( '[src="/dist/leaflet.js"]' ) */ V.getNode( '.leaflet-pane' ) ) {
-    // }
-    // else {
-    //   return launch()
-    //     .then( () => {
-    //       setMap();
-    //       return features;
-    //     } );
-    // }
+  function view( data, options ) {
 
-  }
+    const isPopupOpen = V.getNode( '.map-popup-inner' );
 
-  function view( features ) {
-
-    if ( !features || !features.length || features[0] == undefined ) {
+    if ( Array.isArray( data ) ) {
+      if ( options && options.isSearch ) {
+        setSearch( data );
+      }
+      else {
+        setLastViewed( data );
+      }
       return;
     }
 
-    const sc = V.getState( 'screen' );
-
-    const geojsonMarkerSettings = {
-      radius: 10,
-      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
-      weight: 0,
-      opacity: 1,
-      fillOpacity: 0.9,
-    };
-
-    const popUpSettings = {
-      maxWidth: 150,
-      closeButton: false,
-      autoPanPaddingTopLeft: [100, 140],
-      keepInView: true,
-      className: 'map__popup',
-    };
-
-    if ( featureLayer ) {
-      featureLayer.remove();
+    if ( searchLayer ) {
+      searchLayer.remove();
     }
 
-    featureLayer = L.geoJSON( features, {
-      pointToLayer: function( feature, latlng ) {
-        return L.circleMarker( latlng, geojsonMarkerSettings );
-      },
-      onEachFeature: function( feature, layer ) {
-        layer.bindPopup( L.popup( popUpSettings ).setContent( castPopup( feature ) ) );
-      },
-    } );
+    /**
+     * at this point data is a string, such as "Business",
+     * defining a role by which to filter entities
+     */
 
-    const geo = features[0].geometry.coordinates;
+    const whichRole = data ? data : 'all';
 
-    if ( features.length == 1 ) {
-      const rand = features[0].geometry.rand;
-      const offset = sc.width < 800 ? 0 : rand ? 45 : 0.35;
-      const zoom = rand ? 3 : 10;
-
-      viMap.setView( [geo[1], geo[0] - offset], zoom );
-      setTimeout( () => {featureLayer.addTo( viMap )}, 1000 );
+    if ( 'all' == whichRole ) {
+      const lastLngLat = V.getState( 'active' ).lastLngLat;
+      if ( lastLngLat && !isPopupOpen ) {
+        viMap.setView( [lastLngLat[1], lastLngLat[0]], viMap.getZoom() - 5 );
+      }
+      else {
+        const loc = V.getState( 'map' );
+        viMap.setView( [loc.lat, loc.lng], loc.zoom /* - 4 */  );
+      }
     }
     else {
-      if( !viMap.getZoom() == 3 ) {
-        viMap.setView( [geo[1] - 9, geo[0]], 3 );
-      // viMap.setView( [41.858, -87.964], 8 );
+      if ( lastViewedLayer ) {
+        lastViewedLayer.remove();
       }
-
-      featureLayer.addTo( viMap );
     }
+
+    if ( !isPopupOpen ) {
+      setPoints( whichRole );
+    }
+    setHighlights( whichRole );
+
+    // if ( !features || !features.length || features[0] == undefined ) {
+    //   return;
+    // }
+    //
+    // if ( features.length == 1 ) {
+    //   setLastViewed();
+    // }
+
   }
 
   function castPopup( feature ) {
@@ -130,6 +136,84 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   //   await V.setScript( V.getSetting( 'sourceEndpoint' ) + '/plugins/dependencies/leaflet.js' );
   //   console.log( '*** leaflet library loaded ***' );
   // }
+
+  function castLayer( whichLayer, features ) {
+    const sc = V.getState( 'screen' );
+
+    const marker = {
+      radius: 5,
+      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
+      weight: 0,
+      opacity: 0.8,
+      fillOpacity: 0.8,
+    };
+
+    switch ( whichLayer ) {
+    // case 'points':
+    //   marker.fillColor = 'rgba(' + sc.brandPrimary + ', 1)';
+    //   break;
+    case 'highlights':
+      marker.fillColor = 'rgba(' + sc.brandSecondary + ', 1)';
+      marker.radius = 6;
+      marker.fillOpacity = 1;
+      break;
+    case 'search':
+      marker.fillColor = 'red';
+      marker.radius = 6;
+      marker.fillOpacity = 1;
+      break;
+    case 'lastViewed':
+      marker.radius = 9;
+      marker.fillColor = 'blue';
+      marker.stroke = true;
+      marker.weight = 3;
+      marker.color = 'lightblue';
+      break;
+    }
+
+    const exec = {
+      pointToLayer: function( feature, latlng ) {
+        return L.circleMarker( latlng, marker );
+      },
+    };
+
+    /**
+     * ensure features written to layers
+     * have same geolocation as their point
+     * (relevant for randomly generated locations)
+     */
+
+    if ( whichLayer != 'points' ) {
+      features.forEach( feature => {
+        const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
+        if ( point ) {
+          Object.assign( feature.geometry, point.geometry );
+        }
+      } );
+    }
+
+    if ( ['search', 'highlights'].includes( whichLayer ) ) {
+      exec.onEachFeature = function( feature, layer ) {
+        layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
+      };
+    }
+
+    return L.geoJSON( features, exec );
+
+  }
+
+  function castReturnedPointData( item ) {
+    return {
+      uuidE: item.a,
+      role: item.c.replace( 'Mapped', '' ),
+      geometry: {
+        coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
+        rand: item.zz && item.zz.i ? false : true,
+        type: 'Point',
+      },
+      type: 'Feature',
+    };
+  }
 
   function setMap() {
 
@@ -144,8 +228,6 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       maxZoom: 16,
       minZoom: sc.height > 1200 ? 3 : 2,
     };
-
-    featureLayer = L.geoJSON();
 
     const mapData = V.getLocal( 'map-state' );
 
@@ -167,12 +249,17 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       // accessToken: 'your.mapbox.access.token'
     } ).addTo( viMap );
 
-    viMap.on( 'moveend', function() {
-      const map = viMap.getBounds().getCenter();
-      Object.assign( map, { zoom: viMap.getZoom() } );
-      V.setState( 'map', map );
-      V.setLocal( 'map-state', map );
-    } );
+    getPoints()
+      .then( () => setPoints( 'all' ) );
+
+    // viMap.on( 'moveend', handleMapMoveEnd );
+
+  /*
+   .on( 'moveend' ) has bugs:
+     - causes point rendering incomplete and too small
+     - exceeded stack
+  */
+
   }
 
   function getMapDefault(
@@ -181,11 +268,205 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     return mapDefaults[which];
   }
 
+  function getPoints() {
+    return V.getEntity( 'point' ).then( res => {
+      if ( res.success ) {
+        const castPoints = res.data.map( item => {
+          if ( item.zz && item.zz.i ) {
+            const geoStr = JSON.stringify( item.zz.i );
+            if ( coordinatesCache.includes( geoStr ) ) {
+              item.zz.i[0] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+              item.zz.i[1] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+              coordinatesCache.push( JSON.stringify( item.zz.i ) );
+            }
+            else {
+              coordinatesCache.push( geoStr );
+            }
+          }
+          return castReturnedPointData( item );
+        } );
+        V.setCache( 'points', castPoints );
+      }
+    } );
+  }
+
+  function setPoints( whichRole ) {
+
+    if ( pointLayer ) {
+      pointLayer.remove();
+    }
+
+    const cache = V.getCache( 'points' );
+
+    if ( !cache ) { return }
+
+    let filtered = cache.data;
+
+    if ( 'Person' == whichRole ) {
+      filtered = filtered.filter( item => ['aa', 'ab'].includes( item.role ) );
+    }
+    else if ( 'all' != whichRole ) {
+      filtered = filtered.filter( item => item.role == V.castRole( whichRole ) );
+    }
+    // console.log( 'filtered points', filtered );
+    pointLayer = castLayer( 'points', filtered );
+
+    pointLayer.on( 'click', handlePointClick );
+
+    pointLayer.addTo( viMap );
+  }
+
+  function setHighlights( whichRole ) {
+    if ( highlightLayer ) {
+      highlightLayer.remove();
+    }
+
+    const cache = V.getCache( 'highlights' );
+
+    if ( !cache ) { return }
+
+    let filtered = cache.data;
+
+    if ( whichRole != 'all' ) {
+      filtered = filtered.filter( item => item.role == whichRole );
+    }
+    // console.log( 'filtered highlights', filtered );
+
+    highlightLayer = castLayer( 'highlights', filtered );
+
+    // highlightLayer.on( 'click', handleHighlightClick );
+
+    // if( !viMap.getZoom() == 3 ) {
+    //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
+    // // viMap.setView( [41.858, -87.964], 8 );
+    // }
+
+    highlightLayer.addTo( viMap );
+  }
+
+  function setSearch( features ) {
+    if ( searchLayer ) {
+      searchLayer.remove();
+    }
+
+    searchLayer = castLayer( 'search', features );
+
+    // searchLayer.on( 'click', handleHighlightClick );
+
+    // if( !viMap.getZoom() == 3 ) {
+    //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
+    // // viMap.setView( [41.858, -87.964], 8 );
+    // }
+
+    searchLayer.addTo( viMap );
+
+  }
+
+  function setLastViewed( features ) {
+    if ( lastViewedLayer ) {
+      lastViewedLayer.remove();
+    }
+
+    lastViewedLayer = castLayer( 'lastViewed', features );
+
+    const sc = V.getState( 'screen' );
+
+    const geo = V.getState( 'active' ).lastLngLat
+    || features[0].geometry.coordinates;
+
+    const rand = features[0].geometry.rand;
+    const offset = sc.width < 800 ? 0 : rand ? 45 : 0.35;
+    const zoom = rand ? 3 : 10;
+
+    viMap.setView( [geo[1], geo[0] - offset], zoom );
+
+    setTimeout( () => {
+      lastViewedLayer
+        .addTo( viMap );
+    }, 500 );
+  }
+
+  // function handleHighlightClick( e ) {
+  //
+  //   /**
+  //    * make the coordinates of the clicked point available in state,
+  //    * which ensures that the correct latLng is used in "setLastViewed",
+  //    * otherwise a random geolocation will be rendered again, leading to a map crash
+  //    */
+  //   V.setState( 'active', {
+  //     lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
+  //   } );
+  // }
+
+  async function handlePointClick( e ) {
+
+    /**
+     * see comment in handleHighlightClick
+     */
+
+    // V.setState( 'active', {
+    //   lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
+    // } );
+
+    const uuidE = e.layer.feature.uuidE;
+    const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
+
+    e.layer
+      .bringToFront()
+      .setStyle( {
+        fillColor: 'blue',
+        radius: 7,
+      } )
+      .bindPopup( popup, popUpSettings )
+      .openPopup();
+
+    let entity;
+
+    const inCache = V.getViewed( uuidE );
+
+    if ( inCache ) {
+      entity = V.successTrue( 'used cache', inCache );
+    }
+    else {
+
+      entity = await V.getEntity( uuidE )
+        .then( res => {
+          if ( res.success ) {
+            V.setCache( 'viewed', res.data );
+            return V.successTrue( 'fetched entity', res.data );
+          }
+        } );
+    }
+
+    /* fill popup with content,
+     * needs timeout for popup to be ready
+     */
+    setTimeout( function setPopupContent() {
+      V.setNode( '#' + uuidE + '-map-popup', '' );
+      V.setNode( '#' + uuidE + '-map-popup', castPopup( entity.data[0] ) );
+    }, 200 );
+
+  }
+
+  function handleMapMoveEnd() {
+    console.log( 'map moved' );
+    viMap.off( 'moveend' );
+    setMapPositionInState();
+    viMap.on( 'moveend', handleMapMoveEnd );
+  }
+
+  function setMapPositionInState() {
+    const map = viMap.getCenter();
+    Object.assign( map, { zoom: viMap.getZoom() } );
+    V.setState( 'map', map );
+    V.setLocal( 'map-state', map );
+  }
+
   /* ============ public methods and exports ============ */
 
-  function draw( features ) {
+  function draw( data, options ) {
     if ( V.getSetting( 'drawMap' ) ) {
-      presenter( features ).then( features => { view( features ) } );
+      view( data, options );
     }
   }
 

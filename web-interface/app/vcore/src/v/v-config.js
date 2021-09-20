@@ -6,7 +6,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const firebaseEndpoints = {
-    local: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
+
+    /* for development, firebase function is deployed to "entity-profile"-project */
+    local: 'http://localhost:5001/entity-profile/us-central1/api/v1',
+    staging: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     development: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     production: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
   };
@@ -28,7 +31,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha ' + VNetworkInit.appVersion,
+    appVersion: 'Alpha 3.2.3',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
@@ -61,9 +64,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    previewCacheDuration: 3, // in minutes
-    viewedCacheDuration: 10, // in minutes
-    managedEntitiesCacheDuration: 5, // in minutes
+    highlightsCacheDuration: 60 * 8, // in minutes
+    viewedCacheDuration: 60 * 8, // in minutes
+
+    uuidStringLength: 10,
 
     tinyImageWidth: 40, // Numbers in px
     tinyImageQuality: 0.93, // Number from 0 to 1

@@ -3,7 +3,7 @@ const roles = [
   'Business', 'Institution', 'NGO', 'GOV', 'Network',
   'Skill', 'Task',
   'Place', 'Event',
-  'MediaObject', 'Dataset',
+  'Media', 'Dataset',
 ];
 
 module.exports = data => {

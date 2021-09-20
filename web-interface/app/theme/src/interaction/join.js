@@ -77,6 +77,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       if ( V.getLocal( 'welcome-modal' ) == 1 ) {
         Modal.draw( which );
+        Navigation.drawEntityNavPill( V.getState( 'activeEntity' ) );
         V.setLocal( 'welcome-modal', 0 );
       }
 
@@ -120,7 +121,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    return V.cA() ? V.getEntity( V.cA() ).then( async res => {
+    return V.cA() ? V.getEntity( 'JOIN' + '--' + V.cA() ).then( async res => {
 
       if ( res.reset ) {
         return 'entity not found';

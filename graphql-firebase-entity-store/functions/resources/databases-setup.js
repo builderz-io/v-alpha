@@ -10,6 +10,8 @@ to list projects run -> firebase projects:list
 
 */
 
+const local = false;
+
 const production = false;
 
 const dev = production ? '' : '-dev';
@@ -24,17 +26,23 @@ const credentials = require( '../credentials/credentials' );
 
 const authDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.auth ),
-  databaseURL: 'https://entity-authentication' + dev + '.firebaseio.com',
+  databaseURL: local
+    ? 'http://localhost:9000/?ns=entity-authentication-dev'
+    : 'https://entity-authentication' + dev + '.firebaseio.com',
 }, 'authentication' );
 
 const namespaceDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.namespace ),
-  databaseURL: 'https://entity-namespace' + dev + '.firebaseio.com/',
+  databaseURL: local
+    ? 'http://localhost:9000/?ns=entity-namespace-dev'
+    : 'https://entity-namespace' + dev + '.firebaseio.com/',
 }, 'namespace' );
 
 const profileDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.profile ),
-  databaseURL: 'https://entity-profile' + dev + '.firebaseio.com/',
+  databaseURL: local
+    ? 'http://localhost:9000/?ns=entity-profile-dev'
+    : 'https://entity-profile' + dev + '.firebaseio.com/',
 }, 'profile' );
 
 module.exports.authDb = authDb;
