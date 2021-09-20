@@ -80,7 +80,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     transaction: 'No transactions found',
     message: 'No messages found',
     entity: 'No entities found',
-    marketplace: 'No network items found',
+    marketplace: 'No highlighted items found',
     media: 'No media items found',
     close: 'close',
   };

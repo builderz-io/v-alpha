@@ -10,11 +10,11 @@ const entitySetup = {
   useWhitelist: true, // allow only chars in whitelist
   maxEntityWords: 7,  // max allowed words in entity names (not humans)
   maxHumanWords: 3,  // max allowed words in human entity names
-  maxWordLength: 14,  // max allowed length of each word in name
+  maxWordLength: 16,  // max allowed length of each word in name
 };
 
-const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
-const charWhitelist = /[^0-9^a-z^A-Z^\s^']/g;
+const charBlacklist = /[.,;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
+const charWhitelist = /[^0-9^a-z^A-Z^\s^'-–]/g;
 
 /* ============== error strings ============== */
 
@@ -44,9 +44,10 @@ module.exports.castEntityTitle = ( title, role ) => {
 
   title = title.trim().toLowerCase();
 
-  const titleArray = title.split( ' ' );
-  const checkLength = titleArray.length;
-  const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+  /* Remove the dashes in title for checking and formatting to work */
+  const titleNoDashArray = title.replace( /[-–]/g, ' ' ).split( ' ' );
+  const checkLength = titleNoDashArray.length;
+  const wordLengthExeeded = titleNoDashArray.map( item => item.length > entitySetup.maxWordLength );
 
   let error;
 
@@ -59,9 +60,9 @@ module.exports.castEntityTitle = ( title, role ) => {
   // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
   // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
   // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-  ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
-  ( [ 'Person' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
-  ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
+  ( [ 'Person', 'PersonMapped' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
+  ( [ 'Person', 'PersonMapped' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
+  ( [ 'Person', 'PersonMapped' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
   wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
 
   if ( error ) {
@@ -74,17 +75,25 @@ module.exports.castEntityTitle = ( title, role ) => {
   }
   else {
 
-    const formattedTitle = titleArray.map( function( string ) {
-      if ( 'Person' == role && string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+    let formattedTitle = titleNoDashArray.map( function( string ) {
+      if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
       }
-      if ( 'Person' == role && string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+      if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
       }
       else {
         return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
       }
     } ).join( ' ' );
+
+    /* bring back the dash if originally found in title */
+    if ( title.indexOf( '-' ) != -1 || title.indexOf( '–' ) != -1 ) {
+      const index = title.indexOf( '-' ) + title.indexOf( '–' ) + 1;
+      const x = formattedTitle.split( '' );
+      x[index] = '-';
+      formattedTitle = x.join( '' );
+    }
 
     return {
       success: true,
@@ -308,14 +317,11 @@ module.exports.castUuid = ( input ) => {
     encoded = encode( uuidV4 );
 
     while (
-      // uuidV4.charAt( 0 ) == '0' ||
-      !encoded.charAt( 0 ).match( /[a-z]/ ) ||
-      !encoded.charAt( 1 ).match( /[a-z]/ ) ||
-      encoded.charAt( 0 ) == encoded.charAt( 1 ) ||
-      encoded.includes( '-' ) ||
-      encoded.includes( '_' ) ||
-      ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
-      ['x', 'X'].includes( encoded.charAt( 1 ) )
+      !encoded.charAt( 3 ).match( /[a-zABE-Z]/ )
+      || encoded.includes( '-' )
+      || encoded.includes( '_' )
+      || ['v', 'V'].includes( encoded.charAt( 3 ) )
+      || ['x', 'X'].includes( encoded.charAt( 4 ) )
     ) {
       uuidV4 = universalV4();
       encoded = encode( uuidV4 );
@@ -326,7 +332,7 @@ module.exports.castUuid = ( input ) => {
       base64Url: encoded,
     };
   }
-  else if ( input.length == 22 ) {
+  else if ( input.length == V.getSetting( 'uuidStringLength' ) ) {
     return decode( input );
   }
   else {

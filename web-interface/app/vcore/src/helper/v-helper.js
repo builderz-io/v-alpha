@@ -260,9 +260,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castRandLatLng() {
+    const lat = ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1;
+    const lng = ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1;
     return {
-      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1,
-      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1,
+      lat: lat,
+      lng: lng,
+      latLng: [lat, lng],
+      lngLat: [lng, lat],
     };
   }
 
@@ -323,6 +327,39 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castFullId( title, tag ) {
     const split = title.split( '#' );
     return tag ? title + ' ' + tag : { title: split[0].trim(), tag: '#' + split[1] };
+  }
+
+  function castRole( role ) {
+    switch ( role ) {
+    case 'all' : return 'all';
+    case 'Person' : return 'aa';
+    case 'aa' : return 'Person';
+    case 'PersonMapped' : return 'ab';
+    case 'ab' : return 'Person'; // combine "PersonMapped" with "Person" on retrieval
+    case 'Business' : return 'ac';
+    case 'ac' : return 'Business';
+    case 'Institution' : return 'ad';
+    case 'ad' : return 'Institution';
+    case 'NGO' : return 'ae';
+    case 'ae' : return 'NGO';
+    case 'GOV' : return 'af';
+    case 'af' : return 'GOV';
+    case 'Network' : return 'ag';
+    case 'ag' : return 'Network';
+    case 'Skill' : return 'ah';
+    case 'ah' : return 'Skill';
+    case 'Task' : return 'ai';
+    case 'ai' : return 'Task';
+    case 'Place' : return 'aj';
+    case 'aj' : return 'Place';
+    case 'Event' : return 'ak';
+    case 'ak' : return 'Event';
+    case 'Media' : return 'al';
+    case 'al' : return 'Media';
+    case 'Dataset' : return 'am';
+    case 'am' : return 'Dataset';
+    default: return role;
+    }
   }
 
   function castJson( data, clone ) {
@@ -524,14 +561,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       encoded = encode( uuidV4 );
 
       while (
-        // uuidV4.charAt( 0 ) == '0' ||
-        !encoded.charAt( 0 ).match( /[a-z]/ ) ||
-        !encoded.charAt( 1 ).match( /[a-z]/ ) ||
-        encoded.charAt( 0 ) == encoded.charAt( 1 ) ||
-        encoded.includes( '-' ) ||
-        encoded.includes( '_' ) ||
-        ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
-        ['x', 'X'].includes( encoded.charAt( 1 ) )
+        !encoded.charAt( 3 ).match( /[a-zABE-Z]/ )
+        || encoded.includes( '-' )
+        || encoded.includes( '_' )
+        || ['v', 'V'].includes( encoded.charAt( 3 ) )
+        || ['x', 'X'].includes( encoded.charAt( 4 ) )
       ) {
         uuidV4 = universalV4();
         encoded = encode( uuidV4 );
@@ -542,7 +576,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         base64Url: encoded,
       };
     }
-    else if ( input.length == 22 ) {
+    else if ( input.length == V.getSetting( 'uuidStringLength' ) ) {
       return decode( input );
     }
     else {
@@ -559,6 +593,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     const incMinMax = Math.floor( Math.random() * ( max - min + 1 ) ) + min;
 
     return incMinMax;
+  }
+
+  function castUnix() {
+    return Math.floor( Date.now() / 1000 );
   }
 
   function getIcon( which ) {
@@ -653,10 +691,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castSlugOrId = castSlugOrId;
   V.castPathOrId = castPathOrId;
   V.castFullId = castFullId;
+  V.castRole = castRole;
   V.castJson = castJson;
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;
+  V.castUnix = castUnix;
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
@@ -678,10 +718,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castSlugOrId: castSlugOrId,
     castPathOrId: castPathOrId,
     castFullId: castFullId,
+    castRole: castRole,
     castJson: castJson,
     castShortAddress: castShortAddress,
     castUuid: castUuid,
     castRandomInt: castRandomInt,
+    castUnix: castUnix,
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,

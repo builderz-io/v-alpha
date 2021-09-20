@@ -40,9 +40,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getVisibility( 'user-nav' ) ) {
       V.setState( 'active', { navItem: false } );
       Chat.drawMessageForm( 'clear' );
-      // Navigation.drawReset();
+      Navigation.drawReset();
       // Page.draw( { position: 'peek' } );
-      Marketplace.draw();
+      // Marketplace.draw();
     }
     else {
       Button.draw( 'all', { fade: 'out' } );

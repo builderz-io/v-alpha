@@ -13,19 +13,12 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
   }
 
   /**
-    * Launch ledger-specific VCore scripts and methods,
-    * and get entities for initial view
+    * Launch ledger-specific VCore scripts and methods
     */
 
   V.setNode( 'loader', getString( ui.ledgerLoad ) );
 
   await VLedger.launch();
-
-  V.setCache( 'preview', { data: [] } );
-
-  V.getEntity().then( res => {
-    V.setCache( 'preview', res.data );
-  } );
 
   /**
    * Also load the canvas script (the first theme script)

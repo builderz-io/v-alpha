@@ -25,7 +25,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
 
     if (
       cache &&
-      ( now - cache.timestamp ) < ( V.getSetting( 'managedEntitiesCacheDuration' ) * 60 * 1000 )
+      ( now - cache.timestamp ) < ( 1 * 60 * 1000 )
     ) {
       entitiesAdmined = cache.data;
     }

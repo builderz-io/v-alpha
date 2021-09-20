@@ -21,8 +21,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const message = $form.value;
 
     V.setMessageBot( message ).then( res => {
-      if ( res.success ) {
-        V.sN( $response, '' );
+      V.sN( $response, '' );
+      V.setState( 'active', { autofillUuidE: undefined } );
+      if ( res.success || ( res.data.setHighlight && res.data.setHighlight.a ) ) {
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
@@ -32,7 +33,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else {
-        V.sN( $response, '' );
         $response.append( V.sN( {
           t: 'div',
           c: 'messageform__respinner',
@@ -43,7 +43,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
               padding: '2px 8px',
             },
           },
-          h: res.status,
+          h: res.status || res.errors[0].message,
         } ) );
       }
     } );
@@ -130,7 +130,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       position: 'top', // set again to trigger scroll
       scroll: 'bottom',
     } );
-    Chat.drawMessageForm();
+    Chat.drawMessageForm( 'no-prefill' );
   }
 
   function preview( path ) {
@@ -139,8 +139,6 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       position: 'top',
     } );
-
-    VMap.draw();
   }
 
   function drawMessage( cardData ) {
@@ -212,10 +210,11 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawMessageForm( options ) {
+
     V.setNode( '.messageform', 'clear' );
     if ( options == 'clear' ) { return }
 
-    const prefill = V.getState( 'active' ).lastViewed;
+    const prefill = options == 'no-prefill' ? '' : V.getState( 'active' ).lastViewed;
 
     const $form = ChatComponents.messageForm();
     const $input = ChatComponents.messageInput( prefill );

@@ -66,6 +66,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
 
       if ( formData.layout == 'new entity' ) {
         const values = formData.data[0];
+        V.getNode( '#set' ).addEventListener( 'click', V.handleSetEntity, { once: true } );
         V.setNode( $form, [
           InteractionComponents.formField( 'title', values.title ),
           InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),

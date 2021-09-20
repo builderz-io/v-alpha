@@ -12,7 +12,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     close: 'close',
     connectingWallet: 'Connecting wallet',
-    connectWallet: 'Connect wallet',
+    connectWallet: 'Join with wallet',
     useKey: 'Use key',
     nameProfile: 'Name profile',
     joining: 'Joining',
@@ -23,10 +23,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     enableWallet: 'Enable a crypto wallet in your browser, for example',
     getMetaMask: 'Get MetaMask',
     signTx: 'Sign Transaction',
-    newNameOnly: 'Name new profile only',
-    newName: 'Name new profile',
-    newNameExplain: 'Naming your profile creates a new entity for your address. An entity can be anything you want to make visible in the network.',
-    manageProfile: 'Manage profile with key',
+    newNameOnly: 'Name personal profile only',
+    newName: 'Name personal profile',
+    newNameExplain: 'Name yourself, your personal profile here for your address. Later you can add anything you want to make visible in the network, like a business or your skills.',
+    manageProfile: 'Join with existing key',
     disconnect: 'Confirm Disconnect',
     useProfile: 'Use current profile',
     copyKey: 'Click to copy the key and store it safely elsewhere',
@@ -206,10 +206,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         V.setActiveEntity( res.data[0] );
         Join.draw( 'new entity was set up' );
 
-        V.setCache( 'entire cache', 'clear' );
+        // V.setCache( 'entire cache', 'clear' );
         // V.setCache( 'viewed', res.data[0] );
 
-        Navigation.drawEntityNavPill( res.data[0] );
+        // Navigation.drawEntityNavPill( res.data[0] );
       }
       else {
         console.log( 'could not set entity: ', res );
@@ -415,19 +415,19 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       k: handleWeb3Join,
       h: getString( ui.connectWallet ),
     } );
-    const $newName = V.cN( {
-      t: 'p',
-      c: altButtonClasses + ' modal-pos-2',
-      k: handleSetEntityForm,
-      h: getString( ui.newNameOnly ),
-    } );
     const $key = V.cN( {
       t: 'p',
-      c: altButtonClasses + ' modal-pos-3',
+      c: altButtonClasses + ' modal-pos-2',
       k: handleGetEntityForm,
       h: getString( ui.manageProfile ),
     } );
-    V.setNode( $content, [$new, $newName, $key] );
+    const $newName = V.cN( {
+      t: 'p',
+      c: altButtonClasses + ' modal-pos-3',
+      k: handleSetEntityForm,
+      h: getString( ui.newNameOnly ),
+    } );
+    V.setNode( $content, [$new, $key, $newName] );
     return $content;
   }
 

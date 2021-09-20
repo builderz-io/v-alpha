@@ -472,7 +472,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function setField( field, data ) {
     return V.setEntity( V.getState( 'active' ).lastViewed, {
       field: field,
-      data: data,
+      data: data === '' ? null : data,
     } ).then( res => {
       if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
 
@@ -882,12 +882,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const titles = ['title', 'tag' /*, 'role' */];
     // const db = 'profile';
     // const $innerContent = castTableNode( titles, db, false, 'capitalize' );
-    const holders = V.castJson( entity.holders, 'clone' );
-    holders.splice( holders.indexOf( entity.fullId ), 1 );
+    // const holders = V.castJson( entity.holders, 'clone' );
+    // holders.splice( holders.indexOf( entity.fullId ), 1 );
 
     const $innerContent = V.cN( {
       t: 'table',
-      c: 'pxy w-full',
+      c: 'is-single-entity-view pxy w-full',
       h: [
         {
           t: 'tr',
@@ -939,7 +939,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           ],
         },
         {
-          x: holders.length >= 1,
+          // x: holders.length >= 1,
+          x: entity.holders[0] != entity.fullId,
           t: 'tr',
           h: [
             {
@@ -949,7 +950,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
-              h: holders.join( ' & ' ),
+              h: entity.holders.join( ' & ' ),
               k: handleProfileDraw,
             },
           ],
@@ -994,16 +995,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function holderOfCard() {
-    const holderOf = V.castJson( entity.holderOf, 'clone' );
-    holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
+    // const holderOf = V.castJson( entity.holderOf, 'clone' );
+    // holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
 
-    if ( !holderOf.length ) {
+    if ( !entity.holderOf.length ) {
       return '';
     }
 
     const $innerContent = V.cN( {
       t: 'div',
-      h: holderOf.map( item => V.cN( {
+      h: entity.holderOf.map( item => V.cN( {
         t: 'p',
         c: 'pxy cursor-pointer',
         h: item,
@@ -1418,6 +1419,77 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function entityPlaceholderCard() {
+
+    const $cardContentFrame = V.cN( {
+      t: 'div',
+      c: 'placeholder',
+    } );
+
+    // is-single-entity-view is used to check whether to place highlights into the page
+
+    const $top = V.cN( {
+      t: 'div',
+      c: 'is-single-entity-view animated-background',
+      y: {
+        'height': '20px',
+        'width': '200px',
+        'border-radius': '4px',
+        'margin': '0 0 10px 0',
+      },
+    } );
+
+    const $mid = V.cN( {
+      t: 'div',
+      c: 'animated-background',
+      y: {
+        'height': '20px',
+        'width': '100px',
+        'border-radius': '4px',
+        'margin': '0 0 10px 0',
+      },
+    } );
+
+    const $bottom = V.cN( {
+      t: 'div',
+      c: 'animated-background',
+      y: {
+        'height': '20px',
+        'width': '180px',
+        'border-radius': '4px',
+      },
+    } );
+
+    V.setNode( $cardContentFrame, [ $top, $mid, $bottom ] );
+
+    return $cardContentFrame;
+
+  }
+
+  function entityPlaceholderImage() {
+    // thanks to Justin Bellefontaine https://codepen.io/artboardartisan/pen/VLzKVN
+    return V.cN( {
+      t: 'div',
+      c: 'animated-background',
+      y: {
+        width: '100%',
+        height: '300px',
+      },
+      h: {
+        t: 'div',
+        c: 'progress-bar',
+        h: {
+          t: 'span',
+          c: 'bar',
+          h: {
+            t: 'span',
+            c: 'progress',
+          },
+        },
+      },
+    } );
+  }
+
   /*
   <a class="share-by-email font-bold" href="mailto:?subject=${ entity.fullId }%20is%20on%20${ window.location.hostname }&amp;
    body=Profile%20Link:%20%3Ca+href%3D%22${ window.location.hostname }${entity.paths.entity}%22%3E${ window.location.hostname }${entity.paths.entity}%3C%2Fa%3E
@@ -1448,6 +1520,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,
     socialShareButtons: socialShareButtons,
+    entityPlaceholderCard: entityPlaceholderCard,
+    entityPlaceholderImage: entityPlaceholderImage,
   };
 
 } )();

@@ -2,5 +2,6 @@ node_modules
 .DS_Store
 v-key.js
 local-notes.md
+local-notes_bu.md
 pagekite.py
 test-link-creation.js

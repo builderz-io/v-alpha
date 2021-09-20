@@ -36,14 +36,14 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       query = await V.getEntity(
-        which.length == 22 && // checks whether which is a uuidE or a path
+        which.length == V.getSetting( 'uuidStringLength' ) && // checks whether which is a uuidE or a path
         isNaN( Number( which.slice( -5 ) ) )
           ? which
           : V.castPathOrId( which )
       ).then( res => {
         if ( res.success ) {
-          V.setCache( 'viewed', res.data ); // pass array
-
+          V.setCache( 'points', res.data );
+          V.setCache( 'viewed', res.data );
           return res;
         }
         else {
@@ -60,6 +60,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         lastViewed: entity.fullId,
         lastViewedUuidE: entity.uuidE,
         lastViewedUuidP: entity.uuidP,
+        lastLngLat: entity.geometry.coordinates,
       } );
 
       /*
@@ -114,6 +115,16 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     let $list;
 
     if ( data.success ) {
+      // if ( window.location.host.includes( 'localhost' ) ) {
+      //   V.getAddressState( data.data[0].entity.evmCredentials.address )
+      //     .then( res => {
+      //       console.log( '*** ADDRESS STATE *** ' );
+      //       for ( const key in res.data[0] ) {
+      //         console.log( key, ':', res.data[0][key] );
+      //       }
+      //       console.log( '*** ADDRESS STATE END *** ' );
+      //     } );
+      // }
 
       /**
        * sets up the profile data for use in components
@@ -170,12 +181,24 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
+    const $list = CanvasComponents.list( 'narrow' );
+
+    V.setNode( $list, UserComponents.entityPlaceholderImage() );
+
+    for ( let i = 0; i < 1; i++ ) {
+      const $ph = UserComponents.entityPlaceholderCard();
+      const $card = CanvasComponents.card( $ph );
+
+      V.setNode( $list, $card );
+    }
+
     V.setNode( '#get-started', 'clear' );
 
     Button.draw( 'all', { fade: 'out' } );
 
     Page.draw( {
       position: 'top',
+      listings: $list,
     } );
   }
 

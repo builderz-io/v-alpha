@@ -12,7 +12,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     maxIntroLength: 200, // including links
     maxLinkCount: 12,
     maxVideoIframeCount: 3, // including featured
-    maxPodcastIframeCount: 2,
+    maxPodcastIframeCount: 2, // TODO: currently unused, rework this functionality
     videoMatches: 'youtu|vimeo',
     socialMatches: 'facebook|twitter|linkedin|t.me|medium|instagram|tiktok',
   };
@@ -71,10 +71,9 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     /**
      * Find links and ignore some common sentence endings
-     * TODO: ignore "." here also and not in for loop
      */
 
-    const linksFound = text.match( /(?:www|https?)[^\s!?,]+/gi );
+    const linksFound = text.match( /(?:www|https?)[^\s!,]+/gi );
 
     /**  If no links were found, just add paragraphs */
 
@@ -111,12 +110,11 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       items.push( linksFound[i] );
 
     }
-
     addParagraphEnds( arrayBuffer[1] );
 
     items.push( 'pEnd' );
 
-  // console.log('items', items);
+    // console.log( 'items', items );
 
   }
 
@@ -155,6 +153,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     /** reset */
     charCount = 0;
+    linkCount = 0;
     $paragraph = V.cN( {
       t: 'p',
       c: 'paragraph pb-r',
@@ -164,11 +163,24 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       if ( items[i] == 'pEnd' || charCount > settings.maxIntroLength ) {
         break;
       }
-      if ( items[i] == '' || items[i] > settings.maxIntroLength ) {
+      if ( items[i] == '' ) {
         continue;
+      }
+      if ( items[i].length > settings.maxIntroLength ) {
+        items[i] = items[i].substr( 0, settings.maxIntroLength ) + ' ... ';
       }
       placeNodes( items[i], 'isIntro' );
       charCount += items[i].length;
+    }
+
+    if ( !linkCount ) {
+      for ( let i = 0; i < items.length; i++ ) {
+        if ( ['http', 'www.'].includes( items[i].toLowerCase().substr( 0, 4 ) ) ) {
+          placeNodes( ' ', 'isIntro' );
+          placeNodes( items[i], 'isIntro' );
+          break;
+        }
+      }
     }
 
     $intro.appendChild( $paragraph );
@@ -211,7 +223,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
         ? castYouTubeIframe( link )
         : castVimeoIframe( link );
 
-      if ( videoIframeCount <= settings.maxVideoIframeCount ) {
+      if ( $iframe && videoIframeCount <= settings.maxVideoIframeCount ) {
         setFeature( $iframe, link, host );
       }
       else {
@@ -220,15 +232,27 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( host.match( /soundcloud/ ) ) {
       const scId = link.split( '/' ).pop(); // example 933028357
-      if ( isNaN( scId ) || podcastIframeCount >= settings.maxPodcastIframeCount ) {
+      if ( isNaN( scId ) || podcastIframeCount >= 1 ) {
         $paragraph.appendChild( castRegularLink( link, host ) );
       }
       else {
-        podcastIframeCount += 1;
-
         const $iframe = castSoundcloudIframe( scId );
         setFeature( $iframe, link, host );
+
+        podcastIframeCount += 1;
       }
+    }
+    else if ( host.match( /anchor/ ) && podcastIframeCount < 1 ) {
+      const $iframe = castAnchorFmIframe( link.replace( '/episodes', '/embed/episodes' ) );
+      setFeature( $iframe, link, host );
+
+      podcastIframeCount += 1;
+    }
+    else if ( host.match( /podcasts.apple/ ) && podcastIframeCount < 1 ) {
+      const $iframe = castApplePodcastIframe( link.replace( 'podcasts.apple', 'embed.podcasts.apple' ) );
+      setFeature( $iframe, link, host );
+
+      podcastIframeCount += 1;
     }
     else {
       $paragraph.appendChild( castRegularLink( link, host ) );
@@ -236,6 +260,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function addParagraphEnds( item ) {
+    if ( !item ) { return }
     if ( item.includes( '\n\n' ) ) {
       const split = item.split( '\n\n' );
       for ( let i = 0; i < split.length; i++ ) {
@@ -254,8 +279,8 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     if ( !feature ) {
       feature = true;
       $feature = $iframe;
-      $paragraph.appendChild( castRegularLink( link, host ) );
-      $paragraph.appendChild( castSpan( ' *featured above*' ) );
+      link ? $paragraph.appendChild( castRegularLink( link, host ) ) : null;
+      // $paragraph.appendChild( castSpan( ' *featured above*' ) );
     }
     else {
       $paragraph.appendChild( $iframe );
@@ -293,41 +318,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function castYouTubeIframe( link ) {
-  // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
-    const youtubeId = link.split( '/' ).pop();
-    return V.cN( {
-      t: 'div',
-      c: 'iframe-wrapper w-full',
-      h: {
-        t: 'iframe',
-        r: 'https://www.youtube.com/embed/' + youtubeId,
-        a: {
-          frameborder: '0',
-          allow: 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
-          allowfullscreen: 'allowfullscreen',
-        },
-      },
-    } );
-  }
-
-  function castVimeoIframe( link ) {
-    const vimeoId = link.split( '/' ).pop();
-    return V.cN( {
-      t: 'div',
-      c: 'iframe-wrapper w-full',
-      h: {
-        t: 'iframe',
-        r: 'https://player.vimeo.com/video/' + vimeoId + '?color=ffffff&title=0&byline=0&portrait=0',
-        a: {
-          frameborder: '0',
-          allow: 'autoplay; fullscreen',
-          allowfullscreen: 'allowfullscreen',
-        },
-      },
-    } );
-  }
-
   function castSoundcloudIframe( scId ) {
     return V.cN( {
       t: 'div',
@@ -346,7 +336,83 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function castAnchorFmIframe( afmEmbedLink ) {
+    return V.cN( {
+      t: 'div',
+      // c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: afmEmbedLink,
+        a: {
+          width: '100%',
+          height: '102px',
+          scrolling: 'no',
+          frameborder: '0',
+        },
+      },
+    } );
+  }
+
+  function castApplePodcastIframe( appleLink ) {
+    return V.cN( {
+      t: 'div',
+      // c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: appleLink,
+        a: {
+          allow: 'autoplay *; encrypted-media *; fullscreen *',
+          frameborder: '0',
+          height: '175',
+          style: 'width:100%;max-width:660px;overflow:hidden;background:transparent;',
+          sandbox: 'allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation',
+        },
+      },
+    } );
+  }
+
   /* ================== public methods ================== */
+
+  function castYouTubeIframe( link ) {
+    // fluid width video: https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
+    const youtubeId = link.split( '/' ).pop();
+    // if ( isNaN( youtubeId ) ) {
+    //   return null;
+    // }
+    return V.cN( {
+      t: 'div',
+      c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: 'https://www.youtube.com/embed/' + youtubeId,
+        a: {
+          frameborder: '0',
+          allow: 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;',
+          allowfullscreen: 'allowfullscreen',
+        },
+      },
+    } );
+  }
+
+  function castVimeoIframe( link ) {
+    const vimeoId = link.split( '/' ).pop();
+    if ( isNaN( vimeoId ) ) {
+      return null;
+    }
+    return V.cN( {
+      t: 'div',
+      c: 'iframe-wrapper w-full',
+      h: {
+        t: 'iframe',
+        r: 'https://player.vimeo.com/video/' + vimeoId + '?color=ffffff&title=0&byline=0&portrait=0',
+        a: {
+          frameborder: '0',
+          allow: 'autoplay; fullscreen',
+          allowfullscreen: 'allowfullscreen',
+        },
+      },
+    } );
+  }
 
   function castDescription( whichText ) {
     setupModule();
@@ -365,14 +431,14 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  V.castDescription = castDescription;
   V.castYouTubeIframe = castYouTubeIframe;
   V.castVimeoIframe = castVimeoIframe;
+  V.castDescription = castDescription;
 
   return {
-    castDescription: castDescription,
     castYouTubeIframe: castYouTubeIframe,
     castVimeoIframe: castVimeoIframe,
+    castDescription: castDescription,
   };
 
 } )();

@@ -96,7 +96,6 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   function view( pageData ) {
     Navigation.draw( pageData.which );
     Page.draw( pageData );
-    // VMap.draw();
   }
 
   function preview( whichPath ) {
@@ -104,7 +103,6 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       position: 'top',
     } );
-    VMap.draw();
   }
 
   /* ============ public methods and exports ============ */

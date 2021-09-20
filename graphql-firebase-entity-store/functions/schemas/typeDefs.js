@@ -17,13 +17,42 @@ const Filters = `
   input Filter {
     query: String
     role: String
+    field: String
   }
 
   input WhereEntity {
-    a: String
+    a: [String]
     m: String
     n: String
     i: String
+  }
+
+  input WhereGeo {
+    i: String
+  }
+
+  type Highlight {
+    a: String
+    y: Int
+  }
+
+  input InputHighlight {
+    a: String
+    y: InputHighlightY
+  }
+
+  input InputHighlightY {
+    c: Int
+  }
+
+  type Point {
+    a: String
+    c: String
+    zz: PointZz
+  }
+
+  type PointZz {
+    i: [Float]
   }
 `;
 
@@ -60,9 +89,10 @@ const Jwt = `
 
 const Queries = `
   type Query {
-    getAuth(token: String!): Success
     getEntityQuery(filter: Filter!): [Entity]
+    getHighlights: [Highlight]
     getEntity(where: WhereEntity): [Entity]
+    getPoints(where: WhereGeo): [Point]
     getProfiles(array: [String!]): [Profile]
   }
 `;
@@ -72,6 +102,7 @@ const Mutations = `
     setAuth: Jwt
     setDisconnect: Success
     setTransaction(tx: InputTransaction!): SuccessTx
+    setHighlight(input: InputHighlight!): Highlight
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
   }

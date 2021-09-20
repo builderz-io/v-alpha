@@ -12,6 +12,7 @@ const typeDefs = require( './schemas/typeDefs' );
 
 // Provide resolver functions for your schema fields
 const resolvers = require( './resolvers/resolve/resolve' );
+const findByAuth = require( './resolvers/resolve/find-by-auth' );
 
 // Create GraphQL express server
 const { ApolloServer } = require( 'apollo-server-express' );
@@ -21,11 +22,15 @@ const app = express();
 
 const whitelist = [
   'http://localhost:4021',
+  'http://localhost:5289',
   'https://dev.valueinstrument.org',
   'https://staging.valueinstrument.org',
   'https://staging.builderz.io',
-  'https://staging.coindashboards.com',
   'https://faithfinance.app',
+  'https://impactjourney.cc',
+  'https://map.ayc.world',
+  'https://map.enoughza.org',
+  'https://society4.valueinstrument.org',
 ];
 
 const corsConfig = {
@@ -71,29 +76,21 @@ const server = new ApolloServer( {
     };
 
     if ( tempRefresh ) {
-      // try {
-      //   const jwt = verify( tempRefresh, credentials.jwtRefreshSignature );
-      //   console.log( jwt );
-      // }
-      // catch ( err ) {
-      //   console.log( err );
-      // }
-      const user = await resolvers.Query.getAuth( undefined, { token: tempRefresh } );
-      user[0] ? Object.assign( context, user[0] ) : null;
+      const authDoc = await findByAuth( tempRefresh );
+      authDoc ? Object.assign( context, authDoc ) : null;
     }
     else if ( auth.includes( 'uPhrase' ) ) {
-      const user = await resolvers.Query.getAuth( undefined, { token: auth.replace( 'uPhrase ', '' ) } );
-      if ( user[0] ) {
+      const authDoc = await findByAuth( auth.replace( 'uPhrase ', '' ) );
+      if ( authDoc ) {
 
         /** If an address is set, uPhrase must match entity address */
         if ( lastConnectedAddress != 'not set' ) {
-          user[0].i == lastConnectedAddress ? Object.assign( context, user[0] ) : null;
+          authDoc.i == lastConnectedAddress ? Object.assign( context, authDoc ) : null;
         }
         else {
-          Object.assign( context, user[0] );
+          Object.assign( context, authDoc );
         }
       }
-      // user[0] ? Object.assign( context, user[0] ) : null;
     }
     else if ( auth.includes( 'Bearer' ) ) {
       try {

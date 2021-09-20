@@ -18,25 +18,16 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     let query, isSearch = false;
 
-    const cache = V.getCache( 'preview' );
+    const cachedHighlights = V.getCache( 'highlights' );
     const now = Date.now();
 
-    if ( search && search.query ) {
-      Object.assign( search, { role: whichRole } );
-      isSearch = true;
-      query = await V.getQuery( search );
-      // .then( res => {
-      //   if ( res.success ) {
-      //     return res;
-      //   }
-      // } );
-    }
-    else if ( cache && !cache.data.length ) {
+    /* Mixin a few extra highlighted points on first load */
+    if ( !cachedHighlights ) {
       let counter = 0;
-      const polledCache = await new Promise( resolve => {
+      const polledPointsCache = await new Promise( resolve => {
         const polling = setInterval( () => {
           counter += 1;
-          const cache = V.getCache( 'preview' );
+          const cache = V.getCache( 'points' );
           if ( cache && cache.data.length ) {
             clearInterval( polling );
             resolve( cache );
@@ -48,38 +39,40 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }, 70 );
       } );
 
-      if ( polledCache ) {
-        query = {
-          success: true,
-          status: 'polled cache used',
-          elapsed: now - cache.timestamp,
-          data: V.castJson( polledCache.data, 'clone' ),
-        };
-      }
-      else {
-        query = {
-          success: false,
-          status: 'cache empty',
-        };
+      if ( polledPointsCache ) {
+        V.setCache( 'mixin-highlights', polledPointsCache.data.slice( 0, 10 ).map( item => item.uuidE ) );
       }
     }
+
+    if ( search && search.query ) {
+      Object.assign( search, { role: whichRole } );
+      isSearch = true;
+      query = await V.getQuery( search ).then( res => {
+        if ( res.success ) {
+          V.setCache( 'highlights', res.data );
+        }
+        return res;
+      } );
+    }
     else if (
-      cache &&
-      ( now - cache.timestamp ) < ( V.getSetting( 'previewCacheDuration' ) * 60 * 1000 )
+      cachedHighlights
+      && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'highlightsCacheDuration' ) * 60 * 1000 )
     ) {
       query = {
         success: true,
-        status: 'cache used',
-        elapsed: now - cache.timestamp,
-        data: V.castJson( cache.data, 'clone' ),
+        status: 'cachedHighlights used',
+        elapsed: now - cachedHighlights.timestamp,
+        data: V.castJson( cachedHighlights.data, 'clone' ),
       };
     }
     else {
-      query = await V.getEntity().then( res => {
+      V.setCache( 'highlights', 'clear' );
+      query = await V.getEntity( 'highlight' ).then( res => {
+        console.log( res );
         if ( res.success ) {
-          V.setCache( 'preview', res.data );
-          return res;
+          V.setCache( 'highlights', res.data );
         }
+        return res;
       } );
     }
 
@@ -96,6 +89,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         status: 'entities retrieved and filtered',
         isSearch: isSearch,
         data: [{
+          whichRole: whichRole,
           whichPath: whichPath,
           entities: filtered,
         }],
@@ -107,6 +101,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         status: 'cound not retrieve any entities',
         isSearch: isSearch,
         data: [{
+          whichRole: whichRole,
           whichPath: whichPath,
           entities: query.data,
         }],
@@ -142,8 +137,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
         setSliderContent( last );
 
-        const hasThumbnail = viewData.entities.filter( item => item.thumbnail != undefined );
-        const hasNoThumbnail = viewData.entities.filter( item => item.thumbnail === undefined );
+        const hasThumbnail = viewData.entities.filter( item => item.images.thumbnail != undefined );
+        const hasNoThumbnail = viewData.entities.filter( item => item.images.thumbnail === undefined );
 
         hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
           setListContent( cardData );
@@ -169,15 +164,35 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     }
     else {
+      if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
+        const $addcard = MarketplaceComponents.entitiesAddCard();
+        V.setNode( $slider, $addcard );
+      }
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
+    }
+
+    if ( data.isSearch ) {
+      VMap.draw( viewData.entities, { isSearch: true } );
+    }
+    else {
+      VMap.draw( viewData.whichRole );
+    }
+
+    if ( V.getNode( '.is-single-entity-view' ) ) {
+
+      /**
+       The is-single-entity-view class is found in the UI, if the
+       user requested to view a single entity.
+       In that case highlights must not be placed into the page
+
+       */
+      return;
     }
 
     Page.draw( {
       topslider: $slider,
       listings: $list,
     } );
-
-    VMap.draw( viewData.entities );
 
     // View methods
 
@@ -233,6 +248,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       topslider: $slider,
       position: whichPath ? 'peek' : 'closed',
+      navReset: false,
     } );
 
   }
@@ -240,169 +256,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    const navItems = {
-      localEconomy: {
-        title: 'Local Economy',
-        path: '/network/all',
-        divertFundsToOwner: false,
-        use: {
-          button: 'search',
-          role: 'all', // 'all' is used here to enable search within all entities
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      people: {
-        title: 'People',
-        path: '/network/people',
-        divertFundsToOwner: false,
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'PersonMapped',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      businesses: {
-        title: 'Businesses',
-        path: '/network/businesses',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Business',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      ngos: {
-        title: 'NGO',
-        path: '/network/non-profits',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'NGO',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      publicSector: {
-        title: 'Public Sector',
-        path: '/network/public-sector',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'GOV',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      anchors: {
-        title: 'Anchor Institutions',
-        path: '/network/institutions',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Institution',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      networks: {
-        title: 'Networks',
-        path: '/network/networks',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Network',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      skills: {
-        title: 'Skills',
-        path: '/network/skills',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Skill',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      tasks: {
-        title: 'Tasks',
-        path: '/network/tasks',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Task',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      pools: {
-        title: 'Crowdfunding',
-        path: '/network/pools',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'ResourcePool',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      places: {
-        title: 'Places',
-        path: '/network/places',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Place',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-      events: {
-        title: 'Events',
-        path: '/network/events',
-        use: {
-          button: 'search',
-          form: 'new entity',
-          role: 'Event',
-        },
-        draw: function( path ) {
-          Marketplace.draw( path );
-        },
-      },
-    };
-
-    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => navItems[item] ) );
-
-    /**
-     * pick out which roles have funds received diverted to owner as default
-     * and set state with these roles
-     */
-
-    const divertFundsForRoles = {};
-    for( const navItem in navItems ) {
-      if ( navItems[navItem].divertFundsToOwner === false ) { continue }
-      divertFundsForRoles[navItems[navItem].use.role] = navItems[navItem].use.role;
-    }
-
-    V.setState( 'rolesWithReceivingAddress', divertFundsForRoles );
-
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceNavItems[item] ) );
   }
 
   function draw( whichPath, search ) {
