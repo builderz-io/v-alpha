@@ -1,6 +1,7 @@
+/* eslint global-require: "off" */
 
 const settings = {
-  floatEth: false,
+  floatEth: true,
 };
 
 // Connect to firebase database
@@ -20,11 +21,11 @@ module.exports = async ( context, data ) => {
 
   /** Validate, cast and set inputs */
   if ( !context.doNotValidate ) { // option when running importer
-    await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
+    await require( '../validate/validate' )( context, data );
   }
 
   /** Cast full set of namespace fields and store in DB. */
-  const namespace = require( './utils/cast-namespace' )( context, data ); // eslint-disable-line global-require
+  const namespace = require( './utils/cast-namespace' )( context, data );
 
   const setA = new Promise( resolve => {
     colA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
@@ -46,8 +47,8 @@ module.exports = async ( context, data ) => {
 
   /** Float some ETH and optionally auto-verify */
   // "awaiting" this would make the joining slow for the user
-  if ( settings.floatEth && 'Person' == namespace.entity.c ) {
-    require( './set-transaction' )( context, { // eslint-disable-line global-require
+  if ( settings.floatEth && 'aa' == namespace.entity.c ) {
+    require( './set-transaction' )( context, {
       recipientAddress: namespace.entity.i,
     }, 'float' );
   }

@@ -60,6 +60,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         lastViewed: entity.fullId,
         lastViewedUuidE: entity.uuidE,
         lastViewedUuidP: entity.uuidP,
+        lastLngLat: entity.geometry.coordinates,
       } );
 
       /*
@@ -180,12 +181,24 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
+    const $list = CanvasComponents.list( 'narrow' );
+
+    V.setNode( $list, UserComponents.entityPlaceholderImage() );
+
+    for ( let i = 0; i < 1; i++ ) {
+      const $ph = UserComponents.entityPlaceholderCard();
+      const $card = CanvasComponents.card( $ph );
+
+      V.setNode( $list, $card );
+    }
+
     V.setNode( '#get-started', 'clear' );
 
     Button.draw( 'all', { fade: 'out' } );
 
     Page.draw( {
       position: 'top',
+      listings: $list,
     } );
   }
 

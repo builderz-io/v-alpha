@@ -1,3 +1,9 @@
+background {
+  /* background: rgba(211,232,235,1); */
+  background-image: linear-gradient(rgba(211,232,235,1) 50%, rgba(251,248,243,1) 50%) !important ;
+
+}
+
 td {
   height: 26px;
 }
@@ -295,4 +301,67 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
       border-radius: 20px;
       overflow: hidden;
     }
+}
+
+/* ====================== Progress Bar ================ */
+
+@keyframes loader {
+  0% {
+    width: 0;
+  }
+
+  20% {
+    width: 10%;
+  }
+
+  25% {
+    width: 24%;
+  }
+
+  43% {
+    width: 41%;
+  }
+
+  56% {
+    width: 50%;
+  }
+
+  66% {
+    width: 52%;
+  }
+
+  71% {
+    width: 60%;
+  }
+
+  75% {
+    width: 76%;
+  }
+
+  94% {
+    width: 86%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.progress-bar {
+  overflow: hidden;
+  width: 100%;
+}
+
+.bar {
+  display: block;
+  background: rgba(0, 0, 0, 0.075);
+}
+
+.progress {
+  display: block;
+  animation: loader 12s ease forwards;
+  /* Change the animation fill mode 'infinite' to 'forwards' to stop the animation from repeating. */
+  background: rgba(var(--brandPrimary), 1);
+  padding: 2px;
+  width: 0;
 }

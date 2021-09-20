@@ -27,6 +27,9 @@ const whitelist = [
   'https://staging.valueinstrument.org',
   'https://staging.builderz.io',
   'https://faithfinance.app',
+  'https://impactjourney.cc',
+  'https://map.ayc.world',
+  'https://map.enoughza.org',
   'https://society4.valueinstrument.org',
 ];
 

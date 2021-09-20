@@ -153,6 +153,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
     /** reset */
     charCount = 0;
+    linkCount = 0;
     $paragraph = V.cN( {
       t: 'p',
       c: 'paragraph pb-r',
@@ -162,11 +163,24 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       if ( items[i] == 'pEnd' || charCount > settings.maxIntroLength ) {
         break;
       }
-      if ( items[i] == '' || items[i] > settings.maxIntroLength ) {
+      if ( items[i] == '' ) {
         continue;
+      }
+      if ( items[i].length > settings.maxIntroLength ) {
+        items[i] = items[i].substr( 0, settings.maxIntroLength ) + ' ... ';
       }
       placeNodes( items[i], 'isIntro' );
       charCount += items[i].length;
+    }
+
+    if ( !linkCount ) {
+      for ( let i = 0; i < items.length; i++ ) {
+        if ( ['http', 'www.'].includes( items[i].toLowerCase().substr( 0, 4 ) ) ) {
+          placeNodes( ' ', 'isIntro' );
+          placeNodes( items[i], 'isIntro' );
+          break;
+        }
+      }
     }
 
     $intro.appendChild( $paragraph );

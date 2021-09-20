@@ -50,13 +50,18 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       lat: 40.792,
       zoom: 13,
     },
+    lowerafrica: {
+      lng: 18,
+      lat: -15,
+      zoom: 4,
+    },
   };
 
   const popUpSettings = {
-    maxWidth: 160,
+    maxWidth: 180,
     minWidth: 130,
     closeButton: false,
-    autoPanPaddingTopLeft: [100, 140],
+    autoPanPaddingTopLeft: [100, 180],
     keepInView: true,
     className: 'map__popup',
   };
@@ -68,7 +73,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function view( data, options ) {
-    console.log( data );
+
+    const isPopupOpen = V.getNode( '.map-popup-inner' );
+
     if ( Array.isArray( data ) ) {
       if ( options && options.isSearch ) {
         setSearch( data );
@@ -92,12 +99,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     if ( 'all' == whichRole ) {
       const lastLngLat = V.getState( 'active' ).lastLngLat;
-      if ( lastLngLat ) {
+      if ( lastLngLat && !isPopupOpen ) {
         viMap.setView( [lastLngLat[1], lastLngLat[0]], viMap.getZoom() - 5 );
       }
       else {
         const loc = V.getState( 'map' );
-        viMap.setView( [loc.lat, loc.lng], loc.zoom - 4 );
+        viMap.setView( [loc.lat, loc.lng], loc.zoom /* - 4 */  );
       }
     }
     else {
@@ -106,7 +113,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    setPoints( whichRole );
+    if ( !isPopupOpen ) {
+      setPoints( whichRole );
+    }
     setHighlights( whichRole );
 
     // if ( !features || !features.length || features[0] == undefined ) {
@@ -325,7 +334,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     highlightLayer = castLayer( 'highlights', filtered );
 
-    highlightLayer.on( 'click', handleHighlightClick );
+    // highlightLayer.on( 'click', handleHighlightClick );
 
     // if( !viMap.getZoom() == 3 ) {
     //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
@@ -342,7 +351,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     searchLayer = castLayer( 'search', features );
 
-    searchLayer.on( 'click', handleHighlightClick );
+    // searchLayer.on( 'click', handleHighlightClick );
 
     // if( !viMap.getZoom() == 3 ) {
     //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
@@ -362,7 +371,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     const sc = V.getState( 'screen' );
 
-    const geo = V.getState( 'active' ).lastLngLat // is available when user came here though a popup in the map (only!)
+    const geo = V.getState( 'active' ).lastLngLat
     || features[0].geometry.coordinates;
 
     const rand = features[0].geometry.rand;
@@ -377,17 +386,17 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }, 500 );
   }
 
-  function handleHighlightClick( e ) {
-
-    /**
-     * make the coordinates of the clicked point available in state,
-     * which ensures that the correct latLng is used in "setLastViewed",
-     * otherwise a random geolocation will be rendered again, leading to a map crash
-     */
-    V.setState( 'active', {
-      lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
-    } );
-  }
+  // function handleHighlightClick( e ) {
+  //
+  //   /**
+  //    * make the coordinates of the clicked point available in state,
+  //    * which ensures that the correct latLng is used in "setLastViewed",
+  //    * otherwise a random geolocation will be rendered again, leading to a map crash
+  //    */
+  //   V.setState( 'active', {
+  //     lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
+  //   } );
+  // }
 
   async function handlePointClick( e ) {
 
@@ -395,9 +404,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
      * see comment in handleHighlightClick
      */
 
-    V.setState( 'active', {
-      lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
-    } );
+    // V.setState( 'active', {
+    //   lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
+    // } );
 
     const uuidE = e.layer.feature.uuidE;
     const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );

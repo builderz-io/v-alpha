@@ -140,20 +140,38 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function entitiesPlaceholder() {
+  function entitiesPlaceholder( options ) {
     return V.cN( {
       t: 'li',
       c: 'pxy',
       h: {
         t: 'smallcard',
         c: 'smallcard__container txt-center rounded bkg-white',
-        h: V.cN( {
-          t: 'div',
-          c: 'circle-3 rounded-full animated-background',
+        h: [
+          {
+            t: 'div',
+            c: 'circle-3 rounded-full animated-background',
+            y: {
+              'margin-bottom': '20px',
+            },
           // a: {
           //   style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
           // },
-        } ),
+          },
+          {
+            x: options ? options.showProgress : false,
+            t: 'div',
+            c: 'progress-bar',
+            h: {
+              t: 'span',
+              c: 'bar',
+              h: {
+                t: 'span',
+                c: 'progress',
+              },
+            },
+          },
+        ],
       },
     } );
   }
@@ -249,11 +267,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       return V.cN( {
         t: 'div',
         i: entity.uuidE + '-map-popup',
-        c: 'flex justify-center',
+        c: 'map-popup-inner flex justify-center',
         y: {
           'min-height': '320px',
         },
-        h: entitiesPlaceholder(),
+        h: entitiesPlaceholder( { showProgress: true } ),
       } );
     }
     else {
@@ -278,7 +296,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
             x: text,
             t: 'p',
             c: 'pxy fs-s break-words',
-            h: castDescr.$intro, // text ? text.length > 170 ? text.substr( 0, 170 ) + ' ...' : text : '',
+            h: castDescr.$intro,
           },
         ],
       } );

@@ -17,7 +17,10 @@ module.exports = async ( context, data, objToUpdate, col ) => {
   await require( '../validate/validate' )( context, data, objToUpdate );
 
   /** Generate geohash */
-  if ( objToUpdate.b.includes( '/p' ) && data.n ) {
+  if (
+    objToUpdate.b.includes( '/p' )
+    && data.n
+  ) {
     data.n.b = require( 'geofire-common' ).geohashForLocation( [ data.n.a[1], data.n.a[0] ] );
   }
 
@@ -28,6 +31,9 @@ module.exports = async ( context, data, objToUpdate, col ) => {
 
   /** Never update uuid */
   delete fields.a;
+
+  /** Omit role when updating entity (entity title) */
+  objToUpdate.b.includes( '/e' ) ? delete fields.c : null;
 
   /** Update single fields */
   await new Promise( resolve => {
