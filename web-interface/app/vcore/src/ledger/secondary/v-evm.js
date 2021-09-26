@@ -35,29 +35,20 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function setNewConnectedAddress() {
-
-    const sA = window.ethereum.selectedAddress;
-
-    if ( V.cA() == undefined ) {
-      console.log( 'set initial connected address', sA );
-      V.setLocal( 'last-connected-address', sA );
-    }
-    else if ( sA == null ) {
+  function setNewConnectedAddress( accounts ) {
+    if ( !accounts.length ) {
       V.setLocal( 'last-connected-address', 'clear' );
       V.setState( 'activeEntity', 'clear' );
       V.setLocal( 'welcome-modal', 1 );
       Join.draw( 'logged out' );
     }
-    else if ( sA != V.cA() ) {
-      // V.setLocal( 'last-connected-address', sA.toLowerCase() );
-      // V.setState( 'activeEntity', 'clear' );
-      // V.setLocal( 'welcome-modal', 1 );
-      // Join.draw( 'new entity was set up' );
-      Join.draw( 'disconnect' );
-      // Marketplace.draw();
+    else if ( V.cA() == undefined ) {
+      console.log( 'set initial connected address', accounts[0] );
+      V.setLocal( 'last-connected-address', accounts[0] );
     }
-
+    else if ( accounts[0] != V.cA() ) {
+      Join.draw( 'disconnect' );
+    }
   }
 
   function setEventSubscription( whichEvent ) {
@@ -99,7 +90,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       provider = window.ethereum;
       V.setState( 'browserWallet', true );
       if ( window.ethereum.isMetaMask ) {
-        window.ethereum.on( 'accountsChanged', setNewConnectedAddress );
+        window.ethereum.on( 'accountsChanged', ( accounts ) => setNewConnectedAddress( accounts ) );
       }
     }
     else if ( window.web3 ) {
@@ -146,24 +137,33 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   async function setConnectedAddress() {
 
-    if ( window.ethereum /* && !window.ethereum.selectedAddress */ ) {
-      try {
-        // Request account access
-        await window.ethereum.request( {
-          method: 'eth_requestAccounts',
-        } ).then( () => {
-          setNewConnectedAddress();
-        } );
+    if ( window.ethereum ) {
+      if ( window.ethereum.request ) {
+        // Request account access using new MetaMask API
+        try {
+          await window.ethereum.request( {
+            method: 'eth_requestAccounts',
+          } ).then( ( accounts ) => {
+            setNewConnectedAddress( accounts );
+          } );
+        }
+        catch ( error ) {
+          // User denied account access...
+          console.log( error );
+
+          return {
+            success: false,
+            status: 'user denied auth',
+          };
+        }
       }
-      catch ( error ) {
-        // User denied account access...
-        console.log( error );
-        return {
-          success: false,
-          status: 'user denied auth',
-        };
+      else if ( window.Web3Obj ) {
+        // Backwards compatibility: Request account access using Web3Obj
+        const accounts = await window.Web3Obj.eth.getAccounts();
+        setNewConnectedAddress( accounts );
       }
     }
+
     if ( window.Web3Obj ) {
       setEventSubscription( 'TransferSummary' );
       return {
