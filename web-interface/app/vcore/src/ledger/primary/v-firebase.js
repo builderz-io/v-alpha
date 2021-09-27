@@ -237,6 +237,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const profileInputServerSide = {
       descr: data.props.descr,
       email: data.props.email,
+      emailPrivate: data.props.emailPrivate,
       target: data.props.target,
       unit: data.props.unit,
       lngLat: data.geometry.coordinates,

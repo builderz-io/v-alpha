@@ -249,6 +249,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: target.data[0],
         unit: entityData.unit || undefined,
         email: email,
+        emailPrivate: entityData.emailPrivate || undefined,
       },
 
       geometry: geometry,

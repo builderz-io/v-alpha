@@ -108,6 +108,7 @@ module.exports = ( context, data ) => {
         m: data.profileInputServerSide.target,
         n: data.profileInputServerSide.unit,
         r: data.profileInputServerSide.filteredDescr,
+        s: data.profileInputServerSide.emailPrivate,
       },
       n: {
         a: data.profileInputServerSide.lngLat,

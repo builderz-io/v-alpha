@@ -52,6 +52,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     featureVideo: VNetworkInit.featureVideo,
     plugins: VNetworkInit.plugins,
 
+    askforEmail: VNetworkInit.askforEmail,
+    requireEmail: VNetworkInit.requireEmail,
+    emailKey: VNetworkInit.emailKey,
+
     useBuilds: VNetworkInit.useBuilds,
     buildsHost: 'https://production.valueinstrument.org',
 

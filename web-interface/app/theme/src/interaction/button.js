@@ -12,6 +12,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   function handleSetEntity( e ) {
     e.target.removeEventListener( 'click', handleSetEntity );
 
+    V.setNode( 'interactions > ul', InteractionComponents.clickConfirmSpinner() );
+
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
 
@@ -41,6 +43,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       V.setEntity( entityData ).then( res => {
+        V.setNode( '.confirm-click-spinner', 'clear' );
+
         if ( res.success ) {
           V.setLocal( 'last-form', undefined );
           console.log( res.message );
@@ -52,7 +56,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
           // V.setCache( res.data[0].role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
           // Navigation.drawEntityNavPill( res.data[0] );
-          User.draw( res.data[0].path );
+          User.draw( res.data[0].uuidE );
           Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
 
