@@ -359,9 +359,57 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 
 .progress {
   display: block;
-  animation: loader 12s ease forwards;
+  animation: loader 12s ease infinite;
   /* Change the animation fill mode 'infinite' to 'forwards' to stop the animation from repeating. */
   background: rgba(var(--brandPrimary), 1);
   padding: 2px;
   width: 0;
+}
+
+/* ====================== Nudge Arrow ================ */
+
+.nudge-arrow {
+  width: 80px;
+  margin: 0 auto;
+}
+.nudge-arrow__profile {
+  height: 110px;
+  transform: scale(-1, -1) rotate(-10deg);
+}
+.nudge-arrow__skill {
+  height: 80px;
+  transform: scale(1, -1) rotate(20deg);
+}
+.draw-nudge-arrow {
+  stroke-width: 3;
+  stroke: blue;
+  fill: none;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  -webkit-animation-duration: 2s;
+          animation-duration: 2s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  -webkit-animation-name: draw;
+          animation-name: draw;
+}
+.draw-nudge-arrow .tail-1 {
+  -webkit-animation-delay: 0.5s;
+          animation-delay: 0.5s;
+}
+.draw-nudge-arrow .tail-2 {
+  -webkit-animation-delay: 0.7s;
+          animation-delay: 0.7s;
+}
+
+@-webkit-keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

@@ -244,9 +244,18 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSetTitle( e ) {
 
+    const title = V.getNode( '#plusform__title' ).value;
+
+    /* if title does not validate, stop the process */
+    const titleValidation = V.castEntityTitle( title, 'Person' );
+    if ( !titleValidation.success ) {
+      V.getNode( '.joinform__response' ).textContent = titleValidation.message;
+      return;
+    }
+
     /* set title in state on click */
     V.setState( 'newRegistration', {
-      title: V.getNode( '#plusform__title' ).value,
+      title: title,
     } );
 
     /* if email is not asked for, skip and set entity */
@@ -326,8 +335,22 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     e.stopPropagation();
     e.target.removeEventListener( 'click', handleSetTitle, false );
     e.target.removeEventListener( 'click', handleConfirmNumber, false );
+
+    V.sN( '.explain', 'clear' );
     e.target.textContent = getString( ui.joining );
     e.target.append( InteractionComponents.clickConfirmSpinner() );
+    e.target.parentNode.append( V.cN( {
+      t: 'div',
+      c: 'progress-bar',
+      h: {
+        t: 'span',
+        c: 'bar',
+        h: {
+          t: 'span',
+          c: 'progress',
+        },
+      },
+    } ) );
 
     V.getNode( '.joinform__response' ).textContent = '';
 
@@ -354,8 +377,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
             }
           } );
 
+        // Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
+        Join.onboard( res.data[0].auth.uPhrase );
+
         /** set state and cache */
-        Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
         V.setActiveEntity( res.data[0] );
         Join.draw( 'new entity was set up' );
 
@@ -393,7 +418,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $descr = V.cN( {
       t: 'p',
-      c: 'modal-pos-1 relative txt-center',
+      c: 'explain modal-pos-1 relative txt-center',
       h: explain || '',
     } );
 

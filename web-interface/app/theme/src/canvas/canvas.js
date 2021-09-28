@@ -143,6 +143,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         'font-display': 'fallback',
         'unicode-range': 'U+000-024F',
       },
+      '@font-face-4': {
+        'font-family': 'Indie Flower',
+        'src': 'url(' + V.getSetting( 'sourceEndpoint' ) + '/assets/font/IndieFlower-Regular.ttf) format(\'truetype\')',
+        'font-display': 'fallback',
+        'unicode-range': 'U+000-024F',
+      },
     } );
   }
 
@@ -360,6 +366,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
 
       VMap.setMap();
+
+      // setTimeout( function functionName() {
+      //   Join.onboard();
+      // }, 2000 );
     }
   }
 
