@@ -493,6 +493,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       if ( Array.isArray( which ) ) {
         filter = 'uuidE';
       }
+      else if (
+        new RegExp( /\s#\d{4}/ ).test( which )
+      ) {
+        filter = 'fullId';
+      }
       else if ( 'highlight' == which ) {
         filter = which;
       }
@@ -503,11 +508,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         which.length == V.getSetting( 'uuidStringLength' )
       ) {
         filter = 'uuidE';
-      }
-      else if (
-        new RegExp( /\s#\d{4}/ ).test( which )
-      ) {
-        filter = 'fullId';
       }
       else if (
         '0x' == which.substr( 0, 2 )
