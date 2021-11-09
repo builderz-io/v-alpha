@@ -205,6 +205,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function castReturnedPointData( item ) {
     return {
       uuidE: item.a,
+      uuidP: item.d,
       role: item.c.replace( 'Mapped', '' ),
       geometry: {
         coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
@@ -409,6 +410,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     // } );
 
     const uuidE = e.layer.feature.uuidE;
+    const uuidP = e.layer.feature.uuidP;
     const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
 
     e.layer
@@ -429,10 +431,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
 
-      entity = await V.getEntity( uuidE )
+      entity = await V.getEntity( { uuidE: uuidE, uuidP: uuidP, isMapPopUp: true } )
         .then( res => {
           if ( res.success ) {
-            V.setCache( 'viewed', res.data );
+            // V.setCache( 'viewed', res.data );
             return V.successTrue( 'fetched entity', res.data );
           }
         } );

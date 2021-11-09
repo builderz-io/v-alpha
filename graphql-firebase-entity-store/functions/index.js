@@ -22,7 +22,7 @@ const app = express();
 
 const whitelist = [
   'http://localhost:4021',
-  'http://localhost:5289',
+  'http://localhost:4042',
   'https://dev.valueinstrument.org',
   'https://staging.valueinstrument.org',
   'https://staging.builderz.io',

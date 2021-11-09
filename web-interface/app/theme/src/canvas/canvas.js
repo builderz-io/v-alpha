@@ -379,13 +379,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .then( data => {
           if ( data.success ) {
             console.log( 'auth success' );
-            return data.data[0].uuidE;
+            return data.data[0];
           }
           else {
             throw new Error( 'could not set auth' );
           }
         } )
-        .then( uuidE => V.getEntity( uuidE ) )
+        .then( data => V.getEntity( { uuidE: data.uuidE, uuidP: data.uuidP, isReturningUser: true } ) )
         .then( entity => {
           if ( entity.success ) {
             V.setActiveEntity( entity.data[0] );

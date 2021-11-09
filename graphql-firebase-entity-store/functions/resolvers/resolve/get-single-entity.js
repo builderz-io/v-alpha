@@ -80,6 +80,7 @@ module.exports = async ( context, match ) => {
     .map( item => ( {
       a: item.a,
       c: item.c,
+      d: item.d,
       fullId: item.m + ' ' + item.n,
       geo: item.zz && item.zz.i ? item.zz.i : null,
     } ) );

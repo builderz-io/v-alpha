@@ -490,7 +490,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
 
-      if ( Array.isArray( which ) ) {
+      if (
+        typeof which == 'object'
+        || Array.isArray( which )
+      ) {
         filter = 'uuidE';
       }
       else if (

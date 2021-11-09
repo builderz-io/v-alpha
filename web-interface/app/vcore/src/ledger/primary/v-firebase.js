@@ -22,7 +22,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c } o { c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -33,7 +33,161 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   const previewsE = 'a c d m n';
   const previewsP = 'm { a r } n { a } o { b }';
 
+  const mapPopUpE = 'a c d m n';
+  const mapPopUpP = 'm { a r } o { b }';
+
   /* ================== private methods ================= */
+
+  function castNewEntityData( data ) {
+
+    /**
+    * casts a full set of entity data, to be used when
+    * server-side initialisation of entity is disabled.
+    * Some of this data is also used for server side initialisation (e.g. title).
+    *
+    */
+
+    const a = data.uuidE;
+    const b = data.contextE;
+    const c = V.castRole( data.typeE );
+    const d = data.uuidP;
+    const e = data.uuidA;
+    const g = data.issuer;
+
+    const i = data.evmCredentials.address;
+    const j = data.receivingAddresses.evm;
+
+    const m = data.title;
+    const n = data.tag;
+
+    const x = {
+      a: data.creatorUuid,
+      m: data.heldBy,
+    };
+
+    const y = {
+      a: String( data.unix ),
+      c: String( data.expires ),
+      m: data.active,
+      z: data.statusCode,
+    };
+
+    /**
+    * cast a full set of auth data, in case
+    * server-side initialisation of entity is disabled.
+    */
+
+    const auth = {
+      a: data.uuidA,
+      b: data.contextA,
+      d: data.uuidE,
+      e: data.uuidP,
+      f: data.uPhrase,
+      i: data.evmCredentials.address,
+      j: data.evmCredentials.privateKey || undefined,
+    };
+
+    /**
+    * cast a small set of auth data (evm creds only),
+    * in case server-side initialisation of entity is enabled.
+    */
+
+    const authInputServerSide = {
+      i: data.evmCredentials.address,
+      j: data.evmCredentials.privateKey || undefined,
+    };
+
+    /**
+    * cast the user-defined parts of the profile data,
+    * in case server-side initialisation of entity is enabled.
+    */
+
+    const profileInputServerSide = {
+      descr: data.props.descr,
+      email: data.props.email,
+      emailPrivate: data.props.emailPrivate,
+      target: data.props.target,
+      unit: data.props.unit,
+      lngLat: data.geometry.coordinates,
+      loc: data.geometry.baseLocation,
+      tinyImg: data.tinyImageDU,
+      thumb: data.thumbnailDU,
+      medImg: data.mediumImageDU,
+      imgName: data.imageName,
+      evmIssuer: data.evmIssuer,
+    };
+
+    return settings.useClientData
+      ? { a, b, c, d, e, g, i, j, m, n, x, y, auth }
+      : { a: '-', c, i, j, m, authInputServerSide, profileInputServerSide }; // a is required, but flags "none"
+
+  }
+
+  function castNewProfileData( data ) {
+
+    /**
+    * casts a full set of profile data, to be used when
+    * server-side initialisation of entity is disabled.
+    */
+
+    const a = data.uuidP;
+    const b = data.contextP;
+    const d = data.uuidE; // note that this is NOT creatorUuid
+
+    const m = {
+      a: data.props.descr,
+      b: data.props.email,
+      m: data.props.target,
+      n: data.props.unit,
+    };
+    const n = {
+      a: data.geometry.coordinates,
+      c: data.geometry.baseLocation,
+    };
+    const o = {
+      a: data.tinyImageDU,
+      b: data.thumbnailDU,
+      c: data.mediumImageDU,
+      n: data.imageName,
+    };
+
+    const x = {
+      a: data.creatorUuid,
+      m: data.heldBy,
+    };
+
+    const y = {
+      a: String( data.unix ),
+    };
+
+    return { a, b, d, m, n, o, x, y };
+  }
+
+  function castNewTransferData( array ) {
+    return array.map( tx => ( {
+      a: tx.txType,
+      b: tx.title,
+      // c: tx.message,
+
+      g: tx.amount,
+      h: tx.feeAmount,
+      i: tx.contribution,
+      j: tx.payout,
+
+      m: tx.fromAddress,
+      n: tx.fromUuidE,
+      o: tx.fromEntity,
+
+      p: tx.toAddress,
+      q: tx.toUuidE,
+      r: tx.toEntity,
+
+      s: tx.hash,
+      t: tx.block,
+      u: tx.blockDate,
+      v: tx.logIndex,
+    } ) );
+  }
 
   function castReturnedEntityAndProfileData( E, P ) {
 
@@ -170,157 +324,6 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( query, variables );
   }
 
-  function castNewEntityData( data ) {
-
-    /**
-     * casts a full set of entity data, to be used when
-     * server-side initialisation of entity is disabled.
-     * Some of this data is also used for server side initialisation (e.g. title).
-     *
-     */
-
-    const a = data.uuidE;
-    const b = data.contextE;
-    const c = V.castRole( data.typeE );
-    const d = data.uuidP;
-    const e = data.uuidA;
-    const g = data.issuer;
-
-    const i = data.evmCredentials.address;
-    const j = data.receivingAddresses.evm;
-
-    const m = data.title;
-    const n = data.tag;
-
-    const x = {
-      a: data.creatorUuid,
-      m: data.heldBy,
-    };
-
-    const y = {
-      a: String( data.unix ),
-      c: String( data.expires ),
-      m: data.active,
-      z: data.statusCode,
-    };
-
-    /**
-     * cast a full set of auth data, in case
-     * server-side initialisation of entity is disabled.
-     */
-
-    const auth = {
-      a: data.uuidA,
-      b: data.contextA,
-      d: data.uuidE,
-      e: data.uuidP,
-      f: data.uPhrase,
-      i: data.evmCredentials.address,
-      j: data.evmCredentials.privateKey || undefined,
-    };
-
-    /**
-     * cast a small set of auth data (evm creds only),
-     * in case server-side initialisation of entity is enabled.
-     */
-
-    const authInputServerSide = {
-      i: data.evmCredentials.address,
-      j: data.evmCredentials.privateKey || undefined,
-    };
-
-    /**
-     * cast the user-defined parts of the profile data,
-     * in case server-side initialisation of entity is enabled.
-     */
-
-    const profileInputServerSide = {
-      descr: data.props.descr,
-      email: data.props.email,
-      emailPrivate: data.props.emailPrivate,
-      target: data.props.target,
-      unit: data.props.unit,
-      lngLat: data.geometry.coordinates,
-      loc: data.geometry.baseLocation,
-      tinyImg: data.tinyImageDU,
-      thumb: data.thumbnailDU,
-      medImg: data.mediumImageDU,
-      imgName: data.imageName,
-      evmIssuer: data.evmIssuer,
-    };
-
-    return settings.useClientData
-      ? { a, b, c, d, e, g, i, j, m, n, x, y, auth }
-      : { a: '-', c, i, j, m, authInputServerSide, profileInputServerSide }; // a is required, but flags "none"
-
-  }
-
-  function castNewProfileData( data ) {
-
-    /**
-     * casts a full set of profile data, to be used when
-     * server-side initialisation of entity is disabled.
-     */
-
-    const a = data.uuidP;
-    const b = data.contextP;
-    const d = data.uuidE; // note that this is NOT creatorUuid
-
-    const m = {
-      a: data.props.descr,
-      b: data.props.email,
-      m: data.props.target,
-      n: data.props.unit,
-    };
-    const n = {
-      a: data.geometry.coordinates,
-      c: data.geometry.baseLocation,
-    };
-    const o = {
-      a: data.tinyImageDU,
-      b: data.thumbnailDU,
-      c: data.mediumImageDU,
-      n: data.imageName,
-    };
-
-    const x = {
-      a: data.creatorUuid,
-      m: data.heldBy,
-    };
-
-    const y = {
-      a: String( data.unix ),
-    };
-
-    return { a, b, d, m, n, o, x, y };
-  }
-
-  function castNewTransferData( array ) {
-    return array.map( tx => ( {
-      a: tx.txType,
-      b: tx.title,
-      // c: tx.message,
-
-      g: tx.amount,
-      h: tx.feeAmount,
-      i: tx.contribution,
-      j: tx.payout,
-
-      m: tx.fromAddress,
-      n: tx.fromUuidE,
-      o: tx.fromEntity,
-
-      p: tx.toAddress,
-      q: tx.toUuidE,
-      r: tx.toEntity,
-
-      s: tx.hash,
-      t: tx.block,
-      u: tx.blockDate,
-      v: tx.logIndex,
-    } ) );
-  }
-
   function setEntityField( data ) {
     console.log( 'UPDATING ENTITY: ', data );
     const a = V.getState( 'active' ).lastViewedUuidE;
@@ -447,38 +450,35 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   function getEntities( data, whichEndpoint ) {
     let where;
 
-    let queryE = `query GetEntity ( $where: WhereEntity ){
-        getEntity(where: $where) { ${ typeof data == 'string' ? singleE : previewsE } }
+    let queryE = `query GetEntities ( $where: WhereEntity ) {
+        getEntities(where: $where) { ${ typeof data == 'string' ? singleE : previewsE } }
       }`;
 
     if ( 'entity by role' == whichEndpoint ) {
-      console.log( 111, 'by Role' );
+      console.log( 777, 'by Role' );
       where = {};
-      queryE = `query GetEntitiesByRole ( $where: WhereEntity ){
-             getEntity(where: $where) { ${ previewsE } }
+      queryE = `query GetEntitiesByRole ( $where: WhereEntity ) {
+             getEntities(where: $where) { ${ previewsE } }
            }`;
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
-      console.log( 444, 'by uuidE:', data );
+      console.log( 333, 'by uuidE:', data );
       where = { a: typeof data == 'string' ? [data] : data };
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
-      console.log( 222, 'by EVM Address:', data );
+      console.log( 444, 'by EVM Address:', data );
       where = { i: data };
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
-      console.log( 333, 'by FullId:', tT.title, tT.tag );
+      console.log( 555, 'by FullId:', tT.title, tT.tag );
       where = { m: tT.title, n: tT.tag };
     }
     const variables = {
       where: where,
     };
     return fetchFirebase( queryE, variables );
-    // .then( res => {
-    //   console.log( res );
-    //   return res;
-    // } );
+
   }
 
   function getProfiles( array ) {
@@ -487,6 +487,51 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
            getProfiles (array: ${ V.castJson( uuidPs ) }) { ${ array.length == 1 ? singleP : previewsP } }
          }`;
     return fetchFirebase( queryP );
+  }
+
+  function getEntity( data ) {
+
+    const queryE = `query GetEntity ( $where: WhereEntity ){
+        getEntities(where: $where) { ${ data.isMapPopUp ? mapPopUpE : singleE } }
+      }`;
+
+    const variables = {
+      where: { a: [data.uuidE] },
+    };
+
+    return fetchFirebase( queryE, variables );
+  }
+
+  function getProfile( data ) {
+
+    const queryP = `query GetProfile ( $where: WhereProfile ){
+           getProfile(where: $where) { ${ data.isMapPopUp ? mapPopUpP : singleP } }
+         }`;
+
+    const variables = {
+      where: { a: data.uuidP },
+    };
+
+    return fetchFirebase( queryP, variables );
+  }
+
+  function getEntityQuery( data ) {
+    console.log( 888, 'by query' );
+
+    data.role = V.castRole( data.role );
+
+    const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
+      getEntityQuery(filter: $filter) {
+        ${ previewsE }
+      }
+    }
+    `;
+
+    const variables = {
+      filter: data,
+    };
+
+    return fetchFirebase( queryS, variables );
   }
 
   function getTransactionLog( uuidP ) {
@@ -498,30 +543,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryT );
   }
 
-  function getEntityQuery( data ) {
-    console.log( 100, 'by query' );
-
-    data.role = V.castRole( data.role );
-
-    const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
-                      getEntityQuery(filter: $filter) {
-                        ${ previewsE }
-                      }
-                    }
-                  `;
-
-    const variables = {
-      filter: data,
-    };
-
-    return fetchFirebase( queryS, variables );
-  }
-
-  function getPoints( data ) {
-    console.log( 300, 'by point' );
+  function getPoints() {
+    console.log( 111, 'by point' );
 
     const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
-                 getPoints(where: $where) { a c zz { i } }
+                 getPoints(where: $where) { a c d zz { i } }
                }`;
 
     const variables = {
@@ -531,7 +557,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getHighlights() {
-    console.log( 200, 'by highlight' );
+    console.log( 222, 'by highlight' );
 
     const queryH = `query GetHighlights {
                       getHighlights {
@@ -582,6 +608,17 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     return fetchFirebase( queryS, variables );
   }
 
+  function setChatMessage( data ) {
+    return new Promise( resolve => {
+      NetworkMainRoom.child( data.time ).update( {
+        a: data.time,
+        i: data.uuidE,
+        j: data.sender,
+        m: data.message,
+      }, () => { resolve( { success: true } ) } );
+    } );
+  }
+
   function fetchFirebase( query, variables ) {
     return fetch( settings.firebaseEndpoint, {
       method: 'POST',
@@ -598,20 +635,40 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       .then( r => r.json() );
   }
 
-  function setChatMessage( data ) {
-    return new Promise( resolve => {
-      NetworkMainRoom.child( data.time ).update( {
-        a: data.time,
-        i: data.uuidE,
-        j: data.sender,
-        m: data.message,
-      }, () => { resolve( { success: true } ) } );
-    } );
-  }
-
   /* ================== public methods ================== */
 
   async function getFirebase( data, whichEndpoint ) {
+
+    /** Query a single entity and its profile using Promise.all */
+
+    if (
+      data.isMapPopUp
+      || data.isDisplay
+      || data.isReturningUser
+    ) {
+
+      console.log( 'GET SINGLE ENTITY: ', data );
+
+      const all = await Promise.all( [
+        getEntity( data ),
+        getProfile( data ),
+      ] );
+
+      if (
+        all[0].errors
+        || all[1].errors
+        || all[0].data.getEntities[0] == null
+        || all[1].data.getProfile[0] == null
+      ) {
+        return V.successFalse( 'get entity and profile' );
+      }
+      else {
+        const combined = castReturnedEntityAndProfileData( all[0].data.getEntities[0], all[1].data.getProfile[0] );
+        return V.successTrue( 'got entity and profile', combined );
+      }
+    }
+
+    console.log( 'GET MULTIPLE ENTITIES: ', data );
 
     /** Query entities */
 
@@ -627,6 +684,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( 'entity by highlight' == whichEndpoint ) {
+
+      // uncomment to not load highlights
+      // return V.successFalse( 'get entities by highlight' );
+
       const highlightedE = await getHighlights();
       const mixin = V.getCache( 'mixin-highlights' ); // from points
 
@@ -682,11 +743,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     if (
       !E.errors &&
       (
-        ( E.data.getEntity && E.data.getEntity[0] != null ) ||
+        ( E.data.getEntities && E.data.getEntities[0] != null ) ||
         ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
       )
     ) {
-      const entitiesArray = E.data.getEntity || E.data.getEntityQuery;
+      const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
 
       const P = await getProfiles( entitiesArray );
 

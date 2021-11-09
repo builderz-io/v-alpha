@@ -21,15 +21,11 @@ module.exports = async ( context ) => {
     authDoc.g.forEach( item => {
       const network = item.replace( /\./g, '_' ).replace( ':', '_' );
       dataArray.forEach( entity => {
-
         namespaceDb.database()
           .ref( 'networks/' + network + '/cluster' )
           .child( entity.a )
           .update( {
             a: entity.a,
-            y: {
-              a: now,
-            },
           } );
 
         namespaceDb.database()
@@ -38,6 +34,7 @@ module.exports = async ( context ) => {
           .update( {
             a: entity.a,
             c: entity.c,
+            d: entity.d,
             zz: {
               i: entity.zz && entity.zz.i
                 ? entity.zz.i

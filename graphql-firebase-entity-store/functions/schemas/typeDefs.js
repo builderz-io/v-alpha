@@ -27,6 +27,10 @@ const Filters = `
     i: String
   }
 
+  input WhereProfile {
+    a: String
+  }
+
   input WhereGeo {
     i: String
   }
@@ -48,6 +52,7 @@ const Filters = `
   type Point {
     a: String
     c: String
+    d: String
     zz: PointZz
   }
 
@@ -78,6 +83,7 @@ const Jwt = `
     success: Boolean
     message: String
     uuidE: String
+    uuidP: String
     exp: Int
     jwt: String
     tempRefresh: String
@@ -89,11 +95,12 @@ const Jwt = `
 
 const Queries = `
   type Query {
+    getEntities(where: WhereEntity): [Entity]
     getEntityQuery(filter: Filter!): [Entity]
-    getHighlights: [Highlight]
-    getEntity(where: WhereEntity): [Entity]
-    getPoints(where: WhereGeo): [Point]
+    getProfile(where: WhereProfile): [Profile]
     getProfiles(array: [String!]): [Profile]
+    getPoints(where: WhereGeo): [Point]
+    getHighlights: [Highlight]
   }
 `;
 

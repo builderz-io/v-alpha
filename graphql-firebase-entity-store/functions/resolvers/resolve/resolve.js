@@ -2,7 +2,7 @@
 
 module.exports = {
   Query: {
-    getEntity: ( parent, args, { context } ) => {
+    getEntities: ( parent, args, { context } ) => {
       if ( args.where.m && args.where.n ) {
         return require( './find-by-fullid' )( context, args.where.m, args.where.n );
       }
@@ -16,6 +16,7 @@ module.exports = {
         return require( './get-all-entities' )( context );
       }
     },
+    getProfile: ( parent, args ) => require( './get-single-profile' )( args.where.a ),
     getProfiles: ( parent, args ) => require( './map-profiles' )( args.array ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
     getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
