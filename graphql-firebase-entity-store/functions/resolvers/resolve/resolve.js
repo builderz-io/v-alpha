@@ -17,7 +17,7 @@ module.exports = {
       }
     },
     getProfile: ( parent, args ) => require( './get-single-profile' )( args.where.a ),
-    getProfiles: ( parent, args ) => require( './map-profiles' )( args.array ),
+    getProfiles: ( parent, args ) => require( './get-profiles' )( args.array ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
     getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),

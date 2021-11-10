@@ -9,15 +9,15 @@ module.exports = async ( context, a ) => {
     return getSingleEntity( context, match );
   }
   else {
-    const entities = [];
-    for ( let i = 0; i < a.length; i++ ) {
+    const promises = a.map( function( uuidE ) {
       const match = {
-        uuidE: a[i],
+        uuidE: uuidE,
         noMixins: true,
+        isInArray: true,
       };
-      const entity = await getSingleEntity( {}, match );
-      entities.push( entity[0] );
-    }
-    return entities;
+      return getSingleEntity( {}, match );
+    } );
+
+    return Promise.all( promises );
   }
 };

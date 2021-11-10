@@ -12,6 +12,14 @@ module.exports = async ( context, match ) => {
   if ( match.uuidE ) {
     entity = await colE.child( match.uuidE ).once( 'value' )
       .then( snap => snap.val() );
+    if ( match.isInArray ) {
+      if ( !entity ) {
+        return { success: false };
+      }
+      else {
+        return entity;
+      }
+    }
   }
   else if ( match.title ) {
     entity = await colE.orderByChild( 'm' ).equalTo( match.title ).once( 'value' )
