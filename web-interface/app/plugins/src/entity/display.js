@@ -129,8 +129,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
+      const entity = data.data[0].entity;
+
       UserComponents.setData( {
-        entity: data.data[0].entity,
+        entity: entity,
         editable: false,
       } );
 
@@ -154,11 +156,11 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.socialShareButtons(),
       ] );
 
-      VMap.draw( [data.data[0].entity] );
+      VMap.draw( [entity] );
 
       if ( data.data[0].typeOfWhich == 'string' ) {
         // in this case the profile is fetched using a path and the navigation has not been set in preview
-        Navigation.draw( data.data[0].entity ).then( () => {
+        Navigation.draw( entity ).then( () => {
           Page.draw( {
             position: 'top',
             listings: $list,
@@ -173,6 +175,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         } );
 
         Chat.drawMessageForm();
+      }
+
+      if ( entity.images.tinyImage ) {
+        Navigation.drawImage( entity );
       }
 
     }

@@ -565,9 +565,21 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( 'entity-nav > ul' ).prepend( $pill );
   }
 
+  function drawImage( data ) {
+
+    const entityNavOrder =  V.castJson( V.getLocal( 'entity-nav-order' ) );
+
+    entityNavOrder[data.path].tinyImage = data.images.tinyImage;
+    entityNavOrder[data.path].useDataUrl = true;
+
+    V.setLocal( 'entity-nav-order', entityNavOrder );
+
+  }
+
   return {
     draw: draw,
     drawReset: drawReset,
+    drawImage: drawImage,
     drawEntityNavPill: drawEntityNavPill,
   };
 
