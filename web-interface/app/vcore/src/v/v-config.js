@@ -5,13 +5,13 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const firebaseEndpoints = {
+  const namespaceEndpoints = {
 
     /* for development, firebase function is deployed to "entity-profile"-project */
-    local: 'http://localhost:5001/entity-profile/us-central1/api/v1',
-    staging: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
-    development: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
-    production: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
+    'firebase-local': 'http://localhost:5001/entity-profile/us-central1/api/v1',
+    'firebase-staging': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
+    'firebase-development': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
+    'firebase-production': 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
   };
 
   const mongodbEndpoints = {
@@ -42,7 +42,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
     socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
-    firebaseEndpoint: firebaseEndpoints[ VNetworkInit.firebaseEndpoint ],
+    namespaceEndpoint: namespaceEndpoints[ VNetworkInit.namespaceEndpoint ],
 
     sourceEndpoint: VNetworkInit.sourceEndpoint,
 

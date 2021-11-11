@@ -35,6 +35,11 @@ const Filters = `
     i: String
   }
 
+  type Image {
+    a: String
+    o: Images
+  }
+
   type Highlight {
     a: String
     y: Int
@@ -96,11 +101,12 @@ const Jwt = `
 const Queries = `
   type Query {
     getEntities(where: WhereEntity): [Entity]
+    getProfiles(array: [String!]): [Profile]
     getEntityQuery(filter: Filter!): [Entity]
     getProfile(where: WhereProfile): [Profile]
-    getProfiles(array: [String!]): [Profile]
     getPoints(where: WhereGeo): [Point]
     getHighlights: [Highlight]
+    getImage(where: WhereProfile): [Image]
   }
 `;
 
@@ -112,6 +118,7 @@ const Mutations = `
     setHighlight(input: InputHighlight!): Highlight
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
+    setImage(input: ImageInputServerSide!): Image
   }
 `;
 

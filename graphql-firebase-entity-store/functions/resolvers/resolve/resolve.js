@@ -21,6 +21,7 @@ module.exports = {
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
     getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
+    getImage: ( parent, args ) => require( './get-image' )( args.where.a ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),
@@ -28,6 +29,7 @@ module.exports = {
     setTransaction: ( parent, { tx }, { context } ) => require( './set-transaction' )( context, tx, 'managed' ),
     setEntity: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'entity' ),
     setProfile: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'profile' ),
+    setImage: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'image' ),
     setHighlight: ( parent, { input }, { context } ) => require( './set-highlight' )( context, input ),
   },
 };

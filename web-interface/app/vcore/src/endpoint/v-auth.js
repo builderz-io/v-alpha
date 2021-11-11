@@ -8,7 +8,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const settings = {
-    firebaseEndpoint: V.getSetting( 'firebaseEndpoint' ),
+    namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
   };
 
   let uPhrase, lastConnectedAddress, tempRefresh;
@@ -24,7 +24,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function fetchFirebase( query, variables ) {
-    return fetch( settings.firebaseEndpoint, {
+    return fetch( settings.namespaceEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

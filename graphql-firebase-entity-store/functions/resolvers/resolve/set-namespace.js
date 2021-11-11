@@ -16,6 +16,10 @@ module.exports = async ( context, input, whichCol ) => {
     const { profileDb } = require( '../../resources/databases-setup' );
     col = profileDb.database().ref( 'profiles' );
   }
+  else if ( whichCol == 'image' ) {
+    const { imageDb } = require( '../../resources/databases-setup' );
+    col = imageDb.database().ref( 'images' );
+  }
 
   /** Cast a copy of input */
   const data = JSON.parse( JSON.stringify( input ) );

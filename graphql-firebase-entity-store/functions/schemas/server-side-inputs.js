@@ -58,6 +58,13 @@ const types = {
       q: InputQuestionnaire
     }
   `,
+  ImageInputServerSide: `
+    {
+      a: ID!            // uuid (P)
+
+      o: InputImages
+    }
+  `,
 };
 
 const helpers = require( './helpers' );

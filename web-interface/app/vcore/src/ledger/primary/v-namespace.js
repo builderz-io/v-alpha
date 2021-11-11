@@ -1,7 +1,7 @@
-const VFirebase = ( function() { // eslint-disable-line no-unused-vars
+const VNamespace = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Core Module to connect to Firebase (Middleware)
+   * V Core Module to connect to the V Namespace (Middleware)
    *
    */
 
@@ -9,7 +9,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     useClientData: false,
-    firebaseEndpoint: V.getSetting( 'firebaseEndpoint' ),
+    namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
   };
 
   /** In-memory jwt */
@@ -22,7 +22,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c } o { c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -30,11 +30,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Description, Lng/Lat, Thumbnail image (from Profile)
    */
 
-  const previewsE = 'a c d m n';
-  const previewsP = 'm { a r } n { a } o { b }';
-
-  const mapPopUpE = 'a c d m n';
-  const mapPopUpP = 'm { a r } o { b }';
+  const previewE = 'a c d m n';
+  const previewP = 'm { a r } o { b }'; // n { a }
 
   /* ================== private methods ================= */
 
@@ -189,7 +186,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     } ) );
   }
 
-  function castReturnedEntityAndProfileData( E, P ) {
+  function castReturnedEntityAndProfileData( E, P, I ) {
 
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
@@ -224,7 +221,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       images: {
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
-        mediumImage: P.o ? P.o.c : undefined,
+        mediumImage: I && I.o ? I.o.c : undefined,
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
@@ -305,7 +302,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: castNewEntityData( data ),
     };
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setProfile( data ) {
@@ -321,7 +318,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: castNewProfileData( data ),
     };
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setEntityField( data ) {
@@ -372,7 +369,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
               }
             `;
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setProfileField( data ) {
@@ -419,8 +416,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       o = {
         a: data.data.tiny.dataUrl,
         b: data.data.thumb.dataUrl,
-        c: data.data.medium.dataUrl,
-        n: data.data.thumb.originalName,
+        // c: data.data.medium.dataUrl,
+        // n: data.data.thumb.originalName,
       };
       break;
 
@@ -444,21 +441,53 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
               }
             `;
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
+  }
+
+  function setImageField( data ) {
+    console.log( 'UPDATING IMAGE: ', data );
+    const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidP;
+
+    let o;
+
+    switch ( data.field ) {
+
+    case 'images':
+      o = {
+        a: data.data.tiny.dataUrl,
+        b: data.data.thumb.dataUrl,
+        c: data.data.medium.dataUrl,
+        n: data.data.thumb.originalName,
+      };
+      break;
+    }
+
+    const variables = {
+      input: { a, o },
+    };
+
+    const query = `mutation SetImageUpdate( $input: ImageInputServerSide! ) {
+                setImage(input: $input) {
+                  ${ 'a' /* a confirms successful response */ }
+                }
+              }
+            `;
+
+    return fetchEndpoint( query, variables );
   }
 
   function getEntities( data, whichEndpoint ) {
     let where;
 
     let queryE = `query GetEntities ( $where: WhereEntity ) {
-        getEntities(where: $where) { ${ typeof data == 'string' ? singleE : previewsE } }
+        getEntities(where: $where) { ${ typeof data == 'string' ? singleE : previewE } }
       }`;
 
     if ( 'entity by role' == whichEndpoint ) {
       console.log( 777, 'by Role' );
       where = {};
       queryE = `query GetEntitiesByRole ( $where: WhereEntity ) {
-             getEntities(where: $where) { ${ previewsE } }
+             getEntities(where: $where) { ${ previewE } }
            }`;
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
@@ -477,42 +506,55 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const variables = {
       where: where,
     };
-    return fetchFirebase( queryE, variables );
+    return fetchEndpoint( queryE, variables );
 
   }
 
   function getProfiles( array ) {
     const uuidPs = array.map( item => item.d );
     const queryP = `query GetProfiles {
-           getProfiles (array: ${ V.castJson( uuidPs ) }) { ${ array.length == 1 ? singleP : previewsP } }
+           getProfiles (array: ${ V.castJson( uuidPs ) }) { ${ previewP } }
          }`;
-    return fetchFirebase( queryP );
+    return fetchEndpoint( queryP );
   }
 
   function getEntity( data ) {
 
     const queryE = `query GetEntity ( $where: WhereEntity ){
-        getEntities(where: $where) { ${ data.isMapPopUp ? mapPopUpE : singleE } }
+        getEntities(where: $where) { ${ data.isMapPopUp ? previewE : singleE } }
       }`;
 
     const variables = {
       where: { a: [data.uuidE] },
     };
 
-    return fetchFirebase( queryE, variables );
+    return fetchEndpoint( queryE, variables );
   }
 
   function getProfile( data ) {
 
     const queryP = `query GetProfile ( $where: WhereProfile ){
-           getProfile(where: $where) { ${ data.isMapPopUp ? mapPopUpP : singleP } }
+           getProfile(where: $where) { ${ data.isMapPopUp ? previewP : singleP } }
          }`;
 
     const variables = {
       where: { a: data.uuidP },
     };
 
-    return fetchFirebase( queryP, variables );
+    return fetchEndpoint( queryP, variables );
+  }
+
+  function getImage( data ) {
+
+    const queryI = `query GetImage ( $where: WhereProfile ){
+           getImage(where: $where) { a o { c } }
+         }`;
+
+    const variables = {
+      where: { a: data.uuidP },
+    };
+
+    return fetchEndpoint( queryI, variables );
   }
 
   function getEntityQuery( data ) {
@@ -522,7 +564,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
     const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
       getEntityQuery(filter: $filter) {
-        ${ previewsE }
+        ${ previewE }
       }
     }
     `;
@@ -531,7 +573,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       filter: data,
     };
 
-    return fetchFirebase( queryS, variables );
+    return fetchEndpoint( queryS, variables );
   }
 
   function getTransactionLog( uuidP ) {
@@ -540,7 +582,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
              p { a { a b c g h i j m n o p q r s t u v } z }
            }
          }`;
-    return fetchFirebase( queryT );
+    return fetchEndpoint( queryT );
   }
 
   function getPoints() {
@@ -553,7 +595,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     const variables = {
       where: {},
     };
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function getHighlights() {
@@ -566,7 +608,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
                     }
                   `;
 
-    return fetchFirebase( queryH );
+    return fetchEndpoint( queryH );
   }
 
   function setHighlight( which, whichEndpoint ) {
@@ -585,7 +627,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: { a: which, y: { c: expiry } },
     };
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setManagedTransaction( data ) {
@@ -605,7 +647,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         txTotal: String( data.txTotal ),
       },
     };
-    return fetchFirebase( queryS, variables );
+    return fetchEndpoint( queryS, variables );
   }
 
   function setChatMessage( data ) {
@@ -619,8 +661,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function fetchFirebase( query, variables ) {
-    return fetch( settings.firebaseEndpoint, {
+  function fetchEndpoint( query, variables ) {
+    return fetch( settings.namespaceEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -637,7 +679,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
-  async function getFirebase( data, whichEndpoint ) {
+  async function getNamespace( data, whichEndpoint ) {
 
     /** Query a single entity and its profile using Promise.all */
 
@@ -652,25 +694,32 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       const all = await Promise.all( [
         getEntity( data ),
         getProfile( data ),
+        data.isDisplay ? getImage( data ) : { data: { getImage: [false] } },
       ] );
-
+      console.log( all );
       if (
         all[0].errors
         || all[1].errors
-        || all[0].data.getEntities[0] == null
-        || all[1].data.getProfile[0] == null
+        || all[2].errors
+        || all[0].data.getEntities[0] === null
+        || all[1].data.getProfile[0] === null
+        || all[2].data.getImage[0] === null
       ) {
         return V.successFalse( 'get entity and profile' );
       }
       else {
-        const combined = castReturnedEntityAndProfileData( all[0].data.getEntities[0], all[1].data.getProfile[0] );
+        const combined = castReturnedEntityAndProfileData(
+          all[0].data.getEntities[0],
+          all[1].data.getProfile[0],
+          all[2].data.getImage[0]
+        );
         return V.successTrue( 'got entity and profile', combined );
       }
     }
 
     console.log( 'GET MULTIPLE ENTITIES: ', data );
 
-    /** Query entities */
+    /** Query multiple entities and profiles in sequence (arrays) */
 
     let E;
 
@@ -768,7 +817,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  async function setFirebase( data, whichEndpoint  ) {
+  async function setNamespace( data, whichEndpoint  ) {
     if ( 'entity' == whichEndpoint ) {
 
       /** initializes a new namespace */
@@ -809,6 +858,18 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
           } )
           .catch( err => V.successFalse( 'update entity', err ) );
       }
+      if ( 'images' == data.field ) {
+        return setImageField( data )
+          .then( I => {
+            if ( !I.errors ) {
+              return V.successTrue( 'updated image', I.data.setImage );
+            }
+            else {
+              return V.successFalse( 'update image', I.errors[0].message, I.data.setImage );
+            }
+          } )
+          .catch( err => V.successFalse( 'update image', err ) );
+      }
       else {
         return setProfileField( data )
           .then( P => {
@@ -839,13 +900,13 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  V.getFirebase = getFirebase;
-  V.setFirebase = setFirebase;
+  V.getNamespace = getNamespace;
+  V.setNamespace = setNamespace;
   V.setJwt = setJwt;
 
   return {
-    getFirebase: getFirebase,
-    setFirebase: setFirebase,
+    getNamespace: getNamespace,
+    setNamespace: setNamespace,
     setJwt: setJwt,
   };
 

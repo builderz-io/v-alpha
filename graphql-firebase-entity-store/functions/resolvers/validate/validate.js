@@ -2,7 +2,7 @@
 /* eslint global-require: "off" */
 
 module.exports = async ( context, data, objToUpdate ) => {
-  console.log( 'data to validate:', data );
+  // console.log( 'data to validate:', data );
 
   if ( !objToUpdate && data.profileInputServerSide ) {
 
