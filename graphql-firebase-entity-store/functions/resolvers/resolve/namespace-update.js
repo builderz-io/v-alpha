@@ -25,15 +25,17 @@ module.exports = async ( context, data, objToUpdate, col ) => {
   }
 
   /** Copy tinyImg and thumb to profile db */
-  const imgCopy = {
-    a: data.a,
-    o: {
-      a: data.o.a,
-      b: data.o.b,
-    },
-  };
+  if ( data.o ) {
+    const imgCopy = {
+      a: data.a,
+      o: {
+        a: data.o.a,
+        b: data.o.b,
+      },
+    };
 
-  objToUpdate.b.includes( '/i' ) ? require( './set-namespace' )( context, imgCopy, 'profile' ) : null;
+    objToUpdate.b.includes( '/i' ) ? require( './set-namespace' )( context, imgCopy, 'profile' ) : null;
+  }
 
   /** Track profile fields in entity db */
   objToUpdate.b.includes( '/p' ) ? trackProfileFields( objToUpdate.d, data ) : null;
