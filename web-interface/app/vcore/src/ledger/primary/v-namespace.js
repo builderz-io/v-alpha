@@ -198,6 +198,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
       role: V.castRole( E.c ),
+      roleCode: E.c,
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility

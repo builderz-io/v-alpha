@@ -291,13 +291,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } ).then( res => {
 
         /** Draw the new map position */
+        V.setState( 'active', {
+          lastLngLat: res.data[0].n.a,
+        } );
+
         if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
           VMap.draw( res.data );
         }
         if ( 'Firebase' == V.getSetting( 'entityLedger' ) && res.data[0] && res.data[0].n ) {
 
           /** Create GeoJSON object and mixin data from active entity */
+
           VMap.draw( [{
+            isBaseLocationUpdate: true,
+            uuidE: V.getState( 'active' ).lastViewedUuidE,
+            uuidP: V.getState( 'active' ).lastViewedUuidP,
+            role: V.getState( 'active' ).lastViewedRoleCode, // key has to be role here
             fullId: V.aE().fullId,
             path: V.aE().path,
             profile: {

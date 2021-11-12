@@ -58,6 +58,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         lastViewed: entity.fullId,
         lastViewedUuidE: entity.uuidE,
         lastViewedUuidP: entity.uuidP,
+        lastViewedRoleCode: entity.roleCode,
         lastLngLat: entity.geometry.coordinates,
       } );
 
