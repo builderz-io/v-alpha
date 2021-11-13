@@ -366,6 +366,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             thumb: V.getState( 'thumbnailUpload' ),
             medium: V.getState( 'mediumImageUpload' ),
           } ).then( () => {
+
+            Navigation.drawImage( {
+              path: V.getState( 'active' ).path,
+              images: { tinyImage: V.getState( 'tinyImageUpload' ).dataUrl },
+            } );
+
             V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
             V.setNode( '#img-upload-profile__preview', '' );
             V.setNode( '#img-upload-profile__preview', V.cN( {
