@@ -63,6 +63,8 @@ const types = {
       a: ID!            // uuid (P)
 
       o: InputImages
+      x: InputRelationsP
+
     }
   `,
 };

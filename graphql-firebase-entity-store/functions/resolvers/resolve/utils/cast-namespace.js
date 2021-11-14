@@ -141,6 +141,11 @@ module.exports = ( context, data ) => {
         c: data.profileInputServerSide.medImg,
         n: data.profileInputServerSide.imgName,
       },
+
+      x: {
+        a: creatorUuid,
+        m: heldBy,
+      },
     },
     auth: {
       a: uuidA,

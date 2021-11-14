@@ -38,6 +38,7 @@ const Filters = `
   type Image {
     a: String
     o: Images
+    x: RelationsP
   }
 
   type Highlight {
