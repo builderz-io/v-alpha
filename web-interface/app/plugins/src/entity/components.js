@@ -195,9 +195,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleViewMode() {
+    const data = {
+      uuidE: V.getState( 'active' ).lastViewedUuidE,
+      uuidP: V.getState( 'active' ).lastViewedUuidP,
+      navReset: false,
+    };
     this.checked
-      ? User.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) )
-      : Profile.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) );
+      ? User.draw( data )
+      : Profile.draw( data );
 
   }
 

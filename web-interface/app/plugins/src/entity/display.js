@@ -213,7 +213,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     Button.draw( 'all', { fade: 'out' } );
 
-    if ( data.uuidE ) {
+    if (
+      !( data.navReset === false )
+      && data.uuidE
+    ) {
       Navigation.draw( data ).then( () => {
         Page.draw( {
           position: 'top',

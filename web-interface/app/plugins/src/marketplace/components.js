@@ -94,7 +94,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       },
       e: {
         click: whichHandler == 'editable' ?
-          handleEditProfileDraw.bind( circleData.uuidE ) :
+          handleEditProfileDraw.bind( circleData ) :
           whichHandler == 'popup' ?
             handlePopup.bind( circleData ) :
             handleProfileDraw.bind( circleData ),
