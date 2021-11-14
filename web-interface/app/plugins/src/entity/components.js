@@ -905,6 +905,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const holders = V.castJson( entity.holders, 'clone' );
     // holders.splice( holders.indexOf( entity.fullId ), 1 );
 
+    const descr = entity.properties ? entity.properties.description : undefined;
+    const filteredDescr = entity.properties ? entity.properties.filteredDescription : undefined;
+
     const $innerContent = V.cN( {
       t: 'table',
       c: 'is-single-entity-view pxy w-full',
@@ -945,19 +948,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             },
           ],
         },
-        {
-          t: 'tr',
-          h: [
-            {
-              t: 'td',
-            },
-            {
-              t: 'td',
-              c: 'txt-right',
-              h: entity.role,
-            },
-          ],
-        },
+        // {
+        //   t: 'tr',
+        //   h: [
+        //     {
+        //       t: 'td',
+        //     },
+        //     {
+        //       t: 'td',
+        //       c: 'txt-right',
+        //       h: entity.role,
+        //     },
+        //   ],
+        // },
         {
           // x: holders.length >= 1,
           x: entity.holders[0] != entity.fullId,
@@ -1011,7 +1014,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const $combined = V.cN( { t: 'div', c: 'w-full' } );
     // V.setNode( $combined, [$innerContent, $holders] );
 
-    return castCard( $innerContent, getString( ui.entity ) );
+    return castCard( $innerContent,
+      editable || descr || filteredDescr
+        ? getString( ui.entity )
+        : entity.role
+    );
   }
 
   function holderOfCard() {
