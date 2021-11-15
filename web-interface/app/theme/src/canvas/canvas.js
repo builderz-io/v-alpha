@@ -389,6 +389,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .then( entity => {
           if ( entity.success ) {
             V.setActiveEntity( entity.data[0] );
+            Navigation.drawJoinedUserFirst();
             Join.draw( 'new entity was set up' );
           }
           else {

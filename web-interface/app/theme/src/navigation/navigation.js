@@ -576,11 +576,18 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function drawJoinedUserFirst() {
+    V.getNode( 'entity-nav > ul' ).prepend(
+      V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]'
+      ) );
+  }
+
   return {
     draw: draw,
     drawReset: drawReset,
     drawImage: drawImage,
     drawEntityNavPill: drawEntityNavPill,
+    drawJoinedUserFirst: drawJoinedUserFirst,
   };
 
 } )();
