@@ -45,6 +45,14 @@ const profileDb = admin.initializeApp( {
     : 'https://entity-profile' + dev + '.firebaseio.com/',
 }, 'profile' );
 
+const imageDb = admin.initializeApp( {
+  credential: admin.credential.cert( credentials.profile ),
+  databaseURL: local
+    ? 'http://localhost:9000/?ns=entity-profile-image-dev'
+    : 'https://entity-profile-image' + dev + '.firebaseio.com/',
+}, 'image' );
+
 module.exports.authDb = authDb;
 module.exports.namespaceDb = namespaceDb;
 module.exports.profileDb = profileDb;
+module.exports.imageDb = imageDb;

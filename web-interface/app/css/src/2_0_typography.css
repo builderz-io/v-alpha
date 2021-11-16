@@ -35,6 +35,11 @@ body {
   /* font-weight: 700; */
 }
 
+.font-indie {
+  font-family: 'Indie Flower';
+  /* font-weight: 700; */
+}
+
 p {
   line-height: var(--lh-tight);
 }

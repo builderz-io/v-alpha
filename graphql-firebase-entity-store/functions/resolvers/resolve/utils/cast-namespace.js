@@ -13,6 +13,7 @@ const entitySetup = {
   entityDocVersion: '/e1/v0',
   profileDocVersion: '/p1/v0',
   authDocVersion: '/a1/v0',
+  imageDocVersion: '/i1/v0',
   daysToExpiry: 365 * 2,
   uuidStringLength: 10,
 };
@@ -108,6 +109,7 @@ module.exports = ( context, data ) => {
         m: data.profileInputServerSide.target,
         n: data.profileInputServerSide.unit,
         r: data.profileInputServerSide.filteredDescr,
+        s: data.profileInputServerSide.emailPrivate,
       },
       n: {
         a: data.profileInputServerSide.lngLat,
@@ -117,8 +119,8 @@ module.exports = ( context, data ) => {
       o: {
         a: data.profileInputServerSide.tinyImg,
         b: data.profileInputServerSide.thumb,
-        c: data.profileInputServerSide.medImg,
-        n: data.profileInputServerSide.imgName,
+        // c: data.profileInputServerSide.medImg,
+        // n: data.profileInputServerSide.imgName,
       },
 
       x: {
@@ -128,6 +130,21 @@ module.exports = ( context, data ) => {
 
       y: {
         a: String( unix ),
+      },
+    },
+    image: {
+      a: uuidP,
+      b: entitySetup.imageDocVersion,
+      d: uuidE,
+
+      o: {
+        c: data.profileInputServerSide.medImg,
+        n: data.profileInputServerSide.imgName,
+      },
+
+      x: {
+        a: creatorUuid,
+        m: heldBy,
       },
     },
     auth: {

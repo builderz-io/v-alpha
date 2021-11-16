@@ -27,8 +27,18 @@ const Filters = `
     i: String
   }
 
+  input WhereProfile {
+    a: String
+  }
+
   input WhereGeo {
     i: String
+  }
+
+  type Image {
+    a: String
+    o: Images
+    x: RelationsP
   }
 
   type Highlight {
@@ -48,6 +58,7 @@ const Filters = `
   type Point {
     a: String
     c: String
+    d: String
     zz: PointZz
   }
 
@@ -78,6 +89,7 @@ const Jwt = `
     success: Boolean
     message: String
     uuidE: String
+    uuidP: String
     exp: Int
     jwt: String
     tempRefresh: String
@@ -89,11 +101,13 @@ const Jwt = `
 
 const Queries = `
   type Query {
-    getEntityQuery(filter: Filter!): [Entity]
-    getHighlights: [Highlight]
-    getEntity(where: WhereEntity): [Entity]
-    getPoints(where: WhereGeo): [Point]
+    getEntities(where: WhereEntity): [Entity]
     getProfiles(array: [String!]): [Profile]
+    getEntityQuery(filter: Filter!): [Entity]
+    getProfile(where: WhereProfile): [Profile]
+    getPoints(where: WhereGeo): [Point]
+    getHighlights: [Highlight]
+    getImage(where: WhereProfile): [Image]
   }
 `;
 
@@ -105,6 +119,7 @@ const Mutations = `
     setHighlight(input: InputHighlight!): Highlight
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
+    setImage(input: ImageInputServerSide!): Image
   }
 `;
 

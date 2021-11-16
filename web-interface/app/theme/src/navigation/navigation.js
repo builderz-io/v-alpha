@@ -42,6 +42,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       if ( !entityNav[item] ) {
         const obj = {
           uuidE: entityNavOrder[item].uuidE,
+          uuidP: entityNavOrder[item].uuidP,
           title: entityNavOrder[item].title,
           tag: entityNavOrder[item].tag,
           initials: entityNavOrder[item].initials,
@@ -57,6 +58,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( data && data.fullId && !entityNav[data.path] ) {
       const obj = {
         uuidE: data.uuidE,
+        uuidP: data.uuidP,
         title: data.title,
         tag: data.tag,
         initials: V.castInitials( data.title ),
@@ -237,13 +239,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // add new entries
     for ( const newKey in b ) {
       if( !a.hasOwnProperty( newKey ) ) {
-        a[b[newKey].path] = {
-          uuidE: b[newKey].uuidE,
-          title: b[newKey].title,
-          tag: b[newKey].tag,
-          initials: b[newKey].initials,
-          path: b[newKey].path,
-        };
+        // a[b[newKey].path] = {
+        //   uuidE: b[newKey].uuidE,
+        //   uuidP: b[newKey].uuidP,
+        //   title: b[newKey].title,
+        //   tag: b[newKey].tag,
+        //   initials: b[newKey].initials,
+        //   path: b[newKey].path,
+        // };
+        a[b[newKey].path] = b[newKey];
 
         b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
         b[newKey].useDataUrl ? a[b[newKey].path].useDataUrl = b[newKey].useDataUrl : null;
@@ -260,10 +264,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       const uuidE = $itemClicked.getAttribute( 'uuide' );
+      const uuidP = $itemClicked.getAttribute( 'uuidp' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( path );
       if ( uuidE ) { // entity pill
-        V.getNavItem( 'active', ['entityNav'] ).draw( uuidE );
+        V.getNavItem( 'active', ['entityNav'] ).draw( { uuidE: uuidE, uuidP: uuidP, path: path } );
       }
       else {
         V.getNavItem( 'active', ['serviceNav', 'userNav'] ).draw( path );
@@ -537,6 +542,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /** Create nav object */
     const obj = {
       uuidE: data.uuidE,
+      uuidP: data.uuidP,
       title: data.title,
       tag: data.tag,
       initials: V.castInitials( data.title ),
@@ -559,10 +565,29 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( 'entity-nav > ul' ).prepend( $pill );
   }
 
+  function drawImage( data ) {
+
+    const entityNavOrder =  V.castJson( V.getLocal( 'entity-nav-order' ) );
+
+    entityNavOrder[data.path].tinyImage = data.images.tinyImage;
+    entityNavOrder[data.path].useDataUrl = true;
+
+    V.setLocal( 'entity-nav-order', entityNavOrder );
+
+  }
+
+  function drawJoinedUserFirst() {
+    V.getNode( 'entity-nav > ul' ).prepend(
+      V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]'
+      ) );
+  }
+
   return {
     draw: draw,
     drawReset: drawReset,
+    drawImage: drawImage,
     drawEntityNavPill: drawEntityNavPill,
+    drawJoinedUserFirst: drawJoinedUserFirst,
   };
 
 } )();

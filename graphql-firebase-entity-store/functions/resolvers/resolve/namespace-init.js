@@ -8,10 +8,12 @@ const settings = {
 const { namespaceDb } = require( '../../resources/databases-setup' );
 const { profileDb } = require( '../../resources/databases-setup' );
 const { authDb } = require( '../../resources/databases-setup' );
+const { imageDb } = require( '../../resources/databases-setup' );
 
 const colE = namespaceDb.database().ref( 'entities' );
 const colP = profileDb.database().ref( 'profiles' );
 const colA = authDb.database().ref( 'authentication' );
+const colI = imageDb.database().ref( 'images' );
 
 const castObjectPaths = require( './utils/cast-object-paths' );
 const trackProfileFields = require( './utils/track-profile-fields' );
@@ -31,17 +33,21 @@ module.exports = async ( context, data ) => {
     colA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
   } );
 
-  const setP = new Promise( resolve => {
-    colP.child( namespace.profile.a ).update( castObjectPaths( namespace.profile ), () => resolve( 'set Profile' ) );
-  } );
-
   const setE = new Promise( resolve => {
     colE.child( namespace.entity.a ).update( castObjectPaths( namespace.entity ), () => resolve( 'set Entity' ) );
   } );
 
-  const all = await Promise.all( [setA, setE, setP] );
+  const setP = new Promise( resolve => {
+    colP.child( namespace.profile.a ).update( castObjectPaths( namespace.profile ), () => resolve( 'set Profile' ) );
+  } );
 
-  if ( JSON.stringify( all ) != '["set Auth","set Entity","set Profile"]' ) {
+  const setI = new Promise( resolve => {
+    colI.child( namespace.profile.a ).update( castObjectPaths( namespace.image ), () => resolve( 'set Image' ) );
+  } );
+
+  const all = await Promise.all( [setA, setE, setP, setI] );
+
+  if ( JSON.stringify( all ) != '["set Auth","set Entity","set Profile","set Image"]' ) {
     throw new Error( 'could not set up entity' );
   }
 

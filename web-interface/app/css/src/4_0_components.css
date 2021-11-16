@@ -310,36 +310,24 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
     width: 0;
   }
 
-  20% {
-    width: 10%;
+  15% {
+    width: 65%;
   }
 
   25% {
-    width: 24%;
+    width: 75%;
   }
 
-  43% {
-    width: 41%;
+  50% {
+    width: 78%;
   }
 
-  56% {
-    width: 50%;
+  65% {
+    width: 85%;
   }
 
-  66% {
-    width: 52%;
-  }
-
-  71% {
-    width: 60%;
-  }
-
-  75% {
-    width: 76%;
-  }
-
-  94% {
-    width: 86%;
+  92% {
+    width: 92%;
   }
 
   100% {
@@ -364,4 +352,52 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
   background: rgba(var(--brandPrimary), 1);
   padding: 2px;
   width: 0;
+}
+
+/* ====================== Nudge Arrow ================ */
+
+.nudge-arrow {
+  width: 80px;
+  margin: 0 auto;
+}
+.nudge-arrow__profile {
+  height: 110px;
+  transform: scale(-1, -1) rotate(-10deg);
+}
+.nudge-arrow__skill {
+  height: 80px;
+  transform: scale(1, -1) rotate(20deg);
+}
+.draw-nudge-arrow {
+  stroke-width: 3;
+  stroke: blue;
+  fill: none;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  -webkit-animation-duration: 2s;
+          animation-duration: 2s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  -webkit-animation-name: draw;
+          animation-name: draw;
+}
+.draw-nudge-arrow .tail-1 {
+  -webkit-animation-delay: 0.5s;
+          animation-delay: 0.5s;
+}
+.draw-nudge-arrow .tail-2 {
+  -webkit-animation-delay: 0.7s;
+          animation-delay: 0.7s;
+}
+
+@-webkit-keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

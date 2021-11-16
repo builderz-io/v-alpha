@@ -26,6 +26,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     newNameOnly: 'Name personal profile only',
     newName: 'Name personal profile',
     newNameExplain: 'Name yourself, your personal profile here for your address. Later you can add anything you want to make visible in the network, like a business or your skills.',
+    emailExplainA: 'The admins of', // fills in window.location.hostname
+    emailExplainB: 'kindly ask you to provide a real email address. This address will not be publicly visible.',
+    confirmExplain: 'Check your inbox (and spam) and enter the 4 digits emailed to you.',
+    email: 'Set email',
+    confirmEmail: 'Confirm',
+    isConfirmCode: 'is your confirmation code', // email subjedt // fills in number
+    confirmNumberIncorrect: 'This 4-digit number is not correct',
     manageProfile: 'Join with existing key',
     disconnect: 'Confirm Disconnect',
     useProfile: 'Use current profile',
@@ -124,7 +131,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity() {
-    V.setNode( '#use-key-btn', clickConfirmSpinner() );
+    V.setNode( '#use-key-btn', InteractionComponents.clickConfirmSpinner() );
     V.setAuth( V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
         if ( data.success ) {
@@ -153,76 +160,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
   }
 
-  function handleSetEntityForm() {
-    const $input = InteractionComponents.formField( 'title' );
-    const $new = V.cN( {
-      t: 'div',
-      i: 'name-profile-btn',
-      c: buttonClasses, //+ ' modal-pos-1',
-      k: handleSetEntity,
-      h: getString( ui.nameProfile ),
-    } );
-
-    const $response = V.sN( {
-      t: 'div',
-      c: 'joinform__response pxy txt-red',
-    } );
-
-    V.sN( '.modal__content', '' );
-    V.setNode( '.modal__content', [$input, $response, $new] );
-  }
-
-  function handleSetEntity( e ) {
-    e.stopPropagation();
-    e.target.removeEventListener( 'click', handleSetEntity, false );
-    e.target.textContent = getString( ui.joining );
-    V.setNode( '#name-profile-btn', clickConfirmSpinner() );
-    V.getNode( '.joinform__response' ).textContent = '';
-
-    const entityData = {
-      title: V.getNode( '#plusform__title' ).value,
-      role: 'Person',
-      evmAddress: V.cA(), // TODO: allow for other chains
-    };
-
-    console.log( 'about to set entity: ', entityData );
-    V.setEntity( entityData ).then( res => {
-      if ( res.success ) {
-        console.log( 'successfully set entity: ', res );
-
-        /** automatically join */
-        V.setAuth( res.data[0].auth.uPhrase )
-          .then( data => {
-            if ( data.success ) {
-              console.log( 'auth success' );
-            }
-            else {
-              console.log( 'could not set auth after setting new entity' );
-            }
-          } );
-
-        /** set state and cache */
-        Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
-        V.setActiveEntity( res.data[0] );
-        Join.draw( 'new entity was set up' );
-
-        // V.setCache( 'entire cache', 'clear' );
-        // V.setCache( 'viewed', res.data[0] );
-
-        // Navigation.drawEntityNavPill( res.data[0] );
-      }
-      else {
-        console.log( 'could not set entity: ', res );
-        e.target.addEventListener( 'click', handleSetEntity );
-        e.target.textContent = getString( ui.nameProfile );
-        V.getNode( '.joinform__response' ).textContent = res.message;
-      }
-    } );
-  }
-
   function handleWeb3Join( e ) {
     e.stopPropagation();
-    V.setNode( '#connectwallet-btn', clickConfirmSpinner() );
+    V.setNode( '#connectwallet-btn', InteractionComponents.clickConfirmSpinner() );
     Join.draw( 'authenticate' );
   }
 
@@ -288,11 +228,203 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDisconnect() {
-    V.setNode( '#disconnect-btn', clickConfirmSpinner() );
+    V.setNode( '#disconnect-btn', InteractionComponents.clickConfirmSpinner() );
     V.setDisconnect();
   }
 
+  /* ==================== join process ================== */
+
+  function handleDrawTitleForm() {
+    drawModalContent(
+      'title',
+      handleSetTitle,
+      getString( ui.nameProfile )
+    );
+  }
+
+  function handleSetTitle( e ) {
+
+    const title = V.getNode( '#plusform__title' ).value;
+
+    /* if title does not validate, stop the process */
+    const titleValidation = V.castEntityTitle( title, 'Person' );
+    if ( !titleValidation.success ) {
+      V.getNode( '.joinform__response' ).textContent = titleValidation.message;
+      return;
+    }
+
+    /* set title in state on click */
+    V.setState( 'newRegistration', {
+      title: title,
+    } );
+
+    /* if email is not asked for, skip and set entity */
+    if ( V.getSetting( 'askforEmail' ) ) {
+      drawEmailForm();
+    }
+    else {
+      setEntity( e );
+    }
+  }
+
+  function drawEmailForm() {
+    drawModalContent(
+      'email',
+      handleConfirmEmail,
+      getString( ui.email ),
+      getString( ui.emailExplainA + ' ' + window.location.hostname + ' ' + ui.emailExplainB )
+    );
+  }
+
+  function handleConfirmEmail( e ) {
+
+    const randomNumber = V.castTag().replace( '#', '' );
+    const email = V.getNode( '#plusform__email' ).value;
+
+    // const knownFakes = new RegExp( /FAKEMAILGENERATOR|fakemailgenerator.com|armyspy.com|teleworm.us|cuvox.de|dayrep.com|einrot.com|fleckens.hu|gustr.com|jourrapide.com|rhyta.com|superrito.com|EMAILFAKE|emailfake.com|j9ysy.com|rehtdita.com|77q8m.com|piftir.com|kentol.buzz|freeallapp.com|luddo.me|hcfmgsrp.com|filerd.site|beefnomination.info|sirkelmail.com|white-sptaikz.com|zetgets.com|devoc.site/, 'gi' );
+    //
+    // if ( email.match( knownFakes ) ) {
+    //   V.getNode( '.joinform__response' ).textContent = 'Hmmmm... This email provider is known as fake...';
+    //   return;
+    // }
+
+    V.getNode( '.joinform__response' ).textContent = '';
+    e.target.append( InteractionComponents.clickConfirmSpinner() );
+
+    V.setState( 'newRegistration', {
+      emailPrivate: V.getNode( '#plusform__email' ).value,
+    } );
+
+    /* Email by https://www.smtpjs.com */
+    Email.send( {
+      SecureToken: V.getSetting( 'emailKey' ),
+      To: email,
+      From: 'network.mailer@valueinstrument.org',
+      Subject: window.location.hostname + ': '  + randomNumber + ' ' + getString( ui.isConfirmCode ),
+      Body: window.location.hostname + ': '  + randomNumber + ' ' + getString( ui.isConfirmCode ),
+      // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
+    } ).then( msg => {
+      if ( 'OK' == msg ) {
+        drawModalContent(
+          'emailConfirm',
+          handleConfirmNumber.bind( randomNumber ),
+          getString( ui.confirmEmail ),
+          getString( ui.confirmExplain )
+        );
+      }
+      else {
+        e.target.textContent = getString( ui.newEmail );
+
+        V.getNode( '.joinform__response' ).textContent = msg;
+      }
+    } );
+  }
+
+  function handleConfirmNumber( e ) {
+    const number = V.getNode( '#plusform__emailConfirm' ).value;
+    if ( number == this ) { // both are strings
+      setEntity( e );
+    }
+    else {
+      V.getNode( '.joinform__response' ).textContent = getString( ui.confirmNumberIncorrect );
+    }
+  }
+
+  function setEntity( e ) {
+
+    e.stopPropagation();
+    e.target.removeEventListener( 'click', handleSetTitle, false );
+    e.target.removeEventListener( 'click', handleConfirmNumber, false );
+
+    V.sN( '.explain', 'clear' );
+    e.target.textContent = getString( ui.joining );
+    e.target.append( InteractionComponents.clickConfirmSpinner() );
+    e.target.parentNode.append( V.cN( {
+      t: 'div',
+      c: 'progress-bar',
+      h: {
+        t: 'span',
+        c: 'bar',
+        h: {
+          t: 'span',
+          c: 'progress',
+        },
+      },
+    } ) );
+
+    V.getNode( '.joinform__response' ).textContent = '';
+
+    const entityData = {
+      title: V.getState( 'newRegistration' ).title,
+      emailPrivate: V.getState( 'newRegistration' ).emailPrivate || null,
+      role: 'Person',
+      evmAddress: V.cA() || null, // TODO: allow for other chains
+    };
+
+    console.log( 'about to set entity: ', entityData );
+    V.setEntity( entityData ).then( res => {
+      if ( res.success ) {
+        console.log( 'successfully set entity: ', res );
+
+        /** automatically join */
+        V.setAuth( res.data[0].auth.uPhrase )
+          .then( data => {
+            if ( data.success ) {
+              console.log( 'auth success' );
+            }
+            else {
+              console.log( 'could not set auth after setting new entity' );
+            }
+          } );
+
+        // Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
+        Join.onboard( res.data[0].auth.uPhrase );
+
+        /** set state and cache */
+        V.setActiveEntity( res.data[0] );
+        Join.draw( 'new entity was set up' );
+
+        // V.setCache( 'entire cache', 'clear' );
+        // V.setCache( 'viewed', res.data[0] );
+
+        // Navigation.drawEntityNavPill( res.data[0] );
+      }
+      else {
+        console.log( 'could not set entity: ', res );
+        // e.target.addEventListener( 'click', setEntity );
+        // e.target.textContent = getString( ui.nameProfile );
+        V.getNode( '.joinform__response' ).textContent = res.message;
+      }
+    } );
+  }
+
   /* ================== private methods ================= */
+
+  function drawModalContent( field, handler, label, explain ) {
+
+    const $btn = V.cN( {
+      t: 'div',
+      c: buttonClasses,
+      k: handler,
+      h: label,
+    } );
+
+    const $input = InteractionComponents.formField( field );
+
+    const $response = V.sN( {
+      t: 'div',
+      c: 'joinform__response pxy txt-red',
+    } );
+
+    const $descr = V.cN( {
+      t: 'p',
+      c: 'explain modal-pos-1 relative txt-center',
+      h: explain || '',
+    } );
+
+    V.sN( '.modal__content', '' );
+    V.setNode( '.modal__content', [$input, $response, $btn, $descr] );
+  }
 
   /* ================== public methods ================== */
 
@@ -424,7 +556,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $newName = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
-      k: handleSetEntityForm,
+      k: handleDrawTitleForm,
       h: getString( ui.newNameOnly ),
     } );
     V.setNode( $content, [$new, $key, $newName] );
@@ -436,7 +568,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $new = V.cN( {
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
-      k: handleSetEntityForm,
+      k: handleDrawTitleForm,
       h: getString( ui.newName ),
     } );
     const $key = V.cN( {
@@ -506,7 +638,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $new = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
-      k: handleSetEntityForm,
+      k: handleDrawTitleForm,
       h: getString( ui.newName ),
     } );
     V.setNode( $content, [$current, $new] );
@@ -589,7 +721,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $new = V.cN( {
       t: 'div',
       c: buttonClasses + ' modal-pos-1',
-      k: handleSetEntityForm,
+      k: handleDrawTitleForm,
       h: getString( ui.newName ),
     } );
     const $current = V.cN( {
@@ -610,40 +742,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $content, [$new, $descr] );
     }
     return $content;
-  }
-
-  function clickConfirmSpinner() {
-    return V.cN( {
-      svg: true,
-      t: 'svg',
-      c: 'confirm-click-spinner',
-      a: {
-        width: '18',
-        height: '18',
-        viewBox: '0 0 50 50',
-      },
-      h: [
-        {
-          svg: true,
-          t: 'path',
-          a: {
-            d: 'M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z',
-          },
-          h: {
-            svg: true,
-            t: 'animateTransform',
-            a: {
-              attributeName: 'transform',
-              type: 'rotate',
-              from: '0 25 25',
-              to: '360 25 25',
-              dur: '0.7s',
-              repeatCount: 'indefinite',
-            },
-          },
-        },
-      ],
-    } );
   }
 
   /* ====================== export ====================== */

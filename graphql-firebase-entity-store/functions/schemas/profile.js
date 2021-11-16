@@ -27,6 +27,7 @@ const types = {
       m: Int          // target
       n: String       // unit
       r: String       // filtered description
+      s: String       // email private
     }
   `,
   Geometry: `

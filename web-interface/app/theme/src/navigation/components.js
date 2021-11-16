@@ -164,6 +164,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       c: ( item.tinyImage ? 'pill__entity' : 'pill' ) + ' flex justify-center items-center rounded-full bkg-white pill-shadow cursor-pointer no-txt-select whitespace-no-wrap',
       a: {
         uuidE: item.uuidE,
+        uuidP: item.uuidP,
         path: item.path || '/',
         fullId: item.title + ' ' + item.tag,
         initials: item.initials,

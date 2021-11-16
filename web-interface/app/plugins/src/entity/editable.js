@@ -10,6 +10,14 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( which ) {
+
+    if ( typeof which == 'string' ) {
+      which = V.castPathOrId( which );
+    }
+    else {
+      Object.assign( which, { isDisplay: true } );
+    }
+
     let query;
     const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == which ) : undefined;
 
@@ -27,10 +35,11 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       query = await V.getEntity(
-        which.length == V.getSetting( 'uuidStringLength' ) && // checks whether which is a uuidE or a path
-        isNaN( Number( which.slice( -5 ) ) )
-          ? which
-          : V.castPathOrId( which )
+        which
+        // which.length == V.getSetting( 'uuidStringLength' ) && // checks whether which is a uuidE or a path
+        // isNaN( Number( which.slice( -5 ) ) )
+        //   ? which
+        //   : V.castPathOrId( which )
       ).then( res => {
         if ( res.success ) {
           V.setCache( 'points', res.data );
@@ -157,7 +166,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       //     button: 'plus search',
       //   },
       //   draw: function( path ) {
-      //     User.draw( path );
+      //     User.draw( { path: path } );
       //   }
       // },
       {
@@ -174,19 +183,19 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         title: 'Disconnect',
         path: '/me/disconnect',
         draw: function( path ) {
-          User.draw( path );
+          User.draw( { path: path } );
         },
       },
     ] );
   }
 
-  function draw( path ) {
-    if ( path == '/me/disconnect' ) {
+  function draw( data ) {
+    if ( data.path == '/me/disconnect' ) {
       Modal.draw( 'disconnect' );
     }
     else {
-      preview( path );
-      presenter( path ).then( viewData => { view( viewData ) } );
+      preview( /* path */ );
+      presenter( data ).then( viewData => { view( viewData ) } );
     }
   }
 

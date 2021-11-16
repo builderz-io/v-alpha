@@ -52,8 +52,13 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter( path ) {
-
-    const messages = await V.getMessage();
+    let messages;
+    if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
+      messages = { success: false };
+    }
+    else {
+      messages = await V.getMessage();
+    }
 
     if( !messages.success || !messages.data[0].length ) {
       return {

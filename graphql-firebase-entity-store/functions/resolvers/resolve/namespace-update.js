@@ -24,6 +24,19 @@ module.exports = async ( context, data, objToUpdate, col ) => {
     data.n.b = require( 'geofire-common' ).geohashForLocation( [ data.n.a[1], data.n.a[0] ] );
   }
 
+  /** Copy tinyImg and thumb to profile db */
+  if ( data.o ) {
+    const imgCopy = {
+      a: data.a,
+      o: {
+        a: data.o.a,
+        b: data.o.b,
+      },
+    };
+
+    objToUpdate.b.includes( '/i' ) ? require( './set-namespace' )( context, imgCopy, 'profile' ) : null;
+  }
+
   /** Track profile fields in entity db */
   objToUpdate.b.includes( '/p' ) ? trackProfileFields( objToUpdate.d, data ) : null;
 

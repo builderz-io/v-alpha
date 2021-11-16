@@ -1,3 +1,8 @@
+/**
+ * GraphQL server for Alpha 3.3.0
+ *
+ */
+
 const functions = require( 'firebase-functions' );
 const express = require( 'express' );
 
@@ -22,7 +27,7 @@ const app = express();
 
 const whitelist = [
   'http://localhost:4021',
-  'http://localhost:5289',
+  'http://localhost:4042',
   'https://dev.valueinstrument.org',
   'https://staging.valueinstrument.org',
   'https://staging.builderz.io',

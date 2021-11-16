@@ -8,7 +8,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const settings = {
-    firebaseEndpoint: V.getSetting( 'firebaseEndpoint' ),
+    namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
   };
 
   let uPhrase, lastConnectedAddress, tempRefresh;
@@ -17,14 +17,14 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
   function fetchAuth() {
     const queryA = `mutation SetEntityAuth {
-            setAuth { success message uuidE exp jwt tempRefresh }
+            setAuth { success message uuidE uuidP exp jwt tempRefresh }
           }`;
 
     return fetchFirebase( queryA );
   }
 
   function fetchFirebase( query, variables ) {
-    return fetch( settings.firebaseEndpoint, {
+    return fetch( settings.namespaceEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
