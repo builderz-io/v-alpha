@@ -143,6 +143,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         'font-display': 'fallback',
         'unicode-range': 'U+000-024F',
       },
+      '@font-face-4': {
+        'font-family': 'Indie Flower',
+        'src': 'url(' + V.getSetting( 'sourceEndpoint' ) + '/assets/font/IndieFlower-Regular.ttf) format(\'truetype\')',
+        'font-display': 'fallback',
+        'unicode-range': 'U+000-024F',
+      },
     } );
   }
 
@@ -360,6 +366,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
 
       VMap.setMap();
+
+      // setTimeout( function functionName() {
+      //   Join.onboard();
+      // }, 2000 );
     }
   }
 
@@ -369,16 +379,17 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .then( data => {
           if ( data.success ) {
             console.log( 'auth success' );
-            return data.data[0].uuidE;
+            return data.data[0];
           }
           else {
             throw new Error( 'could not set auth' );
           }
         } )
-        .then( uuidE => V.getEntity( uuidE ) )
+        .then( data => V.getEntity( { uuidE: data.uuidE, uuidP: data.uuidP, isReturningUser: true } ) )
         .then( entity => {
           if ( entity.success ) {
             V.setActiveEntity( entity.data[0] );
+            Navigation.drawJoinedUserFirst();
             Join.draw( 'new entity was set up' );
           }
           else {

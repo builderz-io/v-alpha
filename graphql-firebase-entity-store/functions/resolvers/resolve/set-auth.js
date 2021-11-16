@@ -80,6 +80,7 @@ module.exports = async ( context /*, res */ ) => {
     message: 'successfully set refreshToken and sent cookie',
     exp: settings.jwtExpiry,
     uuidE: authDoc.d,
+    uuidP: authDoc.e,
     tempRefresh: 'REFR' + '--' + authDoc.a + '--' + newRefreshToken,
     jwt: sign(
       {

@@ -19,6 +19,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     key: 'Key',
     title: 'Title',
+    email: 'Email',
+    emailConfirm: '4 digits',
     loc: 'Location',
     descr: 'Description and Links',
     target: 'Target',
@@ -216,6 +218,28 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         inputId: 'plusform__title',
         attributes: {
           value: whichValue,
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
+          spellcheck: 'false',
+        },
+      },
+      email: {
+        label: getString( ui.email ),
+        inputId: 'plusform__email',
+        attributes: {
+          // value: whichValue,
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
+          spellcheck: 'false',
+        },
+      },
+      emailConfirm: {
+        label: getString( ui.emailConfirm ),
+        inputId: 'plusform__emailConfirm',
+        attributes: {
+          // value: whichValue,
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
@@ -560,6 +584,40 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
+  function clickConfirmSpinner() {
+    return V.cN( {
+      svg: true,
+      t: 'svg',
+      c: 'confirm-click-spinner',
+      a: {
+        width: '18',
+        height: '18',
+        viewBox: '0 0 50 50',
+      },
+      h: [
+        {
+          svg: true,
+          t: 'path',
+          a: {
+            d: 'M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z',
+          },
+          h: {
+            svg: true,
+            t: 'animateTransform',
+            a: {
+              attributeName: 'transform',
+              type: 'rotate',
+              from: '0 25 25',
+              to: '360 25 25',
+              dur: '0.7s',
+              repeatCount: 'indefinite',
+            },
+          },
+        },
+      ],
+    } );
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -578,6 +636,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,
     getStarted: getStarted,
+    clickConfirmSpinner: clickConfirmSpinner,
   };
 
 } )();

@@ -52,10 +52,10 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     if ( V.getSetting( 'entityLedger' ) == 'Firebase' ) {
       if ( !V.getSetting( 'useBuilds' ) ) {
         await Promise.all( [
-          V.setScript( host + '/vcore/src/ledger/primary/v-firebase.js' ),
+          V.setScript( host + '/vcore/src/ledger/primary/v-namespace.js' ),
         ] )
-          .then( () => console.log( 'Success loading v-firebase.js' ) )
-          .catch( () => console.error( 'Error loading v-firebase.js' ) );
+          .then( () => console.log( 'Success loading v-namespace.js' ) )
+          .catch( () => console.error( 'Error loading v-namespace.js' ) );
       }
     }
     else if ( V.getSetting( 'entityLedger' ) == '3Box' ) {
@@ -161,7 +161,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       return V.setMongoDB( data, whichEndpoint );
     }
     else if ( whichLedger == 'Firebase' ) {
-      return V.setFirebase( data, whichEndpoint );
+      return V.setNamespace( data, whichEndpoint );
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {
@@ -201,7 +201,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       return V.getMongoDB( data, whichEndpoint );
     }
     else if ( whichLedger == 'Firebase' ) {
-      return V.getFirebase( data, whichEndpoint );
+      return V.getNamespace( data, whichEndpoint );
     }
     else if ( whichLedger == 'EVM' ) {
       if ( whichEndpoint == 'transaction' ) {

@@ -195,9 +195,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleViewMode() {
+    const data = {
+      uuidE: V.getState( 'active' ).lastViewedUuidE,
+      uuidP: V.getState( 'active' ).lastViewedUuidP,
+      navReset: false,
+    };
     this.checked
-      ? User.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) )
-      : Profile.draw( V.castPathOrId( V.getState( 'active' ).lastViewed ) );
+      ? User.draw( data )
+      : Profile.draw( data );
 
   }
 
@@ -291,13 +296,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } ).then( res => {
 
         /** Draw the new map position */
+        V.setState( 'active', {
+          lastLngLat: res.data[0].n.a,
+        } );
+
         if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
           VMap.draw( res.data );
         }
         if ( 'Firebase' == V.getSetting( 'entityLedger' ) && res.data[0] && res.data[0].n ) {
 
           /** Create GeoJSON object and mixin data from active entity */
+
           VMap.draw( [{
+            isBaseLocationUpdate: true,
+            uuidE: V.getState( 'active' ).lastViewedUuidE,
+            uuidP: V.getState( 'active' ).lastViewedUuidP,
+            role: V.getState( 'active' ).lastViewedRoleCode, // key has to be role here
             fullId: V.aE().fullId,
             path: V.aE().path,
             profile: {
@@ -357,6 +371,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             thumb: V.getState( 'thumbnailUpload' ),
             medium: V.getState( 'mediumImageUpload' ),
           } ).then( () => {
+
+            Navigation.drawImage( {
+              path: V.getState( 'active' ).path,
+              images: { tinyImage: V.getState( 'tinyImageUpload' ).dataUrl },
+            } );
+
             V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
             V.setNode( '#img-upload-profile__preview', '' );
             V.setNode( '#img-upload-profile__preview', V.cN( {
@@ -567,7 +587,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           castDescr.$description,
         ],
       } );
-      return castCard( $innerContent, editable ? getString( ui.description ) : entity.role );
+      return castCard( $innerContent, editable ? entity.role + ' ' + getString( ui.description ) : entity.role );
     }
     else {
       return '';
@@ -885,6 +905,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const holders = V.castJson( entity.holders, 'clone' );
     // holders.splice( holders.indexOf( entity.fullId ), 1 );
 
+    const descr = entity.properties ? entity.properties.description : undefined;
+    const filteredDescr = entity.properties ? entity.properties.filteredDescription : undefined;
+
     const $innerContent = V.cN( {
       t: 'table',
       c: 'is-single-entity-view pxy w-full',
@@ -925,19 +948,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             },
           ],
         },
-        {
-          t: 'tr',
-          h: [
-            {
-              t: 'td',
-            },
-            {
-              t: 'td',
-              c: 'txt-right',
-              h: entity.role,
-            },
-          ],
-        },
+        // {
+        //   t: 'tr',
+        //   h: [
+        //     {
+        //       t: 'td',
+        //     },
+        //     {
+        //       t: 'td',
+        //       c: 'txt-right',
+        //       h: entity.role,
+        //     },
+        //   ],
+        // },
         {
           // x: holders.length >= 1,
           x: entity.holders[0] != entity.fullId,
@@ -991,7 +1014,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const $combined = V.cN( { t: 'div', c: 'w-full' } );
     // V.setNode( $combined, [$innerContent, $holders] );
 
-    return castCard( $innerContent, getString( ui.entity ) );
+    return castCard( $innerContent,
+      editable || descr || filteredDescr
+        ? getString( ui.entity )
+        : entity.role
+    );
   }
 
   function holderOfCard() {

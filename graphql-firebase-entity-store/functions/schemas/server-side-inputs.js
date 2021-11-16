@@ -31,6 +31,7 @@ const types = {
     {
       descr: String
       email: String
+      emailPrivate: String
       target: Int
       unit: String
       lngLat: [Float]
@@ -55,6 +56,15 @@ const types = {
       o: InputImages
       p: InputTransactionLog
       q: InputQuestionnaire
+    }
+  `,
+  ImageInputServerSide: `
+    {
+      a: ID!            // uuid (P)
+
+      o: InputImages
+      x: InputRelationsP
+
     }
   `,
 };

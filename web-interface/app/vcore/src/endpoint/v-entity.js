@@ -249,6 +249,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: target.data[0],
         unit: entityData.unit || undefined,
         email: email,
+        emailPrivate: entityData.emailPrivate || undefined,
       },
 
       geometry: geometry,
@@ -489,8 +490,16 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
 
-      if ( Array.isArray( which ) ) {
+      if (
+        typeof which == 'object'
+        || Array.isArray( which )
+      ) {
         filter = 'uuidE';
+      }
+      else if (
+        new RegExp( /\s#\d{4}/ ).test( which )
+      ) {
+        filter = 'fullId';
       }
       else if ( 'highlight' == which ) {
         filter = which;
@@ -502,11 +511,6 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         which.length == V.getSetting( 'uuidStringLength' )
       ) {
         filter = 'uuidE';
-      }
-      else if (
-        new RegExp( /\s#\d{4}/ ).test( which )
-      ) {
-        filter = 'fullId';
       }
       else if (
         '0x' == which.substr( 0, 2 )

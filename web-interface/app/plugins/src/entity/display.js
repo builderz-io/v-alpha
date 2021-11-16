@@ -11,12 +11,13 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    // if (
-    //   isNaN( Number( which.slice( -4 ) ) ) ||
-    //   which.slice( -5, -4 ) != '-'
-    // ) {
-    //   return V.successFalse( 'validate profile link' );
-    // }
+    if ( typeof which == 'string' ) {
+      which = V.castPathOrId( which );
+    }
+    else {
+      Object.assign( which, { isDisplay: true } );
+    }
+
     const cache = V.getCache( 'viewed' );
     const now = Date.now();
 
@@ -29,17 +30,14 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     let query;
 
-    const inCache = V.getViewed( which );
+    const inCache = V.getViewed( which.uuidE || which );
 
     if ( inCache ) {
       query = V.successTrue( 'used cache', inCache );
     }
     else {
       query = await V.getEntity(
-        which.length == V.getSetting( 'uuidStringLength' ) && // checks whether which is a uuidE or a path
-        isNaN( Number( which.slice( -5 ) ) )
-          ? which
-          : V.castPathOrId( which )
+        which
       ).then( res => {
         if ( res.success ) {
           V.setCache( 'points', res.data );
@@ -60,6 +58,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         lastViewed: entity.fullId,
         lastViewedUuidE: entity.uuidE,
         lastViewedUuidP: entity.uuidP,
+        lastViewedRoleCode: entity.roleCode,
         lastLngLat: entity.geometry.coordinates,
       } );
 
@@ -97,7 +96,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       const data = {
-        which: which,
+        typeOfWhich: typeof which,
         entity: entity,
         sendVolume: sendVolume,
         receiveVolume: receiveVolume,
@@ -131,8 +130,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
        *
        */
 
+      const entity = data.data[0].entity;
+
       UserComponents.setData( {
-        entity: data.data[0].entity,
+        entity: entity,
         editable: false,
       } );
 
@@ -156,15 +157,31 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.socialShareButtons(),
       ] );
 
-      VMap.draw( [data.data[0].entity] );
+      VMap.draw( [entity] );
 
-      Navigation.draw( data.data[0].entity ).then( () => {
+      if ( data.data[0].typeOfWhich == 'string' ) {
+        // in this case the profile is fetched using a path and the navigation has not been set in preview
+        Navigation.draw( entity ).then( () => {
+          Page.draw( {
+            position: 'top',
+            listings: $list,
+          } );
+          Chat.drawMessageForm();
+        } );
+      }
+      else {
         Page.draw( {
           position: 'top',
           listings: $list,
         } );
+
         Chat.drawMessageForm();
-      } );
+      }
+
+      if ( entity.images.tinyImage ) {
+        Navigation.drawImage( entity );
+      }
+
     }
     else {
       Page.draw( {
@@ -173,7 +190,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function preview() {
+  function preview( data ) {
 
     /**
      * removes "Get Started"/"Watch intro" button, to exclude it
@@ -196,17 +213,31 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     Button.draw( 'all', { fade: 'out' } );
 
-    Page.draw( {
-      position: 'top',
-      listings: $list,
-    } );
+    if (
+      !( data.navReset === false )
+      && data.uuidE
+    ) {
+      Navigation.draw( data ).then( () => {
+        Page.draw( {
+          position: 'top',
+          listings: $list,
+        } );
+      } );
+    }
+    else {
+      Page.draw( {
+        position: 'top',
+        listings: $list,
+      } );
+    }
+
   }
 
   /* ============ public methods and exports ============ */
 
-  function draw( which ) {
-    preview();
-    presenter( which ).then( data => { view( data ) } );
+  function draw( data ) {
+    preview( data );
+    presenter( data ).then( data => { view( data ) } );
   }
 
   return {

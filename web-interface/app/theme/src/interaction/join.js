@@ -76,7 +76,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( '.modal', 'clear' );
 
       if ( V.getLocal( 'welcome-modal' ) == 1 ) {
-        Modal.draw( which );
+        // Modal.draw( which );
         Navigation.drawEntityNavPill( V.getState( 'activeEntity' ) );
         V.setLocal( 'welcome-modal', 0 );
       }
@@ -177,11 +177,194 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
+  /* ====================== onboard ===================== */
+
+  function onboard( key ) {
+    const skillPill = document.querySelector( '[path="/network/skills"]' );
+    const entityNav = document.querySelector( 'entity-nav' );
+    const skillRect = skillPill.getBoundingClientRect();
+    const entityNavRect = entityNav.getBoundingClientRect();
+
+    V.sN( 'body', V.cN( {
+      t: 'div',
+      c: 'nudge-overlay',
+      y: {
+        position: 'absolute',
+        top: '0',
+        bottom: '0',
+        left: '0',
+        right: '0',
+      },
+      k: handleOnboard.bind( key ),
+      h: [
+        {
+          t: 'div',
+          c: 'profile-nudge',
+          y: {
+            position: 'absolute',
+            top: ( entityNavRect.y + 22 ) + 'px',
+            left: ( entityNavRect.x + 50 ) + 'px',
+          },
+          h: [{
+            t: 'div',
+            innerHtml: '<svg class="nudge-arrow nudge-arrow__profile" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 43.1 85.9" style="enable-background:new 0 0 43.1 85.9;" xml:space="preserve">' +
+                       '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow" d="M11.3,2.5c-5.8,5-8.7,12.7-9,20.3s2,15.1,5.3,22c6.7,14,18,25.8,31.7,33.1" />' +
+                       '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow tail-1" d="M40.6,78.1C39,71.3,37.2,64.6,35.2,58" />' +
+                       '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow tail-2" d="M39.8,78.5c-7.2,1.7-14.3,3.3-21.5,4.9" />' +
+                     '</svg>', // thanks to Ashley Hebler at https://codepen.io/ahebler/pen/YXJJWb
+          },
+          {
+            t: 'div',
+            c: 'font-indie',
+            y: {
+              'font-size': '1.9rem',
+              'color': 'blue',
+              'text-shadow': '0 0 5px white',
+            },
+            h: 'Add your image and location',
+          }],
+        },
+        {
+          t: 'div',
+          c: 'skill-nudge',
+          y: {
+            display: 'none',
+            position: 'absolute',
+            top: ( skillRect.y + 28 ) + 'px',
+            left: ( skillRect.x + -25 ) + 'px',
+          },
+          h: [{
+            t: 'div',
+            innerHtml: '<svg class="nudge-arrow nudge-arrow__skill" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 43.1 85.9" style="enable-background:new 0 0 43.1 85.9;" xml:space="preserve">' +
+                       '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow" d="M11.3,2.5c-5.8,5-8.7,12.7-9,20.3s2,15.1,5.3,22c6.7,14,18,25.8,31.7,33.1" />' +
+                       '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow tail-1" d="M40.6,78.1C39,71.3,37.2,64.6,35.2,58" />' +
+                       '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow tail-2" d="M39.8,78.5c-7.2,1.7-14.3,3.3-21.5,4.9" />' +
+                     '</svg>',
+          },
+          {
+            t: 'div',
+            c: 'font-indie',
+            y: {
+              'font-size': '1.8rem',
+              'color': 'blue',
+              'text-shadow': '0 0 5px white',
+            },
+            h: 'Add a skill',
+          }],
+        },
+      ],
+    } ) );
+  }
+
+  function handleOnboard() {
+    if ( V.getNode( '.profile-nudge' ) ) {
+      V.sN( '.profile-nudge', 'clear' );
+      V.getNode( '.skill-nudge' ).style.display = 'block';
+    }
+    else if ( V.getNode( '.skill-nudge' ) ) {
+      // V.sN( '.skill-nudge', 'clear' );
+      V.sN( '.nudge-overlay', 'clear' );
+      drawKey( this ); // this === key
+    }
+    else {
+      V.sN( '.nudge-overlay', 'clear' );
+    }
+  }
+
+  function drawKey( key ) {
+    const $key = V.cN( {
+      t: 'div',
+      c: 'first-view-key pxy',
+      y: {
+        'position': 'absolute',
+        'right': '10px',
+        'bottom': '10px',
+        'z-index': -1,
+      },
+      h: [
+        // { t: 'span', h: key ? key.length > 18 ? '0x' : 'vx' : '' },
+        {
+          t: 'input',
+          a: {
+            value: key,
+            type: 'password',
+          },
+          y: {
+            'width': '230px',
+            'padding': '2px 8px',
+            'background': 'lightskyblue',
+            'border': '2px solid blue',
+            'border-radius': '20px',
+          },
+          e: {
+            focus: handleViewFirstKeyFocus,
+            blur: handleViewFirstKeyFocus,
+          },
+        },
+      ],
+    } );
+
+    V.setNode( 'logo', $key );
+
+    const firstViewKey = document.querySelector( '.first-view-key' );
+    const firstViewKeyRect = firstViewKey.getBoundingClientRect();
+
+    const $keyNudge = V.cN( {
+      t: 'div',
+      c: 'save-key',
+      y: {
+        'position': 'absolute',
+        'top': ( firstViewKeyRect.y - 220 ) + 'px',
+        'left': ( firstViewKeyRect.x - 85 ) + 'px',
+        'z-index': -2,
+      },
+      h: [
+        {
+          t: 'div',
+          c: 'font-indie',
+          y: {
+            'font-size': '1.9rem',
+            'color': 'blue',
+            'text-shadow': '0 0 5px white',
+          },
+          h: 'Before you begin, copy and save this key elsewhere',
+        },
+        {
+          t: 'div',
+          innerHtml: '<svg class="nudge-arrow nudge-arrow__key" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 43.1 85.9" style="enable-background:new 0 0 43.1 85.9;" xml:space="preserve">' +
+                   '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow" d="M11.3,2.5c-5.8,5-8.7,12.7-9,20.3s2,15.1,5.3,22c6.7,14,18,25.8,31.7,33.1" />' +
+                   '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow tail-1" d="M40.6,78.1C39,71.3,37.2,64.6,35.2,58" />' +
+                   '<path stroke-linecap="round" stroke-linejoin="round" class="draw-nudge-arrow tail-2" d="M39.8,78.5c-7.2,1.7-14.3,3.3-21.5,4.9" />' +
+                 '</svg>',
+        },
+      ],
+    } );
+
+    V.setNode( 'body', $keyNudge );
+
+  }
+
+  function handleViewFirstKeyFocus( e ) {
+    if ( this.type === 'password' ) {
+      V.sN( '.save-key', 'clear' );
+      this.type = 'text';
+      setTimeout( function() {
+        e.target.setSelectionRange( 0, 9999 );
+      }, 50 );
+    }
+    else {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      this.type = 'password';
+    }
+  }
+
   /* ====================== export ====================== */
 
   return {
     launch: launch,
     draw: draw,
+    onboard: onboard,
   };
 
 } )();

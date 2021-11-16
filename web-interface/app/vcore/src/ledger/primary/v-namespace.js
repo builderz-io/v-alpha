@@ -1,7 +1,7 @@
-const VFirebase = ( function() { // eslint-disable-line no-unused-vars
+const VNamespace = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Core Module to connect to Firebase (Middleware)
+   * V Core Module to connect to the V Namespace (Middleware)
    *
    */
 
@@ -9,7 +9,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     useClientData: false,
-    firebaseEndpoint: V.getSetting( 'firebaseEndpoint' ),
+    namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
   };
 
   /** In-memory jwt */
@@ -22,7 +22,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c } o { a b c } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c } o { a } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -30,12 +30,163 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
    * Description, Lng/Lat, Thumbnail image (from Profile)
    */
 
-  const previewsE = 'a c d m n';
-  const previewsP = 'm { a r } n { a } o { b }';
+  const previewE = 'a c d m n';
+  const previewP = 'm { a r } o { b }'; // n { a }
 
   /* ================== private methods ================= */
 
-  function castReturnedEntityAndProfileData( E, P ) {
+  function castNewEntityData( data ) {
+
+    /**
+    * casts a full set of entity data, to be used when
+    * server-side initialisation of entity is disabled.
+    * Some of this data is also used for server side initialisation (e.g. title).
+    *
+    */
+
+    const a = data.uuidE;
+    const b = data.contextE;
+    const c = V.castRole( data.typeE );
+    const d = data.uuidP;
+    const e = data.uuidA;
+    const g = data.issuer;
+
+    const i = data.evmCredentials.address;
+    const j = data.receivingAddresses.evm;
+
+    const m = data.title;
+    const n = data.tag;
+
+    const x = {
+      a: data.creatorUuid,
+      m: data.heldBy,
+    };
+
+    const y = {
+      a: String( data.unix ),
+      c: String( data.expires ),
+      m: data.active,
+      z: data.statusCode,
+    };
+
+    /**
+    * cast a full set of auth data, in case
+    * server-side initialisation of entity is disabled.
+    */
+
+    const auth = {
+      a: data.uuidA,
+      b: data.contextA,
+      d: data.uuidE,
+      e: data.uuidP,
+      f: data.uPhrase,
+      i: data.evmCredentials.address,
+      j: data.evmCredentials.privateKey || undefined,
+    };
+
+    /**
+    * cast a small set of auth data (evm creds only),
+    * in case server-side initialisation of entity is enabled.
+    */
+
+    const authInputServerSide = {
+      i: data.evmCredentials.address,
+      j: data.evmCredentials.privateKey || undefined,
+    };
+
+    /**
+    * cast the user-defined parts of the profile data,
+    * in case server-side initialisation of entity is enabled.
+    */
+
+    const profileInputServerSide = {
+      descr: data.props.descr,
+      email: data.props.email,
+      emailPrivate: data.props.emailPrivate,
+      target: data.props.target,
+      unit: data.props.unit,
+      lngLat: data.geometry.coordinates,
+      loc: data.geometry.baseLocation,
+      tinyImg: data.tinyImageDU,
+      thumb: data.thumbnailDU,
+      medImg: data.mediumImageDU,
+      imgName: data.imageName,
+      evmIssuer: data.evmIssuer,
+    };
+
+    return settings.useClientData
+      ? { a, b, c, d, e, g, i, j, m, n, x, y, auth }
+      : { a: '-', c, i, j, m, authInputServerSide, profileInputServerSide }; // a is required, but flags "none"
+
+  }
+
+  function castNewProfileData( data ) {
+
+    /**
+    * casts a full set of profile data, to be used when
+    * server-side initialisation of entity is disabled.
+    */
+
+    const a = data.uuidP;
+    const b = data.contextP;
+    const d = data.uuidE; // note that this is NOT creatorUuid
+
+    const m = {
+      a: data.props.descr,
+      b: data.props.email,
+      m: data.props.target,
+      n: data.props.unit,
+    };
+    const n = {
+      a: data.geometry.coordinates,
+      c: data.geometry.baseLocation,
+    };
+    const o = {
+      a: data.tinyImageDU,
+      b: data.thumbnailDU,
+      c: data.mediumImageDU,
+      n: data.imageName,
+    };
+
+    const x = {
+      a: data.creatorUuid,
+      m: data.heldBy,
+    };
+
+    const y = {
+      a: String( data.unix ),
+    };
+
+    return { a, b, d, m, n, o, x, y };
+  }
+
+  function castNewTransferData( array ) {
+    return array.map( tx => ( {
+      a: tx.txType,
+      b: tx.title,
+      // c: tx.message,
+
+      g: tx.amount,
+      h: tx.feeAmount,
+      i: tx.contribution,
+      j: tx.payout,
+
+      m: tx.fromAddress,
+      n: tx.fromUuidE,
+      o: tx.fromEntity,
+
+      p: tx.toAddress,
+      q: tx.toUuidE,
+      r: tx.toEntity,
+
+      s: tx.hash,
+      t: tx.block,
+      u: tx.blockDate,
+      v: tx.logIndex,
+    } ) );
+  }
+
+  function castReturnedEntityAndProfileData( E, P, I ) {
 
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
@@ -47,6 +198,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       uuidE: E.a || P.d,
       uuidP: E.d || P.a,
       role: V.castRole( E.c ),
+      roleCode: E.c,
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -70,7 +222,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       images: {
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
-        mediumImage: P.o ? P.o.c : undefined,
+        mediumImage: I && I.o ? I.o.c : undefined,
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
@@ -151,7 +303,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: castNewEntityData( data ),
     };
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setProfile( data ) {
@@ -167,157 +319,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: castNewProfileData( data ),
     };
 
-    return fetchFirebase( query, variables );
-  }
-
-  function castNewEntityData( data ) {
-
-    /**
-     * casts a full set of entity data, to be used when
-     * server-side initialisation of entity is disabled.
-     * Some of this data is also used for server side initialisation (e.g. title).
-     *
-     */
-
-    const a = data.uuidE;
-    const b = data.contextE;
-    const c = V.castRole( data.typeE );
-    const d = data.uuidP;
-    const e = data.uuidA;
-    const g = data.issuer;
-
-    const i = data.evmCredentials.address;
-    const j = data.receivingAddresses.evm;
-
-    const m = data.title;
-    const n = data.tag;
-
-    const x = {
-      a: data.creatorUuid,
-      m: data.heldBy,
-    };
-
-    const y = {
-      a: String( data.unix ),
-      c: String( data.expires ),
-      m: data.active,
-      z: data.statusCode,
-    };
-
-    /**
-     * cast a full set of auth data, in case
-     * server-side initialisation of entity is disabled.
-     */
-
-    const auth = {
-      a: data.uuidA,
-      b: data.contextA,
-      d: data.uuidE,
-      e: data.uuidP,
-      f: data.uPhrase,
-      i: data.evmCredentials.address,
-      j: data.evmCredentials.privateKey || undefined,
-    };
-
-    /**
-     * cast a small set of auth data (evm creds only),
-     * in case server-side initialisation of entity is enabled.
-     */
-
-    const authInputServerSide = {
-      i: data.evmCredentials.address,
-      j: data.evmCredentials.privateKey || undefined,
-    };
-
-    /**
-     * cast the user-defined parts of the profile data,
-     * in case server-side initialisation of entity is enabled.
-     */
-
-    const profileInputServerSide = {
-      descr: data.props.descr,
-      email: data.props.email,
-      target: data.props.target,
-      unit: data.props.unit,
-      lngLat: data.geometry.coordinates,
-      loc: data.geometry.baseLocation,
-      tinyImg: data.tinyImageDU,
-      thumb: data.thumbnailDU,
-      medImg: data.mediumImageDU,
-      imgName: data.imageName,
-      evmIssuer: data.evmIssuer,
-    };
-
-    return settings.useClientData
-      ? { a, b, c, d, e, g, i, j, m, n, x, y, auth }
-      : { a: '-', c, i, j, m, authInputServerSide, profileInputServerSide }; // a is required, but flags "none"
-
-  }
-
-  function castNewProfileData( data ) {
-
-    /**
-     * casts a full set of profile data, to be used when
-     * server-side initialisation of entity is disabled.
-     */
-
-    const a = data.uuidP;
-    const b = data.contextP;
-    const d = data.uuidE; // note that this is NOT creatorUuid
-
-    const m = {
-      a: data.props.descr,
-      b: data.props.email,
-      m: data.props.target,
-      n: data.props.unit,
-    };
-    const n = {
-      a: data.geometry.coordinates,
-      c: data.geometry.baseLocation,
-    };
-    const o = {
-      a: data.tinyImageDU,
-      b: data.thumbnailDU,
-      c: data.mediumImageDU,
-      n: data.imageName,
-    };
-
-    const x = {
-      a: data.creatorUuid,
-      m: data.heldBy,
-    };
-
-    const y = {
-      a: String( data.unix ),
-    };
-
-    return { a, b, d, m, n, o, x, y };
-  }
-
-  function castNewTransferData( array ) {
-    return array.map( tx => ( {
-      a: tx.txType,
-      b: tx.title,
-      // c: tx.message,
-
-      g: tx.amount,
-      h: tx.feeAmount,
-      i: tx.contribution,
-      j: tx.payout,
-
-      m: tx.fromAddress,
-      n: tx.fromUuidE,
-      o: tx.fromEntity,
-
-      p: tx.toAddress,
-      q: tx.toUuidE,
-      r: tx.toEntity,
-
-      s: tx.hash,
-      t: tx.block,
-      u: tx.blockDate,
-      v: tx.logIndex,
-    } ) );
+    return fetchEndpoint( query, variables );
   }
 
   function setEntityField( data ) {
@@ -368,7 +370,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
               }
             `;
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setProfileField( data ) {
@@ -415,8 +417,8 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       o = {
         a: data.data.tiny.dataUrl,
         b: data.data.thumb.dataUrl,
-        c: data.data.medium.dataUrl,
-        n: data.data.thumb.originalName,
+        // c: data.data.medium.dataUrl,
+        // n: data.data.thumb.originalName,
       };
       break;
 
@@ -440,52 +442,139 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
               }
             `;
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
+  }
+
+  function setImageField( data ) {
+    console.log( 'UPDATING IMAGE: ', data );
+    const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidP;
+
+    let o;
+
+    switch ( data.field ) {
+
+    case 'images':
+      o = {
+        a: data.data.tiny.dataUrl,
+        b: data.data.thumb.dataUrl,
+        c: data.data.medium.dataUrl,
+        n: data.data.thumb.originalName,
+      };
+      break;
+    }
+
+    const variables = {
+      input: { a, o },
+    };
+
+    const query = `mutation SetImageUpdate( $input: ImageInputServerSide! ) {
+                setImage(input: $input) {
+                  ${ 'a' /* a confirms successful response */ }
+                }
+              }
+            `;
+
+    return fetchEndpoint( query, variables );
   }
 
   function getEntities( data, whichEndpoint ) {
     let where;
 
-    let queryE = `query GetEntity ( $where: WhereEntity ){
-        getEntity(where: $where) { ${ typeof data == 'string' ? singleE : previewsE } }
+    let queryE = `query GetEntities ( $where: WhereEntity ) {
+        getEntities(where: $where) { ${ typeof data == 'string' ? singleE : previewE } }
       }`;
 
     if ( 'entity by role' == whichEndpoint ) {
-      console.log( 111, 'by Role' );
+      console.log( 777, 'by Role' );
       where = {};
-      queryE = `query GetEntitiesByRole ( $where: WhereEntity ){
-             getEntity(where: $where) { ${ previewsE } }
+      queryE = `query GetEntitiesByRole ( $where: WhereEntity ) {
+             getEntities(where: $where) { ${ previewE } }
            }`;
     }
     else if ( 'entity by uuidE' == whichEndpoint ) {
-      console.log( 444, 'by uuidE:', data );
+      console.log( 333, 'by uuidE:', data );
       where = { a: typeof data == 'string' ? [data] : data };
     }
     else if ( 'entity by evmAddress' == whichEndpoint ) {
-      console.log( 222, 'by EVM Address:', data );
+      console.log( 444, 'by EVM Address:', data );
       where = { i: data };
     }
     else if ( 'entity by fullId' == whichEndpoint ) {
       const tT = V.castFullId( data );
-      console.log( 333, 'by FullId:', tT.title, tT.tag );
+      console.log( 555, 'by FullId:', tT.title, tT.tag );
       where = { m: tT.title, n: tT.tag };
     }
     const variables = {
       where: where,
     };
-    return fetchFirebase( queryE, variables );
-    // .then( res => {
-    //   console.log( res );
-    //   return res;
-    // } );
+    return fetchEndpoint( queryE, variables );
+
   }
 
   function getProfiles( array ) {
     const uuidPs = array.map( item => item.d );
     const queryP = `query GetProfiles {
-           getProfiles (array: ${ V.castJson( uuidPs ) }) { ${ array.length == 1 ? singleP : previewsP } }
+           getProfiles (array: ${ V.castJson( uuidPs ) }) { ${ previewP } }
          }`;
-    return fetchFirebase( queryP );
+    return fetchEndpoint( queryP );
+  }
+
+  function getEntity( data ) {
+
+    const queryE = `query GetEntity ( $where: WhereEntity ){
+        getEntities(where: $where) { ${ data.isMapPopUp ? previewE : singleE } }
+      }`;
+
+    const variables = {
+      where: { a: [data.uuidE] },
+    };
+
+    return fetchEndpoint( queryE, variables );
+  }
+
+  function getProfile( data ) {
+
+    const queryP = `query GetProfile ( $where: WhereProfile ){
+           getProfile(where: $where) { ${ data.isMapPopUp ? previewP : singleP } }
+         }`;
+
+    const variables = {
+      where: { a: data.uuidP },
+    };
+
+    return fetchEndpoint( queryP, variables );
+  }
+
+  function getImage( data ) {
+
+    const queryI = `query GetImage ( $where: WhereProfile ){
+           getImage(where: $where) { a o { c } }
+         }`;
+
+    const variables = {
+      where: { a: data.uuidP },
+    };
+
+    return fetchEndpoint( queryI, variables );
+  }
+
+  function getEntityQuery( data ) {
+    console.log( 888, 'by query' );
+
+    data.role = V.castRole( data.role );
+
+    const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
+      getEntityQuery(filter: $filter) {
+        ${ previewE }
+      }
+    }
+    `;
+
+    const variables = {
+      filter: data,
+    };
+
+    return fetchEndpoint( queryS, variables );
   }
 
   function getTransactionLog( uuidP ) {
@@ -494,43 +583,24 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
              p { a { a b c g h i j m n o p q r s t u v } z }
            }
          }`;
-    return fetchFirebase( queryT );
+    return fetchEndpoint( queryT );
   }
 
-  function getEntityQuery( data ) {
-    console.log( 100, 'by query' );
-
-    data.role = V.castRole( data.role );
-
-    const queryS = `query GetEntitiesByQuery( $filter: Filter! ) {
-                      getEntityQuery(filter: $filter) {
-                        ${ previewsE }
-                      }
-                    }
-                  `;
-
-    const variables = {
-      filter: data,
-    };
-
-    return fetchFirebase( queryS, variables );
-  }
-
-  function getPoints( data ) {
-    console.log( 300, 'by point' );
+  function getPoints() {
+    console.log( 111, 'by point' );
 
     const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
-                 getPoints(where: $where) { a c zz { i } }
+                 getPoints(where: $where) { a c d zz { i } }
                }`;
 
     const variables = {
       where: {},
     };
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function getHighlights() {
-    console.log( 200, 'by highlight' );
+    console.log( 222, 'by highlight' );
 
     const queryH = `query GetHighlights {
                       getHighlights {
@@ -539,7 +609,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
                     }
                   `;
 
-    return fetchFirebase( queryH );
+    return fetchEndpoint( queryH );
   }
 
   function setHighlight( which, whichEndpoint ) {
@@ -558,7 +628,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       input: { a: which, y: { c: expiry } },
     };
 
-    return fetchFirebase( query, variables );
+    return fetchEndpoint( query, variables );
   }
 
   function setManagedTransaction( data ) {
@@ -578,11 +648,22 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
         txTotal: String( data.txTotal ),
       },
     };
-    return fetchFirebase( queryS, variables );
+    return fetchEndpoint( queryS, variables );
   }
 
-  function fetchFirebase( query, variables ) {
-    return fetch( settings.firebaseEndpoint, {
+  function setChatMessage( data ) {
+    return new Promise( resolve => {
+      NetworkMainRoom.child( data.time ).update( {
+        a: data.time,
+        i: data.uuidE,
+        j: data.sender,
+        m: data.message,
+      }, () => { resolve( { success: true } ) } );
+    } );
+  }
+
+  function fetchEndpoint( query, variables ) {
+    return fetch( settings.namespaceEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -597,22 +678,49 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       .then( r => r.json() );
   }
 
-  function setChatMessage( data ) {
-    return new Promise( resolve => {
-      NetworkMainRoom.child( data.time ).update( {
-        a: data.time,
-        i: data.uuidE,
-        j: data.sender,
-        m: data.message,
-      }, () => { resolve( { success: true } ) } );
-    } );
-  }
-
   /* ================== public methods ================== */
 
-  async function getFirebase( data, whichEndpoint ) {
+  async function getNamespace( data, whichEndpoint ) {
 
-    /** Query entities */
+    /** Query a single entity and its profile using Promise.all */
+
+    if (
+      data.isMapPopUp
+      || data.isDisplay
+      || data.isReturningUser
+    ) {
+
+      console.log( 'GET SINGLE ENTITY: ', data );
+
+      const all = await Promise.all( [
+        getEntity( data ),
+        getProfile( data ),
+        data.isDisplay ? getImage( data ) : { data: { getImage: [false] } },
+      ] );
+
+      if (
+        all[0].errors
+        || all[1].errors
+        || all[2].errors
+        || all[0].data.getEntities[0] === null
+        || all[1].data.getProfile[0] === null
+        || all[2].data.getImage[0] === null
+      ) {
+        return V.successFalse( 'get entity and profile' );
+      }
+      else {
+        const combined = castReturnedEntityAndProfileData(
+          all[0].data.getEntities[0],
+          all[1].data.getProfile[0],
+          all[2].data.getImage[0]
+        );
+        return V.successTrue( 'got entity and profile', combined );
+      }
+    }
+
+    console.log( 'GET MULTIPLE ENTITIES: ', data );
+
+    /** Query multiple entities and profiles in sequence (arrays) */
 
     let E;
 
@@ -626,6 +734,10 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else if ( 'entity by highlight' == whichEndpoint ) {
+
+      // uncomment to not load highlights
+      // return V.successFalse( 'get entities by highlight' );
+
       const highlightedE = await getHighlights();
       const mixin = V.getCache( 'mixin-highlights' ); // from points
 
@@ -681,11 +793,11 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     if (
       !E.errors &&
       (
-        ( E.data.getEntity && E.data.getEntity[0] != null ) ||
+        ( E.data.getEntities && E.data.getEntities[0] != null ) ||
         ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
       )
     ) {
-      const entitiesArray = E.data.getEntity || E.data.getEntityQuery;
+      const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
 
       const P = await getProfiles( entitiesArray );
 
@@ -706,7 +818,7 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  async function setFirebase( data, whichEndpoint  ) {
+  async function setNamespace( data, whichEndpoint  ) {
     if ( 'entity' == whichEndpoint ) {
 
       /** initializes a new namespace */
@@ -747,6 +859,18 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
           } )
           .catch( err => V.successFalse( 'update entity', err ) );
       }
+      if ( 'images' == data.field ) {
+        return setImageField( data )
+          .then( I => {
+            if ( !I.errors ) {
+              return V.successTrue( 'updated image', I.data.setImage );
+            }
+            else {
+              return V.successFalse( 'update image', I.errors[0].message, I.data.setImage );
+            }
+          } )
+          .catch( err => V.successFalse( 'update image', err ) );
+      }
       else {
         return setProfileField( data )
           .then( P => {
@@ -777,13 +901,13 @@ const VFirebase = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
-  V.getFirebase = getFirebase;
-  V.setFirebase = setFirebase;
+  V.getNamespace = getNamespace;
+  V.setNamespace = setNamespace;
   V.setJwt = setJwt;
 
   return {
-    getFirebase: getFirebase,
-    setFirebase: setFirebase,
+    getNamespace: getNamespace,
+    setNamespace: setNamespace,
     setJwt: setJwt,
   };
 

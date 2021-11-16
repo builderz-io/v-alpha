@@ -66,7 +66,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     className: 'map__popup',
   };
 
-  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer;
+  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer, tempPointLayer;
 
   const coordinatesCache = [];
 
@@ -81,6 +81,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
         setSearch( data );
       }
       else {
+        if ( data[0] && data[0].isBaseLocationUpdate ) {
+          setTempPoint( data );
+        }
         setLastViewed( data );
       }
       return;
@@ -162,6 +165,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       marker.radius = 6;
       marker.fillOpacity = 1;
       break;
+    case 'tempPoint':
+      marker.fillColor = 'purple';
+      marker.radius = 9;
+      marker.fillOpacity = 1;
+      break;
     case 'lastViewed':
       marker.radius = 9;
       marker.fillColor = 'blue';
@@ -181,9 +189,14 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
      * ensure features written to layers
      * have same geolocation as their point
      * (relevant for randomly generated locations)
+     * except when isBaseLocationUpdate
      */
 
-    if ( whichLayer != 'points' ) {
+    if (
+      whichLayer != 'points'
+      && features[0]
+      && !features[0].isBaseLocationUpdate
+    ) {
       features.forEach( feature => {
         const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
         if ( point ) {
@@ -192,7 +205,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
 
-    if ( ['search', 'highlights'].includes( whichLayer ) ) {
+    if ( ['search', 'highlights', 'tempPoint'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, layer ) {
         layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
       };
@@ -205,6 +218,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function castReturnedPointData( item ) {
     return {
       uuidE: item.a,
+      uuidP: item.d,
       role: item.c.replace( 'Mapped', '' ),
       geometry: {
         coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
@@ -386,6 +400,17 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }, 500 );
   }
 
+  function setTempPoint( feature ) {
+    if ( tempPointLayer ) {
+      tempPointLayer.remove();
+    }
+    tempPointLayer = castLayer( 'tempPoint', feature );
+    setTimeout( () => {
+      tempPointLayer
+        .addTo( viMap );
+    }, 500 );
+  }
+
   // function handleHighlightClick( e ) {
   //
   //   /**
@@ -409,6 +434,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     // } );
 
     const uuidE = e.layer.feature.uuidE;
+    const uuidP = e.layer.feature.uuidP;
     const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
 
     e.layer
@@ -429,10 +455,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
 
-      entity = await V.getEntity( uuidE )
+      entity = await V.getEntity( { uuidE: uuidE, uuidP: uuidP, isMapPopUp: true } )
         .then( res => {
           if ( res.success ) {
-            V.setCache( 'viewed', res.data );
+            // V.setCache( 'viewed', res.data );
             return V.successTrue( 'fetched entity', res.data );
           }
         } );
