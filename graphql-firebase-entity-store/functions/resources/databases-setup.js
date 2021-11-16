@@ -10,7 +10,7 @@ to list projects run -> firebase projects:list
 
 */
 
-const local = true;
+const local = false;
 
 const production = false;
 

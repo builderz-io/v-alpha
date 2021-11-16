@@ -1,3 +1,8 @@
+/**
+ * GraphQL server for Alpha 3.3.0
+ *
+ */
+
 const functions = require( 'firebase-functions' );
 const express = require( 'express' );
 

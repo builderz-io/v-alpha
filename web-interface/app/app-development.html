@@ -11,18 +11,18 @@
 
           // START editing
 
-          sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
-          useAppVersion: '3.2.2', // e.g. '3.2.1' or '' for latest version
-          useBuilds: false,
+          sourceEndpoint: 'staging', // choices are 'local', 'development', 'staging', 'production' and 'github'
+          useAppVersion: '3.3.0', // e.g. '3.2.1' or '' for latest version
+          useBuilds: true,
 
-          namespaceEndpoint: 'firebase-local',
+          namespaceEndpoint: 'firebase-development',
           mongodbEndpoint: 'builderz',
 
           mapDefault: 'atlantic',
           featureVideo: 'builderz',
           questionnaire: false,
 
-          askforEmail: false,
+          askforEmail: true,
           requireEmail: false,
           emailKey: '4ea0ac41-dbc5-4775-b32a-89a0e534a3df', // as per https://www.smtpjs.com/
 
@@ -37,7 +37,6 @@
             * which should show in the UI
             */
 
-            chat: [],
             marketplace: [
               // 'tagEnergyTransportation',
               // 'tagIndigenousValues',
@@ -54,8 +53,8 @@
               // 'tagSystemicApproaches',
 
               // 'localEconomy',
-              'skills',
               'tasks',
+              'skills',
               'businesses',
               'people',
               // 'ngos',
@@ -70,7 +69,8 @@
               'media',
               // 'moocs'
             ],
-            data: []
+            // data: []
+            chat: [],
           },
 
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
