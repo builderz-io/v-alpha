@@ -66,7 +66,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     className: 'map__popup',
   };
 
-  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer, tempPointLayer;
+  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
 
   const coordinatesCache = [];
 
@@ -77,8 +77,13 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const isPopupOpen = V.getNode( '.map-popup-inner' );
 
     if ( Array.isArray( data ) ) {
-      if ( options && options.isSearch ) {
-        setSearch( data );
+      if ( options ) {
+        if ( options.isSearch ) {
+          setSearch( data );
+        }
+        if ( options.isHover ) {
+          setHover( data );
+        }
       }
       else {
         if ( data[0] && data[0].isBaseLocationUpdate ) {
@@ -171,6 +176,13 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       marker.fillOpacity = 1;
       break;
     case 'lastViewed':
+      marker.radius = 9;
+      marker.fillColor = 'blue';
+      marker.stroke = true;
+      marker.weight = 3;
+      marker.color = 'lightblue';
+      break;
+    case 'hover':
       marker.radius = 9;
       marker.fillColor = 'blue';
       marker.stroke = true;
@@ -373,6 +385,22 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     // }
 
     searchLayer.addTo( viMap );
+
+  }
+
+  function setHover( features ) {
+
+    if ( lastViewedLayer ) {
+      lastViewedLayer.remove();
+    }
+
+    if ( hoverLayer ) {
+      hoverLayer.remove();
+    }
+
+    hoverLayer = castLayer( 'hover', features );
+
+    hoverLayer.addTo( viMap );
 
   }
 

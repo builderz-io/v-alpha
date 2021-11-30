@@ -44,6 +44,16 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       V.getNode( '.popup' ).style.opacity = 1;
     }
   }
+  function handlePopupHover() {
+    const entity = V.getCache( 'highlights' ).data.find( item => item.path == this.path );
+    if ( entity ) {
+      V.setNode( '.leaflet-popup-pane', '' );
+      V.setNode( '.popup-content', '' );
+      V.setNode( '.popup-content', popupContent( entity ) );
+      V.getNode( '.popup' ).style.opacity = 1;
+      VMap.draw( [entity], { isHover: true } );
+    }
+  }
 
   function handleDrawPlusForm() {
     Page.draw( { position: 'closed', reset: false, navReset: false } );
@@ -98,6 +108,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           whichHandler == 'popup' ?
             handlePopup.bind( circleData ) :
             handleProfileDraw.bind( circleData ),
+        mouseover: whichHandler == 'popup' ?
+          handlePopupHover.bind( circleData ) : '',
       },
     } );
   }
