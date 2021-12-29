@@ -151,6 +151,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which, options ) {
+    if ( !which ) {return}
     const btnArr = which == 'all' ? ['filter', 'search', 'plus', /*'close', */ 'set', 'send', 'query'] : which.split( ' ' );
     let fade = 'fadeIn', delay = 0.2;
     options && options.fade == 'out' ? fade = 'fadeOut' : null;

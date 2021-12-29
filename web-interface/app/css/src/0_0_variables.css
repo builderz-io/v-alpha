@@ -6,10 +6,12 @@
 
   --card-height: 172px;
 
+  --search-main-top: 11px;
+  --search-main-left: 69px;
   --entity-nav-top: 7px;
-  --entity-nav-left: 61px; /* 61 */
+  --entity-nav-left: 114px; /* 61 */
   --user-nav-top: 7px;
-  --user-nav-left: 61px;
+  --user-nav-left: 114px;
   --service-nav-top: 4rem;
   --service-nav-left: 7px;
 
@@ -83,10 +85,12 @@
 
 @media screen and (min-width: 800px) {
     :root {
+      --search-main-top: 25px;
+      --search-main-left: 90px;
       --entity-nav-top: 21px;
-      --entity-nav-left: 84px; /* 84 */
+      --entity-nav-left: 137px; /* 84 */
       --user-nav-top: 21px;
-      --user-nav-left: 84px;
+      --user-nav-left: 137px;
       --service-nav-top: 5.5rem;
       --service-nav-left: 12px;
 
