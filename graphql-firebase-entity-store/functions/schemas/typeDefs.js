@@ -18,6 +18,7 @@ const Filters = `
     query: String
     role: String
     field: String
+    mapState: String
   }
 
   input WhereEntity {

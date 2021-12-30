@@ -12,7 +12,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Energy & Transportation',
       path: '/tag/energy-transportation',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -25,7 +25,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Indigenous Values',
       path: '/tag/indigenous-values',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -38,7 +38,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Commons, Communities & Governance',
       path: '/tag/commons-communities-governance',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -51,7 +51,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Education & Collective Intelligence',
       path: '/tag/education-collective-intelligence',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -64,7 +64,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Economics & Currencies',
       path: '/tag/economics-currencies',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -77,7 +77,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Countering Anthropogenic Mindsets',
       path: '/tag/countering-anthropogenic-mindsets',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -90,7 +90,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'New Narratives',
       path: '/tag/new-narratives',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -103,7 +103,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Biosphere Regeneration',
       path: '/tag/biosphere-regeneration',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -116,7 +116,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Countering Identity Politics',
       path: '/tag/countering-identity-politics',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -129,7 +129,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Global Integral Health',
       path: '/tag/global-integral-health',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -142,7 +142,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Food & Water',
       path: '/tag/food-water',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -155,7 +155,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Emergent Other',
       path: '/tag/emergent-other',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -168,7 +168,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Systemic Approaches',
       path: '/tag/systemic-approaches',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -181,7 +181,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Local Economy',
       path: '/network/all',
       use: {
-        button: 'search',
+        // button: 'search',
         role: 'all', // 'all' is used here to enable search within all entities
       },
       draw: function( path ) {
@@ -192,7 +192,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'People',
       path: '/network/people',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'PersonMapped',
       },
@@ -205,7 +205,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       path: '/network/businesses',
       divertFundsToOwner: true,
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Business',
       },
@@ -217,7 +217,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'NGO',
       path: '/network/non-profits',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'NGO',
       },
@@ -229,7 +229,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Public Sector',
       path: '/network/public-sector',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'GOV',
       },
@@ -241,7 +241,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Anchor Institutions',
       path: '/network/institutions',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Institution',
       },
@@ -253,7 +253,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Networks',
       path: '/network/networks',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Network',
       },
@@ -266,7 +266,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       path: '/network/skills',
       divertFundsToOwner: true,
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Skill',
       },
@@ -279,7 +279,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       path: '/network/tasks',
       divertFundsToOwner: true,
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Task',
       },
@@ -291,7 +291,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Crowdfunding',
       path: '/network/pools',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'ResourcePool',
       },
@@ -303,7 +303,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Places',
       path: '/network/places',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Place',
       },
@@ -315,7 +315,7 @@ const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
       title: 'Events',
       path: '/network/events',
       use: {
-        button: 'search',
+        // button: 'search',
         form: 'new entity',
         role: 'Event',
       },

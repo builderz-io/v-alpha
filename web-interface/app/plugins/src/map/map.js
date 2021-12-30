@@ -524,10 +524,19 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function getState() {
+    return {
+      center: viMap.getCenter(),
+      zoom: viMap.getZoom(),
+      bounds: viMap.getBounds(),
+    };
+  }
+
   return {
     // launch: launch,
     draw: draw,
     setMap: setMap,
+    getState: getState,
   };
 
 } )();

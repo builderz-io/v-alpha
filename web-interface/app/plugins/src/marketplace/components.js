@@ -125,7 +125,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
           a: {
-            style: 'background:rgba(var(--black), 0.094);margin-left: 5px;', // border: 2px solid rgba(var(--brandPrimary), 1)
+            style: 'background:rgba(var(--black), 0.11);margin-left: 5px;', // border: 2px solid rgba(var(--brandPrimary), 1)
           },
           h: {
             t: 'div',

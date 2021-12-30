@@ -36,22 +36,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== event handlers ================== */
 
-  function handleDrawUserNav() {
-    if ( V.getVisibility( 'user-nav' ) ) {
-      V.setState( 'active', { navItem: false } );
-      Chat.drawMessageForm( 'clear' );
-      Navigation.drawReset();
-      // Page.draw( { position: 'peek' } );
-      // Marketplace.draw();
-    }
-    else {
-      Button.draw( 'all', { fade: 'out' } );
-      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
-      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
-      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
-    }
-  }
-
   function handleOpenTxDetails() {
     V.setToggle( this.closest( 'li' ).querySelector( '.card__bottom-right' ) );
   }
@@ -132,7 +116,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36',
       },
-      k: handleDrawUserNav,
+      k: Navigation.drawUserNav,
       h: [
         {
           svg: true,
