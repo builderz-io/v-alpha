@@ -20,38 +20,42 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function handlePopup() {
-    const pathOfOpen = V.getNode( '.popup-content' ) ?
-      V.getNode( '.popup-content' ).firstChild ?
-        V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
+    const pu = V.getNode( '.popup-content' );
+    const pathOfOpen = pu && pu.firstChild
+      ? V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' )
+      : null;
+
     if (
-      V.getState( 'page' ).height > V.getState( 'page' ).peek ||
-      ( pathOfOpen && pathOfOpen == this.path )
+      V.getState( 'page' ).height > V.getState( 'page' ).peek
+      || ( pathOfOpen && pathOfOpen == this.path )
     ) {
-      // V.setAnimation( '.popup', {
-      //   opacity: 0
-      // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
-      //   V.setNode( '.popup-content', '' );
-      // } );
       V.setBrowserHistory( this.path );
       Profile.draw( this );
-      return;
     }
-    const entity = V.getCache( 'highlights' ).data.find( item => item.path == this.path );
-    if ( entity ) {
-      V.setNode( '.leaflet-popup-pane', '' );
-      V.setNode( '.popup-content', '' );
-      V.setNode( '.popup-content', popupContent( entity ) );
-      V.getNode( '.popup' ).style.opacity = 1;
+    else {
+      drawPopup( this.path );
     }
   }
+
   function handlePopupHover() {
-    const entity = V.getCache( 'highlights' ).data.find( item => item.path == this.path );
+
+    /* hover event is also triggered on touch (together with click), so do nothing on such devices */
+    if ( V.getState( 'screen' ).width > 800 ) {
+      drawPopup( this.path, 'hover' );
+    }
+
+  }
+
+  function drawPopup( path, hover ) {
+    const entity = V.getCache( 'highlights' ).data.find( item => item.path == path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );
       V.setNode( '.popup-content', popupContent( entity ) );
       V.getNode( '.popup' ).style.opacity = 1;
-      VMap.draw( [entity], { isHover: true } );
+      if ( hover ) {
+        VMap.draw( [entity], { isHover: true } );
+      }
     }
   }
 
