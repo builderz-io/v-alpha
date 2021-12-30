@@ -33,7 +33,12 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( mediaData ) {
+    const $slider = CanvasComponents.slider();
     const $list = CanvasComponents.list();
+
+    const $addcard = MarketplaceComponents.entitiesAddCard();
+    V.setNode( $slider, $addcard );
+
     if ( mediaData.data[0] ) {
       mediaData.data.forEach( cardData => {
         const $cardContent = MediaComponents.mediaCard( cardData );
@@ -47,6 +52,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     }
 
     Page.draw( {
+      topslider: $slider,
       listings: $list,
       position: 'feature',
     } );
@@ -101,7 +107,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         path: '/media',
         divertFundsToOwner: true,
         use: {
-          button: 'plus search',
+          // button: 'plus',
           form: 'new entity',
           role: 'Media',
         },
@@ -114,7 +120,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         path: '/media/moocs',
         divertFundsToOwner: true,
         use: {
-          button: 'plus search',
+          // button: 'plus',
           form: 'new entity',
           role: 'Mooc',
         },

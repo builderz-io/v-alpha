@@ -239,6 +239,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function header() {
     return V.setNode( {
       t: 'header',
+      c: 'absolute',
     } );
   }
 

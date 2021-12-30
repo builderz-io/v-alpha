@@ -35,7 +35,7 @@ module.exports = async ( context /*, res */ ) => {
 
   /** Set the refresh token according to how user joins or revisits page */
 
-  let networksArr, refreshTokensArr;
+  let networksArr, refreshTokensArr, newNetwork;
 
   const newRefreshToken = context.isEvmJoin
     ? 'na'
@@ -44,6 +44,7 @@ module.exports = async ( context /*, res */ ) => {
   if ( authDoc.g ) {
     const networkIndex = authDoc.g.indexOf( context.host );
     if ( networkIndex == -1 ) {
+      newNetwork = true;
       authDoc.g.push( context.host );
       authDoc.h.push( newRefreshToken );
     }
@@ -56,6 +57,7 @@ module.exports = async ( context /*, res */ ) => {
     refreshTokensArr = authDoc.h;
   }
   else {
+    newNetwork = true;
     networksArr = [context.host];
     refreshTokensArr = [newRefreshToken];
   }
@@ -65,7 +67,9 @@ module.exports = async ( context /*, res */ ) => {
   } );
 
   /** Update the network cluster and point-cache */
-  setNetwork( context );
+  if ( newNetwork ) {
+    setNetwork( context );
+  }
 
   // const options = {
   //   httpOnly: true,

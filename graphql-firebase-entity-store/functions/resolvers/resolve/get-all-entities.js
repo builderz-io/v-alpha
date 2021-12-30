@@ -4,7 +4,10 @@ const colE = namespaceDb.database().ref( 'entities' );
 
 module.exports = ( context ) => {
 
-  if ( context.host.includes( 'localhost' ) ) {
+  if (
+    context.host.includes( 'localhost' )
+    || context.host.includes( 'staging' )
+  ) {
     return colE.limitToLast( 1000 ).once( 'value' )
       .then( snap => Object.values( snap.val() ) );
   }
