@@ -50,6 +50,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/theme/src/canvas/feature.js' ),
         V.setScript( host + '/theme/src/canvas/header.js' ),
         V.setScript( host + '/theme/src/canvas/page.js' ),
+        V.setScript( host + '/theme/src/search/components.js' ),
         V.setScript( host + '/theme/src/modal/components.js' ),
         V.setScript( host + '/theme/src/modal/modal.js' ),
         V.setScript( host + '/theme/src/interaction/components.js' ),

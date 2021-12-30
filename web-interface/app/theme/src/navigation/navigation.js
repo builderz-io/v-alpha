@@ -531,6 +531,22 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     reset();
   }
 
+  function drawUserNav() {
+    if ( V.getVisibility( 'user-nav' ) ) {
+      V.setState( 'active', { navItem: false } );
+      Chat.drawMessageForm( 'clear' );
+
+      drawReset();
+
+    }
+    else {
+      Button.draw( 'all', { fade: 'out' } );
+      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
+      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
+      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
+    }
+  }
+
   function drawEntityNavPill( data ) {
 
     /**
@@ -585,6 +601,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   return {
     draw: draw,
     drawReset: drawReset,
+    drawUserNav: drawUserNav,
     drawImage: drawImage,
     drawEntityNavPill: drawEntityNavPill,
     drawJoinedUserFirst: drawJoinedUserFirst,

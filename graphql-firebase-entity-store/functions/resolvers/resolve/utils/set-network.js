@@ -6,6 +6,10 @@ const getSingleEntity = require( '../get-single-entity' );
 
 module.exports = async ( context ) => {
 
+  if ( !context.i ) {
+    return;
+  }
+
   /**
    * Get the latest version of the authDoc,
    * as context may not include field g (the active networks)

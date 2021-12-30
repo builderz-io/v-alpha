@@ -45,8 +45,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( search && search.query ) {
-      Object.assign( search, { role: whichRole } );
       isSearch = true;
+
+      Object.assign( search, {
+        role: whichRole,
+        mapState: V.castJson( VMap.getState() ),
+      } );
+      console.log( 'Search data: ', search );
+
       query = await V.getQuery( search ).then( res => {
         if ( res.success ) {
           V.setCache( 'highlights', res.data );
@@ -118,13 +124,15 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     const viewData = data.data[0];
 
     if ( data.success ) {
-      if ( data.isSearch ) {
-        Form.draw( 'all', { fade: 'out' } );
-        Button.draw( 'all', { fade: 'out' } );
-        Button.draw( 'search' );
-      }
 
-      if ( !( ['/network/all'].includes( viewData.whichPath ) ) ) {
+      // previous version of search form
+      // if ( data.isSearch ) {
+      //   Form.draw( 'all', { fade: 'out' } );
+      //   Button.draw( 'all', { fade: 'out' } );
+      //   Button.draw( 'search' );
+      // }
+
+      if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
@@ -247,7 +255,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     Page.draw( {
       topslider: $slider,
-      position: whichPath ? 'peek' : 'closed',
+      position: whichPath || search ? 'peek' : 'closed',
       navReset: false,
     } );
 

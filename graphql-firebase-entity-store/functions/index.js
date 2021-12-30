@@ -29,6 +29,7 @@ const whitelist = [
   'http://localhost:4021',
   'http://localhost:4042',
   'https://dev.valueinstrument.org',
+  'https://ak.valueinstrument.org',
   'https://staging.valueinstrument.org',
   'https://staging.builderz.io',
   'https://faithfinance.app',
