@@ -84,13 +84,21 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
     isOpen = true;
     $input.style.display = 'block';
     $overlay.style.display = 'block';
-    $input.focus();
+
+    setTimeout( function searchMainFocus() {
+      $input.focus();
+    }, 400 );
 
     // V.setAnimation( 'search-main', { width: '14rem' } );
     $form.style.width = sc.width > 800 ? '240px' : '195px'; // using css transition
 
     animateNav();
 
+    Page.draw( {
+      pos: 'closed',
+      reset: false,
+      navReset: false,
+    } );
   }
 
   function animateNav() {

@@ -22,6 +22,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     const $topSlider = CanvasComponents.topSlider();
     const $listings = CanvasComponents.listings();
 
+    $page.addEventListener( 'mouseover', handlePageMouseover );
     $handle.addEventListener( 'click', handleClickHandler );
     $handle.addEventListener( 'touchstart', pageFlickStartHandler );
     $handle.addEventListener( 'touchend', pageFlickEndHandler );
@@ -31,6 +32,11 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     $topSlider.addEventListener( 'touchend', pageFlickEndHandler );
     $listings.addEventListener( 'touchstart', pageFlickStartHandler );
     $listings.addEventListener( 'touchend', pageFlickEndHandler );
+
+    function handlePageMouseover() {
+      V.setNode( '.popup-content', '' );
+      V.getNode( '.popup', '' ).style.opacity = 0;
+    }
 
     function handleClickHandler() {
       const p = V.getState( 'page' );

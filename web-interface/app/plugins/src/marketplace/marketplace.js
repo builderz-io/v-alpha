@@ -51,7 +51,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         role: whichRole,
         mapState: V.castJson( VMap.getState() ),
       } );
-      console.log( 'Search data: ', search );
 
       query = await V.getQuery( search ).then( res => {
         if ( res.success ) {

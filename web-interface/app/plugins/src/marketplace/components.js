@@ -31,13 +31,15 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     ) {
       V.setBrowserHistory( this.path );
       Profile.draw( this );
+      return;
     }
-    else {
-      drawPopup( this.path );
-    }
+
+    drawPopup( this.path );
+
   }
 
-  function handlePopupHover() {
+  function handlePopupHover( e ) {
+    e.stopPropagation();
 
     /* hover event is also triggered on touch (together with click), so do nothing on such devices */
     if ( V.getState( 'screen' ).width > 800 ) {

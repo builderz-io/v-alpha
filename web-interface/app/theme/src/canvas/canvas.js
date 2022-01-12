@@ -226,19 +226,19 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     //   V.setState( 'throttle', setTimeout( refresh, 200 ) );
     // };
 
-    window.onresize = function() {
-
-      // handle mobile keyboard
-
-      const s = V.getState( 'screen' );
-
-      if ( window.innerHeight < ( s.height / 3 * 2 ) && !V.getVisibility( 'form' ) ) {
-        V.getNode( 'page' ).classList.add( 'page-full-screen' );
-      }
-      else {
-        V.getNode( 'page' ).classList.remove( 'page-full-screen' );
-      }
-    };
+    // window.onresize = function() {
+    //
+    //   // handle mobile keyboard
+    //
+    //   const s = V.getState( 'screen' );
+    //
+    //   if ( window.innerHeight < ( s.height / 3 * 2 ) && !V.getVisibility( 'form' ) ) {
+    //     V.getNode( 'page' ).classList.add( 'page-full-screen' );
+    //   }
+    //   else {
+    //     V.getNode( 'page' ).classList.remove( 'page-full-screen' );
+    //   }
+    // };
 
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
@@ -246,6 +246,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
           e.preventDefault();
           handleKeyboard( ['search', 'query'] );
+        }
+        else if (
+          !V.getVisibility( 'form' )
+          && !V.getVisibility( 'modal' )
+        ) {
+          V.getNode( '.search__btn' ).click();
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
