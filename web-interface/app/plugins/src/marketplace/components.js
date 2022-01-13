@@ -135,7 +135,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           },
           h: {
             t: 'div',
-            c: 'card__initials font-bold fs-xxl txt-white',
+            c: 'card__initials font-bold fs-xxl txt-brand-primary-50',
             h: '+',
           },
           k: handleDrawPlusForm,
