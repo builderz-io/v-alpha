@@ -179,7 +179,6 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'handle',
       c: 'handle',
       h: {
-        t: 'div',
         c: 'handle__bar rounded-full bkg-offblack',
       },
     } );
@@ -268,12 +267,10 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'fixed hidden w-screen',
       k: handleClosePopup,
       h: {
-        t: 'div',
         c: 'popup',
         // k: handleClosePopup,
         h: [
           {
-            t: 'div',
             c: 'popup-content-wrapper flex flex-wrap justify-center items-center',
             h: [
               // {
@@ -282,16 +279,13 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
               //   h: getString( ui.close )
               // },
               {
-                t: 'div',
                 c: 'popup-content',
               },
             ],
           },
           {
-            t: 'div',
             c: 'popup-tip-container',
             h: {
-              t: 'div',
               c: 'popup-tip',
             },
           },

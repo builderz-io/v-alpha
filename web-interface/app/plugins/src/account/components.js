@@ -64,7 +64,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent( fullId, bal ) {
     return V.cN( {
-      t: 'div',
       h: [
         {
           t: 'h1',
@@ -79,7 +78,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             h: getString( ui.noBal ),
           }
           : {
-            t: 'div',
             h: {
               t: 'table',
               i: 'v-token-account-details',
@@ -173,7 +171,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       class: 'txt-anchor-mid',
       html: {
         svg: true,
-        t: 'svg',
         a: {
           width: '74px',
           viewBox: '0 0 36 37',
@@ -249,22 +246,18 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: {
-        t: 'div',
         c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
         a: {
           style: `background:${background}`,
         },
         k: handleOpenTxDetails,
         h: {
-          t: 'div',
           c: 'card__initials font-medium fs-xl txt-white no-txt-select',
           h: txData.amount,
         },
@@ -272,7 +265,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'card__top-right flex items-center pxy',
       h: {
         t: 'h2',
@@ -283,13 +275,11 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $bottomLeft = V.cN( {
-      t: 'div',
       c: 'card__bottom-left items-center',
       h: '',
     } );
 
     const $bottomRight = V.cN( {
-      t: 'div',
       c: 'card__bottom-right hidden fs-s pxy capitalize',
       h: {
         t: 'table',
@@ -381,21 +371,17 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   function accountPlaceholderCard() {
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents placeholder',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: V.cN( {
-        t: 'div',
         c: 'circle-3 rounded-full animated-background',
       } ),
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'relative animated-background',
       y: {
         'height': '20px',

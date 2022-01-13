@@ -98,13 +98,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   function castCircle( circleData, whichHandler ) {
     const backgr = castBackground( circleData );
     return V.cN( {
-      t: 'div',
       c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
       a: {
         style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`,
       },
       h: {
-        t: 'div',
         c: 'card__initials font-bold fs-xl txt-white',
         h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId ),
       },
@@ -128,13 +126,11 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'addcard',
         c: 'addcard__container txt-center rounded bkg-white',
         h: {
-          t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
           a: {
             style: 'background:rgba(var(--black), 0.11);margin-left: 5px;', // border: 2px solid rgba(var(--brandPrimary), 1)
           },
           h: {
-            t: 'div',
             c: 'card__initials font-bold fs-xxl txt-brand-primary-50',
             h: '+',
           },
@@ -167,7 +163,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         c: 'smallcard__container txt-center rounded bkg-white',
         h: [
           {
-            t: 'div',
             c: 'circle-3 rounded-full animated-background',
             y: {
               'margin-bottom': '20px',
@@ -178,7 +173,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           },
           {
             x: options ? options.showProgress : false,
-            t: 'div',
             c: 'progress-bar',
             h: {
               t: 'span',
@@ -207,19 +201,16 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const castDescr = V.castDescription( text );
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: castCircle( cardData ),
       // k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'card__top-right flex items-center pxy',
       h: {
         t: 'h2',
@@ -230,11 +221,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
 
     const $bottomLeft = V.cN( {
-      t: 'div',
       c: 'card__bottom-left items-center pxy',
       h: cardData.properties && cardData.properties.target ? [
         {
-          t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
           h: cardData.properties.target || '',
           k: handleProfileDraw.bind( cardData ),
@@ -248,7 +237,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
 
     const $bottomRight = V.cN( {
-      t: 'div',
       c: 'card__bottom-right pxy',
       h: [
         { t: 'p', c: 'pxy capitalize', h: cardData.role },
@@ -283,7 +271,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
     if ( isPreview ) {
       return V.cN( {
-        t: 'div',
         i: entity.uuidE + '-map-popup',
         c: 'map-popup-inner flex justify-center',
         y: {
@@ -294,7 +281,6 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     }
     else {
       return V.cN( {
-        t: 'div',
         c: 'map-popup-inner',
         a: { path: entity.path },
         h: [

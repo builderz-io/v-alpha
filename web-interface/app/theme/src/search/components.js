@@ -137,7 +137,6 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'search-main flex relative pill-shadow',
       h: [
         {
-          t: 'div',
           c: 'search__overlay fixed hidden',
           k: close,
         },
@@ -149,7 +148,6 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
           },
         },
         {
-          t: 'div',
           c: 'search__btn flex absolute justify-center',
           h: V.getIcon( 'search' ),
           k: handleSearchMain,

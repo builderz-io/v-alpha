@@ -401,7 +401,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const rect = $textarea.getBoundingClientRect();
 
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestions absolute card-shadow bkg-white',
       y: {
         left: rect.left + 'px',
@@ -409,7 +408,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         width: rect.width + 'px',
       },
       h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
-        t: 'div',
         h: dbEntries.map( entry => castSuggestion( entry, stringToComplete ) ),
       } ),
     } );
@@ -422,7 +420,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const tag = entity.tag;
 
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestion',
       a: {
         'data-val': title + ' ' + tag,
@@ -435,7 +432,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function notFound( stringToComplete ) {
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestion',
       h: '"' + stringToComplete + '" ' + getString( ui.notFound ),
     } );
@@ -445,7 +441,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent() {
     return V.cN( {
-      t: 'div',
       c: 'w-full',
       h: [
         {
@@ -489,7 +484,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           background: background,
         },
         h: {
-          t: 'div',
           c: 'font-medium pxy',
           h: [
             {
@@ -514,7 +508,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function messageForm() {
     return V.sN( {
-      t: 'div',
       c: 'messageform flex items-center absolute w-full pxy card-shadow',
     } );
   }
@@ -547,7 +540,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function messageResponse() {
     return V.sN( {
-      t: 'div',
       c: 'messageform__response',
       // h: 'test response msg'
     } );

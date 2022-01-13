@@ -134,7 +134,6 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const placeholderImage =  {
       svg: true,
-      t: 'svg',
       a: {
         class: 'pill__placeholderimage txt-white',
         height: '30',
@@ -171,13 +170,11 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       },
       h: [
         {
-          t: 'div',
           c: 'pill__img circle-0 rounded-full flex justify-center items-center cursor-pointer',
           a: {
             style: `background:${backgr}; background-position: center center; background-size: cover;`,
           },
           h: {
-            t: 'div',
             c: 'card__initials font-bold fs-s txt-white',
             h: backgr.includes( 'url' ) ? '' : placeholderImage, // item.initials
           },

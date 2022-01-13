@@ -114,7 +114,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleGetEntityForm() {
     const $input = InteractionComponents.formField( 'uPhrase' );
     const $new = V.cN( {
-      t: 'div',
       i: 'use-key-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntity,
@@ -122,7 +121,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $response = V.sN( {
-      t: 'div',
       c: 'form__response pxy txt-red',
     } );
 
@@ -340,7 +338,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     e.target.textContent = getString( ui.joining );
     e.target.append( InteractionComponents.clickConfirmSpinner() );
     e.target.parentNode.append( V.cN( {
-      t: 'div',
       c: 'progress-bar',
       h: {
         t: 'span',
@@ -403,7 +400,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function drawModalContent( field, handler, label, explain ) {
 
     const $btn = V.cN( {
-      t: 'div',
       c: buttonClasses,
       k: handler,
       h: label,
@@ -412,7 +408,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( field );
 
     const $response = V.sN( {
-      t: 'div',
       c: 'joinform__response pxy txt-red',
     } );
 
@@ -433,7 +428,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       t: 'modal',
       c: 'modal fixed',
       h: {
-        t: 'div',
         i: 'modal-close',
         c: 'modal__close',
         h: getString( ui.close ),
@@ -445,7 +439,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function modalContent() {
     return V.cN( {
-      t: 'div',
       c: 'modal__content relative',
       k: handleStopPropagation,
     } );
@@ -480,7 +473,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: getString( ui.enableWallet ) + ' ' + metaMaskLink,
     } );
     const $fox = V.cN( {
-      t: 'div',
       c: 'mt-r mb-r ml-auto mr-auto',
       y: {
         width: '108px',
@@ -491,7 +483,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       },
     } );
     const $metaMask = V.cN( {
-      t: 'div',
       c: buttonClasses,
       k: handleGetMetaMask,
       h: getString( ui.getMetaMask ),
@@ -528,7 +519,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       ],
     } );
     const $confirm = V.cN( {
-      t: 'div',
       i: 'sign-transaction',
       c: buttonClasses + ' modal-pos-1',
       k: handleTransaction,
@@ -541,7 +531,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function web3Join() {
     const $content = modalContent();
     const $new = V.cN( {
-      t: 'div',
       i: 'connectwallet-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleWeb3Join,
@@ -566,7 +555,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function web2Join() {
     const $content = modalContent();
     const $new = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleDrawTitleForm,
       h: getString( ui.newName ),
@@ -584,7 +572,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function confirmUPhrase() {
     const $content = modalContent();
     const $key = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntityForm,
       h: getString( ui.manageProfile ),
@@ -596,7 +583,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function disconnect() {
     const $content = modalContent();
     const $disc = V.cN( {
-      t: 'div',
       i: 'disconnect-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleDisconnect,
@@ -609,11 +595,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function connectWallet() {
     const $content = modalContent();
     const $connect = V.cN( {
-      t: 'div',
       c: 'preloader',
       h: [
         {
-          t: 'div',
           c: 'preloader__ring',
         },
         {
@@ -630,7 +614,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function mapAddress() {
     const $content = modalContent();
     const $current = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleAddressMapping,
       h: getString( ui.useProfile ),
@@ -649,7 +632,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
 
     const $welcome = V.cN( {
-      t: 'div',
       c: 'txt-center pxy',
       h: [
         { t: 'p', h: getString( ui.welcome ) },
@@ -670,7 +652,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( uPhrase ) {
 
       const $uPhrase = V.cN( {
-        t: 'div',
         c: 'txt-center',
         y: {
           'background': 'aquamarine',
@@ -719,7 +700,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function entityNotFound() {
     const $content = modalContent();
     const $new = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleDrawTitleForm,
       h: getString( ui.newName ),
