@@ -37,8 +37,7 @@ module.exports = async ( context, filter ) => {
 
       text = text.toLowerCase();
 
-      const role =
-      filter.role == 'all'
+      const role = filter.role == 'all'
       || filter.role == E.c
         ? true
         : filter.role == 'aa'

@@ -98,14 +98,16 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     if ( viewData.success ) {
       viewData.data[0].messages.forEach( cardData => {
 
-        previousSender == cardData.sender ?
-          cardData.hideSender = true : null;
+        previousSender == cardData.sender
+          ? cardData.hideSender = true
+          : null;
 
         previousSender = cardData.sender;
 
         if ( viewData.data[0].aE ) {
-          viewData.data[0].aE.fullId == cardData.sender ?
-            cardData.sender = 'Me' : null;
+          viewData.data[0].aE.fullId == cardData.sender
+            ? cardData.sender = 'Me'
+            : null;
         }
 
         const $card = ChatComponents.message( cardData );

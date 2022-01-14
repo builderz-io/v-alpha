@@ -669,8 +669,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function managementCard() {
     if (
-      V.aE() &&
-      (
+      V.aE()
+      && (
         V.getLastViewed().holders.includes( V.aE().fullId ) // || // new model
         // V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
       )

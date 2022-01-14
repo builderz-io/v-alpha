@@ -124,15 +124,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     if ( tL == 'EVM' /* && V.cA() */ ) {
       const rD = recipientData.data[0];
 
-      rD.evmCredentials ? rD.evmCredentials.address ?
-        recipientAddress = rD.evmCredentials.address : undefined : undefined;
+      rD.evmCredentials
+        ? rD.evmCredentials.address
+          ? recipientAddress = rD.evmCredentials.address
+          : undefined
+        : undefined;
 
       /**
        * Overwrite recipientAddress if another has been defined by user
        */
 
-      rD.receivingAddresses ? rD.receivingAddresses.evm ?
-        recipientAddress = rD.receivingAddresses.evm : undefined : undefined;
+      rD.receivingAddresses
+        ? rD.receivingAddresses.evm
+          ? recipientAddress = rD.receivingAddresses.evm
+          : undefined
+        : undefined;
 
       // signature = initiator.evmCredentials.privateKey;
     }

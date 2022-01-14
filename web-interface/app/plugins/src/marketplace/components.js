@@ -107,13 +107,14 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId ),
       },
       e: {
-        click: whichHandler == 'editable' ?
-          handleEditProfileDraw.bind( circleData ) :
-          whichHandler == 'popup' ?
-            handlePopup.bind( circleData ) :
-            handleProfileDraw.bind( circleData ),
-        mouseover: whichHandler == 'popup' ?
-          handlePopupHover.bind( circleData ) : '',
+        click: whichHandler == 'editable'
+          ? handleEditProfileDraw.bind( circleData )
+          : whichHandler == 'popup'
+            ? handlePopup.bind( circleData )
+            : handleProfileDraw.bind( circleData ),
+        mouseover: whichHandler == 'popup'
+          ? handlePopupHover.bind( circleData )
+          : '',
       },
     } );
   }

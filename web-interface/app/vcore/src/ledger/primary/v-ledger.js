@@ -119,7 +119,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         resolve( socket.id + ' connected' );
       } );
 
-      window.socket.on( 'connect_error', ( error ) => {
+      window.socket.on( 'connect_error', () => {
         // V.debug( error );
         reject( 'could not connect socket' );
       } );

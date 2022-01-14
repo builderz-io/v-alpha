@@ -334,9 +334,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           txData.txType == 'out'
             ? [ getString( ui.total ),
               '-' + (
-                Number( txData.amount ) +
-                Number( txData.feeAmount ) +
-                Number( txData.contribution )
+                Number( txData.amount )
+                + Number( txData.feeAmount )
+                + Number( txData.contribution )
               ) ]
             : undefined,
 

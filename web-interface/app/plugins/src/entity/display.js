@@ -22,8 +22,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     const now = Date.now();
 
     if (
-      cache &&
-      ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
+      cache
+      && ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
     ) {
       V.setCache( 'viewed', 'clear' );
     }

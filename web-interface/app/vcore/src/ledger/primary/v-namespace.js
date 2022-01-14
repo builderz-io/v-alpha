@@ -771,9 +771,9 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'transaction log' == whichEndpoint ) {
       const transactionLog = await getTransactionLog( data ); // data is uuidP
-      if ( !transactionLog.errors &&
-        transactionLog.data.getProfiles[0].p != null &&
-        transactionLog.data.getProfiles[0].p.a != null
+      if ( !transactionLog.errors
+        && transactionLog.data.getProfiles[0].p != null
+        && transactionLog.data.getProfiles[0].p.a != null
       ) {
         const castTx = transactionLog.data.getProfiles[0].p.a.map(
           tx => castReturnedTransferData( tx )
@@ -791,10 +791,10 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     /** Query profiles for E fetched regularly or by query */
 
     if (
-      !E.errors &&
-      (
-        ( E.data.getEntities && E.data.getEntities[0] != null ) ||
-        ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
+      !E.errors
+      && (
+        ( E.data.getEntities && E.data.getEntities[0] != null )
+        || ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
       )
     ) {
       const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
