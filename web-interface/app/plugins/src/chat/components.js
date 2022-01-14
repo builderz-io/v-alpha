@@ -469,7 +469,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     linkedMsg.iframes.includes( 'iframe' ) ? width = '330px' : null;
     const style = msg.sender == 'Me' ? { 'margin-left': 'auto', 'width': width } : { 'margin-right': 'auto', 'width': width };
 
-    return V.castNode( {
+    return V.cN( {
       tag: 'li',
       classes: 'w-screen pxy',
       a: {
@@ -507,13 +507,13 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageForm() {
-    return V.sN( {
+    return V.cN( {
       c: 'messageform flex items-center absolute w-full pxy card-shadow',
     } );
   }
 
   function messageInput( prefill ) {
-    return V.sN( {
+    return V.cN( {
       t: 'textarea',
       c: 'messageform__input mr-2',
       h: prefill ? 'send ' + prefill + ' 10' : '',
@@ -531,7 +531,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageSend() {
-    return V.sN( {
+    return V.cN( {
       t: 'button',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
       h: V.getIcon( 'send' ),
@@ -539,7 +539,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageResponse() {
-    return V.sN( {
+    return V.cN( {
       c: 'messageform__response',
       // h: 'test response msg'
     } );

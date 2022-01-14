@@ -120,7 +120,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: getString( ui.useKey ),
     } );
 
-    const $response = V.sN( {
+    const $response = V.cN( {
       c: 'form__response pxy txt-red',
     } );
 
@@ -407,7 +407,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $input = InteractionComponents.formField( field );
 
-    const $response = V.sN( {
+    const $response = V.cN( {
       c: 'joinform__response pxy txt-red',
     } );
 

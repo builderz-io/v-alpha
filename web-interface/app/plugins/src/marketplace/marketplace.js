@@ -263,7 +263,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceNavItems[item] ) );
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceDefinitions[item] ) );
   }
 
   function draw( whichPath, search ) {

@@ -126,7 +126,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( { // #1b1aff
       svg: true,
-      tag: 'svg',
       a: {
         style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',

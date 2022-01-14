@@ -1,4 +1,4 @@
-const MarketplaceNavItems = ( function() { // eslint-disable-line no-unused-vars
+const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-vars
 
   /**
    * Navigation Items for V Marketplace Plugin

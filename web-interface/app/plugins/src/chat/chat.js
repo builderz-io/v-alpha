@@ -33,7 +33,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else {
-        $response.append( V.sN( {
+        $response.append( V.cN( {
           c: 'messageform__respinner',
           s: {
             messageform__respinner: {
