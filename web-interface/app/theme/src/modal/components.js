@@ -454,6 +454,26 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function preview() {
+    const $content = modalContent();
+    const $msg = V.cN( {
+      t: 'p',
+      // h: InteractionComponents.clickConfirmSpinner(),
+      h: [
+        {
+          c: 'preloader__ring',
+        },
+        {
+          t: 'loader',
+          c: 'preloader__text',
+          h: getString( ui.connectingWallet ),
+        },
+      ],
+    } );
+    V.setNode( $content, $msg );
+    return $content;
+  }
+
   function simpleMessage( text ) {
     const $content = modalContent();
     const $msg = V.cN( {
@@ -739,6 +759,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   return {
     modal: modal,
     modalContent: modalContent,
+    preview: preview,
     simpleMessage: simpleMessage,
     validationError: validationError,
     getMetaMask: getMetaMask,
