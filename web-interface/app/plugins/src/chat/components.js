@@ -516,7 +516,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'textarea',
       c: 'messageform__input mr-2',
-      h: prefill ? 'send ' + prefill + ' 10' : '',
+      h: V.aE() && prefill ? 'send ' + prefill + ' 10' : '',
       a: {
         // style: 'height:10px;overflow-y:hidden;',
         placeholder: V.aE() ? getString( ui.placeholder, 'message textarea placeholder' )

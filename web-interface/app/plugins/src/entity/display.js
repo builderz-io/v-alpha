@@ -166,7 +166,9 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
             position: 'top',
             listings: $list,
           } );
-          Chat.drawMessageForm();
+          entity.uuidE != V.aE( 'uuidE' )
+            ? Chat.drawMessageForm()
+            : null;
         } );
       }
       else {
@@ -175,7 +177,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           listings: $list,
         } );
 
-        Chat.drawMessageForm();
+        entity.uuidE != V.aE( 'uuidE' )
+          ? Chat.drawMessageForm()
+          : null;
+
       }
 
       if ( entity.images.tinyImage ) {

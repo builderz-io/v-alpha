@@ -374,8 +374,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
             }
           } );
 
-        // Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
-        Join.onboard( res.data[0].auth.uPhrase );
+        /** onboard routine  */
+        if ( V.getState( 'active' ).navItem ) {
+          Navigation.drawReset();
+          setTimeout( delayedOnboardRoutine, 900, res.data[0].auth.uPhrase );
+        }
+        else {
+          Join.onboard( res.data[0].auth.uPhrase );
+        }
 
         /** set state and cache */
         V.setActiveEntity( res.data[0] );
@@ -396,6 +402,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ================== private methods ================= */
+
+  function delayedOnboardRoutine( uPhrase ) {
+    Join.onboard( uPhrase );
+  }
 
   function drawModalContent( field, handler, label, explain ) {
 
