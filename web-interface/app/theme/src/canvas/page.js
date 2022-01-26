@@ -72,8 +72,8 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       const f = V.getState( 'flick' );
 
       if (
-        Math.abs( f.startX - f.endX ) < 100 &&
-              f.startY > f.endY + 15
+        Math.abs( f.startX - f.endX ) < 100
+              && f.startY > f.endY + 15
       ) {
         if ( p.height == p.peek || p.height == p.featureCalc ) {
           Page.draw( { position: 'top', reset: false } );
@@ -83,9 +83,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else if (
-        isListingsUlAtTop &&
-              Math.abs( f.startX - f.endX ) < 100 &&
-              f.startY < f.endY - 15
+        isListingsUlAtTop
+              && Math.abs( f.startX - f.endX ) < 100
+              && f.startY < f.endY - 15
       ) {
         if ( p.height == p.peek ) {
           Page.draw( { position: 'closed', reset: false } );
@@ -164,16 +164,20 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
     if ( newHeight == p.height ) { return }
 
     V.setAnimation( DOM.$page, { height: newHeight + 'px' }, { duration: 3 } ).then( () => {
-      V.setState( 'page', { height: newHeight } );
+      V.setState( 'page', {
+        height: newHeight,
+        position: pagePos,
+        current: DOM.$page.getBoundingClientRect(),
+      } );
       if ( $list && !pageScroll ) {
         $list.scrollTop = 0;
       }
     } );
 
     if ( pagePos == 'top' ) {
-      if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
-        V.getNode( 'page' ).classList.add( 'page-full-screen' );
-      }
+      // if ( window.innerHeight < ( s.height / 3 * 2 ) ) {
+      //   V.getNode( 'page' ).classList.add( 'page-full-screen' );
+      // }
       if ( s.width < 800 ) {
         Haze.draw();
         $page.classList.remove( 'pill-shadow' );
@@ -194,6 +198,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'closed' ) {
+      SearchComponents.drawReset();
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       CanvasComponents.handleClosePopup();

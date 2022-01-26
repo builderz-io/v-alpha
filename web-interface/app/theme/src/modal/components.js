@@ -46,10 +46,16 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     entityExists: 'This combination of title and tag already exists or is invalid',
     txSent: '✅ Sent to network',
     txSuccess: '✅ Transaction successful',
-    error: 'An error occured. Maybe the wallet is locked?',
+    error: 'Something went wrong. Maybe the wallet is locked or you did not sign the transaction?',
     wait: 'Please wait... requesting data',
     walletLocked: 'Could not unlock wallet. Maybe the site\'s connectivity to the wallet was denied? Check the browser or wallet settings.',
     noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
+
+    txTo: 'Recipient',
+    txAmount: 'Amount',
+    txContribution: 'Contribution',
+    txFee: 'Fee',
+    txTotal: 'Total',
   };
 
   function getString( string, scope ) {
@@ -466,7 +472,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'loader',
           c: 'preloader__text',
-          h: getString( ui.connectingWallet ),
+          h: getString( ui.wait ),
         },
       ],
     } );
@@ -524,7 +530,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function confirmTransaction( txData ) {
 
     const tx = txData.data[0];
-
     const $content = modalContent();
     const $txDetails = V.cN( {
       t: 'p',
@@ -532,19 +537,23 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'p',
-          h: `Amount: ${tx.amount}`,
+          h: `${ getString( ui.txAmount ) }: ${ tx.amount }`,
         },
         {
           t: 'p',
-          h: `Fee: ${tx.feeAmount}`,
+          h: `${ getString( ui.txFee ) }: ${ tx.feeAmount }`,
         },
         {
           t: 'p',
-          h: `Contribution: ${tx.contribution}`,
+          h: `${ getString( ui.txContribution ) }: ${ tx.contribution }`,
         },
         {
           t: 'p',
-          h: `Total: ${tx.txTotal}`,
+          h: `${ getString( ui.txTotal ) }: ${ tx.txTotal }`,
+        },
+        {
+          t: 'p',
+          h: `${ getString( ui.txTo ) }: ${ tx.recipient} `,
         },
       ],
     } );

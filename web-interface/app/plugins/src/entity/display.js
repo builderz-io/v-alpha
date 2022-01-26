@@ -166,9 +166,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
             position: 'top',
             listings: $list,
           } );
-          entity.uuidE != V.aE( 'uuidE' )
-            ? Chat.drawMessageForm()
-            : null;
+          delayedMessageForm( entity );
         } );
       }
       else {
@@ -176,11 +174,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           position: 'top',
           listings: $list,
         } );
-
-        entity.uuidE != V.aE( 'uuidE' )
-          ? Chat.drawMessageForm()
-          : null;
-
+        delayedMessageForm( entity );
       }
 
       if ( entity.images.tinyImage ) {
@@ -193,6 +187,16 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         topcontent: CanvasComponents.notFound( 'entity' ),
       } );
     }
+  }
+
+  function delayedMessageForm( entity ) {
+
+    /** This is a hacky way to wait for V.aE( 'uuidE' ) to be available */
+    setTimeout( function delayMsgForm() {
+      entity.uuidE != V.aE( 'uuidE' )
+        ? Chat.drawMessageForm()
+        : null;
+    }, 1800, entity );
   }
 
   function preview( data ) {

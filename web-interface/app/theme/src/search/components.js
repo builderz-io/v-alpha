@@ -53,7 +53,7 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
     $input = $form.getNode( '.search__input' );
     sc = V.getState( 'screen' );
 
-    if ( isOpen ) {
+    if ( V.getState( 'active' ).searchField ) {
       if ( $input.value != '' ) {
         if ( $input.value.length < 2 ) { return }
         handleQuery( $input.value );
@@ -67,8 +67,9 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function close() {
-
-    isOpen = false;
+    if( !$input ) { return }
+    // isOpen = false;
+    V.setState( 'active', { searchField: false } );
     $input.style.display = 'none';
     $overlay.style.display = 'none';
     $input.value = '';
@@ -81,7 +82,8 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function open() {
-    isOpen = true;
+    // isOpen = true;
+    V.setState( 'active', { searchField: true } );
     $input.style.display = 'block';
     $overlay.style.display = 'block';
 
@@ -94,11 +96,11 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
 
     animateNav();
 
-    Page.draw( {
-      pos: 'closed',
-      reset: false,
-      navReset: false,
-    } );
+    // Page.draw( {
+    //   pos: 'closed',
+    //   reset: false,
+    //   navReset: false,
+    // } );
   }
 
   function animateNav() {
@@ -115,7 +117,7 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
           : 'service-nav'
         : 'entity-nav';
 
-    const distLeft = isOpen
+    const distLeft = V.getState( 'active' ).searchField
       ? sc.width > 800 ? '340px' : '272px'
       : V.getState( 'header' ).entityNavLeft + 'px';
 
@@ -126,10 +128,15 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
     const data = {
       query: query,
     };
+    // Chat.drawMessageForm( 'clear' );
     Marketplace.draw( V.getState( 'active' ).navItem, data );
   }
 
   /* ================  public components ================ */
+
+  function drawReset() {
+    close();
+  }
 
   function searchMain() {
     return V.cN( {
@@ -159,6 +166,7 @@ const SearchComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   return {
+    drawReset: drawReset,
     searchMain: searchMain,
   };
 

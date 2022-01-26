@@ -718,7 +718,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    console.log( 'GET MULTIPLE ENTITIES: ', data );
+    console.log( 'GET ENTITIE(S): ', data );
 
     /** Query multiple entities and profiles in sequence (arrays) */
 
@@ -799,18 +799,31 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     ) {
       const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
 
-      const P = await getProfiles( entitiesArray );
+      if ( entitiesArray.length == 1 ) {
 
-      /** Combine profile and entity data */
-
-      if ( !P.errors && P.data.getProfiles[0] != null ) {
-        const combined = entitiesArray.map(
-          ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
-        );
-        return V.successTrue( 'got entities and profiles', combined );
+        /** Run fetch again for a single entity */
+        const singleEntity = {
+          isDisplay: true,
+          uuidE: entitiesArray[0].a,
+          uuidP: entitiesArray[0].d,
+        };
+        return getNamespace( singleEntity );
       }
       else {
-        return V.successFalse( 'get profiles' );
+
+        /** Get Profiles for all entities in array ... */
+        const P = await getProfiles( entitiesArray );
+
+        /** ... then combine entity with profile data */
+        if ( !P.errors && P.data.getProfiles[0] != null ) {
+          const combined = entitiesArray.map(
+            ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
+          );
+          return V.successTrue( 'got entities and profiles', combined );
+        }
+        else {
+          return V.successFalse( 'get profiles' );
+        }
       }
     }
     else {

@@ -226,7 +226,11 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function setTransactionConfirmation( which ) {
+    Modal.draw( 'preview' );
     const txData = await castTransaction( which );
+    if ( !txData.success ) {
+      V.setNode( '.modal', 'clear' );
+    }
     return Promise.resolve( txData );
   }
 

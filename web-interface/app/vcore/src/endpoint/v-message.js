@@ -192,7 +192,6 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
         //
         // }
         else { // command can only be "send" or "request" at this point
-          Modal.draw( 'preview' );
           return V.setTransactionConfirmation( caseArray );
         }
       }

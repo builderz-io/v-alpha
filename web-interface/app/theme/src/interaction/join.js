@@ -124,36 +124,40 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
   async function ckeckEntityStoreByAddress() { // eslint-disable-line require-await
 
-    return V.cA() ? V.getEntity( 'JOIN' + '--' + V.cA() ).then( async res => {
+    return V.cA()
+      ? V.getEntity( 'JOIN' + '--' + V.cA() ).then( async res => {
 
-      if ( res.reset ) {
-        return 'entity not found';
-      }
-      else if ( res.success ) {
+        if ( res.reset ) {
+          return 'entity not found';
+        }
+        else if ( res.success ) {
 
-        V.setActiveEntity( res.data[0] );
+          V.setActiveEntity( res.data[0] );
 
-        const eB = await V.getEntityBalance( res.data[0] );
+          Navigation.drawJoinedUserPill();
 
-        if ( eB.success ) {
-          V.setState( 'activeEntity', { balance: {
-            success: true,
-            balance: eB.data[0],
-          } } );
+          const eB = await V.getEntityBalance( res.data[0] );
+
+          if ( eB.success ) {
+            V.setState( 'activeEntity', { balance: {
+              success: true,
+              balance: eB.data[0],
+            } } );
+          }
+          else {
+            V.setState( 'activeEntity', { balance: {
+              success: false,
+              message: eB.message.message.message,
+            } } );
+          }
+
+          return 'entity found';
         }
         else {
-          V.setState( 'activeEntity', { balance: {
-            success: false,
-            message: eB.message.message.message,
-          } } );
+          return 'entity not found';
         }
-
-        return 'entity found';
-      }
-      else {
-        return 'entity not found';
-      }
-    } ) : 'error';
+      } )
+      : 'error';
   }
 
   /* ================== public methods ================== */

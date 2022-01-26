@@ -23,7 +23,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setMessageBot( message ).then( res => {
       V.sN( $response, '' );
       V.setState( 'active', { autofillUuidE: undefined } );
-      if ( res.success || ( res.data.setHighlight && res.data.setHighlight.a ) ) {
+      if ( res.success || ( res.data && res.data.setHighlight && res.data.setHighlight.a ) ) {
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
