@@ -215,9 +215,17 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
         // TODO: could do with a better implementation of ignoring the "for" trigger-word
 
-        if ( stringToComplete.length == 2 && stringToComplete != V.i18n( 'for', 'trigger' ) ) {
+        if (
+          stringToComplete.length == 3
+          && stringToComplete != V.i18n( 'for', 'trigger' )
+        ) {
 
-          V.getQuery( { query: stringToComplete, role: 'all', field: 'title' } )
+          V.getQuery( {
+            query: stringToComplete,
+            role: 'all',
+            field: 'title',
+            isAutofill: true,
+          } )
             .then( res => {
               console.log( res );
               dbEntries = res.data;

@@ -799,6 +799,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     ) {
       const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
 
+      if ( data.isAutofill ) {
+        const titles = entitiesArray.map(
+          item => castReturnedEntityAndProfileData( item, {} )
+        );
+        return V.successTrue( 'got entity titles for autofill', titles );
+      }
+
       if ( entitiesArray.length == 1 ) {
 
         /** Run fetch again for a single entity */

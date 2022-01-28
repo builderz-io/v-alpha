@@ -274,6 +274,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if (
           !V.getVisibility( 'form' )
           && !V.getVisibility( 'modal' )
+          && !V.getVisibility( '.messageform' )
         ) {
           V.getNode( '.search__btn' ).click();
         }

@@ -190,6 +190,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function delayedMessageForm( entity ) {
+    if ( !V.aE() ) { return }
 
     /** This is a hacky way to wait for V.aE( 'uuidE' ) to be available */
     setTimeout( function delayMsgForm() {
