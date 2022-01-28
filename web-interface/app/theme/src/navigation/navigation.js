@@ -585,6 +585,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /** Place into view */
     const $pill = NavComponents.entityPill( obj );
     V.getNode( 'entity-nav > ul' ).prepend( $pill );
+    drawJoinedUserPill();
   }
 
   function drawImage( data ) {
@@ -601,6 +602,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function drawJoinedUserPill() {
     if ( V.getState( 'active' ).path != '/' ) { return }
     const $userPill = V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]' );
+    if ( !$userPill ) { return }
     V.getNode( 'entity-nav > ul' ).prepend( $userPill );
     const $span = $userPill.getElementsByClassName( 'pill__initials' )[0];
     if ( $span ) {
