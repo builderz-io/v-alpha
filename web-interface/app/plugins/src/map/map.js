@@ -259,11 +259,17 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
-      viMap = L.map( 'background' ).setView( [ map.lat, map.lng ], map.zoom );
+      viMap = L.map( 'background', {
+        tapTolerance: 22,
+        // renderer: L.canvas( { tolerance: 30 } ),
+      } ).setView( [ map.lat, map.lng ], map.zoom );
       V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
     }
     else {
-      viMap = L.map( 'background' ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
+      viMap = L.map( 'background', {
+        tapTolerance: 22,
+        // renderer: L.canvas( { tolerance: 30 } ),
+      } ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
       V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
     }
 
