@@ -72,7 +72,6 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
           InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
           InteractionComponents.formField( 'description', values.description ),
           V.cN( {
-            t: 'div',
             c: 'flex',
             h: [
               InteractionComponents.formUploadImage(),

@@ -362,18 +362,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       const number3 = String( V.castRandomInt( 2, 9 ) );
 
       if (
-        number2 != number1 &&
-        number3 != number1 &&
-        number3 != number2 &&
-        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
-        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
-        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
-        number1 + number2 != '69' && // sexual reference
-        number3 + number2 != '69' &&
-        number1 + number2 != '13' && // bad luck in Germany
-        number3 + number2 != '13' &&
-        number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21'
+        number2 != number1
+        && number3 != number1
+        && number3 != number2
+        && [number1, number2, number3].indexOf( '6' ) == -1 // could be mistaken for 8
+        && [number1, number2, number3].indexOf( '7' ) == -1 // has two syllables
+        && [number1, number2, number3].indexOf( '4' ) == -1 // stands for death in asian countries
+        && number1 + number2 != '69' // sexual reference
+        && number3 + number2 != '69'
+        && number1 + number2 != '13' // bad luck in Germany
+        && number3 + number2 != '13'
+        && number1 + number2 != '21' // special VI tag
+        && number3 + number2 != '21'
       ) {
         continueDice = false;
         const tag = '#' + number1 + number2 + number3 + number2;
@@ -525,8 +525,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         filter = 'evmAddress';
       }
       else if (
-        which.substr( 0, 1 ) == 'T' &&
-        which.length == 40
+        which.substr( 0, 1 ) == 'T'
+        && which.length == 40
       ) {
         filter = 'symbolAddress';
       }
@@ -585,8 +585,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
           /** Only update state if activeEntity was edited, not a managed entity */
           if (
-            'Firebase' == V.getSetting( 'entityLedger' ) &&
-            [ V.aE().uuidE, V.aE().uuidP ].includes( res.data[0].a )
+            'Firebase' == V.getSetting( 'entityLedger' )
+            && [ V.aE().uuidE, V.aE().uuidP ].includes( res.data[0].a )
           ) {
             getEntity( V.aE().uuidE ).then( res => {
               if ( res.success ) {
@@ -595,8 +595,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
             } );
           }
           else if (
-            'MongoDB' == V.getSetting( 'entityLedger' ) &&
-            V.aE().fullId == res.data[0].fullId
+            'MongoDB' == V.getSetting( 'entityLedger' )
+            && V.aE().fullId == res.data[0].fullId
           ) {
             V.setActiveEntity( res.data[0] );
           }

@@ -718,7 +718,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    console.log( 'GET MULTIPLE ENTITIES: ', data );
+    console.log( 'GET ENTITIE(S): ', data );
 
     /** Query multiple entities and profiles in sequence (arrays) */
 
@@ -771,9 +771,9 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'transaction log' == whichEndpoint ) {
       const transactionLog = await getTransactionLog( data ); // data is uuidP
-      if ( !transactionLog.errors &&
-        transactionLog.data.getProfiles[0].p != null &&
-        transactionLog.data.getProfiles[0].p.a != null
+      if ( !transactionLog.errors
+        && transactionLog.data.getProfiles[0].p != null
+        && transactionLog.data.getProfiles[0].p.a != null
       ) {
         const castTx = transactionLog.data.getProfiles[0].p.a.map(
           tx => castReturnedTransferData( tx )
@@ -791,26 +791,46 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     /** Query profiles for E fetched regularly or by query */
 
     if (
-      !E.errors &&
-      (
-        ( E.data.getEntities && E.data.getEntities[0] != null ) ||
-        ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
+      !E.errors
+      && (
+        ( E.data.getEntities && E.data.getEntities[0] != null )
+        || ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
       )
     ) {
       const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
 
-      const P = await getProfiles( entitiesArray );
-
-      /** Combine profile and entity data */
-
-      if ( !P.errors && P.data.getProfiles[0] != null ) {
-        const combined = entitiesArray.map(
-          ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
+      if ( data.isAutofill ) {
+        const titles = entitiesArray.map(
+          item => castReturnedEntityAndProfileData( item, {} )
         );
-        return V.successTrue( 'got entities and profiles', combined );
+        return V.successTrue( 'got entity titles for autofill', titles );
+      }
+
+      if ( entitiesArray.length == 1 ) {
+
+        /** Run fetch again for a single entity */
+        const singleEntity = {
+          isDisplay: true,
+          uuidE: entitiesArray[0].a,
+          uuidP: entitiesArray[0].d,
+        };
+        return getNamespace( singleEntity );
       }
       else {
-        return V.successFalse( 'get profiles' );
+
+        /** Get Profiles for all entities in array ... */
+        const P = await getProfiles( entitiesArray );
+
+        /** ... then combine entity with profile data */
+        if ( !P.errors && P.data.getProfiles[0] != null ) {
+          const combined = entitiesArray.map(
+            ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
+          );
+          return V.successTrue( 'got entities and profiles', combined );
+        }
+        else {
+          return V.successFalse( 'get profiles' );
+        }
       }
     }
     else {

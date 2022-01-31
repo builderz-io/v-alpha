@@ -43,12 +43,10 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     podcastIframeCount = 0;
 
     $intro = V.cN( {
-      t: 'div',
       c: 'intro',
     } );
 
     $description = V.cN( {
-      t: 'div',
       c: 'description',
     } );
 
@@ -320,7 +318,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   function castSoundcloudIframe( scId ) {
     return V.cN( {
-      t: 'div',
       c: 'iframe-wrapper w-full',
       h: {
         t: 'iframe',
@@ -338,7 +335,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   function castAnchorFmIframe( afmEmbedLink ) {
     return V.cN( {
-      t: 'div',
       // c: 'iframe-wrapper w-full',
       h: {
         t: 'iframe',
@@ -355,7 +351,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
 
   function castApplePodcastIframe( appleLink ) {
     return V.cN( {
-      t: 'div',
       // c: 'iframe-wrapper w-full',
       h: {
         t: 'iframe',
@@ -380,7 +375,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     //   return null;
     // }
     return V.cN( {
-      t: 'div',
       c: 'iframe-wrapper w-full',
       h: {
         t: 'iframe',
@@ -400,7 +394,6 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       return null;
     }
     return V.cN( {
-      t: 'div',
       c: 'iframe-wrapper w-full',
       h: {
         t: 'iframe',

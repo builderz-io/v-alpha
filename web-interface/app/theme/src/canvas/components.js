@@ -80,7 +80,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     transaction: 'No transactions found',
     message: 'No messages found',
     entity: 'No entities found',
-    marketplace: 'No highlighted items found',
+    marketplace: 'No items found',
     media: 'No media items found',
     close: 'close',
   };
@@ -105,7 +105,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================  public components ================ */
 
   function notFound( which ) {
-    return V.setNode( {
+    return V.cN( {
       t: 'p',
       c: 'pxy',
       h: getString( ui[which] ),
@@ -113,7 +113,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function background() {
-    return V.setNode( {
+    return V.cN( {
       t: 'background',
       id: 'background',
       k: handleClosePopup,
@@ -122,7 +122,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function haze() {
-    return V.setNode( {
+    return V.cN( {
       t: 'haze',
       c: 'haze fixed w-screen bkg-white hidden',
     } );
@@ -130,7 +130,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function feature() {
     const dimensions = V.getState( 'page' ).featureDimensions;
-    return V.setNode( {
+    return V.cN( {
       t: 'feature',
       c: 'feature fixed hidden',
       setStyle: {
@@ -147,7 +147,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function balance() {
     const sc = V.getState( 'screen' );
 
-    return V.setNode( {
+    return V.cN( {
       t: 'balance',
       c: 'balance fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
@@ -157,7 +157,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function interactions() {
     const sc = V.getState( 'screen' );
 
-    return V.setNode( {
+    return V.cN( {
       t: 'interactions',
       c: 'interactions fixed',
       s: {
@@ -175,38 +175,37 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handle() {
-    return V.setNode( {
+    return V.cN( {
       t: 'handle',
       c: 'handle',
       h: {
-        t: 'div',
         c: 'handle__bar rounded-full bkg-offblack',
       },
     } );
   }
 
   function topSlider() {
-    return V.setNode( {
+    return V.cN( {
       t: 'topslider',
     } );
   }
 
   function slider() {
-    return V.castNode( {
+    return V.cN( {
       t: 'slider',
       c: 'flex overflow-x-scroll list-none pb-s',
     } );
   }
 
   function listings() {
-    return V.setNode( {
+    return V.cN( {
       t: 'listings',
     } );
   }
 
   function list( which ) {
 
-    const $list = V.setNode( {
+    const $list = V.cN( {
       t: 'list',
       c: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
     } );
@@ -221,7 +220,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function card( $cardContent, cardTitle, id ) {
 
-    return V.setNode( {
+    return V.cN( {
       t: 'li',
       c: 'pxy w-screen max-w-380',
       i: id,
@@ -237,27 +236,27 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function header() {
-    return V.setNode( {
+    return V.cN( {
       t: 'header',
       c: 'absolute',
     } );
   }
 
   function page() {
-    return V.setNode( {
+    return V.cN( {
       t: 'page',
       c: 'page fixed w-screen bkg-white pill-shadow overflow-hidden',
     } );
   }
 
   function content() {
-    return V.setNode( {
+    return V.cN( {
       t: 'content',
     } );
   }
 
   function topContent() {
-    return V.setNode( {
+    return V.cN( {
       t: 'topcontent',
     } );
   }
@@ -268,12 +267,10 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'fixed hidden w-screen',
       k: handleClosePopup,
       h: {
-        t: 'div',
         c: 'popup',
         // k: handleClosePopup,
         h: [
           {
-            t: 'div',
             c: 'popup-content-wrapper flex flex-wrap justify-center items-center',
             h: [
               // {
@@ -282,16 +279,13 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
               //   h: getString( ui.close )
               // },
               {
-                t: 'div',
                 c: 'popup-content',
               },
             ],
           },
           {
-            t: 'div',
             c: 'popup-tip-container',
             h: {
-              t: 'div',
               c: 'popup-tip',
             },
           },

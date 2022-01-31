@@ -97,11 +97,11 @@ module.exports = async ( context, match ) => {
 
   /** authorize the mixin of private data for authenticated user */
   if (
-    context.a &&
-    (
-      entity.a == context.d || // user is entity
-      ( entity.x && entity.x.a == context.d && !entity.x.m ) || // user is creator of entity
-      ( entity.x && entity.x.m == context.d ) // user is holder of entity
+    context.a
+    && (
+      entity.a == context.d // user is entity
+      || ( entity.x && entity.x.a == context.d && !entity.x.m ) // user is creator of entity
+      || ( entity.x && entity.x.m == context.d ) // user is holder of entity
     )
   ) {
 

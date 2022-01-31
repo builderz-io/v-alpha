@@ -23,7 +23,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     V.setMessageBot( message ).then( res => {
       V.sN( $response, '' );
       V.setState( 'active', { autofillUuidE: undefined } );
-      if ( res.success || ( res.data.setHighlight && res.data.setHighlight.a ) ) {
+      if ( res.success || ( res.data && res.data.setHighlight && res.data.setHighlight.a ) ) {
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
@@ -33,8 +33,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         }
       }
       else {
-        $response.append( V.sN( {
-          t: 'div',
+        $response.append( V.cN( {
           c: 'messageform__respinner',
           s: {
             messageform__respinner: {
@@ -99,14 +98,16 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     if ( viewData.success ) {
       viewData.data[0].messages.forEach( cardData => {
 
-        previousSender == cardData.sender ?
-          cardData.hideSender = true : null;
+        previousSender == cardData.sender
+          ? cardData.hideSender = true
+          : null;
 
         previousSender = cardData.sender;
 
         if ( viewData.data[0].aE ) {
-          viewData.data[0].aE.fullId == cardData.sender ?
-            cardData.sender = 'Me' : null;
+          viewData.data[0].aE.fullId == cardData.sender
+            ? cardData.sender = 'Me'
+            : null;
         }
 
         const $card = ChatComponents.message( cardData );

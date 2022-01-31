@@ -528,7 +528,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function castAccessKeyNode( phrase, css = '' ) {
     return V.cN( {
-      t: 'div',
       c: 'pxy fs-s' + css,
       h: [
         { t: 'span', h: phrase ? phrase.length > 18 ? '0x' : 'vx' : '' },
@@ -555,7 +554,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent() {
     return V.cN( {
-      t: 'div',
       h: {
         tag: 'h1',
         class: 'font-bold txt-center pxy',
@@ -579,7 +577,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         h: descr ? descr : getString( ui.edit ),
       } : {
-        t: 'div',
         c: 'pxy w-full',
         h: [
           castDescr.$feature,
@@ -611,11 +608,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( ['Business', 'Institution'].includes( entity.role ) && ( count || editable ) ) {
       const $innerContent = V.cN( {
-        t: 'div',
         h: questions.map( question => {
           const response = responses['q' + question.qid] || false;
           return V.cN( {
-            t: 'div',
             h: [
               {
                 x: editable || response,
@@ -636,7 +631,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
               {
                 x: !editable && response,
-                t: 'div',
                 c: 'pxy CCC',
                 h: response, // V.castLinks( response ? response.replace( /\n/g, ' <br>' ) : '-' ).links,
               },
@@ -675,21 +669,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function managementCard() {
     if (
-      V.aE() &&
-      (
+      V.aE()
+      && (
         V.getLastViewed().holders.includes( V.aE().fullId ) // || // new model
         // V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
       )
     ) {
 
       const active = entity.status.active;
-      const $innerContent = V.cN( { t: 'div' } );
+      const $innerContent = V.cN( {} );
 
       V.setNode( $innerContent, V.cN( {
-        t: 'div',
         h: [
           {
-            t: 'div',
             c: 'pxy flex ',
             h: [
               {
@@ -718,7 +710,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             ],
           },
           {
-            t: 'div',
             c: 'pxy flex ',
             h: [
               {
@@ -760,16 +751,16 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const uPhrase = entity.auth ? entity.auth.uPhrase : undefined;
     const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
 
-    const $innerContent = V.cN( { t: 'div' } );
+    const $innerContent = V.cN( {} );
 
     if( uPhrase ) {
-      V.setNode( $innerContent, V.cN( { t: 'div', h: castAccessKeyNode( uPhrase ) } ) );
+      V.setNode( $innerContent, V.cN( { h: castAccessKeyNode( uPhrase ) } ) );
     }
     else {
-      V.setNode( $innerContent, V.cN( { t: 'div', c: 'pxy fs-s', h: getString( ui.notAuthenticated ) } ) );
+      V.setNode( $innerContent, V.cN( { c: 'pxy fs-s', h: getString( ui.notAuthenticated ) } ) );
     }
     if( privateKey ) {
-      V.setNode( $innerContent, V.cN( { t: 'div', h: castAccessKeyNode( privateKey ) } ) );
+      V.setNode( $innerContent, V.cN( { h: castAccessKeyNode( privateKey ) } ) );
     }
     return castCard( $innerContent, getString( ui.accessKeys ) );
   }
@@ -778,7 +769,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
     if( address ) {
       // const $innerContent = V.cN( {
-      //   t: 'svg',
       //   a: {
       //     viewBox: '0 0 56 18'
       //   },
@@ -1011,7 +1001,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // else {
     //   $holders = '';
     // }
-    // const $combined = V.cN( { t: 'div', c: 'w-full' } );
+    // const $combined = V.cN( { c: 'w-full' } );
     // V.setNode( $combined, [$innerContent, $holders] );
 
     return castCard( $innerContent,
@@ -1030,7 +1020,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const $innerContent = V.cN( {
-      t: 'div',
       h: entity.holderOf.map( item => V.cN( {
         t: 'p',
         c: 'pxy cursor-pointer',
@@ -1067,12 +1056,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex flex-wrap justify-center items-center pxy',
       h: [
         MarketplaceComponents.castCircle( entity, 'editable' ),
@@ -1085,7 +1072,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'card__top-right items-center pxy',
       h: [
         {
@@ -1114,7 +1100,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const appLang = entity.properties ? entity.properties.appLang ? entity.properties.appLang : 'en_US' : 'en_US';
     if( appLang || ( !appLang && editable ) ) {
       const $innerContent = V.cN( {
-        t: 'div',
         c: 'app-lang-selector',
         h: [
           {
@@ -1250,7 +1235,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function roleCard() {
     return V.cN( {
-      t: 'div',
       c: 'pxy',
       h: {
         t: 'h3',
@@ -1266,11 +1250,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if( entity.mediumImage || ( entity.images && entity.images.mediumImage ) ) {
       // const img = V.castEntityThumbnail( entity.mediumImage ).img;
       $innerContent = V.castNode( {
-        t: 'div',
         c: 'pxy',
         h: [
           {
-            t: 'div',
             i: 'img-upload-profile__preview',
             h: entity.mediumImage
               ? V.castEntityThumbnail( entity.mediumImage ).img
@@ -1283,7 +1265,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
           },
           {
-            t: 'div',
             c: 'pxy txt-right',
             h: [
               {
@@ -1314,7 +1295,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           //   h: 'Navigation Image Preview'
           // },
           // {
-          //   t: 'div',
           //   h: V.castEntityThumbnail( tinyImage ).img
           // }
         ],
@@ -1322,7 +1302,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       $innerContent = V.cN( {
-        t: 'div',
         c: 'pxy',
         h: [
           {
@@ -1346,7 +1325,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             },
           },
           {
-            t: 'div',
             i: 'img-upload-profile__preview',
           },
         ],
@@ -1364,7 +1342,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
     return V.cN( {
-      t: 'div',
       c: 'pxy',
       h: [
         {
@@ -1373,7 +1350,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: 'share this profile on',
         },
         {
-          t: 'div',
           s: {
             'sharing-button__icon svg': {
               'width': '1em',
@@ -1411,14 +1387,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 rel: 'noopener',
               },
               h: {
-                t: 'div',
                 c: 'pxy',
                 h: {
-                  t: 'div',
                   c: 'sharing-button__icon sharing-button__icon--solid',
                   h: {
                     svg: true,
-                    t: 'svg',
                     a: {
                       viewBox: '0 0 24 24',
                     },
@@ -1449,14 +1422,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function entityPlaceholderCard() {
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'placeholder',
     } );
 
     // is-single-entity-view is used to check whether to place highlights into the page
 
     const $top = V.cN( {
-      t: 'div',
       c: 'is-single-entity-view animated-background',
       y: {
         'height': '20px',
@@ -1467,7 +1438,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $mid = V.cN( {
-      t: 'div',
       c: 'animated-background',
       y: {
         'height': '20px',
@@ -1478,7 +1448,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $bottom = V.cN( {
-      t: 'div',
       c: 'animated-background',
       y: {
         'height': '20px',
@@ -1496,14 +1465,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function entityPlaceholderImage() {
     // thanks to Justin Bellefontaine https://codepen.io/artboardartisan/pen/VLzKVN
     return V.cN( {
-      t: 'div',
       c: 'animated-background',
       y: {
         width: '100%',
         height: '300px',
       },
       h: {
-        t: 'div',
         c: 'progress-bar',
         h: {
           t: 'span',

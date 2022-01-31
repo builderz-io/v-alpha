@@ -481,10 +481,11 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const totalFee =
-      contractState.fee == 3333 ? amount * 0.5 :
-        contractState.fee == 2500 ? Math.round( amount * 0.33333333 * 100 ) / 100 :
-          Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
+    const totalFee = contractState.fee == 3333
+      ? amount * 0.5
+      : contractState.fee == 2500
+        ? Math.round( amount * 0.33333333 * 100 ) / 100
+        : Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
 
     const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
     const feeAmount = Math.round( ( totalFee - contribution ) * 100 ) / 100;
@@ -504,8 +505,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     const filteredAndEnhanced = await transfers.filter( tx => {
       const data = tx.returnValues;
-      return data.from.toLowerCase() == which ||
-              data.to.toLowerCase() == which;
+      return data.from.toLowerCase() == which
+              || data.to.toLowerCase() == which;
 
     } ).map( async tx => {
       const txData = {};

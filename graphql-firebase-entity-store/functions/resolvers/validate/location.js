@@ -13,8 +13,8 @@ module.exports = ( loc, lngLat ) => {
 
   if ( lngLat ) {
     if(
-      !validator.isNumeric( lngLat[0] + '' ) ||
-      !validator.isNumeric( lngLat[1] + '' )
+      !validator.isNumeric( lngLat[0] + '' )
+      || !validator.isNumeric( lngLat[1] + '' )
     ) {
       throw new Error( '-5142 lat and long must be numeric' );
     }

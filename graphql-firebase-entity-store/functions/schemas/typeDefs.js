@@ -19,6 +19,7 @@ const Filters = `
     role: String
     field: String
     mapState: String
+    isAutofill: Boolean
   }
 
   input WhereEntity {
