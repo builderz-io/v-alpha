@@ -1,5 +1,5 @@
 /**
- * GraphQL server for Alpha 3.3.0
+ * GraphQL server for Alpha 3.4.0
  *
  */
 
@@ -11,6 +11,7 @@ const cookieParser = require( 'cookie-parser' );
 
 const { verify } = require( 'jsonwebtoken' );
 const credentials = require( './credentials/credentials' );
+const { whitelist } = require( './credentials/credentials' );
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = require( './schemas/typeDefs' );
@@ -22,22 +23,8 @@ const findByAuth = require( './resolvers/resolve/find-by-auth' );
 // Create GraphQL express server
 const { ApolloServer } = require( 'apollo-server-express' );
 
-// Setup express cloud function
+// Setup express
 const app = express();
-
-const whitelist = [
-  'http://localhost:4021',
-  'http://localhost:4042',
-  'https://dev.valueinstrument.org',
-  'https://ak.valueinstrument.org',
-  'https://staging.valueinstrument.org',
-  'https://staging.builderz.io',
-  'https://faithfinance.app',
-  'https://impactjourney.cc',
-  'https://map.ayc.world',
-  'https://map.enoughza.org',
-  'https://society4.valueinstrument.org',
-];
 
 const corsConfig = {
   origin: ( origin, callback ) => {
@@ -114,13 +101,5 @@ const server = new ApolloServer( {
 server.applyMiddleware( { app, path: '/v1', cors: false } );
 
 console.log( ' ***  Started Apollo Server at', new Date().toString().split( ' ' )[4], ' ***' );
-
-// for dev/testing
-// require( './resolvers/resolve/set-transaction' )( { host: 'something' }, {
-//   initiatorAddress: '0x04330b0c2b00e069d69066aeeb84e09b46526495',
-//   recipientAddress: '0x891a949adf13890c981f5e64d272fc2d861a1f8c',
-//   // recipientAddress: '0xac6d20f6da9edc85647c8608cb6064794e20ca26',
-//   txTotal: '1',
-// }, 'float' ).then( res => console.log( 'res:', Date.now(), JSON.stringify( res )  ) );
 
 exports.api = functions.https.onRequest( app );

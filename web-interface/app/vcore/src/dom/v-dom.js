@@ -57,12 +57,15 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       return '';
     }
 
-    const tag = data.t || data.tag;
-
-    let $elem = document.createElement( tag );
+    let $elem, tag;
 
     if ( data.svg ) {
+      tag = data.t || data.tag || 'svg';
       $elem = document.createElementNS( 'http://www.w3.org/2000/svg', tag );
+    }
+    else {
+      tag = data.t || data.tag || 'div';
+      $elem = document.createElement( tag );
     }
 
     if ( tag == 'svg' ) {

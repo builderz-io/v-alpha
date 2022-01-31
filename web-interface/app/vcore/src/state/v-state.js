@@ -58,8 +58,14 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function aE() {
-    return getState( 'activeEntity' );
+  function aE( field ) {
+    const state = getState( 'activeEntity' );
+    if ( field ) {
+      return state[field];
+    }
+    else {
+      return state;
+    }
   }
 
   function cA() {

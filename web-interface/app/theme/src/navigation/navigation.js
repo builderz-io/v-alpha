@@ -87,9 +87,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
 
     if (
-      doesNodeExist &&
-      doesNodeExist.closest( 'header' ) &&
-      !data.fullId
+      doesNodeExist
+      && doesNodeExist.closest( 'header' )
+      && !data.fullId
     ) {
       return {
         success: false,
@@ -180,7 +180,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $entityNavUl, $pill );
       }
 
-      V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
+      /* a last placeholder pill. The amount of "z" determine its width */
+      V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzzzzzzzzzzzzzz' } ) );
 
       V.setNode( 'entity-nav', '' );
       V.setNode( 'entity-nav', $entityNavUl );
@@ -285,8 +286,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       const $li = $rowAfter[i];
       const path = $li.getAttribute( 'path' );
 
-      $li.classList.contains( 'pill--selected' ) ?
-        navOrder[ path ].c ? navOrder[ path ].c += 1 : navOrder[ path ].c = 1 : null;
+      $li.classList.contains( 'pill--selected' )
+        ? navOrder[ path ].c
+          ? navOrder[ path ].c += 1
+          : navOrder[ path ].c = 1
+        : null;
 
       navOrder[ path ].l = i;
 
@@ -371,8 +375,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     /* else if an entity is being edited, just return to entity list first */
     else if (
-      V.getState( 'active' ).path == '/me/edit' &&
-      V.getVisibility( '#pref-lang-edit' )
+      V.getState( 'active' ).path == '/me/edit'
+      && V.getVisibility( '#pref-lang-edit' )
     ) {
       EntityList.draw( '/me/edit' );
 
@@ -421,7 +425,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       V.setLocal( 'entity-nav-order', entityNavOrder );
     }
 
-    Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
+    // Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
     // (previous version) also reset path if not account or profile path
     // if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {
@@ -466,6 +470,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /* return to the full market view and reset the map (zoom) */
     Marketplace.draw();
     // VMap.draw( { reset: true } );
+
+    drawJoinedUserPill();
 
   }
 
@@ -534,9 +540,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function drawUserNav() {
     if ( V.getVisibility( 'user-nav' ) ) {
       V.setState( 'active', { navItem: false } );
-      Chat.drawMessageForm( 'clear' );
+      // Chat.drawMessageForm( 'clear' );
 
-      drawReset();
+      reset();
 
     }
     else {
@@ -579,6 +585,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /** Place into view */
     const $pill = NavComponents.entityPill( obj );
     V.getNode( 'entity-nav > ul' ).prepend( $pill );
+    drawJoinedUserPill();
   }
 
   function drawImage( data ) {
@@ -592,10 +599,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function drawJoinedUserFirst() {
-    V.getNode( 'entity-nav > ul' ).prepend(
-      V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]'
-      ) );
+  function drawJoinedUserPill() {
+    if ( V.getState( 'active' ).path != '/' ) { return }
+    const $userPill = V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]' );
+    if ( !$userPill ) { return }
+    V.getNode( 'entity-nav > ul' ).prepend( $userPill );
+    const $span = $userPill.getElementsByClassName( 'pill__initials' )[0];
+    if ( $span ) {
+      $span.textContent = $userPill.getAttribute( 'fullId' ).replace( /\s#\d{4}/, '' );
+    }
   }
 
   return {
@@ -604,7 +616,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     drawUserNav: drawUserNav,
     drawImage: drawImage,
     drawEntityNavPill: drawEntityNavPill,
-    drawJoinedUserFirst: drawJoinedUserFirst,
+    drawJoinedUserPill: drawJoinedUserPill,
   };
 
 } )();

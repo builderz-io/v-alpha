@@ -162,7 +162,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       brandSecondary: V.getCss( '--brandSecondary' ),
       buttonBkg: V.getCss( '--buttonBkg' ),
     } );
-    V.setState( 'active', {} );
+    V.setState( 'active', {
+      path: window.location.pathname,
+    } );
     V.setState( 'page', {
       height: V.getCss( '--page-position-peek' ),
       top: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top' ),
@@ -228,15 +230,37 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     window.onresize = function() {
 
-      // handle mobile keyboard
+      /**
+       * handles page layout when mobile keyboard pops up:
+       * if the screen height suddenly drops to less than 3/4 of its original height
+       * fix page to top-position and bottom. Exceptions: user is on homepage and form is open.
+       */
 
-      const s = V.getState( 'screen' );
-
-      if ( window.innerHeight < ( s.height / 3 * 2 ) && !V.getVisibility( 'form' ) ) {
-        V.getNode( 'page' ).classList.add( 'page-full-screen' );
+      if (
+        window.innerHeight < ( V.getState( 'screen' ).height / 4 * 3 )
+        && !V.getVisibility( 'form' )
+      ) {
+        if ( 'top' == V.getState( 'page' ).position ) {
+          V.setStyle( 'keyboard-open', {
+            'page-top-keyb-open': {
+              top: V.getState( 'page' ).current.top + 'px',
+              bottom: '0 !important',
+              height: 'unset !important',
+            },
+          } );
+          V.getNode( 'page' ).classList.add( 'page-top-keyb-open' );
+        }
+        else {
+          V.setStyle( 'keyboard-open', {
+            'page-max-keyb-open': {
+              'max-height': ( window.innerHeight - V.getState( 'page' ).top ) + 'px !important',
+            },
+          } );
+          V.getNode( 'page' ).classList.add( 'page-max-keyb-open' );
+        }
       }
       else {
-        V.getNode( 'page' ).classList.remove( 'page-full-screen' );
+        V.getNode( 'page' ).classList.remove( 'page-top-keyb-open', 'page-max-keyb-open' );
       }
     };
 
@@ -246,6 +270,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
           e.preventDefault();
           handleKeyboard( ['search', 'query'] );
+        }
+        else if (
+          !V.getVisibility( 'form' )
+          && !V.getVisibility( 'modal' )
+          && !V.getVisibility( '.messageform' )
+        ) {
+          V.getNode( '.search__btn' ).click();
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
@@ -390,7 +421,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .then( entity => {
           if ( entity.success ) {
             V.setActiveEntity( entity.data[0] );
-            Navigation.drawJoinedUserFirst();
+            Navigation.drawJoinedUserPill();
             Join.draw( 'new entity was set up' );
           }
           else {

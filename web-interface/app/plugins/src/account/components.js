@@ -7,6 +7,14 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  V.setStyle( {
+    'chain-status': {
+      'max-width': '180px',
+      'margin': '0 auto',
+      'padding': '20px 0px',
+    },
+  } );
+
   /* ============== user interface strings ============== */
 
   const ui = {
@@ -15,6 +23,7 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     fees: 'fee',
     contr: 'contribution',
     amount: 'amount',
+    total: 'total',
     payout: 'payout',
     block: 'block',
     date: 'date',
@@ -55,7 +64,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent( fullId, bal ) {
     return V.cN( {
-      t: 'div',
       h: [
         {
           t: 'h1',
@@ -63,34 +71,42 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           k: handleOpenTokenAccountDetails,
           h: fullId,
         },
-        !bal ? { t: 'p', c: 'hidden', h: getString( ui.noBal ) } : {
-          t: 'table',
-          i: 'v-token-account-details',
-          c: 'hidden fs-s',
-          h: [
-            [ getString( ui.net ), V.getNetVAmount( bal.data[0].liveBalance ).net ],
-            [ getString( ui.gross ), bal.data[0].liveBalance ],
-            [ getString( ui.chain ), bal.data[0].tokenBalance ],
-            [ getString( ui.eth ), bal.data[0].coinBalance ],
-            [ getString( ui.lastBlock ), bal.data[0].lastBlock ],
-            [ getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
-            [ getString( ui.currentBlock ), bal.data[0].currentBlock  ],
-            [ getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
-          ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
-            t: 'tr',
-            h: [
-              {
-                t: 'td',
-                h: row[0],
-              },
-              {
-                t: 'td',
-                c: 'txt-right',
-                h: row[1],
-              },
-            ],
-          } ) ),
-        },
+        !bal
+          ? {
+            t: 'p',
+            c: 'hidden',
+            h: getString( ui.noBal ),
+          }
+          : {
+            h: {
+              t: 'table',
+              i: 'v-token-account-details',
+              c: 'chain-status hidden fs-s',
+              h: [
+                [ getString( ui.net ), V.getNetVAmount( bal.data[0].liveBalance ).net ],
+                [ getString( ui.gross ), bal.data[0].liveBalance ],
+                [ getString( ui.chain ), bal.data[0].tokenBalance ],
+                [ getString( ui.eth ), bal.data[0].coinBalance ],
+                [ getString( ui.lastBlock ), bal.data[0].lastBlock ],
+                [ getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
+                [ getString( ui.currentBlock ), bal.data[0].currentBlock  ],
+                [ getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
+              ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
+                t: 'tr',
+                h: [
+                  {
+                    t: 'td',
+                    h: row[0],
+                  },
+                  {
+                    t: 'td',
+                    c: 'txt-right',
+                    h: row[1],
+                  },
+                ],
+              } ) ),
+            },
+          },
       ],
 
     } );
@@ -110,7 +126,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( { // #1b1aff
       svg: true,
-      tag: 'svg',
       a: {
         style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',
@@ -155,7 +170,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       class: 'txt-anchor-mid',
       html: {
         svg: true,
-        t: 'svg',
         a: {
           width: '74px',
           viewBox: '0 0 36 37',
@@ -231,22 +245,18 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: {
-        t: 'div',
         c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
         a: {
           style: `background:${background}`,
         },
         k: handleOpenTxDetails,
         h: {
-          t: 'div',
           c: 'card__initials font-medium fs-xl txt-white no-txt-select',
           h: txData.amount,
         },
@@ -254,7 +264,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'card__top-right flex items-center pxy',
       h: {
         t: 'h2',
@@ -265,26 +274,75 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $bottomLeft = V.cN( {
-      t: 'div',
       c: 'card__bottom-left items-center',
       h: '',
     } );
 
     const $bottomRight = V.cN( {
-      t: 'div',
       c: 'card__bottom-right hidden fs-s pxy capitalize',
       h: {
         t: 'table',
         h: [
-          txData.txType == 'in' ? [ getString( ui.from ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag, handleProfileDraw ] :
-            [ getString( ui.to ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag, handleProfileDraw ],
-          txData.blockDate ? [ getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
-          txData.blockDate ? [ getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
-          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date.substr( 4, 11 ) + ' ' + txData.date.substr( 15, 6 ) ],
-          [ getString( ui.amount ), txData.amount ],
-          txData.txType == 'out' ? [ getString( ui.fees ), txData.feeAmount ] : [ getString( ui.fees ), '0' ],
-          txData.txType == 'out' ?  [ getString( ui.contr ), txData.contribution ] : [ getString( ui.contr ), '0' ],
-          txData.payout ? [ getString( ui.payout ), txData.payout ] : undefined,
+          txData.txType == 'in'
+            ? [
+              getString( ui.from ),
+              txData.fromAddress != 'none'
+                ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */
+                : txData.from + ' ' + txData.fromTag,
+              handleProfileDraw,
+            ]
+            : [
+              getString( ui.to ),
+              txData.toAddress != 'none'
+                ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */
+                : txData.to + ' ' + txData.toTag,
+              handleProfileDraw,
+            ],
+
+          txData.blockDate
+            ? [ getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ]
+            : undefined,
+
+          txData.blockDate
+            ? [ getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ]
+            : undefined,
+
+          txData.block
+            ? [ getString( ui.block ), txData.block ]
+            : [ getString( ui.date ), txData.date.substr( 4, 11 ) + ' ' + txData.date.substr( 15, 6 ) ],
+
+          [
+            getString( ui.amount ),
+            txData.txType == 'out'
+              ? '-' + txData.amount
+              : txData.amount,
+          ],
+
+          txData.txType == 'out'
+            ? undefined
+            : [ getString( ui.net ), V.getNetVAmount( txData.amount ).net ],
+
+          txData.txType == 'out'
+            ? [ getString( ui.fees ), '-' + txData.feeAmount ]
+            : [ getString( ui.fees ), '0' ],
+
+          txData.txType == 'out'
+            ? [ getString( ui.contr ), '-' + txData.contribution ]
+            : [ getString( ui.contr ), '0' ],
+
+          txData.txType == 'out'
+            ? [ getString( ui.total ),
+              '-' + (
+                Number( txData.amount )
+                + Number( txData.feeAmount )
+                + Number( txData.contribution )
+              ) ]
+            : undefined,
+
+          // txData.payout
+          //   ? [ getString( ui.payout ), txData.payout ]
+          //   : undefined,
+
         ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
           t: 'tr',
           h: [
@@ -312,21 +370,17 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   function accountPlaceholderCard() {
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents placeholder',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: V.cN( {
-        t: 'div',
         c: 'circle-3 rounded-full animated-background',
       } ),
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'relative animated-background',
       y: {
         'height': '20px',

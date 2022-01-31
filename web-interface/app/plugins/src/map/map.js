@@ -78,7 +78,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     if ( Array.isArray( data ) ) {
       if ( options ) {
-        if ( options.isSearch ) {
+        if ( options.isSearch && data[0] ) {
           setSearch( data );
         }
         if ( options.isHover ) {
@@ -259,11 +259,17 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
-      viMap = L.map( 'background' ).setView( [ map.lat, map.lng ], map.zoom );
+      viMap = L.map( 'background', {
+        tapTolerance: 22,
+        // renderer: L.canvas( { tolerance: 30 } ),
+      } ).setView( [ map.lat, map.lng ], map.zoom );
       V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
     }
     else {
-      viMap = L.map( 'background' ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
+      viMap = L.map( 'background', {
+        tapTolerance: 22,
+        // renderer: L.canvas( { tolerance: 30 } ),
+      } ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
       V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
     }
 
@@ -386,6 +392,15 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     searchLayer.addTo( viMap );
 
+    const lat = features[0].geometry.coordinates[1];
+    const lng = features[0].geometry.coordinates[0];
+
+    viMap.setView( [lat, lng], 3 );
+    V.setState( 'map', {
+      lat: lat,
+      lng: lng,
+      zoom: 3,
+    } );
   }
 
   function setHover( features ) {

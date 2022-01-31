@@ -22,8 +22,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     const now = Date.now();
 
     if (
-      cache &&
-      ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
+      cache
+      && ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
     ) {
       V.setCache( 'viewed', 'clear' );
     }
@@ -166,7 +166,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
             position: 'top',
             listings: $list,
           } );
-          Chat.drawMessageForm();
+          delayedMessageForm( entity );
         } );
       }
       else {
@@ -174,8 +174,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           position: 'top',
           listings: $list,
         } );
-
-        Chat.drawMessageForm();
+        delayedMessageForm( entity );
       }
 
       if ( entity.images.tinyImage ) {
@@ -188,6 +187,17 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         topcontent: CanvasComponents.notFound( 'entity' ),
       } );
     }
+  }
+
+  function delayedMessageForm( entity ) {
+    if ( !V.aE() ) { return }
+
+    /** This is a hacky way to wait for V.aE( 'uuidE' ) to be available */
+    setTimeout( function delayMsgForm() {
+      entity.uuidE != V.aE( 'uuidE' )
+        ? Chat.drawMessageForm()
+        : null;
+    }, 1800, entity );
   }
 
   function preview( data ) {

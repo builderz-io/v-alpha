@@ -24,8 +24,8 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
     const now = Date.now();
 
     if (
-      cache &&
-      ( now - cache.timestamp ) < ( 1 * 60 * 1000 )
+      cache
+      && ( now - cache.timestamp ) < ( 1 * 60 * 1000 )
     ) {
       entitiesAdmined = cache.data;
     }

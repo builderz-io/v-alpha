@@ -79,7 +79,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function img( icon, css ) {
     return V.cN( {
-      t: 'div',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white transition pill-shadow' + ( css ? ' ' + css : '' ),
       h: V.getIcon( icon ),
     } );
@@ -113,7 +112,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       id: 'query',
       c: btnClasses,
       h: {
-        t: 'div',
         c: 'create-btn pxy',
         h: getString( ui.query ),
       }, // img( 'search' )
@@ -144,7 +142,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       id: 'set',
       c: btnClasses,
       h: {
-        t: 'div',
         c: 'create-btn pxy',
         h: getString( ui.create ),
       }, // img( 'send' )
@@ -184,7 +181,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   // form
 
   function form() {
-    return V.setNode( {
+    return V.cN( {
       tag: 'form',
       classes: 'form fixed w-screen hidden bkg-white pxy',
       setStyle: {
@@ -195,7 +192,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       h: {
-        t: 'div',
         c: 'form__response pxy txt-red',
         // h: 'test response msg'
       },
@@ -302,12 +298,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     }
 
     const $inputContainer = V.cN( {
-      t: 'div',
       c: 'field__input-container',
     } );
 
     const $labelNode = V.cN( {
-      t: 'div',
       c: 'field__label-wrapper',
       h: {
         t: 'label',
@@ -357,13 +351,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const hasValue = whichValue ? ' field--static' : '';
 
     return V.cN( {
-      t: 'div',
       c: 'field pxy ' + fieldClasses + hasValue,
       h: {
-        t: 'div',
         c: 'field__border',
         h: {
-          t: 'div',
           c: 'field__internal',
           h: $inputContainer,
         },
@@ -373,10 +364,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function formUploadImage() {
     return V.cN( {
-      t: 'div',
       c: 'pxy w-30%',
       h: {
-        t: 'div',
         s: {
           'upload-field': {
             'padding': '16px 12px 17px',
@@ -416,7 +405,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             },
           },
           {
-            t: 'div',
             i: 'img-upload__preview',
             y: {
               position: 'absolute',
@@ -430,7 +418,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function formSearchFilter() {
     return V.cN( {
-      t: 'div',
       h: [
         {
           t: 'p',
@@ -484,7 +471,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
       h: {
         svg: true,
-        t: 'svg',
         a: {
           width: sc.width > 800 ? '66px' : '54px',
           viewBox: '0 0 36 36',
@@ -587,7 +573,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function clickConfirmSpinner() {
     return V.cN( {
       svg: true,
-      t: 'svg',
       c: 'confirm-click-spinner',
       a: {
         width: '18',

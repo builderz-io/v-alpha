@@ -215,9 +215,17 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
         // TODO: could do with a better implementation of ignoring the "for" trigger-word
 
-        if ( stringToComplete.length == 2 && stringToComplete != V.i18n( 'for', 'trigger' ) ) {
+        if (
+          stringToComplete.length == 3
+          && stringToComplete != V.i18n( 'for', 'trigger' )
+        ) {
 
-          V.getQuery( { query: stringToComplete, role: 'all', field: 'title' } )
+          V.getQuery( {
+            query: stringToComplete,
+            role: 'all',
+            field: 'title',
+            isAutofill: true,
+          } )
             .then( res => {
               console.log( res );
               dbEntries = res.data;
@@ -401,7 +409,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const rect = $textarea.getBoundingClientRect();
 
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestions absolute card-shadow bkg-white',
       y: {
         left: rect.left + 'px',
@@ -409,7 +416,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         width: rect.width + 'px',
       },
       h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
-        t: 'div',
         h: dbEntries.map( entry => castSuggestion( entry, stringToComplete ) ),
       } ),
     } );
@@ -422,7 +428,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const tag = entity.tag;
 
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestion',
       a: {
         'data-val': title + ' ' + tag,
@@ -435,7 +440,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function notFound( stringToComplete ) {
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestion',
       h: '"' + stringToComplete + '" ' + getString( ui.notFound ),
     } );
@@ -445,7 +449,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent() {
     return V.cN( {
-      t: 'div',
       c: 'w-full',
       h: [
         {
@@ -474,7 +477,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     linkedMsg.iframes.includes( 'iframe' ) ? width = '330px' : null;
     const style = msg.sender == 'Me' ? { 'margin-left': 'auto', 'width': width } : { 'margin-right': 'auto', 'width': width };
 
-    return V.castNode( {
+    return V.cN( {
       tag: 'li',
       classes: 'w-screen pxy',
       a: {
@@ -489,7 +492,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           background: background,
         },
         h: {
-          t: 'div',
           c: 'font-medium pxy',
           h: [
             {
@@ -513,17 +515,16 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageForm() {
-    return V.sN( {
-      t: 'div',
+    return V.cN( {
       c: 'messageform flex items-center absolute w-full pxy card-shadow',
     } );
   }
 
   function messageInput( prefill ) {
-    return V.sN( {
+    return V.cN( {
       t: 'textarea',
       c: 'messageform__input mr-2',
-      h: prefill ? 'send ' + prefill + ' 10' : '',
+      h: V.aE() && prefill ? 'send ' + prefill + ' 10' : '',
       a: {
         // style: 'height:10px;overflow-y:hidden;',
         placeholder: V.aE() ? getString( ui.placeholder, 'message textarea placeholder' )
@@ -538,7 +539,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageSend() {
-    return V.sN( {
+    return V.cN( {
       t: 'button',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
       h: V.getIcon( 'send' ),
@@ -546,8 +547,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageResponse() {
-    return V.sN( {
-      t: 'div',
+    return V.cN( {
       c: 'messageform__response',
       // h: 'test response msg'
     } );

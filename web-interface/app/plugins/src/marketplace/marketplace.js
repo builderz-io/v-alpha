@@ -11,7 +11,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( whichPath, search ) {
 
-    let whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
+    let whichRole = whichPath
+      ? V.getState( 'serviceNav' )[ whichPath ]
+        ? V.getState( 'serviceNav' )[ whichPath ].use.role
+        : 'all' // fallback to 'all'
+      : 'all'; // default to 'all'
 
     /** Combines 'PersonMapped' with 'Person' */
     whichRole = whichRole.replace( 'Mapped', '' );
@@ -51,7 +55,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         role: whichRole,
         mapState: V.castJson( VMap.getState() ),
       } );
-      console.log( 'Search data: ', search );
 
       query = await V.getQuery( search ).then( res => {
         if ( res.success ) {
@@ -253,6 +256,9 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     else {
       Navigation.draw();
     }
+
+    Chat.drawMessageForm( 'clear' );
+
     Page.draw( {
       topslider: $slider,
       position: whichPath || search ? 'peek' : 'closed',
@@ -264,7 +270,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceNavItems[item] ) );
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceDefinitions[item] ) );
   }
 
   function draw( whichPath, search ) {
