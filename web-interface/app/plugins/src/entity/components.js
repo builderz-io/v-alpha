@@ -1147,8 +1147,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     /**
      * this component has been ported from the first alpha version
-     *
+     * and is only a demo
      */
+
+    sendVolume = 100;
+    receiveVolume = 420;
 
     if ( entity.role == 'Pool' ) {
 
@@ -1194,11 +1197,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'tr',
-            h: [ { t: 'td', h: svgFunded }, { t: 'td', h: funded + ' %<br><br>' + fundSuccess } ],
+            h: [ { t: 'td', innerHtml: svgFunded }, { t: 'td', innerHtml: funded + ' %<br><br>' + fundSuccess } ],
           },
           {
             t: 'tr',
-            h: [ { t: 'td', h: svgSpent }, { t: 'td', h: budgetPercent + '<br><br>' + budgetUsed } ],
+            h: [ { t: 'td', innerHtml: svgSpent }, { t: 'td', innerHtml: budgetPercent + '<br><br>' + budgetUsed } ],
           },
         ],
       } );

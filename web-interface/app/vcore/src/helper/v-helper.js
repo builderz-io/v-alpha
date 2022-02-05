@@ -358,6 +358,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     case 'al' : return 'Media';
     case 'Dataset' : return 'am';
     case 'am' : return 'Dataset';
+    case 'ResourcePool' : return 'an';
+    case 'an' : return 'Pool';
     default: return role;
     }
   }
@@ -467,26 +469,26 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         // Note: Be careful editing this code!  It's been tuned for performance
         // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
         return (
-          bth[buf[i + 0]] +
-          bth[buf[i + 1]] +
-          bth[buf[i + 2]] +
-          bth[buf[i + 3]] +
-          '-' +
-          bth[buf[i + 4]] +
-          bth[buf[i + 5]] +
-          '-' +
-          bth[buf[i + 6]] +
-          bth[buf[i + 7]] +
-          '-' +
-          bth[buf[i + 8]] +
-          bth[buf[i + 9]] +
-          '-' +
-          bth[buf[i + 10]] +
-          bth[buf[i + 11]] +
-          bth[buf[i + 12]] +
-          bth[buf[i + 13]] +
-          bth[buf[i + 14]] +
-          bth[buf[i + 15]]
+          bth[buf[i + 0]]
+          + bth[buf[i + 1]]
+          + bth[buf[i + 2]]
+          + bth[buf[i + 3]]
+          + '-'
+          + bth[buf[i + 4]]
+          + bth[buf[i + 5]]
+          + '-'
+          + bth[buf[i + 6]]
+          + bth[buf[i + 7]]
+          + '-'
+          + bth[buf[i + 8]]
+          + bth[buf[i + 9]]
+          + '-'
+          + bth[buf[i + 10]]
+          + bth[buf[i + 11]]
+          + bth[buf[i + 12]]
+          + bth[buf[i + 13]]
+          + bth[buf[i + 14]]
+          + bth[buf[i + 15]]
         ).toLowerCase();
       };
 
@@ -497,13 +499,17 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
         // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
         // find the complete implementation of crypto (msCrypto) on IE11.
-        const getRandomValues =
-        ( typeof crypto !== 'undefined' &&
-        crypto.getRandomValues &&
-        crypto.getRandomValues.bind( crypto ) ) ||
-        ( typeof msCrypto !== 'undefined' &&
-        typeof msCrypto.getRandomValues === 'function' &&
-        msCrypto.getRandomValues.bind( msCrypto ) );
+        const getRandomValues
+        = (
+          typeof crypto !== 'undefined'
+          && crypto.getRandomValues
+          && crypto.getRandomValues.bind( crypto )
+        )
+        || (
+          typeof msCrypto !== 'undefined'
+          && typeof msCrypto.getRandomValues === 'function'
+          && msCrypto.getRandomValues.bind( msCrypto )
+        );
 
         const rnds8 = new Uint8Array( 16 );
 
@@ -645,8 +651,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
     // console.log( lang, whichContext, which );
     // if ( lang != 'en_US' ) {
-    const exists = VTranslations[whichContext][which] ?
-      VTranslations[whichContext][which][lang] != '' ? VTranslations[whichContext][which][lang] : undefined : undefined;
+    const exists = VTranslations[whichContext][which]
+      ? VTranslations[whichContext][which][lang] != ''
+        ? VTranslations[whichContext][which][lang]
+        : undefined
+      : undefined;
     return exists ? exists : which;
     // }
     // else {

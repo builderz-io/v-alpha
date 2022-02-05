@@ -142,12 +142,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, [
         UserComponents.mediumImageCard(),
         // UserComponents.roleCard(),
+        UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.descriptionCard(),
         UserComponents.questionnaireCard(),
         UserComponents.socialCard(),
         UserComponents.locationCard(),
         UserComponents.preferredLangsCard(),
-        UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
         UserComponents.financialCard(),
         UserComponents.entityCard(),
         UserComponents.evmAddressCard(),
