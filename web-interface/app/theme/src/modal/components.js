@@ -99,9 +99,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     'modal-pos-3': {
       top: '15vh',
     },
-    'confirm-click-spinner': {
-      'margin-left': '14px',
-    },
   } );
 
   const buttonClasses = 'relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
@@ -135,7 +132,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity() {
-    V.setNode( '#use-key-btn', InteractionComponents.clickConfirmSpinner() );
+    V.setNode( '#use-key-btn', InteractionComponents.confirmClickSpinner() );
     V.setAuth( V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
         if ( data.success ) {
@@ -166,7 +163,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleWeb3Join( e ) {
     e.stopPropagation();
-    V.setNode( '#connectwallet-btn', InteractionComponents.clickConfirmSpinner() );
+    V.setNode( '#connectwallet-btn', InteractionComponents.confirmClickSpinner() );
     Join.draw( 'authenticate' );
   }
 
@@ -232,7 +229,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDisconnect() {
-    V.setNode( '#disconnect-btn', InteractionComponents.clickConfirmSpinner() );
+    V.setNode( '#disconnect-btn', InteractionComponents.confirmClickSpinner() );
     V.setDisconnect();
   }
 
@@ -293,7 +290,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     // }
 
     V.getNode( '.joinform__response' ).textContent = '';
-    e.target.append( InteractionComponents.clickConfirmSpinner() );
+    e.target.append( InteractionComponents.confirmClickSpinner() );
 
     V.setState( 'newRegistration', {
       emailPrivate: V.getNode( '#plusform__email' ).value,
@@ -342,7 +339,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     V.sN( '.explain', 'clear' );
     e.target.textContent = getString( ui.joining );
-    e.target.append( InteractionComponents.clickConfirmSpinner() );
+    e.target.append( InteractionComponents.confirmClickSpinner() );
     e.target.parentNode.append( V.cN( {
       c: 'progress-bar',
       h: {
@@ -443,12 +440,12 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'modal',
       c: 'modal fixed',
-      h: {
-        i: 'modal-close',
-        c: 'modal__close',
-        h: getString( ui.close ),
-        k: handleModalClose,
-      },
+      // h: {
+      //   i: 'modal-close',
+      //   c: 'modal__close',
+      //   h: getString( ui.close ),
+      //   k: handleModalClose,
+      // },
       k: handleModalClose,
     } );
   }
@@ -464,7 +461,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
-      // h: InteractionComponents.clickConfirmSpinner(),
+      // h: InteractionComponents.confirmClickSpinner(),
       h: [
         {
           c: 'preloader__ring',

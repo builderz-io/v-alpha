@@ -216,34 +216,47 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
 
       if ( Array.isArray( data ) ) {
-        data.forEach( $node => {
+        data.forEach( item => {
+          if ( item instanceof Element ) {
 
-          /**
-           * place each node from array into target node
-           */
+            /**
+            * place given node into target node
+            */
 
-          placeNode( $targetNode, $node, prepend );
+            placeNode( $targetNode, item, prepend );
+          }
+          else {
+
+            /**
+            * 1. create new node
+            * 2. place this new node into target node
+            */
+
+            placeNode( $targetNode, castNode( item ), prepend );
+
+          }
+
+          // placeNode( $targetNode, item, prepend );
 
         } );
       }
       else if ( typeof data == 'object' ) {
-        if ( data.t || data.tag ) {
+        if ( data instanceof Element ) {
 
           /**
-           * 1. create new node
-           * 2. place this new node into target node
-           */
+          * place given node into target node
+          */
 
-          placeNode( $targetNode, castNode( data ), prepend );
-
+          placeNode( $targetNode, data, prepend );
         }
         else {
 
           /**
-           * place given node into target node
-           */
+          * 1. create new node
+          * 2. place this new node into target node
+          */
 
-          placeNode( $targetNode, data, prepend );
+          placeNode( $targetNode, castNode( data ), prepend );
 
         }
       }

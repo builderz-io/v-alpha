@@ -12,8 +12,9 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     notActive: 'no active entity',
     invalidAmount: 'invalid amount',
+    invalidRecipient: 'invalid recipient',
     noDecimals: 'no decimals',
-    noRecipient: 'recipient not found',
+    noRecipient: 'recipient name and tag not found',
     noRecipientAddress: 'recipient address not found',
   };
 
@@ -91,6 +92,14 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'transaction',
         status: getString( ui.noDecimals ),
+      };
+    }
+
+    if ( !recipient ) {
+      return {
+        success: false,
+        endpoint: 'transaction',
+        status: getString( ui.invalidRecipient ),
       };
     }
 

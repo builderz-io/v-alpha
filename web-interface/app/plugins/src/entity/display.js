@@ -166,7 +166,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
             position: 'top',
             listings: $list,
           } );
-          delayedMessageForm( entity );
+          MagicButton.draw( 'chat' );
+          // delayedMessageForm( entity );
         } );
       }
       else {
@@ -174,7 +175,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           position: 'top',
           listings: $list,
         } );
-        delayedMessageForm( entity );
+        MagicButton.draw( 'chat' );
+        // delayedMessageForm( entity );
       }
 
       if ( entity.images.tinyImage ) {
@@ -221,7 +223,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( '#get-started', 'clear' );
 
-    Button.draw( 'all', { fade: 'out' } );
+    // Button.draw( 'all', { fade: 'out' } );
 
     if (
       !( data.navReset === false )

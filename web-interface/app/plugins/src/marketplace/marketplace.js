@@ -131,8 +131,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       // previous version of search form
       // if ( data.isSearch ) {
       //   Form.draw( 'all', { fade: 'out' } );
-      //   Button.draw( 'all', { fade: 'out' } );
-      //   Button.draw( 'search' );
+      //  // Button.draw( 'all', { fade: 'out' } );
+      //  // Button.draw( 'search' );
       // }
 
       if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
@@ -250,7 +250,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( whichPath ) {
       Navigation.draw( whichPath );
       if ( !search ) {
-        Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+       // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
       }
     }
     else {

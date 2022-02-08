@@ -570,7 +570,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function clickConfirmSpinner() {
+  function confirmClickSpinner( omitMarginLeft ) {
     return V.cN( {
       svg: true,
       c: 'confirm-click-spinner',
@@ -578,6 +578,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         width: '18',
         height: '18',
         viewBox: '0 0 50 50',
+      },
+      y: {
+        'margin-left': omitMarginLeft ? '0px' : '14px',
       },
       h: [
         {
@@ -621,7 +624,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     joinBtn: joinBtn,
     onboardingCard: onboardingCard,
     getStarted: getStarted,
-    clickConfirmSpinner: clickConfirmSpinner,
+    confirmClickSpinner: confirmClickSpinner,
   };
 
 } )();

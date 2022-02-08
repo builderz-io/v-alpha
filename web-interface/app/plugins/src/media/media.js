@@ -59,7 +59,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( path ) {
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+   // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
     Navigation.draw( path );
 
     featurePresenterAndView();

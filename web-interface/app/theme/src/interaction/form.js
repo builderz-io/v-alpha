@@ -55,6 +55,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
       if ( V.getNode( 'form' ) ) {
         V.setAnimation( 'form', 'fadeOut', { delay: 0.2, duration: 1 } ).then( () => {
           V.setNode( 'form', 'clear' );
+          MagicButton.draw( 'search' );
         } );
       }
     }
@@ -66,7 +67,7 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
 
       if ( formData.layout == 'new entity' ) {
         const values = formData.data[0];
-        V.getNode( '#set' ).addEventListener( 'click', V.handleSetEntity, { once: true } );
+        // V.getNode( '#set' ).addEventListener( 'click', V.handleSetEntity, { once: true } );
         V.setNode( $form, [
           InteractionComponents.formField( 'title', values.title ),
           InteractionComponents.formField( 'location', values.location, values.lat, values.lng ),
@@ -81,29 +82,34 @@ const Form = ( function() { // eslint-disable-line no-unused-vars
           } ),
         ] );
       }
-      else if ( formData.layout == 'search' ) {
-        V.setNode( $form, [
-          InteractionComponents.formField( 'search' ),
-          InteractionComponents.formSearchFilter(),
-        ] );
-      }
+      // else if ( formData.layout == 'search' ) {
+      //   V.setNode( $form, [
+      //     InteractionComponents.formField( 'search' ),
+      //     InteractionComponents.formSearchFilter(),
+      //   ] );
+      // }
       else {
         V.setNode( $form, [ InteractionComponents.title(), InteractionComponents.desc() ] );
       }
 
       V.setNode( 'body', $form );
 
+      V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
+
       setTimeout( () => {
-        V.getVisibility( '#search-input' ) ? V.getNode( '#search-input' ).focus() : null;
-        V.getVisibility( '#plusform__title' ) ? V.getNode( '#plusform__title' ).focus() : null;
+        // V.getVisibility( '#search-input' ) ? V.getNode( '#search-input' ).focus() : null;
+        if ( V.getVisibility( '#plusform__title' ) ) {
+          V.getNode( '#plusform__title' ).focus();
+          MagicButton.draw( 'set' );
+        }
       }, 600 );
 
-      V.setAnimation( 'form', 'fadeIn', { delay: 0.2, duration: 1 } );
       Google.launch().then( () => { // adds places lib script
         Google.initAutocomplete( 'plusform' ); // + __loc, __lng and __lat
       } );
-      Button.draw( 'all', { fade: 'out' } );
-      Button.draw( formData.layout == 'search' ? /* 'close */ 'query' : /* 'close */ 'set', { delay: 1 } );
+
+      //// Button.draw( 'all', { fade: 'out' } );
+      //// Button.draw( formData.layout == 'search' ? /* 'close */ 'query' : /* 'close */ 'set', { delay: 1 } );
     }
   }
 

@@ -605,7 +605,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return Math.floor( Date.now() / 1000 );
   }
 
-  function getIcon( which ) {
+  function getIcon( which, height ) {
     return which.match( new RegExp( socialMatch ) )
       ? V.cN( {
         t: 'img',
@@ -624,7 +624,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
           t: 'img',
           src: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/' + which + '-24px.svg',
           a: {
-            height: '16px',
+            height: height || '16px',
           },
         } );
 

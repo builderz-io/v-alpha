@@ -7,6 +7,8 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  let rerun;
+
   /* ================== event handlers ================== */
 
   function handleInputFocus() {
@@ -14,16 +16,22 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $response.textContent = '';
   }
 
-  function handleSetMessageBot() {
+  function handleSetMessageBot( rerunMessage ) {
     const $form = V.getNode( '.messageform__input' );
     const $response = V.getNode( '.messageform__response' );
 
-    const message = $form.value;
+    const message = !rerunMessage
+      ? $form.value
+      : rerunMessage + ' to ' + V.getState( 'active' ).lastViewed;
 
     V.setMessageBot( message ).then( res => {
       V.sN( $response, '' );
       V.setState( 'active', { autofillUuidE: undefined } );
-      if ( res.success || ( res.data && res.data.setHighlight && res.data.setHighlight.a ) ) {
+      if (
+        res.success
+        || ( res.data && res.data.setHighlight && res.data.setHighlight.a )
+      ) {
+        rerun = false;
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
@@ -32,7 +40,17 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
           $form.value = '';
         }
       }
+      else if (
+        res.endpoint == 'transaction'
+        && res.status == 'invalid recipient ' // needs trailing space
+        && !rerun
+        && V.getState( 'active' ).navItem.includes( 'profile' )
+      ) {
+        rerun = true;
+        handleSetMessageBot( message ); // rerun with active profile
+      }
       else {
+        rerun = false;
         $response.append( V.cN( {
           c: 'messageform__respinner',
           s: {
@@ -247,8 +265,9 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     launch: launch,
-    drawMessageForm: drawMessageForm,
     draw: draw,
+    drawMessageForm: drawMessageForm,
+    handleSetMessageBot: handleSetMessageBot,
   };
 
 } )();

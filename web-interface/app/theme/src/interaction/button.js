@@ -1,7 +1,9 @@
 const Button = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Theme Module to draw buttons
+   * V Theme Module to draw buttons on the right side of the screen
+   *
+   * !! This module is not in use
    *
    */
 
@@ -12,7 +14,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   function handleSetEntity( e ) {
     e.target.removeEventListener( 'click', handleSetEntity );
 
-    V.setNode( 'interactions > ul', InteractionComponents.clickConfirmSpinner() );
+    // V.setNode( 'interactions > ul', InteractionComponents.confirmClickSpinner() );
 
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
@@ -60,7 +62,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
             uuidE: res.data[0].uuidE,
             uuidP: res.data[0].uuidP,
           } );
-          Button.draw( 'set', { fade: 'out' } );
+          // Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
 
           /**
@@ -103,8 +105,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   // function handleCloseForms() {
   //   Form.draw( 'all', { fade: 'out' } );
-  //   Button.draw( 'all', { fade: 'out' } );
-  //   Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+  //  // Button.draw( 'all', { fade: 'out' } );
+  //  // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
   //   Page.draw( { position: 'peek', reset: false } );
   // }
 
@@ -170,8 +172,6 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   function draw( which, options ) {
     view( which, options );
   }
-
-  V.handleSetEntity = handleSetEntity;
 
   return {
     launch: launch,

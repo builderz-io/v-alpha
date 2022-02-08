@@ -50,11 +50,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/theme/src/canvas/feature.js' ),
         V.setScript( host + '/theme/src/canvas/header.js' ),
         V.setScript( host + '/theme/src/canvas/page.js' ),
-        V.setScript( host + '/theme/src/search/components.js' ),
         V.setScript( host + '/theme/src/modal/components.js' ),
         V.setScript( host + '/theme/src/modal/modal.js' ),
         V.setScript( host + '/theme/src/interaction/components.js' ),
-        V.setScript( host + '/theme/src/interaction/button.js' ),
+        // V.setScript( host + '/theme/src/interaction/button.js' ),
+        V.setScript( host + '/theme/src/interaction/magic-button.js' ),
         V.setScript( host + '/theme/src/interaction/form.js' ),
         V.setScript( host + '/theme/src/interaction/join.js' ),
         V.setScript( host + '/theme/src/navigation/components.js' ),
@@ -276,7 +276,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           && !V.getVisibility( 'modal' )
           && !V.getVisibility( '.messageform' )
         ) {
-          V.getNode( '.search__btn' ).click();
+          V.getNode( '.magic-btn__btn' ).click();
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
@@ -393,7 +393,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Header.launch(); // sets nodes
       Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
-      Button.launch(); // sets nodes: hidden buttons
+      // Button.launch(); // sets nodes: hidden buttons
 
       V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
 

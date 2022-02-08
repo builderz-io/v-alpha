@@ -6,8 +6,8 @@
 
   --card-height: 172px;
 
-  --search-main-top: 11px;
-  --search-main-left: 69px;
+  --magic-btn-top: 11px;
+  --magic-btn-left: 69px;
   --entity-nav-top: 7px;
   --entity-nav-left: 114px; /* 61 */
   --user-nav-top: 7px;
@@ -85,8 +85,8 @@
 
 @media screen and (min-width: 800px) {
     :root {
-      --search-main-top: 25px;
-      --search-main-left: 90px;
+      --magic-btn-top: 25px;
+      --magic-btn-left: 90px;
       --entity-nav-top: 21px;
       --entity-nav-left: 137px; /* 84 */
       --user-nav-top: 21px;

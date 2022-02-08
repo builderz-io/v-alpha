@@ -399,8 +399,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function handleCloseForms() {
     Form.draw( 'all', { fade: 'out' } );
-    Button.draw( 'all', { fade: 'out' } );
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+    // Button.draw( 'all', { fade: 'out' } );
+    // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
     Page.draw( { position: 'peek', reset: false } );
   }
 
@@ -424,7 +424,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       } );
       V.setLocal( 'entity-nav-order', entityNavOrder );
     }
-
+    MagicButton.draw( 'search' );
     // Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
     // (previous version) also reset path if not account or profile path
@@ -465,7 +465,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }, { duration: 2.5 } );
 
     Form.draw( 'all', { fade: 'out' } );
-    Button.draw( 'all', { fade: 'out' } );
+    // Button.draw( 'all', { fade: 'out' } );
 
     /* return to the full market view and reset the map (zoom) */
     Marketplace.draw();
@@ -546,7 +546,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     }
     else {
-      Button.draw( 'all', { fade: 'out' } );
+      // Button.draw( 'all', { fade: 'out' } );
       V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
       V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
       V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );

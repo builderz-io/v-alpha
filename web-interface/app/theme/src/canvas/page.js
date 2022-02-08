@@ -198,7 +198,7 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
       handlebar( 7, 22 );
     }
     else if ( pagePos == 'closed' ) {
-      SearchComponents.drawReset();
+      MagicButton.drawReset();
       Haze.draw( { fade: 'out' } );
       Feature.draw( { fade: 'out' } );
       CanvasComponents.handleClosePopup();

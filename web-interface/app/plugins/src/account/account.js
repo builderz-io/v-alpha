@@ -157,7 +157,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $list, $card );
     }
 
-    Button.draw( 'all', { fade: 'out' } );
+   // Button.draw( 'all', { fade: 'out' } );
     Navigation.draw( path );
 
     Chat.drawMessageForm();

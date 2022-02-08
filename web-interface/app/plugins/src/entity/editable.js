@@ -124,7 +124,9 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( /* path */ ) {
-    Button.draw( 'all', { fade: 'out' } );
+    MagicButton.draw( 'chat' );
+
+    // Button.draw( 'all', { fade: 'out' } );
 
     // if ( path == '/me/profile' ) {
     //   Navigation.draw( path );
