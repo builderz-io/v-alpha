@@ -14,8 +14,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setAttr( $elem, attr, data ) {
-    if ( data ) {
-      $elem.setAttribute( attr, data );
+    if ( data === undefined ) { return }
+    if ( String( data ) ) {
+      $elem.setAttribute( attr, String( data ) );
     }
   }
 
@@ -191,14 +192,18 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
 
-    if ( typeof data == 'string' ) {
+    /**
+     * set a simple string
+     */
+
+    if ( ['string', 'number'].includes( typeof data ) ) {
       const $elem = typeof targetNode != 'string' ? targetNode : document.querySelector( targetNode );
-      $elem ? $elem.textContent = data : null;
+      $elem ? $elem.textContent = String( data ) : null;
       return;
     }
 
     /**
-     * determine actions based on targetNode and data
+     * determine actions based on targetNode and data params
      */
 
     if ( data ) {
@@ -282,18 +287,25 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getNode( which ) {
-
-    // TODO: maybe add getNodes with "querySelectorAll"
-
     const node = document.querySelector( which );
     if ( node ) {
       Object.assign( node, { getNode: getNode } );
-
       return node;
     }
   }
 
   function gN( which ) {
+    return getNode( which );
+  }
+
+  function getNodes( which ) {
+    const nodes = document.querySelectorAll( which );
+    if ( nodes ) {
+      return nodes;
+    }
+  }
+
+  function gNs( which ) {
     return getNode( which );
   }
 
@@ -402,12 +414,14 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function setToggle( element ) {
-    if ( getVisibility( element ) ) {
-      element.style.display = 'none';
+  function setToggle( which ) {
+    const $elem = typeof which == 'string' ? getNode( which ) : which;
+
+    if ( getVisibility( $elem ) ) {
+      $elem.style.display = 'none';
     }
     else {
-      element.style.display = 'block';
+      $elem.style.display = 'block';
     }
   }
 
@@ -419,6 +433,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   V.sN = sN;
   V.getNode = getNode;
   V.gN = gN;
+  V.getNodes = getNodes;
+  V.gNs = gNs;
   V.setAnimation = setAnimation;
   V.sA = sA;
   V.setStyle = setStyle;
@@ -436,6 +452,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     sN: sN,
     getNode: getNode,
     gN: gN,
+    getNodes: getNodes,
+    gNs: gNs,
     setAnimation: setAnimation,
     sA: sA,
     setStyle: setStyle,
