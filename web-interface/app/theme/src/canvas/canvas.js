@@ -56,7 +56,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         // V.setScript( host + '/theme/src/interaction/button.js' ),
         V.setScript( host + '/theme/src/interaction/magic-button.js' ),
         V.setScript( host + '/theme/src/interaction/form.js' ),
-        V.setScript( host + '/theme/src/interaction/join.js' ),
+        V.setScript( host + '/theme/src/join/components.js' ),
+        V.setScript( host + '/theme/src/join/human.js' ),
+        V.setScript( host + '/theme/src/join/join.js' ),
         V.setScript( host + '/theme/src/navigation/components.js' ),
         V.setScript( host + '/theme/src/navigation/navigation.js' ),
       ] )
