@@ -11,7 +11,7 @@ const InitHuman = ( function() { // eslint-disable-line no-unused-vars
   
     /* ============== user interface strings ============== */
   
-  
+
   
     /* ================== event handlers ================== */
   
@@ -28,6 +28,7 @@ const InitHuman = ( function() { // eslint-disable-line no-unused-vars
     // view 
 
     function view( which ) {
+        V.setNode( 'body', JoinComponents.joinCard())
         console.log( 'new human', which );
     }
  

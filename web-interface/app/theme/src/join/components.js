@@ -31,6 +31,32 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     function getString( string, scope ) {
       return V.i18n( string, 'join', scope || 'join content' ) + ' ';
     }
+
+/* ====================== styles ====================== */
+
+  V.setStyle( {
+    'join-overlay': {
+      position: 'fixed',
+      top: '0',
+      right: '0',
+      bottom: '0',
+      left: '0',
+      background: 'rgba(0,0,0,0.8)',
+    },
+    'join-card': {
+      'position': 'relative',
+      'background': 'white',
+      'width': '75vw',
+      'max-width': '500px',
+      'height': '46vh',
+      'margin': '14vh auto',
+      'padding': '0.5rem',
+    },
+    'join-content': {
+      
+    }
+   },
+  );
   
     /* ================== event handlers ================== */
 
@@ -45,6 +71,17 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   
     /* ================  public components ================ */
+
+    function joinCard() {
+      return V.cN( {
+        t: 'joinoverlay',
+        c: 'join-overlay',
+        h: {
+          c: 'join-card',
+          h: 'hello world',
+        },
+      } )  
+    }
   
     function joinBtn() {
       const sc = V.getState( 'screen' );
@@ -82,6 +119,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'text',
               c: 'font-medium fs-xs txt-button',
               a: { x: '50%', y: '59%' },
+              k: handleJoin,
               h: 'Join',
             },
           ],
@@ -93,6 +131,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   
     return {
       joinBtn: joinBtn,
+      joinCard: joinCard,
     };
   
   } )();
