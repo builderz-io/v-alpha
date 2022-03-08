@@ -276,6 +276,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if (
           !V.getVisibility( 'form' )
           && !V.getVisibility( 'modal' )
+          && !V.getVisibility( 'joinoverlay' )
           && !V.getVisibility( '.messageform' )
         ) {
           V.getNode( '.magic-btn__btn' ).click();
