@@ -48,7 +48,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': 'white',
       'width': '75vw',
       'max-width': '500px',
-      'height': '46vh',
+      'min-height': '46vh',
       'margin': '14vh auto',
       'padding': '1.5rem',
       'border-radius': '32px',
@@ -93,12 +93,28 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     // selectors
     'join-selectors': {
       
-      'background': 'pink',
-      
     },
-    'join-selectors__continent': {
-      
+    'join-selectors__form': {
+      'display': 'flex',
+      'flex-wrap': 'wrap',
+      'justify-content': 'center',
     },
+    'join-selector': {
+
+    },
+    'join-selector__input': {
+
+    },
+
+    'join-selector__label': {
+        'display': 'flex',
+        'align-items': 'center',
+        'justify-content': 'center',
+        'height': '2rem',
+        'background': 'yellow',
+        'margin': '0.2rem',
+    },
+
     // submit
     'join-submit': {
       'background': 'lightgrey',
@@ -170,13 +186,38 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               },
               {
                 c: 'join-selectors',
-                h: [ 'Africa', 'Asia', 'South-America', 'Europe', 'Australia', 'North-Amercia', 'Antarctica' ].map(continent => {
-                    return V.cN( {
-                      c: 'join-selectors__continent', 
-                      h: continent,
-                    })
-                } ),
+                h: {
+                  t: 'form',
+                  c: 'join-selectors__form',
+                  h: [ 'Africa', 'Asia', 'South-America', 'Europe', 'Australia', 'North-Amercia', 'Antarctica' ].map((continent, i) => {
+                      return V.cN( {
+                        c: 'join-selector', 
+                        h: [
+                          {
+                            t: 'input',
+                            i: 'join-selector__cont' + i,
+                            c: 'join-selector__input', 
+                            a: {
+                              type: 'radio',
+                              name: 'continents',
+                              value: i+1, 
+                            }
+                          },
+                          {
+                            t: 'label',
+                            c: 'join-selector__label', 
+                            h: continent,
+                            a: {
+                              for: 'join-selector__cont' + i,  
+                            }
+
+                          },
+                        ],
+                      } )
+                  } ),
+                }, 
               },
+
               {
                 c: 'join-submit',
                 h: [
