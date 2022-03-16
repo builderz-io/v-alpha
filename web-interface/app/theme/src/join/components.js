@@ -8,6 +8,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     'use strict';
 
     let cardIndex = 0;
+    const randomChecked = V.castRandomInt(0, 4);
   
     /* ============== user interface strings ============== */
   
@@ -26,24 +27,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         joinFormImg: 'Upload',
         joinFormEmail: 'Email',
 
-
-        
-    //   upload: 'uploading...',
-    //   change: 'Change',
-    //   image: 'Image',
-    //   titleOrCity: 'Enter a title or city name',
-  
-    //   key: 'Key',
-    //   title: 'Title',
-    //   email: 'Email',
-    //   emailConfirm: '4 digits',
-    //   loc: 'Location',
-    //   descr: 'Description and Links',
-    //   target: 'Target',
-    //   unit: 'Unit',
-    //   search: 'Search',
-    //   create: 'create',
-    //   query: 'search',
+        joinResLoc: 'Please add your continent at least.',
+        joinResImg: 'Please choose an avatar at least',
+      
     };
   
     function getString( string, scope ) {
@@ -173,6 +159,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         V.sN('joinoverlay', 'clear');
         V.sN('body', JoinComponents.joinOverlay() );
       }
+    
+      function handleSelector() {
+        V.getNode('.join-form__input').value = this; 
+      }
   
     /* ================== private methods ================= */
 
@@ -189,19 +179,34 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             return true;
           }
           else {
-            V.setToggle('.join-selectors')
+            setResponse('joinResLoc');
+            V.setToggle('.join-selectors');
             return false;
           }
           
         }
         else if ( cardIndex == 2 ) {
           // check image
+          if (input) {
+            return true;
+          }
+          else {
+            setResponse('joinResImg');
+            V.setToggle('.join-selectors');
+            return false;
+          }
         } 
         else if ( cardIndex == 3 ) {
           // check email
         }  
 
       }
+
+      function setResponse(which) {
+        V.getNode('.join-submit__response').innerText = getString(ui[which]);
+        
+      }
+    /* ================ components ================ */
 
       function joinHeader( headerTop, headerBottom ) {
         return V.cN( 
@@ -254,7 +259,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               c: 'join-selectors__form',
               h: [ 'Africa', 'Asia', 'South-America', 'Europe', 'Australia', 'North-Amercia', 'Antarctica' ].map((continent, i) => {
                   return V.cN( {
-                    c: 'join-selector', 
+                    c: 'join-selector',
+                    k: handleSelector.bind(continent),
                     h: [
                       {
                         t: 'input',
@@ -292,6 +298,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               h: [ 'Bild1', 'Bild2', 'Bild3', 'Bild4', 'Bild5' ].map(( image, i ) => {
                   return V.cN( {
                     c: 'join-selector', 
+                    k: handleSelector.bind(image),
                     h: [
                       {
                         t: 'input',
@@ -300,7 +307,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                         a: {
                           type: 'radio',
                           name: 'human-profile-images',
-                          value: i+1, 
+                          value: i+1,
+                          checked: i == randomChecked ? true : undefined , 
                         }
                       },
                       {
@@ -319,8 +327,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         )
       }
 
-      
-
       function joinSubmit() {
         return V.cN(
           {
@@ -328,7 +334,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             h: [
               {
                 c: 'join-submit__response',
-                h: 'Please, add your continent at least.',
+//                h: 'Please, add your continent at least.',
               },
               {
                 c: 'join-submit__btn',
@@ -336,12 +342,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                 k: handleNext,
               },
             ]
-          }
-          
-        )
-        
+          }          
+        )  
       }
-  
+
+    /* ================ cards ================ */
+
       function joinName() {
         return [
           joinHeader('joinNameTop', 'joinNameBottom'),
