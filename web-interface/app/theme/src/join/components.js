@@ -36,6 +36,16 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       return V.i18n( string, 'join', scope || 'join content' ) + ' ';
     }
 
+    const svgPaths = [ 'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z', 
+
+    'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z',
+
+    'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z',
+
+    'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z',
+
+    'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z'
+    ]
 /* ====================== styles ====================== */
 
   V.setStyle( {
@@ -120,6 +130,23 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         'margin': '0.2rem',
     },
 
+    'join-selector__img': {
+      'display': 'flex',
+      'justify-content': 'center',
+      'align-items': 'center',
+      'margin': '9px',
+      'height': '50px',
+      'width': '50px',
+      'border': '2px solid lightgrey',
+      'border-radius': '50%',
+      
+    },
+
+    'join-selector__svg': {
+      'width':  '30px',
+      'height': '30px',
+    },
+
     // submit
     'join-submit': {
       'display': 'flex',
@@ -171,7 +198,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         console.log(input);
         if ( cardIndex == 0 ) {
           // check name
-          return true;
+          if (input) {
+            return true;
+          }
+          else {
+            setResponse('joinResImg');
+            V.setToggle('.join-selectors');
+            return false;
+          }
+
         } 
         else if ( cardIndex == 1 ) {
           // check location
@@ -295,7 +330,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             h: {
               t: 'form',
               c: 'join-selectors__form',
-              h: [ 'Bild1', 'Bild2', 'Bild3', 'Bild4', 'Bild5' ].map(( image, i ) => {
+              h: svgPaths.map(( image, i ) => {
                   return V.cN( {
                     c: 'join-selector', 
                     k: handleSelector.bind(image),
@@ -313,8 +348,19 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                       },
                       {
                         t: 'label',
-                        c: 'join-selector__label', 
-                        h: image,
+                        c: 'join-selector__img', 
+                        h: { 
+                          svg: true,
+                          c: 'join-selector__svg',
+                          h: {
+                            svg: true,
+                            t: 'path',
+                            c: 'join-selector__path',
+                            a: {
+                              d: image,
+                            }
+                          }
+                        },
                         a: {
                           for: 'join-selector__img' + i,  
                         }
@@ -391,9 +437,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               c: 'join-content-wrapper',
               h:  [
+                joinImage,
                 joinName, 
-                joinLocation, 
-                joinImage, 
+                joinLocation,  
                 joinEmail
               ][cardIndex](),
             },
