@@ -28,7 +28,10 @@ const InitHuman = ( function() { // eslint-disable-line no-unused-vars
     // view 
 
     function view( which ) {
-        V.setNode( 'body', JoinComponents.joinOverlay())
+        V.setNode( 'body', JoinComponents.joinOverlay());
+
+        Google.launch();
+        
         console.log( 'new human', which );
     }
  

@@ -185,6 +185,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         cardIndex += 1 ;
         V.sN('joinoverlay', 'clear');
         V.sN('body', JoinComponents.joinOverlay() );
+        if ( cardIndex == 1 ) {
+           Google.initAutocomplete( 'join-form' );
+        }
       }
     
       function handleSelector() {
@@ -194,23 +197,22 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     /* ================== private methods ================= */
 
       function validateInput() {
-        const input = V.getNode('.join-form__input').value ;
-        console.log(input);
         if ( cardIndex == 0 ) {
           // check name
+          const input = V.getNode( '.join-form__input' ).value ;
           if (input) {
             return true;
           }
           else {
-            setResponse('joinResImg');
-            V.setToggle('.join-selectors');
-            return false;
+            return true;
           }
 
         } 
         else if ( cardIndex == 1 ) {
+          const lat = V.getNode('.join-form__loc').getAttribute( 'lat' ) ;
+          console.log(lat);
           // check location
-          if (input) {
+          if (lat) {
             return true;
           }
           else {
@@ -284,6 +286,33 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
         )
       }
+
+      function joinFormLoc() {
+        return V.cN(
+          {
+            c: 'join-form',
+            h: {
+              c:'join-form__inner',
+              h: [
+                  {
+                    c: 'join-form__title',
+                    h:  getString(ui.joinFormLoc),
+                  },
+                  {
+                    t: 'input',
+                    i: 'join-form__loc',
+                    c: 'join-form__loc',
+                  
+                    //focus
+                  },
+              ],
+            },
+          },
+
+        )
+      }
+
+      
 
       function joinSelectorsCont() {
         return V.cN(
@@ -404,7 +433,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       function joinLocation() {
         return [
           joinHeader('joinLocTop', 'joinLocBottom'),
-          joinForm('joinFormLoc'),
+          joinFormLoc(),
           joinSelectorsCont(),
         ]
       }
@@ -437,9 +466,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               c: 'join-content-wrapper',
               h:  [
-                joinImage,
                 joinName, 
-                joinLocation,  
+                joinLocation, 
+                joinImage, 
                 joinEmail
               ][cardIndex](),
             },
