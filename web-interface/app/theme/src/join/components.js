@@ -191,7 +191,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     
       function handleSelector() {
-        V.getNode('.join-form__input').value = this; 
+        const $elem = V.getNode('.join-form__input') || V.getNode('.join-form__loc');
+        $elem.value = this; 
       }
   
     /* ================== private methods ================= */
@@ -209,10 +210,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
         } 
         else if ( cardIndex == 1 ) {
-          const lat = V.getNode('.join-form__loc').getAttribute( 'lat' ) ;
-          console.log(lat);
+          const hasLat = V.getNode('.join-form__loc').getAttribute( 'lat' ) ;
+          const hasRadio = getRadioValue( 'continent' )
+
+          console.log(hasRadio);
           // check location
-          if (lat) {
+          if (hasLat) {
+            return true;
+          }
+          else if (hasRadio) {
             return true;
           }
           else {
@@ -221,8 +227,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             return false;
           }
           
+          
         }
         else if ( cardIndex == 2 ) {
+          const input = V.getNode( '.join-form__input' ).value ;
           // check image
           if (input) {
             return true;
@@ -242,6 +250,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       function setResponse(which) {
         V.getNode('.join-submit__response').innerText = getString(ui[which]);
         
+      }
+
+      function getRadioValue( whichForm ) {
+        return document.forms[ whichForm + 's'].elements[ whichForm ].value;
       }
     /* ================ components ================ */
 
@@ -321,6 +333,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             h: {
               t: 'form',
               c: 'join-selectors__form',
+              a: {
+                name: 'continents',
+              },
               h: [ 'Africa', 'Asia', 'South-America', 'Europe', 'Australia', 'North-Amercia', 'Antarctica' ].map((continent, i) => {
                   return V.cN( {
                     c: 'join-selector',
@@ -332,8 +347,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                         c: 'join-selector__input', 
                         a: {
                           type: 'radio',
-                          name: 'continents',
-                          value: i+1, 
+                          name: 'continent',
+                          value: i, 
                         }
                       },
                       {
@@ -358,6 +373,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             c: 'join-selectors hidden', 
             h: {
               t: 'form',
+              a: {
+                name: 'human-profile-images',
+              },
               c: 'join-selectors__form',
               h: svgPaths.map(( image, i ) => {
                   return V.cN( {
@@ -370,8 +388,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                         c: 'join-selector__input', 
                         a: {
                           type: 'radio',
-                          name: 'human-profile-images',
-                          value: i+1,
+                          name: 'human-profile-image',
+                          value: i,
                           checked: i == randomChecked ? true : undefined , 
                         }
                       },
