@@ -118,12 +118,12 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which.includes( 'initialize' ) ) {
       Navigation.draw();
-      if( V.getSetting('launchVersion') === 1) {
-        Modal.draw( which ); 
+      if( V.getSetting( 'launchVersion' ) === 1 ) {
+        Modal.draw( which );
       }
       else {
-        InitHuman.draw( which ); 
-      } 
+        InitHuman.draw( which );
+      }
     }
     else {
       Navigation.draw();
@@ -172,6 +172,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   function launch() {
+
     /** Sets the view on launch (the header "Join" button) */
     if( !V.getLocal( 'browser-id' ) ) {
       const brid = 'BRID' + V.castUuid().base64Url.substr( 1, 16 ); // e.g. BRIDdlvboP9QBioaDvm7

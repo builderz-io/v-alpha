@@ -1,55 +1,45 @@
 const InitHuman = ( function() { // eslint-disable-line no-unused-vars
 
-    /**
+  /**
      * V Theme Module for creation of a profile for a human being
      *
      */
-  
-    'use strict';
 
-   
-  
-    /* ============== user interface strings ============== */
-  
+  'use strict';
 
-  
-    /* ================== event handlers ================== */
-  
+  /* ============== user interface strings ============== */
 
+  /* ================== event handlers ================== */
 
-  
-    /* ================== private methods ================= */
-    
-    // presenter
-    async function presenter( which ) {
-        return which 
-    }
+  /* ================== private methods ================= */
 
-    // view 
+  // presenter
+  async function presenter( which ) {
+    return which;
+  }
 
-    function view( which ) {
-        V.setNode( 'body', JoinComponents.joinOverlay());
+  // view
 
-        Google.launch();
-        
-        console.log( 'new human', which );
-    }
- 
+  function view( which ) {
+    V.setNode( 'body', JoinComponents.joinOverlay() );
 
-  
-    /* ================  public components ================ */
-    
-    // draw
+    Google.launch();
 
-    function draw( which ) {
-        presenter( which ).then( viewData => { view( viewData ) } );
-      }
-    
-    /* ====================== export ====================== */
-  
-    return {
-        draw: draw,
-    };
-  
-  } )();
-  
+    console.log( 'new human', which );
+  }
+
+  /* ================  public components ================ */
+
+  // draw
+
+  function draw( which ) {
+    presenter( which ).then( viewData => { view( viewData ) } );
+  }
+
+  /* ====================== export ====================== */
+
+  return {
+    draw: draw,
+  };
+
+} )();
