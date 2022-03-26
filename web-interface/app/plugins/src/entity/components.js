@@ -690,7 +690,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'toggle-switch__input',
                 a: {
                   type: 'checkbox',
-                  checked: active ? true : false,
+                  checked: active ? true : undefined,
                 },
                 e: {
                   change: handleActive,
@@ -718,7 +718,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'toggle-switch__input',
                 a: {
                   type: 'checkbox',
-                  checked: editable ? true : false,
+                  checked: editable ? true : undefined,
                 },
                 e: {
                   change: handleViewMode,
@@ -1110,7 +1110,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               value: 'en_US',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'en_US' ? true : false,
+              checked: appLang == 'en_US' ? true : undefined,
             },
             k: handleRadioEntry,
           },
@@ -1126,7 +1126,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               value: 'de_DE',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'de_DE' ? true : false,
+              checked: appLang == 'de_DE' ? true : undefined,
             },
             k: handleRadioEntry,
           },

@@ -16,9 +16,9 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
     const $elem = document.getElementById( component + '__loc' );
     if ( $elem ) {
       const autocomplete = new google.maps.places.Autocomplete( $elem, { types: ['geocode'] } );
-
+      $elem.setAttribute('placeholder', '');
       autocomplete.addListener( 'place_changed', function() {
-        var place = autocomplete.getPlace();
+        const place = autocomplete.getPlace();
         $elem.setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
         $elem.setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
         // focus and blur to trigger saving in user profile

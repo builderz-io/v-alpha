@@ -63,6 +63,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     drawMap: true,
 
+    launchVersion: 2,
+
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
     demoContent: false, // set to 'true', then reload page once, then set to 'false'

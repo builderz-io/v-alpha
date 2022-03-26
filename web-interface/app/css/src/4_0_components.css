@@ -4,6 +4,17 @@ background {
 
 }
 
+[type="radio"]:checked,
+[type="radio"]:not(:checked){
+  position: absolute;
+  visibility: hidden;
+}
+
+[type="radio"]:checked + label {
+  color: white;
+  background: rgb(255, 225, 0);
+}
+
 td {
   height: 26px;
 }

@@ -116,6 +116,15 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Navigation.draw();
       Modal.draw( which );
     }
+    else if ( which.includes( 'initialize' ) ) {
+      Navigation.draw();
+      if( V.getSetting('launchVersion') === 1) {
+        Modal.draw( which ); 
+      }
+      else {
+        InitHuman.draw( which ); 
+      } 
+    }
     else {
       Navigation.draw();
       Modal.draw( which );
@@ -163,20 +172,19 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   function launch() {
-    // sets the view on launch (the header "Join" button)
+    /** Sets the view on launch (the header "Join" button) */
     if( !V.getLocal( 'browser-id' ) ) {
       const brid = 'BRID' + V.castUuid().base64Url.substr( 1, 16 ); // e.g. BRIDdlvboP9QBioaDvm7
       V.setLocal( 'browser-id', brid );
     }
     if ( !V.getNode( 'join' ) ) {
-      V.setNode( 'balance > svg', 'clear' );
-      V.setLocal( 'welcome-modal', 1 );
-      const $join = InteractionComponents.joinBtn();
-      $join.addEventListener( 'click', function joinHandler() {
-        Join.draw( 'initialize join' );
-      } );
 
-      V.setNode( 'header', $join );
+      /** Flag that the welcome modal could be shown to a new user */
+      V.setLocal( 'welcome-modal', 1 );
+
+      /** Draw the version of the join button according to the app setting */
+      V.setNode( 'balance > svg', 'clear' );
+      V.setNode( 'header', JoinComponents.joinBtn() );
     }
   }
 
