@@ -140,10 +140,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     return MarketplaceComponents.popupContent( feature );
   }
 
-  // async function launch() {
-  //   await V.setScript( V.getSetting( 'sourceEndpoint' ) + '/plugins/dependencies/leaflet.js' );
-  //   console.log( '*** leaflet library loaded ***' );
-  // }
+  function launch() {
+    if ( V.getSetting( 'drawMap' ) ) {
+      setMap();
+    }
+  }
 
   function castLayer( whichLayer, features ) {
     const sc = V.getState( 'screen' );
@@ -286,7 +287,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     // viMap.on( 'moveend', handleMapMoveEnd );
 
-  /*
+    /*
    .on( 'moveend' ) has bugs:
      - causes point rendering incomplete and too small
      - exceeded stack
@@ -295,7 +296,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getMapDefault(
-    which = V.getSetting( 'mapDefault' )
+    which = V.getSetting( 'mapDefault' ),
   ) {
     return mapDefaults[which];
   }
@@ -548,9 +549,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    // launch: launch,
+    launch: launch,
     draw: draw,
-    setMap: setMap,
     getState: getState,
   };
 

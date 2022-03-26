@@ -400,7 +400,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
 
-      VMap.setMap();
+      VMap.launch();
 
       // setTimeout( function functionName() {
       //   Join.onboard();
