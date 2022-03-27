@@ -61,9 +61,9 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     sendLogsToServer: false,
 
-    drawMap: true,
+    drawMap: false,
 
-    launchVersion: 2,
+    joinVersion: 2,
 
     subscribeToChainEvents: false,
     balanceCheckInterval: 10, // in sec
@@ -156,7 +156,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getTokenContract(
-    which = VNetworkInit.tokenContract
+    which = VNetworkInit.tokenContract,
   ) {
     if ( which ) {
       return tokenContracts[which];

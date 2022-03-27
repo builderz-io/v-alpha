@@ -7,34 +7,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  let cardIndex = 0;
-  const randomChecked = V.castRandomInt( 0, 4 );
+  /* ============== globals ============== */
 
-  /* ============== user interface strings ============== */
-
-  const ui = {
-    joinNameTop: 'Name yourself.',
-    joinNameBottom: 'This is for your personal profile.',
-    joinLocTop: 'Add your location.',
-    joinLocBottom: '',
-    joinImgTop: 'Add your image.',
-    joinImgBottom: '',
-    joinEmailTop: 'Add your email.',
-    joinEmailBottom: 'This is private, visible to admins only.',
-
-    joinFormName: 'Name',
-    joinFormLoc: 'Location',
-    joinFormImg: 'Upload',
-    joinFormEmail: 'Email',
-
-    joinResLoc: 'Please add your continent at least.',
-    joinResImg: 'Please choose an avatar at least',
-
+  const entityData = {
+    role: 'Person',
+    evmAddress: V.cA() || null,
   };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'join', scope || 'join content' ) + ' ';
-  }
+  let fourDigitString, key, cardIndex = 0;
+  const randAvatar = V.castRandomInt( 0, 4 );
 
   const svgPaths = [ 'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z',
 
@@ -47,7 +28,58 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z',
   ];
 
-  const continents = [ 'Africa', 'Asia', 'South-America', 'Europe', 'Australia', 'North-Amercia', 'Antarctica' ];
+  /* ============== user interface strings ============== */
+
+  const ui = {
+    upload: 'uploading...',
+    change: 'Change',
+
+    joinNameTop: 'Name yourself.',
+    joinNameBottom: 'This is for your personal profile.',
+    joinLocTop: 'Add your location.',
+    joinLocBottom: '',
+    joinImgTop: 'Add your image.',
+    joinImgBottom: '',
+    joinEmailTop: 'Add your email.',
+    joinEmailBottom: 'This is private, visible to admins only.',
+    joinKeyTop: 'Download your key.',
+    joinKeyBottom: '',
+
+    joinFormName: 'Name',
+    joinFormLoc: 'Location',
+    joinFormImg: 'Upload',
+    joinFormEmail: 'Email',
+    joinFormEmailConfirm: '4-digit code',
+
+    joinResLoc: 'Please add your continent at least',
+    joinResImg: 'Please choose an avatar at least',
+    joinResEmail: 'Please add a valid email address',
+    joinResEmailConfirm: 'Please enter the 4-digit code we sent',
+    joinResEmailConfirmFalse: '4-digit code does not match',
+
+    africa: 'Africa',
+    asia: 'Asia',
+    europe: 'Europe',
+    australia: 'Australia',
+    northAmerica: 'North-Amercia',
+    southAmerica: 'South-America',
+    antarctica: 'Antarctica',
+
+  };
+
+  const continents = [
+    getString( ui.africa ),
+    getString( ui.asia ),
+    getString( ui.southAmerica ),
+    getString( ui.europe ),
+    getString( ui.australia ),
+    getString( ui.northAmerica ),
+    getString( ui.antarctica ),
+  ];
+
+  function getString( string, scope ) {
+    return V.i18n( string, 'join', scope || 'join content' ) + ' ';
+  }
 
   /* ====================== styles ====================== */
 
@@ -99,14 +131,20 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'border-bottom': '2px solid rgba(0,0,0,0.5)',
     },
     'join-form__title': {
-
+      'margin-right': '10px',
     },
     'join-form__input': {
-
+      'position': 'relative',
+      'top': '-1px',
+      'min-width': 0,
+      'flex': 1,
+    },
+    'join-form__loc': {
+      'min-width': 0,
+      'flex': 1,
     },
     // selectors
     'join-selectors': {
-      // 'display': 'none',
 
     },
     'join-selectors__form': {
@@ -181,7 +219,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleNext() {
-    if ( !validateInput() ) { return }
+    if ( !advanceCard() ) { return }
     cardIndex += 1;
     V.sN( 'joinoverlay', 'clear' );
     V.sN( 'body', JoinComponents.joinOverlay() );
@@ -195,60 +233,201 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     $elem.value = this;
   }
 
+  function handleImageUpload( e ) {
+    V.setNode( '#img-upload__label', getString( ui.upload ) );
+    V.castImageUpload( e ).then( res => {
+      V.setNode( '#img-upload__label', getString( ui.change ) );
+      V.setNode( '#img-upload__preview', '' );
+      V.setNode( '#img-upload__preview', V.cN( {
+        t: 'img',
+        src: res.src,
+        y: {
+          'max-width': '90px',
+          'max-height': '90px',
+          'margin-left': '10px',
+        },
+      } ) );
+    } );
+  }
+
+  function handleConfirmEmail() {
+
+    setResponse( '', 'setAsIs' );
+    V.getNode( '.join-submit__btn' ).append( InteractionComponents.confirmClickSpinner() );
+
+    fourDigitString = V.castTag().replace( '#', '' );
+
+    /* Email by https://www.smtpjs.com */
+    Email.send( {
+      SecureToken: V.getSetting( 'emailKey' ),
+      To: entityData.emailPrivate,
+      From: 'network.mailer@valueinstrument.org',
+      Subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+      Body: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+      // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
+    } ).then( msg => {
+      V.setNode( '.confirm-click-spinner', 'clear' );
+      if ( 'OK' == msg ) {
+        V.getNode( '.join-form__confirm' ).style.display = 'block';
+        setResponse( 'joinResEmailConfirm' );
+      }
+      else {
+        setResponse( msg, 'setAsIs' );
+      }
+    } );
+  }
+
+  function handleSetEntity() {
+
+    V.setEntity( entityData ).then( res => {
+      if ( res.success ) {
+        console.log( 'successfully set entity: ', res );
+
+        key = res.data[0].auth.uPhrase;
+
+        /** automatically join */
+        V.setAuth( key )
+          .then( data => {
+            if ( data.success ) {
+              console.log( 'auth success' );
+              cardIndex += 1;
+              V.sN( 'joinoverlay', 'clear' );
+              V.sN( 'body', JoinComponents.joinOverlay() );
+            }
+            else {
+              console.log( 'could not set auth after setting new entity' );
+            }
+          } );
+
+        /** set state and cache */
+        V.setActiveEntity( res.data[0] );
+        Join.draw( 'new entity was set up' );
+
+      }
+      else {
+        console.log( 'could not set entity: ', res );
+        // V.getNode( '.joinform__response' ).textContent = res.message;
+      }
+    } );
+  }
+
   /* ================== private methods ================= */
 
-  function validateInput() {
+  function advanceCard() {
+
+    /**
+     * For each card: validate user input, then either
+     * a) set user's choices into entityData object for use in handleSetEntity and
+     *    return true to advance to the next card OR
+     * b) give feedback to user and return false to stop advancing to the next card
+     *
+     */
+
+    /* name */
     if ( cardIndex == 0 ) {
-      // check name
       const input = V.getNode( '.join-form__input' ).value;
-      if ( input ) {
+      const title = V.castEntityTitle( input ); // validation of the title
+
+      if ( title.success ) {
+        entityData.title = title.data[0];
         return true;
       }
       else {
-        return true;
+        setResponse( title.message, 'setAsIs' );
+        return false;
       }
-
     }
+
+    /* location */
     else if ( cardIndex == 1 ) {
-      const hasLat = V.getNode( '.join-form__loc' ).getAttribute( 'lat' );
+      const $location = V.getNode( '.join-form__loc' );
+      const hasLat = $location.getAttribute( 'lat' );
+      const hasLng = $location.getAttribute( 'lng' );
       const hasRadio = getRadioValue( 'continent' );
 
-      console.log( hasRadio );
-      // check location
       if ( hasLat ) {
+        entityData.location = $location.value;
+        entityData.lat = hasLat;
+        entityData.lng = hasLng;
+
         return true;
       }
       else if ( hasRadio ) {
+        entityData.continent = hasRadio;
         return true;
       }
       else {
         setResponse( 'joinResLoc' );
-        V.setToggle( '.join-selectors' );
+        setSelectors();
         return false;
       }
-
     }
+
+    /* image */
     else if ( cardIndex == 2 ) {
-      const input = V.getNode( '.join-form__input' ).value;
-      // check image
-      if ( input ) {
+      const hasImage = V.getState( 'mediumImageUpload' );
+
+      if ( hasImage ) {
+
+        /**
+         * the image and its sizes are taken from
+         * the app state directly in castEntity in v-entity.js,
+         * no need to add them to the entityData object
+         */
+        return true;
+      }
+      else if (
+        V.getVisibility( '.join-selectors' )
+      ) {
+        entityData.avatar = getRadioValue( 'avatar' );
         return true;
       }
       else {
         setResponse( 'joinResImg' );
-        V.setToggle( '.join-selectors' );
+        setSelectors();
         return false;
       }
     }
+
+    /* email */
     else if ( cardIndex == 3 ) {
-      // check email
+      const confirm = V.getNode( '.join-form__input-confirm' ).value;
+
+      if ( confirm ) {
+        if ( confirm == fourDigitString ) {
+          handleSetEntity();
+          return false;
+        }
+        else {
+          setResponse( 'joinResEmailConfirmFalse' );
+          return false;
+        }
+      }
+
+      const input = V.getNode( '.join-form__input' ).value;
+
+      /* basic validation of the email syntax */
+      const email = V.isEmail( input );
+
+      if ( email ) {
+        entityData.emailPrivate = input;
+        handleConfirmEmail();
+        return false;
+      }
+      else {
+        setResponse( 'joinResEmail' );
+        return false;
+      }
     }
 
   }
 
-  function setResponse( which ) {
-    V.getNode( '.join-submit__response' ).innerText = getString( ui[which] );
+  function setResponse( which, setAsIs ) {
+    V.getNode( '.join-submit__response' ).innerText = setAsIs ? which : getString( ui[which] );
+  }
 
+  function setSelectors() {
+    V.getNode( '.join-selectors' ).style.display = 'block';
   }
 
   function getRadioValue( whichForm ) {
@@ -278,7 +457,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   function joinForm( formTitle ) {
     return V.cN(
       {
-        c: 'join-form',
+        c: 'join-form' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__confirm hidden' : '' ),
         h: {
           c: 'join-form__inner',
           h: [
@@ -288,9 +467,51 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             },
             {
               t: 'input',
-              c: 'join-form__input',
+              c: 'join-form__input' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__input-confirm' : '' ),
+            },
+          ],
+        },
+      },
 
-              //focus
+    );
+  }
+
+  function joinFormImg() {
+    return V.cN(
+      {
+        c: 'join-form',
+        h: {
+          c: 'join-form__inner',
+          h: [
+            {
+              c: 'join-form__title',
+              h: getString( ui.joinFormImg ),
+            },
+            {
+              t: 'label',
+              i: 'img-upload__label',
+              c: 'cursor-pointer',
+              y: {
+                flex: 1,
+              },
+              a: {
+                for: 'img-upload__file',
+              },
+            },
+            {
+              t: 'input',
+              i: 'img-upload__file',
+              c: 'hidden',
+              a: {
+                type: 'file',
+                accept: 'image/*',
+              },
+              e: {
+                change: handleImageUpload,
+              },
+            },
+            {
+              i: 'img-upload__preview',
             },
           ],
         },
@@ -314,8 +535,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'input',
               i: 'join-form__loc',
               c: 'join-form__loc',
-
-              //focus
             },
           ],
         },
@@ -370,12 +589,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: {
           t: 'form',
           a: {
-            name: 'human-profile-images',
+            name: 'avatars',
           },
           c: 'join-selectors__form',
-          h: svgPaths.map( ( image, i ) => V.cN( {
+          h: svgPaths.map( ( avatarPath, i ) => V.cN( {
             c: 'join-selector',
-            k: handleSelector.bind( image ),
             h: [
               {
                 t: 'input',
@@ -383,9 +601,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                 c: 'join-selector__input',
                 a: {
                   type: 'radio',
-                  name: 'human-profile-image',
+                  name: 'avatar',
                   value: i,
-                  checked: i == randomChecked ? true : undefined,
+                  checked: i == randAvatar ? true : undefined,
                 },
               },
               {
@@ -399,7 +617,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                     t: 'path',
                     c: 'join-selector__path',
                     a: {
-                      d: image,
+                      d: avatarPath,
                     },
                   },
                 },
@@ -414,6 +632,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
+  function joinDownloadKey() {
+    return V.cN( {
+      h: key,
+    } );
+  }
+
   function joinSubmit() {
     return V.cN(
       {
@@ -421,7 +645,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             c: 'join-submit__response',
-            //                h: 'Please, add your continent at least.',
           },
           {
             c: 'join-submit__btn',
@@ -453,7 +676,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   function joinImage() {
     return [
       joinHeader( 'joinImgTop', 'joinImgBottom' ),
-      joinForm( 'joinFormImg' ),
+      joinFormImg(),
       joinSelectorsImg(),
     ];
   }
@@ -462,6 +685,14 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     return [
       joinHeader( 'joinEmailTop', 'joinEmailBottom' ),
       joinForm( 'joinFormEmail' ),
+      joinForm( 'joinFormEmailConfirm' ),
+    ];
+  }
+
+  function joinKey() {
+    return [
+      joinHeader( 'joinKeyTop', 'joinKeyBottom' ),
+      joinDownloadKey(),
     ];
   }
 
@@ -470,7 +701,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   function joinOverlay() {
     return V.cN( {
       t: 'joinoverlay',
-      c: 'join-overlay',
+      c: 'join-overlay no-txt-select',
       h: {
         c: 'join-card',
         h: [
@@ -481,6 +712,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               joinLocation,
               joinImage,
               joinEmail,
+              joinKey,
             ][cardIndex](),
           },
           {
@@ -496,7 +728,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
     const colorBkg = 'rgba(' + sc.buttonBkg + ', 1)';
 
-    return V.cN( { // #ffa41b
+    return V.cN( {
       t: 'join',
       c: 'fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },

@@ -687,6 +687,16 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     };
   }
 
+  function isEmail( string ) {
+
+    /**
+     * From https://stackoverflow.com/a/64128369
+     */
+    const matcher = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,15}$/;
+    if ( string.length > 70 ) {return false}
+    return matcher.test( string );
+  }
+
   /* ====================== export ====================== */
 
   V.castImageUpload = castImageUpload;
@@ -714,6 +724,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.sleep = sleep;
   V.successFalse = successFalse;
   V.successTrue = successTrue;
+  V.isEmail = isEmail;
 
   return {
     castImageUpload: castImageUpload,
@@ -741,6 +752,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     sleep: sleep,
     successFalse: successFalse,
     successTrue: successTrue,
+    isEmail: isEmail,
   };
 
 } )();
