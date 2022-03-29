@@ -51,7 +51,7 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
     e.target.removeEventListener( 'click', handleSetEntity );
 
     V.setNode( '.magic-btn__btn', '' );
-    V.setNode( '.magic-btn__btn', InteractionComponents.confirmClickSpinner( 'omit-margin-left' ) );
+    V.setNode( '.magic-btn__btn', InteractionComponents.confirmClickSpinner( { omitMarginLeft: true } ) );
 
     const $newEntityForm = V.getNode( 'form' );
     const $location = $newEntityForm.getNode( '#plusform__loc' );

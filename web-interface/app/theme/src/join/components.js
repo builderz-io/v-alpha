@@ -14,7 +14,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     evmAddress: V.cA() || null,
   };
 
-  let fourDigitString, key, cardIndex = 0;
+  let fourDigitString, uPhrase, fullId, cardIndex = 0;
   const randAvatar = V.castRandomInt( 0, 4 );
 
   const svgPaths = [ 'M19.365,4.614,21.61,7.763,32.971,4.614M7.56,29.133l6.146-6.009-3.7-3.97m8.426-14.54L15.148,7.573l5.525.206M5.666,4.615,6.842,7.033l6.5.4m-4.2,9.715,4.8-8.96L0,7.436M9.7,17.719l4.537,4.874,5-4.9L20.8,8.55l-6.1-.313Z',
@@ -33,6 +33,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   const ui = {
     upload: 'uploading...',
     change: 'Change',
+    next: 'Next',
+    download: 'Download',
+    downloadAgain: 'Download again',
 
     joinNameTop: 'Name yourself.',
     joinNameBottom: 'This is for your personal profile.',
@@ -192,6 +195,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'flex': 1,
       'align-items': 'center',
     },
+    'join-download': {
+      'display': 'flex',
+      'flex-direction': 'column',
+      'flex': 1,
+      'align-items': 'center',
+    },
 
     'join-submit__response': {
       color: 'crimson',
@@ -199,7 +208,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
     },
 
-    'join-submit__btn': {
+    'join-btn': {
       'display': 'flex',
       'height': '1.5rem',
       'align-items': 'center',
@@ -207,7 +216,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': 'rgba(var(--brandPrimary),1)',
       'color': 'white',
       'border-radius': '16px',
-
     },
   },
   );
@@ -220,12 +228,33 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleNext() {
     if ( !advanceCard() ) { return }
+
+    /* advace card index */
     cardIndex += 1;
+
+    /* skip email if set to false by network */
+    if (
+      !V.getSetting( 'askforEmail' )
+      && cardIndex == 3
+    ) {
+      cardIndex += 1;
+    }
+
+    /* advace to next card */
     V.sN( 'joinoverlay', 'clear' );
     V.sN( 'body', JoinComponents.joinOverlay() );
+
+    /* add Google Places API to location card */
     if ( cardIndex == 1 ) {
       Google.initAutocomplete( 'join-form' );
     }
+
+    /* "download key" card */
+    else if ( cardIndex == 4 ) {
+      V.gN( '.join-submit' ).classList.add( 'hidden' );
+      setHuman();
+    }
+
   }
 
   function handleSelector() {
@@ -250,65 +279,23 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function handleConfirmEmail() {
+  function handleSaveKey() {
+    const site = window.location.host;
+    const text = this.uPhrase + ' -- ' + this.fullId + ' -- ' + site + ' -- ' + new Date().toString(); // .substr( 16, 8 );
+    const blob = new Blob( [text], { type: 'text/plain' } );
 
-    setResponse( '', 'setAsIs' );
-    V.getNode( '.join-submit__btn' ).append( InteractionComponents.confirmClickSpinner() );
+    const $a = document.createElement( 'a' );
+    $a.download = site + '-key.txt';
+    $a.href = window.URL.createObjectURL( blob );
+    $a.click();
 
-    fourDigitString = V.castTag().replace( '#', '' );
+    V.setNode( '.join-download__btn', InteractionComponents.confirmClickSpinner() );
 
-    /* Email by https://www.smtpjs.com */
-    Email.send( {
-      SecureToken: V.getSetting( 'emailKey' ),
-      To: entityData.emailPrivate,
-      From: 'network.mailer@valueinstrument.org',
-      Subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-      Body: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-      // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
-    } ).then( msg => {
-      V.setNode( '.confirm-click-spinner', 'clear' );
-      if ( 'OK' == msg ) {
-        V.getNode( '.join-form__confirm' ).style.display = 'block';
-        setResponse( 'joinResEmailConfirm' );
-      }
-      else {
-        setResponse( msg, 'setAsIs' );
-      }
-    } );
-  }
+    setTimeout( function delayNextBtn() {
+      V.gN( '.join-download__btn' ).innerText = getString( ui.downloadAgain );
+      V.gN( '.join-submit' ).classList.remove( 'hidden' );
+    }, 1600 );
 
-  function handleSetEntity() {
-
-    V.setEntity( entityData ).then( res => {
-      if ( res.success ) {
-        console.log( 'successfully set entity: ', res );
-
-        key = res.data[0].auth.uPhrase;
-
-        /** automatically join */
-        V.setAuth( key )
-          .then( data => {
-            if ( data.success ) {
-              console.log( 'auth success' );
-              cardIndex += 1;
-              V.sN( 'joinoverlay', 'clear' );
-              V.sN( 'body', JoinComponents.joinOverlay() );
-            }
-            else {
-              console.log( 'could not set auth after setting new entity' );
-            }
-          } );
-
-        /** set state and cache */
-        V.setActiveEntity( res.data[0] );
-        Join.draw( 'new entity was set up' );
-
-      }
-      else {
-        console.log( 'could not set entity: ', res );
-        // V.getNode( '.joinform__response' ).textContent = res.message;
-      }
-    } );
   }
 
   /* ================== private methods ================= */
@@ -317,7 +304,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
     /**
      * For each card: validate user input, then either
-     * a) set user's choices into entityData object for use in handleSetEntity and
+     * a) set user's choices into entityData object for use in setHuman and
      *    return true to advance to the next card OR
      * b) give feedback to user and return false to stop advancing to the next card
      *
@@ -395,8 +382,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
       if ( confirm ) {
         if ( confirm == fourDigitString ) {
-          handleSetEntity();
-          return false;
+          return true;
         }
         else {
           setResponse( 'joinResEmailConfirmFalse' );
@@ -411,7 +397,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
       if ( email ) {
         entityData.emailPrivate = input;
-        handleConfirmEmail();
+        confirmEmail();
         return false;
       }
       else {
@@ -432,6 +418,76 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function getRadioValue( whichForm ) {
     return document.forms[ whichForm + 's'].elements[ whichForm ].value;
+  }
+
+  function setHuman() {
+
+    V.setEntity( entityData ).then( res => {
+      if ( res.success ) {
+        console.log( 'successfully set entity: ', res );
+
+        uPhrase = res.data[0].auth.uPhrase;
+        fullId = res.data[0].fullId;
+
+        /** automatically join */
+        V.setAuth( uPhrase )
+          .then( data => {
+            if ( data.success ) {
+              console.log( 'auth success' );
+
+              setDownloadKeyCard();
+            }
+            else {
+              console.log( 'could not set auth after setting new entity' );
+            }
+          } );
+
+        /** set state and cache */
+        V.setActiveEntity( res.data[0] );
+        Join.draw( 'new entity was set up' );
+
+      }
+      else {
+        console.log( 'could not set entity: ', res );
+        // V.getNode( '.joinform__response' ).textContent = res.message;
+      }
+    } );
+  }
+
+  function setDownloadKeyCard() {
+    const $downloadBtn = V.gN( '.join-download__btn' );
+    $downloadBtn.innerText = getString( ui.download );
+    $downloadBtn.addEventListener( 'click', handleSaveKey.bind( {
+      uPhrase: uPhrase,
+      fullId: fullId,
+    } ) );
+  }
+
+  function confirmEmail() {
+
+    setResponse( '', 'setAsIs' );
+    V.getNode( '.join-submit__btn' ).append( InteractionComponents.confirmClickSpinner() );
+
+    fourDigitString = V.castTag().replace( '#', '' );
+
+    /* Email by https://www.smtpjs.com */
+    Email.send( {
+      SecureToken: V.getSetting( 'emailKey' ),
+      To: entityData.emailPrivate,
+      From: 'network.mailer@valueinstrument.org',
+      Subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+      Body: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+      // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
+    } ).then( msg => {
+      V.setNode( '.confirm-click-spinner', 'clear' );
+      if ( 'OK' == msg ) {
+        V.getNode( '.join-form__confirm' ).style.display = 'block';
+        setResponse( 'joinResEmailConfirm' );
+      }
+      else {
+        setResponse( msg, 'setAsIs' );
+      }
+    } );
   }
 
   /* ================ components ================ */
@@ -468,6 +524,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'input',
               c: 'join-form__input' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__input-confirm' : '' ),
+              a: {
+                value: 'Test This',
+              },
             },
           ],
         },
@@ -633,9 +692,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function joinDownloadKey() {
-    return V.cN( {
-      h: key,
-    } );
+    return V.cN(
+      {
+        c: 'join-download',
+        h: {
+          c: 'join-download__btn join-btn',
+          h: InteractionComponents.confirmClickSpinner(),
+        },
+      },
+    );
   }
 
   function joinSubmit() {
@@ -647,8 +712,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             c: 'join-submit__response',
           },
           {
-            c: 'join-submit__btn',
-            h: 'Next',
+            c: 'join-submit__btn join-btn',
+            h: getString( ui.next ),
             k: handleNext,
           },
         ],
