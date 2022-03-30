@@ -259,6 +259,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       thumbnailDU: thumbnail ? thumbnail.dataUrl : undefined,
       mediumImageDU: mediumImage ? mediumImage.dataUrl : undefined,
 
+      continent: entityData.continent,
+      avatar: entityData.avatar,
+
       // for backwards compatibility
       tinyImage: tinyImage,
       thumbnail: thumbnail,

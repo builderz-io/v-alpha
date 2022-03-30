@@ -22,7 +22,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c } o { a } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c z } o { a z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -105,6 +105,8 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       emailPrivate: data.props.emailPrivate,
       target: data.props.target,
       unit: data.props.unit,
+      continent: data.continent,
+      avatar: data.avatar,
       lngLat: data.geometry.coordinates,
       loc: data.geometry.baseLocation,
       tinyImg: data.tinyImageDU,
@@ -223,11 +225,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
         mediumImage: I && I.o ? I.o.c : undefined,
+        avatar: P.o ? P.o.z : undefined,
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
         baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
+        continent: P.n ? P.n.z : undefined,
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
@@ -590,7 +594,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     console.log( 111, 'by point' );
 
     const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
-                 getPoints(where: $where) { a c d zz { i } }
+                 getPoints(where: $where) { a c d zz { i m } }
                }`;
 
     const variables = {
@@ -712,7 +716,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         const combined = castReturnedEntityAndProfileData(
           all[0].data.getEntities[0],
           all[1].data.getProfile[0],
-          all[2].data.getImage[0]
+          all[2].data.getImage[0],
         );
         return V.successTrue( 'got entity and profile', combined );
       }
@@ -776,7 +780,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         && transactionLog.data.getProfiles[0].p.a != null
       ) {
         const castTx = transactionLog.data.getProfiles[0].p.a.map(
-          tx => castReturnedTransferData( tx )
+          tx => castReturnedTransferData( tx ),
         );
         return V.successTrue( 'got transfer log', castTx );
       }
@@ -801,7 +805,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
 
       if ( data.isAutofill ) {
         const titles = entitiesArray.map(
-          item => castReturnedEntityAndProfileData( item, {} )
+          item => castReturnedEntityAndProfileData( item, {} ),
         );
         return V.successTrue( 'got entity titles for autofill', titles );
       }
@@ -824,7 +828,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         /** ... then combine entity with profile data */
         if ( !P.errors && P.data.getProfiles[0] != null ) {
           const combined = entitiesArray.map(
-            ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
+            ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] ),
           );
           return V.successTrue( 'got entities and profiles', combined );
         }

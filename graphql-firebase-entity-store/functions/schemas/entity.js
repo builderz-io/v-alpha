@@ -48,6 +48,9 @@ const types = {
       j: String       // geo hash
       k: String       // base Location
 
+      m: Int          // continent
+      n: Int          // avatar
+
       z: String       // keyword cache
     }
   `,
@@ -101,6 +104,7 @@ const types = {
       c: String
       fullId: String
       geo: [Float]
+      continent: Int
     }
   `,
 };

@@ -41,9 +41,14 @@ module.exports = async ( context ) => {
             d: entity.d,
             zz: {
               i: entity.zz && entity.zz.i
-                ? entity.zz.i
+                ? entity.zz.i // sets coordinates from tracked fields
                 : entity.geo
-                  ? entity.geo
+                  ? entity.geo // sets coordinates from held entity
+                  : null,
+              m: entity.zz && entity.zz.m
+                ? entity.zz.m // sets continent value from tracked fields
+                : entity.continent
+                  ? entity.continent // sets continent value from held entity
                   : null,
             },
           } );

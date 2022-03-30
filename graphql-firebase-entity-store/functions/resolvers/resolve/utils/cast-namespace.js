@@ -115,12 +115,14 @@ module.exports = ( context, data ) => {
         a: data.profileInputServerSide.lngLat,
         b: geoHash,
         c: data.profileInputServerSide.loc,
+        z: data.profileInputServerSide.continent,
       },
       o: {
         a: data.profileInputServerSide.tinyImg,
         b: data.profileInputServerSide.thumb,
         // c: data.profileInputServerSide.medImg,
         // n: data.profileInputServerSide.imgName,
+        z: data.profileInputServerSide.avatar,
       },
 
       x: {

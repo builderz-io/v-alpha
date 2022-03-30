@@ -34,6 +34,8 @@ const types = {
       emailPrivate: String
       target: Int
       unit: String
+      continent: Int,
+      avatar: Int,
       lngLat: [Float]
       loc: String
       tinyImg: String

@@ -38,6 +38,7 @@ const types = {
       g: [Float]      // current coordinates
       h: String       // geo hash
       i: String       // current Location
+      z: Int          // default continent
     }
   `,
   Images: `
@@ -46,6 +47,7 @@ const types = {
       b: String       // thumb
       c: String       // medium
       n: String       // name on upload
+      z: Int          // default avatar
     }
   `,
   Questionnaire: `

@@ -342,7 +342,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       const $location = V.getNode( '.join-form__loc' );
       const hasLat = $location.getAttribute( 'lat' );
       const hasLng = $location.getAttribute( 'lng' );
-      const hasRadio = getRadioValue( 'continent' );
+      const hasRadio = getRadioIndex( 'continent' );
 
       if ( hasLat ) {
         entityData.location = $location.value;
@@ -382,7 +382,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       else if (
         V.getVisibility( '.join-selectors' )
       ) {
-        entityData.avatar = getRadioValue( 'avatar' );
+        entityData.avatar = getRadioIndex( 'avatar' );
         return true;
       }
       else {
@@ -442,8 +442,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     V.getNode( '.join-selectors' ).style.display = 'block';
   }
 
-  function getRadioValue( whichForm ) {
-    return document.forms[ whichForm + 's'].elements[ whichForm ].value;
+  function getRadioIndex( whichForm ) {
+    return Number( document.forms[ whichForm + 's'].elements[ whichForm ].value );
   }
 
   function confirmEmail() {
@@ -501,6 +501,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
         console.log( 'could not set entity: ', res );
+        V.sN( '.join-download__btn', 'clear' );
+        setResponse( res.message, 'setAsIs' );
       }
     } );
   }
@@ -654,7 +656,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   type: 'radio',
                   name: 'continent',
-                  value: i,
+                  value: i+1,
                 },
               },
               {
@@ -693,7 +695,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   type: 'radio',
                   name: 'avatar',
-                  value: i,
+                  value: i+1,
                   checked: i == randAvatar ? true : undefined,
                 },
               },

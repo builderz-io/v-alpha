@@ -57,6 +57,16 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     },
   };
 
+  const continentsLngLat = [
+    [ 17.05291, 2.07035], // Africa
+    [ 87.331111, 43.681111 ], // Asia
+    [ -56.1004, -15.6006 ], // South America, https://www.atlasobscura.com/places/geographic-center-of-south-america
+    [ 9.902056, 49.843 ], // Europe
+    [ 134.354806, -25.610111], // Australia, Lambert Gravitational Centre, https://geohack.toolforge.org/geohack.php?pagename=Centre_points_of_Australia&params=25_36_36.4_S_134_21_17.3_E_
+    [ -100, 48.166667 ], // North America, https://pubs.usgs.gov/unnumbered/70039437/report.pdf
+    [ -5.077173, -74.254112 ], // Antarctica, manually set to be more visible
+  ];
+
   const popUpSettings = {
     maxWidth: 180,
     minWidth: 130,
@@ -305,17 +315,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     return V.getEntity( 'point' ).then( res => {
       if ( res.success ) {
         const castPoints = res.data.map( item => {
-          if ( item.zz && item.zz.i ) {
-            const geoStr = JSON.stringify( item.zz.i );
-            if ( coordinatesCache.includes( geoStr ) ) {
-              item.zz.i[0] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
-              item.zz.i[1] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
-              coordinatesCache.push( JSON.stringify( item.zz.i ) );
-            }
-            else {
-              coordinatesCache.push( geoStr );
-            }
+
+          /* if no location was entered by user, fill in the continent set by user */
+          if ( !item.zz.i ) {
+            item.zz.i = V.castJson( continentsLngLat[ item.zz.m - 1 ], 'clone' );
           }
+
+          /* slightly offset same coordinates */
+          const geoStr = JSON.stringify( item.zz.i );
+          if ( coordinatesCache.includes( geoStr ) ) {
+            item.zz.i[0] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+            item.zz.i[1] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+            coordinatesCache.push( JSON.stringify( item.zz.i ) );
+          }
+          else {
+            coordinatesCache.push( geoStr );
+          }
+
+          /* cast points data */
           return castReturnedPointData( item );
         } );
         V.setCache( 'points', castPoints );

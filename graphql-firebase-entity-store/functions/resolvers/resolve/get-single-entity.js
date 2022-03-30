@@ -91,6 +91,7 @@ module.exports = async ( context, match ) => {
       d: item.d,
       fullId: item.m + ' ' + item.n,
       geo: item.zz && item.zz.i ? item.zz.i : null,
+      continent: item.zz && item.zz.m ? item.zz.m : null,
     } ) );
 
   Object.assign( entity, { holderOf: points } );

@@ -66,6 +66,7 @@ const Filters = `
 
   type PointZz {
     i: [Float]
+    m: Int
   }
 `;
 

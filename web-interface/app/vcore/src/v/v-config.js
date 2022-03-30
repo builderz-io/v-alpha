@@ -61,7 +61,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     sendLogsToServer: false,
 
-    drawMap: false,
+    drawMap: true,
 
     joinVersion: 2,
 
