@@ -34,8 +34,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     upload: 'uploading...',
     change: 'Change',
     next: 'Next',
+    isConfirmCode: 'is your confirmation code',
     download: 'Download',
     downloadAgain: 'Download again',
+    callToAction: '🎉  Ready! Go create!',
 
     joinNameTop: 'Name yourself.',
     joinNameBottom: 'This is for your personal profile.',
@@ -45,8 +47,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinImgBottom: '',
     joinEmailTop: 'Add your email.',
     joinEmailBottom: 'This is private, visible to admins only.',
-    joinKeyTop: 'Download your key.',
-    joinKeyBottom: '',
+    joinKeyTop: 'Done! You successfully joined.',
+    joinKeyBottom: 'Please download your access key.',
 
     joinFormName: 'Name',
     joinFormLoc: 'Location',
@@ -55,6 +57,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinFormEmailConfirm: '4-digit code',
 
     joinResLoc: 'Please add your continent at least',
+    joinResNoLat: 'We couldn\'t find this location. Please select from the list or clear the entry to continue',
     joinResImg: 'Please choose an avatar at least',
     joinResEmail: 'Please add a valid email address',
     joinResEmailConfirm: 'Please enter the 4-digit code we sent',
@@ -142,10 +145,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'min-width': 0,
       'flex': 1,
     },
-    'join-form__loc': {
-      'min-width': 0,
-      'flex': 1,
-    },
+    // 'join-form__loc': {
+    //   'position': 'relative',
+    //   'top': '-1px',
+    //   'min-width': 0,
+    //   'flex': 1,
+    // },
     // selectors
     'join-selectors': {
 
@@ -226,13 +231,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     Join.draw( 'initialize join' );
   }
 
-  function handleNext() {
+  function handleSubmit() {
+
+    /* return early if validaton in advanceCard failed */
     if ( !advanceCard() ) { return }
 
-    /* advace card index */
+    /* advance card index */
     cardIndex += 1;
 
-    /* skip email if set to false by network */
+    /* skip email by bumping up the cardIndex if askforEmail is set to false */
     if (
       !V.getSetting( 'askforEmail' )
       && cardIndex == 3
@@ -240,25 +247,30 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       cardIndex += 1;
     }
 
-    /* advace to next card */
+    /* clear previous card */
     V.sN( 'joinoverlay', 'clear' );
-    V.sN( 'body', JoinComponents.joinOverlay() );
 
-    /* add Google Places API to location card */
-    if ( cardIndex == 1 ) {
-      Google.initAutocomplete( 'join-form' );
-    }
+    /* draw new card or finish join-routine when cardIndex == 5 */
+    if ( cardIndex < 5 ) {
 
-    /* "download key" card */
-    else if ( cardIndex == 4 ) {
-      V.gN( '.join-submit' ).classList.add( 'hidden' );
-      setHuman();
+      V.sN( 'body', JoinComponents.joinOverlay() );
+
+      /* add Google Places API to location card */
+      if ( cardIndex == 1 ) {
+        Google.initAutocomplete( 'join-form' );
+      }
+
+      /* set the new human entity on "download key" card */
+      else if ( cardIndex == 4 ) {
+        drawAltSubmitBtn( 'call-to-action' );
+        setHuman();
+      }
     }
 
   }
 
   function handleSelector() {
-    const $elem = V.getNode( '.join-form__input' ) || V.getNode( '.join-form__loc' );
+    const $elem = V.getNode( '.join-form__input' ); // || V.getNode( '.join-form__loc' );
     $elem.value = this;
   }
 
@@ -281,7 +293,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSaveKey() {
     const site = window.location.host;
-    const text = this.uPhrase + ' -- ' + this.fullId + ' -- ' + site + ' -- ' + new Date().toString(); // .substr( 16, 8 );
+    const text = `Key: ${ this.uPhrase }\n\nTitle: ${ this.fullId }\n\nJoined: ${ new Date().toString().substr( 4, 17 ) }\n\nNetwork: ${ site }`;
     const blob = new Blob( [text], { type: 'text/plain' } );
 
     const $a = document.createElement( 'a' );
@@ -293,8 +305,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
     setTimeout( function delayNextBtn() {
       V.gN( '.join-download__btn' ).innerText = getString( ui.downloadAgain );
-      V.gN( '.join-submit' ).classList.remove( 'hidden' );
-    }, 1600 );
+      V.gN( '.join-submit__btn' ).classList.remove( 'hidden' );
+    }, 1200 );
 
   }
 
@@ -342,6 +354,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       else if ( hasRadio ) {
         entityData.continent = hasRadio;
         return true;
+      }
+      else if ( $location.value ) {
+        setResponse( 'joinResNoLat' );
+        return false;
       }
       else {
         setResponse( 'joinResLoc' );
@@ -401,9 +417,19 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         return false;
       }
       else {
-        setResponse( 'joinResEmail' );
-        return false;
+        if( V.getSetting( 'requireEmail' ) ) {
+          setResponse( 'joinResEmail' );
+          return false;
+        }
+        else {
+          return true;
+        }
       }
+    }
+
+    /* call to action */
+    else if ( cardIndex == 4 ) {
+      return true;
     }
 
   }
@@ -418,49 +444,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function getRadioValue( whichForm ) {
     return document.forms[ whichForm + 's'].elements[ whichForm ].value;
-  }
-
-  function setHuman() {
-
-    V.setEntity( entityData ).then( res => {
-      if ( res.success ) {
-        console.log( 'successfully set entity: ', res );
-
-        uPhrase = res.data[0].auth.uPhrase;
-        fullId = res.data[0].fullId;
-
-        /** automatically join */
-        V.setAuth( uPhrase )
-          .then( data => {
-            if ( data.success ) {
-              console.log( 'auth success' );
-
-              setDownloadKeyCard();
-            }
-            else {
-              console.log( 'could not set auth after setting new entity' );
-            }
-          } );
-
-        /** set state and cache */
-        V.setActiveEntity( res.data[0] );
-        Join.draw( 'new entity was set up' );
-
-      }
-      else {
-        console.log( 'could not set entity: ', res );
-        // V.getNode( '.joinform__response' ).textContent = res.message;
-      }
-    } );
-  }
-
-  function setDownloadKeyCard() {
-    const $downloadBtn = V.gN( '.join-download__btn' );
-    $downloadBtn.innerText = getString( ui.download );
-    $downloadBtn.addEventListener( 'click', handleSaveKey.bind( {
-      uPhrase: uPhrase,
-      fullId: fullId,
-    } ) );
   }
 
   function confirmEmail() {
@@ -488,6 +471,55 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         setResponse( msg, 'setAsIs' );
       }
     } );
+  }
+
+  function setHuman() {
+
+    V.setEntity( entityData ).then( res => {
+      if ( res.success ) {
+        console.log( 'successfully set entity: ', res );
+
+        uPhrase = res.data[0].auth.uPhrase;
+        fullId = res.data[0].fullId;
+
+        /** automatically join */
+        V.setAuth( uPhrase )
+          .then( data => {
+            if ( data.success ) {
+              console.log( 'auth success' );
+              setDownloadKeyBtn();
+            }
+            else {
+              console.log( 'could not set auth after setting new entity' );
+            }
+          } );
+
+        /** set state and cache */
+        V.setActiveEntity( res.data[0] );
+        Join.draw( 'new entity was set up' );
+
+      }
+      else {
+        console.log( 'could not set entity: ', res );
+      }
+    } );
+  }
+
+  function setDownloadKeyBtn() {
+    const $btn = V.gN( '.join-download__btn' );
+    $btn.innerText = getString( ui.download );
+    $btn.addEventListener( 'click', handleSaveKey.bind( {
+      uPhrase: uPhrase,
+      fullId: fullId,
+    } ) );
+  }
+
+  function drawAltSubmitBtn( which ) {
+    const $submitBtn = V.gN( '.join-submit__btn' );
+    if ( 'call-to-action' == which ) {
+      $submitBtn.classList.add( 'hidden', 'bkg-brand-secondary', 'txt-offblack' );
+      $submitBtn.innerText = getString( ui.callToAction );
+    }
   }
 
   /* ================ components ================ */
@@ -524,9 +556,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'input',
               c: 'join-form__input' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__input-confirm' : '' ),
-              a: {
-                value: 'Test This',
-              },
+              // a: {
+              //   value: 'Test This',
+              // },
             },
           ],
         },
@@ -592,8 +624,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             },
             {
               t: 'input',
-              i: 'join-form__loc',
-              c: 'join-form__loc',
+              i: 'join-form__loc', // id needed by Google Places API
+              c: 'join-form__input join-form__loc',
             },
           ],
         },
@@ -614,7 +646,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           },
           h: continents.map( ( continent, i ) => V.cN( {
             c: 'join-selector',
-            k: handleSelector.bind( continent ),
             h: [
               {
                 t: 'input',
@@ -629,6 +660,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               {
                 t: 'label',
                 c: 'join-selector__label',
+                k: handleSelector.bind( continent ),
                 h: continent,
                 a: {
                   for: 'join-selector__cont' + i,
@@ -691,7 +723,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
-  function joinDownloadKey() {
+  function joinDownloadKeyBtn() {
     return V.cN(
       {
         c: 'join-download',
@@ -714,7 +746,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             c: 'join-submit__btn join-btn',
             h: getString( ui.next ),
-            k: handleNext,
+            k: handleSubmit,
           },
         ],
       },
@@ -757,7 +789,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   function joinKey() {
     return [
       joinHeader( 'joinKeyTop', 'joinKeyBottom' ),
-      joinDownloadKey(),
+      joinDownloadKeyBtn(),
     ];
   }
 

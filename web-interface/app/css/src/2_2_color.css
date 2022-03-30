@@ -60,8 +60,12 @@ a {
   color: rgba(var(--brandPrimary), 0.5);
 }
 
-.bkg-brand {
+.bkg-brand-primary {
   background-color: rgba(var(--brandPrimary), 1);
+}
+
+.bkg-brand-secondary {
+  background-color: rgba(var(--brandSecondary), 1);
 }
 
 /* .border-shadow {
