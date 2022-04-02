@@ -96,6 +96,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/marketplace/marketplace.js' ),
         V.setScript( host + '/plugins/src/media/components.js' ),
         V.setScript( host + '/plugins/src/media/media.js' ),
+        V.setScript( host + '/plugins/src/hall/components.js' ),
+        V.setScript( host + '/plugins/src/hall/hall.js' ),
       ] )
         .then( () => console.log( 'Success loading plugin source files' ) )
         .catch( () => console.error( 'Error loading plugin source files' ) );
