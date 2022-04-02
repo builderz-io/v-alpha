@@ -132,6 +132,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
   function entityPill( item ) {
     const backgr = castBackground( item );
 
+    /*
     const placeholderImage =  {
       svg: true,
       a: {
@@ -157,6 +158,9 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
         },
       ],
     };
+    */
+
+    const avatarImage = JoinComponents.castAvatarSvg( item.avatar, { color: 'black' } );
 
     return V.cN( {
       t: 'li',
@@ -171,12 +175,13 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           c: 'pill__img circle-0 rounded-full flex justify-center items-center cursor-pointer',
-          a: {
-            style: `background:${backgr}; background-position: center center; background-size: cover;`,
-          },
+          // a: {
+          //   style: `background:${backgr}; background-position: center center; background-size: cover;`,
+          // },
           h: {
             c: 'card__initials font-bold fs-s txt-white',
-            h: backgr.includes( 'url' ) ? '' : placeholderImage, // item.initials
+            // h: backgr.includes( 'url' ) ? '' : placeholderImage, // item.initials
+            h: backgr.includes( 'url' ) ? '' : avatarImage, // item.avatar
           },
         },
         {

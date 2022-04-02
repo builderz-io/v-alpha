@@ -46,6 +46,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
           title: entityNavOrder[item].title,
           tag: entityNavOrder[item].tag,
           initials: entityNavOrder[item].initials,
+          avatar: entityNavOrder[item].avatar,
           path: entityNavOrder[item].path,
           draw: function( path ) { Profile.draw( path ) },
         };
@@ -62,6 +63,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         title: data.title,
         tag: data.tag,
         initials: V.castInitials( data.title ),
+        avatar: data.images.avatar,
         path: data.path,
         draw: function( path ) { Profile.draw( path ) },
       };
@@ -568,6 +570,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       title: data.title,
       tag: data.tag,
       initials: V.castInitials( data.title ),
+      avatar: data.images.avatar,
       path: data.path,
       draw: function( path ) { Profile.draw( path ) },
     };

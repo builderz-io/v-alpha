@@ -702,18 +702,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               {
                 t: 'label',
                 c: 'join-selector__img',
-                h: {
-                  svg: true,
-                  c: 'join-selector__svg',
-                  h: {
-                    svg: true,
-                    t: 'path',
-                    c: 'join-selector__path',
-                    a: {
-                      d: avatarPath,
-                    },
-                  },
-                },
+                h: castAvatarSvg( i ),
                 a: {
                   for: 'join-selector__img' + i,
                 },
@@ -753,6 +742,22 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         ],
       },
     );
+  }
+
+  function castAvatarSvg( i, options ) {
+    return V.cN( {
+      svg: true,
+      c: 'join-selector__svg',
+      h: {
+        svg: true,
+        t: 'path',
+        c: 'join-selector__path',
+        a: {
+          fill: options && options.color ? options.color : 'white',
+          d: svgPaths[i],
+        },
+      },
+    } );
   }
 
   /* ================ cards ================ */
@@ -872,6 +877,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   return {
     joinBtn: joinBtn,
     joinOverlay: joinOverlay,
+    castAvatarSvg: castAvatarSvg,
   };
 
 } )();
