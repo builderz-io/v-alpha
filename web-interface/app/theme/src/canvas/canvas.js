@@ -402,6 +402,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       VMap.launch();
 
+      if ( V.getSetting( 'devMode' ) ) {
+        V.setNode( 'body', VDebugger.resetApp() );
+        V.setNode( 'body', VDebugger.debugLogs() );
+      }
+
       // setTimeout( function functionName() {
       //   Join.onboard();
       // }, 2000 );
