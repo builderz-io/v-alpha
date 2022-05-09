@@ -359,7 +359,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                   y: {
                     'max-width': '100%',
                   },
-                  src: res.src,
+                  r: res.src,
                 } ) );
               } );
             } );
@@ -384,7 +384,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               y: {
                 'max-width': '100%',
               },
-              src: V.getState( 'mediumImageUpload' ).dataUrl,
+              r: V.getState( 'mediumImageUpload' ).dataUrl,
             } ) );
           } );
         }
@@ -1007,7 +1007,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return castCard( $innerContent,
       editable || descr || filteredDescr
         ? getString( ui.entity )
-        : entity.role
+        : entity.role,
     );
   }
 
@@ -1227,7 +1227,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         t: 'li',
         h: {
           t: 'img',
-          src: entity.images.mediumImage,
+          r: entity.images.mediumImage,
         },
       } );
     }
@@ -1252,7 +1252,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if( entity.mediumImage || ( entity.images && entity.images.mediumImage ) ) {
       // const img = V.castEntityThumbnail( entity.mediumImage ).img;
-      $innerContent = V.castNode( {
+      $innerContent = V.cN( {
         c: 'pxy',
         h: [
           {
@@ -1264,7 +1264,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 y: {
                   'max-width': '100%',
                 },
-                src: entity.images.mediumImage,
+                r: entity.images.mediumImage,
               },
           },
           {
@@ -1399,7 +1399,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                       viewBox: '0 0 24 24',
                     },
                     h: {
-                      svg: true,
                       t: 'path',
                       a: {
                         d: network.icon,

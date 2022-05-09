@@ -239,7 +239,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     drawModalContent(
       'title',
       handleSetTitle,
-      getString( ui.nameProfile )
+      getString( ui.nameProfile ),
     );
   }
 
@@ -273,7 +273,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'email',
       handleConfirmEmail,
       getString( ui.email ),
-      getString( ui.emailExplainA + ' ' + window.location.hostname + ' ' + ui.emailExplainB )
+      getString( ui.emailExplainA + ' ' + window.location.hostname + ' ' + ui.emailExplainB ),
     );
   }
 
@@ -310,7 +310,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           'emailConfirm',
           handleConfirmNumber.bind( randomNumber ),
           getString( ui.confirmEmail ),
-          getString( ui.confirmExplain )
+          getString( ui.confirmExplain ),
         );
       }
       else {
@@ -512,7 +512,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       },
       h: {
         t: 'img',
-        src: '/assets/img/metamask-fox.png',
+        r: '/assets/img/metamask-fox.png',
       },
     } );
     const $metaMask = V.cN( {

@@ -134,7 +134,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       k: Navigation.drawUserNav,
       h: [
         {
-          svg: true,
           t: 'circle',
           a: {
             // todo   stroke-dasharray   should be in circle for lifetime display
@@ -149,7 +148,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           },
         },
         {
-          svg: true,
           t: 'text',
           c: `font-medium fs-xxs ${ textColor } no-txt-select`,
           a: {
@@ -166,9 +164,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
     return V.cN( {
-      tag: 'li',
-      class: 'txt-anchor-mid',
-      html: {
+      t: 'li',
+      c: 'txt-anchor-mid',
+      h: {
         svg: true,
         a: {
           width: '74px',
@@ -176,7 +174,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         h: [
           {
-            svg: true,
             t: 'circle',
             a: {
               'stroke-dasharray': '100',
@@ -191,7 +188,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             },
           },
           {
-            svg: true,
             t: 'text',
             c: 'font-medium fs-xxs ${ textColor } no-txt-select',
             a: {

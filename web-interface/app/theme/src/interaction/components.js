@@ -53,7 +53,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           'max-height': '20px',
           'margin-left': '10px',
         },
-        src: res.src,
+        r: res.src,
       } ) );
     } );
   }
@@ -91,7 +91,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function filter() {
     return V.cN( {
       t: 'li',
-      id: 'filter',
+      i: 'filter',
       c: btnClasses,
       h: img( 'filter_list' ),
     } );
@@ -100,7 +100,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function searchBtn() {
     return V.cN( {
       t: 'li',
-      id: 'search',
+      i: 'search',
       c: btnClasses,
       h: img( 'search' ),
     } );
@@ -109,7 +109,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function query() {
     return V.cN( {
       t: 'li',
-      id: 'query',
+      i: 'query',
       c: btnClasses,
       h: {
         c: 'create-btn pxy',
@@ -121,7 +121,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function plus() {
     return V.cN( {
       t: 'li',
-      id: 'plus',
+      i: 'plus',
       c: btnClasses,
       h: img( '+' ),
     } );
@@ -130,7 +130,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function close() {
     return V.cN( {
       t: 'li',
-      id: 'close',
+      i: 'close',
       c: btnClasses,
       h: img( 'close' ),
     } );
@@ -139,7 +139,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function set() {
     return V.cN( {
       t: 'li',
-      id: 'set',
+      i: 'set',
       c: btnClasses,
       h: {
         c: 'create-btn pxy',
@@ -151,7 +151,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function sendNav() {
     return V.cN( {
       t: 'li',
-      id: 'send',
+      i: 'send',
       c: btnClasses,
       h: img( 'send' ),
     } );
@@ -317,7 +317,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const $input = V.cN( {
       t: 'input',
       c: 'field__input',
-      id: fields[whichField].inputId,
+      i: fields[whichField].inputId,
       e: {
         focus: handleFocus,
         blur: handleBlur,
@@ -328,7 +328,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const $textarea = V.cN( {
       t: 'textarea',
       c: 'field__input auto-height',
-      id: fields[whichField].inputId,
+      i: fields[whichField].inputId,
       a: {
         row: '1',
       },
@@ -539,14 +539,12 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       },
       h: [
         {
-          svg: true,
           t: 'path',
           a: {
             fill: options && options.color ? options.color : 'white',
             d: 'M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z',
           },
           h: {
-            svg: true,
             t: 'animateTransform',
             a: {
               attributeName: 'transform',

@@ -115,9 +115,9 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function background() {
     return V.cN( {
       t: 'background',
-      id: 'background',
-      k: handleClosePopup,
+      i: 'background',
       c: 'background fixed w-screen',
+      k: handleClosePopup,
     } );
   }
 
@@ -298,7 +298,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'img',
       c: 'network-logo',
-      src: V.getSetting( 'logo' ),
+      r: V.getSetting( 'logo' ),
     } );
   }
 

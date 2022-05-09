@@ -281,7 +281,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
         t: 'img',
-        src: res.src,
+        r: res.src,
         y: {
           'max-width': '90px',
           'max-height': '90px',
@@ -749,7 +749,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       svg: true,
       c: 'join-selector__svg',
       h: {
-        svg: true,
         t: 'path',
         c: 'join-selector__path',
         a: {
@@ -844,7 +843,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         h: [
           {
-            svg: true,
             t: 'circle',
             a: {
               'stroke-dasharray': '100',
@@ -860,7 +858,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             k: handleJoin,
           },
           {
-            svg: true,
             t: 'text',
             c: 'font-medium fs-xs txt-button',
             a: { x: '50%', y: '59%' },
