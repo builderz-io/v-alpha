@@ -55,11 +55,9 @@ const server = new ApolloServer( {
     const lastConnectedAddress = req.headers['last-connected-address'];
     const browserId = req.headers['browser-id'];
 
-    const tempRefresh = req.headers.cookie
-      ? req.headers.cookie.split( '=' )[1]
-      : req.headers['temp-refresh'] != 'not set'
-        ? req.headers['temp-refresh']
-        : undefined;
+    const tempRefresh = req.headers['temp-refresh'] != 'not set'
+      ? req.headers['temp-refresh']
+      : undefined;
 
     const host = req.headers.referer.split( '/' )[2];
 
