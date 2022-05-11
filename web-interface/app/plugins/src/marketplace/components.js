@@ -105,9 +105,10 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       h: {
         c: 'card__initials font-bold fs-xl txt-white',
         // h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId ),
-        h: backgr.includes( 'url' )
-          ? ''
-          : JoinComponents.castAvatarSvg( circleData.images.avatar ),
+        // h: backgr.includes( 'url' )
+        // ? ''
+        // : JoinComponents.castAvatarSvg( circleData.images.avatar ),
+        innerHtml: JoinComponents.getAvatarSvgFull( circleData.images.avatar ),
       },
       e: {
         click: whichHandler == 'editable'
