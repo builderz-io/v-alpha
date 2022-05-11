@@ -158,7 +158,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     };
     */
 
-    const avatarImage = JoinComponents.castAvatarSvg( item.avatar, { color: 'black' } );
+    // const avatarImage = JoinComponents.castAvatarSvg( item.avatar, { color: 'black' } );
 
     return V.cN( {
       t: 'li',
@@ -179,7 +179,8 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
           h: {
             c: 'card__initials font-bold fs-s txt-white',
             // h: backgr.includes( 'url' ) ? '' : placeholderImage, // item.initials
-            h: backgr.includes( 'url' ) ? '' : avatarImage, // item.avatar
+            // h: backgr.includes( 'url' ) ? '' : avatarImage, // item.avatar
+            innerHtml: JoinComponents.getAvatarSvgFull( item.avatar - 1 ),
           },
         },
         {
