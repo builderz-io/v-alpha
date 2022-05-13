@@ -11,8 +11,7 @@ background {
 }
 
 [type="radio"]:checked + label {
-  color: white;
-  background: rgb(255, 225, 0);
+  background: rgba(var(--brandSecondary), 1);
 }
 
 td {

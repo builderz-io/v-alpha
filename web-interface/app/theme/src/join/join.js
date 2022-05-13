@@ -370,6 +370,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     launch: launch,
     draw: draw,
     onboard: onboard,
+    handleViewFirstKeyFocus: handleViewFirstKeyFocus,
   };
 
 } )();

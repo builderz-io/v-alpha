@@ -59,12 +59,14 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   const ui = {
     upload: 'uploading...',
-    change: 'Change',
+    change: 'Change image',
     next: 'Next',
     isConfirmCode: 'is your confirmation code',
     download: 'Download',
     downloadAgain: 'Download again',
     callToAction: '🎉  Ready! Go create!',
+    authFail: 'Auth failed. Reload and join manually using the key shown hidden above.',
+    startAgain: 'Please reload and join again.',
 
     joinNameTop: 'Name yourself.',
     joinNameBottom: 'This is for your personal profile.',
@@ -74,8 +76,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinImgBottom: '',
     joinEmailTop: 'Add your email.',
     joinEmailBottom: 'This is private, visible to admins only.',
-    joinKeyTop: 'Done! You successfully joined.',
-    joinKeyBottom: 'Please download your access key.',
+    joinAwaitKeyTop: 'One moment... setting you up.',
+    joinAwaitKeyBottom: '',
+    joinSuccessTop: 'Done! You successfully joined.',
+    joinSuccessBottom: 'Please download your access key.',
+    joinFailTop: 'Eeeeek, problem.',
 
     joinFormName: 'Name',
     joinFormLoc: 'Location',
@@ -126,6 +131,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       background: 'rgba(0,0,0,0.8)',
     },
     'join-card': {
+      'display': 'flex',
+      'flex-flow': 'column',
       'position': 'relative',
       'background': 'white',
       'width': '75vw',
@@ -137,6 +144,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     },
     // wrapper
     'join-content-wrapper': {
+      flex: '1',
     },
     //header
     'join-header': {
@@ -199,8 +207,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'align-items': 'center',
       'justify-content': 'center',
       'height': '2rem',
-      'background': 'yellow',
       'margin': '0.2rem',
+      'padding': '0 1rem',
+      'border': '2px solid lightgrey',
+      'border-radius': '20px',
     },
 
     'join-selector__img': {
@@ -210,7 +220,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'margin': '9px',
       'height': '50px',
       'width': '50px',
-      'border': '2px solid lightgrey',
+      // 'border': '2px solid lightgrey',
       'border-radius': '50%',
 
     },
@@ -224,8 +234,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     'join-submit': {
       'display': 'flex',
       'flex-direction': 'column',
-      'flex': 1,
       'align-items': 'center',
+      'padding-bottom': '2rem',
     },
     'join-download': {
       'display': 'flex',
@@ -256,20 +266,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleJoin() {
     Join.draw( 'initialize join' );
-  }
-
-  function handleJoinOverlayClick() {
-    entityData = {
-      role: 'Person',
-      evmAddress: V.cA() || null,
-    };
-    V.sN( 'joinoverlay', 'clear' );
-  }
-
-  function handleJoinCardClick( e ) {
-
-    /* avoid closing the overlay */
-    e.stopPropagation();
   }
 
   function handleSubmit() {
@@ -303,11 +299,27 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
       /* set the new human entity on "download key" card */
       else if ( cardIndex == 4 ) {
+        V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
         drawAltSubmitBtn( 'call-to-action' );
         setHuman();
       }
     }
 
+  }
+
+  function handleJoinOverlayClick() {
+    cardIndex = 0;
+    entityData = {
+      role: 'Person',
+      evmAddress: V.cA() || null,
+    };
+    V.sN( 'joinoverlay', 'clear' );
+  }
+
+  function handleJoinCardClick( e ) {
+
+    /* avoid closing the overlay */
+    e.stopPropagation();
   }
 
   function handleSelector() {
@@ -316,16 +328,18 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleImageUpload( e ) {
+    V.setNode( '.join-form__title', 'clear' );
     V.setNode( '#img-upload__label', getString( ui.upload ) );
     V.castImageUpload( e ).then( res => {
       V.setNode( '#img-upload__label', getString( ui.change ) );
+      V.gN( '.join-form__inner' ).style['border-bottom'] = 'unset';
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
         t: 'img',
         r: res.src,
         y: {
-          'max-width': '90px',
-          'max-height': '90px',
+          'max-width': '120px',
+          'max-height': '120px',
           'margin-left': '10px',
         },
       } ) );
@@ -515,37 +529,47 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setHuman() {
+    // entityData.title = '1234'; // uncomment for testing a server error
+    V.setEntity( entityData )
+      .then( res => {
+        if ( res.success ) {
+          console.log( 'successfully set entity: ', res );
 
-    V.setEntity( entityData ).then( res => {
-      if ( res.success ) {
-        console.log( 'successfully set entity: ', res );
+          uPhrase = res.data[0].auth.uPhrase;
+          fullId = res.data[0].fullId;
 
-        uPhrase = res.data[0].auth.uPhrase;
-        fullId = res.data[0].fullId;
+          /** automatically join */
+          V.setAuth( uPhrase )
+            .then( data => {
+              if ( data.success ) {
+                console.log( 'auth success' );
+                drawSuccess();
+                setDownloadKeyBtn();
+              }
+              else {
+                throw new Error( 'could not set auth after setting new entity' );
+              }
+            } )
+            .catch( err => {
+              console.log( err );
+              setResponse( getString( ui.authFail ), 'setAsIs' );
+              drawUphraseDisplay( uPhrase );
+            } );
 
-        /** automatically join */
-        V.setAuth( uPhrase )
-          .then( data => {
-            if ( data.success ) {
-              console.log( 'auth success' );
-              setDownloadKeyBtn();
-            }
-            else {
-              console.log( 'could not set auth after setting new entity' );
-            }
-          } );
+          /** set state and cache */
+          V.setActiveEntity( res.data[0] );
+          Join.draw( 'new entity was set up' );
 
-        /** set state and cache */
-        V.setActiveEntity( res.data[0] );
-        Join.draw( 'new entity was set up' );
-
-      }
-      else {
+        }
+        else {
+          throw new Error( res.message );
+        }
+      } )
+      .catch( res => {
         console.log( 'could not set entity: ', res );
-        V.sN( '.join-download__btn', 'clear' );
-        setResponse( res.message, 'setAsIs' );
-      }
-    } );
+        setResponse( ( res.message || res ) + ' ' + getString( ui.startAgain ), 'setAsIs' );
+        drawError();
+      } );
   }
 
   function setDownloadKeyBtn() {
@@ -555,6 +579,32 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       uPhrase: uPhrase,
       fullId: fullId,
     } ) );
+  }
+
+  function drawUphraseDisplay( uPhrase ) {
+    V.sN( '.join-download__btn', 'clear' );
+    V.sN( '.join-header__top', getString( ui.joinFailTop ) );
+    V.sN( '.join-header__bottom', V.cN( {
+      t: 'input',
+      a: {
+        value: uPhrase,
+        type: 'password',
+      },
+      e: {
+        focus: Join.handleViewFirstKeyFocus,
+        blur: Join.handleViewFirstKeyFocus,
+      },
+    } ) );
+  }
+
+  function drawSuccess() {
+    V.sN( '.join-header__top', getString( ui.joinSuccessTop ) );
+    V.sN( '.join-header__bottom', getString( ui.joinSuccessBottom ) );
+  }
+
+  function drawError() {
+    V.sN( '.join-header__top', getString( ui.joinFailTop ) );
+    V.sN( '.join-download__btn', 'clear' );
   }
 
   function drawAltSubmitBtn( which ) {
@@ -617,10 +667,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: {
           c: 'join-form__inner',
           h: [
-            {
-              c: 'join-form__title',
-              h: getString( ui.joinFormImg ),
-            },
+            // {
+            //   c: 'join-form__title',
+            // },
             {
               t: 'label',
               i: 'img-upload__label',
@@ -631,6 +680,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               a: {
                 for: 'img-upload__file',
               },
+              h: getString( ui.joinFormImg ),
             },
             {
               t: 'input',
@@ -838,9 +888,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     ];
   }
 
-  function joinKey() {
+  function joinAwaitKey() {
     return [
-      joinHeader( 'joinKeyTop', 'joinKeyBottom' ),
+      joinHeader( 'joinAwaitKeyTop', 'joinAwaitKeyBottom' ),
       joinDownloadKeyBtn(),
     ];
   }
@@ -863,11 +913,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               joinLocation,
               joinImage,
               joinEmail,
-              joinKey,
+              joinAwaitKey,
             ][cardIndex](),
           },
           {
-            c: 'join-submit',
+            c: 'join-submit-wrapper',
             h: joinSubmit(),
           },
         ],
