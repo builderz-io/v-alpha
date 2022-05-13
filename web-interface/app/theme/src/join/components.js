@@ -9,7 +9,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== globals ============== */
 
-  const entityData = {
+  let entityData = {
     role: 'Person',
     evmAddress: V.cA() || null,
   };
@@ -258,6 +258,20 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     Join.draw( 'initialize join' );
   }
 
+  function handleJoinOverlayClick() {
+    entityData = {
+      role: 'Person',
+      evmAddress: V.cA() || null,
+    };
+    V.sN( 'joinoverlay', 'clear' );
+  }
+
+  function handleJoinCardClick( e ) {
+
+    /* avoid closing the overlay */
+    e.stopPropagation();
+  }
+
   function handleSubmit() {
 
     /* return early if validaton in advanceCard failed */
@@ -352,7 +366,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     /* name */
     if ( cardIndex == 0 ) {
       const input = V.getNode( '.join-form__input' ).value;
-      const title = V.castEntityTitle( input ); // validation of the title
+      const title = V.castEntityTitle( input, 'Person' ); // validation of the title
 
       if ( title.success ) {
         entityData.title = title.data[0];
@@ -837,8 +851,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'joinoverlay',
       c: 'join-overlay no-txt-select',
+      k: handleJoinOverlayClick,
       h: {
         c: 'join-card',
+        k: handleJoinCardClick,
         h: [
           {
             c: 'join-content-wrapper',
