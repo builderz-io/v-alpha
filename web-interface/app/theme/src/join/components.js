@@ -194,6 +194,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'display': 'flex',
       'flex-wrap': 'wrap',
       'justify-content': 'center',
+      'margin-top': '0.6rem',
     },
     'join-selector': {
 
@@ -299,7 +300,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
       /* set the new human entity on "download key" card */
       else if ( cardIndex == 4 ) {
-        V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
+        if ( !V.getSetting( 'devMode' ) ) {
+          V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
+        }
         drawAltSubmitBtn( 'call-to-action' );
         setHuman();
       }
@@ -324,7 +327,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleSelector() {
     const $elem = V.getNode( '.join-form__input' ); // || V.getNode( '.join-form__loc' );
-    $elem.value = this;
+    $elem ? $elem.value = this : null;
+    setResponse( '', 'setAsIs' );
   }
 
   function handleImageUpload( e ) {
@@ -508,24 +512,35 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
     fourDigitString = V.castTag().replace( '#', '' );
 
-    /* Email by https://www.smtpjs.com */
-    Email.send( {
-      SecureToken: V.getSetting( 'emailKey' ),
-      To: entityData.emailPrivate,
-      From: 'network.mailer@valueinstrument.org',
-      Subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-      Body: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-      // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
-    } ).then( msg => {
-      V.setNode( '.confirm-click-spinner', 'clear' );
-      if ( 'OK' == msg ) {
+    if ( V.getSetting( 'devMode' ) ) {
+      setTimeout( function devModeConfirm() {
         V.getNode( '.join-form__confirm' ).style.display = 'block';
-        setResponse( 'joinResEmailConfirm' );
-      }
-      else {
-        setResponse( msg, 'setAsIs' );
-      }
-    } );
+        V.setNode( '.confirm-click-spinner', 'clear' );
+        setResponse( 'this is devMode: use ' + fourDigitString, 'setAsIs' );
+      }, 2000 );
+    }
+    else {
+
+      /* Email by https://www.smtpjs.com */
+      Email.send( {
+        SecureToken: V.getSetting( 'emailKey' ),
+        To: entityData.emailPrivate,
+        From: 'network.mailer@valueinstrument.org',
+        Subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+        Body: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+        // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
+      } ).then( msg => {
+        V.setNode( '.confirm-click-spinner', 'clear' );
+        if ( 'OK' == msg ) {
+          V.getNode( '.join-form__confirm' ).style.display = 'block';
+          setResponse( 'joinResEmailConfirm' );
+        }
+        else {
+          setResponse( msg, 'setAsIs' );
+        }
+      } );
+    }
+
   }
 
   function setHuman() {
@@ -793,6 +808,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               {
                 t: 'label',
                 c: 'join-selector__img',
+                k: handleSelector.bind( i ),
                 // h: castAvatarSvg( i, { color: 'black' } ),
                 innerHtml: svgFull[i],
                 a: {

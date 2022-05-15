@@ -84,7 +84,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
     const setChild = ( item ) => {
       if ( !item.localName ) {
-        tag == 'svg' ? item.svg = true : null;
+        svg ? item.svg = true : null;
         item = castNode( item );
       }
       if (
@@ -110,12 +110,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
     /* Variables */
 
-    let $elem, tag;
+    let $elem, tag, svg;
 
     /* Create node type */
 
-    if ( data.svg ) {
+    if ( svg || data.svg ) {
       tag = data.t || data.tag || 'svg';
+      svg = true;
       $elem = document.createElementNS( 'http://www.w3.org/2000/svg', tag );
     }
     else {
@@ -243,7 +244,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
     const setChild = ( item ) => {
       if ( !item.localName ) {
-        tag == 'svg' ? item.svg = true : null;
+        svg ? item.svg = true : null;
         item = cN( item );
       }
       if (
@@ -269,12 +270,13 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
     /* Variables */
 
-    let $elem, tag;
+    let $elem, tag, svg;
 
     /* Create node type */
 
-    if ( data.svg ) {
+    if ( svg || data.svg ) {
       tag = data.t || 'svg';
+      svg = true;
       $elem = document.createElementNS( 'http://www.w3.org/2000/svg', tag );
     }
     else {
