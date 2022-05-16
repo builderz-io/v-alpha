@@ -24,8 +24,6 @@ const InitHuman = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( 'body', JoinComponents.joinOverlay() );
 
     Google.launch();
-
-    console.log( 'new human', which );
   }
 
   /* ================  public components ================ */

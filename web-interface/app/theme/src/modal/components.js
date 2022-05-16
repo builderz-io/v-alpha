@@ -78,7 +78,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'max-width': '500px',
       'height': '46vh',
       'margin': '14vh auto',
-      'padding': '0.5rem',
+      'padding': '1.5rem',
+      'border-radius': '32px',
     },
     'modal__close': {
       'position': 'absolute',
@@ -86,6 +87,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'top': '1rem',
       'text-decoration': 'none',
       'color': 'white',
+    },
+    'modal__btn': {
+      'border-radius': '32px',
     },
     'modal__uphrase': {
       color: 'red',
@@ -101,7 +105,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     },
   } );
 
-  const buttonClasses = 'relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
+  const buttonClasses = 'modal__btn relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
   const altButtonClasses = 'relative cursor-pointer txt-center';
 
   /* ================== event handlers ================== */
@@ -236,11 +240,17 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ==================== join process ================== */
 
   function handleDrawTitleForm() {
-    drawModalContent(
-      'title',
-      handleSetTitle,
-      getString( ui.nameProfile ),
-    );
+    if( V.getSetting( 'joinVersion' ) === 1 ) {
+      drawModalContent(
+        'title',
+        handleSetTitle,
+        getString( ui.nameProfile ),
+      );
+    }
+    else {
+      V.sN( 'modal', 'clear' );
+      InitHuman.draw();
+    }
   }
 
   function handleSetTitle( e ) {
@@ -734,30 +744,36 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityNotFound() {
-    const $content = modalContent();
-    const $new = V.cN( {
-      c: buttonClasses + ' modal-pos-1',
-      k: handleDrawTitleForm,
-      h: getString( ui.newName ),
-    } );
-    const $current = V.cN( {
-      t: 'p',
-      c: altButtonClasses + ' modal-pos-2',
-      k: handleAddressMapping,
-      h: getString( ui.useProfile ),
-    } );
-    const $descr = V.cN( {
-      t: 'p',
-      c: 'modal-pos-3 relative txt-center',
-      h: getString( ui.newNameExplain ),
-    } );
-    if ( V.aE() ) {
-      V.setNode( $content, [$new, $current, $descr] );
+    if( V.getSetting( 'joinVersion' ) === 1 ) {
+      const $content = modalContent();
+      const $new = V.cN( {
+        c: buttonClasses + ' modal-pos-1',
+        k: handleDrawTitleForm,
+        h: getString( ui.newName ),
+      } );
+      const $current = V.cN( {
+        t: 'p',
+        c: altButtonClasses + ' modal-pos-2',
+        k: handleAddressMapping,
+        h: getString( ui.useProfile ),
+      } );
+      const $descr = V.cN( {
+        t: 'p',
+        c: 'modal-pos-3 relative txt-center',
+        h: getString( ui.newNameExplain ),
+      } );
+      if ( V.aE() ) {
+        V.setNode( $content, [$new, $current, $descr] );
+      }
+      else {
+        V.setNode( $content, [$new, $descr] );
+      }
+      return $content;
     }
     else {
-      V.setNode( $content, [$new, $descr] );
+      V.sN( 'modal', 'clear' );
+      InitHuman.draw();
     }
-    return $content;
   }
 
   /* ====================== export ====================== */
