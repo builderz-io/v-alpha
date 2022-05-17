@@ -428,11 +428,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           //   break;
           case 'email':
             // linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
-            linkedInner = V.cN( {
+            linkedInner = {
               t: 'a',
               f: `mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }`,
               h: inner,
-            } );
+            };
             break;
           // case 'website':
           //   linkedInner = V.castLinks( inner ).links;
@@ -442,7 +442,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           }
         }
 
-        return V.cN( {
+        return {
           x: inner || editable,
           t: 'tr',
           h: [
@@ -465,7 +465,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               h: inner ? linkedInner : '',
             },
           ],
-        } );
+        };
       } ).filter( item => item != '' ),
     } );
 
