@@ -72,7 +72,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
           : $target.append( $elem );
       }
       else {
-        console.log( 'function "cN" missing second parameter (options)' );
+        console.log( 'function "castNode" missing second parameter (options)' );
         $target = document.querySelector( 'body' );
         $target.prepend( $elem );
       }
@@ -83,25 +83,25 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const setChild = ( item ) => {
-      if ( !item.localName ) {
+      if ( item && !( item instanceof Element ) ) {
         svg ? item.svg = true : null;
         item = castNode( item );
       }
       if (
-        item && item.localName
+        item && item instanceof Element
       ) {
         $elem.appendChild( item );
       }
     };
 
-    /* Either set node directly if data is already a formatted node ... */
+    /* Either set node directly if data is a formatted node or a string ... */
 
-    if ( data.localName ) {
+    if ( data && data instanceof Element ) {
       setNode( data, options );
       return;
     }
 
-    if ( typeof data === 'string' ) {
+    if ( data && typeof data === 'string' ) {
       setNode( document.createTextNode( data ), options );
       return;
     }
@@ -176,7 +176,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
         for ( const attr in val ) {
-          setAttr( attr, val[attr] );
+          if ( val[attr] ) {
+            setAttr( attr, val[attr] );
+          }
         }
       }
       else if ( ['i', 'id'].includes( key ) ) {
@@ -243,12 +245,12 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     };
 
     const setChild = ( item ) => {
-      if ( !item.localName ) {
+      if ( item && !( item instanceof Element ) ) {
         svg ? item.svg = true : null;
         item = cN( item );
       }
       if (
-        item && item.localName
+        item && item instanceof Element
       ) {
         $elem.appendChild( item );
       }
@@ -256,12 +258,12 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
     /* Either set node directly if data is a formatted node or a string ... */
 
-    if ( data.localName ) {
+    if ( data && data instanceof Element ) {
       setNode( data, options );
       return;
     }
 
-    if ( typeof data === 'string' ) {
+    if ( data && typeof data === 'string' ) {
       setNode( document.createTextNode( data ), options );
       return;
     }
@@ -344,7 +346,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
       case 'a':
         for ( const attr in val ) {
-          setAttr( attr, val[attr] );
+          if ( val[attr] ) {
+            setAttr( attr, val[attr] );
+          }
         }
         break;
 
