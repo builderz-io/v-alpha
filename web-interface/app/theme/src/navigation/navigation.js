@@ -38,42 +38,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }
 
     for ( const item in entityNavOrder ) {
-
       if ( !entityNav[item] ) {
-        const obj = {
-          uuidE: entityNavOrder[item].uuidE,
-          uuidP: entityNavOrder[item].uuidP,
-          title: entityNavOrder[item].title,
-          tag: entityNavOrder[item].tag,
-          initials: entityNavOrder[item].initials,
-          avatar: entityNavOrder[item].avatar,
-          path: entityNavOrder[item].path,
-          draw: function( path ) { Profile.draw( path ) },
-        };
-        entityNavOrder[item].tinyImage ? obj.tinyImage = entityNavOrder[item].tinyImage : null;
+        const obj = castEntityNavObject( entityNavOrder[item] );
         V.setNavItem( 'entityNav', obj );
       }
     }
 
     // add new
     if ( data && data.fullId && !entityNav[data.path] ) {
-      const obj = {
-        uuidE: data.uuidE,
-        uuidP: data.uuidP,
-        title: data.title,
-        tag: data.tag,
-        initials: V.castInitials( data.title ),
-        avatar: data.images.avatar,
-        path: data.path,
-        draw: function( path ) { Profile.draw( path ) },
-      };
-      if ( data.tinyImage ) { // old model
-        obj.tinyImage = JSON.stringify( data.tinyImage );
-      }
-      else if ( data.images && data.images.tinyImage ) { // new model
-        obj.tinyImage = data.images.tinyImage;
-        obj.useDataUrl = true;
-      }
+      const obj = castEntityNavObject( data );
       V.setNavItem( 'entityNav', obj );
     }
 
@@ -529,6 +502,27 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function castEntityNavObject( data ) {
+    const obj = {
+      uuidE: data.uuidE,
+      uuidP: data.uuidP,
+      title: data.title,
+      tag: data.tag,
+      initials: data.initials || V.castInitials( data.title ),
+      avatar: data.avatar || data.images.avatar,
+      path: data.path,
+      draw: function( path ) { Profile.draw( path ) },
+    };
+    if ( data.tinyImage ) { // old model
+      obj.tinyImage = JSON.stringify( data.tinyImage );
+    }
+    else if ( data.images && data.images.tinyImage ) { // new model
+      obj.tinyImage = data.images.tinyImage;
+      obj.useDataUrl = true;
+    }
+    return obj;
+  }
+
   /* ============ public methods and exports ============ */
 
   function draw( data ) {
@@ -564,17 +558,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      */
 
     /** Create nav object */
-    const obj = {
-      uuidE: data.uuidE,
-      uuidP: data.uuidP,
-      title: data.title,
-      tag: data.tag,
-      initials: V.castInitials( data.title ),
-      avatar: data.images.avatar,
-      path: data.path,
-      draw: function( path ) { Profile.draw( path ) },
-    };
-    data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+    const obj = castEntityNavObject( data );
 
     /** Set object into state */
     V.setNavItem( 'entityNav', obj );
