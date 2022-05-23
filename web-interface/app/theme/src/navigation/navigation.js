@@ -603,7 +603,14 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawJoinedUserPill() {
-    if ( V.getState( 'active' ).path != '/' ) { return }
+
+    if (
+      V.getState( 'active' ).path != '/'
+      || !V.getState( 'activeEntity' )
+    ) {
+      return;
+    }
+
     const $userPill = V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]' );
     if ( !$userPill ) { return }
     V.getNode( 'entity-nav > ul' ).prepend( $userPill );
