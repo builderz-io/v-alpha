@@ -31,7 +31,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const previewE = 'a c d m n';
-  const previewP = 'm { a r } o { a b z }'; // n { a }
+  const previewP = 'm { a r } n { a c } o { a b z }';
 
   /* ================== private methods ================= */
 

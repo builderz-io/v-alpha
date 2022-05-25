@@ -221,14 +221,15 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       && !features[0].isBaseLocationUpdate
     ) {
       features.forEach( feature => {
-        const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
+        const cache = V.getCache( 'points' );
+        const point = cache ? cache.data.find( point => point.uuidE == feature.uuidE ) : undefined;
         if ( point ) {
           Object.assign( feature.geometry, point.geometry );
         }
       } );
     }
 
-    if ( ['search', 'highlights', 'tempPoint'].includes( whichLayer ) ) {
+    if ( ['search', 'highlights', 'tempPoint', 'lastViewed'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, layer ) {
         layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
       };

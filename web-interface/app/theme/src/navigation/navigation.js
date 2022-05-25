@@ -509,7 +509,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       title: data.title,
       tag: data.tag,
       initials: data.initials || V.castInitials( data.title ),
-      avatar: data.avatar || data.images.avatar,
+      avatar: data.avatar || ( data.images ? data.images.avatar : undefined ),
       path: data.path,
       draw: function( path ) { Profile.draw( path ) },
     };

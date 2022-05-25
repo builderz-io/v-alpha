@@ -403,7 +403,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       const hasLng = $location.getAttribute( 'lng' );
       const hasRadio = getRadioIndex( 'continent' );
 
-      if ( hasLat ) {
+      if ( $location.value && hasLat ) {
         entityData.location = $location.value;
         entityData.lat = hasLat;
         entityData.lng = hasLng;
@@ -575,6 +575,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           V.setActiveEntity( res.data[0] );
           Join.draw( 'new entity was set up' );
 
+          VMap.draw( res.data );
+
         }
         else {
           throw new Error( res.message );
@@ -657,16 +659,17 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: {
           c: 'join-form__inner',
           h: [
-            {
-              c: 'join-form__title',
-              h: getString( ui[formTitle] ),
-            },
+            // {
+            //   c: 'join-form__title',
+            //   h: getString( ui[formTitle] ),
+            // },
             {
               t: 'input',
               c: 'join-form__input' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__input-confirm' : '' ),
-              // a: {
-              //   value: 'Test This',
-              // },
+              a: {
+                // value: 'Test This',
+                placeholder: getString( ui[formTitle] ),
+              },
             },
           ],
         },
@@ -726,10 +729,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: {
           c: 'join-form__inner',
           h: [
-            {
-              c: 'join-form__title',
-              h: getString( ui.joinFormLoc ),
-            },
+            // {
+            //   c: 'join-form__title',
+            //   h: getString( ui.joinFormLoc ),
+            // },
             {
               t: 'input',
               i: 'join-form__loc', // id needed by Google Places API
