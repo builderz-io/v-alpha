@@ -224,6 +224,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
         const cache = V.getCache( 'points' );
         const point = cache ? cache.data.find( point => point.uuidE == feature.uuidE ) : undefined;
         if ( point ) {
+
+          /* if no location was entered by user, fill in the continent set by user */
+          if ( !point.geometry.coordinates ) {
+            point.geometry.coordinates = V.castJson( continentsLngLat[ point.geometry.continent - 1 ], 'clone' );
+          }
           Object.assign( feature.geometry, point.geometry );
         }
       } );
@@ -441,6 +446,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function setLastViewed( features ) {
     if ( lastViewedLayer ) {
       lastViewedLayer.remove();
+    }
+
+    /* if no location was entered by user, fill in the continent set by user */
+    if ( !features[0].geometry.coordinates ) {
+      features[0].geometry.coordinates = V.castJson( continentsLngLat[ features[0].geometry.continent - 1 ], 'clone' );
     }
 
     lastViewedLayer = castLayer( 'lastViewed', features );

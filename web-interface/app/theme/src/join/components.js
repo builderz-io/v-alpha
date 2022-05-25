@@ -226,6 +226,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
     },
 
+    'img-upload__label': {
+      flex: 1,
+    },
+
     'join-selector__svg': {
       width: '30px',
       height: '30px',
@@ -369,6 +373,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function handleResetSelectors() {
+    setResponse( '', 'setAsIs' );
+    V.getNode( '.join-selectors' ).style.display = 'none';
+  }
+
   /* ================== private methods ================= */
 
   function advanceCard() {
@@ -399,12 +408,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     /* location */
     else if ( cardIndex == 1 ) {
       const $location = V.getNode( '.join-form__loc' );
+      const hasLoc = $location.getAttribute( 'loc' );
       const hasLat = $location.getAttribute( 'lat' );
       const hasLng = $location.getAttribute( 'lng' );
       const hasRadio = getRadioIndex( 'continent' );
 
-      if ( $location.value && hasLat ) {
-        entityData.location = $location.value;
+      if (
+        $location.value == hasLoc
+      ) {
+        entityData.location = hasLoc;
         entityData.lat = hasLat;
         entityData.lng = hasLng;
 
@@ -692,11 +704,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'label',
               i: 'img-upload__label',
               c: 'cursor-pointer',
-              y: {
-                flex: 1,
-              },
               a: {
                 for: 'img-upload__file',
+              },
+              e: {
+                click: handleResetSelectors,
               },
               h: getString( ui.joinFormImg ),
             },
@@ -737,6 +749,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               t: 'input',
               i: 'join-form__loc', // id needed by Google Places API
               c: 'join-form__input join-form__loc',
+              e: {
+                focus: handleResetSelectors,
+              },
             },
           ],
         },

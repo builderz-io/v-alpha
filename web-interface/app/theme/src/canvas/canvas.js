@@ -271,9 +271,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
-        if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
-          e.preventDefault();
-          handleKeyboard( ['search', 'query'] );
+        if (
+          V.getVisibility( '.join-submit__btn' )
+        ) {
+          V.getNode( '.join-submit__btn' ).click();
         }
         else if (
           !V.getVisibility( 'form' )
@@ -282,6 +283,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           && !V.getVisibility( '.messageform' )
         ) {
           V.getNode( '.magic-btn__btn' ).click();
+        }
+        else if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
+          e.preventDefault();
+          handleKeyboard( ['search', 'query'] );
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }

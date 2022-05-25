@@ -139,7 +139,7 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   function handleAppReset() {
     localStorage.clear();
-    location.reload();
+    location = window.location.origin;
   }
 
   function handleDebugLogs() {

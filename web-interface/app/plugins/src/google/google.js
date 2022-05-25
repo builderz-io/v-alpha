@@ -19,6 +19,7 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
       $elem.setAttribute( 'placeholder', 'Location' );
       autocomplete.addListener( 'place_changed', function() {
         const place = autocomplete.getPlace();
+        $elem.setAttribute( 'loc', place.formatted_address );
         $elem.setAttribute( 'lat', place.geometry.location.lat().toFixed( 5 ) );
         $elem.setAttribute( 'lng', place.geometry.location.lng().toFixed( 5 ) );
         // focus and blur to trigger saving in user profile
