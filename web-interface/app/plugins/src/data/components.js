@@ -11,7 +11,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const cardLeftWidth = 25;
 
-    return V.cN( {
+    return V.castNode( {
       classes: 'contents',
       setStyle: {
         icon: {
@@ -23,6 +23,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
         forecast: {
           'width': '57px',
           'text-align': '-moz-center',
+          'margin-right': '10px',
         },
       },
       innerHtml: '<div class="card__top-left flex justify-center items-center">'
@@ -116,7 +117,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const cardLeftWidth = 25;
 
-    return V.cN( {
+    return V.castNode( {
       classes: 'contents',
       setStyle: {
         icon: {
