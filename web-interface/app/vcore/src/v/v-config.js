@@ -48,12 +48,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     logo: VNetworkInit.logo,
     mapDefault: VNetworkInit.mapDefault,
+    highlights: VNetworkInit.highlights,
     questionnaire: VNetworkInit.questionnaire,
     featureVideo: VNetworkInit.featureVideo,
     plugins: VNetworkInit.plugins,
 
     askforEmail: VNetworkInit.askforEmail,
     requireEmail: VNetworkInit.requireEmail,
+    confirmEmail: VNetworkInit.confirmEmail,
     emailKey: VNetworkInit.emailKey,
 
     useBuilds: VNetworkInit.useBuilds,
@@ -61,7 +63,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     sendLogsToServer: false,
 
-    devMode: true,
+    devMode: VNetworkInit.devMode,
     drawMap: true,
 
     joinVersion: 2,

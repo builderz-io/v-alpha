@@ -18,12 +18,14 @@
           namespaceEndpoint: 'firebase-local',
           mongodbEndpoint: 'builderz',
 
-          mapDefault: 'atlantic',
+          mapDefault: 'fremantle',
+          highlights: 3,
           featureVideo: 'builderz',
           questionnaire: false,
 
           askforEmail: true,
-          requireEmail: true,
+          requireEmail: false,
+          confirmEmail: false,
           emailKey: '4ea0ac41-dbc5-4775-b32a-89a0e534a3df', // as per https://www.smtpjs.com/
 
           tagLine: 'builderz.io - Go create!',
@@ -72,9 +74,11 @@
               'media',
               // 'moocs'
             ],
-            // data: []
-            chat: [],
+            data: [],
+            // chat: [],
           },
+
+          devMode: true,
 
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
           chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)

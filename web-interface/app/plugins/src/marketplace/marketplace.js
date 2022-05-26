@@ -44,7 +44,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       if ( polledPointsCache ) {
-        V.setCache( 'mixin-highlights', polledPointsCache.data.slice( 0, 10 ).map( item => item.uuidE ) );
+        V.setCache( 'mixin-highlights', polledPointsCache.data.slice( 0, V.getSetting( 'highlights' ) ).map( item => item.uuidE ) );
       }
     }
 
@@ -250,7 +250,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( whichPath ) {
       Navigation.draw( whichPath );
       if ( !search ) {
-       // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+        // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
       }
     }
     else {

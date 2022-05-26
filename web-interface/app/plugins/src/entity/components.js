@@ -101,7 +101,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     notFunded: 'Not yet successfully funded',
     successFunded: 'Successfully funded',
     noneSpent: 'None yet spent',
-    spent: 'Budget spent',
+    spent: 'Received budget spent',
 
     title: 'Title',
     tag: 'Tag',
@@ -1150,25 +1150,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
      * and is only a demo
      */
 
-    sendVolume = 100;
-    receiveVolume = 420;
+    // sendVolume = 200;
+    // receiveVolume = 2000;
 
     if ( entity.role == 'Pool' ) {
 
-      const i18n = {
-        strPfPg432: getString( ui.notFunded ),
-        strPfPg433: getString( ui.successFunded ),
-        strPfPg434: getString( ui.noneSpent ),
-        strPfPg435: getString( ui.spent ),
-      };
+      let svgFunded = '',
+        svgSpent = '',
+        fundSuccess = getString( ui.notFunded ),
+        budgetPercent = '',
+        budgetUsed = getString( ui.noneSpent );
 
-      let svgFunded = '';
-      let svgSpent = '';
-      let fundSuccess = i18n.strPfPg432;
-      let budgetPercent = '', budgetUsed = i18n.strPfPg434;
+      const funded = Math.floor( receiveVolume > 0
+        ? receiveVolume / entity.properties.target * 100
+        : 1 );
 
-      const funded = receiveVolume > 0 ? Math.floor( receiveVolume / entity.properties.target * 100 ) : 0;
-      const spent = receiveVolume > 0 ? Math.ceil( ( sendVolume * ( 1 + V.getSetting( 'transactionFee' )/100**2 ) ) / receiveVolume * 100 ) : 0;
+      const spent = Math.ceil( sendVolume > 0
+        ? ( sendVolume * ( 1 + V.getSetting( 'transactionFee' ) / 100**2 ) ) / receiveVolume * 100
+        : 1 );
 
       if ( funded >= 0 ) {
         svgFunded = '<svg width="100" height="100" class="pool__funding-chart">\
@@ -1176,8 +1175,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
              </svg>';
       }
 
-      if ( funded > 66 ) {
-        fundSuccess = '<span class="">' + i18n.strPfPg433 + '</span>';
+      if ( funded >= 66 ) {
+        fundSuccess = '<span class="">' + getString( ui.successFunded ) + '</span>';
       }
 
       if ( spent >= 0 ) {
@@ -1187,8 +1186,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
 
       if ( spent > 0 ) {
-        budgetUsed = '<span class="">' + i18n.strPfPg435 + '</span>';
-        budgetPercent = '<span class="">' + spent + ' %</span>';
+        budgetUsed = '<span class="">' + getString( ui.spent ) + '</span>';
+        budgetPercent = '<span class="">' + ( spent <= 1 ? '0' : spent ) + ' %</span>';
       }
 
       const $innerContent = V.cN( {
@@ -1197,7 +1196,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'tr',
-            h: [ { t: 'td', innerHtml: svgFunded }, { t: 'td', innerHtml: funded + ' %<br><br>' + fundSuccess } ],
+            h: [ { t: 'td', innerHtml: svgFunded }, { t: 'td', innerHtml: ( funded <= 1 ? '0' : funded ) + ' %<br><br>' + fundSuccess } ],
           },
           {
             t: 'tr',

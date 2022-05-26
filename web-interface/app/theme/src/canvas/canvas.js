@@ -57,6 +57,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/theme/src/interaction/magic-button.js' ),
         V.setScript( host + '/theme/src/interaction/form.js' ),
         V.setScript( host + '/theme/src/join/components.js' ),
+        V.setScript( host + '/theme/src/join/avatars.js' ),
         V.setScript( host + '/theme/src/join/human.js' ),
         V.setScript( host + '/theme/src/join/join.js' ),
         V.setScript( host + '/theme/src/navigation/components.js' ),
@@ -274,7 +275,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         if (
           V.getVisibility( '.join-submit__btn' )
         ) {
-          V.getNode( '.join-submit__btn' ).click();
+          setTimeout( function joinClickOnEnter() {
+            V.getNode( '.join-submit__btn' ).click();
+          }, 120 );
         }
         else if (
           !V.getVisibility( 'form' )

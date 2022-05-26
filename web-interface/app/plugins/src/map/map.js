@@ -50,6 +50,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       lat: 40.792,
       zoom: 13,
     },
+    fremantle: {
+      lng: 115.753,
+      lat: -32.05,
+      zoom: 13,
+    },
     lowerafrica: {
       lng: 18,
       lat: -15,
@@ -65,6 +70,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     [ 134.354806, -25.610111], // Australia, Lambert Gravitational Centre, https://geohack.toolforge.org/geohack.php?pagename=Centre_points_of_Australia&params=25_36_36.4_S_134_21_17.3_E_
     [ -100, 48.166667 ], // North America, https://pubs.usgs.gov/unnumbered/70039437/report.pdf
     [ -5.077173, -74.254112 ], // Antarctica, manually set to be more visible
+    [ -40, 35 ], // Fallback to Atlantic Ocean
   ];
 
   const popUpSettings = {
@@ -272,7 +278,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       minZoom: sc.height > 1200 ? 3 : 2,
     };
 
-    const mapData = V.getLocal( 'map-state' );
+    const mapData = V.getLocal( 'map-center' );
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
@@ -301,13 +307,14 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     getPoints()
       .then( () => setPoints( 'all' ) );
 
-    // viMap.on( 'moveend', handleMapMoveEnd );
+    viMap.on( 'moveend', setMapCenterInState );
 
+    // viMap.on( 'moveend', handleMapMoveEnd );
     /*
-   .on( 'moveend' ) has bugs:
-     - causes point rendering incomplete and too small
-     - exceeded stack
-  */
+     .on( 'moveend', handleMapMoveEnd ) creates bugs:
+       - causes point rendering incomplete and too small
+       - exceeded stack
+    */
 
   }
 
@@ -546,18 +553,25 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function handleMapMoveEnd() {
-    console.log( 'map moved' );
-    viMap.off( 'moveend' );
-    setMapPositionInState();
-    viMap.on( 'moveend', handleMapMoveEnd );
-  }
+  // function handleMapMoveEnd() {
+  //   console.log( 'map moved' );
+  //   viMap.off( 'moveend' );
+  //   setMapPositionInState();
+  //   viMap.on( 'moveend', handleMapMoveEnd );
+  // }
 
-  function setMapPositionInState() {
-    const map = viMap.getCenter();
-    Object.assign( map, { zoom: viMap.getZoom() } );
-    V.setState( 'map', map );
-    V.setLocal( 'map-state', map );
+  // function setMapPositionInState() {
+  //   const map = viMap.getCenter();
+  //   Object.assign( map, { zoom: viMap.getZoom() } );
+  //   V.setState( 'map', map );
+  //   V.setLocal( 'map-state', map );
+  // }
+
+  function setMapCenterInState() {
+    const mapCenter = viMap.getCenter();
+    Object.assign( mapCenter, { zoom: viMap.getZoom() } );
+    V.setState( 'mapCenter', mapCenter );
+    V.setLocal( 'map-center', mapCenter );
   }
 
   /* ============ public methods and exports ============ */

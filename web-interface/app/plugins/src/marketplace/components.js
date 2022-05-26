@@ -79,6 +79,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     else if ( cardData.images && cardData.images.thumbnail ) { // new model
       return 'url(\'' + cardData.images.thumbnail + '\')';
     }
+    else {
+      return 'url(\'' + JoinAvatars.dataUris[cardData.images.avatar -1] + '\')';
+    }
 
     switch ( '2' /* cardData.tag.charAt( 1 ) */ ) {
     // case '1': return palette[0];

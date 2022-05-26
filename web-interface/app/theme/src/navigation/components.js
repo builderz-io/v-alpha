@@ -97,6 +97,9 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       const url = V.castEntityThumbnail( JSON.parse( item.tinyImage ) ).src;
       return 'url(\'' + url + '\')';
     }
+    else {
+      return 'url(\'' + JoinAvatars.dataUris[item.avatar - 1] + '\')';
+    }
 
     switch ( '2' ) {
     // case '1': return palette[0];

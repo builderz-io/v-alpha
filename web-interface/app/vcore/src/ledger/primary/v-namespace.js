@@ -22,7 +22,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c z } o { a z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
 
   /**
    * Preview View returns only a few fields:
