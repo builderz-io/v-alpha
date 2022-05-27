@@ -37,7 +37,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       query = await V.getEntity(
-        which
+        which,
       ).then( res => {
         if ( res.success ) {
           V.setCache( 'points', res.data );
@@ -69,6 +69,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
       let txHistory, sendVolume = 0, receiveVolume = 0;
 
+      /*
       if ( entity.role == 'Pool' ) {
         if ( V.cA() || !V.aE() ) {
           if ( entity.evmCredentials ) {
@@ -95,6 +96,22 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           receiveVolume = entity.stats.receiveVolume;
         }
       }
+      */
+
+      if ( entity.role == 'Pool' ) {
+        txHistory = await V.getAddressHistory( {
+          address: entity.evmCredentials.address,
+          fromBlock: 0, // could be entity creation block
+          toBlock: 'latest',
+        } );
+        if ( txHistory.success && txHistory.data.length ) {
+          txHistory.data.forEach( tx => {
+            tx.txType == 'out'? sendVolume += Number( tx.amount ) : null;
+            tx.txType == 'in'? receiveVolume += Number( tx.amount ) : null;
+          } );
+        }
+      }
+
       const data = {
         typeOfWhich: typeof which,
         entity: entity,
