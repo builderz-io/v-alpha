@@ -11,7 +11,6 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {
     role: 'Person',
-    evmAddress: V.cA() || null,
   };
 
   let fourDigitString, uPhrase, fullId, cardIndex = 0;
@@ -530,6 +529,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function setHuman() {
     // entityData.title = '1234'; // uncomment for testing a server error
+
+    if( V.cA() ) { // user has own wallet
+      entityData.evmAddress = V.cA();
+    }
+
     V.setEntity( entityData )
       .then( res => {
         if ( res.success ) {
@@ -541,6 +545,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           /** automatically join */
           V.setAuth( uPhrase )
             .then( data => {
+              console.log( data );
               if ( data.success ) {
                 console.log( 'auth success' );
                 drawSuccess();
