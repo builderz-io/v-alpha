@@ -109,6 +109,7 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       bottom: 0;
       left: 0;
       background: rgba(0,0,0,0.8)
+
     }
     .modal__content {
       background: white;
@@ -116,7 +117,8 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       max-width: 500px;
       height: 46vh;
       margin: 14vh auto;
-      padding: 0.5rem;
+      padding: 1.5rem;
+      border-radius: 32px;
     }
     .preloader {
       display:block;
