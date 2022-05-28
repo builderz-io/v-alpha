@@ -395,7 +395,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       isNaN( target ) ? error = getString( ui.isNaN ) : null;
     }
 
-    if ( ['Pool'].includes( role ) ) {
+    if ( ['ResourcePool'].includes( role ) ) {
       unit == '' ? error = undefined : null;
       !target ? error = getString( ui.noTarget ) : null;
       // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
