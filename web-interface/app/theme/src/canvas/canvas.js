@@ -287,16 +287,33 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         ) {
           V.getNode( '.magic-btn__btn' ).click();
         }
-        else if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
+        else if (
+          V.getVisibility( '#query' )
+          || V.getVisibility( '#search' )
+          || V.getVisibility( '#sign-transaction' )
+        ) {
           e.preventDefault();
-          handleKeyboard( ['search', 'query'] );
+          handleKeyboard( ['search', 'query', 'sign-transaction'] );
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
-        CanvasComponents.handleClosePopup();
-        handleKeyboard( ['close', 'modal-close'] );
+        MagicButton.drawReset();
+        if (
+          V.getVisibility( 'modal' )
+        ) {
+          V.getNode( 'modal' ).click();
+        }
+        else if (
+          V.getVisibility( 'joinoverlay' )
+        ) {
+          V.getNode( 'joinoverlay' ).click();
+        }
+        else {
+          CanvasComponents.handleClosePopup();
+          handleKeyboard( ['close', 'modal-close'] );
+        }
       }
     } );
 

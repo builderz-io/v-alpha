@@ -27,12 +27,12 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
       'align-items': 'center',
     },
     'magic-btn__input': {
-      border: '0',
-      top: '4px',
-      left: '11px',
-      width: '70%',
-      height: '2rem',
-      background: 'white',
+      'border': '0',
+      'top': '4px',
+      'left': '1rem',
+      'max-width': '70%',
+      'height': '2rem',
+      'background': 'white',
 
     },
     'magic-btn__overlay': {
@@ -141,6 +141,10 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
 
     sc = V.getState( 'screen' );
 
+    V.getNode( '.messageform__response' )
+      ? V.getNode( '.messageform__response' ).textContent = ''
+      : null;
+
     if ( V.getState( 'active' ).magicBtnInput ) {
       if ( $input.value != '' ) {
         if ( $input.value.length < 2 ) { return }
@@ -168,7 +172,7 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
     V.setState( 'active', { magicBtnInput: false } );
     $input.style.display = 'none';
     $overlay ? $overlay.style.display = 'none' : null;
-    $input.value = '';
+    // $input.value = '';
 
     $magicButton.style.width = '2.5rem'; // using css transition
 
@@ -237,23 +241,6 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
         },
       ] );
     }
-    else if ( 'chat' == which ) {
-      const prefill = options == 'no-prefill' ? '' : V.getState( 'active' ).lastViewed;
-
-      V.setNode( $magicButton, [
-        {
-          c: 'magic-btn__overlay fixed hidden',
-          k: close,
-        },
-        ChatComponents.messageInput( prefill ),
-        {
-          c: 'magic-btn__btn flex absolute justify-center',
-          h: V.getIcon( 'send' ),
-          k: handleMagicBtn,
-        },
-        ChatComponents.messageResponse(),
-      ] );
-    }
     else if ( 'set' == which ) {
       V.setNode( $magicButton, {
         c: 'magic-btn__btn flex absolute justify-center',
@@ -261,6 +248,58 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
         k: handleSetEntity,
       } );
     }
+    else if ( 'chat' == which ) {
+      V.setNode( $magicButton, [
+        {
+          c: 'magic-btn__overlay fixed hidden',
+          k: close,
+        },
+        {
+          t: 'input',
+          c: 'magic-btn__input relative hidden',
+          a: {
+            type: 'text',
+            value: V.aE() && options == 'no-prefill' ? '' : 'send 10',
+          },
+          e: {
+            focus: function setCursorToEndOfPrefill() {
+              // https://stackoverflow.com/a/10576409/9322037
+              const that = this;
+              setTimeout( function() { that.selectionStart = that.selectionEnd = 10000 }, 0 );
+            },
+          },
+        },
+        {
+          c: 'messageform__response magic-btn__res whitespace-no-wrap',
+          y: {
+            top: '48px',
+          },
+        },
+        {
+          c: 'magic-btn__btn flex absolute justify-center',
+          h: V.getIcon( 'send' ),
+          k: handleMagicBtn.bind( { isChat: true } ),
+        },
+      ] );
+    }
+    // previous version
+    // else if ( 'chat' == which ) {
+    //   const prefill = options == 'no-prefill' ? '' : V.getState( 'active' ).lastViewed;
+    //
+    //   V.setNode( $magicButton, [
+    //     {
+    //       c: 'magic-btn__overlay fixed hidden',
+    //       k: close,
+    //     },
+    //     ChatComponents.messageInput( prefill ),
+    //     {
+    //       c: 'magic-btn__btn flex absolute justify-center',
+    //       h: V.getIcon( 'send' ),
+    //       k: handleMagicBtn,
+    //     },
+    //     ChatComponents.messageResponse(),
+    //   ] );
+    // }
   }
 
   /* ================  public components ================ */

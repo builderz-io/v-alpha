@@ -17,7 +17,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleSetMessageBot( rerunMessage ) {
-    const $form = V.getNode( '.messageform__input' );
+    const $form = V.getNode( '.messageform__input' ) || V.getNode( '.magic-btn__input' );
     const $response = V.getNode( '.messageform__response' );
 
     const message = !rerunMessage
@@ -52,13 +52,12 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       else {
         rerun = false;
         $response.append( V.cN( {
-          c: 'messageform__respinner',
-          s: {
-            messageform__respinner: {
-              color: 'red',
-              background: 'white',
-              padding: '2px 8px',
-            },
+          c: 'messageform__res-inner pill-shadow',
+          y: {
+            'color': 'red',
+            'background': 'white',
+            'padding': '4px 12px',
+            'border-radius': '20px',
           },
           h: res.status || res.errors[0].message,
         } ) );
