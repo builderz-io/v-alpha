@@ -293,7 +293,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       use: {
         // button: 'search',
         form: 'new entity',
-        role: 'ResourcePool',
+        role: 'Pool',
       },
       draw: function( path ) {
         Marketplace.draw( path );

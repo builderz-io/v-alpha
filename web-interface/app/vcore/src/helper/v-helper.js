@@ -358,7 +358,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     case 'al' : return 'Media';
     case 'Dataset' : return 'am';
     case 'am' : return 'Dataset';
-    case 'ResourcePool' : return 'an';
+    case 'Pool' : return 'an';
     case 'an' : return 'Pool';
     default: return role;
     }
