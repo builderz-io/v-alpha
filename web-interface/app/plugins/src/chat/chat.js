@@ -16,9 +16,11 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $response.textContent = '';
   }
 
-  function handleSetMessageBot( rerunMessage ) {
+  function handleSetMessageBot( e, rerunMessage ) {
     const $form = V.getNode( '.messageform__input' ) || V.getNode( '.magic-btn__input' );
     const $response = V.getNode( '.messageform__response' );
+
+    $form.style.height = '37px';
 
     const message = !rerunMessage
       ? $form.value
@@ -47,7 +49,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
         && V.getState( 'active' ).navItem.includes( 'profile' )
       ) {
         rerun = true;
-        handleSetMessageBot( message ); // rerun with active profile
+        handleSetMessageBot( undefined, message ); // rerun with active profile
       }
       else {
         rerun = false;
@@ -243,7 +245,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const $input = ChatComponents.messageInput( prefill );
     const $response = ChatComponents.messageResponse();
 
-    const $send = InteractionComponents.sendBtn();
+    const $send = ChatComponents.messageSend();
 
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );

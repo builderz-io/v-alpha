@@ -272,6 +272,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
+        if ( 'TEXTAREA' == document.activeElement.tagName ) {
+          e.preventDefault();
+        }
+
         if (
           V.getVisibility( '.join-submit__btn' )
         ) {
@@ -293,7 +297,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           || V.getVisibility( '#sign-transaction' )
         ) {
           e.preventDefault();
-          handleKeyboard( ['search', 'query', 'sign-transaction'] );
+          handleKeyboard( ['search', 'query' /*, 'sign-transaction' */ ] );
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }

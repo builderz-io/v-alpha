@@ -30,11 +30,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     },
     'messageform__input': {
       'height': '37px',
-      'padding': '10px 15px',
+      'padding': '9px 18px',
       'width': '87%',
       // 'border': '1px solid #e8e8ec',
       'resize': 'none',
       'border-radius': '30px',
+      'transition': 'height 0.1s',
     },
     'messageform__response': {
       position: 'absolute',
@@ -126,7 +127,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ),
           sc.querySelector( '.ac-suggestion' ).getAttribute( 'uuide' ),
           permanentString,
-          this
+          this,
         );
       }
       else if ( sel ) {
@@ -134,7 +135,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           sel.getAttribute( 'data-val' ),
           sel.getAttribute( 'uuide' ),
           permanentString,
-          this
+          this,
         );
       }
     }
@@ -292,7 +293,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ),
           sc.querySelector( '.ac-suggestion' ).getAttribute( 'uuide' ),
           permanentString,
-          this
+          this,
         );
       }
       else if ( sel ) {
@@ -300,7 +301,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           sel.getAttribute( 'data-val' ),
           sel.getAttribute( 'uuide' ),
           permanentString,
-          this
+          this,
         );
       }
       else {
@@ -336,7 +337,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           this.getAttribute( 'data-val' ),
           this.getAttribute( 'uuide' ),
           permanentString,
-          $textarea
+          $textarea,
         );
       }
     }, sc );
@@ -478,8 +479,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const style = msg.sender == 'Me' ? { 'margin-left': 'auto', 'width': width } : { 'margin-right': 'auto', 'width': width };
 
     return V.cN( {
-      tag: 'li',
-      classes: 'w-screen pxy',
+      t: 'li',
+      c: 'w-screen pxy',
       a: {
         uuidE: msg.uuidE || msg._id, // _id in MongoDB
         time: msg.time || 'na',
@@ -542,8 +543,18 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function messageSend() {
     return V.cN( {
       t: 'button',
+      i: 'send-message',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
-      h: V.getIcon( 'send' ),
+      h: V.cN( {
+        t: 'span',
+        y: {
+          position: 'relative',
+          left: '1px',
+          top: '1px',
+          opacity: '0.75',
+        },
+        h: V.getIcon( 'send' ),
+      } ),
     } );
   }
 
