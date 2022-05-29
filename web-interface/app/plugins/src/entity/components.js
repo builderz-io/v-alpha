@@ -134,6 +134,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     emailSubject: 'Contacting you via',
     emailGreeting: 'Dear',
     socialSubject: 'is on',
+    of: 'of',
   };
 
   function getString( string, scope ) {
@@ -1155,11 +1156,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( entity.role == 'Pool' ) {
 
-      let svgFunded = '',
-        svgSpent = '',
-        fundSuccess = getString( ui.notFunded ),
-        budgetPercent = '',
-        budgetUsed = getString( ui.noneSpent );
+      let svgFunded = '', svgSpent = '';
 
       const funded = Math.floor( receiveVolume > 0
         ? receiveVolume / entity.properties.target * 100
@@ -1175,19 +1172,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
              </svg>';
       }
 
-      if ( funded >= 66 ) {
-        fundSuccess = '<span class="">' + getString( ui.successFunded ) + '</span>';
-      }
-
       if ( spent >= 0 ) {
         svgSpent = '<svg width="100" height="100" class="pool__spending-chart">\
       <circle r="25" cx="50" cy="50" class="pool__spending-pie" stroke-dasharray="' + Math.floor( 158 * ( spent / 100 ) ) + ' ' + ( 158 ) + '"/>\
       </svg>';
-      }
-
-      if ( spent > 0 ) {
-        budgetUsed = '<span class="">' + getString( ui.spent ) + '</span>';
-        budgetPercent = '<span class="">' + ( spent <= 1 ? '0' : spent ) + ' %</span>';
       }
 
       const $innerContent = V.cN( {
@@ -1196,11 +1184,37 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             t: 'tr',
-            h: [ { t: 'td', innerHtml: svgFunded }, { t: 'td', innerHtml: ( funded <= 1 ? '0' : funded ) + ' %<br><br>' + fundSuccess } ],
+            h: [
+              {
+                t: 'td',
+                innerHtml: svgFunded,
+              },
+              {
+                t: 'td',
+                innerHtml: ( funded <= 1 ? '0' : funded ) + ' % '
+                           + getString( ui.of ) + ' ' + entity.properties.target  + ' V'
+                           + '<br><br>'
+                           + ( funded >= 66
+                             ? '<span class="">' + getString( ui.successFunded ) + '</span>'
+                             : getString( ui.notFunded ) ),
+              },
+            ],
           },
           {
             t: 'tr',
-            h: [ { t: 'td', innerHtml: svgSpent }, { t: 'td', innerHtml: budgetPercent + '<br><br>' + budgetUsed } ],
+            h: [
+              {
+                t: 'td',
+                innerHtml: svgSpent,
+              },
+              {
+                t: 'td',
+                innerHtml: ( spent <= 1 ? '0' : spent ) + ' % '
+                           + getString( ui.of ) + ' ' + receiveVolume + ' V'
+                           + '<br><br>'
+                           + getString( ui.noneSpent ),
+              },
+            ],
           },
         ],
       } );
