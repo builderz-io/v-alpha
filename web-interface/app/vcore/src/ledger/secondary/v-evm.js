@@ -321,7 +321,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function getAddressHistory( data
+  async function getAddressHistory( data,
     // which = V.cA() || V.aE().evmCredentials.address,
     // data = { fromBlock: 0, toBlock: 'latest' },
     // whichEvent = 'TransferSummary'
@@ -565,7 +565,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function addEntityData( txData, which ) {
-    if ( txData[which + 'Address'] == V.aE().evmCredentials.address ) {
+    if (
+      V.aE()
+      && V.aE().evmCredentials.address == txData[which + 'Address']
+    ) {
       txData[which + 'Entity'] = V.aE().fullId;
       txData[which + 'UuidE'] = V.aE().uuidE;
     }
