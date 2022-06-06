@@ -10,6 +10,8 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   const settings = {
     useClientData: false,
     namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
+    continent: 8, // Fallback to Atlantic Ocean
+    avatar: 6, // Fallback to Reset-Tangram
   };
 
   /** In-memory jwt */
@@ -225,13 +227,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
         mediumImage: I && I.o ? I.o.c : undefined,
-        avatar: P.o ? P.o.z : undefined,
+        avatar: P.o && P.o.z ? P.o.z : settings.avatar, // Fallback to Reset-Tangram
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
         baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
-        continent: P.n ? P.n.z : undefined,
+        continent: P.n && P.n.z ? P.n.z : settings.continent, // Fallback to Atlantic Ocean
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },

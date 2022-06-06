@@ -65,8 +65,6 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
       description: $newEntityForm.getNode( '#plusform__descr' ).value,
       unit: $newEntityForm.getNode( '#plusform__unit' ).value,
       target: $newEntityForm.getNode( '#plusform__target' ).value,
-      continent: 8, // Fallback to Atlantic Ocean
-      avatar: 6, // Fallback to Reset-Tangram
     };
 
     if ( !V.aE() || V.aE().auth == false ) {

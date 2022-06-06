@@ -7,14 +7,38 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  /* ============== globals ============== */
-
-  let entityData = {
-    role: 'Person',
+  const settings = {
+    defaultSet: 2,
   };
 
-  let fourDigitString, uPhrase, fullId, cardIndex = 0;
-  const randAvatar = V.castRandomInt( 0, 4 );
+  /* ============== globals ============== */
+
+  let entityData = {};
+
+  let randAvatar, cardSet, fourDigitString, uPhrase, fullId, cardIndex = 0;
+
+  /* ============= card sets ============= */
+
+  const cardSets = {
+    set1: [
+      joinName,
+      undefined,
+      undefined,
+      joinLocation,
+      joinImage,
+      joinEmail,
+      joinAwaitKey,
+    ],
+    set2: [
+      joinTitle,
+      joinDescription,
+      joinTarget,
+      joinLocation,
+      joinImage,
+      undefined, // joinEmail,
+      joinAwaitKey,
+    ],
+  };
 
   /* ============== user interface strings ============== */
 
@@ -31,6 +55,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
     joinNameTop: 'Name yourself.',
     joinNameBottom: 'This is for your personal profile.',
+    joinTitleTop: 'Name your',
+    joinTitleBottom: '',
+    joinDescrTop: 'Describe your',
+    joinDescrBottom: 'Simply paste social media and other links.',
+    joinTargetTop: 'Add a price and unit.',
+    joinTargetBottom: 'For example "200" per "hour"',
     joinLocTop: 'Add your location.',
     joinLocBottom: '',
     joinImgTop: 'Add your image.',
@@ -44,6 +74,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinFailTop: 'Eeeeek, problem.',
 
     joinFormName: 'Name',
+    joinFormDescr: 'Description',
+    joinFormTarget: 'Target',
+    joinFormUnit: 'Unit',
     joinFormLoc: 'Location',
     joinFormImg: 'Upload',
     joinFormEmail: 'Email',
@@ -112,7 +145,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'padding': '1.5rem',
       'font-family': 'IBM Plex Medium',
       'color': 'rgba(0,0,0,0.8)',
-      'font-size': '21px',
+      'font-size': '1.25rem',
     },
     'join-header__top': {
       'margin-bottom': '1rem',
@@ -125,12 +158,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'padding': '0.9rem',
       'font-family': 'IBM Plex Medium',
       'color': 'rgba(0,0,0,0.5)',
-      'font-size': '21px',
+      'font-size': '1.25rem',
     },
     'join-form__inner': {
       'display': 'flex',
       'justify-content': 'space-between',
-      'padding': '0.6rem',
+      'padding': '0.45rem',
       'border-bottom': '2px solid rgba(0,0,0,0.5)',
     },
     'join-form__title': {
@@ -235,53 +268,72 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     Join.draw( 'initialize join' );
   }
 
-  function handleSubmit() {
+  function handleNext() {
+    // console.log( cardIndex, entityData.role, cardSets[cardSet][cardIndex] );
 
-    /* return early if validaton in advanceCard failed */
-    if ( !advanceCard() ) { return }
+    /**
+     * return early if cardIndex == 7 (join routine finished successfully)
+     * OR validaton in advanceCard failed
+     */
+
+    if (
+      cardIndex == 7
+    ) {
+      V.sN( 'joinoverlay', 'clear' );
+      return;
+    }
+
+    if (
+      !advanceCard()
+    ) {
+      return;
+    }
 
     /* advance card index */
     cardIndex += 1;
 
-    /* skip email by bumping up the cardIndex if askforEmail is set to false */
+    /* skip undefined cards */
+    if ( !cardSets[cardSet][cardIndex] ) {
+      handleNext();
+      return;
+    }
+
+    /**
+     * skip email by bumping up the cardIndex
+     * if askforEmail is set to false OR entity is not a person
+     */
+
     if (
-      !V.getSetting( 'askforEmail' )
-      && cardIndex == 3
+      cardIndex == 5
+      && ( !V.getSetting( 'askforEmail' )
+       || entityData.role != 'Person' )
     ) {
       cardIndex += 1;
     }
 
-    /* clear previous card */
+    /* draw new card */
     V.sN( 'joinoverlay', 'clear' );
+    V.sN( 'body', JoinComponents.joinOverlay() );
 
-    /* draw new card or finish join-routine when cardIndex == 5 */
-    if ( cardIndex < 5 ) {
+    /* add Google Places API to location card */
+    if ( cardIndex == 3 ) {
+      Google.initAutocomplete( 'join-form' );
+    }
 
-      V.sN( 'body', JoinComponents.joinOverlay() );
-
-      /* add Google Places API to location card */
-      if ( cardIndex == 1 ) {
-        Google.initAutocomplete( 'join-form' );
+    /* set the new human entity on "download key" card */
+    else if ( cardIndex == 6 ) {
+      if ( !V.getSetting( 'devMode' ) ) {
+        V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
       }
-
-      /* set the new human entity on "download key" card */
-      else if ( cardIndex == 4 ) {
-        if ( !V.getSetting( 'devMode' ) ) {
-          V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
-        }
-        drawAltSubmitBtn( 'call-to-action' );
-        setHuman();
-      }
+      drawAltSubmitBtn( 'call-to-action' );
+      setHuman();
     }
 
   }
 
   function handleJoinOverlayClick() {
     cardIndex = 0;
-    entityData = {
-      role: 'Person',
-      evmAddress: V.cA() || null,
-    };
+    entityData = {};
     V.sN( 'joinoverlay', 'clear' );
   }
 
@@ -351,6 +403,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
+    /* validate undefined cards as true (skip) */
+    if ( !cardSets[cardSet][cardIndex] ) {
+      return true;
+    }
+
     /* name */
     if ( cardIndex == 0 ) {
       const input = V.getNode( '.join-form__input' ).value;
@@ -366,8 +423,37 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    /* location */
+    /* description */
     else if ( cardIndex == 1 ) {
+      const descr = V.getNode( '.join-form__descr' ).value;
+      if ( descr ) {
+        entityData.description = V.getNode( '.join-form__descr' ).value;
+      }
+      return true;
+    }
+
+    /* target & unit */
+    else if ( cardIndex == 2 ) {
+
+      const trgt = V.getNode( '.join-form__input' ).value;
+      const unit = V.getNode( '.join-form__input-unit' ).value;
+
+      const target = V.castTarget( trgt, unit, entityData.role );
+
+      if ( target.success ) {
+        entityData.target = trgt;
+        entityData.unit = unit;
+        return true;
+      }
+      else {
+        setResponse( target.message, 'setAsIs' );
+        return false;
+      }
+
+    }
+
+    /* location */
+    else if ( cardIndex == 3 ) {
       const $location = V.getNode( '.join-form__loc' );
       const hasLoc = $location.getAttribute( 'loc' );
       const hasLat = $location.getAttribute( 'lat' );
@@ -400,7 +486,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* image */
-    else if ( cardIndex == 2 ) {
+    else if ( cardIndex == 4 ) {
       const hasImage = V.getState( 'mediumImageUpload' );
 
       if ( hasImage ) {
@@ -426,7 +512,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* email */
-    else if ( cardIndex == 3 ) {
+    else if ( cardIndex == 5 ) {
       const confirm = V.getNode( '.join-form__input-confirm' ).value;
 
       if ( confirm ) {
@@ -471,7 +557,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* call to action */
-    else if ( cardIndex == 4 ) {
+    else if ( cardIndex == 6 ) {
       return true;
     }
 
@@ -624,28 +710,30 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================ components ================ */
 
-  function joinHeader( headerTop, headerBottom ) {
+  function joinHeader( topString, bottomString, role ) {
     return V.cN(
       {
         c: 'join-header',
         h: [
           {
             c: 'join-header__top',
-            h: getString( ui[headerTop] ),
+            h: getString( ui[topString] )
+            + ( role ? ' ' + entityData.role.toLowerCase() + '.' : '' ),
           },
           {
             c: 'join-header__bottom',
-            h: getString( ui[headerBottom] ),
+            h: getString( ui[bottomString] ),
           },
         ],
       },
     );
   }
 
-  function joinForm( formTitle ) {
+  function joinForm( formTitle, addition ) {
     return V.cN(
       {
-        c: 'join-form' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__confirm hidden' : '' ),
+        c: 'join-form'
+             + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__confirm hidden' : '' ),
         h: {
           c: 'join-form__inner',
           h: [
@@ -655,9 +743,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             // },
             {
               t: 'input',
-              c: 'join-form__input' + ( formTitle == 'joinFormEmailConfirm' ? ' join-form__input-confirm' : '' ),
+              c: 'join-form__input'
+                   + ( addition ? '-' + addition : '' ),
               a: {
-                // value: 'Test This',
                 placeholder: getString( ui[formTitle] ),
               },
             },
@@ -729,6 +817,31 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               c: 'join-form__input join-form__loc',
               e: {
                 focus: handleResetSelectors,
+              },
+            },
+          ],
+        },
+      },
+
+    );
+  }
+
+  function joinFormDescr() {
+    return V.cN(
+      {
+        c: 'join-form',
+        h: {
+          c: 'join-form__inner',
+          h: [
+            // {
+            //   c: 'join-form__title',
+            //   h: getString( ui.joinFormLoc ),
+            // },
+            {
+              t: 'textarea',
+              c: 'join-form__input join-form__descr',
+              a: {
+                placeholder: getString( ui.joinFormDescr ),
               },
             },
           ],
@@ -836,7 +949,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
-  function joinSubmit() {
+  function nextButton() {
     return V.cN(
       {
         c: 'join-submit',
@@ -847,7 +960,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             c: 'join-submit__btn join-btn',
             h: getString( ui.next ),
-            k: handleSubmit,
+            k: handleNext,
           },
         ],
       },
@@ -869,12 +982,34 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   //   } );
   // }
 
-  /* ================ cards ================ */
+  /* ======================== cards ====================== */
 
   function joinName() {
     return [
       joinHeader( 'joinNameTop', 'joinNameBottom' ),
       joinForm( 'joinFormName' ),
+    ];
+  }
+
+  function joinTitle() {
+    return [
+      joinHeader( 'joinTitleTop', 'joinTitleBottom', true ),
+      joinForm( 'joinFormName' ),
+    ];
+  }
+
+  function joinDescription() {
+    return [
+      joinHeader( 'joinDescrTop', 'joinDescrBottom', true ),
+      joinFormDescr(),
+    ];
+  }
+
+  function joinTarget() {
+    return [
+      joinHeader( 'joinTargetTop', 'joinTargetBottom' ),
+      joinForm( 'joinFormTarget' ),
+      joinForm( 'joinFormUnit', 'unit' ),
     ];
   }
 
@@ -898,7 +1033,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     return [
       joinHeader( 'joinEmailTop', 'joinEmailBottom' ),
       joinForm( 'joinFormEmail' ),
-      joinForm( 'joinFormEmailConfirm' ),
+      joinForm( 'joinFormEmailConfirm', 'confirm' ),
     ];
   }
 
@@ -911,7 +1046,18 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================  public components ================ */
 
-  function joinOverlay() {
+  function joinOverlay( use ) {
+
+    cardSet = use ? 'set' + ( use.join || settings.defaultSet ) : cardSet;
+
+    entityData.role = use && use.role ? use.role : entityData.role;
+
+    randAvatar = V.castRandomInt( 0, 4 );
+
+    /* Launch Google Places API */
+    Google.launch();
+
+    /* Return correct overlay and card */
     return V.cN( {
       t: 'joinoverlay',
       c: 'join-overlay no-txt-select',
@@ -922,17 +1068,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             c: 'join-content-wrapper',
-            h: [
-              joinName,
-              joinLocation,
-              joinImage,
-              joinEmail,
-              joinAwaitKey,
-            ][cardIndex](),
+            h: cardSets[cardSet][cardIndex](),
           },
           {
             c: 'join-submit-wrapper',
-            h: joinSubmit(),
+            h: nextButton(),
           },
         ],
       },

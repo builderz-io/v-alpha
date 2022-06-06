@@ -330,7 +330,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
         const castPoints = res.data.map( item => {
 
           /* if no location was entered by user, fill in the continent set by user */
-          if ( !item.zz.i ) {
+          if ( !item.zz ) {
+            item.zz = { i: V.castJson( continentsLngLat[ 7 ], 'clone' ) };
+          }
+          else if ( !item.zz.i ) {
             item.zz.i = V.castJson( continentsLngLat[ item.zz.m - 1 ], 'clone' );
           }
 
