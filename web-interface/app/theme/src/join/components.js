@@ -15,7 +15,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {};
 
-  let randAvatar, cardSet, fourDigitString, uPhrase, fullId, cardIndex = 0;
+  let randAvatar, cardSet, fourDigitString, uPhrase, fullId, role, cardIndex = 0;
 
   /* ============= card sets ============= */
 
@@ -627,6 +627,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
           uPhrase = res.data[0].auth.uPhrase;
           fullId = res.data[0].fullId;
+          role = res.data[0].role;
 
           /** automatically join */
           V.setAuth( uPhrase )
@@ -635,6 +636,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               if ( data.success ) {
                 console.log( 'auth success' );
                 drawSuccess();
+                notifySuccess( fullId, role );
                 setDownloadKeyBtn();
               }
               else {
@@ -643,6 +645,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             } )
             .catch( err => {
               console.log( err );
+              notifyError( err.message || err );
               setResponse( getString( ui.authFail ), 'setAsIs' );
               drawUphraseDisplay( uPhrase );
             } );
@@ -660,6 +663,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       } )
       .catch( res => {
         console.log( 'could not set entity: ', res );
+        notifyError( res.message || res );
         setResponse( ( res.message || res ) + ' ' + getString( ui.startAgain ), 'setAsIs' );
         drawError();
       } );
@@ -706,6 +710,28 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       $submitBtn.classList.add( 'hidden', 'bkg-brand-secondary', 'txt-offblack' );
       $submitBtn.innerText = getString( ui.callToAction );
     }
+  }
+
+  function notifySuccess( fullId, role ) {
+    const data = {
+      act: 'New join',
+      msg: 'The '
+        + role.toLowerCase()
+        + ' '
+        + fullId
+        + ( role == 'Person' ? ' just joined.' : ' was just created.' ),
+    };
+    V.setEmailNotification( data );
+    V.setTelegramNotification( data );
+  }
+
+  function notifyError( error ) {
+    const data = {
+      act: 'New join [ERROR]',
+      msg: typeof error == 'object' ? JSON.stringify( error ) : error,
+    };
+    V.setEmailNotification( data );
+    V.setTelegramNotification( data );
   }
 
   /* ================ components ================ */

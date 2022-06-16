@@ -62,6 +62,7 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       setInitScript( host + '/vcore/src/endpoint/v-auth.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-entity.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-message.js' ),
+      setInitScript( host + '/vcore/src/endpoint/v-notification.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-transaction.js' ),
       setInitScript( host + '/vcore/src/helper/v-debugger.js' ),
       setInitScript( host + '/vcore/src/helper/v-description.js' ),

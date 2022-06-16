@@ -20,9 +20,9 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     const apiKeyWeather = '8cc2a6452c40044763dd503c9752fbdc';
 
     // const co2 = await Promise.resolve( V.getData( 'https://datahub.io/core/co2-ppm-daily/datapackage.json' ) );
-    const a = Promise.resolve( V.getData( 'https://api.airvisual.com/v2/nearest_city?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&key=' + apiKeyAir, '', 'http' ) );
-    const b = Promise.resolve( V.getData( 'https://api.openweathermap.org/data/2.5/weather?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, '', 'http' ) );
-    const c = Promise.resolve( V.getData( 'https://api.openweathermap.org/data/2.5/forecast?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, '', 'http' ) );
+    const a = Promise.resolve( V.getData( '', 'https://api.airvisual.com/v2/nearest_city?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&key=' + apiKeyAir, 'api' ) );
+    const b = Promise.resolve( V.getData( '', 'https://api.openweathermap.org/data/2.5/weather?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, 'api' ) );
+    const c = Promise.resolve( V.getData( '', 'https://api.openweathermap.org/data/2.5/forecast?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, 'api' ) );
 
     const all = await Promise.all( [a, b, c] );
 

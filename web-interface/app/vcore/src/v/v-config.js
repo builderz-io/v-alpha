@@ -29,6 +29,17 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     },
   };
 
+  const apiEndpoints = {
+    builderz: {
+      email: 'https://api.builderz.io/v1/email',
+      telegram: 'https://api.builderz.io/v1/telegram',
+    },
+    local: {
+      email: 'http://localhost:8889/v1/email',
+      telegram: 'http://localhost:8889/v1/telegram',
+    },
+  };
+
   const settings = {
 
     appVersion: 'Alpha 3.4.0',
@@ -43,6 +54,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
     namespaceEndpoint: namespaceEndpoints[ VNetworkInit.namespaceEndpoint ],
+    telegramEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint ].telegram,
+    emailEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint ].email,
+
+    networkAdminEmail: VNetworkInit.networkAdminEmail,
 
     sourceEndpoint: VNetworkInit.sourceEndpoint,
 
