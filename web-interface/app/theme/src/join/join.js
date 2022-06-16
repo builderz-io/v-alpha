@@ -118,13 +118,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which.includes( 'initialize' ) ) {
       Navigation.draw();
-
-      // if( V.getSetting( 'joinVersion' ) === 1 ) {
       Modal.draw( which );
-      // }
-      // else {
-      //   InitHuman.draw( which );
-      // }
     }
     else {
       Navigation.draw();

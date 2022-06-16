@@ -12,7 +12,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Energy & Transportation',
       path: '/tag/energy-transportation',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -25,7 +24,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Indigenous Values',
       path: '/tag/indigenous-values',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -38,7 +36,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Commons, Communities & Governance',
       path: '/tag/commons-communities-governance',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -51,7 +48,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Education & Collective Intelligence',
       path: '/tag/education-collective-intelligence',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -64,7 +60,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Economics & Currencies',
       path: '/tag/economics-currencies',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -77,7 +72,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Countering Anthropogenic Mindsets',
       path: '/tag/countering-anthropogenic-mindsets',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -90,7 +84,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'New Narratives',
       path: '/tag/new-narratives',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -103,7 +96,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Biosphere Regeneration',
       path: '/tag/biosphere-regeneration',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -116,7 +108,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Countering Identity Politics',
       path: '/tag/countering-identity-politics',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -129,7 +120,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Global Integral Health',
       path: '/tag/global-integral-health',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -142,7 +132,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Food & Water',
       path: '/tag/food-water',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -155,7 +144,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Emergent Other',
       path: '/tag/emergent-other',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -168,7 +156,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Systemic Approaches',
       path: '/tag/systemic-approaches',
       use: {
-        // button: 'search',
         role: 'all',
       },
       draw: function( path ) {
@@ -181,7 +168,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Local Economy',
       path: '/network/all',
       use: {
-        // button: 'search',
         role: 'all', // 'all' is used here to enable search within all entities
       },
       draw: function( path ) {
@@ -192,9 +178,9 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'People',
       path: '/network/people',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'PersonMapped',
+        join: 1,
       },
       draw: function( path ) {
         Marketplace.draw( path );
@@ -205,7 +191,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       path: '/network/businesses',
       divertFundsToOwner: true,
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Business',
       },
@@ -217,7 +202,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'NGO',
       path: '/network/non-profits',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'NGO',
       },
@@ -229,7 +213,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Public Sector',
       path: '/network/public-sector',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'GOV',
       },
@@ -241,7 +224,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Anchor Institutions',
       path: '/network/institutions',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Institution',
       },
@@ -253,7 +235,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Networks',
       path: '/network/networks',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Network',
       },
@@ -266,7 +247,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       path: '/network/skills',
       divertFundsToOwner: true,
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Skill',
       },
@@ -279,7 +259,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       path: '/network/tasks',
       divertFundsToOwner: true,
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Task',
       },
@@ -291,7 +270,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Crowdfunding',
       path: '/network/pools',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Pool',
       },
@@ -303,7 +281,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Places',
       path: '/network/places',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Place',
       },
@@ -315,7 +292,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       title: 'Events',
       path: '/network/events',
       use: {
-        // button: 'search',
         form: 'new entity',
         role: 'Event',
       },
