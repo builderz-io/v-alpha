@@ -590,25 +590,25 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       }, 2000 );
     }
     else {
-
-      /* Email by https://www.smtpjs.com */
-      Email.send( {
-        SecureToken: V.getSetting( 'emailKey' ),
-        To: entityData.emailPrivate,
-        From: 'network.mailer@valueinstrument.org',
-        Subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-        Body: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-        // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
-      } ).then( msg => {
-        V.setNode( '.confirm-click-spinner', 'clear' );
-        if ( 'OK' == msg ) {
-          V.getNode( '.join-form__confirm' ).style.display = 'block';
-          setResponse( 'joinResEmailConfirm' );
-        }
-        else {
-          setResponse( msg, 'setAsIs' );
-        }
-      } );
+      V.setEmailNotification( {
+        recipient: entityData.emailPrivate,
+        subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+        msg: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+      } )
+        .then( res => {
+          console.log( res );
+          V.setNode( '.confirm-click-spinner', 'clear' );
+          if (
+            res.success
+            && res.data[0].accepted
+          ) {
+            V.getNode( '.join-form__confirm' ).style.display = 'block';
+            setResponse( 'joinResEmailConfirm' );
+          }
+          else {
+            setResponse( res.data[0].response, 'setAsIs' );
+          }
+        } );
     }
 
   }

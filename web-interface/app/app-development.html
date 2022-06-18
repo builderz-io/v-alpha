@@ -16,8 +16,6 @@
           useBuilds: false,
 
           namespaceEndpoint: 'firebase-local',
-          apiEndpoint: 'local',
-          mongodbEndpoint: 'builderz',
 
           mapDefault: 'fremantle',
           highlights: 3,
@@ -28,7 +26,6 @@
           requireEmail: false,
           confirmEmail: false,
           networkAdminEmail: '',
-          emailKey: '4ea0ac41-dbc5-4775-b32a-89a0e534a3df', // as per https://www.smtpjs.com/
 
           tagLine: 'builderz.io - Go create!',
           networkDescription: 'The blockchain-driven marketplace, where you can post and look for skills, create job offers and also initiate crowdfunding campaigns. Built around its dedicated crypto currency, you can earn and spend while also receiving a basic income.',
@@ -85,8 +82,10 @@
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
           chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)
           transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
-          managedTransactionLedger: 'Firebase',
-          notificationServer: 'MongoDB',
+          managedTransactionApi: 'Firebase',
+
+          mongodbEndpoint: 'builderz',
+          apiEndpoint: '', // defaults to 'builderz' // provides email and telegram api, as well as a crypto api
 
           tokenContract: 'rinkeby1',
 

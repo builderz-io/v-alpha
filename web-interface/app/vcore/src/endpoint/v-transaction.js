@@ -249,7 +249,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
       }
       else {
-        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'managedTransactionLedger' ) );
+        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'managedTransactionApi' ) );
       }
     }
     else {

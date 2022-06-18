@@ -192,7 +192,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const adminNotify = status => {
       console.log( status );
-      // V.setData( status, 'transaction admin notification', V.getSetting( 'notificationServer' ) );
     };
 
     V.setTransaction( aTx )

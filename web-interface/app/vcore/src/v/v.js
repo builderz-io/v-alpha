@@ -39,7 +39,6 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
     await Promise.all( [
       setInitScript( host + '/vcore/dependencies/primary/velocity.min.js' ),
       setInitScript( host + '/vcore/dependencies/primary/universal-router.js' ),
-      setInitScript( host + '/vcore/dependencies/primary/smtp.js' ),
     ] )
       .then( () => console.log( 'Success loading vcore dependencies' ) )
       .catch( () => console.error( 'Error loading vcore dependencies' ) );

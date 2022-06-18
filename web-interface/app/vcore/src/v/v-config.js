@@ -47,15 +47,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
     transactionLedger: VNetworkInit.transactionLedger,
-    managedTransactionLedger: VNetworkInit.managedTransactionLedger,
-    notificationServer: VNetworkInit.notificationServer,
+    managedTransactionApi: VNetworkInit.managedTransactionApi,
 
     socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
     socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
     namespaceEndpoint: namespaceEndpoints[ VNetworkInit.namespaceEndpoint ],
-    telegramEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint ].telegram,
-    emailEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint ].email,
+    telegramEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint || 'builderz' ].telegram,
+    emailEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint || 'builderz' ].email,
 
     networkAdminEmail: VNetworkInit.networkAdminEmail,
 
