@@ -191,7 +191,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const aTx = V.getState( 'active' ).transaction;
 
     const adminNotify = status => {
-      console.log( status );
+      const data = {
+        act: 'New transaction',
+        msg: status,
+      };
+      V.setEmailNotification( data );
+      V.setTelegramNotification( data );
+
     };
 
     V.setTransaction( aTx )
@@ -200,17 +206,17 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success || res.data.setTransaction.success ) { // res.success for connected wallet
           V.drawTxConfirmation( res.data.setTransaction ? res.data.setTransaction.data : res.data[0] );
           Account.drawHeaderBalance();
-          adminNotify( 'successfully' );
+          adminNotify( 'successful' );
         }
         else {
           Modal.draw( 'error' );
-          adminNotify( 'unsuccessfully' );
+          adminNotify( 'ERROR' );
         }
       } )
       .catch( err => {
         console.error( err );
         Modal.draw();
-        adminNotify( 'unsuccessfully' );
+        adminNotify( 'ERROR' );
       } );
   }
 
