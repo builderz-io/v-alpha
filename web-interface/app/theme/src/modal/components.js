@@ -254,7 +254,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       V.sN( 'modal', 'clear' );
-      V.setNode( 'body', JoinComponents.joinOverlay( { role: 'Person', join: 1 } ) );
+      V.setNode( 'body', JoinRoutine.draw( { role: 'Person', join: 1 } ) );
     }
   }
 
@@ -777,7 +777,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       V.sN( 'modal', 'clear' );
-      V.setNode( 'body', JoinComponents.joinOverlay( { role: 'Person', join: 1 } ) );
+      V.setNode( 'body', JoinRoutine.draw( { role: 'Person', join: 1 } ) );
     }
   }
 
