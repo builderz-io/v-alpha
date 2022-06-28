@@ -133,7 +133,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'feature',
       c: 'feature fixed hidden',
-      setStyle: {
+      s: {
         feature: {
           top: 'var(--page-position-top-selected)',
           height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
