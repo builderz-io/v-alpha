@@ -198,6 +198,30 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
         Marketplace.draw( path );
       },
     },
+    farms: {
+      title: 'Farms',
+      path: '/network/farms',
+      divertFundsToOwner: true,
+      use: {
+        form: 'new entity',
+        role: 'Farm',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    plots: {
+      title: 'Plots',
+      path: '/network/plots',
+      divertFundsToOwner: true,
+      use: {
+        form: 'new entity',
+        role: 'Plot',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
     ngos: {
       title: 'NGO',
       path: '/network/non-profits',

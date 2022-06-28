@@ -360,6 +360,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     case 'am' : return 'Dataset';
     case 'Pool' : return 'an';
     case 'an' : return 'Pool';
+    case 'Farm' : return 'ao';
+    case 'ao' : return 'Farm';
+    case 'Plot' : return 'ap';
+    case 'ap' : return 'Plot';
     default: return role;
     }
   }

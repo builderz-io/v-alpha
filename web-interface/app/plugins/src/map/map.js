@@ -60,6 +60,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       lat: -15,
       zoom: 4,
     },
+    germany: {
+      lng: 10.85,
+      lat: 50.66,
+      zoom: 6,
+    },
   };
 
   const continentsLngLat = [
