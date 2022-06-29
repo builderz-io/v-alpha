@@ -290,17 +290,6 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
         Marketplace.draw( path );
       },
     },
-    pools: {
-      title: 'Crowdfunding',
-      path: '/network/pools',
-      use: {
-        form: 'new entity',
-        role: 'Pool',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
     places: {
       title: 'Places',
       path: '/network/places',

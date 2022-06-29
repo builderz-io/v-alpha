@@ -278,7 +278,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
 
-  V.setState( 'availablePlugins', { marketplace: function() { Marketplace.launch() } } );
+  V.setState( 'availablePlugins', { marketplace: launch } );
 
   return {
     launch: launch,

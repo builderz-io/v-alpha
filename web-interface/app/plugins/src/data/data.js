@@ -129,7 +129,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
-  V.setState( 'availablePlugins', { data: function() { Data.launch() } } );
+  V.setState( 'availablePlugins', { data: launch } );
 
   return {
     launch: launch,

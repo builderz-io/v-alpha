@@ -95,6 +95,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/google/google.js' ),
         V.setScript( host + '/plugins/src/data/components.js' ),
         V.setScript( host + '/plugins/src/data/data.js' ),
+        V.setScript( host + '/plugins/src/pool/components.js' ),
+        V.setScript( host + '/plugins/src/pool/pool.js' ),
         V.setScript( host + '/plugins/src/marketplace/components.js' ),
         V.setScript( host + '/plugins/src/marketplace/definitions.js' ),
         V.setScript( host + '/plugins/src/marketplace/marketplace.js' ),
@@ -364,7 +366,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           // V.setState( 'page', { rectOffset: 0 } ); // getBoundingClientRect-for-pill-bug-mitigation
           Marketplace.draw();
         }
-        else if ( ['market', 'market category', 'pool'].includes( status ) ) {
+        else if ( ['market', 'market category'].includes( status ) ) {
           Marketplace.draw( which );
         }
         else if ( ['media', 'media category'].includes( status ) ) {
@@ -372,6 +374,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         }
         else if ( ['data'].includes( status ) ) {
           Data.draw( which );
+        }
+        else if ( ['pool'].includes( status ) ) {
+          Pool.draw( which );
         }
         else if ( ['user profile'].includes( status ) ) {
           User.draw( which );

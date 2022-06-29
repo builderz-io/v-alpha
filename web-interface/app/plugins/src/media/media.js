@@ -138,7 +138,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     setTimeout( delayContentLoad, 2000 );
   }
 
-  V.setState( 'availablePlugins', { media: function() { Media.launch() } } );
+  V.setState( 'availablePlugins', { media: launch } );
 
   return {
     launch: launch,

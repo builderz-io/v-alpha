@@ -98,10 +98,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     baseLoc: 'base location',
     currLoc: 'current location',
     UTCOffset: 'current UTC offset',
-    notFunded: 'Not yet successfully funded',
-    successFunded: 'Successfully funded',
-    noneSpent: 'None yet spent',
-    spent: 'Received budget spent',
 
     title: 'Title',
     tag: 'Tag',
@@ -119,7 +115,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     fin: 'Financial',
     social: 'Social',
     contact: 'Contact',
-    funding: 'Funding Status',
     img: 'Image',
     holder: 'Holder',
     holderOf: 'Holder of',
@@ -134,7 +129,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     emailSubject: 'Contacting you via',
     emailGreeting: 'Dear',
     socialSubject: 'is on',
-    of: 'of',
   };
 
   function getString( string, scope ) {
@@ -1144,88 +1138,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function fundingStatusCard( sendVolume, receiveVolume ) {
-
-    /**
-     * this component has been ported from the first alpha version
-     * and is only a demo
-     */
-
-    // sendVolume = 200;
-    // receiveVolume = 2000;
-
-    if ( entity.role == 'Pool' ) {
-
-      let svgFunded = '', svgSpent = '';
-
-      const funded = Math.floor( receiveVolume > 0
-        ? receiveVolume / entity.properties.target * 100
-        : 1 );
-
-      const spent = Math.ceil( sendVolume > 0
-        ? ( sendVolume * ( 1 + V.getSetting( 'transactionFee' ) / 100**2 ) ) / receiveVolume * 100
-        : 1 );
-
-      if ( funded >= 0 ) {
-        svgFunded = '<svg width="100" height="100" class="pool__funding-chart">\
-               <circle r="25" cx="50" cy="50" class="pool__funding-pie" stroke-dasharray="' + Math.floor( 158 * ( funded / 100 ) ) + ' ' + ( 158 ) + '"/>\
-             </svg>';
-      }
-
-      if ( spent >= 0 ) {
-        svgSpent = '<svg width="100" height="100" class="pool__spending-chart">\
-      <circle r="25" cx="50" cy="50" class="pool__spending-pie" stroke-dasharray="' + Math.floor( 158 * ( spent / 100 ) ) + ' ' + ( 158 ) + '"/>\
-      </svg>';
-      }
-
-      const $innerContent = V.cN( {
-        t: 'table',
-        c: 'w-full pxy',
-        h: [
-          {
-            t: 'tr',
-            h: [
-              {
-                t: 'td',
-                innerHtml: svgFunded,
-              },
-              {
-                t: 'td',
-                innerHtml: ( funded <= 1 ? '0' : funded ) + ' % '
-                           + getString( ui.of ) + ' ' + entity.properties.target  + ' V'
-                           + '<br><br>'
-                           + ( funded >= 66
-                             ? '<span class="">' + getString( ui.successFunded ) + '</span>'
-                             : getString( ui.notFunded ) ),
-              },
-            ],
-          },
-          {
-            t: 'tr',
-            h: [
-              {
-                t: 'td',
-                innerHtml: svgSpent,
-              },
-              {
-                t: 'td',
-                innerHtml: ( spent <= 1 ? '0' : spent ) + ' % '
-                           + getString( ui.of ) + ' ' + receiveVolume + ' V'
-                           + '<br><br>'
-                           + getString( ui.noneSpent ),
-              },
-            ],
-          },
-        ],
-      } );
-
-      return castCard( $innerContent, getString( ui.funding ) );
-    }
-    else {
-      return '';
-    }
-  }
-
   function mediumImageCard() {
     if ( entity.mediumImage ) {
       const $img = V.castEntityThumbnail( entity.mediumImage  ).img;
@@ -1524,7 +1436,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     socialCard: socialCard,
     preferredLangsCard: preferredLangsCard,
     appLanguageCard: appLanguageCard,
-    fundingStatusCard: fundingStatusCard,
     mediumImageCard: mediumImageCard,
     roleCard: roleCard,
     addOrChangeImage: addOrChangeImage,

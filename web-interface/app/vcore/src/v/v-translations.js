@@ -1,5 +1,5 @@
-const VTranslations = // eslint-disable-line no-unused-vars
-{
+const VTranslations // eslint-disable-line no-unused-vars
+= {
   'navigation': {
     Data: {
       en_US: 'Data',
@@ -240,6 +240,9 @@ const VTranslations = // eslint-disable-line no-unused-vars
 
   },
   'join': {
+
+  },
+  'pool': {
 
   },
 

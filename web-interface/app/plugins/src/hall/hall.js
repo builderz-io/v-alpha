@@ -58,7 +58,7 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( path ) {
-   // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+    // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
     Navigation.draw( path );
 
     featurePresenterAndView();
@@ -92,7 +92,7 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getFeatureVideo(
-    which = V.getSetting( 'featureVideo' )
+    which = V.getSetting( 'featureVideo' ),
   ) {
     return featureVideos[which];
   }
@@ -123,7 +123,7 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
     setTimeout( delayContentLoad, 2000 );
   }
 
-  V.setState( 'availablePlugins', { hall: function() { Hall.launch() } } );
+  V.setState( 'availablePlugins', { hall: launch } );
 
   return {
     launch: launch,
