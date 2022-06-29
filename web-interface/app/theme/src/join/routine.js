@@ -52,6 +52,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       undefined,
       undefined,
       x.joinLocation,
+      undefined,
       x.joinImage,
       x.joinEmail,
       x.joinAwaitKey,
@@ -61,8 +62,19 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       x.joinDescription,
       x.joinTarget,
       x.joinLocation,
+      undefined,
       x.joinImage,
-      undefined, // joinEmail,
+      undefined,
+      x.joinAwaitKey,
+    ],
+    set3: [
+      x.joinTitle,
+      x.joinDescription,
+      x.joinTarget,
+      x.joinLocation,
+      x.joinDateTime,
+      x.joinImage,
+      undefined,
       x.joinAwaitKey,
     ],
   };
@@ -73,12 +85,12 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     // console.log( cardIndex, entityData.role, cardSets[cardSet][cardIndex] );
 
     /**
-     * return early if cardIndex == 7 (join routine finished successfully)
+     * return early if cardIndex == 8 (join routine finished successfully)
      * OR validaton in advanceCard failed
      */
 
     if (
-      cardIndex == 7
+      cardIndex == 8
     ) {
       V.sN( 'joinoverlay', 'clear' );
       return;
@@ -105,7 +117,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
      */
 
     if (
-      cardIndex == 5
+      cardIndex == 6
       && ( !V.getSetting( 'askforEmail' )
        || entityData.role != 'Person' )
     ) {
@@ -122,7 +134,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* set the new human entity on "download key" card */
-    else if ( cardIndex == 6 ) {
+    else if ( cardIndex == 7 ) {
       if ( !V.getSetting( 'devMode' ) ) {
         V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
       }
@@ -244,8 +256,13 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    /* image */
+    /* date & time */
     else if ( cardIndex == 4 ) {
+      return true;
+    }
+
+    /* image */
+    else if ( cardIndex == 5 ) {
       const hasImage = V.getState( 'mediumImageUpload' );
 
       if ( hasImage ) {
@@ -271,7 +288,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* email */
-    else if ( cardIndex == 5 ) {
+    else if ( cardIndex == 6 ) {
       const confirm = V.getNode( '.join-form__input-confirm' ).value;
 
       if ( confirm ) {
@@ -316,7 +333,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* call to action */
-    else if ( cardIndex == 6 ) {
+    else if ( cardIndex == 7 ) {
       return true;
     }
 
