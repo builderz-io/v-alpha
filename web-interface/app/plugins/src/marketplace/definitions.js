@@ -318,6 +318,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       use: {
         form: 'new entity',
         role: 'Event',
+        join: 3,
       },
       draw: function( path ) {
         Marketplace.draw( path );

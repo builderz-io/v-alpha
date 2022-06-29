@@ -22,6 +22,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinDescrBottom: 'Paste social media and other links also.',
     joinTargetTop: 'Add a price and unit.',
     joinTargetBottom: 'For example "200" per "hour"',
+    joinDateTimeTop: 'Add a start and end date and time.',
+    joinDateTimeBottom: '',
     joinLocTop: 'Add your location.',
     joinLocBottom: '',
     joinImgTop: 'Add your image.',
@@ -35,7 +37,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinFormDescr: 'Description',
     joinFormTarget: 'Target',
     joinFormUnit: 'Unit',
-    joinFormLoc: 'Location',
+    joinFormStartDateTime: 'Start',
+    joinFormEndDateTime: 'End',
     joinFormImg: 'Upload',
     joinFormEmail: 'Email',
     joinFormEmailConfirm: '4-digit code',
@@ -568,6 +571,14 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     ];
   }
 
+  function joinDateTime() {
+    return [
+      joinHeader( 'joinDateTimeTop', 'joinDateTimeBottom' ),
+      joinForm( 'joinFormStartDateTime' ),
+      joinForm( 'joinFormEndDateTime', 'end' ),
+    ];
+  }
+
   function joinLocation() {
     return [
       joinHeader( 'joinLocTop', 'joinLocBottom' ),
@@ -677,6 +688,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinTitle: joinTitle,
     joinDescription: joinDescription,
     joinTarget: joinTarget,
+    joinDateTime: joinDateTime,
     joinLocation: joinLocation,
     joinImage: joinImage,
     joinEmail: joinEmail,
