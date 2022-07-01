@@ -91,49 +91,53 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    edit: 'edit',
-    invalid: 'not valid',
-    chgImg: 'Change this image',
-    baseLoc: 'base location',
-    currLoc: 'current location',
-    UTCOffset: 'current UTC offset',
+  const ui = ( () => {
+    const strings = {
+      edit: 'edit',
+      invalid: 'not valid',
+      chgImg: 'Change this image',
+      baseLoc: 'base location',
+      currLoc: 'current location',
+      UTCOffset: 'current UTC offset',
 
-    title: 'Title',
-    tag: 'Tag',
+      title: 'Title',
+      tag: 'Tag',
 
-    description: 'Description',
-    questionnaire: 'Questionnaire',
-    shortened: '[ ... shortened ]',
-    prefLang: 'Preferred Languages',
-    lang: 'App Language',
-    management: 'Entity Management',
-    ethAddress: 'Entity Ethereum Address',
-    ethAddressReceiver: 'Receiving Ethereum Address',
-    loc: 'Location',
-    entity: 'Entity',
-    fin: 'Financial',
-    social: 'Social',
-    contact: 'Contact',
-    img: 'Image',
-    holder: 'Holder',
-    holderOf: 'Holder of',
-    mappedBy: 'Mapped by',
-    accessKeys: 'Access Keys',
-    notAuthenticated: 'not authorized to view',
-    deactivated: 'activate',
-    activated: 'activated',
-    viewMode: 'edit',
-    editMode: 'editing',
+      description: 'Description',
+      questionnaire: 'Questionnaire',
+      shortened: '[ ... shortened ]',
+      prefLang: 'Preferred Languages',
+      lang: 'App Language',
+      management: 'Entity Management',
+      ethAddress: 'Entity Ethereum Address',
+      ethAddressReceiver: 'Receiving Ethereum Address',
+      loc: 'Location',
+      entity: 'Entity',
+      fin: 'Financial',
+      social: 'Social',
+      contact: 'Contact',
+      img: 'Image',
+      holder: 'Holder',
+      holderOf: 'Holder of',
+      mappedBy: 'Mapped by',
+      accessKeys: 'Access Keys',
+      notAuthenticated: 'not authorized to view',
+      deactivated: 'activate',
+      activated: 'activated',
+      viewMode: 'edit',
+      editMode: 'editing',
 
-    emailSubject: 'Contacting you via',
-    emailGreeting: 'Dear',
-    socialSubject: 'is on',
-  };
+      emailSubject: 'Contacting you via',
+      emailGreeting: 'Dear',
+      socialSubject: 'is on',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'profile', scope || 'profile cards content' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -183,7 +187,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     DOM.entry = this.value ? this.value : this.textContent;
-    if ( [getString( ui.edit ), getString( ui.invalid )].includes( DOM.entry )  ) {
+    if ( [ V.getString( ui.edit ), V.getString( ui.invalid ) ].includes( DOM.entry )  ) {
       this.textContent = '';
       this.value = '';
     }
@@ -219,8 +223,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( str != DOM.entry ) {
       if ( str == '' ) {
-        this.textContent = getString( ui.edit );
-        this.value = getString( ui.edit );
+        this.textContent = V.getString( ui.edit );
+        this.value = V.getString( ui.edit );
         setField( db + '.' + title, '' );
         return;
       }
@@ -232,26 +236,26 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( title == 'email' ) {
         const regex = new RegExp( /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ );
-        entry = regex.test( str ) ? str : getString( ui.invalid );
+        entry = regex.test( str ) ? str : V.getString( ui.invalid );
       }
       else if ( title == 'youtube' ) {
         // must be a channel, not a video
-        entry = str.includes( '/c/' ) ? str : getString( ui.invalid );
+        entry = str.includes( '/c/' ) ? str : V.getString( ui.invalid );
       }
       else if ( title == 'website' ) {
-        entry = str.includes( '.' ) && str.includes( 'http' ) ? str : getString( ui.invalid );
+        entry = str.includes( '.' ) && str.includes( 'http' ) ? str : V.getString( ui.invalid );
       }
       else if ( ['address', 'evm'].includes( title ) ) {
-        entry = str.includes( '0x' ) && str.length == 42 ? str : getString( ui.invalid );
+        entry = str.includes( '0x' ) && str.length == 42 ? str : V.getString( ui.invalid );
       }
       else if ( title == 'currentUTC' ) {
-        entry = isNaN( str ) ? getString( ui.invalid ) : str;
+        entry = isNaN( str ) ? V.getString( ui.invalid ) : str;
       }
       else if ( ['description', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'].includes( title ) ) {
         const words = str.split( ' ' );
         if ( words.length > 2000 ) {
           words.length = 2000;
-          entry = words.join( ' ' ) + ' ' + getString( ui.shortened );
+          entry = words.join( ' ' ) + ' ' + V.getString( ui.shortened );
         }
         else {
           entry = words.join( ' ' );
@@ -261,8 +265,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         entry = str;
       }
 
-      if ( entry == getString( ui.invalid ) ) {
-        this.textContent = getString( ui.invalid );
+      if ( entry == V.getString( ui.invalid ) ) {
+        this.textContent = V.getString( ui.invalid );
         return;
       }
       else {
@@ -334,10 +338,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleRadioEntry() {
-    const title = this.getAttribute( 'title' );
-    const db = this.getAttribute( 'db' );
+    // const title = this.getAttribute( 'title' );
+    // const db = this.getAttribute( 'db' );
     const entry = this.getAttribute( 'value' );
-    setField( db + '.' + title, entry );
+    // setField( db + '.' + title, entry );
+    V.setLocal( 'locale', entry );
+    setTimeout( function reloadAfterLangChange() {
+      location = window.location.origin;
+    }, 800 );
   }
 
   function handleImageUpload( e ) {
@@ -347,7 +355,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           setField( 'tinyImage', V.getState( 'tinyImageUpload' ) ).then( () => {
             setField( 'thumbnail', V.getState( 'thumbnailUpload' ) ).then( () => {
               setField( 'mediumImage', V.getState( 'mediumImageUpload' ) ).then( () => {
-                V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+                V.setNode( '#img-upload-profile__label', V.getString( ui.chgImg ) );
                 V.setNode( '#img-upload-profile__preview', '' );
                 V.setNode( '#img-upload-profile__preview', V.cN( {
                   t: 'img',
@@ -372,7 +380,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               images: { tinyImage: V.getState( 'tinyImageUpload' ).dataUrl },
             } );
 
-            V.setNode( '#img-upload-profile__label', getString( ui.chgImg ) );
+            V.setNode( '#img-upload-profile__label', V.getString( ui.chgImg ) );
             V.setNode( '#img-upload-profile__preview', '' );
             V.setNode( '#img-upload-profile__preview', V.cN( {
               t: 'img',
@@ -422,10 +430,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           //   linkedInner = '<a href="https://youtube.com/c/' + inner + '">' + inner + '</a>';
           //   break;
           case 'email':
-            // linkedInner = `<a href="mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
+            // linkedInner = `<a href="mailto:${ inner }?subject=${ V.getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ V.getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }">` + inner /* .replace( /@.+/, '' ) */ + '</a>';
             linkedInner = {
               t: 'a',
-              f: `mailto:${ inner }?subject=${ getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }`,
+              f: `mailto:${ inner }?subject=${ V.getString( ui.emailSubject.replace( ' ', '%20' ) ) }%20${ window.location }&amp;body=${ V.getString( ui.emailGreeting.replace( ' ', '%20' ) ) }%20${ entity.title }`,
               h: inner,
             };
             break;
@@ -444,7 +452,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'capitalize',
-              h: getString( title ),
+              h: V.getString( title ),
             },
             setEditable( {
               x: editable,
@@ -479,7 +487,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       obj.a = { contenteditable: 'true' };
     }
     if ( !obj.h ) {
-      obj.h = getString( ui.edit );
+      obj.h = V.getString( ui.edit );
     }
     return obj;
   }
@@ -570,7 +578,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           focus: handleEntryFocus,
           blur: handleEntry,
         },
-        h: descr ? descr : getString( ui.edit ),
+        h: descr ? descr : V.getString( ui.edit ),
       } : {
         c: 'pxy w-full',
         h: [
@@ -579,7 +587,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           castDescr.$description,
         ],
       } );
-      return castCard( $innerContent, editable ? entity.role + ' ' + getString( ui.description ) : entity.role );
+      return castCard( $innerContent, editable ? entity.role + ' ' + V.getString( ui.description ) : entity.role );
     }
     else {
       return '';
@@ -622,7 +630,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                   focus: handleEntryFocus,
                   blur: handleEntry,
                 },
-                h: response ? response : getString( ui.edit ),
+                h: response ? response : V.getString( ui.edit ),
               },
               {
                 x: !editable && response,
@@ -633,7 +641,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           } );
         } ),
       } );
-      return castCard( $innerContent, getString( ui.questionnaire ) );
+      return castCard( $innerContent, V.getString( ui.questionnaire ) );
     }
 
     return '';
@@ -655,7 +663,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy',
         h: langs,
       } );
-      return castCard( $innerContent, getString( ui.prefLang ) );
+      return castCard( $innerContent, V.getString( ui.prefLang ) );
     }
     else {
       return '';
@@ -700,7 +708,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               {
                 t: 'p',
                 c: 'active__title fs-xs pxy',
-                h: getString( active ? ui.activated : ui.deactivated ),
+                h: V.getString( active ? ui.activated : ui.deactivated ),
               },
             ],
           },
@@ -728,14 +736,14 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               {
                 t: 'p',
                 c: 'active__title fs-xs pxy',
-                h: getString( editable ? ui.editMode : ui.viewMode ),
+                h: V.getString( editable ? ui.editMode : ui.viewMode ),
               },
             ],
           },
         ],
       } ) );
 
-      return castCard( $innerContent, getString( ui.management ) );
+      return castCard( $innerContent, V.getString( ui.management ) );
     }
     else {
       return '';
@@ -752,12 +760,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( $innerContent, V.cN( { h: castAccessKeyNode( uPhrase ) } ) );
     }
     else {
-      V.setNode( $innerContent, V.cN( { c: 'pxy fs-s', h: getString( ui.notAuthenticated ) } ) );
+      V.setNode( $innerContent, V.cN( { c: 'pxy fs-s', h: V.getString( ui.notAuthenticated ) } ) );
     }
     if( privateKey ) {
       V.setNode( $innerContent, V.cN( { h: castAccessKeyNode( privateKey ) } ) );
     }
-    return castCard( $innerContent, getString( ui.accessKeys ) );
+    return castCard( $innerContent, V.getString( ui.accessKeys ) );
   }
 
   function evmAddressCard() {
@@ -775,7 +783,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         h: address,
       } );
 
-      return castCard( $innerContent, getString( ui.ethAddress ) );
+      return castCard( $innerContent, V.getString( ui.ethAddress ) );
     }
     else {
       return '';
@@ -802,7 +810,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         c: 'pxy fs-s w-full',
         h: address,
       } );
-      return castCard( $innerContent, getString( ui.ethAddressReceiver ) );
+      return castCard( $innerContent, V.getString( ui.ethAddressReceiver ) );
     }
     else {
       return '';
@@ -820,7 +828,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'tr',
             h: [
-              { t: 'td', c: 'capitalize', h: getString( ui.baseLoc ) },
+              { t: 'td', c: 'capitalize', h: V.getString( ui.baseLoc ) },
               editable ? {
                 t: 'input',
                 i: 'user__loc',
@@ -840,7 +848,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           // {
           //   t: 'tr',
           //   h: [
-          //     { t: 'td', c: 'capitalize', h: getString( ui.currLoc ) },
+          //     { t: 'td', c: 'capitalize', h: V.getString( ui.currLoc ) },
           //     editable ? {
           //       t: 'input',
           //       c: 'location__curr pxy w-full txt-right',
@@ -861,7 +869,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           // {
           //   t: 'tr',
           //   h: [
-          //     { t: 'td', c: 'capitalize', h: getString( ui.UTCOffset ) },
+          //     { t: 'td', c: 'capitalize', h: V.getString( ui.UTCOffset ) },
           //     editable ? setEditable( {
           //       t: 'td',
           //       c: 'txt-right',
@@ -876,7 +884,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           // }
         ],
       } );
-      return castCard( $innerContent, getString( ui.loc ) );
+      return castCard( $innerContent, V.getString( ui.loc ) );
     }
     else {
       return '';
@@ -902,7 +910,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             {
               t: 'td',
-              h: getString( ui.title ),
+              h: V.getString( ui.title ),
             },
             setEditable( {
               x: editable,
@@ -924,7 +932,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             {
               t: 'td',
-              h: getString( ui.tag ),
+              h: V.getString( ui.tag ),
             },
             {
               t: 'td',
@@ -953,7 +961,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             {
               t: 'td',
-              h: entity.role == 'Person' ? getString( ui.mappedBy ) : getString( ui.holder ),
+              h: entity.role == 'Person' ? V.getString( ui.mappedBy ) : V.getString( ui.holder ),
             },
             {
               t: 'td',
@@ -981,7 +989,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     //       h: [
     //         {
     //           t: 'td',
-    //           h: getString( ui.holder ),
+    //           h: V.getString( ui.holder ),
     //         },
     //         {
     //           t: 'td',
@@ -1001,7 +1009,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return castCard( $innerContent,
       editable || descr || filteredDescr
-        ? getString( ui.entity )
+        ? V.getString( ui.entity )
         : entity.role,
     );
   }
@@ -1022,7 +1030,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         k: handleProfileDraw,
       } ) ),
     } );
-    return castCard( $innerContent, getString( ui.holderOf ) );
+    return castCard( $innerContent, V.getString( ui.holderOf ) );
   }
 
   function financialCard() {
@@ -1032,7 +1040,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       const titles = ['target', 'unit'];
       const db = 'properties';
       const $innerContent = castTableNode( titles, db, editable );
-      return castCard( $innerContent, getString( ui.fin ) );
+      return castCard( $innerContent, V.getString( ui.fin ) );
     }
     else {
       return '';
@@ -1043,7 +1051,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const titles = ['email' /*'facebook', 'twitter', 'telegram', 'instagram', 'tiktok', 'youtube', 'website', */];
     const db = 'properties';
     const $innerContent = castTableNode( titles, db, editable );
-    return $innerContent ? castCard( $innerContent, getString( ui.contact ) ) : '';
+    return $innerContent ? castCard( $innerContent, V.getString( ui.contact ) ) : '';
   }
 
   function entityListCard( entity ) {
@@ -1078,7 +1086,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'pxy fs-s capitalize',
-          h: getString( ui.accessKeys ),
+          h: V.getString( ui.accessKeys ),
         },
         castAccessKeyNode( uPhrase ),
         castAccessKeyNode( privateKey ),
@@ -1092,7 +1100,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function appLanguageCard() {
-    const appLang = entity.properties ? entity.properties.appLang ? entity.properties.appLang : 'en_US' : 'en_US';
+    const appLang = VTranslation.getLocale();
     if( appLang || ( !appLang && editable ) ) {
       const $innerContent = V.cN( {
         c: 'app-lang-selector',
@@ -1131,7 +1139,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           },
         ],
       } );
-      return castCard( $innerContent, getString( ui.lang ) );
+      return castCard( $innerContent, V.getString( ui.lang ) );
     }
     else {
       return '';
@@ -1202,7 +1210,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                 a: {
                   for: 'img-upload-profile__file',
                 },
-                h: getString( ui.chgImg ),
+                h: V.getString( ui.chgImg ),
               },
               {
                 t: 'input',
@@ -1238,7 +1246,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               for: 'img-upload-profile__file',
             },
-            h: getString( ui.edit ),
+            h: V.getString( ui.edit ),
           },
           {
             t: 'input',
@@ -1259,13 +1267,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
 
-    return castCard( $innerContent, getString( ui.img ) );
+    return castCard( $innerContent, V.getString( ui.img ) );
 
   }
 
   function socialShareButtons() {
     // https://sharingbuttons.io/
-    const subject = ( `${entity.title}%20${ getString( ui.socialSubject ) }${ window.location.hostname }` ).replace( /\s/g, '%20' ); // getString adds a whitespace
+    const subject = ( `${entity.title}%20${ V.getString( ui.socialSubject ) }${ window.location.hostname }` ).replace( /\s/g, '%20' ); // getString adds a whitespace
     const profileLink = `https%3A%2F%2F${ window.location.hostname + entity.path}`;
     // const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 

@@ -14,6 +14,21 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     builderz: 'https://youtu.be/kJbto4TISKA',
   };
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      media: 'Media',
+      moocs: 'Moocs',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   async function presenter() {
@@ -104,11 +119,10 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       media: {
-        title: 'Media',
+        title: V.getString( ui.media ),
         path: '/media',
         divertFundsToOwner: true,
         use: {
-          // button: 'plus',
           form: 'new entity',
           role: 'Media',
         },
@@ -117,11 +131,10 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         },
       },
       moocs: {
-        title: 'Moocs',
+        title: V.getString( ui.moocs ),
         path: '/media/moocs',
         divertFundsToOwner: true,
         use: {
-          // button: 'plus',
           form: 'new entity',
           role: 'Mooc',
         },

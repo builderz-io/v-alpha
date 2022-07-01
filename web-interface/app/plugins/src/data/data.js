@@ -9,6 +9,20 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      data: 'Data',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -110,7 +124,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'serviceNav', [
       {
-        title: 'Data',
+        title: V.getString( ui.data ),
         path: '/data',
         use: {
           button: 'search',

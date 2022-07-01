@@ -2,21 +2,33 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    ledgerLoad: 'Connecting to ledger',
-    themeLoad: 'Setting up the theme',
-    pluginsLoad: 'Initializing network\'s plugins',
-  };
+  const ui = ( () => {
+    const strings = {
+      ledgerLoad: 'Connecting to ledger',
+      themeLoad: 'Setting up the theme',
+      pluginsLoad: 'Initializing network\'s plugins',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'launch', scope || 'launch content' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
+  /**
+    * Launch language file
+    */
+
+  V.setNode( 'loader', 'Loading language ...' );
+
+  await VTranslation.launch();
 
   /**
     * Launch ledger-specific VCore scripts and methods
     */
 
-  V.setNode( 'loader', getString( ui.ledgerLoad ) );
+  V.setNode( 'loader', V.getString( ui.ledgerLoad ) );
 
   await VLedger.launch();
 
@@ -26,7 +38,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  V.setNode( 'loader', getString( ui.themeLoad ) );
+  V.setNode( 'loader', V.getString( ui.themeLoad ) );
 
   if( V.getSetting( 'useBuilds' ) ) {
     await Promise.all( [
@@ -46,7 +58,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     *
     */
 
-  V.setNode( 'loader', getString( ui.pluginsLoad ) );
+  V.setNode( 'loader', V.getString( ui.pluginsLoad ) );
 
   clearTimeout( preloaderTimeout );
 

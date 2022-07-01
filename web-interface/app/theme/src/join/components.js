@@ -9,53 +9,56 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    upload: 'uploading...',
-    change: 'Change image',
-    next: 'Next',
+  const ui = ( () => {
+    const strings = {
+      upload: 'uploading...',
+      change: 'Change image',
+      next: 'Next',
 
-    joinNameTop: 'Name yourself.',
-    joinNameBottom: 'This is for your personal profile.',
-    joinTitleTop: 'Add the title.',
-    joinTitleBottom: '',
-    joinDescrTop: 'Add a description.',
-    joinDescrBottom: 'Paste social media and other links also.',
-    joinTargetTop: 'Add a price and unit.',
-    joinTargetBottom: 'For example "200" per "hour"',
-    joinDateTimeTop: 'Add a start and end date and time.',
-    joinDateTimeBottom: '',
-    joinLocTop: 'Add your location.',
-    joinLocBottom: '',
-    joinImgTop: 'Add your image.',
-    joinImgBottom: '',
-    joinEmailTop: 'Add your email.',
-    joinEmailBottom: 'This is private, visible to admins only.',
-    joinAwaitKeyTop: 'One moment... setting you up.',
-    joinAwaitKeyBottom: '',
+      joinNameTop: 'Name yourself.',
+      joinNameBottom: 'This is for your personal profile.',
+      joinTitleTop: 'Add the title.',
+      joinTitleBottom: '',
+      joinDescrTop: 'Add a description.',
+      joinDescrBottom: 'Paste social media and other links also.',
+      joinTargetTop: 'Add a price and unit.',
+      joinTargetBottom: 'For example "200" per "hour"',
+      joinDateTimeTop: 'Add a start and end date and time.',
+      joinDateTimeBottom: '',
+      joinLocTop: 'Add your location.',
+      joinLocBottom: '',
+      joinImgTop: 'Add your image.',
+      joinImgBottom: '',
+      joinEmailTop: 'Add your email.',
+      joinEmailBottom: 'This is private, visible to admins only.',
+      joinAwaitKeyTop: 'One moment... setting you up.',
+      joinAwaitKeyBottom: '',
 
-    joinFormName: 'Name',
-    joinFormDescr: 'Description',
-    joinFormTarget: 'Target',
-    joinFormUnit: 'Unit',
-    joinFormStartDateTime: 'Start',
-    joinFormEndDateTime: 'End',
-    joinFormImg: 'Upload',
-    joinFormEmail: 'Email',
-    joinFormEmailConfirm: '4-digit code',
+      joinFormName: 'Name',
+      joinFormDescr: 'Description',
+      joinFormTarget: 'Target',
+      joinFormUnit: 'Unit',
+      joinFormStartDateTime: 'Start',
+      joinFormEndDateTime: 'End',
+      joinFormImg: 'Upload',
+      joinFormEmail: 'Email',
+      joinFormEmailConfirm: '4-digit code',
 
-    africa: 'Africa',
-    asia: 'Asia',
-    europe: 'Europe',
-    australia: 'Australia',
-    northAmerica: 'North-Amercia',
-    southAmerica: 'South-America',
-    antarctica: 'Antarctica',
+      africa: 'Africa',
+      asia: 'Asia',
+      europe: 'Europe',
+      australia: 'Australia',
+      northAmerica: 'North-Amercia',
+      southAmerica: 'South-America',
+      antarctica: 'Antarctica',
+    };
 
-  };
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'join', scope || 'join content' ) + ' ';
-  }
+    return strings;
+  } )();
 
   /* ====================== styles ====================== */
 
@@ -231,9 +234,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleImageUpload( e ) {
     V.setNode( '.join-form__title', 'clear' );
-    V.setNode( '#img-upload__label', getString( ui.upload ) );
+    V.setNode( '#img-upload__label', V.getString( ui.upload ) );
     V.castImageUpload( e ).then( res => {
-      V.setNode( '#img-upload__label', getString( ui.change ) );
+      V.setNode( '#img-upload__label', V.getString( ui.change ) );
       V.gN( '.join-form__inner' ).style['border-bottom'] = 'unset';
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
@@ -262,12 +265,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
         h: [
           {
             c: 'join-header__top',
-            h: getString( ui[topString] ),
+            h: V.getString( ui[topString] ),
             // + ( role ? ' ' + entityData.role.toLowerCase() + '.' : '' ),
           },
           {
             c: 'join-header__bottom',
-            h: getString( ui[bottomString] ),
+            h: V.getString( ui[bottomString] ),
           },
         ],
       },
@@ -284,14 +287,14 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             // {
             //   c: 'join-form__title',
-            //   h: getString( ui[formTitle] ),
+            //   h: V.getString( ui[formTitle] ),
             // },
             {
               t: 'input',
               c: 'join-form__input'
                    + ( addition ? '-' + addition : '' ),
               a: {
-                placeholder: getString( ui[formTitle] ),
+                placeholder: V.getString( ui[formTitle] ),
               },
             },
           ],
@@ -321,7 +324,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               e: {
                 click: handleResetSelectors,
               },
-              h: getString( ui.joinFormImg ),
+              h: V.getString( ui.joinFormImg ),
             },
             {
               t: 'input',
@@ -354,7 +357,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             // {
             //   c: 'join-form__title',
-            //   h: getString( ui.joinFormLoc ),
+            //   h: V.getString( ui.joinFormLoc ),
             // },
             {
               t: 'input',
@@ -380,13 +383,13 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           h: [
             // {
             //   c: 'join-form__title',
-            //   h: getString( ui.joinFormLoc ),
+            //   h: V.getString( ui.joinFormLoc ),
             // },
             {
               t: 'textarea',
               c: 'join-form__input join-form__descr',
               a: {
-                placeholder: getString( ui.joinFormDescr ),
+                placeholder: V.getString( ui.joinFormDescr ),
               },
             },
           ],
@@ -407,13 +410,13 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             name: 'continents',
           },
           h: [
-            getString( ui.africa ),
-            getString( ui.asia ),
-            getString( ui.southAmerica ),
-            getString( ui.europe ),
-            getString( ui.australia ),
-            getString( ui.northAmerica ),
-            getString( ui.antarctica ),
+            V.getString( ui.africa ),
+            V.getString( ui.asia ),
+            V.getString( ui.southAmerica ),
+            V.getString( ui.europe ),
+            V.getString( ui.australia ),
+            V.getString( ui.northAmerica ),
+            V.getString( ui.antarctica ),
           ].map( ( continent, i ) => V.cN( {
             c: 'join-selector',
             h: [
@@ -515,7 +518,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
           },
           {
             c: 'join-submit__btn join-btn',
-            h: getString( ui.next ),
+            h: V.getString( ui.next ),
             k: JoinRoutine.handleNext,
           },
         ],

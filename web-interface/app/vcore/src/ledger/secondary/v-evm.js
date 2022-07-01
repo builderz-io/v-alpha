@@ -15,15 +15,19 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    community: 'Community',
-    fee: 'Transaction Fee',
-    unknown: 'unknown',
-  };
+  const ui = ( () => {
+    const strings = {
+      community: 'Community',
+      fee: 'Transaction Fee',
+      unknown: 'unknown',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'evm', scope || 'transaction' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -540,7 +544,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       await addEntityData( txData, 'from' );
       await addEntityData( txData, 'to' );
 
-      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
+      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = V.getString( ui.community ) : null;
 
       if ( txData.txType == 'in' ) {
         txData.title = txData.fromEntity;
@@ -549,10 +553,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         txData.title = txData.toEntity;
       }
       else if ( txData.txType == 'fee' ) {
-        txData.title = getString( ui.fee );
+        txData.title = V.getString( ui.fee );
       }
       else if ( txData.txType == 'generated' ) {
-        txData.title = getString( ui.community );
+        txData.title = V.getString( ui.community );
       }
 
       return txData;
@@ -580,7 +584,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
         txData[which + 'Entity'] = V.castShortAddress( txData[which + 'Address'] );
-        txData[which + 'UuidE'] = getString( ui.unknown );
+        txData[which + 'UuidE'] = V.getString( ui.unknown );
       }
     }
   }

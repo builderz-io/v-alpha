@@ -81,16 +81,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    notFound: 'not found',
-    chatTitle: 'Chat with Everyone',
-    placeholder: 'Send message or funds',
-    placeholder2: 'Join first to send a message or funds',
-  };
+  const ui = ( () => {
+    const strings = {
+      notFound: 'not found',
+      chatTitle: 'Chat with Everyone',
+      placeholder: 'Send message or funds',
+      placeholder2: 'Join first to send a message or funds',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'chat', scope || 'chat components' );
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -104,7 +108,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleKeyUp( e ) {
     const key = window.event ? e.keyCode : e.which;
     // enter (to search)
-    if ( key == 13 && V.i18n( 'search', 'trigger' ) == permanentString.split( ' ' )[0] ) {
+    if ( key == 13 && V.getString( 'search' ) == permanentString.split( ' ' )[0] ) {
       if ( sc.childElementCount == 1 ) {
         this.value = permanentString.split( ' ' )[0] + ' ' + sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' );
         document.getElementById( 'send-message' ).click();
@@ -218,7 +222,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
         if (
           stringToComplete.length == 3
-          && stringToComplete != V.i18n( 'for', 'trigger' )
+          && stringToComplete != V.getString( 'for' )
         ) {
 
           V.getQuery( {
@@ -240,7 +244,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           //   setFirstSuggestions( dbEntries, stringToComplete, permanentString );
           // } );
         }
-        if ( stringToComplete.length == 4 && stringToComplete.substr( 0, 2 ) == V.i18n( 'for', 'trigger' ) ) {
+        if ( stringToComplete.length == 4 && stringToComplete.substr( 0, 2 ) == V.getString( 'for' ) ) {
 
           // socket.emit( 'get all entities', stringToComplete, function( callback ) {
           //   dbEntries = callback;
@@ -442,7 +446,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function notFound( stringToComplete ) {
     return V.cN( {
       c: 'ac-suggestion',
-      h: '"' + stringToComplete + '" ' + getString( ui.notFound ),
+      h: '"' + stringToComplete + '" ' + V.getString( ui.notFound ),
     } );
   }
 
@@ -455,7 +459,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'h2',
           c: 'font-bold fs-l leading-snug txt-center w-full pxy',
-          h: getString( ui.chatTitle, 'chat title' ),
+          h: V.getString( ui.chatTitle, 'chat title' ),
         },
         {
           t: 'span',
@@ -529,8 +533,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       h: V.aE() && prefill ? 'send 10' : '',
       a: {
         // style: 'height:10px;overflow-y:hidden;',
-        placeholder: V.aE() ? getString( ui.placeholder, 'message textarea placeholder' )
-          : getString( ui.placeholder2, 'message textarea placeholder' ),
+        placeholder: V.aE() ? V.getString( ui.placeholder, 'message textarea placeholder' )
+          : V.getString( ui.placeholder2, 'message textarea placeholder' ),
       },
       e: {
         keyup: handleKeyUp,

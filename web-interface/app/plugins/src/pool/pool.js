@@ -11,13 +11,18 @@ const Pool = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    funding: 'Funding Status',
-  };
+  const ui = ( () => {
+    const strings = {
+      funding: 'Funding Status',
+      crowdfunding: 'Crowdfunding',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'pool', scope || 'pool cards content' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== private methods ================= */
 
@@ -96,7 +101,7 @@ const Pool = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       pools: {
-        title: 'Crowdfunding',
+        title: V.getString( ui.crowdfunding ),
         path: '/pools',
         use: {
           form: 'new entity',
@@ -142,7 +147,7 @@ const Pool = ( function() { // eslint-disable-line no-unused-vars
 
     const $inner = PoolComponents.fundingStatusWrapper( PoolComponents.fundingStatusContent( preview ) );
 
-    return CanvasComponents.card( $inner, getString( ui.funding ) );
+    return CanvasComponents.card( $inner, V.getString( ui.funding ) );
 
   }
 

@@ -10,17 +10,21 @@ const PoolComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    notFunded: 'Not yet successfully funded',
-    successFunded: 'Successfully funded',
-    noneSpent: 'None yet spent',
-    spent: 'Received budget spent',
-    of: 'of',
-  };
+  const ui = ( () => {
+    const strings = {
+      notFunded: 'Not yet successfully funded',
+      successFunded: 'Successfully funded',
+      noneSpent: 'None yet spent',
+      spent: 'Received budget spent',
+      of: 'of',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'pool', scope || 'pool cards content' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   function fundingStatusContent( data ) {
 
@@ -54,11 +58,11 @@ const PoolComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               innerHtml: ( funded <= 1 ? '0' : funded ) + ' % '
-                           + getString( ui.of ) + ' ' + data.target  + ' V'
+                           + V.getString( ui.of ) + ' ' + data.target  + ' V'
                            + '<br><br>'
                            + ( funded >= 66
-                             ? '<span class="">' + getString( ui.successFunded ) + '</span>'
-                             : getString( ui.notFunded ) ),
+                             ? '<span class="">' + V.getString( ui.successFunded ) + '</span>'
+                             : V.getString( ui.notFunded ) ),
             },
           ],
         },
@@ -72,9 +76,9 @@ const PoolComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               innerHtml: ( spent <= 1 ? '0' : spent ) + ' % '
-                           + getString( ui.of ) + ' ' + data.receiveVolume + ' V'
+                           + V.getString( ui.of ) + ' ' + data.receiveVolume + ' V'
                            + '<br><br>'
-                           + getString( ui.noneSpent ),
+                           + V.getString( ui.noneSpent ),
             },
           ],
         },

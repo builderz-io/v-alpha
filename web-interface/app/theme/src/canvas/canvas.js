@@ -443,6 +443,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       if ( V.getSetting( 'devMode' ) ) {
         V.setNode( 'body', VDebugger.resetApp() );
+        V.setNode( 'body', VDebugger.downloadStrings() );
         V.setNode( 'body', VDebugger.debugLogs() );
       }
 

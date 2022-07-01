@@ -7,7 +7,187 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
 
   'use strict';
 
-  return {
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      localEconomy: 'Local Economy',
+      people: 'People',
+      businesses: 'Businesses',
+      ngos: 'NGO',
+      publicSector: 'Public Sector',
+      anchors: 'Anchor Institutions',
+      networks: 'Networks',
+      skills: 'Skills',
+      tasks: 'Tasks',
+      places: 'Places',
+      events: 'Events',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
+  /* ============== market definitions ============== */
+
+  const market = {
+    localEconomy: {
+      title: V.getString( ui.localEconomy ),
+      path: '/network/all',
+      use: {
+        role: 'all', // 'all' is used here to enable search within all entities
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    people: {
+      title: V.getString( ui.people ),
+      path: '/network/people',
+      use: {
+        form: 'new entity',
+        role: 'PersonMapped',
+        join: 1,
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    businesses: {
+      title: V.getString( ui.businesses ),
+      path: '/network/businesses',
+      divertFundsToOwner: true,
+      use: {
+        form: 'new entity',
+        role: 'Business',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    // farms: {
+    //   title: 'Farms',
+    //   path: '/network/farms',
+    //   divertFundsToOwner: true,
+    //   use: {
+    //     form: 'new entity',
+    //     role: 'Farm',
+    //   },
+    //   draw: function( path ) {
+    //     Marketplace.draw( path );
+    //   },
+    // },
+    // plots: {
+    //   title: 'Plots',
+    //   path: '/network/plots',
+    //   divertFundsToOwner: true,
+    //   use: {
+    //     form: 'new entity',
+    //     role: 'Plot',
+    //   },
+    //   draw: function( path ) {
+    //     Marketplace.draw( path );
+    //   },
+    // },
+    ngos: {
+      title: V.getString( ui.ngos ),
+      path: '/network/non-profits',
+      use: {
+        form: 'new entity',
+        role: 'NGO',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    publicSector: {
+      title: V.getString( ui.publicSector ),
+      path: '/network/public-sector',
+      use: {
+        form: 'new entity',
+        role: 'GOV',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    anchors: {
+      title: V.getString( ui.anchors ),
+      path: '/network/institutions',
+      use: {
+        form: 'new entity',
+        role: 'Institution',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    networks: {
+      title: V.getString( ui.networks ),
+      path: '/network/networks',
+      use: {
+        form: 'new entity',
+        role: 'Network',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    skills: {
+      title: V.getString( ui.skills ),
+      path: '/network/skills',
+      divertFundsToOwner: true,
+      use: {
+        form: 'new entity',
+        role: 'Skill',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    tasks: {
+      title: V.getString( ui.tasks ),
+      path: '/network/tasks',
+      divertFundsToOwner: true,
+      use: {
+        form: 'new entity',
+        role: 'Task',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    places: {
+      title: V.getString( ui.places ),
+      path: '/network/places',
+      use: {
+        form: 'new entity',
+        role: 'Place',
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+    events: {
+      title: V.getString( ui.events ),
+      path: '/network/events',
+      use: {
+        form: 'new entity',
+        role: 'Event',
+        join: 3,
+      },
+      draw: function( path ) {
+        Marketplace.draw( path );
+      },
+    },
+  };
+
+  /* ============== tags definitions ============== */
+
+  const tags = {
     tagEnergyTransportation: {
       title: 'Energy & Transportation',
       path: '/tag/energy-transportation',
@@ -164,154 +344,9 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
         } );
       },
     },
-    localEconomy: {
-      title: 'Local Economy',
-      path: '/network/all',
-      use: {
-        role: 'all', // 'all' is used here to enable search within all entities
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    people: {
-      title: 'People',
-      path: '/network/people',
-      use: {
-        form: 'new entity',
-        role: 'PersonMapped',
-        join: 1,
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    businesses: {
-      title: 'Businesses',
-      path: '/network/businesses',
-      divertFundsToOwner: true,
-      use: {
-        form: 'new entity',
-        role: 'Business',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    farms: {
-      title: 'Farms',
-      path: '/network/farms',
-      divertFundsToOwner: true,
-      use: {
-        form: 'new entity',
-        role: 'Farm',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    plots: {
-      title: 'Plots',
-      path: '/network/plots',
-      divertFundsToOwner: true,
-      use: {
-        form: 'new entity',
-        role: 'Plot',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    ngos: {
-      title: 'NGO',
-      path: '/network/non-profits',
-      use: {
-        form: 'new entity',
-        role: 'NGO',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    publicSector: {
-      title: 'Public Sector',
-      path: '/network/public-sector',
-      use: {
-        form: 'new entity',
-        role: 'GOV',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    anchors: {
-      title: 'Anchor Institutions',
-      path: '/network/institutions',
-      use: {
-        form: 'new entity',
-        role: 'Institution',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    networks: {
-      title: 'Networks',
-      path: '/network/networks',
-      use: {
-        form: 'new entity',
-        role: 'Network',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    skills: {
-      title: 'Skills',
-      path: '/network/skills',
-      divertFundsToOwner: true,
-      use: {
-        form: 'new entity',
-        role: 'Skill',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    tasks: {
-      title: 'Tasks',
-      path: '/network/tasks',
-      divertFundsToOwner: true,
-      use: {
-        form: 'new entity',
-        role: 'Task',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    places: {
-      title: 'Places',
-      path: '/network/places',
-      use: {
-        form: 'new entity',
-        role: 'Place',
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
-    events: {
-      title: 'Events',
-      path: '/network/events',
-      use: {
-        form: 'new entity',
-        role: 'Event',
-        join: 3,
-      },
-      draw: function( path ) {
-        Marketplace.draw( path );
-      },
-    },
   };
+
+  /* ================= export ==================== */
+
+  return Object.assign( market, tags );
 } )();

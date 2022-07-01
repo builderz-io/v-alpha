@@ -80,7 +80,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
           ? entity.fullId == which
           : which.length == V.getSetting( 'uuidStringLength' ) && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
             ? entity.uuidE == which
-            : entity.path == which
+            : entity.path == which,
       )
       : undefined;
   }

@@ -17,30 +17,33 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    isConfirmCode: 'is your confirmation code',
-    download: 'Download',
-    downloadAgain: 'Download again',
-    callToAction: '🎉  Ready! Go create!',
-    authFail: 'Auth failed. Reload and join manually using the key shown hidden above.',
-    startAgain: 'Please reload and join again.',
+  const ui = ( () => {
+    const strings = {
+      isConfirmCode: 'is your confirmation code',
+      download: 'Download',
+      downloadAgain: 'Download again',
+      callToAction: '🎉  Ready! Go create!',
+      authFail: 'Auth failed. Reload and join manually using the key shown hidden above.',
+      startAgain: 'Please reload and join again.',
 
-    joinSuccessTop: 'Done! You successfully joined.',
-    joinSuccessBottom: 'Please download your access key.',
-    joinFailTop: 'Eeeeek, problem.',
+      joinSuccessTop: 'Done! You successfully joined.',
+      joinSuccessBottom: 'Please download your access key.',
+      joinFailTop: 'Eeeeek, problem.',
 
-    joinResLoc: 'Please add your continent at least',
-    joinResNoLat: 'We couldn\'t find this location. Please select from the list or clear the entry to continue',
-    joinResImg: 'Please choose an avatar at least',
-    joinResEmail: 'Please add a valid email address',
-    joinResEmailConfirm: 'Please enter the 4-digit code we sent',
-    joinResEmailConfirmFalse: '4-digit code does not match',
+      joinResLoc: 'Please add your continent at least',
+      joinResNoLat: 'We couldn\'t find this location. Please select from the list or clear the entry to continue',
+      joinResImg: 'Please choose an avatar at least',
+      joinResEmail: 'Please add a valid email address',
+      joinResEmailConfirm: 'Please enter the 4-digit code we sent',
+      joinResEmailConfirmFalse: '4-digit code does not match',
+    };
 
-  };
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'join', scope || 'join content' ) + ' ';
-  }
+    return strings;
+  } )();
 
   /* ============= card sets ============= */
 
@@ -156,7 +159,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.join-download__btn', InteractionComponents.confirmClickSpinner() );
 
     setTimeout( function delayNextBtn() {
-      V.gN( '.join-download__btn' ).innerText = getString( ui.downloadAgain );
+      V.gN( '.join-download__btn' ).innerText = V.getString( ui.downloadAgain );
       V.gN( '.join-submit__btn' ).classList.remove( 'hidden' );
     }, 1200 );
 
@@ -340,7 +343,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setResponse( which, setAsIs ) {
-    V.getNode( '.join-submit__response' ).innerText = setAsIs ? which : getString( ui[which] );
+    V.getNode( '.join-submit__response' ).innerText = setAsIs ? which : V.getString( ui[which] );
   }
 
   function setSelectors() {
@@ -368,8 +371,8 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     else {
       V.setEmailNotification( {
         recipient: entityData.emailPrivate,
-        subject: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
-        msg: window.location.hostname + ': '  + fourDigitString + ' ' + getString( ui.isConfirmCode ),
+        subject: window.location.hostname + ': '  + fourDigitString + ' ' + V.getString( ui.isConfirmCode ),
+        msg: window.location.hostname + ': '  + fourDigitString + ' ' + V.getString( ui.isConfirmCode ),
       } )
         .then( res => {
           console.log( res );
@@ -440,14 +443,14 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       .catch( res => {
         console.log( 'could not set entity: ', res );
         notifyError( res.message || res );
-        setResponse( ( res.message || res ) + ' ' + getString( ui.startAgain ), 'setAsIs' );
+        setResponse( ( res.message || res ) + ' ' + V.getString( ui.startAgain ), 'setAsIs' );
         drawError();
       } );
   }
 
   function setDownloadKeyBtn() {
     const $btn = V.gN( '.join-download__btn' );
-    $btn.innerText = getString( ui.download );
+    $btn.innerText = V.getString( ui.download );
     $btn.addEventListener( 'click', handleSaveKey.bind( {
       uPhrase: uPhrase,
       fullId: fullId,
@@ -456,7 +459,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   function drawUphraseDisplay( uPhrase ) {
     V.sN( '.join-download__btn', 'clear' );
-    V.sN( '.join-header__top', getString( ui.joinFailTop ) );
+    V.sN( '.join-header__top', V.getString( ui.joinFailTop ) );
     V.sN( '.join-header__bottom', V.cN( {
       t: 'input',
       a: {
@@ -471,12 +474,12 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawSuccess() {
-    V.sN( '.join-header__top', getString( ui.joinSuccessTop ) );
-    V.sN( '.join-header__bottom', getString( ui.joinSuccessBottom ) );
+    V.sN( '.join-header__top', V.getString( ui.joinSuccessTop ) );
+    V.sN( '.join-header__bottom', V.getString( ui.joinSuccessBottom ) );
   }
 
   function drawError() {
-    V.sN( '.join-header__top', getString( ui.joinFailTop ) );
+    V.sN( '.join-header__top', V.getString( ui.joinFailTop ) );
     V.sN( '.join-download__btn', 'clear' );
   }
 
@@ -484,7 +487,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     const $submitBtn = V.gN( '.join-submit__btn' );
     if ( 'call-to-action' == which ) {
       $submitBtn.classList.add( 'hidden', 'bkg-brand-secondary', 'txt-offblack' );
-      $submitBtn.innerText = getString( ui.callToAction );
+      $submitBtn.innerText = V.getString( ui.callToAction );
     }
   }
 

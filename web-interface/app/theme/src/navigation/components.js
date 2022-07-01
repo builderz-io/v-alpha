@@ -126,7 +126,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'span',
-          h: V.i18n( item.title, 'navigation', 'nav item' ),
+          h: V.getString( item.title ),
         },
       ],
     } );

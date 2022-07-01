@@ -76,18 +76,22 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    transaction: 'No transactions found',
-    message: 'No messages found',
-    entity: 'No entities found',
-    marketplace: 'No items found',
-    media: 'No media items found',
-    close: 'close',
-  };
+  const ui = ( () => {
+    const strings = {
+      transaction: 'No transactions found',
+      message: 'No messages found',
+      entity: 'No entities found',
+      marketplace: 'No items found',
+      media: 'No media items found',
+      close: 'close',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'canvas', scope || 'not found' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -108,7 +112,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'p',
       c: 'pxy',
-      h: getString( ui[which] ),
+      h: V.getString( ui[which] ),
     } );
   }
 
@@ -276,7 +280,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
               // {
               //   t: 'p',
               //   c: 'popup-content-close fs-xxs',
-              //   h: getString( ui.close )
+              //   h: V.getString( ui.close )
               // },
               {
                 c: 'popup-content',

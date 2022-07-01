@@ -13,6 +13,20 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
     builderz: 'https://youtu.be/kJbto4TISKA',
   };
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      hall: 'Hall',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   async function presenter() {
@@ -102,7 +116,7 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       hall: {
-        title: 'Hall',
+        title: V.getString( ui.hall ),
         path: '/hall',
         divertFundsToOwner: true,
         use: {

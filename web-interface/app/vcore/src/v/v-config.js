@@ -40,6 +40,13 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     },
   };
 
+  const localeSettings = {
+    slug: '/theme/lang', // omit trailing "/"
+    english: 'en_US',
+    german: 'de_DE',
+    deutsch: 'de_DE',
+  };
+
   const settings = {
 
     appVersion: 'Alpha 3.4.0',
@@ -63,6 +70,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     logo: VNetworkInit.logo,
     mapDefault: VNetworkInit.mapDefault,
     highlights: VNetworkInit.highlights,
+    locale: localeSettings[ VNetworkInit.language ],
+    localeSlug: localeSettings.slug,
     questionnaire: VNetworkInit.questionnaire,
     featureVideo: VNetworkInit.featureVideo,
     plugins: VNetworkInit.plugins,

@@ -13,13 +13,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function castTranslationFile( which, whichContext, whichPart ) {
-    const obj = {};
-    obj[whichContext] = {};
-    obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
-
-  }
-
   /* ================== public methods ================== */
 
   function castImageUpload( e ) {
@@ -648,27 +641,30 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => functions.reduce( ( v, f ) => f( v ), x );
   }
 
-  function getTranslation( which, whichContext, whichDescr = '' ) {
+  function getString( which, whichContext, whichScope ) {
 
-    // castTranslations( which, whichContext, whichPart );
-    const aE = V.aE();
-    const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
-    // console.log( lang, whichContext, which );
-    // if ( lang != 'en_US' ) {
-    const exists = VTranslations[whichContext][which]
-      ? VTranslations[whichContext][which][lang] != ''
-        ? VTranslations[whichContext][which][lang]
-        : undefined
-      : undefined;
-    return exists ? exists : which;
-    // }
-    // else {
-    //   return which;
-    // }
-  }
+    /*
+     * Strings are wrapped into getString. This is kept from previous version
+     * of translation management and could be still useful in the future.
+     */
 
-  function i18n( which, whichContext, whichDescr ) {
-    return getTranslation( which, whichContext, whichDescr );
+    // var err = new Error();
+    // var stack = err.stack;
+    // const [, filename, line, column ] = err.stack.match( /\/([\/\w-_\.]+\.js):(\d*):(\d*)/ );
+    //
+    // console.log( [stack] );
+    // console.log( err.stack.match( /\/([/\w-_.]+\.js)/ ) );
+
+    // const e = new Error();
+    // const regex = /\((.*):(\d+):(\d+)\)$/;
+    // const match = regex.exec( e.stack.split( '\n' )[2] );
+    // console.log( {
+    //   filepath: match[1],
+    //   line: match[2],
+    //   column: match[3],
+    // } );
+
+    return which;
   }
 
   function sleep( ms ) {
@@ -723,8 +719,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
-  V.getTranslation = getTranslation;
-  V.i18n = i18n;
+  V.getString = getString;
   V.sleep = sleep;
   V.successFalse = successFalse;
   V.successTrue = successTrue;
@@ -751,8 +746,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,
-    getTranslation: getTranslation,
-    i18n: i18n,
+    getString: getString,
     sleep: sleep,
     successFalse: successFalse,
     successTrue: successTrue,

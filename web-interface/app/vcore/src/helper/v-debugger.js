@@ -95,24 +95,6 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( 'body', $debug );
   }
 
-  function resetApp() {
-    return V.cN( {
-      c: 'reset-app__btn cursor-pointer',
-      s: {
-        'reset-app__btn': {
-          position: 'fixed',
-          top: '200px',
-          left: '0px',
-          background: 'blue',
-          color: 'white',
-          padding: '4px 5px',
-        },
-      },
-      k: handleAppReset,
-      h: 'R',
-    } );
-  }
-
   function debugLogs() {
     return V.cN( {
       c: 'debog-log__btn cursor-pointer',
@@ -131,6 +113,42 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
+  function downloadStrings() {
+    return V.cN( {
+      c: 'download-strings__btn cursor-pointer',
+      s: {
+        'download-strings__btn': {
+          position: 'fixed',
+          top: '200px',
+          left: '0px',
+          background: 'orange',
+          color: 'white',
+          padding: '4px 5px',
+        },
+      },
+      k: handleStringsDownload,
+      h: 'T',
+    } );
+  }
+
+  function resetApp() {
+    return V.cN( {
+      c: 'reset-app__btn cursor-pointer',
+      s: {
+        'reset-app__btn': {
+          position: 'fixed',
+          top: '226px',
+          left: '0px',
+          background: 'blue',
+          color: 'white',
+          padding: '4px 5px',
+        },
+      },
+      k: handleAppReset,
+      h: 'R',
+    } );
+  }
+
   /* ====================== handlers ====================== */
 
   function handleClearDebugNode() {
@@ -146,14 +164,24 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     V.setToggle( 'debug' );
   }
 
+  function handleStringsDownload() {
+    const json = JSON.stringify( VTranslation.getStringsToTranslate(), null, 2 );
+    const blob = new Blob( [json], { type: 'application/json' } );
+    const $a = document.createElement( 'a' );
+    $a.download = 'strings.json';
+    $a.href = window.URL.createObjectURL( blob );
+    $a.click();
+  }
+
   /* ====================== export ====================== */
 
   V.debug = debug;
 
   return {
     debug: debug,
-    resetApp: resetApp,
     debugLogs: debugLogs,
+    downloadStrings: downloadStrings,
+    resetApp: resetApp,
   };
 
 } )();

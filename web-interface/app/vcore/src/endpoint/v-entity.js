@@ -23,26 +23,30 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    invalidTitle: 'Invalid title',
-    invalidChar: 'Title: invalid character',
-    maxLength: 'Title: max 14 characters in a word',
-    min2Adjecent: 'Title: min 2 adjacent letters',
-    maxHuman: 'Title: max 3 words',
-    maxEntity: 'Title: max 7 words',
-    tooLong: 'Title: max 200 characters',
-    tooShort: 'Title: min 2 characters',
-    noNumbers: 'Title: Your personal name can not include a number',
-    free: 'free',
-    targetRange: 'Target must be within 0 - 9999',
-    isNaN: 'Target must be a number',
-    noUnit: 'Please add a unit, such as "hour"',
-    noTarget: 'Please add a target',
-  };
+  const ui = ( () => {
+    const strings = {
+      invalidTitle: 'Invalid title',
+      invalidChar: 'Title: invalid character',
+      maxLength: 'Title: max 14 characters in a word',
+      min2Adjecent: 'Title: min 2 adjacent letters',
+      maxHuman: 'Title: max 3 words',
+      maxEntity: 'Title: max 7 words',
+      tooLong: 'Title: max 200 characters',
+      tooShort: 'Title: min 2 characters',
+      noNumbers: 'Title: Your personal name can not include a number',
+      free: 'free',
+      targetRange: 'Target must be within 0 - 9999',
+      isNaN: 'Target must be a number',
+      noUnit: 'Please add a unit, such as "hour"',
+      noTarget: 'Please add a target',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'entity', scope || 'error message' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== private methods ================= */
 
@@ -295,19 +299,19 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     let error;
 
-    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
-    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
-    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = getString( ui.invalidTitle ) : null;
-    title.match( charBlacklist ) ? error = getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
-    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = getString( ui.min2Adjecent ) : null;
-    // title.length > 200  ? error = getString( ui.tooLong ) : null; // redundant rule
-    // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
-    // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
-    // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-    ( [ 'Person', 'PersonMapped' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
-    ( [ 'Person', 'PersonMapped' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
-    ( [ 'Person', 'PersonMapped' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
-    wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
+    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = V.getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
+    title.indexOf( '2121' ) != -1 ? error = V.getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
+    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = V.getString( ui.invalidTitle ) : null;
+    title.match( charBlacklist ) ? error = V.getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
+    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = V.getString( ui.min2Adjecent ) : null;
+    // title.length > 200  ? error = V.getString( ui.tooLong ) : null; // redundant rule
+    // title.length < 2 ? error = V.getString( ui.tooShort ) : null; // redundant rule
+    // title.indexOf( '#' ) != -1 ? error = V.getString( ui.invalidTitle ) : null;
+    // title.replace( /[0-9]/g, '' ).length < title.length ? error = V.getString( ui.invalidTitle ) : null;
+    ( [ 'Person', 'PersonMapped' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = V.getString( ui.maxHuman ) : null;
+    ( [ 'Person', 'PersonMapped' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = V.getString( ui.noNumbers ) : null;
+    ( [ 'Person', 'PersonMapped' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = V.getString( ui.maxEntity ) : null;
+    wordLengthExeeded.includes( true ) ? error = V.getString( ui.maxLength ) : null;
 
     if ( error ) {
       return {
@@ -391,17 +395,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     target == '' ? target = undefined : null;
 
     if (  target ) {
-      unit == '' ? error = getString( ui.noUnit ) : null;
-      isNaN( target ) ? error = getString( ui.isNaN ) : null;
+      unit == '' ? error = V.getString( ui.noUnit ) : null;
+      isNaN( target ) ? error = V.getString( ui.isNaN ) : null;
     }
 
     if ( ['Pool'].includes( role ) ) {
       unit == '' ? error = undefined : null;
-      !target ? error = getString( ui.noTarget ) : null;
-      // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
+      !target ? error = V.getString( ui.noTarget ) : null;
+      // target.toLowerCase().trim() == V.getString( ui.free ).trim() ? target = 0 : null;
     }
 
-    Number( target ) > 9999 || Number( target ) < 0 ? error = getString( ui.targetRange ) : null;
+    Number( target ) > 9999 || Number( target ) < 0 ? error = V.getString( ui.targetRange ) : null;
 
     if ( error ) {
       return {

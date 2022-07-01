@@ -43,10 +43,11 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       .then( () => console.log( 'Success loading vcore dependencies' ) )
       .catch( () => console.error( 'Error loading vcore dependencies' ) );
 
-    /** load config */
+    /** load config and primary files */
 
     await Promise.all( [
       setInitScript( host + '/vcore/src/v/v-config.js' ),
+      setInitScript( host + '/vcore/src/state/v-state.js' ),
     ] )
       .then( () => console.log( 'Success loading v-config.js' ) )
       .catch( () => console.error( 'Error loading v-config.js' ) );
@@ -55,7 +56,7 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
 
     await Promise.all( [
       setInitScript( host + '/vcore/src/v/v-key.js' ),
-      setInitScript( host + '/vcore/src/v/v-translations.js' ),
+      setInitScript( host + '/vcore/src/translation/v-translation.js' ),
       setInitScript( host + '/vcore/src/dom/v-dom.js' ),
       setInitScript( host + '/vcore/src/dom/v-route.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-auth.js' ),
@@ -67,7 +68,6 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       setInitScript( host + '/vcore/src/helper/v-description.js' ),
       setInitScript( host + '/vcore/src/helper/v-helper.js' ),
       setInitScript( host + '/vcore/src/ledger/primary/v-ledger.js' ),
-      setInitScript( host + '/vcore/src/state/v-state.js' ),
     ] )
       .then( () => console.log( 'Success loading vcore source files' ) )
       .catch( () => console.error( 'Error loading vcore source files' ) );

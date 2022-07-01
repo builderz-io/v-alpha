@@ -11,40 +11,44 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    upload: 'uploading...',
-    change: 'Change',
-    image: 'Image',
-    titleOrCity: 'Enter a title or city name',
+  const ui = ( () => {
+    const strings = {
+      upload: 'uploading...',
+      change: 'Change',
+      image: 'Image',
+      titleOrCity: 'Enter a title or city name',
 
-    key: 'Key',
-    title: 'Title',
-    email: 'Email',
-    emailConfirm: '4 digits',
-    loc: 'Location',
-    descr: 'Description and Links',
-    target: 'Target',
-    unit: 'Unit',
-    search: 'Search',
-    create: 'create',
-    query: 'search',
+      key: 'Key',
+      title: 'Title',
+      email: 'Email',
+      emailConfirm: '4 digits',
+      loc: 'Location',
+      descr: 'Description and Links',
+      target: 'Target',
+      unit: 'Unit',
+      search: 'Search',
+      create: 'create',
+      query: 'search',
 
-    getStarted: 'Watch intro',
-    connectWallet: 'Connect a new crypto wallet',
-    progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
-    brightId: 'Verify with BrightID to receive VALUE basic income.',
-  };
+      getStarted: 'Watch intro',
+      connectWallet: 'Connect a new crypto wallet',
+      progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
+      brightId: 'Verify with BrightID to receive VALUE basic income.',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'interaction', scope || 'interaction content' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
   function handleImageUpload( e ) {
-    V.setNode( '#img-upload__label', getString( ui.upload ) );
+    V.setNode( '#img-upload__label', V.getString( ui.upload ) );
     V.castImageUpload( e ).then( res => {
-      V.setNode( '#img-upload__label', getString( ui.change ) );
+      V.setNode( '#img-upload__label', V.getString( ui.change ) );
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
         t: 'img',
@@ -113,7 +117,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       c: btnClasses,
       h: {
         c: 'create-btn pxy',
-        h: getString( ui.query ),
+        h: V.getString( ui.query ),
       }, // img( 'search' )
     } );
   }
@@ -143,7 +147,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
       c: btnClasses,
       h: {
         c: 'create-btn pxy',
-        h: getString( ui.create ),
+        h: V.getString( ui.create ),
       }, // img( 'send' )
     } );
   }
@@ -202,7 +206,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     const fields = {
       uPhrase: {
-        label: getString( ui.key ),
+        label: V.getString( ui.key ),
         inputId: 'loginform__uphrase',
         attributes: {
           type: 'password',
@@ -210,7 +214,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       title: {
-        label: getString( ui.title ),
+        label: V.getString( ui.title ),
         inputId: 'plusform__title',
         attributes: {
           value: whichValue,
@@ -221,7 +225,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       email: {
-        label: getString( ui.email ),
+        label: V.getString( ui.email ),
         inputId: 'plusform__email',
         attributes: {
           // value: whichValue,
@@ -232,7 +236,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       emailConfirm: {
-        label: getString( ui.emailConfirm ),
+        label: V.getString( ui.emailConfirm ),
         inputId: 'plusform__emailConfirm',
         attributes: {
           // value: whichValue,
@@ -243,7 +247,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       location: {
-        label: getString( ui.loc ),
+        label: V.getString( ui.loc ),
         inputId: 'plusform__loc',
         attributes: {
           value: whichValue,
@@ -253,22 +257,22 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       description: {
-        label: getString( ui.descr ),
+        label: V.getString( ui.descr ),
         inputId: 'plusform__descr',
         multiline: true,
       },
       target: {
-        label: getString( ui.target ),
+        label: V.getString( ui.target ),
         inputId: 'plusform__target',
         fieldClasses: 'flex-grow w-30%',
       },
       unit: {
-        label: getString( ui.unit ),
+        label: V.getString( ui.unit ),
         inputId: 'plusform__unit',
         fieldClasses: 'flex-grow w-30%',
       },
       search: {
-        label: getString( ui.search ),
+        label: V.getString( ui.search ),
         inputId: 'search-input',
         attributes: {
           autocomplete: 'off',
@@ -390,7 +394,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             a: {
               for: 'img-upload__file',
             },
-            h: getString( ui.image ),
+            h: V.getString( ui.image ),
           },
           {
             t: 'input',
@@ -422,7 +426,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         {
           t: 'p',
           c: 'pxy',
-          h: getString( ui.titleOrCity ),
+          h: V.getString( ui.titleOrCity ),
         },
         // V.cN( {
         //   t: 'search-filter-nav',
@@ -470,7 +474,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.connectWallet, 'onboarding call to action' ) + '</p>',
+          html: '<p>' + '👋 ' + V.getString( ui.connectWallet, 'onboarding call to action' ) + '</p>',
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -486,7 +490,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.progressVerification, 'onboarding call to action' ) + '</p>',
+          html: '<p>' + '👋 ' + V.getString( ui.progressVerification, 'onboarding call to action' ) + '</p>',
         } );
         return CanvasComponents.card( $cardContent );
       }
@@ -494,7 +498,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.brightId, 'onboarding call to action' ) + '</p>',
+          html: '<p>' + '👋 ' + V.getString( ui.brightId, 'onboarding call to action' ) + '</p>',
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
         return CanvasComponents.card( $cardContent );
@@ -520,7 +524,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       c: 'pill getstarted flex justify-center items-center rounded-full cursor-pointer no-txt-select whitespace-no-wrap',
-      h: getString( ui.getStarted ),
+      h: V.getString( ui.getStarted ),
       k: handleGetStarted,
     } );
   }

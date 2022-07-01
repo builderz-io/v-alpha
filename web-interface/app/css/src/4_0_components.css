@@ -4,13 +4,13 @@ background {
 
 }
 
-[type="radio"]:checked,
-[type="radio"]:not(:checked){
+.join-selector__input:checked,
+.join-selector__input:not(:checked){
   position: absolute;
   visibility: hidden;
 }
 
-[type="radio"]:checked + label {
+.join-selector__input:checked + label {
   background: rgba(var(--brandSecondary), 1);
 }
 

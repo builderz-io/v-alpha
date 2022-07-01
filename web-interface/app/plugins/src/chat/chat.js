@@ -9,6 +9,20 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   let rerun;
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      chat: 'Chat',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== event handlers ================== */
 
   function handleInputFocus() {
@@ -218,7 +232,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNavItem( 'serviceNav', [
       {
-        title: 'Chat',
+        title: V.getString( ui.chat ),
         path: '/chat/everyone',
         draw: function() {
           Chat.draw( '/chat/everyone' );
