@@ -11,6 +11,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   const ui = ( () => {
     const strings = {
+      join: 'Join',
       upload: 'uploading...',
       change: 'Change image',
       next: 'Next',
@@ -674,7 +675,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             c: 'font-medium fs-xs txt-button',
             a: { x: '50%', y: '59%' },
             k: handleJoin,
-            h: 'Join',
+            h: V.getString( ui.join ),
           },
         ],
       },

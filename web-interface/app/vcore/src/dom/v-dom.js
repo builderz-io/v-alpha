@@ -94,17 +94,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
     };
 
-    const castI18n = ( str ) => {
-
-      // translate string
-      if ( VTranslation ) {
-        str = VTranslation.get( str );
-      }
-
-      /* return translated text node */
-      return document.createTextNode( str );
-    };
-
     /* Either set node directly if data is a formatted node or a string ... */
 
     if ( data && data instanceof Element ) {
@@ -113,7 +102,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( data && typeof data === 'string' ) {
-      setNode( castI18n( data ), options );
+      setNode( document.createTextNode( data ), options );
       return;
     }
 
@@ -152,10 +141,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         setAttr( 'class', val );
       }
       else if ( ['h', 'html'].includes( key ) ) {
-        if ( typeof val == 'string' ) {
-          $elem.appendChild( castI18n( val ) );
-        }
-        else if ( typeof val == 'number' ) {
+        if ( ['string', 'number'].includes( typeof val ) ) {
           $elem.appendChild( document.createTextNode( val ) );
         }
         else if ( Array.isArray( val ) ) {
@@ -270,17 +256,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
     };
 
-    const castI18n = ( str ) => {
-
-      // translate string
-      if ( VTranslation ) {
-        str = VTranslation.get( str );
-      }
-
-      /* return translated text node */
-      return document.createTextNode( str );
-    };
-
     /* Either set node directly if data is a formatted node or a string ... */
 
     if ( data && data instanceof Element ) {
@@ -289,7 +264,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( data && typeof data === 'string' ) {
-      setNode( castI18n( data ), options );
+      setNode( document.createTextNode( data ), options );
       return;
     }
 
@@ -331,10 +306,7 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
         break;
 
       case 'h':
-        if ( typeof val == 'string' ) {
-          $elem.appendChild( castI18n( val ) );
-        }
-        else if ( typeof val == 'number' ) {
+        if ( ['string', 'number'].includes( typeof val ) ) {
           $elem.appendChild( document.createTextNode( val ) );
         }
         else if ( Array.isArray( val ) ) {

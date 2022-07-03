@@ -244,7 +244,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const $bottomRight = V.cN( {
       c: 'card__bottom-right pxy',
       h: [
-        { t: 'p', c: 'pxy capitalize', h: cardData.role },
+        { t: 'p', c: 'pxy capitalize', h: V.getString( cardData.role ) },
         { x: text, t: 'p', c: 'pxy', h: castDescr.$intro },
         { t: 'p', c: 'pxy', h: cardData.geometry && cardData.geometry.baseLocation ? cardData.geometry.baseLocation : '' },
       ],
@@ -299,7 +299,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
           {
             t: 'p',
             c: 'pxy fs-s capitalize txt-center',
-            h: entity.role,
+            h: V.getString( entity.role ),
           },
           {
             x: text,

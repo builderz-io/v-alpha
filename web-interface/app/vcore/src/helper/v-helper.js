@@ -641,32 +641,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => functions.reduce( ( v, f ) => f( v ), x );
   }
 
-  function getString( which, whichContext, whichScope ) {
-
-    /*
-     * Strings are wrapped into getString. This is kept from previous version
-     * of translation management and could be still useful in the future.
-     */
-
-    // var err = new Error();
-    // var stack = err.stack;
-    // const [, filename, line, column ] = err.stack.match( /\/([\/\w-_\.]+\.js):(\d*):(\d*)/ );
-    //
-    // console.log( [stack] );
-    // console.log( err.stack.match( /\/([/\w-_.]+\.js)/ ) );
-
-    // const e = new Error();
-    // const regex = /\((.*):(\d+):(\d+)\)$/;
-    // const match = regex.exec( e.stack.split( '\n' )[2] );
-    // console.log( {
-    //   filepath: match[1],
-    //   line: match[2],
-    //   column: match[3],
-    // } );
-
-    return which;
-  }
-
   function sleep( ms ) {
     return new Promise( resolve => setTimeout( resolve, ms ) );
   }
@@ -719,7 +693,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
-  V.getString = getString;
   V.sleep = sleep;
   V.successFalse = successFalse;
   V.successTrue = successTrue;
@@ -746,7 +719,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,
-    getString: getString,
     sleep: sleep,
     successFalse: successFalse,
     successTrue: successTrue,

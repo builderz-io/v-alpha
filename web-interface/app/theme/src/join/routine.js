@@ -343,7 +343,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setResponse( which, setAsIs ) {
-    V.getNode( '.join-submit__response' ).innerText = setAsIs ? which : V.getString( ui[which] );
+    V.getNode( '.join-submit__response' ).innerText = V.getString( setAsIs ? which : ui[which] );
   }
 
   function setSelectors() {

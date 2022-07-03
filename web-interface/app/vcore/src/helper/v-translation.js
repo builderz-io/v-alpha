@@ -40,7 +40,7 @@ const VTranslation = ( function() {
     return stringsToTranslate;
   }
 
-  function get( str ) {
+  function getString( str ) {
     return locale != 'en_US'
       ? translations[ locale ]
         && translations[ locale ][ str ]
@@ -59,16 +59,17 @@ const VTranslation = ( function() {
 
   async function launch() {
     if ( locale == 'en_US' ) { return }
-    console.log( locale );
     const source = `${ V.getSetting( 'sourceEndpoint' ) }${ V.getSetting( 'localeSlug' ) }/${ locale }.json`;
     const res = await V.getData( '', source, 'api' );
     translations[locale] = res.data[0];
   }
 
+  V.getString = getString;
+
   return {
     setStringsToTranslate: setStringsToTranslate,
     getStringsToTranslate: getStringsToTranslate,
-    get: get,
+    getString: getString,
     getLocale: getLocale,
     launch: launch,
   };
