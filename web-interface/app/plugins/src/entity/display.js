@@ -98,6 +98,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.mediumImageCard(),
       // UserComponents.roleCard(),
       Pool.drawWidget(),
+      Farm.drawPlotWidget(),
       UserComponents.descriptionCard(),
       UserComponents.questionnaireCard(),
       UserComponents.socialCard(),

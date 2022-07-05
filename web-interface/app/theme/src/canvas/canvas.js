@@ -97,6 +97,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/data/data.js' ),
         V.setScript( host + '/plugins/src/pool/components.js' ),
         V.setScript( host + '/plugins/src/pool/pool.js' ),
+        V.setScript( host + '/plugins/src/farm/components.js' ),
+        V.setScript( host + '/plugins/src/farm/farm.js' ),
         V.setScript( host + '/plugins/src/marketplace/components.js' ),
         V.setScript( host + '/plugins/src/marketplace/definitions.js' ),
         V.setScript( host + '/plugins/src/marketplace/marketplace.js' ),

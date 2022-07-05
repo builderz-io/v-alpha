@@ -28,6 +28,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinDateTimeBottom: '',
       joinLocTop: 'Add your location.',
       joinLocBottom: '',
+      joinLocPickerTop: 'Pick an exact location.',
+      joinLocPickerBottom: '',
       joinImgTop: 'Add your image.',
       joinImgBottom: '',
       joinEmailTop: 'Add your email.',
@@ -400,6 +402,16 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
+  function joinLocPicker() {
+    return V.cN(
+      {
+        c: 'join-loc-picker',
+        h: 'hello',
+      },
+
+    );
+  }
+
   function joinSelectorsCont() {
     return V.cN(
       {
@@ -591,6 +603,13 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     ];
   }
 
+  function joinLocationPicker() {
+    return [
+      joinHeader( 'joinLocPickerTop', 'joinLocPickerBottom' ),
+      joinLocPicker(),
+    ];
+  }
+
   function joinImage() {
     return [
       joinHeader( 'joinImgTop', 'joinImgBottom' ),
@@ -694,6 +713,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinTarget: joinTarget,
     joinDateTime: joinDateTime,
     joinLocation: joinLocation,
+    joinLocationPicker: joinLocationPicker,
     joinImage: joinImage,
     joinEmail: joinEmail,
     joinAwaitKey: joinAwaitKey,

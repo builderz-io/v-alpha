@@ -217,5 +217,10 @@
   "Media": "Medien",
   "Moocs": "Moocs",
   "Hall": "Foyer",
-  "Join": "Start"
+  "Join": "Start",
+  "Farm": "Betrieb",
+  "Farms": "Betriebe",
+  "Plot": "Schlag",
+  "Plots": "Schläge",
+  "Pick an exact location.": "Markiere den genauen Ort."
 }
