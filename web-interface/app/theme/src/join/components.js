@@ -406,7 +406,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN(
       {
         c: 'join-loc-picker',
-        h: 'hello',
+        h: [
+          {
+            c: 'join-loc-picker__map',
+          },
+          {
+            t: 'input',
+            c: 'join-loc-picker__input',
+          },
+        ],
       },
 
     );

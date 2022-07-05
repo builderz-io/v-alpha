@@ -32,6 +32,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
       joinResLoc: 'Please add your continent at least',
       joinResNoLat: 'We couldn\'t find this location. Please select from the list or clear the entry to continue',
+      joinResNoLatPick: 'Please pick a location',
       joinResImg: 'Please choose an avatar at least',
       joinResEmail: 'Please add a valid email address',
       joinResEmailConfirm: 'Please enter the 4-digit code we sent',
@@ -148,6 +149,29 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     /* add Google Places API to location card */
     if ( cardIndex == 3 ) {
       Google.initAutocomplete( 'join-form' );
+    }
+
+    /* add picker to location-picker card */
+    if ( cardIndex == 4 ) {
+      $( '.join-loc-picker__input' ).leafletLocationPicker( {
+        alwaysOpen: true,
+        mapContainer: '.join-loc-picker__map',
+        height: 210,
+        map: {
+          zoom: 4,
+          center: L.latLng( [ 51.376067, 9.84375 ] ),
+          zoomControl: false,
+          attributionControl: false,
+        },
+        onChangeLocation: function pickedLocation( data ) {
+          console.log( data );
+          setResponse( '', 'setAsIs' );
+
+          entityData.location = 'picked location';
+          entityData.lat = data.latlng.lat;
+          entityData.lng = data.latlng.lng;
+        },
+      } );
     }
 
     /* set the new human entity on "download key" card */
@@ -275,7 +299,15 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
     /* location picker */
     else if ( cardIndex == 4 ) {
-      return true;
+      if (
+        entityData.lat
+      ) {
+        return true;
+      }
+      else {
+        setResponse( 'joinResNoLatPick' );
+        return false;
+      }
     }
 
     /* date & time */

@@ -33,6 +33,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setStylesheet( host + '/css/src/4_0_components.css' ),
         V.setStylesheet( host + '/css/src/8_0_overrides.css' ),
         V.setStylesheet( host + '/css/src/9_0_leaflet.css' ),
+        V.setStylesheet( host + '/css/src/9_1_leaflet-locationpicker.css' ),
       ] )
         .then( () => console.log( 'Success loading CSS source files' ) )
         .catch( () => console.error( 'Error loading CSS source files' ) );
@@ -79,6 +80,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       await Promise.all( [
+        V.setScript( host + '/plugins/dependencies/jquery-3.6.0.slim.min.js' ),
+        V.setScript( host + '/plugins/dependencies/leaflet.js' ),
+      ] )
+        .then( () => console.log( 'Success loading plugin source files A' ) )
+        .catch( () => console.error( 'Error loading plugin source files A' ) );
+
+      await Promise.all( [
         V.setScript( host + '/plugins/src/account/components.js' ),
         V.setScript( host + '/plugins/src/account/account.js' ),
         V.setScript( host + '/plugins/src/entity/components.js' ),
@@ -89,7 +97,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/chat/components.js' ),
         V.setScript( host + '/plugins/src/chat/chat.js' ),
 
-        V.setScript( host + '/plugins/dependencies/leaflet.js' ),
+        V.setScript( host + '/plugins/dependencies/leaflet-locationpicker.js' ),
         V.setScript( host + '/plugins/src/map/map.js' ),
 
         V.setScript( host + '/plugins/src/google/google.js' ),
@@ -107,8 +115,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/hall/components.js' ),
         V.setScript( host + '/plugins/src/hall/hall.js' ),
       ] )
-        .then( () => console.log( 'Success loading plugin source files' ) )
-        .catch( () => console.error( 'Error loading plugin source files' ) );
+        .then( () => console.log( 'Success loading plugin source files B' ) )
+        .catch( () => console.error( 'Error loading plugin source files B' ) );
     }
 
     V.setNode( 'body', '' );
