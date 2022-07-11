@@ -1,0 +1,228 @@
+[
+  {
+    "ID": 1004,
+    "NAME": "Winter rye",
+    "LS": 0,
+    "N": {
+      "BFN": 0,
+      "NYR": 0
+    },
+    "MP": {
+      "DM": 0.86,
+      "C": 0.445,
+      "N": 0.0198
+    },
+    "SP": {
+      "DM": 0.86,
+      "C": 0.46,
+      "N": 0.00495
+    },
+    "LIT": {
+      "DM": 0,
+      "C": 0,
+      "N": 0
+    },
+    "STB": {
+      "DM": 0.86,
+      "C": 0.46,
+      "N": 0.00495
+    },
+    "RTS": {
+      "DM": 1,
+      "C": 0.4,
+      "N": 0.0088
+    },
+    "RATIO": {
+      "SPMP": 1.3,
+      "LITMP": 0,
+      "STBMP": 0.261904761904762,
+      "RTSMP": 0.733333333333334
+    }
+  },
+  {
+    "ID": 1034,
+    "NAME": "Potato",
+    "LS": 0,
+    "N": {
+      "BFN": 0,
+      "NYR": -40
+    },
+    "MP": {
+      "DM": 0.22,
+      "C": 0.42,
+      "N": 0.0154
+    },
+    "SP": {
+      "DM": 0.4,
+      "C": 0.4,
+      "N": 0.0099
+    },
+    "LIT": {
+      "DM": 0,
+      "C": 0,
+      "N": 0
+    },
+    "STB": {
+      "DM": 0.4,
+      "C": 0.4,
+      "N": 0.0099
+    },
+    "RTS": {
+      "DM": 1,
+      "C": 0.4,
+      "N": 0.0253
+    },
+    "RATIO": {
+      "SPMP": 0,
+      "LITMP": 0,
+      "STBMP": 0.3,
+      "RTSMP": 0.101010101010101
+    }
+  },
+  {
+    "ID": -1,
+    "NAME": "* preset *",
+    "LS": -1,
+    "N": {
+      "BFN": -1,
+      "NYR": -1
+    },
+    "MP": {
+      "DM": -1,
+      "C": -1,
+      "N": -1
+    },
+    "SP": {
+      "DM": -1,
+      "C": -1,
+      "N": -1
+    },
+    "LIT": {
+      "DM": -1,
+      "C": -1,
+      "N": -1
+    },
+    "STB": {
+      "DM": -1,
+      "C": -1,
+      "N": -1
+    },
+    "RTS": {
+      "DM": -1,
+      "C": -1,
+      "N": -1
+    },
+    "RATIO": {
+      "SPMP": -1,
+      "LITMP": -1,
+      "STBMP": -1,
+      "RTSMP": -1
+    }
+  },
+  {
+    "ID": "Crop id for internal use",
+    "NAME": "Name of the crop in English language",
+    "LS": {
+      "descr": "Share of legumes in mixture",
+      "unit": "Decimal share"
+    },
+    "N": {
+      "BFN": {
+        "descr": "Biological N fixation as share of total plant N (NPB)",
+        "unit": "Decimal share"
+      },
+      "NYR": {
+        "descr": "Not yield-related nitrogen mineralized from organic matter",
+        "unit": "kg N * ha-1"
+      }
+    },
+    "MP": {
+      "DM": {
+        "descr": "Main product dry matter content",
+        "unit": "Decimal share"
+      },
+      "C": {
+        "descr": "Main product C content in dry matter",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "descr": "Main product N content in dry matter",
+        "unit": "Decimal share"
+      }
+    },
+    "SP": {
+      "DM": {
+        "descr": "Side product dry matter content",
+        "unit": "Decimal share"
+      },
+      "C": {
+        "descr": "Side product C content in dry matter",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "descr": "Side product N content in dry matter",
+        "unit": "Decimal share"
+      }
+    },
+    "LIT": {
+      "DM": {
+        "descr": "Litter dry matter content",
+        "unit": "Decimal share"
+      },
+      "C": {
+        "descr": "Litter C content in dry matter",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "descr": "Litter N content in dry matter",
+        "unit": "Decimal share"
+      }
+    },
+    "STB": {
+      "DM": {
+        "descr": "Stubble dry matter content",
+        "unit": "Decimal share"
+      },
+      "C": {
+        "descr": "Stubble C content in dry matter",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "descr": "Stubble N content in dry matter",
+        "unit": "Decimal share"
+      }
+    },
+    "RTS": {
+      "DM": {
+        "descr": "Roots dry matter content",
+        "unit": "Decimal share"
+      },
+      "C": {
+        "descr": "Roots C content in dry matter",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "descr": "Roots N content in dry matter",
+        "unit": "Decimal share"
+      }
+    },
+    "RATIO": {
+      "SPMP": {
+        "descr": "",
+        "unit": "Decimal share"
+      },
+      "LITMP": {
+        "descr": "",
+        "unit": "Decimal share"
+      },
+      "STBMP": {
+        "descr": "",
+        "unit": "Decimal share"
+      },
+      "RTSMP": {
+        "descr": "",
+        "unit": "Decimal share"
+      }
+    }
+  }
+]

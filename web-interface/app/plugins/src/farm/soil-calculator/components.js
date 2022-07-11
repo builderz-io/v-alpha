@@ -1,7 +1,7 @@
-const FarmComponents = ( function() { // eslint-disable-line no-unused-vars
+const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for V Farm Plugin
+   * Components for the soil calculator
    *
    */
 
@@ -61,7 +61,7 @@ const FarmComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================= */
 
-  function soilCalculatorContent( data ) {
+  function content( data ) {
 
     if ( data ) {
       setCalcData( data );
@@ -152,7 +152,7 @@ const FarmComponents = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function soilCalculatorWrapper( $table ) {
+  function wrapper( $table ) {
     return V.cN( {
       c: 'soil-calculator-wrapper w-full',
       h: $table,
@@ -160,8 +160,8 @@ const FarmComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    soilCalculatorWrapper: soilCalculatorWrapper,
-    soilCalculatorContent: soilCalculatorContent,
+    wrapper: wrapper,
+    content: content,
   };
 
 } )();

@@ -105,7 +105,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/data/data.js' ),
         V.setScript( host + '/plugins/src/pool/components.js' ),
         V.setScript( host + '/plugins/src/pool/pool.js' ),
-        V.setScript( host + '/plugins/src/farm/components.js' ),
+        V.setScript( host + '/plugins/src/farm/soil-calculator/components.js' ),
+        V.setScript( host + '/plugins/src/farm/soil-calculator/soil-calculator.js' ),
         V.setScript( host + '/plugins/src/farm/farm.js' ),
         V.setScript( host + '/plugins/src/marketplace/components.js' ),
         V.setScript( host + '/plugins/src/marketplace/definitions.js' ),
@@ -357,6 +358,41 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      * Canvas view renders on initial page load, reload and history change
      *
      */
+
+    setTimeout( function testSoilCalc() {
+      SoilCalculator
+        .getResults( {
+          SITE: {
+            CN: 10,
+            FCAP: 40,
+            PCIP: 650,
+            PCIP_MP: 0.5,
+            N: {
+              DEP: 20,
+            },
+          },
+          CROP: {
+            ID: 1004,
+          },
+          FTLZ: {
+            ORG: {
+              ID: 1041,
+              QTY: 30,
+              T: 2,
+            },
+          },
+          BMASS: {
+            MP: {
+              QTY: 4,
+              EXEC: true,
+            },
+            SP: {
+              EXEC: true,
+            },
+          },
+        } )
+        .then( res => console.log( res ) );
+    }, 2000 );
 
     Chat.drawMessageForm( 'clear' );
 

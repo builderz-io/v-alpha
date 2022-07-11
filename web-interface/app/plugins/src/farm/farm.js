@@ -72,7 +72,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
   function preview( whichPath ) {
     Navigation.draw( whichPath );
     Page.draw( {
-      position: 'top',
+      position: 'peek',
     } );
   }
 
@@ -130,7 +130,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
       two: 4,
     };
 
-    const $inner = FarmComponents.soilCalculatorWrapper( FarmComponents.soilCalculatorContent( widgetPreview ) );
+    const $inner = SoilCalculatorComponents.wrapper( SoilCalculatorComponents.content( widgetPreview ) );
 
     return CanvasComponents.card( $inner, V.getString( ui.widgetTitle ) );
 
