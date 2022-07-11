@@ -79,7 +79,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTokenBalance( balance, decimals ) {
-    const divisibility = V.getState( 'contract' ).divisibility || 18;
+    const divisibility = V.getState( 'contract' ) ? V.getState( 'contract' ).divisibility : 18;
     return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
@@ -121,7 +121,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     window.Web3Obj = new Web3( provider );
     contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getTokenContract().contractAddress );
 
-    const state = await V.getContractState();
+    const state = V.getSetting( 'queryContractState' ) ? await V.getContractState() : {};
 
     if ( state.success ) {
       // V.setState( 'contract', state.data ? state.data[0] : {} );

@@ -88,6 +88,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     devMode: VNetworkInit.devMode,
     drawMap: true,
+    queryContractState: true,
 
     joinVersion: 2,
 
