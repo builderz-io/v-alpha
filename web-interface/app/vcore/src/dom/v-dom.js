@@ -193,6 +193,9 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       else if ( ['v', 'value'].includes( key ) ) {
         setAttr( 'value', val );
       }
+      else if ( ['for'].includes( key ) ) {
+        setAttr( 'for', val );
+      }
       else if ( ['innerHtml'].includes( key ) ) {
         $elem.innerHTML = val;
       }
@@ -366,6 +369,10 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
       case 'v':
         setAttr( 'value', val );
+        break;
+
+      case 'for':
+        setAttr( 'for', val );
         break;
 
       case 'innerHtml':
