@@ -293,10 +293,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         h: [
           {
             t: 'input',
-            p: 'radio',
             c: 's-calc-input-radio',
             i: 's-calc-input-' + section + '-' + key + '_1',
             a: {
+              type: 'radio',
               name: section + '_' + key,
               checked: val ? true : undefined,
             },
@@ -313,10 +313,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           },
           {
             t: 'input',
-            p: 'radio',
             c: 's-calc-input-radio',
             i: 's-calc-input-' + section + '-' + key + '_2',
             a: {
+              type: 'radio',
               name: section + '_' + key,
               checked: val ? undefined : true,
             },
