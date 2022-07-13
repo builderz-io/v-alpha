@@ -303,6 +303,10 @@
   float: right;
 }
 
+.zero-auto {
+  margin: 0 auto;
+}
+
 /* Interactivity */
 .cursor-pointer {
   cursor: pointer;

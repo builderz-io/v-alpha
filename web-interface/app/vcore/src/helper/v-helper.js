@@ -380,6 +380,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castClone( data ) {
+    return JSON.parse( JSON.stringify( data ) );
+  }
+
   function castShortAddress( address, chars ) {
     return address.substr( 0, chars || 6 ) + ' ... ' + address.substr( address.length - ( chars || 6 ) );
   }
@@ -686,6 +690,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castFullId = castFullId;
   V.castRole = castRole;
   V.castJson = castJson;
+  V.castClone = castClone;
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;

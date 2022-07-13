@@ -12,6 +12,140 @@ const SoilCalculator = ( () => {
    * @version 0.2.0
    */
 
+  /* schema definitions */
+
+  const schemas = {
+    templates: function( inputNum, inputRadio, inputDrop ) {
+      return {
+        CROP: {
+          ID: inputNum,
+          NAME: inputDrop,
+        },
+        FTLZ: {
+          ORG: {
+            ID: inputNum,
+            NAME: inputDrop,
+            QTY: inputNum,
+          },
+        },
+        BMASS: {
+          MP: {
+            QTY: inputNum,
+            HVST: inputRadio,
+          },
+          SP: {
+            QTY: inputNum,
+            HVST: inputRadio,
+          },
+        },
+        SITE: {
+          CN: inputNum,
+          FCAP: inputNum,
+          PCIP: inputNum,
+          PCIP_MP: inputNum,
+          N: {
+            DEP: inputNum,
+          },
+        },
+      };
+    },
+    mocked: {
+      CROP: {
+        ID: 1004,
+        NAME: 'Winter rye',
+        // ID: 1034,
+        // NAME: 'Potato',
+      },
+      FTLZ: {
+        ORG: {
+          // ID: 1061,
+          // NAME: 'High N straw (grain legumes, rape, maize)',
+          ID: 1041,
+          NAME: 'rotten cattle stable manure',
+          QTY: 30,
+        },
+      },
+      BMASS: {
+        MP: {
+          QTY: 4,
+          HVST: true,
+        },
+        SP: {
+          QTY: 0,
+          HVST: true,
+        },
+      },
+      SITE: {
+        CN: 10,
+        FCAP: 40,
+        PCIP: 650,
+        PCIP_MP: 0.5,
+        N: {
+          DEP: 20,
+        },
+      },
+    },
+    request: {
+      CROP: {
+        ID: -1,
+        NAME: 'none',
+      },
+      FTLZ: {
+        ORG: {
+          ID: -1,
+          NAME: 'none',
+          QTY: -1,
+        },
+      },
+      BMASS: {
+        MP: {
+          QTY: -1,
+          HVST: true,
+        },
+        SP: {
+          QTY: -1,
+          HVST: true,
+        },
+      },
+      SITE: {
+        CN: 10,
+        FCAP: 40,
+        PCIP: 650,
+        PCIP_MP: 0.5,
+        N: {
+          DEP: 20,
+        },
+      },
+    },
+    results: {
+      SOM: {
+        LOSS: -1,
+        SUPP: -1,
+        BAL: {
+          C: -1,
+          N: -1,
+        },
+      },
+      N: {
+        PB: -1,
+        FIX: -1,
+        DEP: -1,
+        NYR: -1,
+        CR: -1,
+        FTLZ: {
+          ORG: -1,
+          REM: -1,
+        },
+      },
+      C: {
+        CR: -1,
+        FTLZ: {
+          REM: -1,
+        },
+      },
+    },
+  };
+
   /* setup module state */
 
   const STATE = {};
@@ -162,63 +296,33 @@ const SoilCalculator = ( () => {
      * @returns { Object } inputs - valid parameter set to run calculations, plus placeholders (-1) for mixins
      */
 
-    // WIP: overwrites req with a parameter set for local dev
-    // TODO: run validations on req object and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
-
-    /*
-    req = {
-      SITE: {
-        CN: 10,
-        FCAP: 40,
-        PCIP: 650,
-        PCIP_MP: 0.5,
-        N: {
-          DEP: 20,
-        },
-      },
-      CROP: {
-        ID: 1004,
-        NAME: 'Winter rye',
-      },
-      FTLZ: {
-        ORG: {
-          ID: 1041,
-          QTY: 30,
-          T: 2,
-        },
-      },
-      BMASS: {
-        MP: {
-          QTY: 4,
-          EXEC: true,
-        },
-        SP: {
-          QTY: -1,
-          EXEC: true,
-        },
-      },
-    };
-    */
+    const clone = V.castClone( req );
 
     /* mixin the full set of crop and fertilizer parameters */
-    Object.assign( req.CROP, getCrop( req.CROP.ID || req.CROP.NAME ) );
-    Object.assign( req.FTLZ.ORG, getFertilizer( req.FTLZ.ORG.ID || req.FTLZ.ORG.NAME ) );
+    Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
+    Object.assign( clone.FTLZ.ORG, getFertilizer( clone.FTLZ.ORG.ID || clone.FTLZ.ORG.NAME ) );
+
+    // TODO: run validations on clone object and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
 
     /* return all as "inputs" */
 
     const inputs = {
-      inputs: req,
+      inputs: clone,
     };
 
     return inputs;
   }
 
-  function runCalculations( _ ) {
+  function castResults( _ ) {
 
     /**
      * @arg { Object } _ - all inputs needed for running the calculations ( sourced from STATE )
      * @returns { Object } results - set of all results
      */
+
+    /* setup schema */
+
+    const __ = getSchema( 'results' );
 
     /**
      * mixins:
@@ -240,57 +344,32 @@ const SoilCalculator = ( () => {
 
     /* N calculations */
 
-    const nPb = toKilo( nPlantBiomass( _ ) );
-    const nFtlzOrg = toKilo( nFertilizerOrganic( _ ) );
-    const nFix = nFixation( _, nPb, nFtlzOrg );
-    const nDep = nDeposition( _ );
-    const nNyr = nNotYieldRelated( _ );
-    const nCr = toKilo( nCropResidues( _ ) );
-    const nFtlzRem = toKilo( nFertilizerRemaining( _ ) );
+    __.N.PB = toKilo( nPlantBiomass( _ ) );
+
+    __.N.FTLZ.ORG = toKilo( nFertilizerOrganic( _ ) );
+    __.N.FTLZ.REM = toKilo( nFertilizerRemaining( _ ) );
+    __.N.FIX = nFixation( _, __.N.PB, __.N.FTLZ.ORG );
+    __.N.DEP = nDeposition( _ );
+    __.N.NYR = nNotYieldRelated( _ );
+    __.N.CR = toKilo( nCropResidues( _ ) );
 
     /* C calculations */
 
-    const cCr = toKilo( cCropResidues( _ ) );
-    const cFtlzRem = toKilo( cFertilizerRemaining( _ ) );
+    __.C.CR = toKilo( cCropResidues( _ ) );
+    __.C.FTLZ.REM = toKilo( cFertilizerRemaining( _ ) );
 
     /* soil organic matter calculations */
 
-    const somLoss = soilOrganicMatterLoss( _, nFtlzOrg, nPb, nFix, nDep, nNyr );
-    const somSupp = soilOrganicMatterSupp( _, nCr, nFtlzRem, cCr, cFtlzRem );
+    __.SOM.LOSS = soilOrganicMatterLoss( _, __.N );
+    __.SOM.SUPP = soilOrganicMatterSupp( _, __.N, __.C );
 
-    const somBalC = soilOrganicMatterBalanceC( somLoss, somSupp );
-    const somBalN = soilOrganicMatterBalanceN( _, somLoss, somSupp );
+    __.SOM.BAL.C = soilOrganicMatterBalanceC( __.SOM );
+    __.SOM.BAL.N = soilOrganicMatterBalanceN( _, __.SOM );
 
     /* cast and return results object */
 
     const results = {
-      results: {
-        SOM: {
-          LOSS: somLoss,
-          SUPP: somSupp,
-          BAL: {
-            C: somBalC,
-            N: somBalN,
-          },
-        },
-        N: {
-          PB: nPb,
-          FIX: nFix,
-          DEP: nDep,
-          NYR: nNyr,
-          CR: nCr,
-          FTLZ: {
-            ORG: nFtlzOrg,
-            REM: nFtlzRem,
-          },
-        },
-        C: {
-          CR: cCr,
-          FTLZ: {
-            REM: cFtlzRem,
-          },
-        },
-      },
+      results: __,
     };
 
     return results;
@@ -310,14 +389,15 @@ const SoilCalculator = ( () => {
       spQty: _.BMASS.MP.QTY * _.CROP.RATIO.SPMP,
       litQty: _.BMASS.MP.QTY * _.CROP.RATIO.LITMP,
       stbQty: _.BMASS.MP.QTY * _.CROP.RATIO.STBMP,
-      rtsQty: _.BMASS.MP.QTY * _.CROP.RATIO.RTSMP,
-      nLoss: ( _.SITE.PCIP / ( _.SITE.PCIP + _.SITE.FCAP / 10 ) )**90,
+      rtsQty: _.BMASS.MP.QTY * _.CROP.MP.DM * _.CROP.RATIO.RTSMP,
+      nLoss: 1 - ( ( _.SITE.PCIP * _.SITE.PCIP_MP )
+             / ( ( _.SITE.PCIP * _.SITE.PCIP_MP ) + _.SITE.FCAP / 10 ) )**90,
     };
   }
 
   function cnQuantities( _, which, total ) {
-    return ( total || !_.BMASS.MP.EXEC ? _.BMASS.MP.QTY  * _.CROP.MP.DM  * _.CROP.MP[which] : 0 )
-         + ( total || !_.BMASS.SP.EXEC ? _.BMASS.SP.QTY  * _.CROP.SP.DM  * _.CROP.SP[which] : 0 )
+    return ( total || !_.BMASS.MP.HVST ? _.BMASS.MP.QTY  * _.CROP.MP.DM  * _.CROP.MP[which] : 0 )
+         + ( total || !_.BMASS.SP.HVST ? _.BMASS.SP.QTY  * _.CROP.SP.DM  * _.CROP.SP[which] : 0 )
          + _.BMASS.LIT.QTY * _.CROP.LIT.DM * _.CROP.LIT[which]
          + _.BMASS.STB.QTY * _.CROP.STB.DM * _.CROP.STB[which]
          + _.BMASS.RTS.QTY * _.CROP.RTS.DM * _.CROP.RTS[which];
@@ -345,7 +425,7 @@ const SoilCalculator = ( () => {
 
   function nFixation( _, nPb, nFtlzOrg ) {
 
-    const a = nPb * _.CROP.N.BFN - nFtlzOrg;
+    const a = nPb * _.CROP.LS * _.CROP.N.BFN - nFtlzOrg;
     const b = 0;
 
     return Math.max( a, b );
@@ -367,24 +447,24 @@ const SoilCalculator = ( () => {
     return _.FTLZ.ORG.QTY * _.FTLZ.ORG.DM * _.FTLZ.ORG.C;
   }
 
-  function soilOrganicMatterLoss( _, nFtlzOrg, nPb, nFix, nDep, nNyr ) {
-    return ( nPb - nFix - nFtlzOrg - nDep + nNyr ) * _.SITE.CN;
+  function soilOrganicMatterLoss( _, N ) {
+    return ( N.PB - N.FIX - N.FTLZ.ORG - N.DEP + N.NYR ) * _.SITE.CN;
   }
 
-  function soilOrganicMatterSupp( _, nCr, nFtlzRem, cCr, cFtlzRem ) {
+  function soilOrganicMatterSupp( _, N, C ) {
 
-    const a = ( nCr + nFtlzRem ) * _.SITE.CN;
-    const b = cCr + cFtlzRem;
+    const a = ( N.CR + N.FTLZ.REM ) * _.SITE.CN;
+    const b = C.CR + C.FTLZ.REM;
 
     return Math.min( a, b );
   }
 
-  function soilOrganicMatterBalanceC( somLoss, somSupp ) {
-    return somSupp - somLoss;
+  function soilOrganicMatterBalanceC( SOM ) {
+    return SOM.SUPP - SOM.LOSS;
   }
 
-  function soilOrganicMatterBalanceN( _, somLoss, somSupp ) {
-    return ( somSupp - somLoss ) / _.SITE.CN;
+  function soilOrganicMatterBalanceN( _, SOM ) {
+    return ( SOM.SUPP - SOM.LOSS ) / _.SITE.CN;
   }
 
   /* =================  Private Methods Helpers =================== */
@@ -428,10 +508,19 @@ const SoilCalculator = ( () => {
     Object.assign( STATE, castInputs( req ) );
 
     /* run all calculations and add results to state */
-    Object.assign( STATE, runCalculations( STATE.inputs ) );
+    Object.assign( STATE, castResults( STATE.inputs ) );
 
     /* return state */
     return STATE;
+  }
+
+  function getSchema( which ) {
+    return schemas[which];
+  }
+
+  function getDataset( uuidE ) {
+    const mockedDbResponse = getSchema( 'mocked' );
+    return mockedDbResponse;
   }
 
   return {
@@ -440,6 +529,8 @@ const SoilCalculator = ( () => {
     getCrops: getCrops,
     getFertilizers: getFertilizers,
     getResults: getResults,
+    getSchema: getSchema,
+    getDataset: getDataset,
   };
 
 } )();

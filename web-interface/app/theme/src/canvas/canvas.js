@@ -360,39 +360,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      */
 
     setTimeout( function testSoilCalc() {
-      SoilCalculator
-        .getResults( {
-          SITE: {
-            CN: 10,
-            FCAP: 40,
-            PCIP: 650,
-            PCIP_MP: 0.5,
-            N: {
-              DEP: 20,
-            },
-          },
-          CROP: {
-            ID: 1004,
-          },
-          FTLZ: {
-            ORG: {
-              ID: 1041,
-              QTY: 30,
-              T: 2,
-            },
-          },
-          BMASS: {
-            MP: {
-              QTY: 4,
-              EXEC: true,
-            },
-            SP: {
-              EXEC: true,
-            },
-          },
-        } )
-        .then( res => console.log( res ) );
-    }, 2000 );
+      V.setState( 'active', { lastViewedEntity: { role: 'Plot' } } );
+      V.setNode( 'content', '' );
+      V.setNode( 'content', Farm.drawPlotWidget() );
+    }, 400 );
 
     Chat.drawMessageForm( 'clear' );
 

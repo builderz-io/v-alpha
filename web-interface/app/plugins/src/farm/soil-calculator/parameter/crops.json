@@ -45,7 +45,7 @@
     "LS": 0,
     "N": {
       "BFN": 0,
-      "NYR": -40
+      "NYR": 40
     },
     "MP": {
       "DM": 0.22,
@@ -80,149 +80,43 @@
     }
   },
   {
-    "ID": -1,
-    "NAME": "* preset *",
-    "LS": -1,
+    "ID": 1050,
+    "NAME": "Clovergrass, legume share >0.9",
+    "LS": 0.75,
     "N": {
-      "BFN": -1,
-      "NYR": -1
+      "BFN": 0.85,
+      "NYR": 0
     },
     "MP": {
-      "DM": -1,
-      "C": -1,
-      "N": -1
+      "DM": 0.2,
+      "C": 0.46,
+      "N": 0.0286
     },
     "SP": {
-      "DM": -1,
-      "C": -1,
-      "N": -1
+      "DM": 0,
+      "C": 0,
+      "N": 0
     },
     "LIT": {
-      "DM": -1,
-      "C": -1,
-      "N": -1
+      "DM": 0,
+      "C": 0,
+      "N": 0
     },
     "STB": {
-      "DM": -1,
-      "C": -1,
-      "N": -1
+      "DM": 0.2,
+      "C": 0.46,
+      "N": 0.0286
     },
     "RTS": {
-      "DM": -1,
-      "C": -1,
-      "N": -1
+      "DM": 1,
+      "C": 0.4,
+      "N": 0.0204
     },
     "RATIO": {
-      "SPMP": -1,
-      "LITMP": -1,
-      "STBMP": -1,
-      "RTSMP": -1
-    }
-  },
-  {
-    "ID": "Crop id for internal use",
-    "NAME": "Name of the crop in English language",
-    "LS": {
-      "descr": "Share of legumes in mixture",
-      "unit": "Decimal share"
-    },
-    "N": {
-      "BFN": {
-        "descr": "Biological N fixation as share of total plant N (NPB)",
-        "unit": "Decimal share"
-      },
-      "NYR": {
-        "descr": "Not yield-related nitrogen mineralized from organic matter",
-        "unit": "kg N * ha-1"
-      }
-    },
-    "MP": {
-      "DM": {
-        "descr": "Main product dry matter content",
-        "unit": "Decimal share"
-      },
-      "C": {
-        "descr": "Main product C content in dry matter",
-        "unit": "Decimal share"
-      },
-      "N": {
-        "descr": "Main product N content in dry matter",
-        "unit": "Decimal share"
-      }
-    },
-    "SP": {
-      "DM": {
-        "descr": "Side product dry matter content",
-        "unit": "Decimal share"
-      },
-      "C": {
-        "descr": "Side product C content in dry matter",
-        "unit": "Decimal share"
-      },
-      "N": {
-        "descr": "Side product N content in dry matter",
-        "unit": "Decimal share"
-      }
-    },
-    "LIT": {
-      "DM": {
-        "descr": "Litter dry matter content",
-        "unit": "Decimal share"
-      },
-      "C": {
-        "descr": "Litter C content in dry matter",
-        "unit": "Decimal share"
-      },
-      "N": {
-        "descr": "Litter N content in dry matter",
-        "unit": "Decimal share"
-      }
-    },
-    "STB": {
-      "DM": {
-        "descr": "Stubble dry matter content",
-        "unit": "Decimal share"
-      },
-      "C": {
-        "descr": "Stubble C content in dry matter",
-        "unit": "Decimal share"
-      },
-      "N": {
-        "descr": "Stubble N content in dry matter",
-        "unit": "Decimal share"
-      }
-    },
-    "RTS": {
-      "DM": {
-        "descr": "Roots dry matter content",
-        "unit": "Decimal share"
-      },
-      "C": {
-        "descr": "Roots C content in dry matter",
-        "unit": "Decimal share"
-      },
-      "N": {
-        "descr": "Roots N content in dry matter",
-        "unit": "Decimal share"
-      }
-    },
-    "RATIO": {
-      "SPMP": {
-        "descr": "",
-        "unit": "Decimal share"
-      },
-      "LITMP": {
-        "descr": "",
-        "unit": "Decimal share"
-      },
-      "STBMP": {
-        "descr": "",
-        "unit": "Decimal share"
-      },
-      "RTSMP": {
-        "descr": "",
-        "unit": "Decimal share"
-      }
+      "SPMP": 0,
+      "LITMP": 0,
+      "STBMP": 0.2,
+      "RTSMP": 1
     }
   }
 ]

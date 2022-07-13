@@ -14,33 +14,5 @@
     "C": 0.46,
     "N": 0.012,
     "NAV": 0.1013568207
-  },
-  {
-    "ID": -1,
-    "NAME": "* preset *",
-    "DM": -1,
-    "C": -1,
-    "N": -1,
-    "NAV": -1
-  },
-  {
-    "ID": "crop id for internal use",
-    "NAME": "name of the crop in English language",
-    "DM": {
-      "descr": "Fertilizer dry matter content",
-      "unit": "Decimal share"
-    },
-    "C": {
-      "descr": "Fertilizer C content in dry matter",
-      "unit": "Decimal share"
-    },
-    "N": {
-      "descr": "Fertilizer N content in dry matter",
-      "unit": "Decimal share"
-    },
-    "NAV": {
-      "descr": "short-term available N from fertilizer",
-      "unit": "Decimal share"
-    }
   }
 ]

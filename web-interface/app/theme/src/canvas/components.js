@@ -226,7 +226,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( {
       t: 'li',
-      c: 'pxy w-screen max-w-380',
+      c: 'pxy w-screen max-w-380 zero-auto',
       i: id,
       h: {
         t: 'card',

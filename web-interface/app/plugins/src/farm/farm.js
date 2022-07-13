@@ -121,16 +121,14 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
 
     /* replaces preview with retrieved data */
 
-    // todo: something here
+    setTimeout( function testDatasetRetrieval() {
+      const retrievedDataset = SoilCalculator.getDataset();
+      SoilCalculatorComponents.drawContent( retrievedDataset );
+    }, 2000 );
 
     /* draws the preview */
 
-    const widgetPreview = {
-      one: 2,
-      two: 4,
-    };
-
-    const $inner = SoilCalculatorComponents.wrapper( SoilCalculatorComponents.content( widgetPreview ) );
+    const $inner = SoilCalculatorComponents.wrapper();
 
     return CanvasComponents.card( $inner, V.getString( ui.widgetTitle ) );
 
