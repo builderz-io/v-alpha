@@ -15,16 +15,16 @@ const SoilCalculator = ( () => {
   /* schema definitions */
 
   const schemas = {
-    templates: function( inputNum, inputRadio, inputDrop ) {
+    templates: function( inputNum, inputRadio, inputDropID ) {
       return {
         CROP: {
-          ID: inputNum,
-          NAME: inputDrop,
+          ID: inputDropID,
+          // NAME: inputDropID,
         },
         FTLZ: {
           ORG: {
-            ID: inputNum,
-            NAME: inputDrop,
+            ID: inputDropID,
+            // NAME: inputDropID,
             QTY: inputNum,
           },
         },
@@ -51,17 +51,11 @@ const SoilCalculator = ( () => {
     },
     mocked: {
       CROP: {
-        ID: 1004,
-        NAME: 'Winter rye',
-        // ID: 1034,
-        // NAME: 'Potato',
+        ID: 1140,
       },
       FTLZ: {
         ORG: {
-          // ID: 1061,
-          // NAME: 'High N straw (grain legumes, rape, maize)',
-          ID: 1041,
-          NAME: 'rotten cattle stable manure',
+          ID: 1040,
           QTY: 30,
         },
       },
@@ -88,12 +82,12 @@ const SoilCalculator = ( () => {
     request: {
       CROP: {
         ID: -1,
-        NAME: 'none',
+        // NAME: 'none',
       },
       FTLZ: {
         ORG: {
           ID: -1,
-          NAME: 'none',
+          // NAME: 'none',
           QTY: -1,
         },
       },

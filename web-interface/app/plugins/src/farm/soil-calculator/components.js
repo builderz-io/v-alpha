@@ -11,12 +11,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-wrapper': {
       height: '80vh',
     },
-    's-calc-input-wrapper__CROP_ID': {
-      display: 'none !important',
-    },
-    's-calc-input-wrapper__ORG_ID': {
-      display: 'none !important',
-    },
+    // 's-calc-input-wrapper__CROP_ID': {
+    //   display: 'none !important',
+    // },
+    // 's-calc-input-wrapper__ORG_ID': {
+    //   display: 'none !important',
+    // },
     's-calc-form': {
       'height': '40vh',
       'overflow': 'scroll',
@@ -101,9 +101,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     __.SITE.PCIP_MP = Number( _.SITE_PCIP_MP.value );
     __.SITE.N.DEP = Number( _.N_DEP.value );
 
-    __.CROP.ID = Number( _.CROP_NAME ? _.CROP_NAME.value  : _.CROP_ID.value );
+    __.CROP.ID = Number( _.CROP_ID.value );
 
-    __.FTLZ.ORG.ID = Number( _.ORG_NAME ? _.ORG_NAME.value  : _.ORG_ID.value );
+    __.FTLZ.ORG.ID = Number( _.ORG_ID.value );
     __.FTLZ.ORG.QTY = Number( _.ORG_QTY.value );
 
     __.BMASS.MP.QTY = Number( _.MP_QTY.value );
@@ -147,8 +147,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function validateNewDataset( _ ) {
     if(
-      _.CROP_NAME.value === 'none'
-      || _.ORG_NAME.value === 'none'
+      _.CROP_ID.value === 'none'
+      || _.ORG_ID.value === 'none'
       || !_.MP_QTY.value
       || ! _.ORG_QTY.value
     ) {
@@ -251,8 +251,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       return input( section, key, $inputNumObj );
     };
 
-    const inputDrop = ( section, key, val ) => {
-      const menuData = section == 'CROP'
+    const inputDropID = ( section, key, val ) => {
+
+      const menuJson = section == 'CROP'
         ? SoilCalculator.getCrops()
         : SoilCalculator.getFertilizers();
 
@@ -266,12 +267,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         e: {
           change: handleCalcUpdate,
         },
-        h: menuData.map( option => ( {
+        h: menuJson.map( option => ( {
           t: 'option',
           v: option.ID,
           a: {
-            'data-id': option.ID,
-            'selected': option.NAME == val ? true : undefined,
+            selected: option.ID == val ? true : undefined,
           },
           h: option.NAME,
         } ) ),
@@ -281,7 +281,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         V.getString( ui.notSelected ),
         'none',
         false,
-        val == 'none' ? true : false,
+        val == -1 ? true : false,
       ) );
 
       return input( section, key, $inputDropElem );
@@ -336,7 +336,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       return input( section, key, $inputRadioElem );
     };
 
-    const templates = SoilCalculator.getSchema( 'templates' )( inputNum, inputRadio, inputDrop );
+    const templates = SoilCalculator.getSchema( 'templates' )( inputNum, inputRadio, inputDropID );
 
     const fieldSingle = ( section, field ) => V.cN( {
       c: 's-calc-form__section-field-single',
