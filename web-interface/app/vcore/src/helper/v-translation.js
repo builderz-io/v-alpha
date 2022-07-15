@@ -11,7 +11,7 @@ const VTranslation = ( function() {
 
   'use strict';
 
-  const locale = getLocale();
+  const locale = getAppLocale();
 
   const stringsToTranslate = {};
 
@@ -50,7 +50,7 @@ const VTranslation = ( function() {
       : str;
   }
 
-  function getLocale() {
+  function getAppLocale() {
     const localLocale = V.getLocal( 'locale' ) ? V.getLocal( 'locale' ).replace( /"/g, '' ) : undefined;
     return localLocale
     ||  V.getSetting( 'locale' )
@@ -65,12 +65,13 @@ const VTranslation = ( function() {
   }
 
   V.getString = getString;
+  V.getAppLocale = getAppLocale;
 
   return {
     setStringsToTranslate: setStringsToTranslate,
     getStringsToTranslate: getStringsToTranslate,
     getString: getString,
-    getLocale: getLocale,
+    getAppLocale: getAppLocale,
     launch: launch,
   };
 

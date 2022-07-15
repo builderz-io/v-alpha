@@ -7,16 +7,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   'use strict';
 
+  const locale = V.getAppLocale();
+
   V.setStyle( {
     's-calc-wrapper': {
       height: '80vh',
     },
-    // 's-calc-input-wrapper__CROP_ID': {
-    //   display: 'none !important',
-    // },
-    // 's-calc-input-wrapper__ORG_ID': {
-    //   display: 'none !important',
-    // },
     's-calc-form': {
       'height': '40vh',
       'overflow': 'scroll',
@@ -39,10 +35,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-input-label': {
       width: '50px',
     },
-    's-calc-form__section-field-single': {
+    's-calc-form__field-single': {
       padding: '0 20px',
     },
-    's-calc-form__section-field-group': {
+    's-calc-form__field-group': {
       padding: '10px 20px',
     },
     's-calc-input-radio-wrapper': {
@@ -180,6 +176,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
+  function castFlatFieldTitle( section, field, subField ) {
+    return section + '_' + field + ( subField ? '_' + subField : '' );
+  }
+
   function resultsSOM() {
     return {
       c: 's-calc-results s-calc-results__som',
@@ -219,50 +219,52 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       data = SoilCalculator.getSchema( 'request' );
     }
 
-    const input = ( section, key, $inputElem ) => ( {
-      c: 's-calc-input-wrapper s-calc-input-wrapper__' + section + '_' + key,
+    const input = ( $inputElem, fieldTitle ) => ( {
+      c: 's-calc-input-wrapper',
       h: [
         {
           t: 'label',
           c: 's-calc-input-label',
-          for: 's-calc-input-' + section + '_' + key,
-          h: V.getString( key ),
+          for: 's-calc-input__' + fieldTitle,
+          h: SoilCalculator.getFieldTitle( fieldTitle ),
         },
         $inputElem,
       ],
     } );
 
-    const inputNum = ( section, key, val ) => {
+    const inputNum = ( val, fieldTitle ) => {
       const $inputNumObj = V.cN( {
         t: 'input',
         c: 's-calc-input-number',
-        i: 's-calc-input-' + section + '_' + key,
+        i: 's-calc-input__' + fieldTitle,
         a: {
           type: 'number',
           step: 'any',
           min: '0',
-          name: section + '_' + key,
+          name: fieldTitle,
         },
         e: {
           input: handleCalcUpdate,
         },
         v: val === -1 ? 0 : val,
       } );
-      return input( section, key, $inputNumObj );
+      return input( $inputNumObj, fieldTitle );
     };
 
-    const inputDropID = ( section, key, val ) => {
+    const inputDropID = ( val, fieldTitle ) => {
 
-      const menuJson = section == 'CROP'
+      const menuJson = fieldTitle == 'CROP_ID'
         ? SoilCalculator.getCrops()
         : SoilCalculator.getFertilizers();
+
+      const useDe = locale.includes( 'de_' );
 
       const $inputDropElem = V.cN( {
         t: 'select',
         c: 's-calc-input-select',
-        i: 's-calc-input-' + section + '_' + key,
+        i: 's-calc-input__' + fieldTitle,
         a: {
-          name: section + '_' + key,
+          name: fieldTitle,
         },
         e: {
           change: handleCalcUpdate,
@@ -273,7 +275,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           a: {
             selected: option.ID == val ? true : undefined,
           },
-          h: option.NAME,
+          h: useDe ? option.NAME_DE : option.NAME,
         } ) ),
       } );
 
@@ -284,20 +286,20 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         val == -1 ? true : false,
       ) );
 
-      return input( section, key, $inputDropElem );
+      return input( $inputDropElem, fieldTitle );
     };
 
-    const inputRadio = ( section, key, val ) => {
+    const inputRadio = ( val, fieldTitle ) => {
       const $inputRadioElem = V.cN( {
         c: 's-calc-input-radio-wrapper',
         h: [
           {
             t: 'input',
             c: 's-calc-input-radio',
-            i: 's-calc-input-' + section + '-' + key + '_1',
+            i: 's-calc-input-' + fieldTitle + '_1',
             a: {
               type: 'radio',
-              name: section + '_' + key,
+              name: fieldTitle,
               checked: val ? true : undefined,
             },
             e: {
@@ -308,16 +310,16 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             t: 'label',
             c: 's-calc-input-radio-label',
-            for: 's-calc-input-' + section + '-' + key + '_1',
+            for: 's-calc-input-' + fieldTitle + '_1',
             h: V.getString( ui.yes ),
           },
           {
             t: 'input',
             c: 's-calc-input-radio',
-            i: 's-calc-input-' + section + '-' + key + '_2',
+            i: 's-calc-input-' + fieldTitle + '_2',
             a: {
               type: 'radio',
-              name: section + '_' + key,
+              name: fieldTitle,
               checked: val ? undefined : true,
             },
             e: {
@@ -328,32 +330,32 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             t: 'label',
             c: 's-calc-input-radio-label',
-            for: 's-calc-input-' + section + '-' + key + '_1',
+            for: 's-calc-input-' + fieldTitle + '_1',
             h: V.getString( ui.no ),
           },
         ],
       } );
-      return input( section, key, $inputRadioElem );
+      return input( $inputRadioElem, fieldTitle );
     };
 
     const templates = SoilCalculator.getSchema( 'templates' )( inputNum, inputRadio, inputDropID );
 
     const fieldSingle = ( section, field ) => V.cN( {
-      c: 's-calc-form__section-field-single',
-      h: templates[section][field]( section, field, data[section][field] ),
+      c: 's-calc-form__field-single',
+      h: templates[section][field]( data[section][field], castFlatFieldTitle( section, field, false ) ),
     } );
 
     const fieldGroup = ( section, field ) => V.cN( {
-      c: 's-calc-form__section-field-group',
+      c: 's-calc-form__field-group',
       h: [
         {
-          c: 's-calc-form__section-field-group-title',
+          c: 's-calc-form__field-group-title',
           h: field,
         },
         {
-          c: 's-calc-form__section-field-group-fields',
+          c: 's-calc-form__field-group-fields',
           h: Object.keys( data[section][field] )
-            .map( subField => templates[section][field][subField]( field, subField, data[section][field][subField] ) ),
+            .map( subField => templates[section][field][subField]( data[section][field][subField], castFlatFieldTitle( section, field, subField ) ) ),
         },
       ],
     } );

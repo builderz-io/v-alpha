@@ -254,6 +254,7 @@ const SoilCalculator = ( () => {
 
   const sourceCrop = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/crops.json`;
   const sourceFtlz = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/fertilizers.json`;
+  const sourceLegend = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/schemas-and-legends.json`;
 
   // we may not need to await the JSON file loading
 
@@ -517,6 +518,10 @@ const SoilCalculator = ( () => {
     return mockedDbResponse;
   }
 
+  function getFieldTitle( fieldTitle ) {
+    return fieldTitle;
+  }
+
   return {
     getCrop: getCrop,
     getFertilizer: getFertilizer,
@@ -525,6 +530,7 @@ const SoilCalculator = ( () => {
     getResults: getResults,
     getSchema: getSchema,
     getDataset: getDataset,
+    getFieldTitle: getFieldTitle,
   };
 
 } )();

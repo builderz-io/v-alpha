@@ -123,7 +123,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
 
     setTimeout( function testDatasetRetrieval() {
       const retrievedDataset = SoilCalculator.getDataset();
-      SoilCalculatorComponents.drawContent( retrievedDataset );
+      SoilCalculatorComponents.drawContent();
     }, 2000 );
 
     /* draws the preview */

@@ -1100,7 +1100,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function appLanguageCard() {
-    const appLang = VTranslation.getLocale();
+    const appLang = VTranslation.getAppLocale();
     if( appLang || ( !appLang && editable ) ) {
       const $innerContent = V.cN( {
         c: 'app-lang-selector',
