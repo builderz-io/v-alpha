@@ -95,18 +95,18 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     __.SITE.FCAP = Number( _.SITE_FCAP.value );
     __.SITE.PCIP = Number( _.SITE_PCIP.value );
     __.SITE.PCIP_MP = Number( _.SITE_PCIP_MP.value );
-    __.SITE.N.DEP = Number( _.N_DEP.value );
+    __.SITE.N.DEP = Number( _.SITE_N_DEP.value );
 
     __.CROP.ID = Number( _.CROP_ID.value );
 
-    __.FTLZ.ORG.ID = Number( _.ORG_ID.value );
-    __.FTLZ.ORG.QTY = Number( _.ORG_QTY.value );
+    __.FTLZ.ORG.ID = Number( _.FTLZ_ORG_ID.value );
+    __.FTLZ.ORG.QTY = Number( _.FTLZ_ORG_QTY.value );
 
-    __.BMASS.MP.QTY = Number( _.MP_QTY.value );
-    __.BMASS.MP.HVST = ( _.MP_HVST.value === 'true' );
+    __.BMASS.MP.QTY = Number( _.BMASS_MP_QTY.value );
+    __.BMASS.MP.HVST = ( _.BMASS_MP_HVST.value === 'true' );
 
-    __.BMASS.SP.QTY = Number( _.SP_QTY.value );
-    __.BMASS.SP.HVST = ( _.SP_HVST.value === 'true' );
+    __.BMASS.SP.QTY = Number( _.BMASS_SP_QTY.value );
+    __.BMASS.SP.HVST = ( _.BMASS_SP_HVST.value === 'true' );
 
     console.log( 'New Dataset: ', __ );
 
@@ -144,9 +144,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   function validateNewDataset( _ ) {
     if(
       _.CROP_ID.value === 'none'
-      || _.ORG_ID.value === 'none'
-      || !_.MP_QTY.value
-      || ! _.ORG_QTY.value
+      || _.FTLZ_ORG_ID.value === 'none'
+      || !_.BMASS_MP_QTY.value
+      || ! _.FTLZ_ORG_QTY.value
     ) {
       return false;
     }

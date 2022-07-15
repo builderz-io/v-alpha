@@ -55,7 +55,7 @@ const SoilCalculator = ( () => {
       },
       FTLZ: {
         ORG: {
-          ID: 1040,
+          ID: 5040,
           QTY: 30,
         },
       },
