@@ -23,83 +23,119 @@
         }
       },
       "SITE": {
-        "CN": 10,
-        "FCAP": 40,
-        "PCIP": 650,
-        "PCIP_MP": 0.5,
+        "CN": -1,
+        "FCAP": -1,
+        "PCIP": {
+          "QTY": -1,
+          "MUL": -1
+        },
         "N": {
-          "DEP": 20
+          "DEP": -1
         }
       }
     },
     "legend": {
       "CROP": {
+        "displayName": "Crop",
+        "descr": "Crop",
         "ID": {
+          "displayName": "Type",
           "descr": "Crop id for internal use",
           "unit": ""
         },
         "NAME": {
+          "displayName": "Type",
           "descr": "Name of the crop in English language",
           "unit": ""
         }
       },
       "FTLZ": {
+        "displayName": "Fertilizer",
+        "descr": "Fertilizer",
         "ORG": {
+          "displayName": "Organic",
+          "descr": "Organic",
           "ID": {
+            "displayName": "Type",
             "descr": "Fertilizer id for internal use",
             "unit": ""
           },
           "NAME": {
+            "displayName": "Type",
             "descr": "Name of the fertilizer in English language",
             "unit": ""
           },
           "QTY": {
+            "displayName": "Quantity applied",
             "descr": "Quantity of applied fertilizer",
             "unit": ""
           }
         }
       },
       "BMASS": {
+        "displayName": "Bio mass",
+        "descr": "Bio mass",
         "MP": {
+          "displayName": "Main Product",
+          "descr": "Main Product",
           "QTY": {
+            "displayName": "Quantity available",
             "descr": "Main Product Quantity",
             "unit": ""
           },
           "HVST": {
+            "displayName": "harvested",
             "descr": "Whether main product has been harvested",
             "unit": ""
           }
         },
         "SP": {
+          "displayName": "Side Product",
+          "descr": "Side Product",
           "QTY": {
+            "displayName": "Quantity available",
             "descr": "Side Product Quantity",
             "unit": ""
           },
           "HVST": {
+            "displayName": "harvested",
             "descr": "Whether side product has been harvested",
             "unit": ""
           }
         }
       },
       "SITE": {
+        "displayName": "Plot data",
+        "descr": "Plot data",
         "CN": {
+          "displayName": "C/N Ratio",
           "descr": "Plot C/N Ratio",
           "unit": ""
         },
         "FCAP": {
+          "displayName": "Capacity",
           "descr": "Field Capacity",
           "unit": ""
         },
         "PCIP": {
-          "descr": "Plot precipitation",
-          "unit": ""
-        },
-        "PCIP_MP": {
-          "descr": "precipitation multiplier",
-          "unit": "Decimal share"
+          "displayName": "Precipitation",
+          "descr": "Precipitation",
+          "QTY": {
+            "displayName": "Quantity average",
+            "descr": "Plot precipitation",
+            "unit": ""
+          },
+          "MUL": {
+            "displayName": "Multiplier",
+            "descr": "precipitation multiplier",
+            "unit": "Decimal share"
+          }
         },
         "N": {
+          "displayName": "N",
+          "descr": "N",
           "DEP": {
+            "displayName": "Atmospheric N Deposition",
             "descr": "Atmospheric N Deposition",
             "unit": ""
           }

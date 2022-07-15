@@ -41,8 +41,10 @@ const SoilCalculator = ( () => {
         SITE: {
           CN: inputNum,
           FCAP: inputNum,
-          PCIP: inputNum,
-          PCIP_MP: inputNum,
+          PCIP: {
+            QTY: inputNum,
+            MUL: inputNum,
+          },
           N: {
             DEP: inputNum,
           },
@@ -72,8 +74,10 @@ const SoilCalculator = ( () => {
       SITE: {
         CN: 10,
         FCAP: 40,
-        PCIP: 650,
-        PCIP_MP: 0.5,
+        PCIP: {
+          QTY: 650,
+          MUL: 0.5,
+        },
         N: {
           DEP: 20,
         },
@@ -104,8 +108,10 @@ const SoilCalculator = ( () => {
       SITE: {
         CN: 10,
         FCAP: 40,
-        PCIP: 650,
-        PCIP_MP: 0.5,
+        PCIP: {
+          QTY: 650,
+          MUL: 0.5,
+        },
         N: {
           DEP: 20,
         },
@@ -146,7 +152,7 @@ const SoilCalculator = ( () => {
 
   /* fetch crop and fertilizer parameters */
 
-  let crops, fertilizers;
+  let crops, fertilizers, legend;
 
   // provide two parameter sets each for local dev w/o using express server
   /*
@@ -261,9 +267,11 @@ const SoilCalculator = ( () => {
   Promise.all( [
     V.getData( '', sourceCrop, 'api' ),
     V.getData( '', sourceFtlz, 'api' ),
+    V.getData( '', sourceLegend, 'api' ),
   ] ).then( all => {
     crops = all[0].data[0];
     fertilizers = all[1].data[0];
+    legends = all[2].data[0];
   } );
 
   /* ======================  Private Methods  ===================== */
@@ -376,7 +384,7 @@ const SoilCalculator = ( () => {
 
     /**
      * nLoss:
-     * - divided by 10 in order to account for mm vs. cm in PCIP
+     * - divided by 10 in order to account for mm vs. cm in PCIP.QTY
      * - 90 is cm below ground
      */
 
@@ -385,8 +393,8 @@ const SoilCalculator = ( () => {
       litQty: _.BMASS.MP.QTY * _.CROP.RATIO.LITMP,
       stbQty: _.BMASS.MP.QTY * _.CROP.RATIO.STBMP,
       rtsQty: _.BMASS.MP.QTY * _.CROP.MP.DM * _.CROP.RATIO.RTSMP,
-      nLoss: 1 - ( ( _.SITE.PCIP * _.SITE.PCIP_MP )
-             / ( ( _.SITE.PCIP * _.SITE.PCIP_MP ) + _.SITE.FCAP / 10 ) )**90,
+      nLoss: 1 - ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL )
+             / ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL ) + _.SITE.FCAP / 10 ) )**90,
     };
   }
 
@@ -518,8 +526,29 @@ const SoilCalculator = ( () => {
     return mockedDbResponse;
   }
 
-  function getFieldTitle( fieldTitle ) {
-    return fieldTitle;
+  function getFieldDisplayName( fieldTitle ) {
+
+    /*
+    from https://www.30secondsofcode.org/js/s/get
+    const obj = {
+      selector: { to: { val: 'val to select' } },
+      target: [1, 2, { a: 'test' }],
+    };
+    get(obj, 'selector.to.val', 'target[0]', 'target[2].a');
+    // ['val to select', 1, 'test']
+    */
+
+    const get = ( from, ...selectors ) =>
+      [...selectors].map( s =>
+        s
+          .replace( /\[([^[\]]*)\]/g, '.$1.' )
+          .split( '_' )
+          .filter( t => t !== '' )
+          .reduce( ( prev, cur ) => prev && prev[cur], from ),
+      );
+
+    const displayName = get( legends.request.legend, fieldTitle )[0];
+    return displayName ? displayName.displayName : fieldTitle;
   }
 
   return {
@@ -530,7 +559,7 @@ const SoilCalculator = ( () => {
     getResults: getResults,
     getSchema: getSchema,
     getDataset: getDataset,
-    getFieldTitle: getFieldTitle,
+    getFieldDisplayName: getFieldDisplayName,
   };
 
 } )();
