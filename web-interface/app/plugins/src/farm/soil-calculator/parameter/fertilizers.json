@@ -1,18 +1,191 @@
 [
   {
-    "ID": 1041,
+    "ID": 1010,
+    "NAME": "Cattle slurry",
+    "NAME_DE": "Vollgülle Milchvieh",
+    "DM": 0.075,
+    "C": 0.42,
+    "N": 0.053,
+    "NAV": 0.3401169
+  },
+  {
+    "ID": 1020,
+    "NAME": "cattle dung water",
+    "NAME_DE": "Gülle kotarm",
+    "DM": 0.05,
+    "C": 0.3,
+    "N": 0.083,
+    "NAV": 0.62153079
+  },
+  {
+    "ID": 1030,
+    "NAME": "pig slurry",
+    "NAME_DE": "Schweingülle",
+    "DM": 0.03,
+    "C": 0.375,
+    "N": 0.06,
+    "NAV": 0.4081351
+  },
+  {
+    "ID": 1040,
+    "NAME": "poultry manure",
+    "NAME_DE": "Hühnertrockenkot",
+    "DM": 0.55,
+    "C": 0.272,
+    "N": 0.054,
+    "NAV": 0.48169184
+  },
+  {
+    "ID": 1050,
+    "NAME": "fresh cattle stable manure",
+    "NAME_DE": "Rinder-Stallmist frisch",
+    "DM": 0.2,
+    "C": 0.4,
+    "N": 0.0275,
+    "NAV": 0.21333653
+  },
+  {
+    "ID": 1060,
     "NAME": "rotten cattle stable manure",
+    "NAME_DE": "Rinder-Stallmist verrottet (Rottemist)",
     "DM": 0.25,
     "C": 0.4,
     "N": 0.025,
-    "NAV": 0.1982785117
+    "NAV": 0.19827851
   },
   {
-    "ID": 1061,
+    "ID": 1070,
+    "NAME": "composted cattle stable manure",
+    "NAME_DE": "Rinder-Stallmist kompostiert",
+    "DM": 0.35,
+    "C": 0.4,
+    "N": 0.015,
+    "NAV": 0.13393553
+  },
+  {
+    "ID": 1080,
+    "NAME": "horse stable manure",
+    "NAME_DE": "Pferdemist",
+    "DM": 0.3,
+    "C": 0.4,
+    "N": 0.013,
+    "NAV": 0.11999585
+  },
+  {
+    "ID": 1090,
+    "NAME": "Green manure",
+    "NAME_DE": "Gründüngung",
+    "DM": 0.15,
+    "C": 0.46,
+    "N": 0.046,
+    "NAV": 0.28447218
+  },
+  {
+    "ID": 1100,
+    "NAME": "Plant-based compost",
+    "NAME_DE": "Grüngutkompost",
+    "DM": 0.6,
+    "C": 0.15,
+    "N": 0.013,
+    "NAV": 0.1
+  },
+  {
+    "ID": 1110,
+    "NAME": "Biogas slurry",
+    "NAME_DE": "Biogasgülle (unsepariert)",
+    "DM": 0.1,
+    "C": 0.42,
+    "N": 0.06,
+    "NAV": 0.37411447
+  },
+  {
+    "ID": 1120,
+    "NAME": "Digestate solid",
+    "NAME_DE": "Gärrest fest",
+    "DM": 0.3,
+    "C": 0.5,
+    "N": 0.025,
+    "NAV": 0.16705088
+  },
+  {
+    "ID": 1130,
+    "NAME": "Digestate liquid",
+    "NAME_DE": "Gärrest flüssig",
+    "DM": 0.07,
+    "C": 0.42,
+    "N": 0.07,
+    "NAV": 0.42113335
+  },
+  {
+    "ID": 1140,
+    "NAME": "Clover grass-compost",
+    "NAME_DE": "Kleegras-Kompost",
+    "DM": 0.35,
+    "C": 0.4,
+    "N": 0.0343,
+    "NAV": 0.25279216
+  },
+  {
+    "ID": 1150,
+    "NAME": "Low N straw (cereals)",
+    "NAME_DE": "Stroh, N-arm (Getreide)",
+    "DM": 0.86,
+    "C": 0.46,
+    "N": 0.0046,
+    "NAV": 0.0485333
+  },
+  {
+    "ID": 1160,
     "NAME": "High N straw (grain legumes, rape, maize)",
+    "NAME_DE": "Stroh, N-reich (Leguminosen, Raps, Mais)",
     "DM": 0.86,
     "C": 0.46,
     "N": 0.012,
-    "NAV": 0.1013568207
+    "NAV": 0.10135682
+  },
+  {
+    "ID": 1170,
+    "NAME": "Chicken manure",
+    "NAME_DE": "Hühnertrockenkot",
+    "DM": 0.3995,
+    "C": 0.284,
+    "N": 0.0289,
+    "NAV": 0.15139251
+  },
+  {
+    "ID": 1180,
+    "NAME": "Straw pellets",
+    "NAME_DE": "Strohpellets",
+    "DM": 0.939,
+    "C": 0.468,
+    "N": 0.0072,
+    "NAV": 0.0061827
+  },
+  {
+    "ID": 1190,
+    "NAME": "Mineral N fertilizer",
+    "NAME_DE": "Mineraldünger",
+    "DM": 1,
+    "C": 0,
+    "N": 1,
+    "NAV": 1
+  },
+  {
+    "ID": 1200,
+    "NAME": "Hair meal pellets",
+    "NAME_DE": "Haarmehlpellets",
+    "DM": 0.95,
+    "C": 0.45,
+    "N": 0.14,
+    "NAV": 0.68014094
+  },
+  {
+    "ID": 1210,
+    "NAME": "Dung water (not specified)",
+    "NAME_DE": "Jauche",
+    "DM": 0.02,
+    "C": 0.03,
+    "N": 0.2,
+    "NAV": 7.15816509
   }
 ]
