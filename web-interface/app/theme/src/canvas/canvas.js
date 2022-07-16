@@ -359,11 +359,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    setTimeout( function testSoilCalc() {
-      V.setState( 'active', { lastViewedEntity: { role: 'Plot' } } );
-      V.setNode( 'content', '' );
-      V.setNode( 'content', Farm.drawPlotWidget() );
-    }, 400 );
+    // setTimeout( function testSoilCalc() {
+    //   V.setState( 'active', { lastViewedEntity: { role: 'Plot' } } );
+    //   V.setNode( 'content', '' );
+    //   V.setNode( 'content', Farm.drawPlotWidget() );
+    // }, 400 );
 
     Chat.drawMessageForm( 'clear' );
 

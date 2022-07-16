@@ -134,7 +134,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  V.setState( 'availablePlugins', { pool: launch } );
+  V.setState( 'availablePlugins', { farm: launch } );
 
   return {
     launch: launch,

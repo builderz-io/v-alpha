@@ -187,6 +187,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function form() {
     return V.castNode( {
       tag: 'form',
+      id: 'join-form-v1',
       classes: 'form fixed w-screen hidden bkg-white pxy',
       setStyle: {
         form: {

@@ -343,8 +343,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function resetOnClick( e ) {
     e.stopPropagation();
 
-    /* if a form is open, just close form first */
-    if ( V.getNode( 'form' ) ) {
+    /* if a first version of form is open, just close form first */
+    if ( V.getNode( '#join-form-v1' ) ) {
       handleCloseForms();
     }
 

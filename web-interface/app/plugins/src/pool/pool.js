@@ -71,7 +71,7 @@ const Pool = ( function() { // eslint-disable-line no-unused-vars
   function preview( whichPath ) {
     Navigation.draw( whichPath );
     Page.draw( {
-      position: 'top',
+      position: 'peek',
     } );
   }
 

@@ -63,8 +63,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
   function handleDrawPlusForm() {
     Page.draw( { position: 'closed', reset: false, navReset: false } );
-    // Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
-    V.setNode( 'body', JoinRoutine.draw( V.getNavItem( 'active', 'serviceNav' ).use ) );
+    if( V.getSetting( 'joinVersion' ) === 1 ) {
+      Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
+    }
+    else {
+      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( 'active', 'serviceNav' ).use ) );
+    }
   }
 
   /* ================== private methods ================= */
