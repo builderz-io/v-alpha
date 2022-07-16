@@ -24,7 +24,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'm { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -267,6 +267,18 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         q9: P.q ? P.q.q9 : undefined,
         q10: P.q ? P.q.q10 : undefined,
       },
+      servicefields: {
+        s1: P.s ? P.s.s1 : undefined,
+        s2: P.s ? P.s.s2 : undefined,
+        s3: P.s ? P.s.s3 : undefined,
+        s4: P.s ? P.s.s4 : undefined,
+        s5: P.s ? P.s.s5 : undefined,
+        s6: P.s ? P.s.s6 : undefined,
+        s7: P.s ? P.s.s7 : undefined,
+        s8: P.s ? P.s.s8 : undefined,
+        s9: P.s ? P.s.s9 : undefined,
+        s10: P.s ? P.s.s10 : undefined,
+      },
     };
   }
 
@@ -383,7 +395,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     console.log( 'UPDATING PROFILE: ', data );
     const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidP;
 
-    let m, n, o, p, q;
+    let m, n, o, p, q, s;
     let returnFields = '';
 
     if ( data.field.includes( 'questionnaire' ) ) {
@@ -391,6 +403,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       q = {};
       for ( let i = 1; i <= 10; i++ ) {
         n == i ? q['q' + n] = data.data : null;
+      }
+    }
+    else if ( data.field.includes( 'servicefields' ) ) {
+      const n = data.field.replace( 'servicefields.s', '' );
+      s = {};
+      for ( let i = 1; i <= 10; i++ ) {
+        n == i ? s['s' + n] = data.data : null;
       }
     }
 
@@ -438,7 +457,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const variables = {
-      input: { a, m, n, o, p, q },
+      input: { a, m, n, o, p, q, s },
     };
 
     const query = `mutation SetProfileUpdate( $input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }! ) {

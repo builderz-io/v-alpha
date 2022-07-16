@@ -58,6 +58,7 @@ const types = {
       o: InputImages
       p: InputTransactionLog
       q: InputQuestionnaire
+      s: InputServicefields
     }
   `,
   ImageInputServerSide: `

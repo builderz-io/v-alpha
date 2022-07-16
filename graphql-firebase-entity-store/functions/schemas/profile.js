@@ -12,6 +12,7 @@ const types = {
       o: Images
       p: TransactionLog
       q: Questionnaire
+      s: Servicefields  // fields for free allocation used by plugins or widgets
 
       x: RelationsP
       y: DatesP
@@ -62,6 +63,20 @@ const types = {
       q8: String
       q9: String
       q10: String
+    }
+  `,
+  Servicefields: `
+    {
+      s1: String       // some content
+      s2: String
+      s3: String
+      s4: String
+      s5: String
+      s6: String
+      s7: String
+      s8: String
+      s9: String
+      s10: String
     }
   `,
   RelationsP: `
