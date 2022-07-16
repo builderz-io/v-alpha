@@ -3,264 +3,30 @@
 const SoilCalculator = ( () => {
 
   /**
-   * An API to calculate the soil organic matter loss and supply,
+   * API to calculate the soil organic matter loss and supply for one data point,
    * according to crop planted, fertilizer used, biomass harvested, etc.
    *
    * @returns { Object } - Dataset including all inputs, parameters and results
    * @author of calculator model - Christopher Brock
    * @author of code - Philipe Achille Villiers @ Value Instrument
-   * @version 0.2.0
+   * @version 0.3.0
+   *
+   * Dependencies: V Core module is currently used to fetch the JSON files, but could easily be omitted
    */
-
-  /* schema definitions */
-
-  const schemas = {
-    templates: function( inputNum, inputRadio, inputDropID ) {
-      return {
-        CROP: {
-          ID: inputDropID,
-          // NAME: inputDropID,
-        },
-        FTLZ: {
-          ORG: {
-            ID: inputDropID,
-            // NAME: inputDropID,
-            QTY: inputNum,
-          },
-        },
-        BMASS: {
-          MP: {
-            QTY: inputNum,
-            HVST: inputRadio,
-          },
-          SP: {
-            QTY: inputNum,
-            HVST: inputRadio,
-          },
-        },
-        SITE: {
-          CN: inputNum,
-          FCAP: inputNum,
-          PCIP: {
-            QTY: inputNum,
-            MUL: inputNum,
-          },
-          N: {
-            DEP: inputNum,
-          },
-        },
-      };
-    },
-    mocked: {
-      CROP: {
-        ID: 1140,
-      },
-      FTLZ: {
-        ORG: {
-          ID: 5040,
-          QTY: 30,
-        },
-      },
-      BMASS: {
-        MP: {
-          QTY: 4,
-          HVST: true,
-        },
-        SP: {
-          QTY: 0,
-          HVST: true,
-        },
-      },
-      SITE: {
-        CN: 10,
-        FCAP: 40,
-        PCIP: {
-          QTY: 650,
-          MUL: 0.5,
-        },
-        N: {
-          DEP: 20,
-        },
-      },
-    },
-    request: {
-      CROP: {
-        ID: -1,
-      },
-      FTLZ: {
-        ORG: {
-          ID: -1,
-          QTY: -1,
-        },
-      },
-      BMASS: {
-        MP: {
-          QTY: -1,
-          HVST: true,
-        },
-        SP: {
-          QTY: -1,
-          HVST: true,
-        },
-      },
-      SITE: {
-        CN: 10,
-        FCAP: 40,
-        PCIP: {
-          QTY: 650,
-          MUL: 0.5,
-        },
-        N: {
-          DEP: 20,
-        },
-      },
-    },
-    results: {
-      SOM: {
-        LOSS: -1,
-        SUPP: -1,
-        BAL: {
-          C: -1,
-          N: -1,
-        },
-      },
-      N: {
-        PB: -1,
-        FIX: -1,
-        DEP: -1,
-        NYR: -1,
-        CR: -1,
-        FTLZ: {
-          ORG: -1,
-          REM: -1,
-        },
-      },
-      C: {
-        CR: -1,
-        FTLZ: {
-          REM: -1,
-        },
-      },
-    },
-  };
 
   /* setup module state */
 
   const STATE = {};
 
-  /* fetch crop and fertilizer parameters */
+  /* fetch crop and fertilizer parameters, fetch legend-file (includes translations) */
 
-  let crops, fertilizers, legend;
-
-  // provide two parameter sets each for local dev w/o using express server
-  /*
-    crops = [
-    {
-      ID: 1004,
-      NAME: 'Winter rye',
-      LS: 0,
-      N: {
-        BFN: 0,
-        NYR: 0,
-      },
-      MP: {
-        DM: 0.86,
-        C: 0.445,
-        N: 0.0198,
-      },
-      SP: {
-        DM: 0.86,
-        C: 0.46,
-        N: 0.00495,
-      },
-      LIT: {
-        DM: 0,
-        C: 0,
-        N: 0,
-      },
-      STB: {
-        DM: 0.86,
-        C: 0.46,
-        N: 0.00495,
-      },
-      RTS: {
-        DM: 1,
-        C: 0.4,
-        N: 0.0088,
-      },
-      RATIO: {
-        SPMP: 1.3,
-        LITMP: 0,
-        STBMP: 0.261904761904762,
-        RTSMP: 0.733333333333334,
-      },
-    },
-    {
-      ID: 1034,
-      NAME: 'Potato',
-      LS: 0,
-      N: {
-        BFN: 0,
-        NYR: -40,
-      },
-      MP: {
-        DM: 0.22,
-        C: 0.42,
-        N: 0.0154,
-      },
-      SP: {
-        DM: 0.4,
-        C: 0.4,
-        N: 0.0099,
-      },
-      LIT: {
-        DM: 0,
-        C: 0,
-        N: 0,
-      },
-      STB: {
-        DM: 0.4,
-        C: 0.4,
-        N: 0.0099,
-      },
-      RTS: {
-        DM: 1,
-        C: 0.4,
-        N: 0.0253,
-      },
-      RATIO: {
-        SPMP: 0,
-        LITMP: 0,
-        STBMP: 0.3,
-        RTSMP: 0.101010101010101,
-      },
-    },
-  ];
-    fertilizers = [
-    {
-      ID: 1041,
-      NAME: 'Rotten cattle stable manure',
-      DM: 0.25,
-      C: 0.4,
-      N: 0.025,
-      NAV: 0.1982785117,
-    },
-    {
-      ID: 1061,
-      NAME: 'High N straw (grain legumes, rape, maize)',
-      DM: 0.86,
-      C: 0.46,
-      N: 0.012,
-      NAV: 0.1013568207,
-    },
-  ];
-  */
+  let crops, fertilizers, legends;
 
   const sourceCrop = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/crops.json`;
   const sourceFtlz = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/fertilizers.json`;
   const sourceLegend = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/schemas-and-legends.json`;
 
-  // we may not need to await the JSON file loading
+  // we may not need to await the JSON file-loading
 
   Promise.all( [
     V.getData( '', sourceCrop, 'api' ),
@@ -293,25 +59,24 @@ const SoilCalculator = ( () => {
   function castInputs( req ) {
 
     /**
-     * @arg { Object } req - Request, as in data provided by user, e.g. plot data
+     * @arg { Object } req - Request, as in data provided by user, e.g. CROP.ID
      * @returns { Object } inputs - valid parameter set to run calculations, plus placeholders (-1) for mixins
      */
 
-    const clone = V.castClone( req );
+    /* clone request in order to not meddle with the original */
+    const clone = JSON.parse( JSON.stringify( req ) );
 
-    /* mixin the full set of crop and fertilizer parameters */
+    /* mixin the full set of crop and fertilizer parameters into clone */
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
     Object.assign( clone.FTLZ.ORG, getFertilizer( clone.FTLZ.ORG.ID || clone.FTLZ.ORG.NAME ) );
 
-    // TODO: run validations on clone object and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
+    // TODO: run validations on clone and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
 
     /* return all as "inputs" */
 
-    const inputs = {
+    return {
       inputs: clone,
     };
-
-    return inputs;
   }
 
   function castResults( _ ) {
@@ -471,6 +236,13 @@ const SoilCalculator = ( () => {
   /* =================  Private Methods Helpers =================== */
 
   function getParameters( array, which ) {
+
+    /**
+     * @arg { Array } array - crop or fertilizer parameters array
+     * @arg { string|number } which - id or name of crop or fertilizer parameters to find
+     * @returns { Object } - set of crop or fertilizer parameter according to "which"
+     */
+
     return array.find( function finder( doc ) {
       return isNaN( Number( this ) )
         ? doc.NAME === String( this )
@@ -485,22 +257,130 @@ const SoilCalculator = ( () => {
   /* ======================  Public Methods  ====================== */
 
   function getCrop( which ) {
+
+    /* see getParameters for comments */
     return getParameters( crops, which );
   }
 
   function getFertilizer( which ) {
+
+    /* see getParameters for comments */
     return getParameters( fertilizers, which );
   }
 
   function getCrops() {
+
+    /**
+     * @returns { Array } crops - full array of crop parameters
+     */
+
     return crops;
   }
 
   function getFertilizers() {
+
+    /**
+     * @returns { Array } fertilizers - full array of fertilizer parameters
+     */
+
     return fertilizers;
   }
 
+  function getSchema( which ) {
+
+    /**
+     * @arg { string } which - which schema is requested
+     * @returns { Object } - schema
+     */
+
+    return legends[which].schema;
+  }
+
+  function getDataset() {
+    const mockedDbResponse = {
+      CROP: {
+        ID: 1140,
+      },
+      FTLZ: {
+        ORG: {
+          ID: 5040,
+          QTY: 30,
+        },
+      },
+      BMASS: {
+        MP: {
+          QTY: 4,
+          HVST: true,
+        },
+        SP: {
+          QTY: 0,
+          HVST: true,
+        },
+      },
+      SITE: {
+        CN: 10,
+        FCAP: 40,
+        PCIP: {
+          QTY: 650,
+          MUL: 0.5,
+        },
+        N: {
+          DEP: 20,
+        },
+      },
+    };
+    return mockedDbResponse;
+  }
+
+  function getFieldDisplayName( fieldTitle, locale ) {
+
+    /**
+     * @arg { string } fieldTitle - the field to query from the legends file in flattened format, e.g. "BMASS_MP_QTY"
+     * @arg { string } locale - the current app locale
+     * @returns { string } fieldTitle - the human readable title of a field in app locale
+     */
+
+    /*
+      from: https://www.30secondsofcode.org/js/s/get
+      example: const obj = {
+        selector: { to: { val: 'val to select' } },
+        target: [1, 2, { a: 'test' }],
+      };
+      run: get(obj, '.', 'selector.to.val', 'target[0]', 'target[2].a');
+      res: ['val to select', 1, 'test']
+    */
+
+    const get = ( obj, separator, ...selectors ) =>
+      [ ...selectors ].map( s =>
+        s
+          .replace( /\[([^[\]]*)\]/g, '.$1.' )
+          .split( separator )
+          .filter( t => t !== '' )
+          .reduce( ( prev, cur ) => prev && prev[cur], obj ),
+      );
+
+    const requestDisplayName = get( legends.request.legend[locale], '_', fieldTitle )[0];
+
+    if ( requestDisplayName ) {
+      return requestDisplayName.displayName;
+    }
+
+    const resultsDisplayName = get( legends.results.legend[locale], '_', fieldTitle )[0];
+
+    if ( resultsDisplayName ) {
+      return resultsDisplayName.displayName;
+    }
+
+    return fieldTitle;
+
+  }
+
   async function getResults( req ) {
+
+    /**
+       * @arg { Object } req - Request, as in data provided by user, e.g. CROP.ID
+       * @returns { Object } STATE - API response including all inputs and results
+       */
 
     /* add timestamps to state */
     Object.assign( STATE, castTime() );
@@ -515,56 +395,15 @@ const SoilCalculator = ( () => {
     return STATE;
   }
 
-  function getSchema( which ) {
-    return schemas[which];
-  }
-
-  function getDataset( uuidE ) {
-    const mockedDbResponse = getSchema( 'mocked' );
-    return mockedDbResponse;
-  }
-
-  function getFieldDisplayName( fieldTitle, locale ) {
-
-    /*
-    from https://www.30secondsofcode.org/js/s/get
-    const obj = {
-      selector: { to: { val: 'val to select' } },
-      target: [1, 2, { a: 'test' }],
-    };
-    get(obj, 'selector.to.val', 'target[0]', 'target[2].a');
-    // ['val to select', 1, 'test']
-    */
-
-    const get = ( from, ...selectors ) =>
-      [...selectors].map( s =>
-        s
-          .replace( /\[([^[\]]*)\]/g, '.$1.' )
-          .split( '_' )
-          .filter( t => t !== '' )
-          .reduce( ( prev, cur ) => prev && prev[cur], from ),
-      );
-
-    const requestDisplayName = get( legends.request.legend[locale], fieldTitle )[0];
-    const resultsDisplayName = get( legends.results.legend[locale], fieldTitle )[0];
-
-    return requestDisplayName
-      ? requestDisplayName.displayName
-      : resultsDisplayName
-        ? resultsDisplayName.displayName
-        : fieldTitle;
-
-  }
-
   return {
     getCrop: getCrop,
     getFertilizer: getFertilizer,
     getCrops: getCrops,
     getFertilizers: getFertilizers,
-    getResults: getResults,
     getSchema: getSchema,
     getDataset: getDataset,
     getFieldDisplayName: getFieldDisplayName,
+    getResults: getResults,
   };
 
 } )();

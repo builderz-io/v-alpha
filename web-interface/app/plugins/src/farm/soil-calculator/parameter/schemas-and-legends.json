@@ -2,13 +2,11 @@
   "request": {
     "schema": {
       "CROP": {
-        "ID": -1,
-        "NAME": "none"
+        "ID": -1
       },
       "FTLZ": {
         "ORG": {
           "ID": -1,
-          "NAME": "none",
           "QTY": -1
         }
       },

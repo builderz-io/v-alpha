@@ -1,7 +1,7 @@
 const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * Components for the soil calculator
+   * Components for the soil calculator in context of the VI app
    *
    */
 
@@ -341,7 +341,38 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       return input( $inputRadioElem, fieldTitle );
     };
 
-    const templates = SoilCalculator.getSchema( 'templates' )( inputNum, inputRadio, inputDropID );
+    const templates = {
+      CROP: {
+        ID: inputDropID,
+      },
+      FTLZ: {
+        ORG: {
+          ID: inputDropID,
+          QTY: inputNum,
+        },
+      },
+      BMASS: {
+        MP: {
+          QTY: inputNum,
+          HVST: inputRadio,
+        },
+        SP: {
+          QTY: inputNum,
+          HVST: inputRadio,
+        },
+      },
+      SITE: {
+        CN: inputNum,
+        FCAP: inputNum,
+        PCIP: {
+          QTY: inputNum,
+          MUL: inputNum,
+        },
+        N: {
+          DEP: inputNum,
+        },
+      },
+    };
 
     const fieldSingle = ( section, field ) => V.cN( {
       c: 's-calc-form__field-single',
