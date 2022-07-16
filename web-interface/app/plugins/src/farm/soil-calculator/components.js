@@ -50,7 +50,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'width': '60%',
     },
     's-calc-input-select': {
-      width: '60%',
+      width: '180px',
       border: 'none',
     },
   } );
@@ -167,7 +167,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: [
         {
           t: 'td',
-          h: row,
+          h: SoilCalculator.getFieldDisplayName( row, locale ),
         },
         {
           t: 'td',
@@ -229,7 +229,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           t: 'label',
           c: 's-calc-input-label',
           for: 's-calc-input__' + fieldTitle,
-          h: SoilCalculator.getFieldDisplayName( fieldTitle ),
+          h: SoilCalculator.getFieldDisplayName( fieldTitle, locale ),
         },
         $inputElem,
       ],
@@ -353,7 +353,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: [
         {
           c: 's-calc-form__field-group-title',
-          h: SoilCalculator.getFieldDisplayName( section + '_' + field ),
+          h: SoilCalculator.getFieldDisplayName( section + '_' + field, locale ),
         },
         {
           c: 's-calc-form__field-group-fields',
@@ -374,7 +374,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         h: [
           {
             c: 's-calc-form__section-title',
-            h: SoilCalculator.getFieldDisplayName( section ),
+            h: SoilCalculator.getFieldDisplayName( section, locale ),
           },
           {
             c: 's-calc-form__section-fields',

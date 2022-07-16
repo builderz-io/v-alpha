@@ -35,109 +35,219 @@
       }
     },
     "legend": {
-      "CROP": {
-        "displayName": "Crop",
-        "descr": "Crop",
-        "ID": {
-          "displayName": "Type",
-          "descr": "Crop id for internal use",
-          "unit": ""
-        },
-        "NAME": {
-          "displayName": "Type",
-          "descr": "Name of the crop in English language",
-          "unit": ""
-        }
-      },
-      "FTLZ": {
-        "displayName": "Fertilizer",
-        "descr": "Fertilizer",
-        "ORG": {
-          "displayName": "Organic",
-          "descr": "Organic",
+      "en_US": {
+        "CROP": {
+          "displayName": "Crop",
+          "descr": "Crop",
           "ID": {
             "displayName": "Type",
-            "descr": "Fertilizer id for internal use",
+            "descr": "Crop id for internal use",
             "unit": ""
           },
           "NAME": {
             "displayName": "Type",
-            "descr": "Name of the fertilizer in English language",
+            "descr": "Name of the crop in English language",
+            "unit": ""
+          }
+        },
+        "FTLZ": {
+          "displayName": "Fertilizer",
+          "descr": "Fertilizer",
+          "ORG": {
+            "displayName": "Organic",
+            "descr": "Organic",
+            "ID": {
+              "displayName": "Type",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Type",
+              "descr": "Name of the fertilizer in English language",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity applied",
+              "descr": "Quantity of applied fertilizer",
+              "unit": ""
+            }
+          }
+        },
+        "BMASS": {
+          "displayName": "Bio mass",
+          "descr": "Bio mass",
+          "MP": {
+            "displayName": "Main Product",
+            "descr": "Main Product",
+            "QTY": {
+              "displayName": "Quantity available",
+              "descr": "Main Product Quantity",
+              "unit": ""
+            },
+            "HVST": {
+              "displayName": "Harvested",
+              "descr": "Whether main product has been harvested",
+              "unit": ""
+            }
+          },
+          "SP": {
+            "displayName": "Side Product",
+            "descr": "Side Product",
+            "QTY": {
+              "displayName": "Quantity available",
+              "descr": "Side Product Quantity",
+              "unit": ""
+            },
+            "HVST": {
+              "displayName": "Harvested",
+              "descr": "Whether side product has been harvested",
+              "unit": ""
+            }
+          }
+        },
+        "SITE": {
+          "displayName": "Plot data",
+          "descr": "Plot data",
+          "CN": {
+            "displayName": "C/N Ratio",
+            "descr": "Plot C/N Ratio",
             "unit": ""
           },
-          "QTY": {
-            "displayName": "Quantity applied",
-            "descr": "Quantity of applied fertilizer",
+          "FCAP": {
+            "displayName": "Capacity",
+            "descr": "Field Capacity",
             "unit": ""
+          },
+          "PCIP": {
+            "displayName": "Precipitation",
+            "descr": "Precipitation",
+            "QTY": {
+              "displayName": "Quantity average",
+              "descr": "Plot precipitation",
+              "unit": ""
+            },
+            "MUL": {
+              "displayName": "Multiplier",
+              "descr": "precipitation multiplier",
+              "unit": "Decimal share"
+            }
+          },
+          "N": {
+            "displayName": "N",
+            "descr": "N",
+            "DEP": {
+              "displayName": "Atmospheric N Deposition",
+              "descr": "Atmospheric N Deposition",
+              "unit": ""
+            }
           }
         }
       },
-      "BMASS": {
-        "displayName": "Bio mass",
-        "descr": "Bio mass",
-        "MP": {
-          "displayName": "Main Product",
-          "descr": "Main Product",
-          "QTY": {
-            "displayName": "Quantity available",
-            "descr": "Main Product Quantity",
+      "de_DE": {
+        "CROP": {
+          "displayName": "Frucht",
+          "descr": "Frucht",
+          "ID": {
+            "displayName": "Typ",
+            "descr": "Crop id for internal use",
             "unit": ""
           },
-          "HVST": {
-            "displayName": "harvested",
-            "descr": "Whether main product has been harvested",
+          "NAME": {
+            "displayName": "Typ",
+            "descr": "Name of the crop in English language",
             "unit": ""
           }
         },
-        "SP": {
-          "displayName": "Side Product",
-          "descr": "Side Product",
-          "QTY": {
-            "displayName": "Quantity available",
-            "descr": "Side Product Quantity",
-            "unit": ""
-          },
-          "HVST": {
-            "displayName": "harvested",
-            "descr": "Whether side product has been harvested",
-            "unit": ""
-          }
-        }
-      },
-      "SITE": {
-        "displayName": "Plot data",
-        "descr": "Plot data",
-        "CN": {
-          "displayName": "C/N Ratio",
-          "descr": "Plot C/N Ratio",
-          "unit": ""
-        },
-        "FCAP": {
-          "displayName": "Capacity",
-          "descr": "Field Capacity",
-          "unit": ""
-        },
-        "PCIP": {
-          "displayName": "Precipitation",
-          "descr": "Precipitation",
-          "QTY": {
-            "displayName": "Quantity average",
-            "descr": "Plot precipitation",
-            "unit": ""
-          },
-          "MUL": {
-            "displayName": "Multiplier",
-            "descr": "precipitation multiplier",
-            "unit": "Decimal share"
+        "FTLZ": {
+          "displayName": "Dünger",
+          "descr": "Fertilizer",
+          "ORG": {
+            "displayName": "Organisch",
+            "descr": "Organic",
+            "ID": {
+              "displayName": "Typ",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Typ",
+              "descr": "Name of the fertilizer in English language",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Quantity of applied fertilizer",
+              "unit": ""
+            }
           }
         },
-        "N": {
-          "displayName": "N",
-          "descr": "N",
-          "DEP": {
-            "displayName": "Atmospheric N Deposition",
-            "descr": "Atmospheric N Deposition",
+        "BMASS": {
+          "displayName": "Bio mass",
+          "descr": "Bio mass",
+          "MP": {
+            "displayName": "Main Product",
+            "descr": "Main Product",
+            "QTY": {
+              "displayName": "Quantity available",
+              "descr": "Main Product Quantity",
+              "unit": ""
+            },
+            "HVST": {
+              "displayName": "Harvested",
+              "descr": "Whether main product has been harvested",
+              "unit": ""
+            }
+          },
+          "SP": {
+            "displayName": "Side Product",
+            "descr": "Side Product",
+            "QTY": {
+              "displayName": "Quantity available",
+              "descr": "Side Product Quantity",
+              "unit": ""
+            },
+            "HVST": {
+              "displayName": "Harvested",
+              "descr": "Whether side product has been harvested",
+              "unit": ""
+            }
+          }
+        },
+        "SITE": {
+          "displayName": "Plot data",
+          "descr": "Plot data",
+          "CN": {
+            "displayName": "C/N Ratio",
+            "descr": "Plot C/N Ratio",
             "unit": ""
+          },
+          "FCAP": {
+            "displayName": "Capacity",
+            "descr": "Field Capacity",
+            "unit": ""
+          },
+          "PCIP": {
+            "displayName": "Precipitation",
+            "descr": "Precipitation",
+            "QTY": {
+              "displayName": "Quantity average",
+              "descr": "Plot precipitation",
+              "unit": ""
+            },
+            "MUL": {
+              "displayName": "Multiplier",
+              "descr": "precipitation multiplier",
+              "unit": "Decimal share"
+            }
+          },
+          "N": {
+            "displayName": "N",
+            "descr": "N",
+            "DEP": {
+              "displayName": "Atmospheric N Deposition",
+              "descr": "Atmospheric N Deposition",
+              "unit": ""
+            }
           }
         }
       }
@@ -172,67 +282,173 @@
       }
     },
     "legend": {
-      "SOM": {
-        "LOSS": {
-          "descr": "Soil Organic Matter Loss",
-          "unit": ""
-        },
-        "SUPP": {
-          "descr": "Soil Organic Matter Supply",
-          "unit": ""
-        },
-        "BAL": {
-          "C": {
-            "descr": "Soil Organic Matter Balance C",
+      "en_US": {
+        "SOM": {
+          "displayName": "Soil Organic Matter",
+          "descr": "Soil Organic Matter",
+          "LOSS": {
+            "displayName": "Loss",
+            "descr": "Soil Organic Matter Loss",
             "unit": ""
           },
-          "N": {
-            "descr": "Soil Organic Matter Balance N",
+          "SUPP": {
+            "displayName": "Supply",
+            "descr": "Soil Organic Matter Supply",
             "unit": ""
+          },
+          "BAL": {
+            "C": {
+              "displayName": "C Balance",
+              "descr": "C Balance",
+              "unit": ""
+            },
+            "N": {
+              "displayName": "N Balance",
+              "descr": "N Balance",
+              "unit": ""
+            }
+          }
+        },
+        "N": {
+          "displayName": "N",
+          "descr": "N",
+          "PB": {
+            "displayName": "N Plant Biomass",
+            "descr": "N Plant Biomass",
+            "unit": ""
+          },
+          "FIX": {
+            "displayName": "N Fixation",
+            "descr": "N Fixation",
+            "unit": ""
+          },
+          "DEP": {
+            "displayName": "N Deposition",
+            "descr": "N Deposition",
+            "unit": ""
+          },
+          "NYR": {
+            "displayName": "N Not Yield Related",
+            "descr": "N Not Yield Related",
+            "unit": ""
+          },
+          "CR": {
+            "displayName": "N Fixation",
+            "descr": "N Fixation",
+            "unit": ""
+          },
+          "FTLZ": {
+            "displayName": "Fertilizer",
+            "descr": "Fertilizer",
+            "ORG": {
+              "displayName": "N Organic Fertilizer",
+              "descr": "N Organic Fertilizer",
+              "unit": ""
+            },
+            "REM": {
+              "displayName": "N Fertilizer Remaining",
+              "descr": "N Fertilizer Remaining",
+              "unit": ""
+            }
+          }
+        },
+        "C": {
+          "CR": {
+            "displayName": "C Fixation",
+            "descr": "C Fixation",
+            "unit": ""
+          },
+          "FTLZ": {
+            "REM": {
+              "displayName": "C Fertilizer Remaining",
+              "descr": "C Fertilizer Remaining",
+              "unit": ""
+            }
           }
         }
       },
-      "N": {
-        "PB": {
-          "descr": "N in plant biomass",
-          "unit": ""
-        },
-        "FIX": {
-          "descr": "N fixation",
-          "unit": ""
-        },
-        "DEP": {
-          "descr": "N deposition",
-          "unit": ""
-        },
-        "NYR": {
-          "descr": "N not yield related",
-          "unit": ""
-        },
-        "CR": {
-          "descr": "N in crop residues",
-          "unit": ""
-        },
-        "FTLZ": {
-          "ORG": {
-            "descr": "N from organic fertilizer",
+      "de_DE": {
+        "SOM": {
+          "displayName": "Soil Organic Matter",
+          "descr": "Soil Organic Matter",
+          "LOSS": {
+            "displayName": "Substanz Abbau",
+            "descr": "Soil Organic Matter Loss",
             "unit": ""
           },
-          "REM": {
-            "descr": "N from remaining fertilizer",
+          "SUPP": {
+            "displayName": "Substanz Aufbau",
+            "descr": "Soil Organic Matter Supply",
             "unit": ""
+          },
+          "BAL": {
+            "C": {
+              "displayName": "Humusbilanz C",
+              "descr": "C Balance",
+              "unit": ""
+            },
+            "N": {
+              "displayName": "Humusbilanz N",
+              "descr": "N Balance",
+              "unit": ""
+            }
           }
-        }
-      },
-      "C": {
-        "CR": {
-          "descr": "C in crop residues",
-          "unit": ""
         },
-        "FTLZ": {
-          "REM": {
-            "descr": "C from remaining fertilizer",
+        "N": {
+          "displayName": "N",
+          "descr": "N",
+          "PB": {
+            "displayName": "N Pflanzenbiomasse",
+            "descr": "N Pflanzenbiomasse",
             "unit": ""
+          },
+          "FIX": {
+            "displayName": "N Fixierung",
+            "descr": "N Fixierung",
+            "unit": ""
+          },
+          "DEP": {
+            "displayName": "N Deposition",
+            "descr": "N Deposition",
+            "unit": ""
+          },
+          "NYR": {
+            "displayName": "N Nicht aufgenommen",
+            "descr": "N Nicht aufgenommen",
+            "unit": ""
+          },
+          "CR": {
+            "displayName": "N Crop Residues",
+            "descr": "N Crop Residues",
+            "unit": ""
+          },
+          "FTLZ": {
+            "displayName": "Fertilizer",
+            "descr": "Fertilizer",
+            "ORG": {
+              "displayName": "N Organischer Dünger",
+              "descr": "N Organischer Dünger",
+              "unit": ""
+            },
+            "REM": {
+              "displayName": "N Nachlieferung",
+              "descr": "N Nachlieferung",
+              "unit": ""
+            }
+          }
+        },
+        "C": {
+          "CR": {
+            "displayName": "C Fixierung",
+            "descr": "C Fixierung",
+            "unit": ""
+          },
+          "FTLZ": {
+            "REM": {
+              "displayName": "C Nachlieferung",
+              "descr": "C Nachlieferung",
+              "unit": ""
+            }
           }
         }
       }

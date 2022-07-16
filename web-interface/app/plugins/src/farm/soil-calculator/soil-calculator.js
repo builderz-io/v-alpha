@@ -86,12 +86,10 @@ const SoilCalculator = ( () => {
     request: {
       CROP: {
         ID: -1,
-        // NAME: 'none',
       },
       FTLZ: {
         ORG: {
           ID: -1,
-          // NAME: 'none',
           QTY: -1,
         },
       },
@@ -526,7 +524,7 @@ const SoilCalculator = ( () => {
     return mockedDbResponse;
   }
 
-  function getFieldDisplayName( fieldTitle ) {
+  function getFieldDisplayName( fieldTitle, locale ) {
 
     /*
     from https://www.30secondsofcode.org/js/s/get
@@ -547,8 +545,15 @@ const SoilCalculator = ( () => {
           .reduce( ( prev, cur ) => prev && prev[cur], from ),
       );
 
-    const displayName = get( legends.request.legend, fieldTitle )[0];
-    return displayName ? displayName.displayName : fieldTitle;
+    const requestDisplayName = get( legends.request.legend[locale], fieldTitle )[0];
+    const resultsDisplayName = get( legends.results.legend[locale], fieldTitle )[0];
+
+    return requestDisplayName
+      ? requestDisplayName.displayName
+      : resultsDisplayName
+        ? resultsDisplayName.displayName
+        : fieldTitle;
+
   }
 
   return {
