@@ -53,6 +53,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       width: '180px',
       border: 'none',
     },
+    's-calc-safe': {
+      'margin': '10px 0 0 0',
+      'padding': '5px 0',
+      'background': 'gray',
+      'color': 'white',
+      'text-align': 'center',
+      'border-radius': '50px',
+
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -62,6 +71,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       yes: 'yes',
       no: 'no',
       notSelected: 'none selected',
+      safeDataset: 'Save this set',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -72,6 +82,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   } )();
 
   /* ===================== handlers ==================== */
+
+  function handleSaveDataset() {
+    const dataset = getNewDataset();
+    const jsonStr = V.castJson( dataset );
+
+    V.setEntity( V.getState( 'active' ).lastViewed, {
+      field: 'servicefields.s1',
+      data: jsonStr === '' ? null : jsonStr,
+    } ).then( res => {
+      console.log( res );
+      // something here
+    } );
+  }
 
   function handleCalcUpdate() {
 
@@ -173,7 +196,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           t: 'td',
           i: 's-calc-result__' + row,
           c: 's-calc-result td-right txt-right break-words',
-          h: '',
+          h: InteractionComponents.confirmClickSpinner( { color: 'black' } ),
         },
       ],
     };
@@ -422,12 +445,21 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return $form;
   }
 
+  function saveBtn() {
+    return V.cN( {
+      c: 's-calc-safe',
+      h: V.getString( ui.safeDataset ),
+      k: handleSaveDataset,
+    } );
+  }
+
   function content( data ) {
     return [
       resultsSOM(),
       resultsN(),
       resultsC(),
       form( data ),
+      saveBtn(),
     ];
   }
 
