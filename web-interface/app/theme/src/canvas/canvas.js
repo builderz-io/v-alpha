@@ -359,11 +359,109 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    // setTimeout( function testSoilCalc() {
-    //   V.setState( 'active', { lastViewedEntity: { role: 'Plot' } } );
-    //   V.setNode( 'content', '' );
-    //   V.setNode( 'content', Farm.drawPlotWidget() );
-    // }, 400 );
+    setTimeout( function testSoilCalc() {
+      V.setState( 'active', { lastViewedEntity: { role: 'Plot', servicefields: {
+        s1: JSON.stringify( {
+          CROP: {
+            ID: 1140,
+          },
+          FTLZ: {
+            ORG: {
+              ID: 5040,
+              QTY: 30,
+            },
+          },
+          BMASS: {
+            MP: {
+              QTY: 4,
+              HVST: true,
+            },
+            SP: {
+              QTY: 0,
+              HVST: true,
+            },
+          },
+        } ),
+        s2: JSON.stringify( {
+          CROP: {
+            ID: 1160,
+          },
+          FTLZ: {
+            ORG: {
+              ID: 5030,
+              QTY: 29,
+            },
+          },
+          BMASS: {
+            MP: {
+              QTY: 4,
+              HVST: true,
+            },
+            SP: {
+              QTY: 0,
+              HVST: true,
+            },
+          },
+        } ),
+        s3: JSON.stringify( {
+          CROP: {
+            ID: 1180,
+          },
+          FTLZ: {
+            ORG: {
+              ID: 5020,
+              QTY: 28,
+            },
+          },
+          BMASS: {
+            MP: {
+              QTY: 4,
+              HVST: true,
+            },
+            SP: {
+              QTY: 0,
+              HVST: true,
+            },
+          },
+        } ),
+        s4: JSON.stringify( {
+          CROP: {
+            ID: 1200,
+          },
+          FTLZ: {
+            ORG: {
+              ID: 5010,
+              QTY: 27,
+            },
+          },
+          BMASS: {
+            MP: {
+              QTY: 4,
+              HVST: true,
+            },
+            SP: {
+              QTY: 0,
+              HVST: true,
+            },
+          },
+        } ),
+        s10: JSON.stringify( {
+          SITE: {
+            CN: 10,
+            FCAP: 40,
+            PCIP: {
+              QTY: 650,
+              MUL: 0.5,
+            },
+            N: {
+              DEP: 20,
+            },
+          },
+        } ),
+      } } } );
+      V.setNode( 'content', '' );
+      V.setNode( 'content', Farm.drawPlotWidget() );
+    }, 400 );
 
     Chat.drawMessageForm( 'clear' );
 

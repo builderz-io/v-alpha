@@ -123,8 +123,8 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
 
     setTimeout( function testDatasetRetrieval() {
       // const retrievedDataset = SoilCalculator.getDataset();
-      const retrievedDataset = V.castJson( entity.servicefields.s1 );
-      SoilCalculatorComponents.drawContent( retrievedDataset );
+      // const retrievedDataset = V.castJson( entity.servicefields.s1 );
+      SoilCalculatorComponents.drawContent( entity.servicefields );
     }, 2000 );
 
     /* draws the preview */

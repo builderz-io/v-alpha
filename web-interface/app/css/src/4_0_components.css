@@ -411,3 +411,84 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
     stroke-dashoffset: 0;
   }
 }
+
+
+
+
+/**
+ * Tabs
+ * adjusted from https://codepen.io/alvarotrigo/pen/bGoPzMe
+ */
+
+#tab1:checked ~ content .tab1__content,
+#tab2:checked ~ content .tab2__content,
+#tab3:checked ~ content .tab3__content,
+#tab4:checked ~ content .tab4__content,
+#tab5:checked ~ content .tab5__content,
+#tab6:checked ~ content .tab6__content,
+#tab7:checked ~ content .tab7__content,
+#tab8:checked ~ content .tab8__content {
+  display: block;
+}
+
+#tab1:checked ~ nav .tab1__label,
+#tab2:checked ~ nav .tab2__label,
+#tab3:checked ~ nav .tab3__label,
+#tab4:checked ~ nav .tab4__label,
+#tab5:checked ~ nav .tab5__label,
+#tab6:checked ~ nav .tab6__label,
+#tab7:checked ~ nav .tab7__label,
+#tab8:checked ~ nav .tab8__label {
+  background: #fff;
+}
+
+#tab1:checked ~ nav .tab1__label:after,
+#tab2:checked ~ nav .tab2__label:after,
+#tab3:checked ~ nav .tab3__label:after,
+#tab4:checked ~ nav .tab4__label:after,
+#tab5:checked ~ nav .tab5__label:after,
+#tab6:checked ~ nav .tab6__label:after,
+#tab7:checked ~ nav .tab7__label:after,
+#tab8:checked ~ nav .tab8__label:after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: #fff;
+  left: 0;
+  bottom: -1px;
+}
+
+tabs .tab-input {
+  display: none;
+}
+
+tabs content .tab-content {
+  display: none;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+tabs ul {
+  display: flex;
+}
+tabs ul li {
+  display: flex;
+}
+tabs ul li label {
+  position: relative;
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  border-bottom: 0;
+  background: #eee;
+}
+tabs ul li label:hover {
+  background: #ddd;
+}
+tabs ul li label:active {
+  background: #fff;
+}
+tabs ul li:not(:last-child) label {
+  border-right-width: 0;
+}

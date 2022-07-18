@@ -14,15 +14,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       height: '80vh',
     },
     's-calc-form': {
-      'height': '40vh',
-      'overflow': 'scroll',
-      'border-radius': '5px',
-      'background': 'lightgreen',
+      'border-radius': '20px',
+      'border': '1px solid lightgray',
+
     },
     's-calc-results': {
       'border-radius': '5px',
       'background': 'lightblue',
       'margin-bottom': '1rem',
+    },
+    's-calc-total-balance': {
+      'border-radius': '20px',
+      'border': '1px solid gray',
+      'padding': '1.2rem',
     },
     's-calc-form__section': {
       padding: '1.5rem',
@@ -36,7 +40,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       width: '170px',
     },
     's-calc-input-number': {
-      width: '60px',
+      'width': '60px',
+      'border-bottom': '1px solid gray',
     },
     's-calc-form__field-single': {
       padding: '0 20px',
@@ -83,11 +88,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ===================== handlers ==================== */
 
-  function handleSaveDataset() {
-    const dataset = getNewDataset();
-    const jsonStr = V.castJson( dataset );
+  function saveDatapoints( datasets ) {
 
-    V.setEntity( V.getState( 'active' ).lastViewed, {
+    const jsonStr = V.castJson( datasets );
+    console.log( jsonStr );
+    V.setEntity( 'Schlag Vier #3151', {
       field: 'servicefields.s1',
       data: jsonStr === '' ? null : jsonStr,
     } ).then( res => {
@@ -102,6 +107,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if ( !newDataset ) { return }
 
+    saveDatapoints( newDataset );
+
     SoilCalculator
       .getResults( newDataset )
       .then( res => {
@@ -110,29 +117,30 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       } );
   }
 
-  function getNewDataset() {
-    const _ = document.forms.calcvalues.elements;
+  function getNewDataset( tabNum = 1 ) {
+    const s = document.forms.SITE.elements;
+    const c = document.forms['CROP-' + tabNum].elements;
 
-    if ( !validateNewDataset( _ ) ) { return }
+    if ( !validateNewDataset( s, c ) ) { return }
 
     const __ = SoilCalculator.getSchema( 'request' );
 
-    __.SITE.CN = Number( _.SITE_CN.value );
-    __.SITE.FCAP = Number( _.SITE_FCAP.value );
-    __.SITE.PCIP.QTY = Number( _.SITE_PCIP_QTY.value );
-    __.SITE.PCIP.MUL = Number( _.SITE_PCIP_MUL.value );
-    __.SITE.N.DEP = Number( _.SITE_N_DEP.value );
+    __.SITE.CN = Number( s.SITE_CN.value );
+    __.SITE.FCAP = Number( s.SITE_FCAP.value );
+    __.SITE.PCIP.QTY = Number( s.SITE_PCIP_QTY.value );
+    __.SITE.PCIP.MUL = Number( s.SITE_PCIP_MUL.value );
+    __.SITE.N.DEP = Number( s.SITE_N_DEP.value );
 
-    __.CROP.ID = Number( _.CROP_ID.value );
+    __.CROP.ID = Number( c.CROP_ID.value );
 
-    __.FTLZ.ORG.ID = Number( _.FTLZ_ORG_ID.value );
-    __.FTLZ.ORG.QTY = Number( _.FTLZ_ORG_QTY.value );
+    __.FTLZ.ORG.ID = Number( c.FTLZ_ORG_ID.value );
+    __.FTLZ.ORG.QTY = Number( c.FTLZ_ORG_QTY.value );
 
-    __.BMASS.MP.QTY = Number( _.BMASS_MP_QTY.value );
-    __.BMASS.MP.HVST = ( _.BMASS_MP_HVST.value === 'true' );
+    __.BMASS.MP.QTY = Number( c.BMASS_MP_QTY.value );
+    __.BMASS.MP.HVST = ( c.BMASS_MP_HVST.value === 'true' );
 
-    __.BMASS.SP.QTY = Number( _.BMASS_SP_QTY.value );
-    __.BMASS.SP.HVST = ( _.BMASS_SP_HVST.value === 'true' );
+    __.BMASS.SP.QTY = Number( c.BMASS_SP_QTY.value );
+    __.BMASS.SP.HVST = ( c.BMASS_SP_HVST.value === 'true' );
 
     console.log( 'New Dataset: ', __ );
 
@@ -167,12 +175,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function validateNewDataset( _ ) {
+  function validateNewDataset( s, c ) {
     if(
-      _.CROP_ID.value === 'none'
-      || _.FTLZ_ORG_ID.value === 'none'
-      || !_.BMASS_MP_QTY.value
-      || ! _.FTLZ_ORG_QTY.value
+      c.CROP_ID.value === 'none'
+      || c.FTLZ_ORG_ID.value === 'none'
+      || !c.BMASS_MP_QTY.value
+      || !c.FTLZ_ORG_QTY.value
     ) {
       return false;
     }
@@ -239,11 +247,110 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
-  function form( data ) {
+  function totalBalance() {
+    return {
+      c: 's-calc-total-balance',
+      h: [
+        {
+          h: 'Hummusbilanz',
+        },
+        {
+          t: 'table',
+          c: 'w-full pxy',
+          h: ['T_BAL_N', 'T_BAL_C'].map( row => rowObj( row ) ),
+        },
+      ],
+    };
+  }
+
+  function cropSequence( data = {} ) {
+
+    for ( let i = 1; i <= 8; i++ ) {
+      if ( !data['s' + i] ) {
+        data['s' + i] = JSON.stringify( SoilCalculator.getSchema( 'request' ) );
+      }
+    }
+
+    delete data.s9;
+    delete data.s10;
+
+    const sequence = Object.keys( data ).map( key => key.replace( 's', '' ) );
+
+    const tabs = V.cN( {
+      t: 'tabs',
+      h: sequence.map( tabNum => ( {
+        t: 'input',
+        c: 'tab-input',
+        i: 'tab' + tabNum,
+        a: {
+          type: 'radio',
+          name: 'crop-sequence',
+          checked: tabNum === '1' ? true : undefined,
+        },
+      } ) ),
+    } );
+
+    tabs.append( V.cN( {
+      t: 'nav',
+      h: {
+        t: 'ul',
+        h: sequence.map( tabNum => ( {
+          t: 'li',
+          h: {
+            t: 'label',
+            c: 'tab' + tabNum + '__label',
+            for: 'tab' + tabNum,
+            h: tabNum,
+          },
+        } ) ),
+      },
+    } ) );
+
+    tabs.append( V.cN( {
+      t: 'content',
+      h: sequence.map( function placeForm( tabNum ) {
+        const dataset = V.castJson( this.data[ 's' + tabNum] );
+        return {
+          c: 'tab-content tab' + tabNum + '__content',
+          h: form( tabNum, dataset, /* exclude: */ ['SITE'] ),
+        };
+      }, { data: data } ),
+
+    } ) );
+
+    const tabsWrapper = V.cN( {
+      c: 'tabs-wrapper',
+      h: tabs,
+    } );
+
+    return tabsWrapper;
+  }
+
+  function plotData( data ) {
+
+    if ( !data ) {
+      data = {
+        s10: JSON.stringify( SoilCalculator.getSchema( 'request' ) ),
+      };
+    }
+    const dataset = V.castJson( data.s10 );
+    return form( 0, dataset, /* exclude: */ ['BMASS', 'CROP', 'FTLZ'] );
+
+  }
+
+  function form( formNumber, data, exclude ) {
 
     if ( !data ) {
       data = SoilCalculator.getSchema( 'request' );
     }
+
+    data = V.castClone( data );
+
+    exclude.forEach( section => {
+      delete data[section];
+    } );
+
+    formNumber ? formNumber = '-' + formNumber : formNumber = '';
 
     const input = ( $inputElem, fieldTitle ) => ( {
       c: 's-calc-input-wrapper',
@@ -420,7 +527,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const $form = V.cN( {
       t: 'form',
       a: {
-        name: 'calcvalues',
+        name: Object.keys( data )[0] + formNumber,
       },
       c: 's-calc-form',
       h: Object.keys( data ).map( section => ( {
@@ -455,11 +562,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function content( data ) {
     return [
-      resultsSOM(),
-      resultsN(),
-      resultsC(),
-      form( data ),
-      saveBtn(),
+      cropSequence( data ),
+      // totalBalance(),
+      plotData( data ),
+      // resultsSOM(),
+      // resultsN(),
+      // resultsC(),
+      // saveBtn(),
     ];
   }
 
@@ -471,10 +580,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     handleCalcUpdate();
   }
 
-  function wrapper( data ) {
+  function wrapper() {
     return V.cN( {
       c: 's-calc-wrapper w-full',
-      h: content( data ),
+      h: content(),
     } );
   }
 
