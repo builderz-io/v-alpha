@@ -358,7 +358,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      * Canvas view renders on initial page load, reload and history change
      *
      */
-
+    /*
     setTimeout( function testSoilCalc() {
       V.setState( 'active', { lastViewedEntity: { role: 'Plot', servicefields: {
         s1: JSON.stringify( {
@@ -462,6 +462,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'content', '' );
       V.setNode( 'content', Farm.drawPlotWidget() );
     }, 400 );
+    */
 
     Chat.drawMessageForm( 'clear' );
 

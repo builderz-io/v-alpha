@@ -15,7 +15,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
       farms: 'Farms',
       plot: 'Plot',
       plots: 'Plots',
-      widgetTitle: 'Calculator',
+      widgetTitle: '',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -122,16 +122,15 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
     /* replaces preview with retrieved data */
 
     setTimeout( function testDatasetRetrieval() {
-      // const retrievedDataset = SoilCalculator.getDataset();
-      // const retrievedDataset = V.castJson( entity.servicefields.s1 );
       SoilCalculatorComponents.drawContent( entity.servicefields );
-    }, 2000 );
+    }, 1000 );
 
     /* draws the preview */
 
     const $inner = SoilCalculatorComponents.wrapper();
 
-    return CanvasComponents.card( $inner, V.getString( ui.widgetTitle ) );
+    // return CanvasComponents.card( $inner, V.getString( ui.widgetTitle ) );
+    return $inner;
 
   }
 

@@ -143,8 +143,8 @@
       },
       "de_DE": {
         "CROP": {
-          "displayName": "Frucht",
-          "descr": "Frucht",
+          "displayName": "Kulturfrucht",
+          "descr": "Kulturfrucht",
           "ID": {
             "displayName": "Typ",
             "descr": "Crop id for internal use",
@@ -180,8 +180,8 @@
           }
         },
         "BMASS": {
-          "displayName": "Bio mass",
-          "descr": "Bio mass",
+          "displayName": "Biomasse",
+          "descr": "Biomasse",
           "MP": {
             "displayName": "Main Product",
             "descr": "Main Product",
@@ -215,7 +215,7 @@
           "displayName": "Plot data",
           "descr": "Plot data",
           "CN": {
-            "displayName": "C/N Ratio",
+            "displayName": "C/N Verhältnis",
             "descr": "Plot C/N Ratio",
             "unit": ""
           },
@@ -225,8 +225,8 @@
             "unit": ""
           },
           "PCIP": {
-            "displayName": "Precipitation",
-            "descr": "Precipitation",
+            "displayName": "Niederschlag",
+            "descr": "Niederschlag",
             "QTY": {
               "displayName": "Quantity average",
               "descr": "Plot precipitation",
