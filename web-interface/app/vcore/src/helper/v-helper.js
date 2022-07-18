@@ -370,7 +370,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return JSON.parse( JSON.stringify( data ) );
     }
     else if ( typeof data === 'string' ) {
-      return JSON.parse( data );
+      try {
+        return JSON.parse( data );
+      }
+      catch ( err ) {
+        return data; // data is likely a string which is not in JSON format
+      }
     }
     else if ( typeof data === 'object' ) {
       return JSON.stringify( data );
