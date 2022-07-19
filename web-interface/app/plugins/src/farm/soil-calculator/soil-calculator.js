@@ -16,7 +16,7 @@ const SoilCalculator = ( () => {
 
   /* setup module state */
 
-  const STATE = {};
+  let STATE;
 
   /* fetch crop and fertilizer parameters, fetch legend-file (includes translations) */
 
@@ -63,7 +63,7 @@ const SoilCalculator = ( () => {
      * @returns { Object } inputs - valid parameter set to run calculations, plus placeholders (-1) for mixins
      */
 
-    /* clone request in order to not meddle with the original */
+    /* clone request */
     const clone = JSON.parse( JSON.stringify( req ) );
 
     /* mixin the full set of crop and fertilizer parameters into clone */
@@ -86,9 +86,8 @@ const SoilCalculator = ( () => {
      * @returns { Object } results - set of all results
      */
 
-    /* setup schema */
-
-    const __ = getSchema( 'results' );
+    /* clone schema */
+    const __ = JSON.parse( JSON.stringify( getSchema( 'results' ) ) );
 
     /**
      * mixins:
@@ -231,6 +230,32 @@ const SoilCalculator = ( () => {
 
   function soilOrganicMatterBalanceN( _, SOM ) {
     return ( SOM.SUPP - SOM.LOSS ) / _.SITE.CN;
+  }
+
+  function sequenceTotalCandN( sequence ) {
+    let divisor = 0, cTotal = 0, nTotal = 0;
+
+    for ( const key in sequence ) {
+      if (
+        !sequence[key].datapoint
+      ) {
+        continue;
+      }
+      divisor += 1;
+      cTotal += sequence[key].results.SOM.BAL.C;
+      nTotal += sequence[key].results.SOM.BAL.N;
+    }
+
+    if ( !divisor ) { return }
+
+    return {
+      T: {
+        BAL: {
+          C: cTotal / divisor,
+          N: nTotal / divisor,
+        },
+      },
+    };
   }
 
   /* =================  Private Methods Helpers =================== */
@@ -382,6 +407,8 @@ const SoilCalculator = ( () => {
        * @returns { Object } STATE - API response including all inputs and results
        */
 
+    STATE = {};
+
     /* add timestamps to state */
     Object.assign( STATE, castTime() );
 
@@ -395,6 +422,10 @@ const SoilCalculator = ( () => {
     return STATE;
   }
 
+  async function getSequenceResults( req ) {
+    return sequenceTotalCandN( req );
+  }
+
   return {
     getCrop: getCrop,
     getFertilizer: getFertilizer,
@@ -404,6 +435,7 @@ const SoilCalculator = ( () => {
     getDataset: getDataset,
     getFieldDisplayName: getFieldDisplayName,
     getResults: getResults,
+    getSequenceResults: getSequenceResults,
   };
 
 } )();

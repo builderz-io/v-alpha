@@ -222,6 +222,9 @@
   "Farms": "Betriebe",
   "Plot": "Schlag",
   "Plots": "Schläge",
+  "Crop Sequence": "Fruchtfolge",
+  "Soil Balance": "Humusbilanz",
+  "Site Data": "Schlagdaten",
   "Pick an exact location.": "Markiere den genauen Ort.",
   "none selected": "Nicht gewählt",
   "Save this set": "Daten speichern"

@@ -10,32 +10,38 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   const locale = V.getAppLocale();
 
   V.setStyle( {
-    // 's-calc-wrapper': {
+    // 's-calc-widget': {
     //   height: '80vh',
     // },
-    // 's-calc-form': {
-    //   'border-radius': '20px',
-    //   'border': '1px solid lightgray',
-    // },
+    's-calc-form': {
+      // 'border-radius': '20px',
+      // 'border': '1px solid lightgray',
+      background: 'honeydew',
+
+    },
     's-calc-results': {
       'border-radius': '5px',
-      'background': 'lightblue',
-      'margin-bottom': '1.5rem',
+      'background': 'azure',
+      'margin': '1.5rem',
     },
-    // 's-calc-form__section': {
-    //   padding: '1.5rem',
-    // },
+    's-calc-total-balance': {
+      background: 'azure',
+    },
+    's-calc-form__section': {
+      padding: '1rem',
+    },
     's-calc-input-wrapper': {
       'display': 'flex',
       'justify-content': 'space-between',
+      'margin-bottom': '0.5rem',
     },
     // 's-calc-input-label': {
     //   width: '170px',
     // },
     's-calc-input-number': {
-      'width': '60px',
-      'height': '2rem',
-      'border-bottom': '1px solid gray',
+      width: '60px',
+      height: '1.74rem',
+      // 'border-bottom': '1px solid gray',
     },
     's-calc-form__field-group-title': {
       height: '2rem',
@@ -43,6 +49,21 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-form__section-title': {
       height: '2rem',
     },
+    's-calc-tab-nav': {
+      // background: 'azure',
+    },
+    's-calc-tab-content': {
+      // background: 'azure',
+      background: 'honeydew',
+      // padding: '0.5rem',
+    },
+    's-calc-results-table': {
+      // background: 'azure',
+      padding: '1.2rem',
+    },
+    // 's-calc-tab-content': {
+    //   background: 'honeydew',
+    // },
     // 's-calc-form__field-single': {
     //   padding: '0 20px',
     // },
@@ -52,7 +73,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-input-radio-wrapper': {
       'display': 'flex',
       'justify-content': 'space-around',
-      'width': '60%',
+      'width': '35%',
     },
     's-calc-input-select': {
       width: '210px',
@@ -93,46 +114,109 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ===================== handlers ==================== */
 
-  function saveDatapoint( formName, newDatapoint ) {
+  function handleDatapointChange( e ) {
 
-    const jsonStr = V.castJson( newDatapoint );
-    const subFieldNum = formName === 'SITE'
-      ? '10'
-      : formName.replace( 'CROP-', '' );
-    V.setEntity( V.getState( 'active' ).lastViewed, {
-      field: 'servicefields.s' + subFieldNum,
-      data: jsonStr === '' ? null : jsonStr,
-    } ).then( res => {
-      // console.log( res );
-      // something here
+    setStateDatapoint();
+
+    setStateResults();
+
+    // timeout looks good in ui, but is also needed to ensure results are set (should be changed to promise)
+    setTimeout( function delayedDrawResults() {
+      drawResetResults();
+      drawDatapointResults();
+      drawSequenceResults(); // the total
+    }, 170 );
+
+    if ( !e ) { return } // when loading data from db
+
+    setDatapoint( e ); // save to db
+
+  }
+
+  /* ================== private methods ================= */
+
+  function setStateDatapoint() {
+    V.setState( 'cropSequence', { s10: getFormData( 'SITE' ) } );
+    for ( let i = 1; i <= 8; i++ ) {
+      const obj = {};
+      obj[ 's' + i ] = { datapoint: getFormData( 'CROP-' + i ) };
+      V.setState( 'cropSequence', obj );
+    }
+  }
+
+  function setStateResults() {
+    const siteData = V.getState( 'cropSequence' )[ 's10' ];
+    for ( let i = 1; i <= 8; i++ ) {
+      const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
+      if ( !cropData ) { continue }
+      Object.assign( cropData, siteData ); // merge
+      if ( cropData && siteData ) {
+        SoilCalculator
+          .getResults( cropData )
+          .then( res => {
+            // console.log( 'Calculation Results: ', res );
+            Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { results: res.results } );
+          } );
+      }
+    }
+  }
+
+  function drawResetResults() {
+    V.getNodes( '.s-calc-result' ).forEach( $elem => {
+      $elem.innerText = '';
     } );
   }
 
-  function handleDatapointChange( e ) {
+  function drawDatapointResults() {
+    const sequence = V.getState( 'cropSequence' );
+    // console.log( 'drawDatapointResults' );
+    // console.log( sequence );
+    for ( const key in sequence ) {
+      if (
+        !sequence[key].datapoint
+      ) {
+        continue;
+      }
+      drawResults( sequence[key].results, key.replace( 's', '' ) );
+    }
+  }
 
-    if ( !e ) {return }
-
-    const formName = e.target.closest( 'form' ).getAttribute( 'name' );
-
-    const newDatapoint = getNewDatapoint( formName );
-
-    if ( !newDatapoint ) { return }
-
-    saveDatapoint( formName, newDatapoint );
+  function drawSequenceResults() {
+    // console.log( 'drawSequenceResults' );
 
     SoilCalculator
-      .getResults( newDatapoint )
+      .getSequenceResults( V.getState( 'cropSequence' ) )
       .then( res => {
-        console.log( 'Calculation Results: ', res );
-        setResults( res );
+        drawResults( res );
       } );
   }
 
-  function getNewDatapoint( formName ) {
+  function setDatapoint( e ) {
+
+    const formName = e.target.closest( 'form' ).getAttribute( 'name' );
+
+    const newDatapoint = getFormData( formName );
+
+    if ( !newDatapoint ) { return }
+
+    const jsonStr = V.castJson( newDatapoint );
+
+    const subFieldNum = formName === 'SITE'
+      ? '10'
+      : formName.replace( 'CROP-', '' );
+
+    V.setEntity( V.getState( 'active' ).lastViewed, {
+      field: 'servicefields.s' + subFieldNum,
+      data: jsonStr === '' ? null : jsonStr,
+    } );
+
+  }
+
+  function getFormData( formName ) {
     // const s = document.forms.SITE.elements;
     const _ = document.forms[formName].elements;
 
-    if ( !validateNewDatapoint( _, formName ) ) { return }
+    if ( !validateFormData( _, formName ) ) { return }
 
     const __ = V.castClone( SoilCalculator.getSchema( 'request' ) );
 
@@ -161,7 +245,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       __.BMASS.SP.HVST = ( _.BMASS_SP_HVST.value === 'true' );
     }
 
-    console.log( 'New Dataset: ', __ );
+    // console.log( 'New Dataset: ', __ );
 
     /* return the new dataset */
 
@@ -169,32 +253,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   }
 
-  function setResults( res ) {
-    V.getNodes( '.s-calc-result' ).forEach( $elem => {
-      $elem.innerText = '';
-    } );
-
-    const prefix = '#s-calc-result__';
-
-    for ( const section in res.results ) {
-      for ( const field in res.results[section] ) {
-        if ( typeof res.results[section][field] == 'object' ) {
-          for ( const subField in res.results[section][field] ) {
-            const fieldString = section + '_' + field + '_' + subField;
-            const value = res.results[section][field][subField].toFixed( 1 );
-            V.setNode( prefix + fieldString, value );
-          }
-        }
-        else {
-          const fieldString = section + '_' + field;
-          const value = res.results[section][field].toFixed( 1 );
-          V.setNode( prefix + fieldString, value );
-        }
-      }
-    }
-  }
-
-  function validateNewDatapoint( _, formName ) {
+  function validateFormData( _, formName ) {
     if ( formName === 'SITE' ) { return true } // TODO
     if(
       _.CROP_ID.value === 'none'
@@ -209,12 +268,42 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   }
 
-  /* ================== private methods ================= */
+  function drawResults( res, tabNum ) {
 
-  function rowObj( row ) {
+    const prefix = '#s-calc-result' + ( tabNum ? '__tab-' + tabNum : '' ) + '__';
+
+    for ( const section in res ) {
+      for ( const field in res[section] ) {
+        if ( typeof res[section][field] == 'object' ) {
+          for ( const subField in res[section][field] ) {
+            const fieldString = section + '_' + field + '_' + subField;
+            const value = res[section][field][subField].toFixed( 1 );
+            V.setNode( prefix + fieldString, value );
+          }
+        }
+        else {
+          const fieldString = section + '_' + field;
+          const value = res[section][field].toFixed( 1 );
+          V.setNode( prefix + fieldString, value );
+        }
+      }
+    }
+  }
+
+  function castFlatFieldTitle( section, field, subField ) {
+    return section + '_' + field + ( subField ? '_' + subField : '' );
+  }
+
+  function mapFields( array, tabNum ) {
+    return array.map( function( row ) { return rowObj( row, this.tabNum ) }, { tabNum: tabNum } );
+  }
+
+  /* ================== components ================= */
+
+  function rowObj( row, tabNum ) {
     return {
       t: 'tr',
-      c: 'fs-l',
+      // c: 'fs-l',
       h: [
         {
           t: 'td',
@@ -222,7 +311,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
         {
           t: 'td',
-          i: 's-calc-result__' + row,
+          i: 's-calc-result' + ( tabNum ? '__tab-' + tabNum : '' ) + '__' + row,
           c: 's-calc-result td-right txt-right break-words',
           h: InteractionComponents.confirmClickSpinner( { color: 'black' } ),
         },
@@ -230,39 +319,35 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
-  function castFlatFieldTitle( section, field, subField ) {
-    return section + '_' + field + ( subField ? '_' + subField : '' );
-  }
-
-  function resultsSOM() {
+  function resultsSOM( tabNum ) {
     return {
       c: 's-calc-results s-calc-results__som',
       h: {
         t: 'table',
-        c: 'w-full pxy',
-        h: ['SOM_LOSS', 'SOM_SUPP', 'SOM_BAL_N', 'SOM_BAL_C'].map( row => rowObj( row ) ),
+        c: 's-calc-results-table w-full',
+        h: mapFields( ['SOM_LOSS', 'SOM_SUPP', 'SOM_BAL_N', 'SOM_BAL_C'], tabNum ),
       },
     };
   }
 
-  function resultsN() {
+  function resultsN( tabNum ) {
     return {
       c: 's-calc-results s-calc-results__n',
       h: {
         t: 'table',
-        c: 'w-full pxy',
-        h: ['N_PB', 'N_FIX', 'N_DEP', 'N_NYR', 'N_CR', 'N_FTLZ_ORG', 'N_FTLZ_REM'].map( row => rowObj( row ) ),
+        c: 's-calc-results-table w-full',
+        h: mapFields( ['N_PB', 'N_FIX', 'N_DEP', 'N_NYR', 'N_CR', 'N_FTLZ_ORG', 'N_FTLZ_REM'], tabNum ),
       },
     };
   }
 
-  function resultsC() {
+  function resultsC( tabNum ) {
     return {
       c: 's-calc-results s-calc-results__c',
       h: {
         t: 'table',
-        c: 'w-full pxy',
-        h: ['C_CR', 'C_FTLZ_REM'].map( row => rowObj( row ) ),
+        c: 's-calc-results-table w-full',
+        h: mapFields( ['C_CR', 'C_FTLZ_REM'], tabNum ),
       },
     };
   }
@@ -273,12 +358,14 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: {
         t: 'table',
         c: 'w-full pxy',
-        h: ['T_BAL_N', 'T_BAL_C'].map( row => rowObj( row ) ),
+        h: mapFields( ['T_BAL_N', 'T_BAL_C'], null ),
       },
     };
   }
 
   function cropSequence( data = {} ) {
+
+    data = V.castClone( data );
 
     for ( let i = 1; i <= 8; i++ ) {
       if ( !data['s' + i] ) {
@@ -314,6 +401,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
         {
           t: 'ul',
+          c: 's-calc-tab-nav',
           h: sequence.map( tabNum => ( {
             t: 'li',
             h: {
@@ -332,15 +420,20 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: sequence.map( function placeForm( tabNum ) {
         const dataset = V.castJson( this.data[ 's' + tabNum] );
         return {
-          c: 'tab-content tab' + tabNum + '__content',
-          h: form( tabNum, dataset, /* exclude: */ ['SITE'] ),
+          c: 's-calc-tab-content tab-content tab' + tabNum + '__content',
+          h: [
+            form( tabNum, dataset, /* exclude: */ ['SITE'] ),
+            resultsSOM( tabNum ),
+            resultsN( tabNum ),
+            resultsC( tabNum ),
+          ],
         };
       }, { data: data } ),
 
     } ) );
 
     const tabsWrapper = V.cN( {
-      c: 'tabs-wrapper',
+      c: 'tabs-wrapper w-full',
       h: tabs,
     } );
 
@@ -348,6 +441,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function siteData( data ) {
+
     if (
       !data
       || ( data && !data.s10 )
@@ -567,11 +661,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       },
       c: 's-calc-form w-full',
       h: Object.keys( data ).map( section => ( {
-        c: 's-calc-form__section pxy',
+        c: 's-calc-form__section',
         h: [
           {
             c: 's-calc-form__section-title font-bold',
-            h: SoilCalculator.getFieldDisplayName( section, locale ),
+            h: SoilCalculator.getFieldDisplayName( section, locale ), // + formNumber.replace( '-', ' ' ),
           },
           {
             c: 's-calc-form__section-fields',
@@ -601,8 +695,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   function content( data ) {
     return [
       CanvasComponents.card( totalBalance(), V.getString( ui.soilBalanceTitle ) ),
-      CanvasComponents.card( siteData( data ), V.getString( ui.siteDataTitle ) ),
       CanvasComponents.card( cropSequence( data ), V.getString( ui.cropSequenceTitle ) ),
+      CanvasComponents.card( siteData( data ), '' ),
       // resultsSOM(),
       // resultsN(),
       // resultsC(),
@@ -612,22 +706,22 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ================== public methods ================= */
 
-  function drawContent( data ) {
-    V.setNode( '.s-calc-wrapper', '' );
-    V.setNode( '.s-calc-wrapper', content( data ) );
+  function drawWidgetContent( data ) {
+    V.setNode( '.s-calc-widget', '' );
+    V.setNode( '.s-calc-widget', content( data ) );
     handleDatapointChange();
   }
 
-  function wrapper() {
+  function widget() {
     return V.cN( {
-      c: 's-calc-wrapper w-full',
+      c: 's-calc-widget w-full',
       h: content(),
     } );
   }
 
   return {
-    wrapper: wrapper,
-    drawContent: drawContent,
+    widget: widget,
+    drawWidgetContent: drawWidgetContent,
   };
 
 } )();

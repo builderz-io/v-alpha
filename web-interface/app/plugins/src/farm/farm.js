@@ -122,12 +122,12 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
     /* replaces preview with retrieved data */
 
     setTimeout( function testDatasetRetrieval() {
-      SoilCalculatorComponents.drawContent( entity.servicefields );
-    }, 1000 );
+      SoilCalculatorComponents.drawWidgetContent( entity.servicefields );
+    }, 1200 );
 
     /* draws the preview */
 
-    const $inner = SoilCalculatorComponents.wrapper();
+    const $inner = SoilCalculatorComponents.widget();
 
     // return CanvasComponents.card( $inner, V.getString( ui.widgetTitle ) );
     return $inner;

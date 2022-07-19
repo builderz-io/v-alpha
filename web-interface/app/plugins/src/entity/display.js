@@ -97,6 +97,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( $list, [
       UserComponents.mediumImageCard(),
       // UserComponents.roleCard(),
+      UserComponents.entityCard(),
       Pool.drawWidget(),
       Farm.drawPlotWidget(),
       UserComponents.descriptionCard(),
@@ -105,7 +106,6 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.locationCard(),
       UserComponents.preferredLangsCard(),
       UserComponents.financialCard(),
-      UserComponents.entityCard(),
       UserComponents.evmAddressCard(),
       UserComponents.evmReceiverAddressCard(),
       UserComponents.managementCard(),

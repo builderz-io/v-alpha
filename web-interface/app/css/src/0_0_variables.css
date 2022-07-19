@@ -68,7 +68,7 @@
   --link: 215, 126, 88;
 
   /* Spacing */
-  --global-padding: 5px;
+  --global-padding: 0.5rem;
 
   --desktop-page-detach: 0;
 

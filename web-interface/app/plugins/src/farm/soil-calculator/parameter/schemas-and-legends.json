@@ -183,29 +183,29 @@
           "displayName": "Biomasse",
           "descr": "Biomasse",
           "MP": {
-            "displayName": "Main Product",
+            "displayName": "Hauptprodukt",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Quantity available",
+              "displayName": "Ertrag",
               "descr": "Main Product Quantity",
               "unit": ""
             },
             "HVST": {
-              "displayName": "Harvested",
+              "displayName": "Ernte",
               "descr": "Whether main product has been harvested",
               "unit": ""
             }
           },
           "SP": {
-            "displayName": "Side Product",
+            "displayName": "Nebenprodukt",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Quantity available",
+              "displayName": "Ertrag",
               "descr": "Side Product Quantity",
               "unit": ""
             },
             "HVST": {
-              "displayName": "Harvested",
+              "displayName": "Ernte",
               "descr": "Whether side product has been harvested",
               "unit": ""
             }
@@ -281,6 +281,20 @@
     },
     "legend": {
       "en_US": {
+        "T": {
+          "BAL": {
+            "C": {
+              "displayName": "C Balance",
+              "descr": "C Balance",
+              "unit": ""
+            },
+            "N": {
+              "displayName": "N Balance",
+              "descr": "N Balance",
+              "unit": ""
+            }
+          }
+        },
         "SOM": {
           "displayName": "Soil Organic Matter",
           "descr": "Soil Organic Matter",
@@ -366,6 +380,20 @@
         }
       },
       "de_DE": {
+        "T": {
+          "BAL": {
+            "C": {
+              "displayName": "C Balance",
+              "descr": "C Balance",
+              "unit": ""
+            },
+            "N": {
+              "displayName": "N Balance",
+              "descr": "N Balance",
+              "unit": ""
+            }
+          }
+        },
         "SOM": {
           "displayName": "Soil Organic Matter",
           "descr": "Soil Organic Matter",

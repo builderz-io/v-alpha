@@ -1010,7 +1010,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return castCard( $innerContent,
       editable || descr || filteredDescr
         ? V.getString( ui.entity )
-        : entity.role,
+        : V.getString( entity.role ),
     );
   }
 

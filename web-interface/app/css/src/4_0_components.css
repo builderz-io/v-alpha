@@ -439,7 +439,7 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 #tab6:checked ~ nav .tab6__label,
 #tab7:checked ~ nav .tab7__label,
 #tab8:checked ~ nav .tab8__label {
-  background: #ddd;
+  background: honeydew;
 }
 
 /* #tab1:checked ~ nav .tab1__label:after,
@@ -459,6 +459,10 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
   bottom: -1px;
 } */
 
+tabs {
+  margin-bottom: 12px;
+}
+
 tabs .tab-input {
   display: none;
 }
@@ -472,7 +476,8 @@ tabs content .tab-content {
 
 tabs ul {
   display: flex;
-  padding: 4px;
+  /* padding: 4px; */
+  justify-content: space-between;
 }
 tabs ul li {
   display: flex;
@@ -486,9 +491,9 @@ tabs ul li label {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 2rem;
+    border-radius: 2rem 2rem 0 0;
 }
-tabs ul li label:hover {
+/* tabs ul li label:hover {
   background: #eee;
 }
 tabs ul li label:active {
@@ -496,4 +501,4 @@ tabs ul li label:active {
 }
 tabs ul li:not(:last-child) label {
   border-right-width: 0;
-}
+} */
