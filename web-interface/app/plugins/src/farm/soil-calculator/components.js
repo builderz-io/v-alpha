@@ -450,7 +450,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         s10: JSON.stringify( {
           SITE: {
             CN: 10,
-            FCAP: 0.4,
+            FCAP: 40,
             PCIP: {
               QTY: 650,
               MUL: 0.5,
