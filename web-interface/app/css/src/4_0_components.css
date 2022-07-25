@@ -439,7 +439,7 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 #tab6:checked ~ nav .tab6__label,
 #tab7:checked ~ nav .tab7__label,
 #tab8:checked ~ nav .tab8__label {
-  background: honeydew;
+  background: #eee;
 }
 
 /* #tab1:checked ~ nav .tab1__label:after,
@@ -491,7 +491,7 @@ tabs ul li label {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 2rem 2rem 0 0;
+    border-radius: 5px 5px 0 0;
 }
 /* tabs ul li label:hover {
   background: #eee;

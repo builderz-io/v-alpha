@@ -143,8 +143,8 @@
       },
       "de_DE": {
         "CROP": {
-          "displayName": "Kulturfrucht",
-          "descr": "Kulturfrucht",
+          "displayName": "Fruchtart",
+          "descr": "Fruchtart",
           "ID": {
             "displayName": "Typ",
             "descr": "Crop id for internal use",
@@ -175,7 +175,7 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Quantity of applied fertilizer",
-              "unit": ""
+              "unit": "t/ha"
             }
           }
         },
@@ -188,7 +188,7 @@
             "QTY": {
               "displayName": "Ertrag",
               "descr": "Main Product Quantity",
-              "unit": ""
+              "unit": "t/ha"
             },
             "HVST": {
               "displayName": "Ernte",
@@ -202,7 +202,7 @@
             "QTY": {
               "displayName": "Ertrag",
               "descr": "Side Product Quantity",
-              "unit": ""
+              "unit": "t/ha"
             },
             "HVST": {
               "displayName": "Ernte",
@@ -212,39 +212,39 @@
           }
         },
         "SITE": {
-          "displayName": "Plot data",
+          "displayName": "Schlag Daten",
           "descr": "Plot data",
           "CN": {
             "displayName": "C/N Verhältnis",
             "descr": "Plot C/N Ratio",
-            "unit": ""
+            "unit": " "
           },
           "FCAP": {
-            "displayName": "Capacity",
+            "displayName": "Feldkapazität",
             "descr": "Field Capacity",
-            "unit": ""
+            "unit": "cm/m"
           },
           "PCIP": {
             "displayName": "Niederschlag",
             "descr": "Niederschlag",
             "QTY": {
-              "displayName": "Quantity average",
+              "displayName": "Menge",
               "descr": "Plot precipitation",
-              "unit": ""
+              "unit": "mm/a"
             },
             "MUL": {
-              "displayName": "Multiplier",
+              "displayName": "Multiplikator",
               "descr": "precipitation multiplier",
-              "unit": "Decimal share"
+              "unit": " "
             }
           },
           "N": {
             "displayName": "N",
             "descr": "N",
             "DEP": {
-              "displayName": "Atmospheric N Deposition",
-              "descr": "Atmospheric N Deposition",
-              "unit": ""
+              "displayName": "Atmospherische N Deposition",
+              "descr": "Atmospherische N Deposition",
+              "unit": "kg/ha/a"
             }
           }
         }
@@ -383,14 +383,14 @@
         "T": {
           "BAL": {
             "C": {
-              "displayName": "C Balance",
+              "displayName": "C Bilanz",
               "descr": "C Balance",
-              "unit": ""
+              "unit": "kg/ha"
             },
             "N": {
-              "displayName": "N Balance",
+              "displayName": "N Bilanz",
               "descr": "N Balance",
-              "unit": ""
+              "unit": "kg/ha"
             }
           }
         },
@@ -400,23 +400,23 @@
           "LOSS": {
             "displayName": "Substanz Abbau",
             "descr": "Soil Organic Matter Loss",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "SUPP": {
             "displayName": "Substanz Aufbau",
             "descr": "Soil Organic Matter Supply",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "BAL": {
             "C": {
               "displayName": "Humusbilanz C",
               "descr": "C Balance",
-              "unit": ""
+              "unit": "kg/ha"
             },
             "N": {
               "displayName": "Humusbilanz N",
               "descr": "N Balance",
-              "unit": ""
+              "unit": "kg/ha"
             }
           }
         },
@@ -426,27 +426,27 @@
           "PB": {
             "displayName": "N Pflanzenbiomasse",
             "descr": "N Pflanzenbiomasse",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "FIX": {
             "displayName": "N Fixierung",
             "descr": "N Fixierung",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "DEP": {
             "displayName": "N Deposition",
             "descr": "N Deposition",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "NYR": {
             "displayName": "N Nicht aufgenommen",
             "descr": "N Nicht aufgenommen",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "CR": {
             "displayName": "N Crop Residues",
             "descr": "N Crop Residues",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "FTLZ": {
             "displayName": "Fertilizer",
@@ -454,12 +454,12 @@
             "ORG": {
               "displayName": "N Organischer Dünger",
               "descr": "N Organischer Dünger",
-              "unit": ""
+              "unit": "kg/ha"
             },
             "REM": {
               "displayName": "N Nachlieferung",
               "descr": "N Nachlieferung",
-              "unit": ""
+              "unit": "kg/ha"
             }
           }
         },
@@ -467,13 +467,13 @@
           "CR": {
             "displayName": "C Fixierung",
             "descr": "C Fixierung",
-            "unit": ""
+            "unit": "kg/ha"
           },
           "FTLZ": {
             "REM": {
               "displayName": "C Nachlieferung",
               "descr": "C Nachlieferung",
-              "unit": ""
+              "unit": "kg/ha"
             }
           }
         }

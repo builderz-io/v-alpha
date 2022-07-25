@@ -52,6 +52,8 @@
       attributionControl: false,
     };
 
+    let pickerZoom = 0;
+
     if( $.isPlainObject( opts ) && $.isPlainObject( opts.map ) ) {optsMap = $.extend( optsMap, opts.map )}
 
     var defaults = {
@@ -209,6 +211,12 @@
 		    self.locationOri = self.$input.val();
 
       self.onChangeLocation = function() {
+        if ( pickerZoom === 0 ) { pickerZoom = 8 }
+        else if ( pickerZoom === 8 ) { pickerZoom = 12 }
+        else if ( pickerZoom === 12 ) { pickerZoom = 13 }
+
+        self.map.setView( self.location, pickerZoom );
+
         var edata = {
           latlng: self.location,
           location: self.getLocation(),

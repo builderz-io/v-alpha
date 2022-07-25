@@ -156,7 +156,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       $( '.join-loc-picker__input' ).leafletLocationPicker( {
         alwaysOpen: true,
         mapContainer: '.join-loc-picker__map',
-        height: 210,
+        height: 300,
         map: {
           zoom: 4,
           center: L.latLng( [ 51.376067, 9.84375 ] ),
@@ -164,7 +164,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           attributionControl: false,
         },
         onChangeLocation: function pickedLocation( data ) {
-          console.log( data );
+
           setResponse( '', 'setAsIs' );
 
           entityData.location = 'picked location';

@@ -261,7 +261,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
     Page.draw( {
       topslider: $slider,
-      position: whichPath || search ? 'peek' : 'top',
+      position: whichPath || search ? 'peek' : 'closed',
       navReset: false,
     } );
 

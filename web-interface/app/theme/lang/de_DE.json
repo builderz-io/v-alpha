@@ -136,6 +136,8 @@
   "Please add a valid email address": "Bitte geben Sie eine gültige E-Mail-Adresse an",
   "Please enter the 4-digit code we sent": "Bitte geben Sie den 4-stelligen Code ein, den wir gesendet haben",
   "4-digit code does not match": "4-stelliger Code stimmt nicht überein",
+  "yes": "ja",
+  "no": "nein",
   "from": "von",
   "to": "zu",
   "fee": "Gebühr",
@@ -226,6 +228,9 @@
   "Soil Balance": "Humusbilanz",
   "Site Data": "Schlagdaten",
   "Pick an exact location.": "Markiere den genauen Ort.",
-  "none selected": "Nicht gewählt",
-  "Save this set": "Daten speichern"
+  "None selected": "Nicht gewählt",
+  "No fertilizer": "Kein Dünger",
+  "Save this set": "Daten speichern",
+  "Select the area to move closer.": "Wähle die Gegend um die Karte im Detail zu sehen.",
+  "Show details": "Details anzeigen"
 }

@@ -29,7 +29,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinLocTop: 'Add your location.',
       joinLocBottom: '',
       joinLocPickerTop: 'Pick an exact location.',
-      joinLocPickerBottom: '',
+      joinLocPickerBottom: 'Select the area to move closer.',
       joinImgTop: 'Add your image.',
       joinImgBottom: '',
       joinEmailTop: 'Add your email.',

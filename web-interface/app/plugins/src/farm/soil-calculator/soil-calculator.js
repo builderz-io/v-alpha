@@ -357,7 +357,7 @@ const SoilCalculator = ( () => {
     return mockedDbResponse;
   }
 
-  function getFieldDisplayName( fieldTitle, locale ) {
+  function getFieldString( fieldTitle, locale, unit ) {
 
     /**
      * @arg { string } fieldTitle - the field to query from the legends file in flattened format, e.g. "BMASS_MP_QTY"
@@ -387,13 +387,13 @@ const SoilCalculator = ( () => {
     const requestDisplayName = get( legends.request.legend[locale], '_', fieldTitle )[0];
 
     if ( requestDisplayName ) {
-      return requestDisplayName.displayName;
+      return unit ? requestDisplayName.unit : requestDisplayName.displayName;
     }
 
     const resultsDisplayName = get( legends.results.legend[locale], '_', fieldTitle )[0];
 
     if ( resultsDisplayName ) {
-      return resultsDisplayName.displayName;
+      return unit ? resultsDisplayName.unit : resultsDisplayName.displayName;
     }
 
     return fieldTitle;
@@ -433,7 +433,7 @@ const SoilCalculator = ( () => {
     getFertilizers: getFertilizers,
     getSchema: getSchema,
     getDataset: getDataset,
-    getFieldDisplayName: getFieldDisplayName,
+    getFieldString: getFieldString,
     getResults: getResults,
     getSequenceResults: getSequenceResults,
   };

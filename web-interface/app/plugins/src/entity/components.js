@@ -87,6 +87,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'toggle-switch:active:after': {
       width: '130px',
     },
+    'join-loc-picker__input-profile-view': {
+      display: 'none',
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -822,66 +825,39 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if( loc || ( !loc && editable ) ) {
       const $innerContent = V.cN( {
-        t: 'table',
-        c: 'w-full pxy',
+        c: 'location-card-wrapper w-full',
         h: [
           {
-            t: 'tr',
-            h: [
-              { t: 'td', c: 'capitalize', h: V.getString( ui.baseLoc ) },
-              editable ? {
-                t: 'input',
-                i: 'user__loc',
-                c: 'location__base pxy w-full txt-right',
-                a: { value: loc },
-                e: {
-                  focus: handleBaseLocationFocus,
-                  blur: handleBaseLocation,
-                },
-              } : {
-                t: 'p',
-                c: 'location__base pxy txt-right',
-                h: loc,
-              },
-            ],
+            c: 'join-loc-picker__map',
           },
-          // {
-          //   t: 'tr',
-          //   h: [
-          //     { t: 'td', c: 'capitalize', h: V.getString( ui.currLoc ) },
-          //     editable ? {
-          //       t: 'input',
-          //       c: 'location__curr pxy w-full txt-right',
-          //       a: {
-          //         value: loc,
-          //       },
-          //       e: {
-          //       // focus: handleBaseLocationFocus,
-          //       // blur: handleBaseLocation
-          //       },
-          //     } : {
-          //       t: 'p',
-          //       c: 'location__curr pxy txt-right',
-          //       h: loc,
-          //     },
-          //   ],
-          // },
-          // {
-          //   t: 'tr',
-          //   h: [
-          //     { t: 'td', c: 'capitalize', h: V.getString( ui.UTCOffset ) },
-          //     editable ? setEditable( {
-          //       t: 'td',
-          //       c: 'txt-right',
-          //       a: { title: 'currentUTC', db: 'properties' },
-          //       h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-          //     } ) : {
-          //       t: 'td',
-          //       c: 'txt-right',
-          //       h: entity['properties'] ? entity['properties']['currentUTC'] : undefined
-          //     },
-          //   ]
-          // }
+          {
+            t: 'input',
+            c: 'join-loc-picker__input-profile-view',
+          },
+          V.cN( {
+            t: 'table',
+            c: 'w-full pxy',
+            h: {
+              t: 'tr',
+              h: [
+                { t: 'td', c: 'capitalize', h: V.getString( ui.baseLoc ) },
+                editable ? {
+                  t: 'input',
+                  i: 'user__loc',
+                  c: 'location__base w-full txt-right',
+                  a: { value: loc },
+                  e: {
+                    focus: handleBaseLocationFocus,
+                    blur: handleBaseLocation,
+                  },
+                } : {
+                  t: 'p',
+                  c: 'location__base txt-right',
+                  h: loc,
+                },
+              ],
+            },
+          } ),
         ],
       } );
       return castCard( $innerContent, V.getString( ui.loc ) );

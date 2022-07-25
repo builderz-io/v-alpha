@@ -16,7 +16,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-form': {
       // 'border-radius': '20px',
       // 'border': '1px solid lightgray',
-      background: 'honeydew',
+      // background: '#eee',
+
+    },
+    's-calc-results-show-btn': {
+      'text-align': 'center',
+      'text-decoration': 'underline',
+      'cursor': 'pointer',
 
     },
     's-calc-results': {
@@ -25,23 +31,41 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'margin': '1.5rem',
     },
     's-calc-total-balance': {
-      background: 'azure',
+      // background: 'azure',
     },
     's-calc-form__section': {
-      padding: '1rem',
+      padding: '0.5rem',
+    },
+    's-calc-results-visibility': {
+      display: 'block !important',
+      // visibility: 'hidden',
     },
     's-calc-input-wrapper': {
       'display': 'flex',
       'justify-content': 'space-between',
-      'margin-bottom': '0.5rem',
+      'margin-bottom': '0.8rem',
     },
     // 's-calc-input-label': {
     //   width: '170px',
     // },
     's-calc-input-number': {
-      width: '60px',
-      height: '1.74rem',
+      'width': '50px',
+      // height: '1.74rem',
+      'padding': '0.2rem 0.4rem',
+      'font-weight': '600',
       // 'border-bottom': '1px solid gray',
+      'border-radius': '3px',
+      'text-align': 'right',
+    },
+    's-calc-input-select': {
+      'width': '210px',
+      'border': 'none',
+      // height: '1.74rem',
+      'padding': '0.2rem 0.4rem',
+      'font-weight': '600',
+      'border-radius': '3px',
+      'text-align': 'right',
+      'background': '#eee',
     },
     's-calc-form__field-group-title': {
       height: '2rem',
@@ -52,10 +76,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-tab-nav': {
       // background: 'azure',
     },
+    's-calc-input-unit': {
+      'font-size': '0.75rem',
+      'font-style': 'italic',
+      'margin-left': '1rem',
+    },
     's-calc-tab-content': {
       // background: 'azure',
-      background: 'honeydew',
-      // padding: '0.5rem',
+      'background': '#eee',
+      'padding': '0.5rem',
+      'border-radius': '0 0 5px 5px',
+
     },
     's-calc-results-table': {
       // background: 'azure',
@@ -74,10 +105,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'display': 'flex',
       'justify-content': 'space-around',
       'width': '35%',
-    },
-    's-calc-input-select': {
-      width: '210px',
-      border: 'none',
     },
     's-calc-safe': {
       'margin': '10px 0 0 0',
@@ -101,8 +128,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       yes: 'yes',
       no: 'no',
-      notSelected: '',
+      noCropSelected: 'None selected',
+      noFertilizerSelected: 'No fertilizer',
       safeDataset: 'Save this set',
+      showDetails: 'Show details',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -113,6 +142,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   } )();
 
   /* ===================== handlers ==================== */
+
+  function handleRadioButton( e ) {
+    drawRadioBtnChange( e );
+    handleDatapointChange( e );
+  }
 
   function handleDatapointChange( e ) {
 
@@ -133,7 +167,25 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   }
 
+  function handleShowDetails() {
+    V.getNodes( '.s-calc-results-wrapper' ).forEach( $elem => {
+      $elem.classList.toggle( 's-calc-results-visibility' );
+    } );
+
+  }
+
   /* ================== private methods ================= */
+
+  function drawRadioBtnChange( e ) {
+    const formName = e.target.closest( 'form' ).getAttribute( 'name' );
+
+    /* Set side product to not harvested if main product is not harvested */
+    if (
+      e.target.id == 's-calc-input-BMASS_MP_HVST_N_' + formName
+    ) {
+      V.getNode( '#s-calc-input-BMASS_SP_HVST_N_' + formName ).checked = true;
+    }
+  }
 
   function setStateDatapoint() {
     V.setState( 'cropSequence', { s10: getFormData( 'SITE' ) } );
@@ -257,9 +309,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     if ( formName === 'SITE' ) { return true } // TODO
     if(
       _.CROP_ID.value === 'none'
-      || _.FTLZ_ORG_ID.value === 'none'
+      || ( _.FTLZ_ORG_ID.value != 'none' && !_.FTLZ_ORG_QTY.value )
       || !_.BMASS_MP_QTY.value
-      || !_.FTLZ_ORG_QTY.value
     ) {
       return false;
     }
@@ -307,7 +358,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: [
         {
           t: 'td',
-          h: SoilCalculator.getFieldDisplayName( row, locale ),
+          h: SoilCalculator.getFieldString( row, locale ),
         },
         {
           t: 'td',
@@ -315,6 +366,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           c: 's-calc-result td-right txt-right break-words',
           h: InteractionComponents.confirmClickSpinner( { color: 'black' } ),
         },
+        // {
+        //   t: 'td',
+        //   h: SoilCalculator.getFieldString( row, locale, 'unit' ),
+        // },
       ],
     };
   }
@@ -395,10 +450,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     tabs.append( V.cN( {
       t: 'nav',
       h: [
-        {
-          c: 's-calc-form__section-title pxy font-bold',
-          h: V.getString( ui.year ),
-        },
+        // {
+        //   c: 's-calc-form__section-title pxy font-bold',
+        //   h: V.getString( ui.year ),
+        // },
         {
           t: 'ul',
           c: 's-calc-tab-nav',
@@ -423,9 +478,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           c: 's-calc-tab-content tab-content tab' + tabNum + '__content',
           h: [
             form( tabNum, dataset, /* exclude: */ ['SITE'] ),
-            resultsSOM( tabNum ),
-            resultsN( tabNum ),
-            resultsC( tabNum ),
+            {
+              c: 's-calc-results-show-btn',
+              h: V.getString( 'Show details' ),
+              k: handleShowDetails,
+            },
+            V.cN( {
+              c: 's-calc-results-wrapper hidden',
+              h: [
+                resultsSOM( tabNum ),
+                resultsN( tabNum ),
+                resultsC( tabNum ),
+              ],
+            } ),
           ],
         };
       }, { data: data } ),
@@ -480,22 +545,52 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete data[section];
     } );
 
-    formNumber ? formNumber = '-' + formNumber : formNumber = '';
+    const formName = Object.keys( data )[0] + ( formNumber ? '-' + formNumber : '' );
 
-    const input = ( $inputElem, fieldTitle ) => ( {
+    const input = ( $inputElem, fieldTitle, unit ) => ( {
       c: 's-calc-input-wrapper',
       h: [
-        {
-          t: 'label',
-          c: 's-calc-input-label',
-          for: 's-calc-input__' + fieldTitle,
-          h: SoilCalculator.getFieldDisplayName( fieldTitle, locale ),
-        },
+        V.cN( {
+          y: {
+            'display': 'flex',
+            'align-items': 'center',
+          },
+          h: [
+            {
+              t: 'label',
+              c: 's-calc-input-label',
+              for: 's-calc-input__' + fieldTitle,
+              h: SoilCalculator.getFieldString( fieldTitle, locale ),
+            },
+            {
+              c: 's-calc-input-unit',
+              h: unit,
+            },
+          ],
+        } ),
         $inputElem,
+        // !unit ? $inputElem : V.cN( {
+        //   y: {
+        //     'display': 'flex',
+        //     'width': '85px',
+        //     'align-items': 'center',
+        //   },
+        //   h: [
+        //     $inputElem,
+        //     {
+        //       y: {
+        //         'font-size': '0.75rem',
+        //         'margin-left': '0.4rem',
+        //       },
+        //       h: unit,
+        //     },
+        //   ],
+        // } ),
       ],
     } );
 
     const inputNum = ( val, fieldTitle ) => {
+      const unit = SoilCalculator.getFieldString( fieldTitle, locale, 'unit' );
       const $inputNumObj = V.cN( {
         t: 'input',
         c: 's-calc-input-number',
@@ -511,7 +606,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
         v: val === -1 ? 0 : val,
       } );
-      return input( $inputNumObj, fieldTitle );
+      return input( $inputNumObj, fieldTitle, unit );
     };
 
     const inputDropID = ( val, fieldTitle ) => {
@@ -543,7 +638,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       } );
 
       $inputDropElem.prepend( new Option(
-        V.getString( ui.notSelected ),
+        fieldTitle == 'CROP_ID'
+          ? V.getString( ui.noCropSelected )
+          : V.getString( ui.noFertilizerSelected ),
         'none',
         false,
         val == -1 ? true : false,
@@ -559,41 +656,41 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             t: 'input',
             c: 's-calc-input-radio',
-            i: 's-calc-input-' + fieldTitle + '_1',
+            i: 's-calc-input-' + fieldTitle + '_Y',
             a: {
               type: 'radio',
               name: fieldTitle,
               checked: val ? true : undefined,
             },
             e: {
-              change: handleDatapointChange,
+              change: handleRadioButton,
             },
             v: 'true',
           },
           {
             t: 'label',
             c: 's-calc-input-radio-label',
-            for: 's-calc-input-' + fieldTitle + '_1',
+            for: 's-calc-input-' + fieldTitle + '_Y',
             h: V.getString( ui.yes ),
           },
           {
             t: 'input',
             c: 's-calc-input-radio',
-            i: 's-calc-input-' + fieldTitle + '_2',
+            i: 's-calc-input-' + fieldTitle + '_N_' + formName,
             a: {
               type: 'radio',
               name: fieldTitle,
               checked: val ? undefined : true,
             },
             e: {
-              change: handleDatapointChange,
+              change: handleRadioButton,
             },
             v: 'false',
           },
           {
             t: 'label',
             c: 's-calc-input-radio-label',
-            for: 's-calc-input-' + fieldTitle + '_1',
+            for: 's-calc-input-' + fieldTitle + '_N_' + formName,
             h: V.getString( ui.no ),
           },
         ],
@@ -644,7 +741,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: [
         {
           c: 's-calc-form__field-group-title font-bold',
-          h: SoilCalculator.getFieldDisplayName( section + '_' + field, locale ),
+          h: SoilCalculator.getFieldString( section + '_' + field, locale ),
         },
         {
           c: 's-calc-form__field-group-fields',
@@ -657,7 +754,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const $form = V.cN( {
       t: 'form',
       a: {
-        name: Object.keys( data )[0] + formNumber,
+        name: formName,
       },
       c: 's-calc-form w-full',
       h: Object.keys( data ).map( section => ( {
@@ -665,7 +762,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         h: [
           {
             c: 's-calc-form__section-title font-bold',
-            h: SoilCalculator.getFieldDisplayName( section, locale ), // + formNumber.replace( '-', ' ' ),
+            h: SoilCalculator.getFieldString( section, locale ),
           },
           {
             c: 's-calc-form__section-fields',

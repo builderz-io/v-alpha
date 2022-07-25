@@ -98,12 +98,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.mediumImageCard(),
       // UserComponents.roleCard(),
       UserComponents.entityCard(),
+      UserComponents.locationCard(),
       Pool.drawWidget(),
       Farm.drawPlotWidget(),
       UserComponents.descriptionCard(),
       UserComponents.questionnaireCard(),
       UserComponents.socialCard(),
-      UserComponents.locationCard(),
       UserComponents.preferredLangsCard(),
       UserComponents.financialCard(),
       UserComponents.evmAddressCard(),
@@ -114,6 +114,28 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     ] );
 
     VMap.draw( [entity] );
+
+    setTimeout( function delayedEntityViewMap() {
+      $( '.join-loc-picker__input-profile-view' ).leafletLocationPicker( {
+        alwaysOpen: true,
+        mapContainer: '.join-loc-picker__map',
+        height: 140,
+        map: {
+          zoom: 13,
+          center: L.latLng( entity.geometry.coordinates.reverse() ),
+          zoomControl: false,
+          attributionControl: false,
+        },
+        onChangeLocation: function pickedLocation( data ) {
+
+          setResponse( '', 'setAsIs' );
+
+          entityData.location = 'picked location';
+          entityData.lat = data.latlng.lat;
+          entityData.lng = data.latlng.lng;
+        },
+      } );
+    }, 400 );
 
     if ( data.data[0].typeOfWhich == 'string' ) {
       // in this case the profile is fetched using a path and the navigation has not been set in preview
