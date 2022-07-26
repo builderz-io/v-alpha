@@ -654,6 +654,20 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return new Promise( resolve => setTimeout( resolve, ms ) );
   }
 
+  function debounce( fn, delay ) {
+
+    /* https://codeforgeek.com/debounce-function-javascript/ */
+    let timeOutId;
+    return function( ...args ) {
+      if( timeOutId ) {
+        clearTimeout( timeOutId );
+      }
+      timeOutId = setTimeout( () => {
+        fn( ...args );
+      }, delay );
+    };
+  }
+
   function successFalse( msg, err, data ) {
     return {
       success: false,
@@ -704,6 +718,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
   V.sleep = sleep;
+  V.debounce = debounce;
   V.successFalse = successFalse;
   V.successTrue = successTrue;
   V.isEmail = isEmail;
@@ -730,6 +745,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     stripHtml: stripHtml,
     setPipe: setPipe,
     sleep: sleep,
+    debounce: debounce,
     successFalse: successFalse,
     successTrue: successTrue,
     isEmail: isEmail,

@@ -56,19 +56,27 @@ const SoilCalculator = ( () => {
     return time;
   }
 
-  function castInputs( req ) {
+  function castInputs( datapoint, prevDatapoint ) {
 
     /**
-     * @arg { Object } req - Request, as in data provided by user, e.g. CROP.ID
+     * @arg { Object } datapoint - Request, as in data provided by user, e.g. CROP.ID
      * @returns { Object } inputs - valid parameter set to run calculations, plus placeholders (-1) for mixins
      */
 
     /* clone request */
-    const clone = JSON.parse( JSON.stringify( req ) );
+    const clone = JSON.parse( JSON.stringify( datapoint ) );
 
     /* mixin the full set of crop and fertilizer parameters into clone */
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
     Object.assign( clone.FTLZ.ORG, getFertilizer( clone.FTLZ.ORG.ID || clone.FTLZ.ORG.NAME ) );
+
+    /* do the same for the previous datapoint */
+    let clonePrev = null;
+    if ( prevDatapoint ) {
+      clonePrev = JSON.parse( JSON.stringify( prevDatapoint ) );
+      Object.assign( clonePrev.CROP, getCrop( clonePrev.CROP.ID || clonePrev.CROP.NAME ) );
+      Object.assign( clonePrev.FTLZ.ORG, getFertilizer( clonePrev.FTLZ.ORG.ID || clonePrev.FTLZ.ORG.NAME ) );
+    }
 
     // TODO: run validations on clone and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
 
@@ -76,10 +84,11 @@ const SoilCalculator = ( () => {
 
     return {
       inputs: clone,
+      prev: clonePrev,
     };
   }
 
-  function castResults( _ ) {
+  function castResults( _, _prev ) {
 
     /**
      * @arg { Object } _ - all inputs needed for running the calculations ( sourced from STATE )
@@ -112,8 +121,9 @@ const SoilCalculator = ( () => {
     __.N.PB = toKilo( nPlantBiomass( _ ) );
 
     __.N.FTLZ.ORG = toKilo( nFertilizerOrganic( _ ) );
+    __.N.FTLZ.GRS = toKilo( nFertilizerFromPrev( _, _prev ) );
     __.N.FTLZ.REM = toKilo( nFertilizerRemaining( _ ) );
-    __.N.FIX = nFixation( _, __.N.PB, __.N.FTLZ.ORG );
+    __.N.FIX = nFixation( _, __.N );
     __.N.DEP = nDeposition( _ );
     __.N.NYR = nNotYieldRelated( _ );
     __.N.CR = toKilo( nCropResidues( _ ) );
@@ -146,6 +156,7 @@ const SoilCalculator = ( () => {
 
     /**
      * nLoss:
+     * is actually not "loss", but available N after "loss" (due to "1 - ..." )
      * - divided by 10 in order to account for mm vs. cm in PCIP.QTY
      * - 90 is cm below ground
      */
@@ -188,9 +199,35 @@ const SoilCalculator = ( () => {
          * _.SITE.N.LOSS;
   }
 
-  function nFixation( _, nPb, nFtlzOrg ) {
+  function nFertilizerFromPrev( _, _prev ) {
 
-    const a = nPb * _.CROP.LS * _.CROP.N.BFN - nFtlzOrg;
+    if ( !_prev ) { return 0 }
+
+    let sum = 0;
+
+    sum += !_prev.BMASS.MP.HVST
+      ? _prev.BMASS.MP.QTY
+        * _prev.CROP.MP.DM
+        * _prev.CROP.MP.N
+        * ( 1.6674 * ( _prev.CROP.MP.C / _prev.CROP.MP.N )**-0.768 )
+        * _.SITE.N.LOSS
+      : 0;
+
+    sum += !_prev.BMASS.SP.HVST
+           && _prev.CROP.SP.N
+      ? _prev.BMASS.SP.QTY
+        * _prev.CROP.SP.DM
+        * _prev.CROP.SP.N
+        * ( 1.6674 * ( _prev.CROP.SP.C / _prev.CROP.SP.N )**-0.768 )
+        * _.SITE.N.LOSS
+      : 0;
+
+    return sum;
+  }
+
+  function nFixation( _, N ) {
+
+    const a = N.PB * _.CROP.LS * _.CROP.N.BFN - N.FTLZ.ORG - N.FTLZ.GRS;
     const b = 0;
 
     return Math.max( a, b );
@@ -205,7 +242,10 @@ const SoilCalculator = ( () => {
   }
 
   function nFertilizerRemaining( _ ) {
-    return _.FTLZ.ORG.QTY * _.FTLZ.ORG.DM * _.FTLZ.ORG.N * ( 1-_.FTLZ.ORG.NAV );
+    return _.FTLZ.ORG.QTY
+         * _.FTLZ.ORG.DM
+         * _.FTLZ.ORG.N
+         * ( 1-_.FTLZ.ORG.NAV );
   }
 
   function cFertilizerRemaining( _ ) {
@@ -213,7 +253,7 @@ const SoilCalculator = ( () => {
   }
 
   function soilOrganicMatterLoss( _, N ) {
-    return ( N.PB - N.FIX - N.FTLZ.ORG - N.DEP + N.NYR ) * _.SITE.CN;
+    return ( N.PB - N.FIX - N.FTLZ.ORG - N.FTLZ.GRS - N.DEP + N.NYR ) * _.SITE.CN;
   }
 
   function soilOrganicMatterSupp( _, N, C ) {
@@ -400,10 +440,11 @@ const SoilCalculator = ( () => {
 
   }
 
-  async function getResults( req ) {
+  async function getDatapointResults( datapoint, prevDatapoint ) {
 
     /**
-       * @arg { Object } req - Request, as in data provided by user, e.g. CROP.ID
+       * @arg { Object } datapoint - Request, as in data provided by user, e.g. CROP.ID
+       * @arg { Object } prevDatapoint - The previous datapoint needed to calc ftlz from green/straw
        * @returns { Object } STATE - API response including all inputs and results
        */
 
@@ -413,10 +454,10 @@ const SoilCalculator = ( () => {
     Object.assign( STATE, castTime() );
 
     /* add input data to state */
-    Object.assign( STATE, castInputs( req ) );
+    Object.assign( STATE, castInputs( datapoint, prevDatapoint ) );
 
     /* run all calculations and add results to state */
-    Object.assign( STATE, castResults( STATE.inputs ) );
+    Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
 
     /* return state */
     return STATE;
@@ -434,7 +475,7 @@ const SoilCalculator = ( () => {
     getSchema: getSchema,
     getDataset: getDataset,
     getFieldString: getFieldString,
-    getResults: getResults,
+    getDatapointResults: getDatapointResults,
     getSequenceResults: getSequenceResults,
   };
 

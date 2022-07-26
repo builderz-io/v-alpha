@@ -34,7 +34,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       width: '100%',
     },
     'card__container': {
-      'max-width': '360px',
+      // 'max-width': '360px',
       'flex-wrap': 'wrap',
     },
     'background': {
@@ -215,8 +215,8 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     if ( which == 'narrow' ) {
-      $list.style['max-width'] = '380px';
-      $list.style.margin = '0 auto';
+      // $list.style['max-width'] = '380px';
+      // $list.style.margin = '0 auto';
     }
 
     return $list;
@@ -226,11 +226,11 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( {
       t: 'li',
-      c: 'pxy w-screen max-w-380 zero-auto',
+      c: 'pxy w-screen max-w-list zero-auto',
       i: id,
       h: {
         t: 'card',
-        c: 'card__container flex card-shadow rounded bkg-white pxy',
+        c: 'card__container max-w-list flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
           { t: 'h2', c: 'w-full font-bold pxy capitalize', h: cardTitle },
           $cardContent,

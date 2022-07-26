@@ -269,6 +269,7 @@
         "CR": -1,
         "FTLZ": {
           "ORG": -1,
+          "GRS": -1,
           "REM": -1
         }
       },
@@ -357,6 +358,11 @@
               "descr": "N Organic Fertilizer",
               "unit": ""
             },
+            "GRS": {
+              "displayName": "N from Green/Straw",
+              "descr": "N from Green/Straw",
+              "unit": ""
+            },
             "REM": {
               "displayName": "N Fertilizer Remaining",
               "descr": "N Fertilizer Remaining",
@@ -424,40 +430,45 @@
           "displayName": "N",
           "descr": "N",
           "PB": {
-            "displayName": "N Pflanzenbiomasse",
-            "descr": "N Pflanzenbiomasse",
+            "displayName": "N in Pflanzenbiomasse",
+            "descr": "N in Pflanzenbiomasse",
             "unit": "kg/ha"
           },
           "FIX": {
-            "displayName": "N Fixierung",
-            "descr": "N Fixierung",
+            "displayName": "N aus Fixierung",
+            "descr": "N aus Fixierung",
             "unit": "kg/ha"
           },
           "DEP": {
-            "displayName": "N Deposition",
-            "descr": "N Deposition",
+            "displayName": "N aus Deposition",
+            "descr": "N aus atmosphärischer Deposition",
             "unit": "kg/ha"
           },
           "NYR": {
-            "displayName": "N Nicht aufgenommen",
-            "descr": "N Nicht aufgenommen",
+            "displayName": "N nicht aufgenommen",
+            "descr": "N nicht aufgenommen",
             "unit": "kg/ha"
           },
           "CR": {
-            "displayName": "N Crop Residues",
-            "descr": "N Crop Residues",
+            "displayName": "N in Pflanzenrückständen",
+            "descr": "N in Pflanzenrückständen",
             "unit": "kg/ha"
           },
           "FTLZ": {
             "displayName": "Fertilizer",
             "descr": "Fertilizer",
             "ORG": {
-              "displayName": "N Organischer Dünger",
+              "displayName": "N aus organischen Düngern",
               "descr": "N Organischer Dünger",
               "unit": "kg/ha"
             },
+            "GRS": {
+              "displayName": "N aus Grün/Stroh",
+              "descr": "N aus Grün/Stroh",
+              "unit": ""
+            },
             "REM": {
-              "displayName": "N Nachlieferung",
+              "displayName": "N in Düngerrückständen",
               "descr": "N Nachlieferung",
               "unit": "kg/ha"
             }
@@ -465,14 +476,14 @@
         },
         "C": {
           "CR": {
-            "displayName": "C Fixierung",
-            "descr": "C Fixierung",
+            "displayName": "C in Pflanzenrückständen",
+            "descr": "C in Pflanzenrückständen",
             "unit": "kg/ha"
           },
           "FTLZ": {
             "REM": {
-              "displayName": "C Nachlieferung",
-              "descr": "C Nachlieferung",
+              "displayName": "C in Düngerrückständen",
+              "descr": "C in Düngerrückständen",
               "unit": "kg/ha"
             }
           }

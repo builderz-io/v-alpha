@@ -13,6 +13,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     // 's-calc-widget': {
     //   height: '80vh',
     // },
+    'tabs-wrapper': {
+      padding: '0.5rem',
+    },
     's-calc-form': {
       // 'border-radius': '20px',
       // 'border': '1px solid lightgray',
@@ -27,7 +30,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     },
     's-calc-results': {
       'border-radius': '5px',
-      'background': 'azure',
+      'background': 'whitesmoke',
       'margin': '1.5rem',
     },
     's-calc-total-balance': {
@@ -48,6 +51,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     // 's-calc-input-label': {
     //   width: '170px',
     // },
+    's-calc-input-radio': {
+      // 'border': '2px solid white',
+      // 'box-shadow': '0 0 0 1px #392',
+      'appearance': 'none',
+      'border-radius': '50%',
+      'width': '13px',
+      'height': '13px',
+      'background-color': '#fff',
+      'transition': 'all ease-in 0.15s',
+    },
+    's-calc-input-radio:checked': {
+      'background-color': '#bbb',
+    },
     's-calc-input-number': {
       'width': '50px',
       // height: '1.74rem',
@@ -103,8 +119,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     // },
     's-calc-input-radio-wrapper': {
       'display': 'flex',
-      'justify-content': 'space-around',
-      'width': '35%',
+      'justify-content': 'space-between',
+      'align-items': 'center',
+      'width': '38%',
     },
     's-calc-safe': {
       'margin': '10px 0 0 0',
@@ -152,7 +169,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     setStateDatapoint();
 
-    setStateResults();
+    setStateDatapointResults();
 
     // timeout looks good in ui, but is also needed to ensure results are set (should be changed to promise)
     setTimeout( function delayedDrawResults() {
@@ -196,15 +213,16 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function setStateResults() {
+  function setStateDatapointResults() {
     const siteData = V.getState( 'cropSequence' )[ 's10' ];
     for ( let i = 1; i <= 8; i++ ) {
       const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
+      const prevCropData = i == 1 ? null : V.getState( 'cropSequence' )[ 's' + ( i - 1 ) ].datapoint;
       if ( !cropData ) { continue }
       Object.assign( cropData, siteData ); // merge
       if ( cropData && siteData ) {
         SoilCalculator
-          .getResults( cropData )
+          .getDatapointResults( cropData, prevCropData )
           .then( res => {
             // console.log( 'Calculation Results: ', res );
             Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { results: res.results } );
@@ -349,6 +367,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return array.map( function( row ) { return rowObj( row, this.tabNum ) }, { tabNum: tabNum } );
   }
 
+  function simpleSeparator( x ) {
+    return x.toString().replace( /\B(?=(\d{3})+(?!\d))/g, '.' );
+  }
+
   /* ================== components ================= */
 
   function rowObj( row, tabNum ) {
@@ -385,36 +407,134 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
-  function resultsN( tabNum ) {
+  function resultsDemand( tabNum ) {
     return {
       c: 's-calc-results s-calc-results__n',
       h: {
         t: 'table',
         c: 's-calc-results-table w-full',
-        h: mapFields( ['N_PB', 'N_FIX', 'N_DEP', 'N_NYR', 'N_CR', 'N_FTLZ_ORG', 'N_FTLZ_REM'], tabNum ),
+        h: mapFields( ['N_PB', 'N_FIX', 'N_FTLZ_ORG', 'N_FTLZ_GRS', 'N_DEP', 'N_NYR'], tabNum ),
       },
     };
   }
 
-  function resultsC( tabNum ) {
+  function resultsSupply( tabNum ) {
     return {
-      c: 's-calc-results s-calc-results__c',
+      c: 's-calc-results s-calc-results__n',
       h: {
         t: 'table',
         c: 's-calc-results-table w-full',
-        h: mapFields( ['C_CR', 'C_FTLZ_REM'], tabNum ),
+        h: mapFields( ['N_CR', 'N_FTLZ_REM', 'C_CR', 'C_FTLZ_REM'], tabNum ),
       },
+    };
+  }
+
+  function resultsCsupply( tabNum ) {
+    return {
+      c: 's-calc-results s-calc-results__c',
+      h: [
+        {
+          t: 'table',
+          c: 's-calc-results-table w-full',
+          h: mapFields( ['C_CR', 'C_FTLZ_REM'], tabNum ),
+        },
+        {
+          y: {
+            'text-align': 'right',
+            'padding': '0 1.5rem 1rem',
+            'font-size': '0.75rem',
+            'font-style': 'italic',
+            'color': '#aaa',
+          },
+          h: 'in kg/ha',
+        },
+      ],
     };
   }
 
   function totalBalance() {
     return {
       c: 's-calc-total-balance w-full',
-      h: {
-        t: 'table',
-        c: 'w-full pxy',
-        h: mapFields( ['T_BAL_N', 'T_BAL_C'], null ),
-      },
+      // h: {
+      //   t: 'table',
+      //   c: 'w-full pxy',
+      //   h: mapFields( ['T_BAL_N', 'T_BAL_C'], null ),
+      // },
+      h: [
+        {
+          y: {
+            'display': 'flex',
+            'justify-content': 'space-between',
+            'font-size': '1.6rem',
+            'font-weight': '600',
+          },
+          c: 'w-full pxy',
+          h: [
+            {
+              y: {
+                // 'background': '#eee',
+                'padding': '0.75rem 1.25rem',
+                'border-radius': '5px',
+                'border-left': '3px solid',
+                'color': 'teal',
+              },
+              h: [
+                {
+                  t: 'span',
+                  y: {
+                    'margin-right': '1.5rem',
+                  },
+                  h: 'N',
+                },
+                {
+                  t: 'span',
+                  y: {
+                    color: 'teal',
+                  },
+                  i: 's-calc-result' + '__' + 'T_BAL_N',
+                  h: '0.00',
+                },
+              ],
+            },
+            {
+              y: {
+                // 'background': '#eee',
+                'padding': '0.75rem 1.25rem',
+                'border-radius': '5px',
+                'border-left': '3px solid',
+                'color': 'steelblue',
+              },
+              h: [
+                {
+                  t: 'span',
+                  y: {
+                    'margin-right': '1.5rem',
+                  },
+                  h: 'C',
+                },
+                {
+                  t: 'span',
+                  y: {
+                    color: 'steelblue',
+                  },
+                  i: 's-calc-result' + '__' + 'T_BAL_C',
+                  h: '0.00',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          y: {
+            'text-align': 'right',
+            'padding': '0.1rem 0.7rem',
+            'font-size': '0.75rem',
+            'font-style': 'italic',
+            'color': '#aaa',
+          },
+          h: 'in kg/ha',
+        },
+      ],
     };
   }
 
@@ -487,8 +607,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
               c: 's-calc-results-wrapper hidden',
               h: [
                 resultsSOM( tabNum ),
-                resultsN( tabNum ),
-                resultsC( tabNum ),
+                resultsDemand( tabNum ),
+                resultsSupply( tabNum ),
+                // resultsCsupply( tabNum ),
               ],
             } ),
           ],
@@ -602,7 +723,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           name: fieldTitle,
         },
         e: {
-          input: handleDatapointChange,
+          input: V.debounce( handleDatapointChange, 320 ),
         },
         v: val === -1 ? 0 : val,
       } );

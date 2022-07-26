@@ -37,6 +37,11 @@
 .max-w-380 {
   max-width: 380px;
 }
+
+.max-w-list {
+  max-width: var(--list-max-width);
+}
+
 .max-w-full {
   max-width: 100%;
 }
