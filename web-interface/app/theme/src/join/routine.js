@@ -567,6 +567,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   function drawOverlay( use ) {
 
     cardSet = use ? 'set' + ( use.join || settings.defaultSet ) : cardSet;
+    cardIndex = use ? 0 : cardIndex;
 
     entityData.role = use && use.role ? use.role : entityData.role;
 
