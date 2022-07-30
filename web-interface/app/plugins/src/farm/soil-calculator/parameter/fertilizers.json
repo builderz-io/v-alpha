@@ -1,5 +1,14 @@
 [
   {
+    "ID": 5000,
+    "NAME": "No fertilizer",
+    "NAME_DE": "Kein Dünger",
+    "DM": 0,
+    "C": 0,
+    "N": 0,
+    "NAV": 0
+  },
+  {
     "ID": 5010,
     "NAME": "Cattle slurry",
     "NAME_DE": "Vollgülle Milchvieh",

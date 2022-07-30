@@ -1,5 +1,10 @@
 [
   {
+    "ID": 1000,
+    "NAME": "Not selected",
+    "NAME_DE": "Nicht gewählt"
+  },
+  {
     "ID": 1010,
     "NAME": "Winter wheat",
     "NAME_DE": "Winterweizen",

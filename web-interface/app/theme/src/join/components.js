@@ -726,6 +726,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinEmail: joinEmail,
     joinAwaitKey: joinAwaitKey,
 
+    handleJoinOverlayClick: handleJoinOverlayClick,
+
   };
 
 } )();

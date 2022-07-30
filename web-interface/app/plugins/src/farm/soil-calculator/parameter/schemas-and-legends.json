@@ -175,7 +175,7 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Quantity of applied fertilizer",
-              "unit": "t/ha"
+              "unit": "FM t/ha"
             }
           }
         },
@@ -188,7 +188,7 @@
             "QTY": {
               "displayName": "Ertrag",
               "descr": "Main Product Quantity",
-              "unit": "t/ha"
+              "unit": "FM t/ha"
             },
             "HVST": {
               "displayName": "Ernte",
@@ -202,7 +202,7 @@
             "QTY": {
               "displayName": "Ertrag",
               "descr": "Side Product Quantity",
-              "unit": "t/ha"
+              "unit": "FM t/ha"
             },
             "HVST": {
               "displayName": "Ernte",

@@ -277,7 +277,7 @@ const SoilCalculator = ( () => {
 
     for ( const key in sequence ) {
       if (
-        !sequence[key].datapoint
+        ['undefined', 'number'].includes( typeof sequence[key].datapoint )
       ) {
         continue;
       }
@@ -361,42 +361,6 @@ const SoilCalculator = ( () => {
     return legends[which].schema;
   }
 
-  function getDataset() {
-    const mockedDbResponse = {
-      CROP: {
-        ID: 1140,
-      },
-      FTLZ: {
-        ORG: {
-          ID: 5040,
-          QTY: 30,
-        },
-      },
-      BMASS: {
-        MP: {
-          QTY: 4,
-          HVST: true,
-        },
-        SP: {
-          QTY: 0,
-          HVST: true,
-        },
-      },
-      SITE: {
-        CN: 10,
-        FCAP: 40,
-        PCIP: {
-          QTY: 650,
-          MUL: 0.5,
-        },
-        N: {
-          DEP: 20,
-        },
-      },
-    };
-    return mockedDbResponse;
-  }
-
   function getFieldString( fieldTitle, locale, unit ) {
 
     /**
@@ -473,7 +437,6 @@ const SoilCalculator = ( () => {
     getCrops: getCrops,
     getFertilizers: getFertilizers,
     getSchema: getSchema,
-    getDataset: getDataset,
     getFieldString: getFieldString,
     getDatapointResults: getDatapointResults,
     getSequenceResults: getSequenceResults,

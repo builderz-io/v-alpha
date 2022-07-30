@@ -123,6 +123,25 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       ],
     },
     {
+      path: '/farms',
+      children: [
+        {
+          path: '',
+          action: () => ( {
+            status: 'farms',
+            data: [ '/farms' ],
+          } ),
+        },
+        {
+          path: '/:id',
+          action: ( context ) => ( {
+            status: 'farms category',
+            data: [ '/farms/' + context.params.id ],
+          } ),
+        },
+      ],
+    },
+    {
       path: '/data',
       action: () => ( {
         status: 'data',

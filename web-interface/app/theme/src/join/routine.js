@@ -177,7 +177,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     /* set the new human entity on "download key" card */
     else if ( cardIndex == 8 ) {
       if ( !V.getSetting( 'devMode' ) ) {
-        V.gN( 'joinoverlay' ).removeEventListener( 'click', handleJoinOverlayClick );
+        V.gN( 'joinoverlay' ).removeEventListener( 'click', JoinComponents.handleJoinOverlayClick );
       }
       drawAltSubmitBtn( 'call-to-action' );
       setNewEntity();

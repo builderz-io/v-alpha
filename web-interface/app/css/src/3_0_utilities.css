@@ -312,6 +312,11 @@
   margin: 0 auto;
 }
 
+.rotate {
+  transform: rotate(-180deg) !important;
+  transition: transform 0.25s ease-out;
+},
+
 /* Interactivity */
 .cursor-pointer {
   cursor: pointer;
