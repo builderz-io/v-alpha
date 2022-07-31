@@ -122,18 +122,18 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         height: 140,
         map: {
           zoom: 13,
-          center: L.latLng( entity.geometry.coordinates.reverse() ),
+          center: L.latLng( V.castClone( entity.geometry.coordinates ).reverse() ),
           zoomControl: false,
           attributionControl: false,
         },
-        onChangeLocation: function pickedLocation( data ) {
-
-          setResponse( '', 'setAsIs' );
-
-          entityData.location = 'picked location';
-          entityData.lat = data.latlng.lat;
-          entityData.lng = data.latlng.lng;
-        },
+        // onChangeLocation: function pickedLocation( data ) {
+        //
+        //   setResponse( '', 'setAsIs' );
+        //
+        //   entityData.location = 'picked location';
+        //   entityData.lat = data.latlng.lat;
+        //   entityData.lng = data.latlng.lng;
+        // },
       } );
     }, 400 );
 
