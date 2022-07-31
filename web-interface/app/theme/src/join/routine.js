@@ -196,11 +196,18 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( '.join-download__btn', InteractionComponents.confirmClickSpinner() );
 
-    setTimeout( function delayNextBtn() {
-      V.gN( '.join-download__btn' ).innerText = V.getString( ui.downloadAgain );
-      V.gN( '.join-submit__btn' ).classList.remove( 'hidden' );
-    }, 1200 );
+    setTimeout( delayCallToActionBtn.bind( { fullId: this.fullId } ), 1200 );
 
+  }
+
+  function delayCallToActionBtn() {
+    V.gN( '.join-download__btn' ).innerText = V.getString( ui.downloadAgain );
+    V.gN( '.join-submit__btn' ).classList.remove( 'hidden' );
+    V.gN( '.join-submit__btn' ).addEventListener( 'click', reloadOnCallToActionBtn.bind( { fullId: this.fullId } ) );
+  }
+
+  function reloadOnCallToActionBtn() {
+    location = window.location.origin + V.castPathOrId( this.fullId );
   }
 
   /* ================== private methods ================= */
