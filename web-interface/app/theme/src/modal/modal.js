@@ -57,6 +57,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'loggedOut' ) );
     }
+    else if ( which == 'join first' ) {
+      V.setNode( $modal, ModalComponents.simpleMessage( 'joinFirst' ) );
+    }
     else if ( which == 'confirm uPhrase' ) {
       V.setNode( $modal, ModalComponents.confirmUPhrase() );
     }

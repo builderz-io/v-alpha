@@ -455,9 +455,19 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           console.log( 'successfully set entity: ', res );
 
+          Navigation.drawEntityNavPill( res.data[0] );
+          VMap.draw( res.data );
+
           uPhrase = res.data[0].auth.uPhrase;
           fullId = res.data[0].fullId;
           role = res.data[0].role;
+
+          if ( role != 'Person' ) {
+            drawSuccess();
+            notifySuccess( fullId, role );
+            setDownloadKeyBtn();
+            return;
+          }
 
           /** automatically join */
           V.setAuth( uPhrase )
@@ -483,8 +493,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           /** set state and cache */
           V.setActiveEntity( res.data[0] );
           Join.draw( 'new entity was set up' );
-
-          VMap.draw( res.data );
 
         }
         else {
@@ -565,6 +573,15 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawOverlay( use ) {
+
+    if (
+      use
+      && !use.role == 'Person'
+      && !V.aE()
+    ) {
+      Modal.draw( 'join first' );
+      return;
+    }
 
     cardSet = use ? 'set' + ( use.join || settings.defaultSet ) : cardSet;
     cardIndex = use ? 0 : cardIndex;

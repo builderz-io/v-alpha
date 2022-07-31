@@ -78,11 +78,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( '.modal', 'clear' );
 
-      if ( V.getLocal( 'welcome-modal' ) == 1 ) {
-        // Modal.draw( which );
-        Navigation.drawEntityNavPill( V.getState( 'activeEntity' ) );
-        V.setLocal( 'welcome-modal', 0 );
-      }
+      // if ( V.getLocal( 'welcome-modal' ) == 1 ) {
+      //   // Modal.draw( which );
+      //   // Navigation.drawEntityNavPill( V.getState( 'activeEntity' ) );
+      //   V.setLocal( 'welcome-modal', 0 );
+      // }
 
       const bal = V.aE().balance;
 

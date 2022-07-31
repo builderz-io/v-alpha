@@ -43,6 +43,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       notRetrieved: 'Sorry, account details could not be retrieved',
       fourOfour: '404 - Page not found',
 
+      joinFirst: 'Please join first, creating a personal profile.',
       loggedOut: 'You are logged out',
       entityExists: 'This combination of title and tag already exists or is invalid',
       txSent: '✅ Sent to network',
