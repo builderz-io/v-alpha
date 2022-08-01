@@ -143,8 +143,9 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* draw new card */
-    V.sN( 'joinoverlay', 'clear' );
-    V.sN( 'body', drawOverlay() );
+    V.gN( '.join-card' ).classList.remove( 'join-card-extended' );
+    V.sN( '.join-card-inner-wrapper', 'clear' );
+    V.sN( '.join-card', drawOverlayContent() );
 
     /* add Google Places API to location card */
     if ( cardIndex == 3 ) {
@@ -153,25 +154,28 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
     /* add picker to location-picker card */
     if ( cardIndex == 4 ) {
-      $( '.join-loc-picker__input' ).leafletLocationPicker( {
-        alwaysOpen: true,
-        mapContainer: '.join-loc-picker__map',
-        height: 300,
-        map: {
-          zoom: 4,
-          center: L.latLng( [ 51.376067, 9.84375 ] ),
-          zoomControl: false,
-          attributionControl: false,
-        },
-        onChangeLocation: function pickedLocation( data ) {
+      V.gN( '.join-card' ).classList.add( 'join-card-extended' );
+      setTimeout( function delayedDrawLocPicker() {
+        $( '.join-loc-picker__input' ).leafletLocationPicker( {
+          alwaysOpen: true,
+          mapContainer: '.join-loc-picker__map',
+          height: Math.floor( V.getState( 'screen' ).height * 0.5 ),
+          map: {
+            zoom: 4,
+            center: L.latLng( [ 51.376067, 9.84375 ] ),
+            zoomControl: false,
+            attributionControl: false,
+          },
+          onChangeLocation: function pickedLocation( data ) {
 
-          setResponse( '', 'setAsIs' );
+            setResponse( '', 'setAsIs' );
 
-          entityData.location = 'picked location';
-          entityData.lat = data.latlng.lat;
-          entityData.lng = data.latlng.lng;
-        },
-      } );
+            entityData.location = 'picked location';
+            entityData.lat = data.latlng.lat;
+            entityData.lng = data.latlng.lng;
+          },
+        } );
+      }, 350 );
     }
 
     /* set the new human entity on "download key" card */
@@ -581,25 +585,32 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   function drawOverlay( use ) {
 
+    if ( !use ) { return }
+
     if (
-      use
-      && !use.role == 'Person'
+      use.role != 'Person'
       && !V.aE()
     ) {
       Modal.draw( 'join first' );
       return;
     }
 
-    cardSet = use ? 'set' + ( use.join || settings.defaultSet ) : cardSet;
-    cardIndex = use ? 0 : cardIndex;
+    cardSet = 'set' + ( use.join || settings.defaultSet );
+    cardIndex = 0;
 
-    entityData.role = use && use.role ? use.role : entityData.role;
+    entityData.role = use.role;
 
     /* Launch Google Places API */
     Google.launch();
 
     /* Return overlay with correct card */
     return JoinComponents.joinOverlay( cardSets[cardSet][cardIndex] );
+  }
+
+  function drawOverlayContent() {
+
+    /* Return overlay with correct card */
+    return JoinComponents.joinOverlayContent( cardSets[cardSet][cardIndex] );
   }
 
   /* ================  public methods ================ */

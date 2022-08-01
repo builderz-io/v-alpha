@@ -85,6 +85,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'margin': '14vh auto',
       'padding': '1.5rem',
       'border-radius': '32px',
+      'transition': 'max-width 0.5s ease-out, min-height 0.5s ease-out',
+    },
+    'join-card-extended': {
+      'width': '95vw',
+      'max-width': '1000px',
+      'min-height': '70vh',
     },
     // wrapper
     'join-content-wrapper': {
@@ -651,17 +657,24 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         c: 'join-card',
         k: handleJoinCardClick,
-        h: [
-          {
-            c: 'join-content-wrapper',
-            h: card(),
-          },
-          {
-            c: 'join-submit-wrapper',
-            h: nextButton(),
-          },
-        ],
+        h: joinOverlayContent( card ),
       },
+    } );
+  }
+
+  function joinOverlayContent( card ) {
+    return V.cN( {
+      c: 'join-card-inner-wrapper',
+      h: [
+        {
+          c: 'join-content-wrapper',
+          h: card(),
+        },
+        {
+          c: 'join-submit-wrapper',
+          h: nextButton(),
+        },
+      ],
     } );
   }
 
@@ -713,6 +726,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
 
   return {
     joinOverlay: joinOverlay,
+    joinOverlayContent: joinOverlayContent,
     joinBtn: joinBtn,
 
     joinName: joinName,

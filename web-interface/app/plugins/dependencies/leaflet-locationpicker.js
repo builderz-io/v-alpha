@@ -211,9 +211,9 @@
 		    self.locationOri = self.$input.val();
 
       self.onChangeLocation = function() {
-        if ( pickerZoom === 0 ) { pickerZoom = 8 }
-        else if ( pickerZoom === 8 ) { pickerZoom = 12 }
-        else if ( pickerZoom === 12 ) { pickerZoom = 13 }
+        if ( pickerZoom === 0 ) { pickerZoom = 10 }
+        else if ( pickerZoom === 10 ) { pickerZoom = 13 }
+        // else if ( pickerZoom === 12 ) { pickerZoom = 13 }
 
         self.map.setView( self.location, pickerZoom );
 
