@@ -11,11 +11,11 @@
 
           // START editing
 
-          sourceEndpoint: 'staging', // choices are 'local', 'development', 'staging', 'production' and 'github'
+          sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
           useAppVersion: '3.4.0', // e.g. '3.4.0' or '' for latest version
           useBuilds: false,
 
-          namespaceEndpoint: 'firebase-development',
+          namespaceEndpoint: 'firebase-local',
 
           language: 'german',
           mapDefault: 'germany',
@@ -23,7 +23,7 @@
           featureVideo: 'builderz',
           questionnaire: false,
 
-          askforEmail: true,
+          askforEmail: false,
           requireEmail: false,
           confirmEmail: false,
           networkAdminEmail: '',
@@ -84,7 +84,7 @@
             chat: [],
           },
 
-          devMode: false,
+          devMode: true,
 
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
           chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)

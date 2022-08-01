@@ -207,7 +207,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function reloadOnCallToActionBtn() {
-    location = window.location.origin + V.castPathOrId( this.fullId );
+    // location = window.location.origin + V.castPathOrId( this.fullId );
   }
 
   /* ================== private methods ================= */
