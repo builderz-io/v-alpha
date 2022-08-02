@@ -124,7 +124,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   function view( viewData ) {
 
     const $topcontent = ChatComponents.topcontent();
-    const $list = CanvasComponents.list( 'narrow' );
+    const $list = CanvasComponents.list();
 
     let previousSender;
 

@@ -1133,11 +1133,19 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( entity.images.mediumImage ) { // new model
       return V.cN( {
-        t: 'li',
-        h: {
-          t: 'img',
-          r: entity.images.mediumImage,
+        y: {
+          'display': 'flex',
+          'justify-content': 'center',
+          'min-height': '20vh',
+          'max-height': '20vh',
+          'background-image': `url(${ entity.images.mediumImage })`,
+          'background-repeat': 'no-repeat',
+          'background-position': 'center',
         },
+        // h: {
+        //   t: 'img',
+        //   r: entity.images.mediumImage,
+        // },
       } );
     }
     else {
@@ -1254,7 +1262,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     // const activeUserLink = V.aE() ? '%20%20%20%20My%20Profile:%20https%3A%2F%2F' + window.location.hostname + V.aE().path : '';
 
     return V.cN( {
-      c: 'pxy',
+      c: 'w-screen',
       h: [
         {
           t: 'p',
@@ -1262,6 +1270,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           h: 'share this profile on',
         },
         {
+          y: {
+            'display': 'flex',
+            'justify-content': 'space-evenly',
+          },
           s: {
             'sharing-button__icon svg': {
               'width': '1em',
@@ -1320,6 +1332,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             .concat( [
               V.cN( {
                 t: 'a',
+                y: {
+                  'display': 'flex',
+                  'align-items': 'center',
+                },
                 c: 'share-by-email inline-block pxy font-bold',
                 f: `mailto:?subject=${ subject }&body=Profile:%20${ profileLink }`, // optionally add ${ activeUserLink }
                 h: '@',

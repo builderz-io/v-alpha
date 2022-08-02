@@ -13,7 +13,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     /* Cross-browser bottom list padding */
     'list > *:last-child': {
-      'padding-bottom': '160px',
+      'padding-bottom': '20vh',
     },
     'card__top-left': {
       width: cardLeftWidth + '%',
@@ -207,16 +207,21 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function list( which ) {
+  function list( options ) {
 
     const $list = V.cN( {
       t: 'list',
       c: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
     } );
 
-    if ( which == 'narrow' ) {
+    if ( options && options.width == 'narrow' ) {
       // $list.style['max-width'] = '380px';
       // $list.style.margin = '0 auto';
+    }
+
+    if ( options && options.top == 'indent' ) {
+      $list.style.position = 'relative';
+      $list.style.top = '-30px';
     }
 
     return $list;

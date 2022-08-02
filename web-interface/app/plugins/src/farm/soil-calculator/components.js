@@ -38,7 +38,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       // background: 'azure',
     },
     's-calc-form__section': {
-      padding: '0.5rem',
+      'padding': '0 0.5rem',
+      'margin-top': '0.7rem',
     },
     's-calc-results-visibility': {
       display: 'block !important',
@@ -47,7 +48,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-input-wrapper': {
       'display': 'flex',
       'justify-content': 'space-between',
-      'margin-bottom': '0.8rem',
+      'margin-bottom': '0.7rem',
     },
     // 's-calc-input-label': {
     //   width: '170px',
@@ -85,10 +86,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'background': '#eee',
     },
     's-calc-form__field-group-title': {
-      height: '2rem',
+      // height: '2rem',
+      'margin-bottom': '0.7rem',
     },
     's-calc-form__section-title': {
-      height: '2rem',
+      // height: '2rem',
     },
     's-calc-tab-nav': {
       // background: 'azure',
@@ -570,12 +572,26 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         {
           y: {
             'text-align': 'right',
-            'padding': '0.1rem 0.7rem',
-            'font-size': '0.75rem',
+            'padding': '0 0.7rem',
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha/a',
+          h: [
+            {
+              t: 'span',
+              y: {
+                'font-size': '1.1rem',
+              },
+              h: 'x̄',
+            },
+            {
+              t: 'span',
+              y: {
+                'font-size': '0.75rem',
+              },
+              h: ' in kg/ha',
+            },
+          ],
         },
       ],
     };

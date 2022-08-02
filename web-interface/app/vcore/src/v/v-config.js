@@ -106,7 +106,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     tinyImageQuality: 0.93, // Number from 0 to 1
     thumbnailWidth: 88,
     thumbnailQuality: 0.90,
-    mediumImageWidth: 400,
+    mediumImageWidth: 510,
     mediumImageQuality: 0.87,
 
     coinTicker: 'ETH',

@@ -71,7 +71,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         editable: true,
       } );
 
-      $list = CanvasComponents.list( 'narrow' );
+      $list = CanvasComponents.list();
       $topcontent = UserComponents.topcontent();
 
       for ( let i = 0; i < viewData.data[0].entitiesAdmined.length; i++ ) {

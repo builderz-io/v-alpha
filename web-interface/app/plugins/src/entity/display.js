@@ -92,10 +92,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       editable: false,
     } );
 
-    const $list = CanvasComponents.list( 'narrow' );
+    const $list = CanvasComponents.list( { top: entity.images.mediumImage ? 'indent' : '' } );
 
     V.setNode( $list, [
-      UserComponents.mediumImageCard(),
+      // UserComponents.mediumImageCard(),
       // UserComponents.roleCard(),
       UserComponents.entityCard(),
       UserComponents.locationCard(),
@@ -141,6 +141,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       // in this case the profile is fetched using a path and the navigation has not been set in preview
       Navigation.draw( entity ).then( () => {
         Page.draw( {
+          topcontent: UserComponents.mediumImageCard(),
           position: 'top',
           listings: $list,
         } );
@@ -150,6 +151,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       Page.draw( {
+        topcontent: UserComponents.mediumImageCard(),
         position: 'top',
         listings: $list,
       } );
@@ -182,7 +184,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const $list = CanvasComponents.list( 'narrow' );
+    const $list = CanvasComponents.list();
 
     V.setNode( $list, UserComponents.entityPlaceholderImage() );
 

@@ -118,7 +118,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       Modal.draw( 'confirm uPhrase' );
     }
 
-    const $list = CanvasComponents.list( 'narrow' );
+    const $list = CanvasComponents.list();
     if ( viewData.success && viewData.data.length ) {
 
       const $topcontent = AccountComponents.topcontent( viewData.aE.fullId, viewData.entityBalance );
@@ -148,7 +148,7 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
 
   function preview( path ) {
 
-    const $list = CanvasComponents.list( 'narrow' );
+    const $list = CanvasComponents.list();
 
     for ( let i = 0; i < 8; i++ ) {
       const $ph = AccountComponents.accountPlaceholderCard();
