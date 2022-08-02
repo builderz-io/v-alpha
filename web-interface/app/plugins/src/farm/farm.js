@@ -113,7 +113,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
     // presenter( which ).then( viewData => { view( viewData ) } );
   }
 
-  function drawPlotWidget() {
+  function drawPlotWidget( display ) {
 
     const entity = V.getState( 'active' ).lastViewedEntity;
 
@@ -122,12 +122,12 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
     /* replaces preview with retrieved data */
 
     setTimeout( function testDatasetRetrieval() {
-      SoilCalculatorComponents.drawWidgetContent( entity.servicefields );
-    }, 1200 );
+      SoilCalculatorComponents.drawWidgetContent( display, entity.servicefields );
+    }, 800 );
 
     /* draws the preview */
 
-    const $inner = SoilCalculatorComponents.widget();
+    const $inner = SoilCalculatorComponents.widget( display );
 
     // return CanvasComponents.card( $inner, V.getString( ui.widgetTitle ) );
     return $inner;

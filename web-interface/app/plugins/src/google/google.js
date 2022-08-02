@@ -10,13 +10,13 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============ public methods and exports ============ */
 
-  function initAutocomplete( component ) {
+  function initAutocomplete( component, location ) {
 
     /** $elem must be of type {!HTMLInputElement} */
     const $elem = document.getElementById( component + '__loc' );
     if ( $elem ) {
       const autocomplete = new google.maps.places.Autocomplete( $elem, { types: ['geocode'] } );
-      $elem.setAttribute( 'placeholder', 'Location' );
+      $elem.setAttribute( 'placeholder', location || V.getString( 'Pick or type a new location' ) );
       autocomplete.addListener( 'place_changed', function() {
         const place = autocomplete.getPlace();
         $elem.setAttribute( 'loc', place.formatted_address );
@@ -25,6 +25,30 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
         // focus and blur to trigger saving in user profile
         $elem.focus();
         $elem.blur();
+
+        V.setNode( '.join-loc-picker__map', '' );
+
+        V.setState( 'userLocChange', {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+          loc: place.formatted_address,
+        } );
+
+        $( '.location__base' ).leafletLocationPicker( {
+          alwaysOpen: true,
+          mapContainer: '.join-loc-picker__map',
+          height: 140,
+          map: {
+            zoom: 13,
+            center: L.latLng( [
+              place.geometry.location.lat(),
+              place.geometry.location.lng(),
+            ] ),
+            zoomControl: false,
+            attributionControl: false,
+          },
+        } );
+
       } );
     }
   }

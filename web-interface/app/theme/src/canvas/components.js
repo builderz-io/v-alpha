@@ -227,11 +227,10 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return $list;
   }
 
-  function card( $cardContent, cardTitle, id ) {
-
+  function card( $cardContent, cardTitle, id, display ) {
     return V.cN( {
       t: 'li',
-      c: 'pxy w-screen max-w-list zero-auto',
+      c: 'pxy w-screen max-w-list zero-auto' + ( display ? ' hidden' : '' ),
       i: id,
       h: {
         t: 'card',

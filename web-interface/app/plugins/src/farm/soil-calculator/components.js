@@ -974,30 +974,39 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
   */
 
-  function content( data ) {
+  function content( display, data ) {
     return [
-      CanvasComponents.card( totalBalance(), V.getString( ui.soilBalanceTitle ) ),
-      CanvasComponents.card( cropSequence( data ), V.getString( ui.cropSequenceTitle ) ),
-      CanvasComponents.card( siteData( data ), '' ),
-      // resultsSOM(),
-      // resultsN(),
-      // resultsC(),
-      // saveBtn(),
+      CanvasComponents.card(
+        totalBalance(),
+        V.getString( ui.soilBalanceTitle ),
+      ),
+      CanvasComponents.card(
+        cropSequence( data ),
+        V.getString( ui.cropSequenceTitle ),
+        undefined,
+        display,
+      ),
+      CanvasComponents.card(
+        siteData( data ),
+        '',
+        undefined,
+        display,
+      ),
     ];
   }
 
   /* ================== public methods ================= */
 
-  function drawWidgetContent( data ) {
+  function drawWidgetContent( display, data ) {
     V.setNode( '.s-calc-widget', '' );
-    V.setNode( '.s-calc-widget', content( data ) );
+    V.setNode( '.s-calc-widget', content( display, data ) );
     handleDatapointChange();
   }
 
-  function widget() {
+  function widget( display ) {
     return V.cN( {
       c: 's-calc-widget w-full',
-      h: content(),
+      h: content( display ),
     } );
   }
 

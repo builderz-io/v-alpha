@@ -1,4 +1,7 @@
 /*
+ *
+ * ADJUSTED by Philipe Achille Villiers for Value Instrument in August 2022
+ *
  * Leaflet Location Picker v0.3.2 - 2020-04-28
  *
  * Copyright 2020 Stefano Cudini
@@ -20,10 +23,10 @@
     //AMD
     define( ['jquery', 'leaflet'], factory );
   }
-  else if( typeof module !== 'undefined' ) {
-    // Node/CommonJS
-    module.exports = factory( require( 'jquery', 'leaflet' ) );
-  }
+  // else if( typeof module !== 'undefined' ) {
+  //   // Node/CommonJS
+  //   module.exports = factory( require( 'jquery', 'leaflet' ) );
+  // }
   else {
     // Browser globals
     if( typeof window.jQuery === 'undefined' ) {throw 'jQuery must be loaded first'}
@@ -32,20 +35,20 @@
   }
 } )( function( jQuery, L ) {
 
-  var $ = jQuery;
+  const $ = jQuery;
 
   $.fn.leafletLocationPicker = function( opts, onChangeLocation ) {
 
-    var http = window.location.protocol;
+    const http = window.location.protocol;
 
-    var baseClassName = 'leaflet-locpicker',
+    const baseClassName = 'leaflet-locpicker',
       baseLayers = {
         OSM: http + '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         SAT: http + '//otile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
         //TODO add more free base layers
       };
 
-    var optsMap = {
+    let optsMap = {
       zoom: 0,
       center: L.latLng( [40, 0] ),
       zoomControl: false,
@@ -56,7 +59,7 @@
 
     if( $.isPlainObject( opts ) && $.isPlainObject( opts.map ) ) {optsMap = $.extend( optsMap, opts.map )}
 
-    var defaults = {
+    const defaults = {
       alwaysOpen: false,
       className: baseClassName,
       location: optsMap.center,
@@ -98,19 +101,18 @@
     }
 
     function parseLocation( loc ) {
-      var retLoc = loc;
+      let lat, lng, retLoc = loc;
 
       switch( $.type( loc ) ) {
       case 'string':
-        var ll = loc.split( opts.locationSep );
-        if( ll[0] && ll[1] ) {retLoc = L.latLng( ll )}
-        else {retLoc = null}
+        const ll = loc.split( opts.locationSep );
+        if( ll[0] && ll[1] ) { retLoc = L.latLng( ll ) }
+        else { retLoc = null }
         break;
       case 'array':
         retLoc = L.latLng( loc );
         break;
       case 'object':
-        var lat, lng;
         if( loc.hasOwnProperty( 'lat' ) ) {lat = loc.lat}
         else if( loc.hasOwnProperty( 'latitude' ) ) {lat = loc.latitude}
 
@@ -166,10 +168,10 @@
 
       //only adds closeBtn if not alwaysOpen
       if( opts.alwaysOpen!==true ) {
-        var xmap = L.control( { position: 'topright' } );
-        xmap.onAdd = function( map ) {
-          var btn_holder = L.DomUtil.create( 'div', 'leaflet-bar' );
-          var btn = L.DomUtil.create( 'a', 'leaflet-control '+opts.className+'-close' );
+        const xmap = L.control( { position: 'topright' } );
+        xmap.onAdd = function() {
+          const btn_holder = L.DomUtil.create( 'div', 'leaflet-bar' );
+          const btn = L.DomUtil.create( 'a', 'leaflet-control '+opts.className+'-close' );
           btn.innerHTML = '&times;';
           btn_holder.appendChild( btn );
           L.DomEvent
@@ -186,7 +188,7 @@
     }
 
     function buildMarker( loc ) {
-      var css = 'padding: 0px; margin: 0px; position: absolute; outline: 1px solid #fff; box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);';
+      const css = 'padding: 0px; margin: 0px; position: absolute; outline: 1px solid #fff; box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);';
 
       return L.marker( parseLocation( loc ) || L.latLng( 0, 0 ), {
         icon: L.divIcon( {
@@ -203,12 +205,10 @@
       } );
     }
 
-    $( this ).each( function( index, input ) {
-		    var self = this;
-
-		    self.$input = $( this );
-
-		    self.locationOri = self.$input.val();
+    $( this ).each( function() {
+      const self = this;
+      self.$input = $( this );
+      self.locationOri = self.$input.val();
 
       self.onChangeLocation = function() {
         if ( pickerZoom === 0 ) { pickerZoom = 10 }
@@ -217,7 +217,7 @@
 
         self.map.setView( self.location, pickerZoom );
 
-        var edata = {
+        const edata = {
           latlng: self.location,
           location: self.getLocation(),
         };
@@ -227,7 +227,7 @@
         opts.onChangeLocation.call( self, edata );
       };
 
-		    self.setLocation = function( loc, noSet ) {
+      self.setLocation = function( loc, noSet ) {
         loc = loc || defaults.location;
         self.location = parseLocation( loc );
 
@@ -238,76 +238,76 @@
           self.$input.val( self.getLocation() );
           self.onChangeLocation();
         }
-		    };
+      };
 
-		    self.getLocation = function() {
-		    	return self.location ? L.Util.template( opts.locationFormat, {
-		    		lat: self.location.lat,
-		    		lng: self.location.lng,
-		    		sep: opts.locationSep,
-		    	} ) : self.location;
-		    };
+      self.getLocation = function() {
+        return self.location ? L.Util.template( opts.locationFormat, {
+          lat: self.location.lat,
+          lng: self.location.lng,
+          sep: opts.locationSep,
+        } ) : self.location;
+      };
 
-		    self.updatePosition = function() {
-			    switch( opts.position ) {
-				    case 'bottomleft':
-					    self.$map.css( {
-						    top: self.$input.offset().top + self.$input.height() + 6,
-						    left: self.$input.offset().left,
-					    } );
-					    break;
-				    case 'topright':
-					    self.$map.css( {
-						    top: self.$input.offset().top,
-						    left: self.$input.offset().left + self.$input.width() + 5,
-					    } );
-					    break;
-			    }
-		    };
+      self.updatePosition = function() {
+        switch( opts.position ) {
+        case 'bottomleft':
+          self.$map.css( {
+            top: self.$input.offset().top + self.$input.height() + 6,
+            left: self.$input.offset().left,
+          } );
+          break;
+        case 'topright':
+          self.$map.css( {
+            top: self.$input.offset().top,
+            left: self.$input.offset().left + self.$input.width() + 5,
+          } );
+          break;
+        }
+      };
 
-		    self.openMap = function() {
-			    self.updatePosition();
-			    self.$map.show();
-			    self.map.invalidateSize();
-			    self.$input.trigger( 'show' );
-		    };
+      self.openMap = function() {
+        self.updatePosition();
+        self.$map.show();
+        self.map.invalidateSize();
+        self.$input.trigger( 'show' );
+      };
 
-		    self.closeMap = function() {
-			    self.$map.hide();
-			    self.$input.trigger( 'hide' );
-		    };
+      self.closeMap = function() {
+        self.$map.hide();
+        self.$input.trigger( 'hide' );
+      };
 
-		    self.setLocation( self.locationOri, true );
+      self.setLocation( /* self.locationOri */ undefined, true );
 
-		    self.$map = buildMap( self );
+      self.$map = buildMap( self );
 
-		    self.$input
-			    .addClass( opts.className )
-			    .on( 'focus.'+opts.className, function( e ) {
-				    e.preventDefault();
-				    self.openMap();
-			    } )
-			    .on( 'blur.'+opts.className, function( e ) {
-				    e.preventDefault();
-				    var p = e.relatedTarget;
-				    var close = true;
-				    while ( p ) {
-					    if ( p._leaflet ) {
-						    close = false;
-						    break;
-					    }
-					    p = p.parentElement;
-				    }
-				    if( close ) {
-				    	setTimeout( function() {
-					    	self.closeMap();
-					    }, 100 );
-				    }
-			    } );
+      self.$input
+        .addClass( opts.className )
+        .on( 'focus.'+opts.className, function( e ) {
+          e.preventDefault();
+          self.openMap();
+        } )
+        .on( 'blur.'+opts.className, function( e ) {
+          e.preventDefault();
+          let p = e.relatedTarget;
+          let close = true;
+          while ( p ) {
+            if ( p._leaflet ) {
+              close = false;
+              break;
+            }
+            p = p.parentElement;
+          }
+          if( close ) {
+            setTimeout( function() {
+              self.closeMap();
+            }, 100 );
+          }
+        } );
 
-		    $( window ).on( 'resize', function() {
+      $( window ).on( 'resize', function() {
         if ( self.$map.is( ':visible' ) ) {self.updatePosition()}
-		    } );
+      } );
       //opens map initially if alwaysOpen
       if( opts.alwaysOpen && opts.alwaysOpen===true ) {self.openMap()}
     } );

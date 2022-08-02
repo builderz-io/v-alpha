@@ -431,9 +431,9 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       break;
 
     case 'geometry.baseLocation':
-      n = data.data.value ? {
+      n = data.data.loc ? {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
-        c: data.data.value,
+        c: data.data.loc,
       } : null;
       returnFields = 'n { a c }';
       break;

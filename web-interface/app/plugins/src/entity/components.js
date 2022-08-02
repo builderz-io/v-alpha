@@ -157,7 +157,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleBaseLocationFocus() {
-    DOM.location = this.value;
+    DOM.location = this.getAttribute( 'loc' );
   }
 
   function handleViewKeyFocus( e ) {
@@ -282,19 +282,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleBaseLocation() {
     const lat = this.getAttribute( 'lat' );
     const lng = this.getAttribute( 'lng' );
-    const value = this.value;
-    // V.getNode( '.location__curr' ).value = this.value;
+    const loc = this.getAttribute( 'loc' );
 
-    if ( DOM.location.length && value == '' ) {
+    if ( DOM.location.length && loc == '' ) {
       setField( 'geometry.baseLocation', {
-        value: null,
+        loc: null,
       } );
     }
     else if ( lat ) {
       setField( 'geometry.baseLocation', {
         lat: lat,
         lng: lng,
-        value: value,
+        loc: loc,
       } ).then( res => {
 
         /** Draw the new map position */
@@ -821,7 +820,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function locationCard() {
-    const loc = entity.geometry ? entity.geometry.baseLocation || entity.geometry.currentLocation : undefined;
+    const loc = entity.geometry
+      ? entity.geometry.baseLocation == 'picked location'
+        ? 'Lat ' + entity.geometry.coordinates[1] + ' Lng ' + entity.geometry.coordinates[0]
+        : entity.geometry.baseLocation
+      : undefined;
 
     if( loc || ( !loc && editable ) ) {
       const $innerContent = V.cN( {
@@ -835,28 +838,31 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             c: 'join-loc-picker__input-profile-view',
           },
           V.cN( {
-            t: 'table',
             c: 'w-full pxy',
-            h: {
-              t: 'tr',
-              h: [
-                { t: 'td', c: 'capitalize', h: V.getString( ui.baseLoc ) },
-                editable ? {
-                  t: 'input',
-                  i: 'user__loc',
-                  c: 'location__base w-full txt-right',
-                  a: { value: loc },
-                  e: {
-                    focus: handleBaseLocationFocus,
-                    blur: handleBaseLocation,
-                  },
-                } : {
-                  t: 'p',
-                  c: 'location__base txt-right',
-                  h: loc,
-                },
-              ],
+            y: {
+              'display': 'flex',
+              'justify-content': 'space-between',
             },
+            h: [
+              { t: 'span', c: 'capitalize', h: V.getString( ui.baseLoc ) },
+              editable ? {
+                t: 'input',
+                i: 'user__loc',
+                c: 'location__base w-full txt-right',
+                a: {
+                  loc: loc,
+                  placeholder: 'Test',
+                },
+                e: {
+                  focus: handleBaseLocationFocus,
+                  blur: handleBaseLocation,
+                },
+              } : {
+                t: 'span',
+                c: 'location__base txt-right',
+                h: loc,
+              },
+            ],
           } ),
         ],
       } );
@@ -1001,7 +1007,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const $innerContent = V.cN( {
       h: entity.holderOf.map( item => V.cN( {
         t: 'p',
-        c: 'pxy cursor-pointer',
+        c: 'pxy',
+        y: {
+          cursor: 'pointer',
+        },
         h: item,
         k: handleProfileDraw,
       } ) ),
