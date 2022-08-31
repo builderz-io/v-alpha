@@ -58,7 +58,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       }
       else if (
         res.endpoint == 'transaction'
-        && res.status == 'invalid recipient ' // needs trailing space
+        && res.status == 'invalid recipient'
         && !rerun
         && V.getState( 'active' ).navItem.includes( 'profile' )
       ) {
