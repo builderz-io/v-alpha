@@ -7,6 +7,22 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      transfers: 'Transfers',
+      settings: 'Settings',
+      disconnect: 'Disconnect',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   async function presenter( which ) {
@@ -213,7 +229,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       //   },
       // },
       {
-        title: 'Transfers',
+        title: ui.transfers,
         path: '/me/transfers',
         use: {
           button: 'search',
@@ -233,7 +249,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       //   }
       // },
       {
-        title: 'Settings',
+        title: ui.settings,
         path: '/me/settings',
         use: {
           button: 'plus search',
@@ -243,7 +259,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
       },
       {
-        title: 'Disconnect',
+        title: ui.disconnect,
         path: '/me/disconnect',
         draw: function( path ) {
           User.draw( { path: path } );

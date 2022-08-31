@@ -81,7 +81,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       farms: {
-        title: V.getString( ui.farms ),
+        title: ui.farms,
         path: '/farms',
         use: {
           form: 'new entity',
@@ -92,7 +92,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
         },
       },
       plots: {
-        title: V.getString( ui.plots ),
+        title: ui.plots,
         path: '/farms/plots',
         use: {
           form: 'new entity',

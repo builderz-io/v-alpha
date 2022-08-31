@@ -116,7 +116,7 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       hall: {
-        title: V.getString( ui.hall ),
+        title: ui.hall,
         path: '/hall',
         divertFundsToOwner: true,
         use: {

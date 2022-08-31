@@ -35,7 +35,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
 
   const market = {
     localEconomy: {
-      title: V.getString( ui.localEconomy ),
+      title: ui.localEconomy,
       path: '/network/all',
       use: {
         role: 'all', // 'all' is used here to enable search within all entities
@@ -45,7 +45,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     people: {
-      title: V.getString( ui.people ),
+      title: ui.people,
       path: '/network/people',
       use: {
         form: 'new entity',
@@ -57,7 +57,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     businesses: {
-      title: V.getString( ui.businesses ),
+      title: ui.businesses,
       path: '/network/businesses',
       divertFundsToOwner: true,
       use: {
@@ -93,7 +93,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
     //   },
     // },
     ngos: {
-      title: V.getString( ui.ngos ),
+      title: ui.ngos,
       path: '/network/non-profits',
       use: {
         form: 'new entity',
@@ -104,7 +104,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     publicSector: {
-      title: V.getString( ui.publicSector ),
+      title: ui.publicSector,
       path: '/network/public-sector',
       use: {
         form: 'new entity',
@@ -115,7 +115,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     anchors: {
-      title: V.getString( ui.anchors ),
+      title: ui.anchors,
       path: '/network/institutions',
       use: {
         form: 'new entity',
@@ -126,7 +126,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     networks: {
-      title: V.getString( ui.networks ),
+      title: ui.networks,
       path: '/network/networks',
       use: {
         form: 'new entity',
@@ -137,7 +137,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     skills: {
-      title: V.getString( ui.skills ),
+      title: ui.skills,
       path: '/network/skills',
       divertFundsToOwner: true,
       use: {
@@ -149,7 +149,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     tasks: {
-      title: V.getString( ui.tasks ),
+      title: ui.tasks,
       path: '/network/tasks',
       divertFundsToOwner: true,
       use: {
@@ -161,7 +161,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     places: {
-      title: V.getString( ui.places ),
+      title: ui.places,
       path: '/network/places',
       use: {
         form: 'new entity',
@@ -172,7 +172,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       },
     },
     events: {
-      title: V.getString( ui.events ),
+      title: ui.events,
       path: '/network/events',
       use: {
         form: 'new entity',

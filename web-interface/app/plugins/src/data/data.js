@@ -124,7 +124,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'serviceNav', [
       {
-        title: V.getString( ui.data ),
+        title: ui.data,
         path: '/data',
         use: {
           button: 'search',

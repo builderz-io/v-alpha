@@ -119,7 +119,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       media: {
-        title: V.getString( ui.media ),
+        title: ui.media,
         path: '/media',
         divertFundsToOwner: true,
         use: {
@@ -131,7 +131,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         },
       },
       moocs: {
-        title: V.getString( ui.moocs ),
+        title: ui.moocs,
         path: '/media/moocs',
         divertFundsToOwner: true,
         use: {

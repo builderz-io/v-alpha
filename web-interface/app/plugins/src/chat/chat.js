@@ -232,7 +232,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNavItem( 'serviceNav', [
       {
-        title: V.getString( ui.chat ),
+        title: ui.chat,
         path: '/chat/everyone',
         draw: function() {
           Chat.draw( '/chat/everyone' );

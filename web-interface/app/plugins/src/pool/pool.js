@@ -101,7 +101,7 @@ const Pool = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       pools: {
-        title: V.getString( ui.crowdfunding ),
+        title: ui.crowdfunding,
         path: '/pools',
         use: {
           form: 'new entity',
