@@ -30,7 +30,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     let query;
 
-    const inCache = V.getViewed( which.uuidE || which );
+    const inCache = V.getFromCache( 'viewed', which.uuidE || which );
 
     if ( inCache ) {
       query = V.successTrue( 'used cache', inCache );
@@ -40,6 +40,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         which,
       ).then( res => {
         if ( res.success ) {
+
+          /* sync coordinates with cached point */
+          const inCache = V.getFromCache( 'points', res.data[0].uuidE );
+          if ( inCache ) {
+            res.data[0].geometry.coordinates = inCache.geometry.coordinates;
+          }
           V.setCache( 'points', res.data );
           V.setCache( 'viewed', res.data );
           return res;
@@ -100,7 +106,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.entityCard(),
       UserComponents.locationCard(),
       Pool.drawWidget(),
-      Farm.drawPlotWidget( 'display' ),
+      Farm.drawPlotWidget( /* 'display' */ ),
       UserComponents.descriptionCard(),
       UserComponents.questionnaireCard(),
       UserComponents.socialCard(),

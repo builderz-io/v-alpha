@@ -73,9 +73,9 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     return cA ? cA.replace( /"/g, '' ) : undefined;
   }
 
-  function getViewed( which ) {
-    return getCache().viewed
-      ? getCache().viewed.data.find( entity =>
+  function getFromCache( whichCache, which ) {
+    return getCache()[whichCache]
+      ? getCache()[whichCache].data.find( entity =>
         which.includes( ' #' )
           ? entity.fullId == which
           : which.length == V.getSetting( 'uuidStringLength' ) && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
@@ -86,7 +86,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getLastViewed() {
-    return getViewed( getState( 'active' ).lastViewedUuidE );
+    return getFromCache( 'viewed', getState( 'active' ).lastViewedUuidE );
   }
 
   function getCache( which ) {
@@ -226,7 +226,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   V.setActiveEntity = setActiveEntity;
   V.aE = aE;
   V.cA = cA;
-  V.getViewed = getViewed;
+  V.getFromCache = getFromCache;
   V.getLastViewed = getLastViewed;
   V.getCache = getCache;
   V.setCache = setCache;

@@ -31,12 +31,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       const polledPointsCache = await new Promise( resolve => {
         const polling = setInterval( () => {
           counter += 1;
-          const cache = V.getCache( 'points' );
+          const cache = V.getCache( 'permitted' );
           if ( cache && cache.data.length ) {
             clearInterval( polling );
             resolve( cache );
           }
-          else if ( counter > 299 ) {
+          else if ( counter > 115 ) {
             clearInterval( polling );
             resolve( false );
           }

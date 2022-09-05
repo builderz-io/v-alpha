@@ -86,6 +86,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
         use: {
           form: 'new entity',
           role: 'Farm',
+          privacy: 2,
         },
         draw: function( path ) {
           Farm.draw( path );
@@ -98,6 +99,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
           form: 'new entity',
           role: 'Plot',
           join: 4,
+          privacy: 1,
         },
         draw: function( path ) {
           Farm.draw( path );

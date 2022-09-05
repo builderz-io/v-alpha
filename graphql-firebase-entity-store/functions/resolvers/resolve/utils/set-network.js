@@ -18,19 +18,18 @@ module.exports = async ( context ) => {
   const authDoc = await findByAuth( context.i );
 
   if ( authDoc && authDoc.g ) {
-    const now = Math.floor( Date.now() / 1000 );
-    const entityDoc = await getSingleEntity( {}, { uuidE: authDoc.d } );
+    const entityDoc = await getSingleEntity( context, { uuidE: authDoc.d } );
     const dataArray = [].concat( entityDoc[0].holderOf, entityDoc[0] );
 
     authDoc.g.forEach( item => {
       const network = item.replace( /\./g, '_' ).replace( ':', '_' );
       dataArray.forEach( entity => {
-        namespaceDb.database()
-          .ref( 'networks/' + network + '/cluster' )
-          .child( entity.a )
-          .update( {
-            a: entity.a,
-          } );
+        // namespaceDb.database()
+        //   .ref( 'networks/' + network + '/cluster' )
+        //   .child( entity.a )
+        //   .update( {
+        //     a: entity.a,
+        //   } );
 
         namespaceDb.database()
           .ref( 'networks/' + network + '/cache/points' )
@@ -39,6 +38,11 @@ module.exports = async ( context ) => {
             a: entity.a,
             c: entity.c,
             d: entity.d,
+            f: entity.zz && ( entity.zz.f || entity.zz.f === 0 )
+              ? entity.zz.f // sets privacy value from tracked fields
+              : entity.privacy || entity.privacy === 0
+                ? entity.privacy // sets privacy value from held entity
+                : null,
             zz: {
               i: entity.zz && entity.zz.i
                 ? entity.zz.i // sets coordinates from tracked fields

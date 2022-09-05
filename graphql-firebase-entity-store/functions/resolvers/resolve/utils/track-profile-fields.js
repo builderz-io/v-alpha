@@ -18,6 +18,7 @@ module.exports = ( uuidE, data ) => {
 
       m: data.n ? data.n.z : data.n == null ? data.n : undefined,  // continent
       n: data.o ? data.o.z : data.o == null ? data.o : undefined,  // avatar
+      f: data.f || data.f === 0 ? data.f : data.f == null ? data.f : undefined,  // privacy
     },
   };
 

@@ -90,6 +90,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'join-loc-picker__input-profile-view': {
       display: 'none',
     },
+    'entity-mng-radio-wrapper': {
+      'display': 'flex',
+      'justify-content': 'space-around',
+      'border': '1px solid lightgray',
+      'margin': '0.5rem',
+      'padding': '0.5rem',
+      'border-radius': '20px',
+      'width': '24rem',
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -133,6 +142,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       emailSubject: 'Contacting you via',
       emailGreeting: 'Dear',
       socialSubject: 'is on',
+
+      notPrivate: 'fully visible',
+      private: 'not visible',
+      pointVisible: 'point visible',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -206,6 +219,10 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       ? User.draw( data )
       : Profile.draw( data );
 
+  }
+
+  function handlePrivacyRadioButton( e ) {
+    setField( 'privacy', { privacy: e.target.value } );
   }
 
   /* ============ event handlers (edit entity) ========== */
@@ -682,10 +699,78 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     ) {
 
       const active = entity.status.active;
-      const $innerContent = V.cN( {} );
+      const priv = entity.privacy;
+      // const $innerContent = V.cN( {} );
 
-      V.setNode( $innerContent, V.cN( {
+      const $inputRadioElem = V.cN( {
+        c: 'entity-mng-radio-wrapper',
         h: [
+          {
+            t: 'input',
+            c: 'entity-mng-input-radio',
+            i: 'entity-mng-input-0',
+            a: {
+              type: 'radio',
+              name: 'entity-mng',
+              checked: !priv ? true : undefined,
+            },
+            e: {
+              change: handlePrivacyRadioButton,
+            },
+            v: '0',
+          },
+          {
+            t: 'label',
+            c: 'entity-mng-input-radio-label',
+            for: 'entity-mng-input-0',
+            h: V.getString( ui.notPrivate ),
+          },
+          {
+            t: 'input',
+            c: 'entity-mng-input-radio',
+            i: 'entity-mng-input-1',
+            a: {
+              type: 'radio',
+              name: 'entity-mng',
+              checked: priv == 1 ? true : undefined,
+            },
+            e: {
+              change: handlePrivacyRadioButton,
+            },
+            v: '1',
+          },
+          {
+            t: 'label',
+            c: 'entity-mng-input-radio-label',
+            for: 'entity-mng-input-1',
+            h: V.getString( ui.private ),
+          },
+          {
+            t: 'input',
+            c: 'entity-mng-input-radio',
+            i: 'entity-mng-input-2',
+            a: {
+              type: 'radio',
+              name: 'entity-mng',
+              checked: priv == 2 ? true : undefined,
+            },
+            e: {
+              change: handlePrivacyRadioButton,
+            },
+            v: '2',
+          },
+          {
+            t: 'label',
+            c: 'entity-mng-input-radio-label',
+            for: 'entity-mng-input-2',
+            h: V.getString( ui.pointVisible ),
+          },
+        ],
+      } );
+
+      const $innerContent = V.cN( {
+        h: [
+          $inputRadioElem,
           {
             c: 'pxy flex ',
             h: [
@@ -743,7 +828,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             ],
           },
         ],
-      } ) );
+      } );
 
       return castCard( $innerContent, V.getString( ui.management ) );
     }

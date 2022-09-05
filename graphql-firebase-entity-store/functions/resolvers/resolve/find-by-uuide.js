@@ -15,7 +15,7 @@ module.exports = async ( context, a ) => {
         noMixins: true,
         isInArray: true,
       };
-      return getSingleEntity( {}, match );
+      return getSingleEntity( context, match );
     } );
 
     return Promise.all( promises );

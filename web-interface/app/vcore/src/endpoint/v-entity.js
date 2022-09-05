@@ -265,6 +265,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       continent: entityData.continent,
       avatar: entityData.avatar,
+      privacy: entityData.privacy,
 
       // for backwards compatibility
       tinyImage: tinyImage,
