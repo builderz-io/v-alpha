@@ -39,6 +39,7 @@ const Filters = `
 
   type Image {
     a: String
+    f: Int
     o: Images
     x: RelationsP
   }
@@ -61,6 +62,7 @@ const Filters = `
     a: String
     c: String
     d: String
+    f: Int
     zz: PointZz
   }
 

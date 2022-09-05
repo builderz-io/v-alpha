@@ -87,7 +87,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     className: 'map__popup',
   };
 
-  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
+  let viMap, highlightLayer, permittedLayer, deniedLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
 
   const coordinatesCache = [];
 
@@ -179,9 +179,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     };
 
     switch ( whichLayer ) {
-    // case 'points':
+    // case 'permitted':
     //   marker.fillColor = 'rgba(' + sc.brandPrimary + ', 1)';
     //   break;
+    case 'denied':
+      marker.fillColor = 'rgba(' + sc.brandPrimary + ', 0.55)';
+      break;
     case 'highlights':
       marker.fillColor = 'rgba(' + sc.brandSecondary + ', 1)';
       marker.radius = 6;
@@ -227,12 +230,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
      */
 
     if (
-      whichLayer != 'points'
+      whichLayer != 'permitted'
       && features[0]
       && !features[0].isBaseLocationUpdate
     ) {
       features.forEach( feature => {
-        const cache = V.getCache( 'points' );
+        const cache = V.getCache( 'permitted' );
         const point = cache ? cache.data.find( point => point.uuidE == feature.uuidE ) : undefined;
         if ( point ) {
 
@@ -260,6 +263,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       uuidE: item.a,
       uuidP: item.d,
       role: item.c.replace( 'Mapped', '' ),
+      privacy: item.f,
       geometry: {
         coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
         rand: item.zz && item.zz.i ? false : true,
@@ -356,15 +360,29 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
           /* cast points data */
           return castReturnedPointData( item );
         } );
+
+        /* set a cache with all points */
         V.setCache( 'points', castPoints );
+
+        /* set a cache with permitted points */
+        const permitted = castPoints.filter( item => [ 0, null ].includes( item.privacy ) );
+        V.setCache( 'permitted', permitted );
+
+        /* set a cache with denied points */
+        const denied = castPoints.filter( item => item.privacy == 2 );
+        V.setCache( 'denied', denied );
       }
     } );
   }
 
   function setPoints( whichRole ) {
 
-    if ( pointLayer ) {
-      pointLayer.remove();
+    if ( permittedLayer ) {
+      permittedLayer.remove();
+    }
+
+    if ( deniedLayer ) {
+      deniedLayer.remove();
     }
 
     const cache = V.getCache( 'points' );
@@ -379,12 +397,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'all' != whichRole ) {
       filtered = filtered.filter( item => item.role == V.castRole( whichRole ) );
     }
-    // console.log( 'filtered points', filtered );
-    pointLayer = castLayer( 'points', filtered );
 
-    pointLayer.on( 'click', handlePointClick );
+    /* draw publicly accessible points (permitted points) */
 
-    pointLayer.addTo( viMap );
+    const permitted = filtered.filter( item => [ 0, null ].includes( item.privacy ) );
+
+    permittedLayer = castLayer( 'permitted', permitted );
+
+    permittedLayer.on( 'click', handlePointClick );
+
+    permittedLayer.addTo( viMap );
+
+    /* draw non-accessible, but visible points (denied points) */
+
+    const denied = filtered.filter( item => item.privacy == 2 );
+
+    deniedLayer = castLayer( 'denied', denied );
+
+    deniedLayer.addTo( viMap );
   }
 
   function setHighlights( whichRole ) {
@@ -520,6 +550,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     //   lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
     // } );
 
+    if ( e.layer.feature.privacy > 0 ) {
+      return;
+    }
+
     const uuidE = e.layer.feature.uuidE;
     const uuidP = e.layer.feature.uuidP;
     const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
@@ -535,7 +569,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     let entity;
 
-    const inCache = V.getViewed( uuidE );
+    const inCache = V.getFromCache( 'viewed', uuidE );
 
     if ( inCache ) {
       entity = V.successTrue( 'used cache', inCache );

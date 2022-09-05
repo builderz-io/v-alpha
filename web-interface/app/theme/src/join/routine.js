@@ -9,6 +9,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
     defaultSet: 2,
+    defaultPrivacy: V.getSetting( 'defaultPrivacy' ),
   };
 
   let entityData = {};
@@ -599,6 +600,8 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     cardIndex = 0;
 
     entityData.role = use.role;
+    entityData.privacy = ( use.privacy == 0 ? undefined : use.privacy )
+                         || ( settings.defaultPrivacy == 0 ? undefined : settings.defaultPrivacy );
 
     /* Launch Google Places API */
     Google.launch();

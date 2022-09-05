@@ -24,7 +24,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
+  const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -33,7 +33,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const previewE = 'a c d m n';
-  const previewP = 'm { a r } n { a c z } o { a b z }';
+  const previewP = 'f m { a r } n { a c z } o { a b z }';
 
   /* ================== private methods ================= */
 
@@ -109,6 +109,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       unit: data.props.unit,
       continent: data.continent,
       avatar: data.avatar,
+      privacy: data.privacy,
       lngLat: data.geometry.coordinates,
       loc: data.geometry.baseLocation,
       tinyImg: data.tinyImageDU,
@@ -127,13 +128,17 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   function castNewProfileData( data ) {
 
     /**
-    * casts a full set of profile data, to be used when
-    * server-side initialisation of entity is disabled.
-    */
+     * TODO: Needs updating
+     *
+     * casts a full set of profile data, to be used when
+     * server-side initialisation of entity is disabled.
+     */
 
     const a = data.uuidP;
     const b = data.contextP;
     const d = data.uuidE; // note that this is NOT creatorUuid
+
+    // const f = // privacy
 
     const m = {
       a: data.props.descr,
@@ -144,12 +149,14 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     const n = {
       a: data.geometry.coordinates,
       c: data.geometry.baseLocation,
+      // z: // continent
     };
     const o = {
       a: data.tinyImageDU,
       b: data.thumbnailDU,
       c: data.mediumImageDU,
       n: data.imageName,
+      // z: // avatar
     };
 
     const x = {
@@ -203,6 +210,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       uuidP: E.d || P.a,
       role: V.castRole( E.c ),
       roleCode: E.c,
+      privacy: P.f,
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -395,7 +403,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     console.log( 'UPDATING PROFILE: ', data );
     const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidP;
 
-    let m, n, o, p, q, s;
+    let f, m, n, o, p, q, s;
     let returnFields = '';
 
     if ( data.field.includes( 'questionnaire' ) ) {
@@ -454,10 +462,15 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       };
       returnFields = 'p { z }'; // p { a { a b g h i j m n o p s t } z }
       break;
+
+    case 'privacy':
+      f = Number( data.data.privacy );
+      returnFields = 'f';
+      break;
     }
 
     const variables = {
-      input: { a, m, n, o, p, q, s },
+      input: { a, f, m, n, o, p, q, s },
     };
 
     const query = `mutation SetProfileUpdate( $input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }! ) {
@@ -615,7 +628,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     console.log( 111, 'by point' );
 
     const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
-                 getPoints(where: $where) { a c d zz { i m } }
+                 getPoints(where: $where) { a c d f zz { i m } }
                }`;
 
     const variables = {

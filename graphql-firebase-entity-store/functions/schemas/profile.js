@@ -6,6 +6,7 @@ const types = {
       a: ID!           // uuid - as base64 and URL compatible
       b: String        // @context - includes document version
       d: String        // related entity document
+      f: Int           // privacy setting
 
       m: Properties
       n: Geometry

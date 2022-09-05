@@ -36,6 +36,7 @@ const types = {
       unit: String
       continent: Int,
       avatar: Int,
+      privacy: Int,
       lngLat: [Float]
       loc: String
       tinyImg: String
@@ -52,7 +53,7 @@ const types = {
   ProfileInputServerSide: `
     {
       a: ID!            // uuid (P)
-
+      f: Int
       m: InputProperties
       n: InputGeometry
       o: InputImages

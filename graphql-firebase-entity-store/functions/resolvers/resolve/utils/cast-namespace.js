@@ -102,6 +102,8 @@ module.exports = ( context, data ) => {
       b: entitySetup.profileDocVersion,
       d: uuidE,
 
+      f: data.profileInputServerSide.privacy,
+
       m: {
         a: data.profileInputServerSide.descr,
         b: data.profileInputServerSide.email,
@@ -138,6 +140,8 @@ module.exports = ( context, data ) => {
       a: uuidP,
       b: entitySetup.imageDocVersion,
       d: uuidE,
+
+      f: data.profileInputServerSide.privacy,
 
       o: {
         c: data.profileInputServerSide.medImg,

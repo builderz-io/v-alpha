@@ -234,7 +234,13 @@
   "Select the area to move closer.": "Wähle die Gegend um die Karte im Detail zu sehen.",
   "Show details": "Details anzeigen",
   "Pick or type a new location": "Neuen Ort wählen oder eingeben",
+<<<<<<< HEAD
   "Transfers": "Konto",
   "Settings": "Einstellungen",
   "Disconnect": "Abmelden"
+=======
+  "fully visible": "sichtbar",
+  "not visible": "nicht sichtbar",
+  "point visible": "Punkt sichtbar"
+>>>>>>> entity-private-2
 }

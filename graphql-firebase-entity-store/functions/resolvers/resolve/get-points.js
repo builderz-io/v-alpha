@@ -6,7 +6,11 @@ module.exports = async ( context ) => {
   const colCache = namespaceDb.database().ref( 'networks/' + network + '/cache' );
 
   const points = await colCache.child( 'points' ).once( 'value' )
-    .then( snap => Object.values( snap.val() ) );
+    .then( snap => {
+      let items = Object.values( snap.val() );
+      items = items.filter( item => item.f != 1 );
+      return items;
+    } );
 
   // const used = process.memoryUsage();
   // for ( const key in used ) {
