@@ -38,7 +38,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     const message = !rerunMessage
       ? $form.value
-      : rerunMessage + ' to ' + V.getState( 'active' ).lastViewed;
+      : rerunMessage + ' ' + V.getString( 'to' ) + ' ' + V.getState( 'active' ).lastViewed;
 
     V.setMessageBot( message ).then( res => {
       V.sN( $response, '' );
@@ -58,7 +58,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       }
       else if (
         res.endpoint == 'transaction'
-        && res.status == 'invalid recipient'
+        && res.error == 'invalid recipient'
         && !rerun
         && V.getState( 'active' ).navItem.includes( 'profile' )
       ) {

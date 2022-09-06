@@ -104,6 +104,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         success: false,
         endpoint: 'transaction',
         status: V.getString( ui.invalidRecipient ),
+        error: 'invalid recipient',
       };
     }
 
