@@ -41,6 +41,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'padding': '0 0.5rem',
       'margin-top': '0.7rem',
     },
+    's-calc-summary': {
+      'padding': '0 0.5rem',
+      'margin-top': '0.7rem',
+    },
+    's-calc-summary__data': {
+      'margin-top': '0.7rem',
+    },
+    's-calc-summary__item': {
+      'margin-bottom': '0.7rem',
+    },
+    's-calc-summary__item-number': {
+      'margin-right': '0.7rem',
+    },
     's-calc-results-visibility': {
       display: 'block !important',
       // visibility: 'hidden',
@@ -152,6 +165,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       noFertilizerSelected: 'No fertilizer',
       safeDataset: 'Save this set',
       showDetails: 'Show details',
+      summary: 'Summary',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -184,6 +198,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       drawResetResults();
       drawDatapointResults();
       drawSequenceResults(); /* the total */
+      drawSummary();
     }, 170 );
 
   }
@@ -286,6 +301,14 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       .then( res => {
         drawResults( res );
       } );
+  }
+
+  function drawSummary() {
+    const sequence = V.castClone( V.getState( 'cropSequence' ) );
+    delete sequence.s9;
+    delete sequence.s10;
+    V.setNode( '.s-calc-summary__data', 'clear' );
+    V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
 
   function setDatapoint( e ) {
@@ -612,7 +635,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     const sequence = Object.keys( data ).map( key => key.replace( 's', '' ) );
 
-    const tabs = V.cN( {
+    sequence.push( 'AA' );
+
+    const $tabs = V.cN( {
       t: 'tabs',
       h: sequence.map( tabNum => ( {
         t: 'input',
@@ -626,7 +651,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       } ) ),
     } );
 
-    tabs.append( V.cN( {
+    $tabs.append( V.cN( {
       t: 'nav',
       h: [
         // {
@@ -642,21 +667,23 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
               t: 'label',
               c: 'tab' + tabNum + '__label',
               for: 'tab' + tabNum,
-              h: tabNum,
+              h: tabNum == 'AA' ? V.getIcon( 'summarize' ) : tabNum,
             },
           } ) ),
         },
       ],
     } ) );
 
-    tabs.append( V.cN( {
+    $tabs.append( V.cN( {
       t: 'content',
       h: sequence.map( function placeForm( tabNum ) {
         const dataset = V.castJson( this.data[ 's' + tabNum] );
         return {
           c: 's-calc-tab-content tab-content tab' + tabNum + '__content',
           h: [
-            form( tabNum, dataset, /* exclude: */ ['SITE'] ),
+            tabNum != 'AA'
+              ? form( tabNum, dataset, /* exclude: */ ['SITE'] )
+              : summary( this.data ),
             {
               c: 's-calc-results-show-btn',
               h: V.getIcon( 'expand_more', '24px' ), // V.getString( 'Show details' ),
@@ -677,12 +704,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     } ) );
 
-    const tabsWrapper = V.cN( {
+    const $tabsWrapper = V.cN( {
       c: 'tabs-wrapper w-full',
-      h: tabs,
+      h: $tabs,
     } );
 
-    return tabsWrapper;
+    return $tabsWrapper;
   }
 
   function siteData( data ) {
@@ -962,6 +989,56 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     } );
 
     return $form;
+  }
+
+  function summary( data ) {
+    return V.cN( {
+      c: 's-calc-summary',
+      h: [
+        V.cN( { c: 's-calc-summary__title font-bold', h: V.getString( ui.summary ) } ),
+        summaryTable( data ),
+      ],
+    } );
+  }
+
+  function summaryTable( data ) {
+    return V.cN( {
+      c: 's-calc-summary__data',
+      h: Object.values( data ).map( ( item, i ) => {
+        item = item.datapoint || JSON.parse( item ); /* item is sourced from either state or db */
+        // if ( !item.CROP || item.CROP.ID == -1 ) {
+        //   return V.cN( {
+        //     t: 'p',
+        //     c: 's-calc-summary__item',
+        //     h:
+        //     ( i + 1 )
+        //     + ' '
+        //     + V.getString( ui.noCropSelected ),
+        //   } );
+        // }
+        return V.cN( {
+          t: 'p',
+          c: 's-calc-summary__item flex',
+          h: [
+            {
+              t: 'span',
+              c: 's-calc-summary__item-number',
+              h: i + 1,
+            },
+            {
+              t: 'span',
+              h: !item.CROP || item.CROP.ID == -1
+                ? '' // V.getString( ui.noCropSelected )
+                : (
+                  SoilCalculator.getCropName( item.CROP.ID, locale )
+                  + ' / '
+                  + SoilCalculator.getFertilizerName( item.FTLZ.ORG.ID, locale )
+                ),
+            },
+          ],
+        } );
+      } ),
+    } );
   }
 
   /*

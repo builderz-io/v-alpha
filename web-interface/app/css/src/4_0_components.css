@@ -420,6 +420,7 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
  * adjusted from https://codepen.io/alvarotrigo/pen/bGoPzMe
  */
 
+#tabAA:checked ~ content .tabAA__content,
 #tab1:checked ~ content .tab1__content,
 #tab2:checked ~ content .tab2__content,
 #tab3:checked ~ content .tab3__content,
@@ -431,6 +432,7 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
   display: block;
 }
 
+#tabAA:checked ~ nav .tabAA__label,
 #tab1:checked ~ nav .tab1__label,
 #tab2:checked ~ nav .tab2__label,
 #tab3:checked ~ nav .tab3__label,

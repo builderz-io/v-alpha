@@ -333,6 +333,14 @@ const SoilCalculator = ( () => {
     return getParameters( fertilizers, which );
   }
 
+  function getCropName( which, locale ) {
+    return getCrop( which )[ 'NAME' + ( locale.includes( 'de' ) ? '_DE' : '' ) ];
+  }
+
+  function getFertilizerName( which, locale ) {
+    return getFertilizer( which )[ 'NAME' + ( locale.includes( 'de' ) ? '_DE' : '' ) ];
+  }
+
   function getCrops() {
 
     /**
@@ -434,6 +442,8 @@ const SoilCalculator = ( () => {
   return {
     getCrop: getCrop,
     getFertilizer: getFertilizer,
+    getCropName: getCropName,
+    getFertilizerName: getFertilizerName,
     getCrops: getCrops,
     getFertilizers: getFertilizers,
     getSchema: getSchema,
