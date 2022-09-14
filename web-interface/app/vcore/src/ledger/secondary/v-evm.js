@@ -200,7 +200,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const lifetime = contract.methods.getLifetime.call().call();
       const fee = contract.methods.getTransactionFee.call().call();
       const contribution = contract.methods.getCommunityContribution.call().call();
-      const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
+      const divisibility = Promise.resolve( 18 ); // now fixed to 18, instead of contract.methods.decimals.call().call();
 
       // const allEvents = contract.getPastEvents( 'allEvents', {
       // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -224,7 +224,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         blockNumber,
         fee,
         contribution,
-        // divisibility,
+        divisibility,
         // payout,
         // interval,
         // lifetime,
