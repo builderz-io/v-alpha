@@ -1,5 +1,4 @@
 const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
-
   /**
      * V Theme Module for join routine
      *
@@ -12,6 +11,8 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     defaultPrivacy: V.getSetting( 'defaultPrivacy' ),
   };
 
+  const devModeNames = ['Pat', 'Peter', 'Paul', 'Mary', 'Jane', 'Chris', 'Alex', 'Otto', 'Miranda', 'Sunak'];
+
   let entityData = {};
 
   let cardSet, fourDigitString, uPhrase, fullId, role, cardIndex = 0;
@@ -20,20 +21,20 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   const ui = ( () => {
     const strings = {
-      isConfirmCode: 'is your confirmation code',
+      isConfirmCode: 'is the confirmation code',
       download: 'Download',
       downloadAgain: 'Download again',
       callToAction: '🎉  Ready! Go create!',
-      authFail: 'Auth failed. Reload and join manually using the key shown hidden above.',
+      authFail: 'Auth failed. Copy the key shown hidden above, reload and join manually.',
       startAgain: 'Please reload and join again.',
 
-      joinSuccessTop: 'Done! You successfully joined.',
-      joinSuccessBottom: 'Please download your access key.',
+      joinSuccessTop: 'Done! The identity was successfully set up.',
+      joinSuccessBottom: 'Please download the access key.',
       joinFailTop: 'Eeeeek, problem.',
 
-      joinResLoc: 'Please add your continent at least',
+      joinResLoc: 'Please add the continent at least',
       joinResNoLat: 'We couldn\'t find this location. Please select from the list or clear the entry to continue',
-      joinResNoLatPick: 'Please pick a location',
+      joinResNoLatPick: 'Please pick the location',
       joinResImg: 'Please choose an avatar at least',
       joinResEmail: 'Please add a valid email address',
       joinResEmailConfirm: 'Please enter the 4-digit code we sent',
@@ -93,6 +94,17 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       x.joinLocationPicker,
       undefined,
       undefined,
+      undefined,
+      x.joinAwaitKey,
+    ],
+    set5: [
+      x.joinTitle,
+      x.joinDescription,
+      undefined,
+      x.joinLocation,
+      undefined,
+      undefined,
+      x.joinImage,
       undefined,
       x.joinAwaitKey,
     ],
@@ -168,7 +180,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             attributionControl: false,
           },
           onChangeLocation: function pickedLocation( data ) {
-
             setResponse( '', 'setAsIs' );
 
             entityData.location = 'picked location';
@@ -187,11 +198,10 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       drawAltSubmitBtn( 'call-to-action' );
       setNewEntity();
     }
-
   }
 
   function handleSaveKey() {
-    const text = `Key: ${ this.uPhrase }\n\nTitle: ${ this.fullId }\n\nJoined: ${ new Date().toString().substr( 4, 17 ) }\n\nInitialized by: ${ window.location.host }`;
+    const text = `Key: ${ this.uPhrase }\n\nTitle: ${ this.fullId }\n\nRole: ${ this.role }\n\nJoined: ${ new Date().toString().substr( 4, 17 ) }\n\nInitialized by: ${ window.location.host }`;
     const blob = new Blob( [text], { type: 'text/plain' } );
 
     const $a = document.createElement( 'a' );
@@ -202,7 +212,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.join-download__btn', InteractionComponents.confirmClickSpinner() );
 
     setTimeout( delayCallToActionBtn.bind( { fullId: this.fullId } ), 1200 );
-
   }
 
   function delayCallToActionBtn() {
@@ -241,6 +250,9 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
         entityData.title = title.data[0];
         return true;
       }
+      else if ( V.getSetting( 'devMode' ) ) {
+        V.getNode( '.join-form__input' ).value = devModeNames[V.castRandomInt( 0, devModeNames.length - 1 )];
+      }
       else {
         setResponse( title.message, 'setAsIs' );
         return false;
@@ -258,7 +270,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
     /* target & unit */
     else if ( cardIndex == 2 ) {
-
       const trgt = V.getNode( '.join-form__input' ).value;
       const unit = V.getNode( '.join-form__input-unit' ).value;
 
@@ -273,7 +284,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
         setResponse( target.message, 'setAsIs' );
         return false;
       }
-
     }
 
     /* location */
@@ -301,6 +311,10 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       else if ( $location.value ) {
         setResponse( 'joinResNoLat' );
         return false;
+      }
+      else if ( V.getNode( '.join-selectors' ).style.display == 'block' ) {
+        const int = V.getSetting( 'devMode' ) ? 3 : V.castRandomInt( 0, 6 );
+        document.getElementById( 'join-selector__cont' + int ).checked = true;
       }
       else {
         setResponse( 'joinResLoc' );
@@ -402,7 +416,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     else if ( cardIndex == 8 ) {
       return true;
     }
-
   }
 
   function setResponse( which, setAsIs ) {
@@ -418,7 +431,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function confirmEmail() {
-
     setResponse( '', 'setAsIs' );
     V.getNode( '.join-submit__btn' ).append( InteractionComponents.confirmClickSpinner() );
 
@@ -452,7 +464,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           }
         } );
     }
-
   }
 
   function setNewEntity() {
@@ -505,7 +516,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           /** set state and cache */
           V.setActiveEntity( res.data[0] );
           Join.draw( 'new entity was set up' );
-
         }
         else {
           throw new Error( res.message );
@@ -525,6 +535,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     $btn.addEventListener( 'click', handleSaveKey.bind( {
       uPhrase: uPhrase,
       fullId: fullId,
+      role: role,
     } ) );
   }
 
@@ -556,8 +567,10 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   function drawAltSubmitBtn( which ) {
     const $submitBtn = V.gN( '.join-submit__btn' );
+    // const $submitSkip = V.gN( '.join-submit__skip' );
     if ( 'call-to-action' == which ) {
       $submitBtn.classList.add( 'hidden', 'bkg-brand-secondary', 'txt-offblack' );
+      // $submitSkip.classList.add( 'hidden' );
       $submitBtn.innerText = V.getString( ui.callToAction );
     }
   }
@@ -585,7 +598,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function drawOverlay( use ) {
-
     if ( !use ) { return }
 
     if (
@@ -635,5 +647,4 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
     handleNext: handleNext,
   };
-
 } )();

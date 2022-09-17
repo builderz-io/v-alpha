@@ -86,6 +86,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
         use: {
           form: 'new entity',
           role: 'Farm',
+          join: 5,
           privacy: 2,
         },
         draw: function( path ) {

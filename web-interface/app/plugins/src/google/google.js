@@ -16,7 +16,7 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
     const $elem = document.getElementById( component + '__loc' );
     if ( $elem ) {
       const autocomplete = new google.maps.places.Autocomplete( $elem, { types: ['geocode'] } );
-      $elem.setAttribute( 'placeholder', location || V.getString( 'Pick or type a new location' ) );
+      $elem.setAttribute( 'placeholder', location || V.getString( 'Location' ) );
       autocomplete.addListener( 'place_changed', function() {
         const place = autocomplete.getPlace();
         $elem.setAttribute( 'loc', place.formatted_address );

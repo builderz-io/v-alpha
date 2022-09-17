@@ -41,10 +41,13 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   };
 
   const localeSettings = {
-    slug: '/theme/lang', // omit trailing "/"
-    english: 'en_US',
-    german: 'de_DE',
-    deutsch: 'de_DE',
+    'slug': '/theme/lang', // omit trailing "/"
+    'english': 'en_US',
+    'englisch': 'en_US',
+    'german official': 'de_DE_sie',
+    'deutsch offiziell': 'de_DE_sie',
+    'german personal': 'de_DE_du',
+    'deutsch persönlich': 'de_DE_du',
   };
 
   const settings = {
@@ -94,7 +97,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     joinVersion: 2,
 
     subscribeToChainEvents: false,
-    balanceCheckInterval: 10, // in sec
+    balanceCheckInterval: 30, // in sec
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,

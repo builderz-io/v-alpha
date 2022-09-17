@@ -141,6 +141,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
       emailSubject: 'Contacting you via',
       emailGreeting: 'Dear',
+
+      share: 'share this profile on',
       socialSubject: 'is on',
 
       notPrivate: 'fully visible',
@@ -1361,7 +1363,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'p',
           c: 'pxy fs-s txt-center',
-          h: 'share this profile on',
+          h: V.getString( ui.share ),
         },
         {
           y: {

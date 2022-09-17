@@ -15,29 +15,31 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       upload: 'uploading...',
       change: 'Change image',
       next: 'Next',
+      skip: 'skip',
 
       joinNameTop: 'Name yourself.',
       joinNameBottom: 'This is for your personal profile.',
       joinTitleTop: 'Add the title.',
       joinTitleBottom: '',
       joinDescrTop: 'Add a description.',
-      joinDescrBottom: 'Paste social media and other links also.',
-      joinTargetTop: 'Add a price and unit.',
-      joinTargetBottom: 'For example "200" per "hour"',
-      joinDateTimeTop: 'Add a start and end date and time.',
+      joinDescrBottom: 'Include social media and other links here too.',
+      joinTargetTop: 'Add your target price and its unit.',
+      joinTargetBottom: 'For example "200" per "hour" or "120" per "ticket".',
+      joinDateTimeTop: 'Add the start and end date and time.',
       joinDateTimeBottom: '',
       joinLocTop: 'Add your location.',
-      joinLocBottom: '',
-      joinLocPickerTop: 'Pick an exact location.',
-      joinLocPickerBottom: 'Select the area to move closer.',
+      joinLocBottom: 'Start typing, then pick from the suggestions.',
+      joinLocPickerTop: 'Pick the exact location.',
+      joinLocPickerBottom: 'Select the area to zoom in closer.',
       joinImgTop: 'Add your image.',
       joinImgBottom: '',
       joinEmailTop: 'Add your email.',
       joinEmailBottom: 'This is private, visible to admins only.',
-      joinAwaitKeyTop: 'One moment... setting you up.',
+      joinAwaitKeyTop: 'One moment... setting up the identity.',
       joinAwaitKeyBottom: '',
 
       joinFormName: 'Name',
+      joinFormTitle: 'Title',
       joinFormDescr: 'Description',
       joinFormTarget: 'Target',
       joinFormUnit: 'Unit',
@@ -81,7 +83,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': 'white',
       'width': '75vw',
       'max-width': '500px',
-      'min-height': '46vh',
+      'min-height': '41vh',
       'margin': '14vh auto',
       'padding': '1.5rem',
       'border-radius': '32px',
@@ -93,6 +95,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'min-height': '70vh',
     },
     // wrapper
+    'join-card-inner-wrapper': {
+      display: 'contents',
+    },
     'join-content-wrapper': {
       flex: '1',
     },
@@ -201,7 +206,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     },
 
     'join-submit__response': {
-      color: 'crimson',
+      'color': 'crimson',
+      'padding': '0.8rem',
+      'text-align': 'center',
+    },
+    'join-submit__skip': {
       padding: '0.8rem',
 
     },
@@ -263,6 +272,12 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleResetSelectors() {
     V.getNode( '.join-submit__response' ).innerText = '';
     V.getNode( '.join-selectors' ).style.display = 'none';
+    const $europe = document.getElementById( 'join-selector__cont3' );
+    if ( $europe ) { $europe.checked = false }
+  }
+
+  function handleFormFocus() {
+    V.getNode( '.join-submit__response' ).innerText = '';
   }
 
   /* ================ components ================ */
@@ -304,6 +319,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
                    + ( addition ? '-' + addition : '' ),
               a: {
                 placeholder: V.getString( ui[formTitle] ),
+              },
+              e: {
+                focus: handleFormFocus,
               },
             },
           ],
@@ -548,6 +566,11 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
             h: V.getString( ui.next ),
             k: JoinRoutine.handleNext,
           },
+          // {
+          //   c: 'join-submit__skip',
+          //   h: V.getString( ui.skip ),
+          //   k: JoinRoutine.handleNext,
+          // },
         ],
       },
     );
@@ -582,7 +605,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   function joinTitle() {
     return [
       joinHeader( 'joinTitleTop', 'joinTitleBottom', true ),
-      joinForm( 'joinFormName' ),
+      joinForm( 'joinFormTitle' ),
     ];
   }
 
