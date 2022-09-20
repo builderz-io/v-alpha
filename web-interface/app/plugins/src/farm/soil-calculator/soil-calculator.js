@@ -396,13 +396,13 @@ const SoilCalculator = ( () => {
           .reduce( ( prev, cur ) => prev && prev[cur], obj ),
       );
 
-    const requestDisplayName = get( legends.request.legend[locale], '_', fieldTitle )[0];
+    const requestDisplayName = get( legends.request.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( requestDisplayName ) {
       return unit ? requestDisplayName.unit : requestDisplayName.displayName;
     }
 
-    const resultsDisplayName = get( legends.results.legend[locale], '_', fieldTitle )[0];
+    const resultsDisplayName = get( legends.results.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( resultsDisplayName ) {
       return unit ? resultsDisplayName.unit : resultsDisplayName.displayName;

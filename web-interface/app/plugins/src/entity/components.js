@@ -15,7 +15,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'app-lang-selector': {
       'display': 'flex',
       'justify-content': 'space-evenly',
-      'width': '190px',
+      'width': '300px',
       'padding': '25px 0',
     },
     'pool__funding-pie': {
@@ -1198,16 +1198,32 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             a: {
               type: 'radio',
               name: 'app-lang',
-              value: 'de_DE',
+              value: 'de_DE_du',
               title: 'appLang',
               db: 'properties',
-              checked: appLang == 'de_DE' ? true : undefined,
+              checked: appLang == 'de_DE_du' ? true : undefined,
             },
             k: handleRadioEntry,
           },
           {
             t: 'span',
-            h: '🇩🇪',
+            h: '🇩🇪 "Du"',
+          },
+          {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'de_DE_sie',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'de_DE_sie' ? true : undefined,
+            },
+            k: handleRadioEntry,
+          },
+          {
+            t: 'span',
+            h: '🇩🇪 "Sie"',
           },
         ],
       } );
