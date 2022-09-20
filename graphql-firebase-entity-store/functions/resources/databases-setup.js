@@ -6,15 +6,24 @@ For development env run -> firebase use entity-profile
 
 to list projects run -> firebase projects:list
 
-2. set production true/false below
-
 */
 
-const local = false;
+const env = {
 
-const production = false;
+  use: 'clientDFR',
 
-const dev = production ? '' : '-dev';
+  local: false, /* set to "true" to save data locally when running importer */
+
+  prod: {
+    dbAffix: '',
+  },
+  dev: {
+    dbAffix: '-dev',
+  },
+  clientDFR: {
+    dbAffix: '-client-dfr',
+  },
+};
 
 const admin = require( 'firebase-admin' );
 
@@ -26,30 +35,30 @@ const credentials = require( '../credentials/credentials' );
 
 const authDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.auth ),
-  databaseURL: local
+  databaseURL: env.local
     ? 'http://localhost:9000/?ns=entity-authentication-dev'
-    : 'https://entity-authentication' + dev + '.firebaseio.com',
+    : 'https://entity-authentication' + env[env.use].dbAffix + '.firebaseio.com',
 }, 'authentication' );
 
 const namespaceDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.namespace ),
-  databaseURL: local
+  databaseURL: env.local
     ? 'http://localhost:9000/?ns=entity-namespace-dev'
-    : 'https://entity-namespace' + dev + '.firebaseio.com/',
+    : 'https://entity-namespace' + env[env.use].dbAffix + '.firebaseio.com/',
 }, 'namespace' );
 
 const profileDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.profile ),
-  databaseURL: local
+  databaseURL: env.local
     ? 'http://localhost:9000/?ns=entity-profile-dev'
-    : 'https://entity-profile' + dev + '.firebaseio.com/',
+    : 'https://entity-profile' + env[env.use].dbAffix + '.firebaseio.com/',
 }, 'profile' );
 
 const imageDb = admin.initializeApp( {
   credential: admin.credential.cert( credentials.profile ),
-  databaseURL: local
+  databaseURL: env.local
     ? 'http://localhost:9000/?ns=entity-profile-image-dev'
-    : 'https://entity-profile-image' + dev + '.firebaseio.com/',
+    : 'https://entity-profile-image' + env[env.use].dbAffix + '.firebaseio.com/',
 }, 'image' );
 
 module.exports.authDb = authDb;

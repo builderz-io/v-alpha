@@ -12,6 +12,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     'firebase-staging': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     'firebase-development': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     'firebase-production': 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
+    'firebase-client-dfr': 'https://us-central1-client-dfr.cloudfunctions.net/api/v1',
   };
 
   const mongodbEndpoints = {
