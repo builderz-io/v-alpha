@@ -17,13 +17,58 @@ const Filters = `
   input Filter {
     query: String
     role: String
+    field: String
+    mapState: String
+    isAutofill: Boolean
   }
 
   input WhereEntity {
-    a: String
+    a: [String]
     m: String
     n: String
     i: String
+  }
+
+  input WhereProfile {
+    a: String
+  }
+
+  input WhereGeo {
+    i: String
+  }
+
+  type Image {
+    a: String
+    f: Int
+    o: Images
+    x: RelationsP
+  }
+
+  type Highlight {
+    a: String
+    y: Int
+  }
+
+  input InputHighlight {
+    a: String
+    y: InputHighlightY
+  }
+
+  input InputHighlightY {
+    c: Int
+  }
+
+  type Point {
+    a: String
+    c: String
+    d: String
+    f: Int
+    zz: PointZz
+  }
+
+  type PointZz {
+    i: [Float]
+    m: Int
   }
 `;
 
@@ -49,6 +94,7 @@ const Jwt = `
     success: Boolean
     message: String
     uuidE: String
+    uuidP: String
     exp: Int
     jwt: String
     tempRefresh: String
@@ -60,10 +106,13 @@ const Jwt = `
 
 const Queries = `
   type Query {
-    getAuth(token: String!): Success
-    getEntityQuery(filter: Filter!): [Entity]
-    getEntity(where: WhereEntity): [Entity]
+    getEntities(where: WhereEntity): [Entity]
     getProfiles(array: [String!]): [Profile]
+    getEntityQuery(filter: Filter!): [Entity]
+    getProfile(where: WhereProfile): [Profile]
+    getPoints(where: WhereGeo): [Point]
+    getHighlights: [Highlight]
+    getImage(where: WhereProfile): [Image]
   }
 `;
 
@@ -72,8 +121,10 @@ const Mutations = `
     setAuth: Jwt
     setDisconnect: Success
     setTransaction(tx: InputTransaction!): SuccessTx
+    setHighlight(input: InputHighlight!): Highlight
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
+    setImage(input: ImageInputServerSide!): Image
   }
 `;
 

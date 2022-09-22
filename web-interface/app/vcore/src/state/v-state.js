@@ -46,15 +46,26 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setActiveEntity( data ) {
-    delete data.auth;
+    if ( data.auth.uPhrase ) {
+      data.auth = true;
+    }
+    else {
+      data.auth = false;
+    }
     V.setState( 'activeEntity', 'clear' );
     V.setState( 'activeEntity', data );
     console.log( 'set active entity' );
 
   }
 
-  function aE() {
-    return getState( 'activeEntity' );
+  function aE( field ) {
+    const state = getState( 'activeEntity' );
+    if ( field ) {
+      return state[field];
+    }
+    else {
+      return state;
+    }
   }
 
   function cA() {
@@ -62,20 +73,20 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     return cA ? cA.replace( /"/g, '' ) : undefined;
   }
 
-  function getViewed( which ) {
-    return getCache().viewed
-      ? getCache().viewed.data.find( entity =>
+  function getFromCache( whichCache, which ) {
+    return getCache()[whichCache]
+      ? getCache()[whichCache].data.find( entity =>
         which.includes( ' #' )
           ? entity.fullId == which
-          : which.length == 22 && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
+          : which.length == V.getSetting( 'uuidStringLength' ) && isNaN( Number( which.slice( -5 ) ) ) // checks whether which is a uuidE
             ? entity.uuidE == which
-            : entity.path == which
+            : entity.path == which,
       )
       : undefined;
   }
 
   function getLastViewed() {
-    return getViewed( getState( 'active' ).lastViewedUuidE );
+    return getFromCache( 'viewed', getState( 'active' ).lastViewedUuidE );
   }
 
   function getCache( which ) {
@@ -98,23 +109,49 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
     if ( Array.isArray( data ) ) {
       if ( cache[which].timestamp ) {
-        cache[which].data = [].concat( cache[which].data, data );
+        if ( data.length == 1 ) {
+          setOrUpdateOneInCache( which, data[0] );
+        }
+        else {
+          cache[which].data = [].concat( cache[which].data, data );
+        }
       }
       else {
-        const obj = {
-          timestamp: Date.now(),
-          date: new Date(),
-          data: data,
-        };
-        Object.assign( cache[which], obj );
+        setNewCache( which, data );
       }
     }
     else if ( typeof data == 'object' ) {
-      Object.assign( cache[which], data );
+      if ( cache[which].timestamp ) {
+        setOrUpdateOneInCache( which, data );
+      }
+      else {
+        setNewCache( which, [data] );
+      }
+    }
+  }
+
+  function setOrUpdateOneInCache( which, entity ) {
+    entity = V.castJson( entity, 'clone' );
+    const index = cache[which].data.findIndex( item => item.uuidE == entity.uuidE );
+
+    if ( index != -1 ) {
+      if ( 'points' == which ) {
+        delete entity.geometry;
+      }
+      Object.assign( cache[which].data[index], entity );
     }
     else {
-      cache[which] = data;
+      cache[which].data.push( entity );
     }
+  }
+
+  function setNewCache( which, data ) {
+    const obj = {
+      timestamp: Date.now(),
+      date: new Date(),
+      data: data,
+    };
+    Object.assign( cache[which], obj );
   }
 
   function getNavItem( whichItem, whichNav ) {
@@ -153,6 +190,11 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
 
           obj[item.path] = item;
           setState( whichNav, obj );
+          if ( item.use && item.divertFundsToOwner ) {
+            const obj = {};
+            obj[item.use.role] = item.use.role;
+            setState( 'rolesWithReceivingAddress', obj );
+          }
         }
         else {
           throw new Error( 'Title too long (max ' + maxLength + ', has ' + item.title.length + '): ' + item.title );
@@ -184,7 +226,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   V.setActiveEntity = setActiveEntity;
   V.aE = aE;
   V.cA = cA;
-  V.getViewed = getViewed;
+  V.getFromCache = getFromCache;
   V.getLastViewed = getLastViewed;
   V.getCache = getCache;
   V.setCache = setCache;

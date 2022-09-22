@@ -1,22 +1,39 @@
+
+/**
+ * This module is out of date and untested
+ */
+
+const settings = {
+  floatEth: true,
+};
+
 // Connect to firebase database
 const { authDb } = require( '../../resources/databases-setup' );
 const colA = authDb.database().ref( 'authentication' );
 
-const trackSearchableFields = require( './utils/track-searchable-fields' );
+const trackProfileFields = require( './utils/track-profile-fields' );
 
 module.exports = ( context, data, col ) => new Promise( async resolve => {
-  if ( data.c === 'Person' ) {
-    // require( './auto-float' ).autoFloat( data.i );  // eslint-disable-line global-require
-  }
 
   /** Validate, cast and set inputs */
   await require( '../validate/validate' )( context, data ); // eslint-disable-line global-require
 
-  /** Track searchable fields in entity db */
-  data.b.includes( '/p' ) ? trackSearchableFields( data.d, data ) : null;
+  /** Track profile fields in entity db */
+  data.b.includes( '/p' ) ? trackProfileFields( data.d, data ) : null;
 
-  /** Write auth data into auth db */
-  data.b.includes( '/e' ) ? colA.child( data.auth.a ).update( data.auth ) : null;
+  if ( data.b.includes( '/e' ) ) {
+
+    /** Write auth data into auth db */
+    colA.child( data.auth.a ).update( data.auth );
+
+    /** Float some ETH and optionally auto-verify */
+    // "awaiting" this would make the joining slow for the user
+    if ( settings.floatEth && 'Person' == data.c ) {
+      require( './set-transaction' )( context, { // eslint-disable-line global-require
+        recipientAddress: data.i,
+      }, 'float' );
+    }
+  }
 
   /** Then omit the auth data and write entity data into entity db */
   const omit = JSON.parse( JSON.stringify( data ) );

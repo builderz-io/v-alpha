@@ -7,50 +7,47 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  V.setStyle( {
+    'chain-status': {
+      'max-width': '180px',
+      'margin': '0 auto',
+      'padding': '20px 0px',
+    },
+  } );
+
   /* ============== user interface strings ============== */
 
-  const ui = {
-    from: 'from',
-    to: 'to',
-    fees: 'fee',
-    contr: 'contribution',
-    amount: 'amount',
-    payout: 'payout',
-    block: 'block',
-    date: 'date',
-    time: 'time',
-    net: 'Spendable',
-    gross: 'Gross',
-    eth: 'ETH',
-    chain: 'On Chain',
-    noBal: 'no balance details',
-    lastBlock: 'last block',
-    zeroBlock: 'zero block',
-    currentBlock: 'now block',
-    currentDate: 'now date',
-  };
+  const ui = ( () => {
+    const strings = {
+      from: 'from',
+      to: 'to',
+      fees: 'fee',
+      contr: 'contribution',
+      amount: 'amount',
+      total: 'total',
+      payout: 'payout',
+      block: 'block',
+      date: 'date',
+      time: 'time',
+      net: 'Spendable',
+      gross: 'Gross',
+      eth: 'ETH',
+      chain: 'On Chain',
+      noBal: 'no balance details',
+      lastBlock: 'last block',
+      zeroBlock: 'zero block',
+      currentBlock: 'now block',
+      currentDate: 'now date',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'account', scope || 'account components' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
-
-  function handleDrawUserNav() {
-    if ( V.getVisibility( 'user-nav' ) ) {
-      V.setState( 'active', { navItem: false } );
-      Chat.drawMessageForm( 'clear' );
-      // Navigation.drawReset();
-      // Page.draw( { position: 'peek' } );
-      Marketplace.draw();
-    }
-    else {
-      Button.draw( 'all', { fade: 'out' } );
-      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
-      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
-      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
-    }
-  }
 
   function handleOpenTxDetails() {
     V.setToggle( this.closest( 'li' ).querySelector( '.card__bottom-right' ) );
@@ -71,7 +68,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent( fullId, bal ) {
     return V.cN( {
-      t: 'div',
       h: [
         {
           t: 'h1',
@@ -79,34 +75,42 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           k: handleOpenTokenAccountDetails,
           h: fullId,
         },
-        !bal ? { t: 'p', c: 'hidden', h: getString( ui.noBal ) } : {
-          t: 'table',
-          i: 'v-token-account-details',
-          c: 'hidden fs-s',
-          h: [
-            [ getString( ui.net ), V.getNetVAmount( bal.data[0].liveBalance ).net ],
-            [ getString( ui.gross ), bal.data[0].liveBalance ],
-            [ getString( ui.chain ), bal.data[0].tokenBalance ],
-            [ getString( ui.eth ), bal.data[0].coinBalance ],
-            [ getString( ui.lastBlock ), bal.data[0].lastBlock ],
-            [ getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
-            [ getString( ui.currentBlock ), bal.data[0].currentBlock  ],
-            [ getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
-          ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
-            t: 'tr',
-            h: [
-              {
-                t: 'td',
-                h: row[0],
-              },
-              {
-                t: 'td',
-                c: 'txt-right',
-                h: row[1],
-              },
-            ],
-          } ) ),
-        },
+        !bal
+          ? {
+            t: 'p',
+            c: 'hidden',
+            h: V.getString( ui.noBal ),
+          }
+          : {
+            h: {
+              t: 'table',
+              i: 'v-token-account-details',
+              c: 'chain-status hidden fs-s',
+              h: [
+                [ V.getString( ui.net ), V.getNetVAmount( bal.data[0].liveBalance ).net ],
+                [ V.getString( ui.gross ), bal.data[0].liveBalance ],
+                [ V.getString( ui.chain ), bal.data[0].tokenBalance ],
+                [ V.getString( ui.eth ), bal.data[0].coinBalance ],
+                [ V.getString( ui.lastBlock ), bal.data[0].lastBlock ],
+                [ V.getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
+                [ V.getString( ui.currentBlock ), bal.data[0].currentBlock  ],
+                [ V.getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
+              ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
+                t: 'tr',
+                h: [
+                  {
+                    t: 'td',
+                    h: row[0],
+                  },
+                  {
+                    t: 'td',
+                    c: 'txt-right',
+                    h: row[1],
+                  },
+                ],
+              } ) ),
+            },
+          },
       ],
 
     } );
@@ -126,16 +130,14 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( { // #1b1aff
       svg: true,
-      tag: 'svg',
       a: {
         style: 'filter: drop-shadow(0px 2px 1px rgba(var(--black), .18))',
         width: sc.width > 800 ? '66px' : '54px',
         viewBox: '0 0 36 36',
       },
-      k: handleDrawUserNav,
+      k: Navigation.drawUserNav,
       h: [
         {
-          svg: true,
           t: 'circle',
           a: {
             // todo   stroke-dasharray   should be in circle for lifetime display
@@ -150,7 +152,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           },
         },
         {
-          svg: true,
           t: 'text',
           c: `font-medium fs-xxs ${ textColor } no-txt-select`,
           a: {
@@ -167,18 +168,16 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     const sc = V.getState( 'screen' );
     const strokeColor = 'rgba(' + sc.brandPrimary + ', 1)';
     return V.cN( {
-      tag: 'li',
-      class: 'txt-anchor-mid',
-      html: {
+      t: 'li',
+      c: 'txt-anchor-mid',
+      h: {
         svg: true,
-        t: 'svg',
         a: {
           width: '74px',
           viewBox: '0 0 36 37',
         },
         h: [
           {
-            svg: true,
             t: 'circle',
             a: {
               'stroke-dasharray': '100',
@@ -193,7 +192,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             },
           },
           {
-            svg: true,
             t: 'text',
             c: 'font-medium fs-xxs ${ textColor } no-txt-select',
             a: {
@@ -247,22 +245,18 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: {
-        t: 'div',
         c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
         a: {
           style: `background:${background}`,
         },
         k: handleOpenTxDetails,
         h: {
-          t: 'div',
           c: 'card__initials font-medium fs-xl txt-white no-txt-select',
           h: txData.amount,
         },
@@ -270,7 +264,6 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'card__top-right flex items-center pxy',
       h: {
         t: 'h2',
@@ -281,26 +274,75 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
 
     const $bottomLeft = V.cN( {
-      t: 'div',
       c: 'card__bottom-left items-center',
       h: '',
     } );
 
     const $bottomRight = V.cN( {
-      t: 'div',
       c: 'card__bottom-right hidden fs-s pxy capitalize',
       h: {
         t: 'table',
         h: [
-          txData.txType == 'in' ? [ getString( ui.from ), txData.fromAddress != 'none' ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */ : txData.from + ' ' + txData.fromTag, handleProfileDraw ] :
-            [ getString( ui.to ), txData.toAddress != 'none' ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */ : txData.to + ' ' + txData.toTag, handleProfileDraw ],
-          txData.blockDate ? [ getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ] : undefined,
-          txData.blockDate ? [ getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ] : undefined,
-          txData.block ? [ getString( ui.block ), txData.block ] : [ getString( ui.date ), txData.date.substr( 4, 11 ) + ' ' + txData.date.substr( 15, 6 ) ],
-          [ getString( ui.amount ), txData.amount ],
-          txData.txType == 'out' ? [ getString( ui.fees ), txData.feeAmount ] : [ getString( ui.fees ), '0' ],
-          txData.txType == 'out' ?  [ getString( ui.contr ), txData.contribution ] : [ getString( ui.contr ), '0' ],
-          txData.payout ? [ getString( ui.payout ), txData.payout ] : undefined,
+          txData.txType == 'in'
+            ? [
+              V.getString( ui.from ),
+              txData.fromAddress != 'none'
+                ? txData.fromEntity /* + ' ' + V.castShortAddress( txData.fromAddress, 4 ) */
+                : txData.from + ' ' + txData.fromTag,
+              handleProfileDraw,
+            ]
+            : [
+              V.getString( ui.to ),
+              txData.toAddress != 'none'
+                ? txData.toEntity /* + ' ' + V.castShortAddress( txData.toAddress, 4 ) */
+                : txData.to + ' ' + txData.toTag,
+              handleProfileDraw,
+            ],
+
+          txData.blockDate
+            ? [ V.getString( ui.date ), new Date( txData.blockDate * 1000 ).toString().substr( 4, 11 ) ]
+            : undefined,
+
+          txData.blockDate
+            ? [ V.getString( ui.time ), new Date( txData.blockDate * 1000 ).toString().substr( 15, 6 ) ]
+            : undefined,
+
+          txData.block
+            ? [ V.getString( ui.block ), txData.block ]
+            : [ V.getString( ui.date ), txData.date.substr( 4, 11 ) + ' ' + txData.date.substr( 15, 6 ) ],
+
+          [
+            V.getString( ui.amount ),
+            txData.txType == 'out'
+              ? '-' + txData.amount
+              : txData.amount,
+          ],
+
+          txData.txType == 'out'
+            ? undefined
+            : [ V.getString( ui.net ), V.getNetVAmount( txData.amount ).net ],
+
+          txData.txType == 'out'
+            ? [ V.getString( ui.fees ), '-' + txData.feeAmount ]
+            : [ V.getString( ui.fees ), '0' ],
+
+          txData.txType == 'out'
+            ? [ V.getString( ui.contr ), '-' + txData.contribution ]
+            : [ V.getString( ui.contr ), '0' ],
+
+          txData.txType == 'out'
+            ? [ V.getString( ui.total ),
+              '-' + (
+                Number( txData.amount )
+                + Number( txData.feeAmount )
+                + Number( txData.contribution )
+              ) ]
+            : undefined,
+
+          // txData.payout
+          //   ? [ V.getString( ui.payout ), txData.payout ]
+          //   : undefined,
+
         ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
           t: 'tr',
           h: [
@@ -328,21 +370,17 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
   function accountPlaceholderCard() {
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents placeholder',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: V.cN( {
-        t: 'div',
         c: 'circle-3 rounded-full animated-background',
       } ),
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'relative animated-background',
       y: {
         'height': '20px',

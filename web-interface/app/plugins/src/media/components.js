@@ -45,8 +45,6 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function mediaCard( cardData ) {
 
-    const linkedContent = V.castLinks( cardData.properties.description.replace( /\n/g, ' <br>' ) );
-
     const $cardContent = V.cN( {
       t: 'media',
       c: 'contents',
@@ -59,19 +57,15 @@ const MediaComponents = ( function() { // eslint-disable-line no-unused-vars
       k: handleProfileDraw,
     } );
 
-    const $video = V.castNode( {
-      t: 'div',
-      c: 'w-full',
-      h: linkedContent.firstIframe,
-    } );
+    const $feature = V.castDescription( cardData.properties.description ).$feature;
+    const $descr = V.castDescription( cardData.properties.description ).$description;
 
-    const $text = V.castNode( {
-      t: 'div',
-      c: 'media-text pt-r',
-      h: linkedContent.links,
-    } );
-
-    V.setNode( $cardContent, [$title, $video, $text] );
+    if ( $feature ) {
+      V.setNode( $cardContent, [$title, $feature, $descr ] );
+    }
+    else {
+      V.setNode( $cardContent, [$title, $descr ] );
+    }
 
     return $cardContent;
   }

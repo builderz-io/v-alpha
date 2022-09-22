@@ -15,34 +15,38 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     useWhitelist: true, // allow only chars in whitelist
     maxEntityWords: 7,  // max allowed words in entity names (not humans)
     maxHumanWords: 3,  // max allowed words in human entity names
-    maxWordLength: 14,  // max allowed length of each word in name
+    maxWordLength: 16,  // max allowed length of each word in name
   };
 
-  const charBlacklist = /[;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
-  const charWhitelist = /[^0-9^a-z^A-Z^\s^']/g;
+  const charBlacklist = /[.,;/!?:@=&"<>#%(){}[\]|\\^~`]/g;
+  const charWhitelist = /[^0-9^a-z^A-Z^\s^'-–]/g;
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    invalidTitle: 'Invalid title',
-    invalidChar: 'Title: invalid character',
-    maxLength: 'Title: max 14 characters in a word',
-    min2Adjecent: 'Title: min 2 adjacent letters',
-    maxHuman: 'Title: max 3 words',
-    maxEntity: 'Title: max 7 words',
-    tooLong: 'Title: max 200 characters',
-    tooShort: 'Title: min 2 characters',
-    noNumbers: 'Title: Your personal name can not include a number',
-    free: 'free',
-    targetRange: 'Target must be within 0 - 9999',
-    isNaN: 'Target must be a number',
-    noUnit: 'Please add a unit, such as "hour"',
-    noTarget: 'Please add a target',
-  };
+  const ui = ( () => {
+    const strings = {
+      invalidTitle: 'Invalid title',
+      invalidChar: 'Title: invalid character',
+      maxLength: 'Title: max 16 characters in a word',
+      min2Adjecent: 'Title: min 2 adjacent letters',
+      maxHuman: 'Title: max 3 words',
+      maxEntity: 'Title: max 7 words',
+      // tooLong: 'Title: max 200 characters',
+      // tooShort: 'Title: min 2 characters',
+      noNumbers: 'Title: Your personal name can not include a number',
+      free: 'free',
+      targetRange: 'Target must be within 0 - 9999',
+      isNaN: 'Target must be a number',
+      noUnit: 'Please add a unit, such as "hour"',
+      noTarget: 'Please add a target',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'entity', scope || 'error message' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== private methods ================= */
 
@@ -107,10 +111,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     /** Prepare data */
 
-    const uuidE = V.castUuid().base64Url;
-    const uuidP = V.castUuid().base64Url;
-    const uuidA = V.castUuid().base64Url;
-    const unix = Math.floor( Date.now() / 1000 );
+    const uuidE = V.castUuid().base64Url.substr( 3, V.getSetting( 'uuidStringLength' ) );
+    const uuidP = V.castUuid().base64Url.substr( 3, V.getSetting( 'uuidStringLength' ) );
+    const uuidA = V.castUuid().base64Url.substr( 3, V.getSetting( 'uuidStringLength' ) );
+    const unix = V.castUnix();
 
     let geometry = {};
 
@@ -150,13 +154,13 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const aE = V.getState( 'activeEntity' );
 
     if ( aE ) {
-      heldBy = [uuidE, aE.uuidE];
+      // heldBy = aE.uuidE;
       creatorUuid = aE.uuidE;
     }
-    else {
-      heldBy = [uuidE];
-      creatorUuid = uuidE;
-    }
+    // else {
+    //   heldBy = [uuidE];
+    //   creatorUuid = uuidE;
+    // }
 
     const email = aE && aE.properties ? aE.properties.email || undefined : undefined;
 
@@ -249,6 +253,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         target: target.data[0],
         unit: entityData.unit || undefined,
         email: email,
+        emailPrivate: entityData.emailPrivate || undefined,
       },
 
       geometry: geometry,
@@ -257,6 +262,10 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       tinyImageDU: tinyImage ? tinyImage.dataUrl : undefined,
       thumbnailDU: thumbnail ? thumbnail.dataUrl : undefined,
       mediumImageDU: mediumImage ? mediumImage.dataUrl : undefined,
+
+      continent: entityData.continent,
+      avatar: entityData.avatar,
+      privacy: entityData.privacy,
 
       // for backwards compatibility
       tinyImage: tinyImage,
@@ -284,47 +293,56 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     title = title.trim().toLowerCase();
 
-    const titleArray = title.split( ' ' );
-    const checkLength = titleArray.length;
-    const wordLengthExeeded = titleArray.map( item => item.length > entitySetup.maxWordLength );
+    /* Remove the dashes in title for checking and formatting to work */
+    const titleNoDashArray = title.replace( /[-–]/g, ' ' ).split( ' ' );
+    const checkLength = titleNoDashArray.length;
+    const wordLengthExeeded = titleNoDashArray.map( item => item.length > entitySetup.maxWordLength );
 
     let error;
 
-    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
-    title.indexOf( '2121' ) != -1 ? error = getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
-    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = getString( ui.invalidTitle ) : null;
-    title.match( charBlacklist ) ? error = getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
-    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = getString( ui.min2Adjecent ) : null;
-    // title.length > 200  ? error = getString( ui.tooLong ) : null; // redundant rule
-    // title.length < 2 ? error = getString( ui.tooShort ) : null; // redundant rule
-    // title.indexOf( '#' ) != -1 ? error = getString( ui.invalidTitle ) : null;
-    // title.replace( /[0-9]/g, '' ).length < title.length ? error = getString( ui.invalidTitle ) : null;
-    ( [ 'Person' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = getString( ui.maxHuman ) : null;
-    ( [ 'Person' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = getString( ui.noNumbers ) : null;
-    ( [ 'Person' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = getString( ui.maxEntity ) : null;
-    wordLengthExeeded.includes( true ) ? error = getString( ui.maxLength ) : null;
+    ['vx', 'Vx', '0x'].includes( title.substring( 0, 2 ) ) ? error = V.getString( ui.invalidTitle + ' "' + 'vx' + '"' ) : null;
+    title.indexOf( '2121' ) != -1 ? error = V.getString( ui.invalidTitle + ' "' + '2121' + '"'  ) : null;
+    entitySetup.useWhitelist && title.match( charWhitelist ) ? error = V.getString( ui.invalidTitle ) : null;
+    title.match( charBlacklist ) ? error = V.getString( ui.invalidChar ) + ' "' + title.match( charBlacklist )[0] + '"' : null;
+    !title.match( /[a-z]{2}|[A-Z]{2}/g ) ? error = V.getString( ui.min2Adjecent ) : null;
+    // title.length > 200  ? error = V.getString( ui.tooLong ) : null; // redundant rule
+    // title.length < 2 ? error = V.getString( ui.tooShort ) : null; // redundant rule
+    // title.indexOf( '#' ) != -1 ? error = V.getString( ui.invalidTitle ) : null;
+    // title.replace( /[0-9]/g, '' ).length < title.length ? error = V.getString( ui.invalidTitle ) : null;
+    ( [ 'Person', 'PersonMapped' ].includes( role ) && checkLength > entitySetup.maxHumanWords ) ? error = V.getString( ui.maxHuman ) : null;
+    ( [ 'Person', 'PersonMapped' ].includes( role ) && title.match( /[0-9]/g ) ) ? error = V.getString( ui.noNumbers ) : null;
+    ( [ 'Person', 'PersonMapped' ].indexOf( role ) == -1 && checkLength > entitySetup.maxEntityWords ) ? error = V.getString( ui.maxEntity ) : null;
+    wordLengthExeeded.includes( true ) ? error = V.getString( ui.maxLength ) : null;
 
     if ( error ) {
       return {
         success: false,
         endpoint: 'entity',
         status: 'invalid title',
-        message: '🔮' + ' ' + error,
+        message: /* '🔮' + ' ' + */ error,
       };
     }
     else {
 
-      const formattedTitle = titleArray.map( function( string ) {
-        if ( 'Person' == role && string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
+      let formattedTitle = titleNoDashArray.map( function( string ) {
+        if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 2 && string.substr( 0, 2 ) == 'mc' ) {
           return string.charAt( 0 ).toUpperCase() + string.slice( 1, 2 ) + string.charAt( 2 ).toUpperCase() + string.slice( 3 );
         }
-        if ( 'Person' == role && string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
+        if ( /* [ 'Person', 'PersonMapped' ].includes( role ) && */ string.length > 3 && string.substr( 0, 3 ) == 'mac' ) {
           return string.charAt( 0 ).toUpperCase() + string.slice( 1, 3 ) + string.charAt( 3 ).toUpperCase() + string.slice( 4 );
         }
         else {
           return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
         }
       } ).join( ' ' );
+
+      /* bring back the dash if originally found in title */
+      if ( title.indexOf( '-' ) != -1 || title.indexOf( '–' ) != -1 ) {
+        const index = title.indexOf( '-' ) + title.indexOf( '–' ) + 1;
+        const x = formattedTitle.split( '' );
+        x[index] = '-';
+        formattedTitle = x.join( '' );
+      }
 
       return {
         success: true,
@@ -352,18 +370,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       const number3 = String( V.castRandomInt( 2, 9 ) );
 
       if (
-        number2 != number1 &&
-        number3 != number1 &&
-        number3 != number2 &&
-        [number1, number2, number3].indexOf( '6' ) == -1 && // could be mistaken for 8
-        [number1, number2, number3].indexOf( '7' ) == -1 && // has two syllables
-        [number1, number2, number3].indexOf( '4' ) == -1 && // stands for death in asian countries
-        number1 + number2 != '69' && // sexual reference
-        number3 + number2 != '69' &&
-        number1 + number2 != '13' && // bad luck in Germany
-        number3 + number2 != '13' &&
-        number1 + number2 != '21' && // special VI tag
-        number3 + number2 != '21'
+        number2 != number1
+        && number3 != number1
+        && number3 != number2
+        && [number1, number2, number3].indexOf( '6' ) == -1 // could be mistaken for 8
+        && [number1, number2, number3].indexOf( '7' ) == -1 // has two syllables
+        && [number1, number2, number3].indexOf( '4' ) == -1 // stands for death in asian countries
+        && number1 + number2 != '69' // sexual reference
+        && number3 + number2 != '69'
+        && number1 + number2 != '13' // bad luck in Germany
+        && number3 + number2 != '13'
+        && number1 + number2 != '21' // special VI tag
+        && number3 + number2 != '21'
       ) {
         continueDice = false;
         const tag = '#' + number1 + number2 + number3 + number2;
@@ -378,17 +396,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     target == '' ? target = undefined : null;
 
     if (  target ) {
-      unit == '' ? error = getString( ui.noUnit ) : null;
-      isNaN( target ) ? error = getString( ui.isNaN ) : null;
+      unit == '' ? error = V.getString( ui.noUnit ) : null;
+      isNaN( target ) ? error = V.getString( ui.isNaN ) : null;
     }
 
     if ( ['Pool'].includes( role ) ) {
       unit == '' ? error = undefined : null;
-      !target ? error = getString( ui.noTarget ) : null;
-      // target.toLowerCase().trim() == getString( ui.free ).trim() ? target = 0 : null;
+      !target ? error = V.getString( ui.noTarget ) : null;
+      // target.toLowerCase().trim() == V.getString( ui.free ).trim() ? target = 0 : null;
     }
 
-    Number( target ) > 9999 || Number( target ) < 0 ? error = getString( ui.targetRange ) : null;
+    Number( target ) > 9999 || Number( target ) < 0 ? error = V.getString( ui.targetRange ) : null;
 
     if ( error ) {
       return {
@@ -479,33 +497,46 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     const whichLedger = V.getSetting( 'entityLedger' );
 
     if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
+
       if (
-        which.substr( 0, 2 ) == '0x' &&
-        which.length == 42
+        typeof which == 'object'
+        || Array.isArray( which )
       ) {
-        filter = 'evmAddress';
+        filter = 'uuidE';
       }
-      else if (
-        which.substr( 0, 1 ) == 'T' &&
-        which.length == 40
-      ) {
-        filter = 'symbolAddress';
-      }
-      // else if (
-      //   which.substr( 0, 2 ) == 'vx' &&
-      //   which.length == 18
-      // ) {
-      //   filter = 'uPhrase';
-      // }
       else if (
         new RegExp( /\s#\d{4}/ ).test( which )
       ) {
         filter = 'fullId';
       }
+      else if ( 'highlight' == which ) {
+        filter = which;
+      }
+      else if ( 'point' == which ) {
+        filter = which;
+      }
       else if (
-        which.length == 22
+        which.length == V.getSetting( 'uuidStringLength' )
       ) {
         filter = 'uuidE';
+      }
+      else if (
+        '0x' == which.substr( 0, 2 )
+        && which.length == 42
+      ) {
+        filter = 'evmAddress';
+      }
+      else if (
+        'JOIN' == which.substr( 0, 4 )
+        && which.length == 48
+      ) {
+        filter = 'evmAddress';
+      }
+      else if (
+        which.substr( 0, 1 ) == 'T'
+        && which.length == 40
+      ) {
+        filter = 'symbolAddress';
       }
     }
     else if ( whichLedger == '3Box' ) {
@@ -544,8 +575,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         return Promise.resolve( entityCast );
       }
     }
-    else if ( data == 'verification' ) {
+    else if ( 'verification' == data ) {
       return V.setData( whichEntity, 'verification', V.getSetting( 'transactionLedger' ) );
+    }
+    else if ( ['highlight', 'revokehighlight'].includes( data ) ) {
+      return V.setData( whichEntity, data, V.getSetting( 'entityLedger' ) );
     }
     else {
       Object.assign( data, {
@@ -559,8 +593,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
           /** Only update state if activeEntity was edited, not a managed entity */
           if (
-            'Firebase' == V.getSetting( 'entityLedger' ) &&
-            [ V.aE().uuidE, V.aE().uuidP ].includes( res.data[0].a )
+            'Firebase' == V.getSetting( 'entityLedger' )
+            && [ V.aE().uuidE, V.aE().uuidP ].includes( res.data[0].a )
           ) {
             getEntity( V.aE().uuidE ).then( res => {
               if ( res.success ) {
@@ -569,8 +603,8 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
             } );
           }
           else if (
-            'MongoDB' == V.getSetting( 'entityLedger' ) &&
-            V.aE().fullId == res.data[0].fullId
+            'MongoDB' == V.getSetting( 'entityLedger' )
+            && V.aE().fullId == res.data[0].fullId
           ) {
             V.setActiveEntity( res.data[0] );
           }

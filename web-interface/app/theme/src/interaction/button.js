@@ -1,7 +1,9 @@
 const Button = ( function() { // eslint-disable-line no-unused-vars
 
   /**
-   * V Theme Module to draw buttons
+   * V Theme Module to draw buttons on the right side of the screen
+   *
+   * !! This module is not in use
    *
    */
 
@@ -10,7 +12,9 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   /* ================== event handlers ================== */
 
   function handleSetEntity( e ) {
-    // e.target.removeEventListener( 'click', handleSetEntity );
+    e.target.removeEventListener( 'click', handleSetEntity );
+
+    // V.setNode( 'interactions > ul', InteractionComponents.confirmClickSpinner() );
 
     const form = V.getNode( 'form' );
     const location = form.getNode( '#plusform__loc' );
@@ -26,7 +30,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
       target: form.getNode( '#plusform__target' ).value,
     };
 
-    if ( !V.aE() ) {
+    if ( !V.aE() || V.aE().auth == false ) {
 
       /**
        * ask user to authenticate first
@@ -35,20 +39,30 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
        */
 
       V.setLocal( 'last-form', entityData );
-      Join.draw( 'authenticate' );
+      Modal.draw( 'confirm uPhrase' );
+      // Join.draw( 'authenticate' );
+      e.target.addEventListener( 'click', handleSetEntity );
     }
     else {
       V.setEntity( entityData ).then( res => {
+        V.setNode( '.confirm-click-spinner', 'clear' );
+
         if ( res.success ) {
+          V.setLocal( 'last-form', undefined );
           console.log( res.message );
           console.log( 'set uuidE:', res.data[0].uuidE );
-          e.target.addEventListener( 'click', handleSetEntity );
-          V.setCache( 'all', 'clear' );
-          V.setCache( res.data[0].role, 'clear' );
+          // e.target.addEventListener( 'click', handleSetEntity );
+          // V.setCache( 'points', res.data );
+          // V.setCache( 'points', res.data );
+          // V.setCache( 'all', 'clear' );
+          // V.setCache( res.data[0].role, 'clear' );
           V.setBrowserHistory( res.data[0].path );
-          Navigation.drawEntityNavPill( res.data[0] );
-          User.draw( res.data[0].path );
-          Button.draw( 'set', { fade: 'out' } );
+          // Navigation.drawEntityNavPill( res.data[0] );
+          User.draw( {
+            uuidE: res.data[0].uuidE,
+            uuidP: res.data[0].uuidP,
+          } );
+          // Button.draw( 'set', { fade: 'out' } );
           Form.draw( 'all', { fade: 'out' } );
 
           /**
@@ -65,16 +79,15 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
           /* update cache with new entity */
 
-          V.setCache( 'preview', res.data );
+          // V.setCache( 'highlights', res.data );
 
         }
         else {
           Form.draw( 'error', res );
-          e.target.addEventListener( 'click', handleSetEntity );
+          // e.target.addEventListener( 'click', handleSetEntity );
           console.error( res );
         }
       } );
-      V.setLocal( 'last-form', undefined );
     }
 
   }
@@ -92,8 +105,8 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
 
   // function handleCloseForms() {
   //   Form.draw( 'all', { fade: 'out' } );
-  //   Button.draw( 'all', { fade: 'out' } );
-  //   Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+  //  // Button.draw( 'all', { fade: 'out' } );
+  //  // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
   //   Page.draw( { position: 'peek', reset: false } );
   // }
 
@@ -140,6 +153,7 @@ const Button = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function view( which, options ) {
+    if ( !which ) {return}
     const btnArr = which == 'all' ? ['filter', 'search', 'plus', /*'close', */ 'set', 'send', 'query'] : which.split( ' ' );
     let fade = 'fadeIn', delay = 0.2;
     options && options.fade == 'out' ? fade = 'fadeOut' : null;

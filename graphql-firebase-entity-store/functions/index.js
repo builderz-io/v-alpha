@@ -1,3 +1,8 @@
+/**
+ * GraphQL server for VI Alpha 3.5.0
+ *
+ */
+
 const functions = require( 'firebase-functions' );
 const express = require( 'express' );
 
@@ -6,27 +11,20 @@ const cookieParser = require( 'cookie-parser' );
 
 const { verify } = require( 'jsonwebtoken' );
 const credentials = require( './credentials/credentials' );
+const { whitelist } = require( './credentials/credentials' );
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = require( './schemas/typeDefs' );
 
 // Provide resolver functions for your schema fields
 const resolvers = require( './resolvers/resolve/resolve' );
+const findByAuth = require( './resolvers/resolve/find-by-auth' );
 
 // Create GraphQL express server
 const { ApolloServer } = require( 'apollo-server-express' );
 
-// Setup express cloud function
+// Setup express
 const app = express();
-
-const whitelist = [
-  'http://localhost:4021',
-  'https://dev.valueinstrument.org',
-  'https://staging.valueinstrument.org',
-  'https://staging.builderz.io',
-  'https://staging.coindashboards.com',
-  'https://faithfinance.app',
-];
 
 const corsConfig = {
   origin: ( origin, callback ) => {
@@ -57,11 +55,9 @@ const server = new ApolloServer( {
     const lastConnectedAddress = req.headers['last-connected-address'];
     const browserId = req.headers['browser-id'];
 
-    const tempRefresh = req.headers.cookie
-      ? req.headers.cookie.split( '=' )[1]
-      : req.headers['temp-refresh'] != 'not set'
-        ? req.headers['temp-refresh']
-        : undefined;
+    const tempRefresh = req.headers['temp-refresh'] != 'not set'
+      ? req.headers['temp-refresh']
+      : undefined;
 
     const host = req.headers.referer.split( '/' )[2];
 
@@ -71,29 +67,21 @@ const server = new ApolloServer( {
     };
 
     if ( tempRefresh ) {
-      // try {
-      //   const jwt = verify( tempRefresh, credentials.jwtRefreshSignature );
-      //   console.log( jwt );
-      // }
-      // catch ( err ) {
-      //   console.log( err );
-      // }
-      const user = await resolvers.Query.getAuth( undefined, { token: tempRefresh } );
-      user[0] ? Object.assign( context, user[0] ) : null;
+      const authDoc = await findByAuth( tempRefresh );
+      authDoc ? Object.assign( context, authDoc ) : null;
     }
     else if ( auth.includes( 'uPhrase' ) ) {
-      const user = await resolvers.Query.getAuth( undefined, { token: auth.replace( 'uPhrase ', '' ) } );
-      if ( user[0] ) {
+      const authDoc = await findByAuth( auth.replace( 'uPhrase ', '' ) );
+      if ( authDoc ) {
 
         /** If an address is set, uPhrase must match entity address */
         if ( lastConnectedAddress != 'not set' ) {
-          user[0].i == lastConnectedAddress ? Object.assign( context, user[0] ) : null;
+          authDoc.i == lastConnectedAddress ? Object.assign( context, authDoc ) : null;
         }
         else {
-          Object.assign( context, user[0] );
+          Object.assign( context, authDoc );
         }
       }
-      // user[0] ? Object.assign( context, user[0] ) : null;
     }
     else if ( auth.includes( 'Bearer' ) ) {
       try {
@@ -111,13 +99,5 @@ const server = new ApolloServer( {
 server.applyMiddleware( { app, path: '/v1', cors: false } );
 
 console.log( ' ***  Started Apollo Server at', new Date().toString().split( ' ' )[4], ' ***' );
-
-// for dev/testing
-// require( './resolvers/resolve/set-transaction' )( { host: 'something' }, {
-//   initiatorAddress: '0x04330b0c2b00e069d69066aeeb84e09b46526495',
-//   recipientAddress: '0x891a949adf13890c981f5e64d272fc2d861a1f8c',
-//   // recipientAddress: '0xac6d20f6da9edc85647c8608cb6064794e20ca26',
-//   txTotal: '1',
-// }, 'float' ).then( res => console.log( 'res:', Date.now(), JSON.stringify( res )  ) );
 
 exports.api = functions.https.onRequest( app );

@@ -37,6 +37,11 @@
 .max-w-380 {
   max-width: 380px;
 }
+
+.max-w-list {
+  max-width: var(--list-max-width);
+}
+
 .max-w-full {
   max-width: 100%;
 }
@@ -301,6 +306,15 @@
 
 .float-right {
   float: right;
+}
+
+.zero-auto {
+  margin: 0 auto;
+}
+
+.rotate {
+  transform: rotate(-180deg) !important;
+  transition: transform 0.25s ease-out;
 }
 
 /* Interactivity */

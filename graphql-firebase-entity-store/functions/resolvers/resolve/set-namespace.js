@@ -16,6 +16,10 @@ module.exports = async ( context, input, whichCol ) => {
     const { profileDb } = require( '../../resources/databases-setup' );
     col = profileDb.database().ref( 'profiles' );
   }
+  else if ( whichCol == 'image' ) {
+    const { imageDb } = require( '../../resources/databases-setup' );
+    col = imageDb.database().ref( 'images' );
+  }
 
   /** Cast a copy of input */
   const data = JSON.parse( JSON.stringify( input ) );
@@ -47,7 +51,12 @@ module.exports = async ( context, input, whichCol ) => {
    */
 
   else if (
-    context.a && objToUpdate.x.b.includes( context.d )
+    context.a
+    && (
+      [ /* entity */ objToUpdate.a, /* profile */ objToUpdate.d ].includes( context.d ) // user updating self
+      || ( objToUpdate.x && objToUpdate.x.a == context.d && !objToUpdate.x.m ) // user updating created entity
+      || ( objToUpdate.x && objToUpdate.x.m == context.d ) // user updating held entity
+    )
   ) {
     return require( './namespace-update' )( context, data, objToUpdate, col );
   }

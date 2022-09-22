@@ -11,39 +11,43 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( which ) {
 
-    // if (
-    //   isNaN( Number( which.slice( -4 ) ) ) ||
-    //   which.slice( -5, -4 ) != '-'
-    // ) {
-    //   return V.successFalse( 'validate profile link' );
-    // }
+    if ( typeof which == 'string' ) {
+      which = V.castPathOrId( which );
+    }
+    else {
+      Object.assign( which, { isDisplay: true } );
+    }
+
     const cache = V.getCache( 'viewed' );
     const now = Date.now();
 
     if (
-      cache &&
-      ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
+      cache
+      && ( now - cache.timestamp ) > ( V.getSetting( 'viewedCacheDuration' ) * 60 * 1000 )
     ) {
       V.setCache( 'viewed', 'clear' );
     }
 
     let query;
 
-    const inCache = V.getViewed( which );
+    const inCache = V.getFromCache( 'viewed', which.uuidE || which );
 
     if ( inCache ) {
       query = V.successTrue( 'used cache', inCache );
     }
     else {
       query = await V.getEntity(
-        which.length == 22 && // checks whether which is a uuidE or a path
-        isNaN( Number( which.slice( -5 ) ) )
-          ? which
-          : V.castPathOrId( which )
+        which,
       ).then( res => {
         if ( res.success ) {
-          V.setCache( 'viewed', res.data ); // pass array
 
+          /* sync coordinates with cached point */
+          const inCache = V.getFromCache( 'points', res.data[0].uuidE );
+          if ( inCache ) {
+            res.data[0].geometry.coordinates = inCache.geometry.coordinates;
+          }
+          V.setCache( 'points', res.data );
+          V.setCache( 'viewed', res.data );
           return res;
         }
         else {
@@ -60,46 +64,14 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         lastViewed: entity.fullId,
         lastViewedUuidE: entity.uuidE,
         lastViewedUuidP: entity.uuidP,
+        lastViewedRoleCode: entity.roleCode,
+        lastLngLat: entity.geometry.coordinates,
+        lastViewedEntity: entity,
       } );
 
-      /*
-       * Pool data
-       *
-       */
-
-      let txHistory, sendVolume = 0, receiveVolume = 0;
-
-      if ( entity.role == 'Pool' ) {
-        if ( V.cA() || !V.aE() ) {
-          if ( entity.evmCredentials ) {
-            txHistory = await V.getAddressHistory( entity.evmCredentials.address );
-            if ( txHistory.success && txHistory.data.length ) {
-              txHistory.data.forEach( tx => {
-                tx.txType == 'out'? sendVolume += Number( tx.amount ) : null;
-                tx.txType == 'in'? receiveVolume += Number( tx.amount ) : null;
-              } );
-            }
-          }
-          else {
-          // TODO: other ledgers ...
-          }
-        }
-        else {
-          if ( !entity.stats ) {
-            Object.assign( entity, { stats: {
-              sendVolume: 0,
-              receiveVolume: 0,
-            } } );
-          }
-          sendVolume = entity.stats.sendVolume;
-          receiveVolume = entity.stats.receiveVolume;
-        }
-      }
       const data = {
-        which: which,
+        typeOfWhich: typeof which,
         entity: entity,
-        sendVolume: sendVolume,
-        receiveVolume: receiveVolume,
       };
 
       return V.successTrue( 'retrieved entities', data );
@@ -111,58 +83,102 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
   function view( data ) {
 
-    let $list;
-
-    if ( data.success ) {
-
-      /**
-       * sets up the profile data for use in components
-       *
-       */
-
-      UserComponents.setData( {
-        entity: data.data[0].entity,
-        editable: false,
+    if ( !data.success ) {
+      Page.draw( {
+        topcontent: CanvasComponents.notFound( 'entity' ),
       } );
+      return;
+    }
 
-      $list = CanvasComponents.list( 'narrow' );
+    const entity = data.data[0].entity;
 
-      V.setNode( $list, [
-        UserComponents.mediumImageCard(),
-        // UserComponents.roleCard(),
-        UserComponents.descriptionCard(),
-        UserComponents.questionnaireCard(),
-        UserComponents.socialCard(),
-        UserComponents.locationCard(),
-        UserComponents.preferredLangsCard(),
-        UserComponents.fundingStatusCard( data.data[0].sendVolume, data.data[0].receiveVolume ),
-        UserComponents.financialCard(),
-        UserComponents.entityCard(),
-        UserComponents.evmAddressCard(),
-        UserComponents.evmReceiverAddressCard(),
-        UserComponents.managementCard(),
-        UserComponents.holderOfCard(),
-        UserComponents.socialShareButtons(),
-      ] );
+    /* set up the profile data for use in components */
+    UserComponents.setData( {
+      entity: entity,
+      editable: false,
+    } );
 
-      VMap.draw( [data.data[0].entity] );
+    const $list = CanvasComponents.list( { top: entity.images.mediumImage ? 'indent' : '' } );
 
-      Navigation.draw( data.data[0].entity ).then( () => {
+    V.setNode( $list, [
+      // UserComponents.mediumImageCard(),
+      // UserComponents.roleCard(),
+      UserComponents.entityCard(),
+      UserComponents.locationCard(),
+      Pool.drawWidget(),
+      Farm.drawPlotWidget( /* 'display' */ ),
+      UserComponents.descriptionCard(),
+      UserComponents.questionnaireCard(),
+      UserComponents.socialCard(),
+      UserComponents.preferredLangsCard(),
+      UserComponents.financialCard(),
+      UserComponents.evmAddressCard(),
+      UserComponents.evmReceiverAddressCard(),
+      UserComponents.managementCard(),
+      UserComponents.holderOfCard(),
+      UserComponents.socialShareButtons(),
+    ] );
+
+    VMap.draw( [entity] );
+
+    setTimeout( function delayedEntityViewMap() {
+      $( '.location__base' ).leafletLocationPicker( {
+        alwaysOpen: true,
+        mapContainer: '.join-loc-picker__map',
+        height: 140,
+        map: {
+          zoom: 13,
+          center: L.latLng(
+            V.getState( 'userLocChange' )
+              ? [ V.getState( 'userLocChange' ).lat, V.getState( 'userLocChange' ).lng ]
+              : V.castClone( entity.geometry.coordinates ).reverse(),
+          ),
+          zoomControl: false,
+          attributionControl: false,
+        },
+      } );
+    }, 100 );
+
+    if ( data.data[0].typeOfWhich == 'string' ) {
+      // in this case the profile is fetched using a path and the navigation has not been set in preview
+      Navigation.draw( entity ).then( () => {
         Page.draw( {
+          topcontent: UserComponents.mediumImageCard(),
           position: 'top',
           listings: $list,
         } );
-        Chat.drawMessageForm();
+        MagicButton.draw( 'chat' );
+        // delayedMessageForm( entity );
       } );
     }
     else {
       Page.draw( {
-        topcontent: CanvasComponents.notFound( 'entity' ),
+        topcontent: UserComponents.mediumImageCard(),
+        position: 'top',
+        listings: $list,
       } );
+      MagicButton.draw( 'chat' );
+      // delayedMessageForm( entity );
     }
+
+    if ( entity.images.tinyImage ) {
+      Navigation.drawImage( entity );
+    }
+
   }
 
-  function preview() {
+  // function delayedMessageForm( entity ) {
+  //   if ( !V.aE() ) { return }
+  //
+  //   /** This is a hacky way to wait for V.aE( 'uuidE' ) to be available */
+  //   setTimeout( function delayMsgForm() {
+  //     entity.uuidE != V.aE( 'uuidE' )
+  //       ? Chat.drawMessageForm()
+  //       : null;
+  //   }, 1800, entity );
+  // }
+
+  function preview( data ) {
 
     /**
      * removes "Get Started"/"Watch intro" button, to exclude it
@@ -170,20 +186,46 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
+    const $list = CanvasComponents.list();
+
+    V.setNode( $list, UserComponents.entityPlaceholderImage() );
+
+    for ( let i = 0; i < 1; i++ ) {
+      const $ph = UserComponents.entityPlaceholderCard();
+      const $card = CanvasComponents.card( $ph );
+
+      V.setNode( $list, $card );
+    }
+
     V.setNode( '#get-started', 'clear' );
 
-    Button.draw( 'all', { fade: 'out' } );
+    // Button.draw( 'all', { fade: 'out' } );
 
-    Page.draw( {
-      position: 'top',
-    } );
+    if (
+      !( data.navReset === false )
+      && data.uuidE
+    ) {
+      Navigation.draw( data ).then( () => {
+        Page.draw( {
+          position: 'top',
+          listings: $list,
+        } );
+      } );
+    }
+    else {
+      Page.draw( {
+        position: 'top',
+        listings: $list,
+      } );
+    }
+
   }
 
   /* ============ public methods and exports ============ */
 
-  function draw( which ) {
-    preview();
-    presenter( which ).then( data => { view( data ) } );
+  function draw( data ) {
+    preview( data );
+    presenter( data ).then( data => { view( data ) } );
   }
 
   return {

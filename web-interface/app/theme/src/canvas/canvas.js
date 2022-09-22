@@ -33,6 +33,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setStylesheet( host + '/css/src/4_0_components.css' ),
         V.setStylesheet( host + '/css/src/8_0_overrides.css' ),
         V.setStylesheet( host + '/css/src/9_0_leaflet.css' ),
+        V.setStylesheet( host + '/css/src/9_1_leaflet-locationpicker.css' ),
       ] )
         .then( () => console.log( 'Success loading CSS source files' ) )
         .catch( () => console.error( 'Error loading CSS source files' ) );
@@ -42,6 +43,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   async function launchScripts() {
 
     if( !V.getSetting( 'useBuilds' ) ) { // the build is optionally loaded in v-launch.js (in VCore)
+      await Promise.all( [
+        V.setScript( host + '/theme/src/join/components.js' ),
+      ] );
       await Promise.all( [
         V.setScript( host + '/theme/src/canvas/components.js' ),
         V.setScript( host + '/theme/src/canvas/background.js' ),
@@ -53,9 +57,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/theme/src/modal/components.js' ),
         V.setScript( host + '/theme/src/modal/modal.js' ),
         V.setScript( host + '/theme/src/interaction/components.js' ),
-        V.setScript( host + '/theme/src/interaction/button.js' ),
+        // V.setScript( host + '/theme/src/interaction/button.js' ),
+        V.setScript( host + '/theme/src/interaction/magic-button.js' ),
         V.setScript( host + '/theme/src/interaction/form.js' ),
-        V.setScript( host + '/theme/src/interaction/join.js' ),
+        // V.setScript( host + '/theme/src/join/components.js' ),
+        V.setScript( host + '/theme/src/join/avatars.js' ),
+        V.setScript( host + '/theme/src/join/routine.js' ),
+        V.setScript( host + '/theme/src/join/join.js' ),
         V.setScript( host + '/theme/src/navigation/components.js' ),
         V.setScript( host + '/theme/src/navigation/navigation.js' ),
       ] )
@@ -72,6 +80,13 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       await Promise.all( [
+        V.setScript( host + '/plugins/dependencies/jquery-3.6.0.slim.min.js' ),
+        V.setScript( host + '/plugins/dependencies/leaflet.js' ),
+      ] )
+        .then( () => console.log( 'Success loading plugin source files A' ) )
+        .catch( () => console.error( 'Error loading plugin source files A' ) );
+
+      await Promise.all( [
         V.setScript( host + '/plugins/src/account/components.js' ),
         V.setScript( host + '/plugins/src/account/account.js' ),
         V.setScript( host + '/plugins/src/entity/components.js' ),
@@ -82,19 +97,27 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/chat/components.js' ),
         V.setScript( host + '/plugins/src/chat/chat.js' ),
 
-        V.setScript( host + '/plugins/dependencies/leaflet.js' ),
+        V.setScript( host + '/plugins/dependencies/leaflet-locationpicker.js' ),
         V.setScript( host + '/plugins/src/map/map.js' ),
 
         V.setScript( host + '/plugins/src/google/google.js' ),
         V.setScript( host + '/plugins/src/data/components.js' ),
         V.setScript( host + '/plugins/src/data/data.js' ),
+        V.setScript( host + '/plugins/src/pool/components.js' ),
+        V.setScript( host + '/plugins/src/pool/pool.js' ),
+        V.setScript( host + '/plugins/src/farm/soil-calculator/components.js' ),
+        V.setScript( host + '/plugins/src/farm/soil-calculator/soil-calculator.js' ),
+        V.setScript( host + '/plugins/src/farm/farm.js' ),
         V.setScript( host + '/plugins/src/marketplace/components.js' ),
+        V.setScript( host + '/plugins/src/marketplace/definitions.js' ),
         V.setScript( host + '/plugins/src/marketplace/marketplace.js' ),
         V.setScript( host + '/plugins/src/media/components.js' ),
         V.setScript( host + '/plugins/src/media/media.js' ),
+        V.setScript( host + '/plugins/src/hall/components.js' ),
+        V.setScript( host + '/plugins/src/hall/hall.js' ),
       ] )
-        .then( () => console.log( 'Success loading plugin source files' ) )
-        .catch( () => console.error( 'Error loading plugin source files' ) );
+        .then( () => console.log( 'Success loading plugin source files B' ) )
+        .catch( () => console.error( 'Error loading plugin source files B' ) );
     }
 
     V.setNode( 'body', '' );
@@ -142,6 +165,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         'font-display': 'fallback',
         'unicode-range': 'U+000-024F',
       },
+      '@font-face-4': {
+        'font-family': 'Indie Flower',
+        'src': 'url(' + V.getSetting( 'sourceEndpoint' ) + '/assets/font/IndieFlower-Regular.ttf) format(\'truetype\')',
+        'font-display': 'fallback',
+        'unicode-range': 'U+000-024F',
+      },
     } );
   }
 
@@ -154,7 +183,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       brandSecondary: V.getCss( '--brandSecondary' ),
       buttonBkg: V.getCss( '--buttonBkg' ),
     } );
-    V.setState( 'active', {} );
+    V.setState( 'active', {
+      path: window.location.pathname,
+    } );
     V.setState( 'page', {
       height: V.getCss( '--page-position-peek' ),
       top: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top' ),
@@ -220,31 +251,89 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
     window.onresize = function() {
 
-      // handle mobile keyboard
+      /**
+       * handles page layout when mobile keyboard pops up:
+       * if the screen height suddenly drops to less than 3/4 of its original height
+       * fix page to top-position and bottom. Exceptions: user is on homepage and form is open.
+       */
 
-      const s = V.getState( 'screen' );
-
-      if ( window.innerHeight < ( s.height / 3 * 2 ) && !V.getVisibility( 'form' ) ) {
-        V.getNode( 'page' ).classList.add( 'page-full-screen' );
+      if (
+        window.innerHeight < ( V.getState( 'screen' ).height / 4 * 3 )
+        && !V.getVisibility( 'form' )
+      ) {
+        if ( 'top' == V.getState( 'page' ).position ) {
+          V.setStyle( 'keyboard-open', {
+            'page-top-keyb-open': {
+              top: V.getState( 'page' ).current.top + 'px',
+              bottom: '0 !important',
+              height: 'unset !important',
+            },
+          } );
+          V.getNode( 'page' ).classList.add( 'page-top-keyb-open' );
+        }
+        else {
+          V.setStyle( 'keyboard-open', {
+            'page-max-keyb-open': {
+              'max-height': ( window.innerHeight - V.getState( 'page' ).top ) + 'px !important',
+            },
+          } );
+          V.getNode( 'page' ).classList.add( 'page-max-keyb-open' );
+        }
       }
       else {
-        V.getNode( 'page' ).classList.remove( 'page-full-screen' );
+        V.getNode( 'page' ).classList.remove( 'page-top-keyb-open', 'page-max-keyb-open' );
       }
     };
 
     document.addEventListener( 'keydown', function handleDocumentKeyDown( e ) {
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
-        if ( V.getVisibility( '#query' ) || V.getVisibility( '#search' ) ) {
+        if ( 'TEXTAREA' == document.activeElement.tagName ) {
           e.preventDefault();
-          handleKeyboard( ['search', 'query'] );
+        }
+
+        if (
+          V.getVisibility( '.join-submit__btn' )
+        ) {
+          setTimeout( function joinClickOnEnter() {
+            V.getNode( '.join-submit__btn' ).click();
+          }, 120 );
+        }
+        else if (
+          !V.getVisibility( 'form' )
+          && !V.getVisibility( 'modal' )
+          && !V.getVisibility( 'joinoverlay' )
+          && !V.getVisibility( '.messageform' )
+        ) {
+          V.getNode( '.magic-btn__btn' ).click();
+        }
+        else if (
+          V.getVisibility( '#query' )
+          || V.getVisibility( '#search' )
+          || V.getVisibility( '#sign-transaction' )
+        ) {
+          e.preventDefault();
+          handleKeyboard( ['search', 'query' /*, 'sign-transaction' */ ] );
         }
         // handleKeyboard( ['sign-transaction', 'plus', /* 'set', */ 'name-new', 'query'] );
       }
       else if ( key == 27 ) {
         e.preventDefault();
-        CanvasComponents.handleClosePopup();
-        handleKeyboard( ['close', 'modal-close'] );
+        MagicButton.drawReset();
+        if (
+          V.getVisibility( 'modal' )
+        ) {
+          V.getNode( 'modal' ).click();
+        }
+        else if (
+          V.getVisibility( 'joinoverlay' )
+        ) {
+          V.getNode( 'joinoverlay' ).click();
+        }
+        else {
+          CanvasComponents.handleClosePopup();
+          handleKeyboard( ['close', 'modal-close'] );
+        }
       }
     } );
 
@@ -288,14 +377,20 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
           // V.setState( 'page', { rectOffset: 0 } ); // getBoundingClientRect-for-pill-bug-mitigation
           Marketplace.draw();
         }
-        else if ( ['market', 'market category', 'pool'].includes( status ) ) {
+        else if ( ['market', 'market category'].includes( status ) ) {
           Marketplace.draw( which );
         }
         else if ( ['media', 'media category'].includes( status ) ) {
           Media.draw( which );
         }
+        else if ( ['farms', 'farms category'].includes( status ) ) {
+          Farm.draw( which );
+        }
         else if ( ['data'].includes( status ) ) {
           Data.draw( which );
+        }
+        else if ( ['pool'].includes( status ) ) {
+          Pool.draw( which );
         }
         else if ( ['user profile'].includes( status ) ) {
           User.draw( which );
@@ -354,11 +449,21 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       Header.launch(); // sets nodes
       Logo.launch(); // sets node
       Page.launch(); //  sets nodes: page elements and adds flick and click handlers for sliding
-      Button.launch(); // sets nodes: hidden buttons
+      // Button.launch(); // sets nodes: hidden buttons
 
       V.setNode( 'balance', AccountComponents.headerBalance( -1 ) );
 
-      VMap.setMap();
+      VMap.launch();
+
+      if ( V.getSetting( 'devMode' ) ) {
+        V.setNode( 'body', VDebugger.resetApp() );
+        V.setNode( 'body', VDebugger.downloadStrings() );
+        V.setNode( 'body', VDebugger.debugLogs() );
+      }
+
+      // setTimeout( function functionName() {
+      //   Join.onboard();
+      // }, 2000 );
     }
   }
 
@@ -368,16 +473,17 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         .then( data => {
           if ( data.success ) {
             console.log( 'auth success' );
-            return data.data[0].uuidE;
+            return data.data[0];
           }
           else {
             throw new Error( 'could not set auth' );
           }
         } )
-        .then( uuidE => V.getEntity( uuidE ) )
+        .then( data => V.getEntity( { uuidE: data.uuidE, uuidP: data.uuidP, isReturningUser: true } ) )
         .then( entity => {
           if ( entity.success ) {
             V.setActiveEntity( entity.data[0] );
+            Navigation.drawJoinedUserPill();
             Join.draw( 'new entity was set up' );
           }
           else {

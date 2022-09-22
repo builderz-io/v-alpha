@@ -1,4 +1,4 @@
-/* PAV's ESLint rules January 2021 */
+/* PAV's ESLint rules January 2022 */
 module.exports = {
     "env": {
         "browser": true,
@@ -20,6 +20,10 @@ module.exports = {
         "linebreak-style": [
             "error",
             "unix"
+        ],
+        "operator-linebreak": [
+          "error",
+          "before"
         ],
         "quotes": [
             "error",

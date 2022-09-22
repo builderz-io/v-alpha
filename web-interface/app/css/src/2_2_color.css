@@ -56,8 +56,16 @@ a {
   color: rgba(var(--brandPrimary), 1);
 }
 
-.bkg-brand {
+.txt-brand-primary-50 {
+  color: rgba(var(--brandPrimary), 0.5);
+}
+
+.bkg-brand-primary {
   background-color: rgba(var(--brandPrimary), 1);
+}
+
+.bkg-brand-secondary {
+  background-color: rgba(var(--brandSecondary), 1);
 }
 
 /* .border-shadow {

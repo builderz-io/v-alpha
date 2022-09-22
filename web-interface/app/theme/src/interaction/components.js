@@ -11,38 +11,44 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    upload: 'uploading...',
-    change: 'Change',
-    image: 'Image',
-    titleOrCity: 'Enter a title or city name',
+  const ui = ( () => {
+    const strings = {
+      upload: 'uploading...',
+      change: 'Change',
+      image: 'Image',
+      titleOrCity: 'Enter a title or city name',
 
-    key: 'Key',
-    title: 'Title',
-    loc: 'Location',
-    descr: 'Description and Links',
-    target: 'Target',
-    unit: 'Unit',
-    search: 'Search',
-    create: 'create',
-    query: 'search',
+      key: 'Key',
+      title: 'Title',
+      email: 'Email',
+      emailConfirm: '4 digits',
+      loc: 'Location',
+      descr: 'Description and Links',
+      target: 'Target',
+      unit: 'Unit',
+      search: 'Search',
+      create: 'create',
+      query: 'search',
 
-    getStarted: 'Watch intro',
-    connectWallet: 'Connect a new crypto wallet',
-    progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
-    brightId: 'Verify with BrightID to receive VALUE basic income.',
-  };
+      getStarted: 'Watch intro',
+      connectWallet: 'Connect a new crypto wallet',
+      progressVerification: 'Ask a friend to transfer 1 VALUE to progress your verification.',
+      brightId: 'Verify with BrightID to receive VALUE basic income.',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'interaction', scope || 'interaction content' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
   function handleImageUpload( e ) {
-    V.setNode( '#img-upload__label', getString( ui.upload ) );
+    V.setNode( '#img-upload__label', V.getString( ui.upload ) );
     V.castImageUpload( e ).then( res => {
-      V.setNode( '#img-upload__label', getString( ui.change ) );
+      V.setNode( '#img-upload__label', V.getString( ui.change ) );
       V.setNode( '#img-upload__preview', '' );
       V.setNode( '#img-upload__preview', V.cN( {
         t: 'img',
@@ -51,7 +57,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           'max-height': '20px',
           'margin-left': '10px',
         },
-        src: res.src,
+        r: res.src,
       } ) );
     } );
   }
@@ -77,7 +83,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function img( icon, css ) {
     return V.cN( {
-      t: 'div',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white transition pill-shadow' + ( css ? ' ' + css : '' ),
       h: V.getIcon( icon ),
     } );
@@ -90,7 +95,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function filter() {
     return V.cN( {
       t: 'li',
-      id: 'filter',
+      i: 'filter',
       c: btnClasses,
       h: img( 'filter_list' ),
     } );
@@ -99,7 +104,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function searchBtn() {
     return V.cN( {
       t: 'li',
-      id: 'search',
+      i: 'search',
       c: btnClasses,
       h: img( 'search' ),
     } );
@@ -108,12 +113,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function query() {
     return V.cN( {
       t: 'li',
-      id: 'query',
+      i: 'query',
       c: btnClasses,
       h: {
-        t: 'div',
         c: 'create-btn pxy',
-        h: getString( ui.query ),
+        h: V.getString( ui.query ),
       }, // img( 'search' )
     } );
   }
@@ -121,7 +125,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function plus() {
     return V.cN( {
       t: 'li',
-      id: 'plus',
+      i: 'plus',
       c: btnClasses,
       h: img( '+' ),
     } );
@@ -130,7 +134,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function close() {
     return V.cN( {
       t: 'li',
-      id: 'close',
+      i: 'close',
       c: btnClasses,
       h: img( 'close' ),
     } );
@@ -139,12 +143,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function set() {
     return V.cN( {
       t: 'li',
-      id: 'set',
+      i: 'set',
       c: btnClasses,
       h: {
-        t: 'div',
         c: 'create-btn pxy',
-        h: getString( ui.create ),
+        h: V.getString( ui.create ),
       }, // img( 'send' )
     } );
   }
@@ -152,7 +155,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   function sendNav() {
     return V.cN( {
       t: 'li',
-      id: 'send',
+      i: 'send',
       c: btnClasses,
       h: img( 'send' ),
     } );
@@ -182,8 +185,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
   // form
 
   function form() {
-    return V.setNode( {
+    return V.castNode( {
       tag: 'form',
+      id: 'join-form-v1',
       classes: 'form fixed w-screen hidden bkg-white pxy',
       setStyle: {
         form: {
@@ -193,7 +197,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       h: {
-        t: 'div',
         c: 'form__response pxy txt-red',
         // h: 'test response msg'
       },
@@ -204,7 +207,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
     const fields = {
       uPhrase: {
-        label: getString( ui.key ),
+        label: V.getString( ui.key ),
         inputId: 'loginform__uphrase',
         attributes: {
           type: 'password',
@@ -212,7 +215,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       title: {
-        label: getString( ui.title ),
+        label: V.getString( ui.title ),
         inputId: 'plusform__title',
         attributes: {
           value: whichValue,
@@ -222,8 +225,30 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
           spellcheck: 'false',
         },
       },
+      email: {
+        label: V.getString( ui.email ),
+        inputId: 'plusform__email',
+        attributes: {
+          // value: whichValue,
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
+          spellcheck: 'false',
+        },
+      },
+      emailConfirm: {
+        label: V.getString( ui.emailConfirm ),
+        inputId: 'plusform__emailConfirm',
+        attributes: {
+          // value: whichValue,
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
+          spellcheck: 'false',
+        },
+      },
       location: {
-        label: getString( ui.loc ),
+        label: V.getString( ui.loc ),
         inputId: 'plusform__loc',
         attributes: {
           value: whichValue,
@@ -233,22 +258,22 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       description: {
-        label: getString( ui.descr ),
+        label: V.getString( ui.descr ),
         inputId: 'plusform__descr',
         multiline: true,
       },
       target: {
-        label: getString( ui.target ),
+        label: V.getString( ui.target ),
         inputId: 'plusform__target',
         fieldClasses: 'flex-grow w-30%',
       },
       unit: {
-        label: getString( ui.unit ),
+        label: V.getString( ui.unit ),
         inputId: 'plusform__unit',
         fieldClasses: 'flex-grow w-30%',
       },
       search: {
-        label: getString( ui.search ),
+        label: V.getString( ui.search ),
         inputId: 'search-input',
         attributes: {
           autocomplete: 'off',
@@ -278,12 +303,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     }
 
     const $inputContainer = V.cN( {
-      t: 'div',
       c: 'field__input-container',
     } );
 
     const $labelNode = V.cN( {
-      t: 'div',
       c: 'field__label-wrapper',
       h: {
         t: 'label',
@@ -299,7 +322,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const $input = V.cN( {
       t: 'input',
       c: 'field__input',
-      id: fields[whichField].inputId,
+      i: fields[whichField].inputId,
       e: {
         focus: handleFocus,
         blur: handleBlur,
@@ -310,7 +333,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const $textarea = V.cN( {
       t: 'textarea',
       c: 'field__input auto-height',
-      id: fields[whichField].inputId,
+      i: fields[whichField].inputId,
       a: {
         row: '1',
       },
@@ -333,13 +356,10 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     const hasValue = whichValue ? ' field--static' : '';
 
     return V.cN( {
-      t: 'div',
       c: 'field pxy ' + fieldClasses + hasValue,
       h: {
-        t: 'div',
         c: 'field__border',
         h: {
-          t: 'div',
           c: 'field__internal',
           h: $inputContainer,
         },
@@ -349,10 +369,8 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function formUploadImage() {
     return V.cN( {
-      t: 'div',
       c: 'pxy w-30%',
       h: {
-        t: 'div',
         s: {
           'upload-field': {
             'padding': '16px 12px 17px',
@@ -377,7 +395,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             a: {
               for: 'img-upload__file',
             },
-            h: getString( ui.image ),
+            h: V.getString( ui.image ),
           },
           {
             t: 'input',
@@ -392,7 +410,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
             },
           },
           {
-            t: 'div',
             i: 'img-upload__preview',
             y: {
               position: 'absolute',
@@ -406,12 +423,11 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
 
   function formSearchFilter() {
     return V.cN( {
-      t: 'div',
       h: [
         {
           t: 'p',
           c: 'pxy',
-          h: getString( ui.titleOrCity ),
+          h: V.getString( ui.titleOrCity ),
         },
         // V.cN( {
         //   t: 'search-filter-nav',
@@ -447,52 +463,6 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  // join
-
-  function joinBtn() {
-    const sc = V.getState( 'screen' );
-    const colorBkg = 'rgba(' + sc.buttonBkg + ', 1)';
-
-    return V.cN( { // #ffa41b
-      t: 'join',
-      i: 'join',
-      c: 'fixed cursor-pointer txt-anchor-mid',
-      y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
-      h: {
-        svg: true,
-        t: 'svg',
-        a: {
-          width: sc.width > 800 ? '66px' : '54px',
-          viewBox: '0 0 36 36',
-        },
-        h: [
-          {
-            svg: true,
-            t: 'circle',
-            a: {
-              'stroke-dasharray': '100',
-              'transform': 'rotate(-90, 18, 18) translate(0, 36) scale(1, -1)',
-              'stroke-dashoffset': '-200',
-              'cx': '18',
-              'cy': '18',
-              'r': '15.91549430918954',
-              'fill': colorBkg,
-              'stroke': colorBkg,
-              'stroke-width': '2.7',
-            },
-          },
-          {
-            svg: true,
-            t: 'text',
-            c: 'font-medium fs-xs txt-button',
-            a: { x: '50%', y: '59%' },
-            h: 'Join',
-          },
-        ],
-      },
-    } );
-  }
-
   function onboardingCard() {
 
     const ledger = V.getSetting( 'transactionLedger' );
@@ -505,7 +475,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.connectWallet, 'onboarding call to action' ) + '</p>',
+          html: '<p>' + '👋 ' + V.getString( ui.connectWallet, 'onboarding call to action' ) + '</p>',
         } );
         $cardContent.addEventListener( 'click', function handleAddWallet() {
           if ( window.Web3Obj ) {
@@ -521,7 +491,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.progressVerification, 'onboarding call to action' ) + '</p>',
+          html: '<p>' + '👋 ' + V.getString( ui.progressVerification, 'onboarding call to action' ) + '</p>',
         } );
         return CanvasComponents.card( $cardContent );
       }
@@ -529,7 +499,7 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         $cardContent = V.castNode( {
           tag: 'div',
           c: 'flex w-full items-center justify-evenly',
-          html: '<p>' + '👋 ' + getString( ui.brightId, 'onboarding call to action' ) + '</p>',
+          html: '<p>' + '👋 ' + V.getString( ui.brightId, 'onboarding call to action' ) + '</p>',
           // <a href="brightid://link-verification/http:%2f%2fnode.brightid.org/VALUE/${ entity.private.base64Url }"><img src="/assets/img/brightID-logo_sm.png"></a>
         } );
         return CanvasComponents.card( $cardContent );
@@ -555,8 +525,43 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
         },
       },
       c: 'pill getstarted flex justify-center items-center rounded-full cursor-pointer no-txt-select whitespace-no-wrap',
-      h: getString( ui.getStarted ),
+      h: V.getString( ui.getStarted ),
       k: handleGetStarted,
+    } );
+  }
+
+  function confirmClickSpinner( options ) {
+    return V.cN( {
+      svg: true,
+      c: 'confirm-click-spinner',
+      a: {
+        width: '18',
+        height: '18',
+        viewBox: '0 0 50 50',
+      },
+      y: {
+        'margin-left': options && options.omitMarginLeft ? '0px' : '14px',
+      },
+      h: [
+        {
+          t: 'path',
+          a: {
+            fill: options && options.color ? options.color : 'white',
+            d: 'M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z',
+          },
+          h: {
+            t: 'animateTransform',
+            a: {
+              attributeName: 'transform',
+              type: 'rotate',
+              from: '0 25 25',
+              to: '360 25 25',
+              dur: '0.7s',
+              repeatCount: 'indefinite',
+            },
+          },
+        },
+      ],
     } );
   }
 
@@ -575,9 +580,9 @@ const InteractionComponents = ( function() { // eslint-disable-line no-unused-va
     formField: formField,
     formUploadImage: formUploadImage,
     formSearchFilter: formSearchFilter,
-    joinBtn: joinBtn,
     onboardingCard: onboardingCard,
     getStarted: getStarted,
+    confirmClickSpinner: confirmClickSpinner,
   };
 
 } )();

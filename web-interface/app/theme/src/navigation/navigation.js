@@ -38,31 +38,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }
 
     for ( const item in entityNavOrder ) {
-
       if ( !entityNav[item] ) {
-        const obj = {
-          uuidE: entityNavOrder[item].uuidE,
-          title: entityNavOrder[item].title,
-          tag: entityNavOrder[item].tag,
-          initials: entityNavOrder[item].initials,
-          path: entityNavOrder[item].path,
-          draw: function( path ) { Profile.draw( path ) },
-        };
-        entityNavOrder[item].tinyImage ? obj.tinyImage = entityNavOrder[item].tinyImage : null;
+        const obj = castEntityNavObject( entityNavOrder[item] );
         V.setNavItem( 'entityNav', obj );
       }
     }
 
+    // add new
     if ( data && data.fullId && !entityNav[data.path] ) {
-      const obj = {
-        uuidE: data.uuidE,
-        title: data.title,
-        tag: data.tag,
-        initials: V.castInitials( data.title ),
-        path: data.path,
-        draw: function( path ) { Profile.draw( path ) },
-      };
-      data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+      const obj = castEntityNavObject( data );
       V.setNavItem( 'entityNav', obj );
     }
 
@@ -78,9 +62,9 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
 
     if (
-      doesNodeExist &&
-      doesNodeExist.closest( 'header' ) &&
-      !data.fullId
+      doesNodeExist
+      && doesNodeExist.closest( 'header' )
+      && !data.fullId
     ) {
       return {
         success: false,
@@ -134,7 +118,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     if ( viewData.success ) {
 
-      !viewData.data[0].which ? reset() : null;
+      // !viewData.data[0].which ? reset() : null;
 
       /**
        * draw serviceNav
@@ -171,7 +155,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $entityNavUl, $pill );
       }
 
-      V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzz' } ) ); // a last placeholder pill
+      /* a last placeholder pill. The amount of "z" determine its width */
+      V.setNode( $entityNavUl, NavComponents.pill( { title: 'zzzzzzzzzzzzzzzzz' } ) );
 
       V.setNode( 'entity-nav', '' );
       V.setNode( 'entity-nav', $entityNavUl );
@@ -203,7 +188,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const which = viewData.data[0].which;
 
     if ( which ) {
-      animate( which );
+
+      /**
+       * timeout ensures that popup is removed from DOM,
+       * to avoid conflicting node being found in $itemToAnimate in animate
+       */
+      setTimeout( () => ( animate( which ) ), 8 );
     }
 
   }
@@ -225,15 +215,18 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     // add new entries
     for ( const newKey in b ) {
       if( !a.hasOwnProperty( newKey ) ) {
-        a[b[newKey].path] = {
-          uuidE: b[newKey].uuidE,
-          title: b[newKey].title,
-          tag: b[newKey].tag,
-          initials: b[newKey].initials,
-          path: b[newKey].path,
-        };
+        // a[b[newKey].path] = {
+        //   uuidE: b[newKey].uuidE,
+        //   uuidP: b[newKey].uuidP,
+        //   title: b[newKey].title,
+        //   tag: b[newKey].tag,
+        //   initials: b[newKey].initials,
+        //   path: b[newKey].path,
+        // };
+        a[b[newKey].path] = b[newKey];
 
         b[newKey].tinyImage ? a[b[newKey].path].tinyImage = b[newKey].tinyImage : null;
+        b[newKey].useDataUrl ? a[b[newKey].path].useDataUrl = b[newKey].useDataUrl : null;
 
       }
     }
@@ -247,10 +240,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( $itemClicked ) {
       const path = $itemClicked.getAttribute( 'path' );
       const uuidE = $itemClicked.getAttribute( 'uuide' );
+      const uuidP = $itemClicked.getAttribute( 'uuidp' );
       V.setState( 'active', { navItem: path } );
       V.setBrowserHistory( path );
       if ( uuidE ) { // entity pill
-        V.getNavItem( 'active', ['entityNav'] ).draw( uuidE );
+        V.getNavItem( 'active', ['entityNav'] ).draw( { uuidE: uuidE, uuidP: uuidP, path: path } );
       }
       else {
         V.getNavItem( 'active', ['serviceNav', 'userNav'] ).draw( path );
@@ -267,8 +261,11 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       const $li = $rowAfter[i];
       const path = $li.getAttribute( 'path' );
 
-      $li.classList.contains( 'pill--selected' ) ?
-        navOrder[ path ].c ? navOrder[ path ].c += 1 : navOrder[ path ].c = 1 : null;
+      $li.classList.contains( 'pill--selected' )
+        ? navOrder[ path ].c
+          ? navOrder[ path ].c += 1
+          : navOrder[ path ].c = 1
+        : null;
 
       navOrder[ path ].l = i;
 
@@ -346,15 +343,15 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function resetOnClick( e ) {
     e.stopPropagation();
 
-    /* if a form is open, just close form first */
-    if ( V.getNode( 'form' ) ) {
+    /* if a first version of form is open, just close form first */
+    if ( V.getNode( '#join-form-v1' ) ) {
       handleCloseForms();
     }
 
     /* else if an entity is being edited, just return to entity list first */
     else if (
-      V.getState( 'active' ).path == '/me/edit' &&
-      V.getVisibility( '#pref-lang-edit' )
+      V.getState( 'active' ).path == '/me/edit'
+      && V.getVisibility( '#pref-lang-edit' )
     ) {
       EntityList.draw( '/me/edit' );
 
@@ -377,8 +374,8 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function handleCloseForms() {
     Form.draw( 'all', { fade: 'out' } );
-    Button.draw( 'all', { fade: 'out' } );
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
+    // Button.draw( 'all', { fade: 'out' } );
+    // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 1.5 } );
     Page.draw( { position: 'peek', reset: false } );
   }
 
@@ -397,14 +394,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     if ( entitiesViewed.length >= 50 ) {
       entitiesViewed.forEach( entityPath => {
         if ( entityNavOrder[entityPath].l > 40 ) {
-          console.log( entityPath );
           delete entityNavOrder[entityPath];
         }
       } );
       V.setLocal( 'entity-nav-order', entityNavOrder );
     }
-
-    Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
+    MagicButton.draw( 'search' );
+    // Chat.drawMessageForm( 'clear' ); // a good place to reset the chat input
 
     // (previous version) also reset path if not account or profile path
     // if ( !['/me/account', '/me/profile'].includes( V.getState( 'active' ).path ) ) {
@@ -444,7 +440,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     }, { duration: 2.5 } );
 
     Form.draw( 'all', { fade: 'out' } );
-    Button.draw( 'all', { fade: 'out' } );
+    // Button.draw( 'all', { fade: 'out' } );
+
+    /* return to the full market view and reset the map (zoom) */
+    Marketplace.draw();
+    // VMap.draw( { reset: true } );
+
+    drawJoinedUserPill();
 
   }
 
@@ -500,6 +502,27 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function castEntityNavObject( data ) {
+    const obj = {
+      uuidE: data.uuidE,
+      uuidP: data.uuidP,
+      title: data.title,
+      tag: data.tag,
+      initials: data.initials || V.castInitials( data.title ),
+      avatar: data.avatar || ( data.images ? data.images.avatar : undefined ),
+      path: data.path,
+      draw: function( path ) { Profile.draw( path ) },
+    };
+    if ( data.tinyImage ) { // old model
+      obj.tinyImage = JSON.stringify( data.tinyImage );
+    }
+    else if ( data.images && data.images.tinyImage ) { // new model
+      obj.tinyImage = data.images.tinyImage;
+      obj.useDataUrl = true;
+    }
+    return obj;
+  }
+
   /* ============ public methods and exports ============ */
 
   function draw( data ) {
@@ -508,6 +531,22 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function drawReset() {
     reset();
+  }
+
+  function drawUserNav() {
+    if ( V.getVisibility( 'user-nav' ) ) {
+      V.setState( 'active', { navItem: false } );
+      // Chat.drawMessageForm( 'clear' );
+
+      reset();
+
+    }
+    else {
+      // Button.draw( 'all', { fade: 'out' } );
+      V.setAnimation( 'entity-nav', 'fadeOut', { duration: 0.1 } );
+      V.setAnimation( 'service-nav', 'fadeOut', { duration: 0.6 } );
+      V.setAnimation( 'user-nav', 'fadeIn', { duration: 0.2 } );
+    }
   }
 
   function drawEntityNavPill( data ) {
@@ -519,15 +558,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      */
 
     /** Create nav object */
-    const obj = {
-      uuidE: data.uuidE,
-      title: data.title,
-      tag: data.tag,
-      initials: V.castInitials( data.title ),
-      path: data.path,
-      draw: function( path ) { Profile.draw( path ) },
-    };
-    data.tinyImage ? obj.tinyImage = JSON.stringify( data.tinyImage ) : null;
+    const obj = castEntityNavObject( data );
 
     /** Set object into state */
     V.setNavItem( 'entityNav', obj );
@@ -541,12 +572,45 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     /** Place into view */
     const $pill = NavComponents.entityPill( obj );
     V.getNode( 'entity-nav > ul' ).prepend( $pill );
+    drawJoinedUserPill();
+  }
+
+  function drawImage( data ) {
+
+    const entityNavOrder =  V.castJson( V.getLocal( 'entity-nav-order' ) );
+
+    entityNavOrder[data.path].tinyImage = data.images.tinyImage;
+    entityNavOrder[data.path].useDataUrl = true;
+
+    V.setLocal( 'entity-nav-order', entityNavOrder );
+
+  }
+
+  function drawJoinedUserPill() {
+
+    if (
+      V.getState( 'active' ).path != '/'
+      || !V.getState( 'activeEntity' )
+    ) {
+      return;
+    }
+
+    const $userPill = V.getNode( '[uuide="' + V.getState( 'activeEntity' ).uuidE + '"]' );
+    if ( !$userPill ) { return }
+    V.getNode( 'entity-nav > ul' ).prepend( $userPill );
+    const $span = $userPill.getElementsByClassName( 'pill__initials' )[0];
+    if ( $span ) {
+      $span.textContent = $userPill.getAttribute( 'fullId' ).replace( /\s#\d{4}/, '' );
+    }
   }
 
   return {
     draw: draw,
     drawReset: drawReset,
+    drawUserNav: drawUserNav,
+    drawImage: drawImage,
     drawEntityNavPill: drawEntityNavPill,
+    drawJoinedUserPill: drawJoinedUserPill,
   };
 
 } )();

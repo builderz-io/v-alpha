@@ -9,17 +9,22 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    notActive: 'no active entity',
-    invalidAmount: 'invalid amount',
-    noDecimals: 'no decimals',
-    noRecipient: 'recipient not found',
-    noRecipientAddress: 'recipient address not found',
-  };
+  const ui = ( () => {
+    const strings = {
+      notActive: 'no active entity',
+      invalidAmount: 'invalid amount',
+      invalidRecipient: 'invalid recipient',
+      noDecimals: 'no decimals',
+      noRecipient: 'recipient name and tag not found',
+      noRecipientAddress: 'recipient address not found',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'transaction', scope || 'error message' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== private methods ================= */
 
@@ -38,15 +43,15 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.notActive ),
+        status: V.getString( ui.notActive ),
       };
     }
 
     const messageParts = data.slice(),
       date = Date.now(),
       timeSecondsUNIX = Number( Math.floor( date / 1000 ) ),
-      forIndex = messageParts.indexOf( V.i18n( 'for', 'trigger', 'key word' ) ),
-      toIndex = messageParts.indexOf( V.i18n( 'to', 'trigger', 'key word' ) );
+      forIndex = messageParts.indexOf( V.getString( 'for' ) ),
+      toIndex = messageParts.indexOf( V.getString( 'to' ) );
 
     let reference = '', recipient = '', currency,
       amount = 0, feeAmount = 0, contribution = 0, txTotal = 0;
@@ -83,14 +88,23 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.invalidAmount ),
+        status: V.getString( ui.invalidAmount ),
       };
     }
     else if ( amount % 1 != 0 ) {
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.noDecimals ),
+        status: V.getString( ui.noDecimals ),
+      };
+    }
+
+    if ( !recipient ) {
+      return {
+        success: false,
+        endpoint: 'transaction',
+        status: V.getString( ui.invalidRecipient ),
+        error: 'invalid recipient',
       };
     }
 
@@ -100,7 +114,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.noRecipient ),
+        status: V.getString( ui.noRecipient ),
       };
     }
 
@@ -124,15 +138,21 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
     if ( tL == 'EVM' /* && V.cA() */ ) {
       const rD = recipientData.data[0];
 
-      rD.evmCredentials ? rD.evmCredentials.address ?
-        recipientAddress = rD.evmCredentials.address : undefined : undefined;
+      rD.evmCredentials
+        ? rD.evmCredentials.address
+          ? recipientAddress = rD.evmCredentials.address
+          : undefined
+        : undefined;
 
       /**
        * Overwrite recipientAddress if another has been defined by user
        */
 
-      rD.receivingAddresses ? rD.receivingAddresses.evm ?
-        recipientAddress = rD.receivingAddresses.evm : undefined : undefined;
+      rD.receivingAddresses
+        ? rD.receivingAddresses.evm
+          ? recipientAddress = rD.receivingAddresses.evm
+          : undefined
+        : undefined;
 
       // signature = initiator.evmCredentials.privateKey;
     }
@@ -145,7 +165,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         endpoint: 'transaction',
-        status: getString( ui.noRecipientAddress ),
+        status: V.getString( ui.noRecipientAddress ),
       };
     }
 
@@ -214,13 +234,17 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   /* ================== public methods ================== */
 
   async function getTransactions(
-    data
+    data,
   ) {
     return V.getData( data, 'transaction', V.getSetting( 'transactionLedger' ) );
   }
 
   async function setTransactionConfirmation( which ) {
+    Modal.draw( 'preview' );
     const txData = await castTransaction( which );
+    if ( !txData.success ) {
+      V.setNode( '.modal', 'clear' );
+    }
     return Promise.resolve( txData );
   }
 
@@ -230,7 +254,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
         return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
       }
       else {
-        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'managedTransactionLedger' ) );
+        return V.setData( txData.data[0], 'managed transaction', V.getSetting( 'managedTransactionApi' ) );
       }
     }
     else {
@@ -247,7 +271,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getTransactionLog(
-    uuidP = V.aE().uuidP
+    uuidP = V.aE().uuidP,
   ) {
     return V.getData( uuidP, 'transaction log', V.getSetting( 'entityLedger' ) );
   }

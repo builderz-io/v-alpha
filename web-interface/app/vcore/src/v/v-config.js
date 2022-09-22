@@ -5,10 +5,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
    *
    */
 
-  const firebaseEndpoints = {
-    local: 'http://localhost:5001/entity-namespace/us-central1/api/v1',
-    development: 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
-    production: 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
+  const namespaceEndpoints = {
+
+    /* for development, firebase function is deployed to "entity-profile"-project */
+    'firebase-local': 'http://localhost:5001/entity-profile/us-central1/api/v1',
+    'firebase-staging': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
+    'firebase-development': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
+    'firebase-production': 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
+    'firebase-client-dfr': 'https://us-central1-client-dfr.cloudfunctions.net/api/v1',
   };
 
   const mongodbEndpoints = {
@@ -26,50 +30,88 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     },
   };
 
+  const apiEndpoints = {
+    builderz: {
+      email: 'https://api.builderz.io/v1/email',
+      telegram: 'https://api.builderz.io/v1/telegram',
+    },
+    local: {
+      email: 'http://localhost:8889/v1/email',
+      telegram: 'http://localhost:8889/v1/telegram',
+    },
+  };
+
+  const localeSettings = {
+    'slug': '/theme/lang', // omit trailing "/"
+    'english': 'en_US',
+    'englisch': 'en_US',
+    'german official': 'de_DE_sie',
+    'deutsch offiziell': 'de_DE_sie',
+    'german personal': 'de_DE_du',
+    'deutsch persönlich': 'de_DE_du',
+  };
+
   const settings = {
 
-    appVersion: 'Alpha ' + VNetworkInit.appVersion,
+    appVersion: 'Alpha 3.5.0',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
     transactionLedger: VNetworkInit.transactionLedger,
-    managedTransactionLedger: VNetworkInit.managedTransactionLedger,
-    notificationServer: VNetworkInit.notificationServer,
+    managedTransactionApi: VNetworkInit.managedTransactionApi,
 
     socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
     socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
-    firebaseEndpoint: firebaseEndpoints[ VNetworkInit.firebaseEndpoint ],
+    namespaceEndpoint: namespaceEndpoints[ VNetworkInit.namespaceEndpoint ],
+    telegramEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint || 'builderz' ].telegram,
+    emailEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint || 'builderz' ].email,
+
+    networkAdminEmail: VNetworkInit.networkAdminEmail,
 
     sourceEndpoint: VNetworkInit.sourceEndpoint,
 
     logo: VNetworkInit.logo,
     mapDefault: VNetworkInit.mapDefault,
+    highlights: VNetworkInit.highlights,
+    locale: localeSettings[ VNetworkInit.language ],
+    localeSlug: localeSettings.slug,
     questionnaire: VNetworkInit.questionnaire,
     featureVideo: VNetworkInit.featureVideo,
     plugins: VNetworkInit.plugins,
+
+    defaultPrivacy: VNetworkInit.defaultPrivacy,
+    askforEmail: VNetworkInit.askforEmail,
+    requireEmail: VNetworkInit.requireEmail,
+    confirmEmail: VNetworkInit.confirmEmail,
+    emailKey: VNetworkInit.emailKey,
 
     useBuilds: VNetworkInit.useBuilds,
     buildsHost: 'https://production.valueinstrument.org',
 
     sendLogsToServer: false,
 
+    devMode: VNetworkInit.devMode,
     drawMap: true,
+    queryContractState: false,
+
+    joinVersion: 2,
 
     subscribeToChainEvents: false,
-    balanceCheckInterval: 10, // in sec
+    balanceCheckInterval: 30, // in sec
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    previewCacheDuration: 3, // in minutes
-    viewedCacheDuration: 10, // in minutes
-    managedEntitiesCacheDuration: 5, // in minutes
+    highlightsCacheDuration: 60 * 8, // in minutes
+    viewedCacheDuration: 60 * 8, // in minutes
+
+    uuidStringLength: 10,
 
     tinyImageWidth: 40, // Numbers in px
     tinyImageQuality: 0.93, // Number from 0 to 1
     thumbnailWidth: 88,
     thumbnailQuality: 0.90,
-    mediumImageWidth: 400,
+    mediumImageWidth: 510,
     mediumImageQuality: 0.87,
 
     coinTicker: 'ETH',
@@ -146,7 +188,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getTokenContract(
-    which = VNetworkInit.tokenContract
+    which = VNetworkInit.tokenContract,
   ) {
     if ( which ) {
       return tokenContracts[which];

@@ -2,7 +2,7 @@
 
 module.exports = {
   Query: {
-    getEntity: ( parent, args, { context } ) => {
+    getEntities: ( parent, args, { context } ) => {
       if ( args.where.m && args.where.n ) {
         return require( './find-by-fullid' )( context, args.where.m, args.where.n );
       }
@@ -16,9 +16,12 @@ module.exports = {
         return require( './get-all-entities' )( context );
       }
     },
-    getProfiles: ( parent, args ) => require( './map-profiles' )( args.array ),
-    getAuth: ( parent, args ) => require( './find-by-auth' )( args.token ),
+    getProfile: ( parent, args, { context } ) => require( './get-single-profile' )( context, args.where.a ),
+    getProfiles: ( parent, args, { context } ) => require( './get-profiles' )( context, args.array ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
+    getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
+    getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
+    getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),
@@ -26,6 +29,8 @@ module.exports = {
     setTransaction: ( parent, { tx }, { context } ) => require( './set-transaction' )( context, tx, 'managed' ),
     setEntity: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'entity' ),
     setProfile: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'profile' ),
+    setImage: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'image' ),
+    setHighlight: ( parent, { input }, { context } ) => require( './set-highlight' )( context, input ),
   },
 };
 

@@ -13,12 +13,6 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     prepend == 'prepend' || prepend == true ? $targetNode.prepend( $node ) : $targetNode.append( $node );
   }
 
-  function setAttr( $elem, attr, data ) {
-    if ( data ) {
-      $elem.setAttribute( attr, data );
-    }
-  }
-
   function writeStyle( data, $customStyles ) {
 
     let string = '';
@@ -51,112 +45,352 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
-  function castNode( data ) {
+  function castNode( data, options ) {
 
-    if ( [data.x, data.condition].includes( false ) ) {
-      return '';
+    /* castNode ALSO allows long keys in data object */
+
+    /* Check whether to cast a node or not by condition-key */
+
+    if (
+      ( Object.prototype.hasOwnProperty.call( data, 'x' ) && !data.x )
+      || ( Object.prototype.hasOwnProperty.call( data, 'condition' ) && !data.condition )
+    ) {
+      return;
     }
 
-    const tag = data.t || data.tag;
+    /* Private methods */
 
-    let $elem = document.createElement( tag );
+    const setNode = ( $elem, options ) => {
+      let $target;
+      if ( options ) {
+        if ( typeof options === 'string' ) {
+          options = { target: options };
+        }
+        $target = document.querySelector( options.target );
+        options.prepend == true
+          ? $target.prepend( $elem )
+          : $target.append( $elem );
+      }
+      else {
+        console.log( 'function "castNode" missing second parameter (options)' );
+        $target = document.querySelector( 'body' );
+        $target.prepend( $elem );
+      }
+    };
 
-    if ( data.svg ) {
+    const setAttr = ( attr, data ) => {
+      $elem.setAttribute( attr, String( data ) );
+    };
+
+    const setChild = ( item ) => {
+      if ( item && !( item instanceof Element ) ) {
+        svg ? item.svg = true : null;
+        item = castNode( item );
+      }
+      if (
+        item && item instanceof Element
+      ) {
+        $elem.appendChild( item );
+      }
+    };
+
+    /* Either set node directly if data is a formatted node or a string ... */
+
+    if ( data && data instanceof Element ) {
+      setNode( data, options );
+      return;
+    }
+
+    if ( data && typeof data === 'string' ) {
+      setNode( document.createTextNode( data ), options );
+      return;
+    }
+
+    /* ... or continue casting the node */
+
+    /* Variables */
+
+    let $elem, tag, svg;
+
+    /* Create node type */
+
+    if ( svg || data.svg ) {
+      tag = data.t || data.tag || 'svg';
+      svg = true;
       $elem = document.createElementNS( 'http://www.w3.org/2000/svg', tag );
+    }
+    else {
+      tag = data.t || data.tag || 'div';
+      $elem = document.createElement( tag );
     }
 
     if ( tag == 'svg' ) {
-      setAttr( $elem, 'xmlns', 'http://www.w3.org/2000/svg' );
-      setAttr( $elem, 'version', '1.1' );
+      setAttr( 'xmlns', 'http://www.w3.org/2000/svg' );
+      setAttr( 'version', '1.1' );
     }
 
-    for ( const key in data ) {
+    /* Cast the node according to data */
+
+    Object.keys( data ).forEach( key => {
+
+      const val = data[key];
+
+      if ( !val ) { return }
+
       if ( ['c', 'class', 'classes'].includes( key ) ) {
-        if ( data[key] ) {
-          setAttr( $elem, 'class', data[key] );
-        }
-        continue;
+        setAttr( 'class', val );
       }
       else if ( ['h', 'html'].includes( key ) ) {
-        if ( data[key] && ['string', 'number'].includes( typeof data[key] ) ) {
-          $elem.appendChild( document.createTextNode( data[key] ) );
+        if ( ['string', 'number'].includes( typeof val ) ) {
+          $elem.appendChild( document.createTextNode( val ) );
         }
-        else if ( Array.isArray( data[key] ) ) {
-          for ( let i = 0; i < data[key].length; i++ ) {
-            if ( [data[key][i].x, data[key][i].condition].includes( false ) ) {
-              continue;
-            }
-            if ( !data[key][i].localName ) {
-              data[key][i] = castNode( data[key][i] );
-            }
-            $elem.appendChild( data[key][i] );
+        else if ( Array.isArray( val ) ) {
+          for ( let i = 0; i < val.length; i++ ) {
+            setChild( val[i] );
           }
         }
-        else if ( data[key] ) {
-          if ( !data[key].localName ) {
-            data[key] = castNode( data[key] );
-          }
-          $elem.appendChild( data[key] );
+        else {
+          setChild( val );
         }
-        continue;
-      }
-      else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
-        for ( const attr in data[key] ) {
-          setAttr( $elem, attr, data[key][attr] );
-        }
-        continue;
-      }
-      else if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
-        if ( data[key] ) {
-          setStyle( data[key] );
-        }
-        continue;
       }
       else if ( ['k', 'click'].includes( key ) ) {
-        if ( data[key] ) {
-          $elem.addEventListener( 'click', data[key] );
-        }
-        continue;
+        $elem.addEventListener( 'click', val );
       }
       else if ( ['e', 'event', 'events'].includes( key ) ) {
-        for ( const evt in data[key] ) {
-          if ( data[key][evt] ) {
-            $elem.addEventListener( evt, data[key][evt] );
+        for ( const evt in val ) {
+          if ( val[evt] ) {
+            $elem.addEventListener( evt, val[evt] );
           }
         }
-        continue;
       }
       else if ( ['y', 'style', 'styles'].includes( key ) ) {
-        if ( data[key] ) {
-          Object.assign( $elem.style, data[key] );
+        Object.assign( $elem.style, val );
+      }
+      else if ( ['s', 'setStyle', 'setStyles', 'setClass', 'setClasses'].includes( key ) ) {
+        if ( typeof setStyle === 'function' ) {
+          setStyle( val );
         }
-        continue;
+        else {
+          console.log( 'Can not set style: function missing' );
+        }
+      }
+      else if ( ['a', 'attribute', 'attributes'].includes( key ) ) {
+        for ( const attr in val ) {
+          if ( val[attr] ) {
+            setAttr( attr, val[attr] );
+          }
+        }
       }
       else if ( ['i', 'id'].includes( key ) ) {
-        setAttr( $elem, 'id', data[key] );
-        continue;
+        setAttr( 'id', val );
       }
       else if ( ['f', 'href'].includes( key ) ) {
-        setAttr( $elem, 'href', data[key] );
-        continue;
+        setAttr( 'href', val );
       }
       else if ( ['r', 'src'].includes( key ) ) {
-        setAttr( $elem, 'src', data[key] );
-        continue;
+        setAttr( 'src', val );
       }
       else if ( ['v', 'value'].includes( key ) ) {
-        setAttr( $elem, 'value', data[key] );
-        continue;
+        setAttr( 'value', val );
+      }
+      else if ( ['for'].includes( key ) ) {
+        setAttr( 'for', val );
       }
       else if ( ['innerHtml'].includes( key ) ) {
-        $elem.innerHTML = data[key];
+        $elem.innerHTML = val;
       }
+
+    } );
+
+    /* Either set the node or return it */
+
+    if ( options ) {
+      setNode( $elem, options );
     }
-    return $elem;
+    else {
+      return $elem;
+    }
   }
 
-  function cN( data ) {
-    return castNode( data );
+  function cN( data, options ) {
+
+    /* cN allows ONLY short keys in data object (tiny performace improvement ) */
+
+    /* Check whether to cast a node or not by condition-key */
+
+    if (
+      Object.prototype.hasOwnProperty.call( data, 'x' )
+      && !data.x
+    ) { return }
+
+    /* Private methods */
+
+    const setNode = ( $elem, options ) => {
+      let $target;
+      if ( options ) {
+        if ( typeof options === 'string' ) {
+          options = { target: options };
+        }
+        $target = document.querySelector( options.target );
+        options.prepend == true
+          ? $target.prepend( $elem )
+          : $target.append( $elem );
+      }
+      else {
+        console.log( 'function "cN" missing second parameter (options)' );
+        $target = document.querySelector( 'body' );
+        $target.prepend( $elem );
+      }
+    };
+
+    const setAttr = ( attr, data ) => {
+      $elem.setAttribute( attr, String( data ) );
+    };
+
+    const setChild = ( item ) => {
+      if ( item && !( item instanceof Element ) ) {
+        svg ? item.svg = true : null;
+        item = cN( item );
+      }
+      if (
+        item && item instanceof Element
+      ) {
+        $elem.appendChild( item );
+      }
+    };
+
+    /* Either set node directly if data is a formatted node or a string ... */
+
+    if ( data && data instanceof Element ) {
+      setNode( data, options );
+      return;
+    }
+
+    if ( data && typeof data === 'string' ) {
+      setNode( document.createTextNode( data ), options );
+      return;
+    }
+
+    /* ... or continue casting the node */
+
+    /* Variables */
+
+    let $elem, tag, svg;
+
+    /* Create node type */
+
+    if ( svg || data.svg ) {
+      tag = data.t || 'svg';
+      svg = true;
+      $elem = document.createElementNS( 'http://www.w3.org/2000/svg', tag );
+    }
+    else {
+      tag = data.t || 'div';
+      $elem = document.createElement( tag );
+    }
+
+    if ( tag == 'svg' ) {
+      setAttr( 'xmlns', 'http://www.w3.org/2000/svg' );
+      setAttr( 'version', '1.1' );
+    }
+
+    /* Cast the node according to data */
+
+    Object.keys( data ).forEach( key => {
+
+      const val = data[key];
+
+      if ( !val ) { return }
+
+      switch ( key ) {
+
+      case 'c':
+        setAttr( 'class', val );
+        break;
+
+      case 'h':
+        if ( ['string', 'number'].includes( typeof val ) ) {
+          $elem.appendChild( document.createTextNode( val ) );
+        }
+        else if ( Array.isArray( val ) ) {
+          for ( let i = 0; i < val.length; i++ ) {
+            setChild( val[i] );
+          }
+        }
+        else {
+          setChild( val );
+        }
+        break;
+
+      case 'k':
+        $elem.addEventListener( 'click', val );
+        break;
+
+      case 'e':
+        for ( const evt in val ) {
+          if ( val[evt] ) {
+            $elem.addEventListener( evt, val[evt] );
+          }
+        }
+        break;
+
+      case 'y':
+        Object.assign( $elem.style, val );
+        break;
+
+      case 's':
+        if ( typeof setStyle === 'function' ) {
+          setStyle( val );
+        }
+        else {
+          console.log( 'Can not set style: function missing' );
+        }
+        break;
+
+      case 'a':
+        for ( const attr in val ) {
+          if ( val[attr] ) {
+            setAttr( attr, val[attr] );
+          }
+        }
+        break;
+
+      case 'i':
+        setAttr( 'id', val );
+        break;
+
+      case 'f':
+        setAttr( 'href', val );
+        break;
+
+      case 'r':
+        setAttr( 'src', val );
+        break;
+
+      case 'v':
+        setAttr( 'value', val );
+        break;
+
+      case 'for':
+        setAttr( 'for', val );
+        break;
+
+      case 'innerHtml':
+        $elem.innerHTML = val;
+        break;
+      }
+
+    } );
+
+    /* Either set the node or return it */
+
+    if ( options ) {
+      setNode( $elem, options );
+    }
+    else {
+      return $elem;
+    }
+
   }
 
   function setNode( targetNode, data, prepend ) {
@@ -188,14 +422,18 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       return;
     }
 
-    if ( typeof data == 'string' ) {
+    /**
+     * set a simple string
+     */
+
+    if ( ['string', 'number'].includes( typeof data ) ) {
       const $elem = typeof targetNode != 'string' ? targetNode : document.querySelector( targetNode );
-      $elem ? $elem.textContent = data : null;
+      $elem ? $elem.textContent = String( data ) : null;
       return;
     }
 
     /**
-     * determine actions based on targetNode and data
+     * determine actions based on targetNode and data params
      */
 
     if ( data ) {
@@ -213,34 +451,47 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
       }
 
       if ( Array.isArray( data ) ) {
-        data.forEach( $node => {
+        data.forEach( item => {
+          if ( item instanceof Element ) {
 
-          /**
-           * place each node from array into target node
-           */
+            /**
+            * place given node into target node
+            */
 
-          placeNode( $targetNode, $node, prepend );
+            placeNode( $targetNode, item, prepend );
+          }
+          else {
+
+            /**
+            * 1. create new node
+            * 2. place this new node into target node
+            */
+
+            placeNode( $targetNode, castNode( item ), prepend );
+
+          }
+
+          // placeNode( $targetNode, item, prepend );
 
         } );
       }
       else if ( typeof data == 'object' ) {
-        if ( data.t || data.tag ) {
+        if ( data instanceof Element ) {
 
           /**
-           * 1. create new node
-           * 2. place this new node into target node
-           */
+          * place given node into target node
+          */
 
-          placeNode( $targetNode, castNode( data ), prepend );
-
+          placeNode( $targetNode, data, prepend );
         }
         else {
 
           /**
-           * place given node into target node
-           */
+          * 1. create new node
+          * 2. place this new node into target node
+          */
 
-          placeNode( $targetNode, data, prepend );
+          placeNode( $targetNode, castNode( data ), prepend );
 
         }
       }
@@ -266,18 +517,25 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getNode( which ) {
-
-    // TODO: maybe add getNodes with "querySelectorAll"
-
     const node = document.querySelector( which );
     if ( node ) {
       Object.assign( node, { getNode: getNode } );
-
       return node;
     }
   }
 
   function gN( which ) {
+    return getNode( which );
+  }
+
+  function getNodes( which ) {
+    const nodes = document.querySelectorAll( which );
+    if ( nodes ) {
+      return nodes;
+    }
+  }
+
+  function gNs( which ) {
     return getNode( which );
   }
 
@@ -386,12 +644,14 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function setToggle( element ) {
-    if ( getVisibility( element ) ) {
-      element.style.display = 'none';
+  function setToggle( which ) {
+    const $elem = typeof which == 'string' ? getNode( which ) : which;
+
+    if ( getVisibility( $elem ) ) {
+      $elem.style.display = 'none';
     }
     else {
-      element.style.display = 'block';
+      $elem.style.display = 'block';
     }
   }
 
@@ -403,6 +663,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
   V.sN = sN;
   V.getNode = getNode;
   V.gN = gN;
+  V.getNodes = getNodes;
+  V.gNs = gNs;
   V.setAnimation = setAnimation;
   V.sA = sA;
   V.setStyle = setStyle;
@@ -420,6 +682,8 @@ const VDom = ( function() { // eslint-disable-line no-unused-vars
     sN: sN,
     getNode: getNode,
     gN: gN,
+    getNodes: getNodes,
+    gNs: gNs,
     setAnimation: setAnimation,
     sA: sA,
     setStyle: setStyle,

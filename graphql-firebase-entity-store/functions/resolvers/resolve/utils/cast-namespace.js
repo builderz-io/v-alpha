@@ -13,7 +13,9 @@ const entitySetup = {
   entityDocVersion: '/e1/v0',
   profileDocVersion: '/p1/v0',
   authDocVersion: '/a1/v0',
+  imageDocVersion: '/i1/v0',
   daysToExpiry: 365 * 2,
+  uuidStringLength: 10,
 };
 
 const { castUuid } = require( '../../../resources/v-core' );
@@ -22,21 +24,28 @@ module.exports = ( context, data ) => {
 
   /** Prepare data */
 
-  const uuidE = castUuid().base64Url;
-  const uuidP = castUuid().base64Url;
-  const uuidA = castUuid().base64Url;
+  const uuidE = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
+  const uuidP = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
+  const uuidA = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
 
-  let creatorUuid, heldBy;
+  let creatorUuid, heldBy, geoHash;
 
   if ( context.a ) {
-    heldBy = [uuidE, context.d];
+    // heldBy = context.d;
     creatorUuid = context.d;
   }
-  else {
-    heldBy = [uuidE];
-    creatorUuid = uuidE;
+  // else {
+  //   heldBy = [uuidE];
+  //   creatorUuid = uuidE;
+  // }
+
+  if ( data.profileInputServerSide.lngLat ) {
+    geoHash = require( 'geofire-common' ).geohashForLocation( [
+      data.profileInputServerSide.lngLat[1],
+      data.profileInputServerSide.lngLat[0],
+    ] );
   }
 
   // let block, rpc, contract;
@@ -68,11 +77,11 @@ module.exports = ( context, data ) => {
       j: data.j,
 
       m: data.m,
-      n: data.nImporter || data.n,
+      n: data.n,
 
       x: {
         a: creatorUuid,
-        b: heldBy,
+        m: heldBy,
       },
 
       y: {
@@ -81,37 +90,67 @@ module.exports = ( context, data ) => {
         m: true,
         z: 100,
       },
+
+      zz: {
+        i: data.profileInputServerSide.lngLat,
+        j: geoHash,
+        k: data.profileInputServerSide.loc,
+      },
     },
     profile: {
       a: uuidP,
       b: entitySetup.profileDocVersion,
       d: uuidE,
 
+      f: data.profileInputServerSide.privacy,
+
       m: {
         a: data.profileInputServerSide.descr,
         b: data.profileInputServerSide.email,
+        c: data.prefLangImporter,
         m: data.profileInputServerSide.target,
         n: data.profileInputServerSide.unit,
         r: data.profileInputServerSide.filteredDescr,
+        s: data.profileInputServerSide.emailPrivate,
       },
       n: {
         a: data.profileInputServerSide.lngLat,
-        b: data.profileInputServerSide.loc,
+        b: geoHash,
+        c: data.profileInputServerSide.loc,
+        z: data.profileInputServerSide.continent,
       },
       o: {
         a: data.profileInputServerSide.tinyImg,
         b: data.profileInputServerSide.thumb,
+        // c: data.profileInputServerSide.medImg,
+        // n: data.profileInputServerSide.imgName,
+        z: data.profileInputServerSide.avatar,
+      },
+
+      x: {
+        a: creatorUuid,
+        m: heldBy,
+      },
+
+      y: {
+        a: String( unix ),
+      },
+    },
+    image: {
+      a: uuidP,
+      b: entitySetup.imageDocVersion,
+      d: uuidE,
+
+      f: data.profileInputServerSide.privacy,
+
+      o: {
         c: data.profileInputServerSide.medImg,
         n: data.profileInputServerSide.imgName,
       },
 
       x: {
         a: creatorUuid,
-        b: heldBy,
-      },
-
-      y: {
-        a: String( unix ),
+        m: heldBy,
       },
     },
     auth: {

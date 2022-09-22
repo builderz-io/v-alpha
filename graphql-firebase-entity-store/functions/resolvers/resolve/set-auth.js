@@ -1,9 +1,10 @@
 // https://hasura.io/blog/best-practices-of-using-jwt-with-graphql
 
-const { jwtSignature, jwtRefreshSignature } = require( '../../credentials/credentials' );
+const { jwtSignature } = require( '../../credentials/credentials' );
 const { sign } = require( 'jsonwebtoken' );
 const { castUuid } = require( '../../resources/v-core' );
-const castObjectPaths = require( './utils/cast-object-paths' );
+const setNetwork = require( './utils/set-network' );
+const findByAuth = require( './find-by-auth' );
 
 // Connect to firebase database
 const { authDb } = require( '../../resources/databases-setup' );
@@ -13,45 +14,68 @@ const settings = {
   jwtExpiry: 60 * 60 * 24 * 365 * 10, // seconds
 };
 
-module.exports = async ( context, res ) => {
+module.exports = async ( context /*, res */ ) => {
 
   /**
    * If first visit or user is logged out, no context can be set.
    * Hence return early.
    */
 
-  if ( !context.a ) {
+  if ( !context.i ) {
     throw new Error( 'could not match an entity for setting up the context object' );
-    // return {
-    //   success: false,
-    //   message: 'could not find an entity for setting up the context object',
-    // };
   }
 
-  const newRefreshToken = 'REFR' + castUuid().base64Url.substr( 1, 16 ); // e.g. REFRr1KM2HCkMKkRlbCt
+  const authDoc = await findByAuth( context.i );
 
-  // const newRefreshToken = sign(
-  //   {
-  //     user: {
-  //       a: context.a,
-  //       d: context.d,
-  //     },
-  //   },
-  //   jwtRefreshSignature,
-  //   {
-  //     expiresIn: settings.jwtExpiry,
-  //   },
-  // );
+  if ( !authDoc ) { return }
+
+  if ( authDoc.errors ) {
+    throw new Error( 'could not match an entity for setting up refresh token' );
+  }
+
+  /** Set the refresh token according to how user joins or revisits page */
+
+  let networksArr, refreshTokensArr, newNetwork;
+
+  const newRefreshToken = context.isEvmJoin
+    ? 'na'
+    : castUuid().base64Url;
+
+  if ( authDoc.g ) {
+    const networkIndex = authDoc.g.indexOf( context.host );
+    if ( networkIndex == -1 ) {
+      newNetwork = true;
+      authDoc.g.push( context.host );
+      authDoc.h.push( newRefreshToken );
+    }
+    else {
+      if ( !context.isEvmJoin ) {
+        authDoc.h[networkIndex] = newRefreshToken;
+      }
+    }
+    networksArr = authDoc.g;
+    refreshTokensArr = authDoc.h;
+  }
+  else {
+    newNetwork = true;
+    networksArr = [context.host];
+    refreshTokensArr = [newRefreshToken];
+  }
 
   await new Promise( resolve => {
-    colA.child( context.a ).update( castObjectPaths( { g: newRefreshToken } ), () => resolve( 'set newRefreshToken' ) );
+    colA.child( authDoc.a ).update( { g: networksArr, h: refreshTokensArr }, () => resolve( true ) );
   } );
 
-  const options = {
-    httpOnly: true,
-    // maxAge: 60 * 60 * 24 * 5 * 1000,
-    // secure: true,
-  };
+  /** Update the network cluster and point-cache */
+  if ( newNetwork ) {
+    setNetwork( context );
+  }
+
+  // const options = {
+  //   httpOnly: true,
+  //   // maxAge: 60 * 60 * 24 * 5 * 1000,
+  //   // secure: true,
+  // };
 
   // res.cookie( 'refresh_token', newRefreshToken, options );
 
@@ -59,13 +83,15 @@ module.exports = async ( context, res ) => {
     success: true,
     message: 'successfully set refreshToken and sent cookie',
     exp: settings.jwtExpiry,
-    uuidE: context.d,
-    tempRefresh: newRefreshToken,
+    uuidE: authDoc.d,
+    uuidP: authDoc.e,
+    tempRefresh: 'REFR' + '--' + authDoc.a + '--' + newRefreshToken,
     jwt: sign(
       {
         user: {
-          a: context.a,
-          d: context.d,
+          a: authDoc.a,
+          d: authDoc.d,
+          i: authDoc.i,
         },
       },
       jwtSignature,

@@ -13,7 +13,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     /* Cross-browser bottom list padding */
     'list > *:last-child': {
-      'padding-bottom': '160px',
+      'padding-bottom': '20vh',
     },
     'card__top-left': {
       width: cardLeftWidth + '%',
@@ -34,7 +34,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       width: '100%',
     },
     'card__container': {
-      'max-width': '360px',
+      // 'max-width': '360px',
       'flex-wrap': 'wrap',
     },
     'background': {
@@ -76,18 +76,22 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    transaction: 'No transactions found',
-    message: 'No messages found',
-    entity: 'No entities found',
-    marketplace: 'No network items found',
-    media: 'No media items found',
-    close: 'close',
-  };
+  const ui = ( () => {
+    const strings = {
+      transaction: 'No transactions found',
+      message: 'No messages found',
+      entity: 'No entities found',
+      marketplace: 'No items found',
+      media: 'No media items found',
+      close: 'close',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'canvas', scope || 'not found' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -105,24 +109,24 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   /* ================  public components ================ */
 
   function notFound( which ) {
-    return V.setNode( {
+    return V.cN( {
       t: 'p',
       c: 'pxy',
-      h: getString( ui[which] ),
+      h: V.getString( ui[which] ),
     } );
   }
 
   function background() {
-    return V.setNode( {
+    return V.cN( {
       t: 'background',
-      id: 'background',
-      k: handleClosePopup,
+      i: 'background',
       c: 'background fixed w-screen',
+      k: handleClosePopup,
     } );
   }
 
   function haze() {
-    return V.setNode( {
+    return V.cN( {
       t: 'haze',
       c: 'haze fixed w-screen bkg-white hidden',
     } );
@@ -130,10 +134,10 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function feature() {
     const dimensions = V.getState( 'page' ).featureDimensions;
-    return V.setNode( {
+    return V.cN( {
       t: 'feature',
       c: 'feature fixed hidden',
-      setStyle: {
+      s: {
         feature: {
           top: 'var(--page-position-top-selected)',
           height: dimensions.height + 'px', // 'calc(var(--screen-width) * (9 / 16))'
@@ -147,7 +151,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function balance() {
     const sc = V.getState( 'screen' );
 
-    return V.setNode( {
+    return V.cN( {
       t: 'balance',
       c: 'balance fixed cursor-pointer txt-anchor-mid',
       y: sc.width > 800 ? { top: '12px', left: '12px' } : { top: '2px', left: '2px' },
@@ -157,7 +161,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   function interactions() {
     const sc = V.getState( 'screen' );
 
-    return V.setNode( {
+    return V.cN( {
       t: 'interactions',
       c: 'interactions fixed',
       s: {
@@ -175,61 +179,64 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handle() {
-    return V.setNode( {
+    return V.cN( {
       t: 'handle',
       c: 'handle',
       h: {
-        t: 'div',
         c: 'handle__bar rounded-full bkg-offblack',
       },
     } );
   }
 
   function topSlider() {
-    return V.setNode( {
+    return V.cN( {
       t: 'topslider',
     } );
   }
 
   function slider() {
-    return V.castNode( {
+    return V.cN( {
       t: 'slider',
       c: 'flex overflow-x-scroll list-none pb-s',
     } );
   }
 
   function listings() {
-    return V.setNode( {
+    return V.cN( {
       t: 'listings',
     } );
   }
 
-  function list( which ) {
+  function list( options ) {
 
-    const $list = V.setNode( {
+    const $list = V.cN( {
       t: 'list',
       c: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
     } );
 
-    if ( which == 'narrow' ) {
-      $list.style['max-width'] = '380px';
-      $list.style.margin = '0 auto';
+    if ( options && options.width == 'narrow' ) {
+      // $list.style['max-width'] = '380px';
+      // $list.style.margin = '0 auto';
+    }
+
+    if ( options && options.top == 'indent' ) {
+      $list.style.position = 'relative';
+      $list.style.top = '-30px';
     }
 
     return $list;
   }
 
-  function card( $cardContent, cardTitle, id ) {
-
-    return V.setNode( {
+  function card( $cardContent, cardTitle, id, display ) {
+    return V.cN( {
       t: 'li',
-      c: 'pxy w-screen max-w-380',
+      c: 'pxy w-screen max-w-list zero-auto' + ( display ? ' hidden' : '' ),
       i: id,
       h: {
         t: 'card',
-        c: 'card__container flex card-shadow rounded bkg-white pxy',
+        c: 'card__container max-w-list flex card-shadow rounded bkg-white pxy',
         h: cardTitle ? [
-          { t: 'h2', c: 'w-full font-bold pxy capitalize', h: cardTitle },
+          { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle },
           $cardContent,
         ] : $cardContent,
       },
@@ -237,26 +244,27 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function header() {
-    return V.setNode( {
+    return V.cN( {
       t: 'header',
+      c: 'absolute',
     } );
   }
 
   function page() {
-    return V.setNode( {
+    return V.cN( {
       t: 'page',
       c: 'page fixed w-screen bkg-white pill-shadow overflow-hidden',
     } );
   }
 
   function content() {
-    return V.setNode( {
+    return V.cN( {
       t: 'content',
     } );
   }
 
   function topContent() {
-    return V.setNode( {
+    return V.cN( {
       t: 'topcontent',
     } );
   }
@@ -267,30 +275,25 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       c: 'fixed hidden w-screen',
       k: handleClosePopup,
       h: {
-        t: 'div',
         c: 'popup',
         // k: handleClosePopup,
         h: [
           {
-            t: 'div',
             c: 'popup-content-wrapper flex flex-wrap justify-center items-center',
             h: [
               // {
               //   t: 'p',
               //   c: 'popup-content-close fs-xxs',
-              //   h: getString( ui.close )
+              //   h: V.getString( ui.close )
               // },
               {
-                t: 'div',
                 c: 'popup-content',
               },
             ],
           },
           {
-            t: 'div',
             c: 'popup-tip-container',
             h: {
-              t: 'div',
               c: 'popup-tip',
             },
           },
@@ -303,7 +306,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'img',
       c: 'network-logo',
-      src: V.getSetting( 'logo' ),
+      r: V.getSetting( 'logo' ),
     } );
   }
 

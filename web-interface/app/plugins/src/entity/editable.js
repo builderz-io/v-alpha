@@ -7,11 +7,35 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      transfers: 'Transfers',
+      settings: 'Settings',
+      disconnect: 'Disconnect',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
-  async function presenter( path ) {
+  async function presenter( which ) {
+
+    if ( typeof which == 'string' ) {
+      which = V.castPathOrId( which );
+    }
+    else {
+      Object.assign( which, { isDisplay: true } );
+    }
+
     let query;
-    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == path ) : undefined;
+    const inCache = V.getCache().viewed ? V.getCache().viewed.data.find( entity => entity.path == which ) : undefined;
 
     if ( !V.aE() ) {
       return {
@@ -26,11 +50,16 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       };
     }
     else {
-      query = await V.getEntity( V.castPathOrId( path ) ).then( res => {
+      query = await V.getEntity(
+        which,
+        // which.length == V.getSetting( 'uuidStringLength' ) && // checks whether which is a uuidE or a path
+        // isNaN( Number( which.slice( -5 ) ) )
+        //   ? which
+        //   : V.castPathOrId( which )
+      ).then( res => {
         if ( res.success ) {
-
+          V.setCache( 'points', res.data );
           V.setCache( 'viewed', res.data );
-
           return res;
         }
         else {
@@ -66,17 +95,18 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         editable: true,
       } );
 
-      $list = CanvasComponents.list( 'narrow' );
+      $list = CanvasComponents.list();
       $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [
         // InteractionComponents.onboardingCard(),
         // UserComponents.roleCard(),
         UserComponents.addOrChangeImage(),
-        UserComponents.descriptionCard(),
-        UserComponents.questionnaireCard(),
-        UserComponents.socialCard(),
         UserComponents.locationCard(),
+        Farm.drawPlotWidget(),
+        UserComponents.questionnaireCard(),
+        UserComponents.descriptionCard(),
+        UserComponents.socialCard(),
         UserComponents.preferredLangsCard(),
         UserComponents.financialCard(),
         UserComponents.entityCard(),
@@ -96,10 +126,70 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         // topcontent: $topcontent,
         listings: $list,
       } ).then( () => {
+
+        $( '.location__base' ).leafletLocationPicker( {
+          alwaysOpen: true,
+          mapContainer: '.join-loc-picker__map',
+          height: 140,
+          map: {
+            zoom: 13,
+            center: L.latLng(
+              V.getState( 'userLocChange' )
+                ? [ V.getState( 'userLocChange' ).lat, V.getState( 'userLocChange' ).lng ]
+                : V.castClone( viewData.data[0].geometry.coordinates ).reverse(),
+            ),
+            zoomControl: false,
+            attributionControl: false,
+          },
+          onChangeLocation: function newPickedLocation( data ) {
+            V.setState( 'userLocChange', {
+              lat: data.latlng.lat,
+              lng: data.latlng.lng,
+              loc: 'picked location',
+            } );
+            V.setEntity( V.getState( 'active' ).lastViewed, {
+              field: 'geometry.baseLocation',
+              data: {
+                lat: data.latlng.lat,
+                lng: data.latlng.lng,
+                loc: 'picked location',
+              },
+            } );
+          },
+        } );
+
+        const loc = viewData.data[0].geometry
+          ? viewData.data[0].geometry.baseLocation == 'picked location'
+            ? 'Lat ' + viewData.data[0].geometry.coordinates[1] + ' Lng ' + viewData.data[0].geometry.coordinates[0]
+            : viewData.data[0].geometry.baseLocation
+          : undefined;
+
         Google.launch().then( () => { // adds places lib script
-          Google.initAutocomplete( 'user' );
+          Google.initAutocomplete( 'user', loc );
         } );
       } );
+
+      // setTimeout( function delayedEntityViewMap() {
+      //   $( '.join-loc-picker__input-profile-view' ).leafletLocationPicker( {
+      //     alwaysOpen: true,
+      //     mapContainer: '.join-loc-picker__map',
+      //     height: 140,
+      //     map: {
+      //       zoom: 13,
+      //       center: L.latLng( V.castClone( viewData.data[0].geometry.coordinates ).reverse() ),
+      //       zoomControl: false,
+      //       attributionControl: false,
+      //     },
+      //     // onChangeLocation: function pickedLocation( data ) {
+      //     //
+      //     //   setResponse( '', 'setAsIs' );
+      //     //
+      //     //   entityData.location = 'picked location';
+      //     //   entityData.lat = data.latlng.lat;
+      //     //   entityData.lng = data.latlng.lng;
+      //     // },
+      //   } );
+      // }, 400 );
 
       VMap.draw( [viewData.data[0]] );
     }
@@ -111,7 +201,9 @@ const User = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( /* path */ ) {
-    Button.draw( 'all', { fade: 'out' } );
+    MagicButton.draw( 'chat' );
+
+    // Button.draw( 'all', { fade: 'out' } );
 
     // if ( path == '/me/profile' ) {
     //   Navigation.draw( path );
@@ -137,7 +229,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       //   },
       // },
       {
-        title: 'Transfers',
+        title: ui.transfers,
         path: '/me/transfers',
         use: {
           button: 'search',
@@ -153,11 +245,11 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       //     button: 'plus search',
       //   },
       //   draw: function( path ) {
-      //     User.draw( path );
+      //     User.draw( { path: path } );
       //   }
       // },
       {
-        title: 'Settings',
+        title: ui.settings,
         path: '/me/settings',
         use: {
           button: 'plus search',
@@ -167,22 +259,22 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         },
       },
       {
-        title: 'Disconnect',
+        title: ui.disconnect,
         path: '/me/disconnect',
         draw: function( path ) {
-          User.draw( path );
+          User.draw( { path: path } );
         },
       },
     ] );
   }
 
-  function draw( path ) {
-    if ( path == '/me/disconnect' ) {
+  function draw( data ) {
+    if ( data.path == '/me/disconnect' ) {
       Modal.draw( 'disconnect' );
     }
     else {
-      preview( path );
-      presenter( path ).then( viewData => { view( viewData ) } );
+      preview( /* path */ );
+      presenter( data ).then( viewData => { view( viewData ) } );
     }
   }
 

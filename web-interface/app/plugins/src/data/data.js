@@ -9,44 +9,58 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      data: 'Data',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   async function presenter( which ) {
 
-    const geometry = V.getState( 'map' ) || { lat: 52.522, lng: 13.383, zoom: 12 };
+    const geometry = V.getState( 'mapCenter' ) || { lat: 52.522, lng: 13.383, zoom: 12 };
     // const geometry = { lat: 52.3667, lng: 4.8945, zoom: 12 }; // Amsterdam
 
-    // const apiKeyAir = '43efc70f-a3e2-4cc3-a261-fb5bd47a3e1c';
+    const apiKeyAir = '8d746809-90e8-4190-9550-7b85e3b3e16e';
     const apiKeyWeather = '8cc2a6452c40044763dd503c9752fbdc';
 
-    // const co2 = await Promise.resolve( getHttp( 'https://datahub.io/core/co2-ppm-daily/datapackage.json' ) );
-    // const a = Promise.resolve( V.getHttp( 'https://api.airvisual.com/v2/nearest_city?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&key=' + apiKeyAir ) );
-    const b = Promise.resolve( V.getData( 'https://api.openweathermap.org/data/2.5/weather?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, '', 'http' ) );
-    const c = Promise.resolve( V.getData( 'https://api.openweathermap.org/data/2.5/forecast?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, '', 'http' ) );
+    // const co2 = await Promise.resolve( V.getData( 'https://datahub.io/core/co2-ppm-daily/datapackage.json' ) );
+    const a = Promise.resolve( V.getData( '', 'https://api.airvisual.com/v2/nearest_city?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&key=' + apiKeyAir, 'api' ) );
+    const b = Promise.resolve( V.getData( '', 'https://api.openweathermap.org/data/2.5/weather?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, 'api' ) );
+    const c = Promise.resolve( V.getData( '', 'https://api.openweathermap.org/data/2.5/forecast?lat=' + geometry.lat.toFixed( 4 ) + '&lon=' + geometry.lng.toFixed( 4 ) + '&appid=' + apiKeyWeather, 'api' ) );
 
-    const all = await Promise.all( [{ status: 'fail' }, b, c] );
+    const all = await Promise.all( [a, b, c] );
 
     const airQuality = all[0];
     const weatherData = all[1].data[0];
     const forecastData = all[2].data[0];
 
     let formattedAirQualityData = {
-      city: 'Sorry, could not get data',
-      pollution: 0,
+      city: 'Sorry, could not get data for this location',
+      pollution: { aqius: 0 },
     };
 
-    if ( airQuality && airQuality.status != 'fail' ) {
+    if ( airQuality.success && airQuality.data[0].status != 'fail' ) {
       formattedAirQualityData = {
-        city: 'The current air pollution levels in ' + airQuality.data.city + '!',
-        pollution: airQuality.data.current.pollution,
+        city: 'The current air pollution levels in ' + airQuality.data[0].data.city + '!',
+        pollution: airQuality.data[0].data.current.pollution,
       };
     }
 
     const formattedWeatherDataNow = {
       place: 'The weather in ' + ( weatherData.name == '' ? 'current map position' : weatherData.name ) + '!',
       iconUrl: 'http://openweathermap.org/img/wn/' + weatherData.weather[0].icon + '@2x.png',
-      temp: 'Temperature: ' + ( weatherData.main.temp - 273.15 ).toFixed( 1 ) + '°C / ' +
-             ( ( weatherData.main.temp - 273.15 ) * 9/5 + 32 ).toFixed( 1 ) + '°F',
+      temp: 'Temperature: ' + ( weatherData.main.temp - 273.15 ).toFixed( 1 ) + '°C / '
+             + ( ( weatherData.main.temp - 273.15 ) * 9/5 + 32 ).toFixed( 1 ) + '°F',
       tempC: ( weatherData.main.temp - 273.15 ).toFixed( 0 ) + '°C',
       humidity: 'Humidity: ' + weatherData.main.humidity,
       sky: weatherData.weather[0].description,
@@ -78,11 +92,11 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     const $list = CanvasComponents.list();
     const $weatherCard = DataComponents.weatherCard( formattedWeatherDataNow, formattedWeatherDataForecast );
     const $card = CanvasComponents.card( $weatherCard );
-    // const $airCard = DataComponents.airCard( formattedAirQualityData );
-    // const $card2 = CanvasComponents.card( $airCard );
+    const $airCard = DataComponents.airCard( formattedAirQualityData );
+    const $card2 = CanvasComponents.card( $airCard );
 
     V.setNode( $list, $card );
-    // V.setNode( $list, $card2 );
+    V.setNode( $list, $card2 );
 
     const pageData = {
       which: which,
@@ -96,7 +110,6 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   function view( pageData ) {
     Navigation.draw( pageData.which );
     Page.draw( pageData );
-    // VMap.draw();
   }
 
   function preview( whichPath ) {
@@ -104,7 +117,6 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       position: 'top',
     } );
-    VMap.draw();
   }
 
   /* ============ public methods and exports ============ */
@@ -112,7 +124,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     V.setNavItem( 'serviceNav', [
       {
-        title: 'Data',
+        title: ui.data,
         path: '/data',
         use: {
           button: 'search',
@@ -131,7 +143,7 @@ const Data = ( function() { // eslint-disable-line no-unused-vars
     presenter( which ).then( viewData => { view( viewData ) } );
   }
 
-  V.setState( 'availablePlugins', { data: function() { Data.launch() } } );
+  V.setState( 'availablePlugins', { data: launch } );
 
   return {
     launch: launch,

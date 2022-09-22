@@ -6,12 +6,14 @@ const types = {
       a: ID!           // uuid - as base64 and URL compatible
       b: String        // @context - includes document version
       d: String        // related entity document
+      f: Int           // privacy setting
 
       m: Properties
       n: Geometry
       o: Images
       p: TransactionLog
       q: Questionnaire
+      s: Servicefields  // fields for free allocation used by plugins or widgets
 
       x: RelationsP
       y: DatesP
@@ -27,14 +29,18 @@ const types = {
       m: Int          // target
       n: String       // unit
       r: String       // filtered description
+      s: String       // email private
     }
   `,
   Geometry: `
     {
       a: [Float]      // base coordinates
-      b: String       // base Location
-      c: [Float]      // current coordinates
-      d: String       // current Location
+      b: String       // geo hash
+      c: String       // base Location
+      g: [Float]      // current coordinates
+      h: String       // geo hash
+      i: String       // current Location
+      z: Int          // default continent
     }
   `,
   Images: `
@@ -43,6 +49,7 @@ const types = {
       b: String       // thumb
       c: String       // medium
       n: String       // name on upload
+      z: Int          // default avatar
     }
   `,
   Questionnaire: `
@@ -59,10 +66,26 @@ const types = {
       q10: String
     }
   `,
+  Servicefields: `
+    {
+      s1: String       // some content
+      s2: String
+      s3: String
+      s4: String
+      s5: String
+      s6: String
+      s7: String
+      s8: String
+      s9: String
+      s10: String
+    }
+  `,
   RelationsP: `
     {
       a: String      // creator uuid
-      b: [String]    // owned by
+      m: String      // held by (1)
+      n: String      // held by (2)
+      o: String      // held by (3)
     }
   `,
   DatesP: `

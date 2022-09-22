@@ -2,13 +2,13 @@
 /* eslint global-require: "off" */
 
 module.exports = async ( context, data, objToUpdate ) => {
-  console.log( 'data to validate:', data );
+  // console.log( 'data to validate:', data );
 
   if ( !objToUpdate && data.profileInputServerSide ) {
 
     /** Check whether the role is valid. */
 
-    require( './role' )( data );
+    // require( './role' )( data );
 
     /** Check whether the title is valid. */
 
@@ -58,7 +58,7 @@ module.exports = async ( context, data, objToUpdate ) => {
   else if ( objToUpdate && objToUpdate.b.includes( '/e' ) ) {
 
     if ( data.m ) {
-      require( './title' )( data );
+      await require( './title' )( data, objToUpdate );
     }
 
     if ( data.j ) {
@@ -108,7 +108,6 @@ module.exports = async ( context, data, objToUpdate ) => {
        */
 
       if ( data.m.m || data.m.m === null ) {
-        console.log( 'we are here' );
         require( './target' )( {
           profileInputServerSide: {
             target: data.m.m,

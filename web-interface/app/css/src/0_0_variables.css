@@ -5,11 +5,14 @@
   --corners: 5px;
 
   --card-height: 172px;
+  --list-max-width: 410px;
 
+  --magic-btn-top: 11px;
+  --magic-btn-left: 69px;
   --entity-nav-top: 7px;
-  --entity-nav-left: 61px; /* 61 */
+  --entity-nav-left: 114px; /* 61 */
   --user-nav-top: 7px;
-  --user-nav-left: 61px;
+  --user-nav-left: 114px;
   --service-nav-top: 4rem;
   --service-nav-left: 7px;
 
@@ -66,7 +69,7 @@
   --link: 215, 126, 88;
 
   /* Spacing */
-  --global-padding: 5px;
+  --global-padding: 0.5rem;
 
   --desktop-page-detach: 0;
 
@@ -83,10 +86,12 @@
 
 @media screen and (min-width: 800px) {
     :root {
+      --magic-btn-top: 25px;
+      --magic-btn-left: 90px;
       --entity-nav-top: 21px;
-      --entity-nav-left: 84px; /* 84 */
+      --entity-nav-left: 137px; /* 84 */
       --user-nav-top: 21px;
-      --user-nav-left: 84px;
+      --user-nav-left: 137px;
       --service-nav-top: 5.5rem;
       --service-nav-left: 12px;
 

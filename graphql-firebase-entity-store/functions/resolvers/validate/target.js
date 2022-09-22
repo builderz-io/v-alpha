@@ -13,16 +13,16 @@ module.exports = data => {
     else if ( !validator.isAlphanumeric( unit + '' ) ) {
       throw new Error( '-5153 unit must be alphanumeric' );
     }
-    else if ( unit.length >= 10 ) {
+    else if ( unit && unit.length >= 10 ) {
       throw new Error( '-5154 max 10 chars in unit' );
     }
     else if ( Number( target ) < 1 ||  Number( target ) > 9999 ) {
       throw new Error( '-5151 target must be between 1 - 9999' );
     }
-    else if ( role == 'Pool' && !target ) {
+    else if ( role == 'an' && !target ) { // 'an' is a ResourcePool
       throw new Error( '-5155 pools must have a target' );
     }
-    else if ( role != 'Pool' && ( !target || !unit ) ) {
+    else if ( role != 'an' && ( !target || !unit ) ) { // 'an' is a ResourcePool
       throw new Error( '-5150 both target and unit, such as "hour", must be present' );
     }
     else {

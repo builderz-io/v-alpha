@@ -16,10 +16,12 @@ const Header = ( function() { // eslint-disable-line no-unused-vars
     const $userNav = NavComponents.userNav();
     const $serviceNav = NavComponents.serviceNav();
     const $interactions = CanvasComponents.interactions();
+    const $magicButton = MagicButton.frame();
 
-    V.setNode( $header, [ $balance, $entityNav, $userNav, $serviceNav, $interactions ] );
+    V.setNode( $header, [ $balance, $entityNav, $userNav, $serviceNav, $interactions, $magicButton ] );
 
     V.setNode( 'body', $header );
+    MagicButton.draw( 'search' );
   }
 
   return {

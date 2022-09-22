@@ -30,11 +30,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     },
     'messageform__input': {
       'height': '37px',
-      'padding': '10px 15px',
+      'padding': '9px 18px',
       'width': '87%',
       // 'border': '1px solid #e8e8ec',
       'resize': 'none',
       'border-radius': '30px',
+      'transition': 'height 0.1s',
     },
     'messageform__response': {
       position: 'absolute',
@@ -80,16 +81,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    notFound: 'not found',
-    chatTitle: 'Chat with Everyone',
-    placeholder: 'Send message or funds',
-    placeholder2: 'Join first to send a message or funds',
-  };
+  const ui = ( () => {
+    const strings = {
+      notFound: 'not found',
+      chatTitle: 'Chat with Everyone',
+      placeholder: 'Send message or funds',
+      placeholder2: 'Join first to send a message or funds',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'chat', scope || 'chat components' );
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -103,7 +108,7 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleKeyUp( e ) {
     const key = window.event ? e.keyCode : e.which;
     // enter (to search)
-    if ( key == 13 && V.i18n( 'search', 'trigger' ) == permanentString.split( ' ' )[0] ) {
+    if ( key == 13 && V.getString( 'search' ) == permanentString.split( ' ' )[0] ) {
       if ( sc.childElementCount == 1 ) {
         this.value = permanentString.split( ' ' )[0] + ' ' + sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' );
         document.getElementById( 'send-message' ).click();
@@ -122,10 +127,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     else if ( ( key == 13 || key == 9 || key == 39 ) && autoCompleteActive ) {
       e.preventDefault();
       if ( sc.childElementCount == 1 ) {
-        placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ),
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'uuide' ),
+          permanentString,
+          this,
+        );
       }
       else if ( sel ) {
-        placeSelection( sel.getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sel.getAttribute( 'data-val' ),
+          sel.getAttribute( 'uuide' ),
+          permanentString,
+          this,
+        );
       }
     }
     // esc
@@ -205,21 +220,31 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
         // TODO: could do with a better implementation of ignoring the "for" trigger-word
 
-        if ( stringToComplete.length == 2 && stringToComplete != V.i18n( 'for', 'trigger' ) ) {
+        if (
+          stringToComplete.length == 3
+          && stringToComplete != V.getString( 'for' )
+        ) {
 
-          V.getQuery( { query: stringToComplete, role: 'all' } ).then( res => {
-            dbEntries = res.data;
-            if ( res.success ) {
-              setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
-            }
-          } );
+          V.getQuery( {
+            query: stringToComplete,
+            role: 'all',
+            field: 'title',
+            isAutofill: true,
+          } )
+            .then( res => {
+              console.log( res );
+              dbEntries = res.data;
+              if ( res.success ) {
+                setFirstSuggestions( dbEntries, stringToComplete, permanentString, this );
+              }
+            } );
 
           // socket.emit( 'get all entities', [stringToComplete, $( '#header-svg' ).attr( 'fullid' )], function( callback ) {
           //   dbEntries = callback.sort();
           //   setFirstSuggestions( dbEntries, stringToComplete, permanentString );
           // } );
         }
-        if ( stringToComplete.length == 4 && stringToComplete.substr( 0, 2 ) == V.i18n( 'for', 'trigger' ) ) {
+        if ( stringToComplete.length == 4 && stringToComplete.substr( 0, 2 ) == V.getString( 'for' ) ) {
 
           // socket.emit( 'get all entities', stringToComplete, function( callback ) {
           //   dbEntries = callback;
@@ -268,10 +293,20 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
       // const sc = document.getElementsByClassName( 'ac-suggestions' )[0];
       // const sel = sc.querySelector( '.ac-suggestion.selected' );
       if ( sc.childElementCount == 1 ) {
-        placeSelection( sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'data-val' ),
+          sc.querySelector( '.ac-suggestion' ).getAttribute( 'uuide' ),
+          permanentString,
+          this,
+        );
       }
       else if ( sel ) {
-        placeSelection( sel.getAttribute( 'data-val' ), permanentString, this );
+        placeSelection(
+          sel.getAttribute( 'data-val' ),
+          sel.getAttribute( 'uuide' ),
+          permanentString,
+          this,
+        );
       }
       else {
         revertAutoComplete();
@@ -302,7 +337,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
     live( 'ac-suggestion', 'mousedown', function() {
       if ( hasAutoCompleteClass( this, 'ac-suggestion' ) ) { // else outside click
-        placeSelection( this.getAttribute( 'data-val' ), permanentString, $textarea );
+        placeSelection(
+          this.getAttribute( 'data-val' ),
+          this.getAttribute( 'uuide' ),
+          permanentString,
+          $textarea,
+        );
       }
     }, sc );
 
@@ -333,7 +373,8 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     $elem.value = completeString;
   }
 
-  function placeSelection( selectedEntity, permanentString, $elem ) {
+  function placeSelection( selectedEntity, selectedUuide, permanentString, $elem ) {
+    V.setState( 'active', { autofillUuidE: selectedUuide } );
     considerSelection( selectedEntity, permanentString, $elem );
     revertAutoComplete();
     window.setTimeout( function() { $elem.focus() }, 10 );
@@ -373,7 +414,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const rect = $textarea.getBoundingClientRect();
 
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestions absolute card-shadow bkg-white',
       y: {
         left: rect.left + 'px',
@@ -381,7 +421,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         width: rect.width + 'px',
       },
       h: !dbEntries.length ? notFound( stringToComplete ) : V.cN( {
-        t: 'div',
         h: dbEntries.map( entry => castSuggestion( entry, stringToComplete ) ),
       } ),
     } );
@@ -390,25 +429,24 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   function castSuggestion( entity, stringToComplete ) {
     const search = stringToComplete.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
     const re = new RegExp( '(' + search.split( ' ' ).join( '|' ) + ')', 'gi' );
-    const name = entity.title;
+    const title = entity.title;
     const tag = entity.tag;
 
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestion',
       a: {
-        'data-val': name + ' ' + tag,
+        'data-val': title + ' ' + tag,
+        'uuidE': entity.uuidE,
       },
-      innerHtml: name.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' ' + tag,
+      innerHtml: title.replace( re, '<span class="txt-brand-primary font-bold">$1</span>' ) + ' ' + tag,
     } );
 
   }
 
   function notFound( stringToComplete ) {
     return V.cN( {
-      t: 'div',
       c: 'ac-suggestion',
-      h: '"' + stringToComplete + '" ' + getString( ui.notFound ),
+      h: '"' + stringToComplete + '" ' + V.getString( ui.notFound ),
     } );
   }
 
@@ -416,13 +454,12 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function topcontent() {
     return V.cN( {
-      t: 'div',
       c: 'w-full',
       h: [
         {
           t: 'h2',
           c: 'font-bold fs-l leading-snug txt-center w-full pxy',
-          h: getString( ui.chatTitle, 'chat title' ),
+          h: V.getString( ui.chatTitle, 'chat title' ),
         },
         {
           t: 'span',
@@ -445,9 +482,9 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     linkedMsg.iframes.includes( 'iframe' ) ? width = '330px' : null;
     const style = msg.sender == 'Me' ? { 'margin-left': 'auto', 'width': width } : { 'margin-right': 'auto', 'width': width };
 
-    return V.castNode( {
-      tag: 'li',
-      classes: 'w-screen pxy',
+    return V.cN( {
+      t: 'li',
+      c: 'w-screen pxy',
       a: {
         uuidE: msg.uuidE || msg._id, // _id in MongoDB
         time: msg.time || 'na',
@@ -460,7 +497,6 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
           background: background,
         },
         h: {
-          t: 'div',
           c: 'font-medium pxy',
           h: [
             {
@@ -484,21 +520,21 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageForm() {
-    return V.sN( {
-      t: 'div',
+    return V.cN( {
       c: 'messageform flex items-center absolute w-full pxy card-shadow',
     } );
   }
 
   function messageInput( prefill ) {
-    return V.sN( {
+    return V.cN( {
       t: 'textarea',
       c: 'messageform__input mr-2',
-      h: prefill ? 'send ' + prefill + ' 10' : '',
+      // h: V.aE() && prefill ? 'send ' + prefill + ' 10' : '',
+      h: V.aE() && prefill ? 'send 10' : '',
       a: {
         // style: 'height:10px;overflow-y:hidden;',
-        placeholder: V.aE() ? getString( ui.placeholder, 'message textarea placeholder' )
-          : getString( ui.placeholder2, 'message textarea placeholder' ),
+        placeholder: V.aE() ? V.getString( ui.placeholder, 'message textarea placeholder' )
+          : V.getString( ui.placeholder2, 'message textarea placeholder' ),
       },
       e: {
         keyup: handleKeyUp,
@@ -509,16 +545,25 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function messageSend() {
-    return V.sN( {
+    return V.cN( {
       t: 'button',
+      i: 'send-message',
       c: 'circle-1 flex justify-center items-center rounded-full bkg-white',
-      h: V.getIcon( 'send' ),
+      h: V.cN( {
+        t: 'span',
+        y: {
+          position: 'relative',
+          left: '1px',
+          top: '1px',
+          opacity: '0.75',
+        },
+        h: V.getIcon( 'send' ),
+      } ),
     } );
   }
 
   function messageResponse() {
-    return V.sN( {
-      t: 'div',
+    return V.cN( {
       c: 'messageform__response',
       // h: 'test response msg'
     } );

@@ -10,10 +10,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   /* ================== event handlers ================== */
 
   function handleProfileDraw() {
-    const path = this;
-    V.setState( 'active', { navItem: path } );
-    V.setBrowserHistory( path );
-    Profile.draw( path );
+    V.setState( 'active', { navItem: this.path } );
+    V.setBrowserHistory( this.path );
+    Profile.draw( this );
   }
 
   function handleEditProfileDraw() {
@@ -21,34 +20,55 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function handlePopup() {
-    const pathOfOpen = V.getNode( '.popup-content' ) ?
-      V.getNode( '.popup-content' ).firstChild ?
-        V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' ) : false : false;
+    const pu = V.getNode( '.popup-content' );
+    const pathOfOpen = pu && pu.firstChild
+      ? V.getNode( '.popup-content' ).firstChild.getAttribute( 'path' )
+      : null;
+
     if (
-      V.getState( 'page' ).height > V.getState( 'page' ).peek ||
-      ( pathOfOpen && pathOfOpen == this )
+      V.getState( 'page' ).height > V.getState( 'page' ).peek
+      || ( pathOfOpen && pathOfOpen == this.path )
     ) {
-      // V.setAnimation( '.popup', {
-      //   opacity: 0
-      // }, { duration: 0.8 }, { delay: 0.5 } ).then( ()=>{
-      //   V.setNode( '.popup-content', '' );
-      // } );
-      V.setBrowserHistory( this );
+      V.setBrowserHistory( this.path );
       Profile.draw( this );
       return;
     }
-    const entity = V.getCache( 'preview' ).data.find( item => item.path == this );
+
+    drawPopup( this.path );
+
+  }
+
+  function handlePopupHover( e ) {
+    e.stopPropagation();
+
+    /* hover event is also triggered on touch (together with click), so do nothing on such devices */
+    if ( V.getState( 'screen' ).width > 800 ) {
+      drawPopup( this.path, 'hover' );
+    }
+
+  }
+
+  function drawPopup( path, hover ) {
+    const entity = V.getCache( 'highlights' ).data.find( item => item.path == path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );
       V.setNode( '.popup-content', popupContent( entity ) );
       V.getNode( '.popup' ).style.opacity = 1;
+      if ( hover ) {
+        VMap.draw( [entity], { isHover: true } );
+      }
     }
   }
 
   function handleDrawPlusForm() {
     Page.draw( { position: 'closed', reset: false, navReset: false } );
-    Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
+    if( V.getSetting( 'joinVersion' ) === 1 ) {
+      Form.draw( V.getNavItem( 'active', 'serviceNav' ).use.form );
+    }
+    else {
+      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( 'active', 'serviceNav' ).use ) );
+    }
   }
 
   /* ================== private methods ================= */
@@ -63,6 +83,9 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     }
     else if ( cardData.images && cardData.images.thumbnail ) { // new model
       return 'url(\'' + cardData.images.thumbnail + '\')';
+    }
+    else {
+      return 'url(\'' + JoinAvatars.dataUris[cardData.images.avatar -1] + '\')';
     }
 
     switch ( '2' /* cardData.tag.charAt( 1 ) */ ) {
@@ -83,22 +106,23 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   function castCircle( circleData, whichHandler ) {
     const backgr = castBackground( circleData );
     return V.cN( {
-      t: 'div',
       c: 'circle-3 flex justify-center items-center rounded-full cursor-pointer',
       a: {
         style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`,
       },
       h: {
-        t: 'div',
         c: 'card__initials font-bold fs-xl txt-white',
         h: backgr.includes( 'url' ) ? '' : V.castInitials( circleData.fullId ),
       },
       e: {
-        click: whichHandler == 'editable' ?
-          handleEditProfileDraw.bind( circleData.path ) :
-          whichHandler == 'popup' ?
-            handlePopup.bind( circleData.path ) :
-            handleProfileDraw.bind( circleData.path ),
+        click: whichHandler == 'editable'
+          ? handleEditProfileDraw.bind( circleData )
+          : whichHandler == 'popup'
+            ? handlePopup.bind( circleData )
+            : handleProfileDraw.bind( circleData ),
+        mouseover: whichHandler == 'popup'
+          ? handlePopupHover.bind( circleData )
+          : '',
       },
     } );
   }
@@ -111,14 +135,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
         t: 'addcard',
         c: 'addcard__container txt-center rounded bkg-white',
         h: {
-          t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full cursor-pointer',
           a: {
-            style: 'background:rgba(var(--black), 0.094);margin-left: 5px;', // border: 2px solid rgba(var(--brandPrimary), 1)
+            style: 'background:rgba(var(--black), 0.11);margin-left: 5px;', // border: 2px solid rgba(var(--brandPrimary), 1)
           },
           h: {
-            t: 'div',
-            c: 'card__initials font-bold fs-xxl txt-white',
+            c: 'card__initials font-bold fs-xxl txt-brand-primary-50',
             h: '+',
           },
           k: handleDrawPlusForm,
@@ -141,20 +163,36 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
   }
 
-  function entitiesPlaceholder() {
+  function entitiesPlaceholder( options ) {
     return V.cN( {
       t: 'li',
       c: 'pxy',
       h: {
         t: 'smallcard',
         c: 'smallcard__container txt-center rounded bkg-white',
-        h: V.cN( {
-          t: 'div',
-          c: 'circle-3 rounded-full animated-background',
+        h: [
+          {
+            c: 'circle-3 rounded-full animated-background',
+            y: {
+              'margin-bottom': '20px',
+            },
           // a: {
           //   style: `background:${backgr}; background-position: center center; background-size: cover;margin: 0 auto;`
           // },
-        } ),
+          },
+          {
+            x: options ? options.showProgress : false,
+            c: 'progress-bar',
+            h: {
+              t: 'span',
+              c: 'bar',
+              h: {
+                t: 'span',
+                c: 'progress',
+              },
+            },
+          },
+        ],
       },
     } );
   }
@@ -172,37 +210,32 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     const castDescr = V.castDescription( text );
 
     const $cardContentFrame = V.cN( {
-      t: 'div',
       c: 'contents',
     } );
 
     const $topLeft = V.cN( {
-      t: 'div',
       c: 'card__top-left flex justify-center items-center pxy',
       h: castCircle( cardData ),
-      k: handleProfileDraw.bind( cardData.path ),
+      // k: handleProfileDraw.bind( { path: cardData.path, uuidE: cardData.uuidE } ),
     } );
 
     const $topRight = V.cN( {
-      t: 'div',
       c: 'card__top-right flex items-center pxy',
       h: {
         t: 'h2',
         c: 'font-bold fs-l leading-snug cursor-pointer',
         h: cardData.fullId,
-        k: handleProfileDraw.bind( cardData.path ),
+        k: handleProfileDraw.bind( cardData ),
       },
     } );
 
     const $bottomLeft = V.cN( {
-      t: 'div',
       c: 'card__bottom-left items-center pxy',
       h: cardData.properties && cardData.properties.target ? [
         {
-          t: 'div',
           c: 'circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select',
           h: cardData.properties.target || '',
-          k: handleProfileDraw.bind( cardData.path ),
+          k: handleProfileDraw.bind( cardData ),
         },
         {
           t: 'p',
@@ -213,14 +246,13 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     } );
 
     const $bottomRight = V.cN( {
-      t: 'div',
       c: 'card__bottom-right pxy',
       h: [
-        { t: 'p', c: 'pxy capitalize', h: cardData.role },
+        { t: 'p', c: 'pxy capitalize', h: V.getString( cardData.role ) },
         { x: text, t: 'p', c: 'pxy', h: castDescr.$intro },
         { t: 'p', c: 'pxy', h: cardData.geometry && cardData.geometry.baseLocation ? cardData.geometry.baseLocation : '' },
       ],
-      k: handleProfileDraw.bind( cardData.path ),
+      k: handleProfileDraw.bind( cardData ),
     } );
 
     V.setNode( $cardContentFrame, [ $topLeft, $topRight, $bottomLeft, $bottomRight ] );
@@ -234,6 +266,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
     // const filteredDescr = entity.properties && entity.properties.filteredDescription ? entity.properties.filteredDescription : undefined;
     // const text = filteredDescr ? filteredDescr : descr;
 
+    const isPreview = entity.path ? false : true;
+
     const text = entity.properties
       ? entity.properties.filteredDescription
         ? entity.properties.filteredDescription
@@ -244,30 +278,42 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
 
     const castDescr = V.castDescription( text );
 
-    return V.cN( {
-      t: 'div',
-      a: { path: entity.path },
-      h: [
-        {
-          t: 'p',
-          c: 'pxy txt-center font-bold cursor-pointer',
-          h: entity.fullId,
-          k: handleProfileDraw.bind( entity.path ),
+    if ( isPreview ) {
+      return V.cN( {
+        i: entity.uuidE + '-map-popup',
+        c: 'map-popup-inner flex justify-center',
+        y: {
+          'min-height': '320px',
         },
-        castCircle( entity ),
-        {
-          t: 'p',
-          c: 'pxy fs-s capitalize txt-center',
-          h: entity.role,
-        },
-        {
-          x: text,
-          t: 'p',
-          c: 'pxy fs-s break-words',
-          h: castDescr.$intro, // text ? text.length > 170 ? text.substr( 0, 170 ) + ' ...' : text : '',
-        },
-      ],
-    } );
+        h: entitiesPlaceholder( { showProgress: true } ),
+      } );
+    }
+    else {
+      return V.cN( {
+        c: 'map-popup-inner',
+        a: { path: entity.path },
+        h: [
+          {
+            t: 'p',
+            c: 'pxy txt-center font-bold cursor-pointer',
+            h: entity.fullId,
+            k: handleProfileDraw.bind( entity ),
+          },
+          castCircle( entity ),
+          {
+            t: 'p',
+            c: 'pxy fs-s capitalize txt-center',
+            h: V.getString( entity.role ),
+          },
+          {
+            x: text,
+            t: 'p',
+            c: 'pxy fs-s break-words',
+            h: castDescr.$intro,
+          },
+        ],
+      } );
+    }
   }
 
   /* ====================== export ====================== */

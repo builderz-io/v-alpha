@@ -31,8 +31,12 @@ const types = {
     {
       descr: String
       email: String
+      emailPrivate: String
       target: Int
       unit: String
+      continent: Int,
+      avatar: Int,
+      privacy: Int,
       lngLat: [Float]
       loc: String
       tinyImg: String
@@ -49,12 +53,22 @@ const types = {
   ProfileInputServerSide: `
     {
       a: ID!            // uuid (P)
-
+      f: Int
       m: InputProperties
       n: InputGeometry
       o: InputImages
       p: InputTransactionLog
       q: InputQuestionnaire
+      s: InputServicefields
+    }
+  `,
+  ImageInputServerSide: `
+    {
+      a: ID!            // uuid (P)
+
+      o: InputImages
+      x: InputRelationsP
+
     }
   `,
 };

@@ -13,13 +13,6 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
-  function castTranslationFile( which, whichContext, whichPart ) {
-    const obj = {};
-    obj[whichContext] = {};
-    obj[whichContext][which] = { en_US: which, de_DE: '', es_ES: '' };
-
-  }
-
   /* ================== public methods ================== */
 
   function castImageUpload( e ) {
@@ -59,7 +52,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
           tinyImage.canvas.toBlob( tinyBlob => {
             V.setState( 'tinyImageUpload', {
-              dataUrl: tinyImage.canvas.toDataURL( 'image/jpeg' ),
+              dataUrl: tinyImage.canvas.toDataURL(),
               blob: tinyBlob,
               contentType: tinyBlob.type,
               originalName: e.target.files[0].name,
@@ -67,7 +60,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
             thumbnail.canvas.toBlob( thumbBlob => {
               V.setState( 'thumbnailUpload', {
-                dataUrl: thumbnail.canvas.toDataURL( 'image/jpeg' ),
+                dataUrl: thumbnail.canvas.toDataURL(),
                 blob: thumbBlob,
                 contentType: thumbBlob.type,
                 originalName: e.target.files[0].name,
@@ -75,7 +68,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
               mediumImage.canvas.toBlob( mediumBlob => {
                 V.setState( 'mediumImageUpload', {
-                  dataUrl: mediumImage.canvas.toDataURL( 'image/jpeg' ),
+                  dataUrl: mediumImage.canvas.toDataURL(),
                   blob: mediumBlob,
                   contentType: mediumBlob.type,
                   originalName: e.target.files[0].name,
@@ -260,9 +253,13 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castRandLatLng() {
+    const lat = ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1;
+    const lng = ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1;
     return {
-      lat: ( Math.random() * ( 36 - 26 + 1 ) + 25 ).toFixed( 5 ) * 1,
-      lng: ( Math.random() * ( 53 - 31 + 1 ) + 32 ).toFixed( 5 ) * -1,
+      lat: lat,
+      lng: lng,
+      latLng: [lat, lng],
+      lngLat: [lng, lat],
     };
   }
 
@@ -325,6 +322,45 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return tag ? title + ' ' + tag : { title: split[0].trim(), tag: '#' + split[1] };
   }
 
+  function castRole( role ) {
+    switch ( role ) {
+    case 'all' : return 'all';
+    case 'Person' : return 'aa';
+    case 'aa' : return 'Person';
+    case 'PersonMapped' : return 'ab';
+    case 'ab' : return 'Person'; // combine "PersonMapped" with "Person" on retrieval
+    case 'Business' : return 'ac';
+    case 'ac' : return 'Business';
+    case 'Institution' : return 'ad';
+    case 'ad' : return 'Institution';
+    case 'NGO' : return 'ae';
+    case 'ae' : return 'NGO';
+    case 'GOV' : return 'af';
+    case 'af' : return 'GOV';
+    case 'Network' : return 'ag';
+    case 'ag' : return 'Network';
+    case 'Skill' : return 'ah';
+    case 'ah' : return 'Skill';
+    case 'Task' : return 'ai';
+    case 'ai' : return 'Task';
+    case 'Place' : return 'aj';
+    case 'aj' : return 'Place';
+    case 'Event' : return 'ak';
+    case 'ak' : return 'Event';
+    case 'Media' : return 'al';
+    case 'al' : return 'Media';
+    case 'Dataset' : return 'am';
+    case 'am' : return 'Dataset';
+    case 'Pool' : return 'an';
+    case 'an' : return 'Pool';
+    case 'Farm' : return 'ao';
+    case 'ao' : return 'Farm';
+    case 'Plot' : return 'ap';
+    case 'ap' : return 'Plot';
+    default: return role;
+    }
+  }
+
   function castJson( data, clone ) {
 
     if ( !data || data === 'undefined' ) {
@@ -334,7 +370,12 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       return JSON.parse( JSON.stringify( data ) );
     }
     else if ( typeof data === 'string' ) {
-      return JSON.parse( data );
+      try {
+        return JSON.parse( data );
+      }
+      catch ( err ) {
+        return data; // data is likely a string which is not in JSON format
+      }
     }
     else if ( typeof data === 'object' ) {
       return JSON.stringify( data );
@@ -342,6 +383,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     else {
       console.error( 'Could not convert JSON' );
     }
+  }
+
+  function castClone( data ) {
+    return JSON.parse( JSON.stringify( data ) );
   }
 
   function castShortAddress( address, chars ) {
@@ -430,26 +475,26 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         // Note: Be careful editing this code!  It's been tuned for performance
         // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
         return (
-          bth[buf[i + 0]] +
-          bth[buf[i + 1]] +
-          bth[buf[i + 2]] +
-          bth[buf[i + 3]] +
-          '-' +
-          bth[buf[i + 4]] +
-          bth[buf[i + 5]] +
-          '-' +
-          bth[buf[i + 6]] +
-          bth[buf[i + 7]] +
-          '-' +
-          bth[buf[i + 8]] +
-          bth[buf[i + 9]] +
-          '-' +
-          bth[buf[i + 10]] +
-          bth[buf[i + 11]] +
-          bth[buf[i + 12]] +
-          bth[buf[i + 13]] +
-          bth[buf[i + 14]] +
-          bth[buf[i + 15]]
+          bth[buf[i + 0]]
+          + bth[buf[i + 1]]
+          + bth[buf[i + 2]]
+          + bth[buf[i + 3]]
+          + '-'
+          + bth[buf[i + 4]]
+          + bth[buf[i + 5]]
+          + '-'
+          + bth[buf[i + 6]]
+          + bth[buf[i + 7]]
+          + '-'
+          + bth[buf[i + 8]]
+          + bth[buf[i + 9]]
+          + '-'
+          + bth[buf[i + 10]]
+          + bth[buf[i + 11]]
+          + bth[buf[i + 12]]
+          + bth[buf[i + 13]]
+          + bth[buf[i + 14]]
+          + bth[buf[i + 15]]
         ).toLowerCase();
       };
 
@@ -460,13 +505,17 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
         // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
         // find the complete implementation of crypto (msCrypto) on IE11.
-        const getRandomValues =
-        ( typeof crypto !== 'undefined' &&
-        crypto.getRandomValues &&
-        crypto.getRandomValues.bind( crypto ) ) ||
-        ( typeof msCrypto !== 'undefined' &&
-        typeof msCrypto.getRandomValues === 'function' &&
-        msCrypto.getRandomValues.bind( msCrypto ) );
+        const getRandomValues
+        = (
+          typeof crypto !== 'undefined'
+          && crypto.getRandomValues
+          && crypto.getRandomValues.bind( crypto )
+        )
+        || (
+          typeof msCrypto !== 'undefined'
+          && typeof msCrypto.getRandomValues === 'function'
+          && msCrypto.getRandomValues.bind( msCrypto )
+        );
 
         const rnds8 = new Uint8Array( 16 );
 
@@ -524,14 +573,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
       encoded = encode( uuidV4 );
 
       while (
-        // uuidV4.charAt( 0 ) == '0' ||
-        !encoded.charAt( 0 ).match( /[a-z]/ ) ||
-        !encoded.charAt( 1 ).match( /[a-z]/ ) ||
-        encoded.charAt( 0 ) == encoded.charAt( 1 ) ||
-        encoded.includes( '-' ) ||
-        encoded.includes( '_' ) ||
-        ['v', 'V'].includes( encoded.charAt( 0 ) ) ||
-        ['x', 'X'].includes( encoded.charAt( 1 ) )
+        !encoded.charAt( 3 ).match( /[a-zABE-Z]/ )
+        || encoded.includes( '-' )
+        || encoded.includes( '_' )
+        || ['v', 'V'].includes( encoded.charAt( 3 ) )
+        || ['x', 'X'].includes( encoded.charAt( 4 ) )
       ) {
         uuidV4 = universalV4();
         encoded = encode( uuidV4 );
@@ -542,7 +588,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         base64Url: encoded,
       };
     }
-    else if ( input.length == 22 ) {
+    else if ( input.length == V.getSetting( 'uuidStringLength' ) ) {
       return decode( input );
     }
     else {
@@ -561,11 +607,15 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return incMinMax;
   }
 
-  function getIcon( which ) {
+  function castUnix() {
+    return Math.floor( Date.now() / 1000 );
+  }
+
+  function getIcon( which, height ) {
     return which.match( new RegExp( socialMatch ) )
       ? V.cN( {
         t: 'img',
-        src: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/social/' + which + '.svg',
+        r: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/social/' + which + '.svg',
         a: {
           height: '28px',
         },
@@ -578,9 +628,9 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
         } )
         : V.cN( {
           t: 'img',
-          src: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/' + which + '-24px.svg',
+          r: V.getSetting( 'sourceEndpoint' ) + '/assets/icon/' + which + '-24px.svg',
           a: {
-            height: '16px',
+            height: height || '16px',
           },
         } );
 
@@ -600,28 +650,22 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return ( x ) => functions.reduce( ( v, f ) => f( v ), x );
   }
 
-  function getTranslation( which, whichContext, whichDescr = '' ) {
-
-    // castTranslations( which, whichContext, whichPart );
-    const aE = V.aE();
-    const lang = aE ? aE.properties ? aE.properties.appLang ? aE.properties.appLang : 'en_US' : 'en_US' : 'en_US';
-    // console.log( lang, whichContext, which );
-    // if ( lang != 'en_US' ) {
-    const exists = VTranslations[whichContext][which] ?
-      VTranslations[whichContext][which][lang] != '' ? VTranslations[whichContext][which][lang] : undefined : undefined;
-    return exists ? exists : which;
-    // }
-    // else {
-    //   return which;
-    // }
-  }
-
-  function i18n( which, whichContext, whichDescr ) {
-    return getTranslation( which, whichContext, whichDescr );
-  }
-
   function sleep( ms ) {
     return new Promise( resolve => setTimeout( resolve, ms ) );
+  }
+
+  function debounce( fn, delay ) {
+
+    /* https://codeforgeek.com/debounce-function-javascript/ */
+    let timeOutId;
+    return function( ...args ) {
+      if( timeOutId ) {
+        clearTimeout( timeOutId );
+      }
+      timeOutId = setTimeout( () => {
+        fn( ...args );
+      }, delay );
+    };
   }
 
   function successFalse( msg, err, data ) {
@@ -640,6 +684,16 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     };
   }
 
+  function isEmail( string ) {
+
+    /**
+     * From https://stackoverflow.com/a/64128369
+     */
+    const matcher = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,15}$/;
+    if ( string.length > 70 ) {return false}
+    return matcher.test( string );
+  }
+
   /* ====================== export ====================== */
 
   V.castImageUpload = castImageUpload;
@@ -653,18 +707,21 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.castSlugOrId = castSlugOrId;
   V.castPathOrId = castPathOrId;
   V.castFullId = castFullId;
+  V.castRole = castRole;
   V.castJson = castJson;
+  V.castClone = castClone;
   V.castShortAddress = castShortAddress;
   V.castUuid = castUuid;
   V.castRandomInt = castRandomInt;
+  V.castUnix = castUnix;
   V.getIcon = getIcon;
   V.stripHtml = stripHtml;
   V.setPipe = setPipe;
-  V.getTranslation = getTranslation;
-  V.i18n = i18n;
   V.sleep = sleep;
+  V.debounce = debounce;
   V.successFalse = successFalse;
   V.successTrue = successTrue;
+  V.isEmail = isEmail;
 
   return {
     castImageUpload: castImageUpload,
@@ -678,18 +735,20 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     castSlugOrId: castSlugOrId,
     castPathOrId: castPathOrId,
     castFullId: castFullId,
+    castRole: castRole,
     castJson: castJson,
     castShortAddress: castShortAddress,
     castUuid: castUuid,
     castRandomInt: castRandomInt,
+    castUnix: castUnix,
     getIcon: getIcon,
     stripHtml: stripHtml,
     setPipe: setPipe,
-    getTranslation: getTranslation,
-    i18n: i18n,
     sleep: sleep,
+    debounce: debounce,
     successFalse: successFalse,
     successTrue: successTrue,
+    isEmail: isEmail,
   };
 
 } )();
