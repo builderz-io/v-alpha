@@ -1,5 +1,5 @@
 /**
- * GraphQL server for Alpha 3.4.0
+ * GraphQL server for VI Alpha 3.5.0
  *
  */
 

@@ -20,7 +20,7 @@ const VNotification = ( function() { // eslint-disable-line no-unused-vars
       network: window.location.hostname || 'Testnet',
       recipient: data.recipient
         || V.getSetting( 'networkAdminEmail' )
-        || V.getSensitiveData( 'viAdminEmail' ),
+        || V.getSensitiveData( 'viAdmin' ) + '@' + 'gmail.com',
     } );
   }
 

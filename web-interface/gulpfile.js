@@ -30,14 +30,16 @@ const gulp = require( 'gulp' ),
 function vcore() {
   return gulp.src( [
     './app/vcore/src/v/v-config.js',
+    './app/vcore/src/state/v-state.js',
+    './app/vcore/src/helper/v-translation.js',
     './app/vcore/dependencies/primary/*.js',
     './app/vcore/src/dom/*.js',
     './app/vcore/src/endpoint/*.js',
-    './app/vcore/src/helper/*.js',
+    './app/vcore/src/helper/v-debugger.js',
+    './app/vcore/src/helper/v-description.js',
+    './app/vcore/src/helper/v-helper.js',
     './app/vcore/src/ledger/primary/*.js',
-    './app/vcore/src/state/*.js',
     './app/vcore/src/v/v-key.js',
-    './app/vcore/src/v/v-translations.js',
     './app/vcore/src/v/v-launch.js',
   ] )
     .pipe( concat( 'vcore.min.js' ) )
@@ -103,6 +105,8 @@ function vtheme() {
 function vplugins() {
   return gulp.src( [
     './app/plugins/dependencies/leaflet.js',
+    './app/plugins/dependencies/jquery-3.6.0.slim.min.js',
+    './app/plugins/dependencies/leaflet-locationpicker.js',
     './app/plugins/src/**/*.js',
   ] )
     .pipe( concat( 'vplugins.min.js' ) )

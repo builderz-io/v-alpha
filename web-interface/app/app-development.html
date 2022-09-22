@@ -12,19 +12,19 @@
           // START editing
 
           sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
-          useAppVersion: '3.4.0', // e.g. '3.4.0' or '' for latest version
-          useBuilds: false,
+          useAppVersion: '3.5.0', // e.g. '3.4.0' or '' for latest version
+          useBuilds: true,
 
           namespaceEndpoint: 'firebase-client-dfr',
 
-          language: 'german personal',
+          language: 'german official',
           mapDefault: 'germany',
           highlights: 15,
           defaultPrivacy: 0, // 0 -> no restriction, 1 -> level 1 (maximum) restriction (point invisible), 2 -> level 2 restriction (point visible, content invisible)
           featureVideo: 'builderz',
           questionnaire: false,
 
-          askforEmail: false,
+          askforEmail: true,
           requireEmail: false,
           confirmEmail: false,
           networkAdminEmail: '',
@@ -85,7 +85,7 @@
             chat: [],
           },
 
-          devMode: true,
+          devMode: false,
 
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
           chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)

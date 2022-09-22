@@ -25,10 +25,10 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   const sessionNr = Date.now();
 
   console.log( '*** NEW SESSION ***' );
-  console.log( '', window.location.href );
-  console.log( '', new Date().toString() );
-  console.log( '', navigator.userAgent );
-  console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '*** ', window.location.href );
+  console.log( '*** ', new Date().toString() );
+  console.log( '*** ', navigator.userAgent );
+  console.log( '*** ', VConfig.getSetting( 'appVersion' ) );
   console.log( '*** NEW SESSION END ***' );
 
   function handleConsoleMessage( msg, data ) {
