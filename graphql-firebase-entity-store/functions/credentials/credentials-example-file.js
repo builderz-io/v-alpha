@@ -1,3 +1,9 @@
+module.exports.whitelist = [
+  'http://localhost:4021',
+  'https://some.domain.com',
+  ' ... ',
+];
+
 module.exports.float = {
   rpc: ' ... ',
   contractAddress: '0x ...', // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1'; builderz.io

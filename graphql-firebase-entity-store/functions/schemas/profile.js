@@ -6,12 +6,14 @@ const types = {
       a: ID!           // uuid - as base64 and URL compatible
       b: String        // @context - includes document version
       d: String        // related entity document
+      f: Int           // privacy setting
 
       m: Properties
       n: Geometry
       o: Images
       p: TransactionLog
       q: Questionnaire
+      s: Servicefields  // fields for free allocation used by plugins or widgets
 
       x: RelationsP
       y: DatesP
@@ -38,6 +40,7 @@ const types = {
       g: [Float]      // current coordinates
       h: String       // geo hash
       i: String       // current Location
+      z: Int          // default continent
     }
   `,
   Images: `
@@ -46,6 +49,7 @@ const types = {
       b: String       // thumb
       c: String       // medium
       n: String       // name on upload
+      z: Int          // default avatar
     }
   `,
   Questionnaire: `
@@ -60,6 +64,20 @@ const types = {
       q8: String
       q9: String
       q10: String
+    }
+  `,
+  Servicefields: `
+    {
+      s1: String       // some content
+      s2: String
+      s3: String
+      s4: String
+      s5: String
+      s6: String
+      s7: String
+      s8: String
+      s9: String
+      s10: String
     }
   `,
   RelationsP: `

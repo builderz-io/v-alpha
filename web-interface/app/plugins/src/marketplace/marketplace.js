@@ -11,7 +11,11 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter( whichPath, search ) {
 
-    let whichRole = whichPath ? V.getState( 'serviceNav' )[ whichPath ].use.role : 'all'; // default to 'all'
+    let whichRole = whichPath
+      ? V.getState( 'serviceNav' )[ whichPath ]
+        ? V.getState( 'serviceNav' )[ whichPath ].use.role
+        : 'all' // fallback to 'all'
+      : 'all'; // default to 'all'
 
     /** Combines 'PersonMapped' with 'Person' */
     whichRole = whichRole.replace( 'Mapped', '' );
@@ -27,12 +31,12 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       const polledPointsCache = await new Promise( resolve => {
         const polling = setInterval( () => {
           counter += 1;
-          const cache = V.getCache( 'points' );
+          const cache = V.getCache( 'permitted' );
           if ( cache && cache.data.length ) {
             clearInterval( polling );
             resolve( cache );
           }
-          else if ( counter > 299 ) {
+          else if ( counter > 115 ) {
             clearInterval( polling );
             resolve( false );
           }
@@ -40,7 +44,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       } );
 
       if ( polledPointsCache ) {
-        V.setCache( 'mixin-highlights', polledPointsCache.data.slice( 0, 10 ).map( item => item.uuidE ) );
+        V.setCache( 'mixin-highlights', polledPointsCache.data.slice( 0, V.getSetting( 'highlights' ) ).map( item => item.uuidE ) );
       }
     }
 
@@ -51,7 +55,6 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         role: whichRole,
         mapState: V.castJson( VMap.getState() ),
       } );
-      console.log( 'Search data: ', search );
 
       query = await V.getQuery( search ).then( res => {
         if ( res.success ) {
@@ -128,8 +131,8 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       // previous version of search form
       // if ( data.isSearch ) {
       //   Form.draw( 'all', { fade: 'out' } );
-      //   Button.draw( 'all', { fade: 'out' } );
-      //   Button.draw( 'search' );
+      //  // Button.draw( 'all', { fade: 'out' } );
+      //  // Button.draw( 'search' );
       // }
 
       if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
@@ -247,12 +250,15 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     if ( whichPath ) {
       Navigation.draw( whichPath );
       if ( !search ) {
-        Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
+        // Button.draw( V.getNavItem( 'active', ['serviceNav', 'entityNav'] ).use.button, { delay: 2 } );
       }
     }
     else {
       Navigation.draw();
     }
+
+    Chat.drawMessageForm( 'clear' );
+
     Page.draw( {
       topslider: $slider,
       position: whichPath || search ? 'peek' : 'closed',
@@ -264,7 +270,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
   /* ============ public methods and exports ============ */
 
   function launch() {
-    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceNavItems[item] ) );
+    V.setNavItem( 'serviceNav', V.getSetting( 'plugins' ).marketplace.map( item => MarketplaceDefinitions[item] ) );
   }
 
   function draw( whichPath, search ) {
@@ -272,7 +278,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     presenter( whichPath, search ).then( viewData => { view( viewData ) } );
   }
 
-  V.setState( 'availablePlugins', { marketplace: function() { Marketplace.launch() } } );
+  V.setState( 'availablePlugins', { marketplace: launch } );
 
   return {
     launch: launch,

@@ -40,7 +40,7 @@ const Settings = ( function() { // eslint-disable-line no-unused-vars
         editable: true,
       } );
 
-      $list = CanvasComponents.list( 'narrow' );
+      $list = CanvasComponents.list();
       $topcontent = UserComponents.topcontent();
 
       V.setNode( $list, [

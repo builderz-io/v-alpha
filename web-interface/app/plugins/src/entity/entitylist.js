@@ -24,8 +24,8 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
     const now = Date.now();
 
     if (
-      cache &&
-      ( now - cache.timestamp ) < ( 1 * 60 * 1000 )
+      cache
+      && ( now - cache.timestamp ) < ( 1 * 60 * 1000 )
     ) {
       entitiesAdmined = cache.data;
     }
@@ -71,7 +71,7 @@ const EntityList = ( function() { // eslint-disable-line no-unused-vars
         editable: true,
       } );
 
-      $list = CanvasComponents.list( 'narrow' );
+      $list = CanvasComponents.list();
       $topcontent = UserComponents.topcontent();
 
       for ( let i = 0; i < viewData.data[0].entitiesAdmined.length; i++ ) {

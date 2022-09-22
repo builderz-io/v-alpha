@@ -25,6 +25,16 @@ body {
   /* font-weight: 400; */
 }
 
+select {
+  font-family: 'IBM Plex Regular';
+  /* font-weight: 400; */
+}
+
+option {
+  font-family: 'IBM Plex Regular';
+  /* font-weight: 400; */
+}
+
 .font-medium {
   font-family: 'IBM Plex Medium';
   /* font-weight: 500; */

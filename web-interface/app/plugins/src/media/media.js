@@ -14,6 +14,21 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     builderz: 'https://youtu.be/kJbto4TISKA',
   };
 
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      media: 'Media',
+      moocs: 'Moocs',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   async function presenter() {
@@ -59,7 +74,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function preview( path ) {
-    Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
+    // Button.draw( V.getNavItem( 'active', 'serviceNav' ).use.button, { delay: 2 } );
     Navigation.draw( path );
 
     featurePresenterAndView();
@@ -93,8 +108,9 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getFeatureVideo(
-    which = V.getSetting( 'featureVideo' )
+    which = V.getSetting( 'featureVideo' ),
   ) {
+    if ( which.includes( 'http' ) ) { return which }
     return featureVideos[which];
   }
 
@@ -103,11 +119,10 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   function launch() {
     const navItems = {
       media: {
-        title: 'Media',
+        title: ui.media,
         path: '/media',
         divertFundsToOwner: true,
         use: {
-          // button: 'plus',
           form: 'new entity',
           role: 'Media',
         },
@@ -116,11 +131,10 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
         },
       },
       moocs: {
-        title: 'Moocs',
+        title: ui.moocs,
         path: '/media/moocs',
         divertFundsToOwner: true,
         use: {
-          // button: 'plus',
           form: 'new entity',
           role: 'Mooc',
         },
@@ -137,7 +151,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     setTimeout( delayContentLoad, 2000 );
   }
 
-  V.setState( 'availablePlugins', { media: function() { Media.launch() } } );
+  V.setState( 'availablePlugins', { media: launch } );
 
   return {
     launch: launch,

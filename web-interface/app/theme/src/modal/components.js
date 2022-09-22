@@ -9,52 +9,63 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    close: 'close',
-    connectingWallet: 'Connecting wallet',
-    connectWallet: 'Join with wallet',
-    useKey: 'Use key',
-    nameProfile: 'Name profile',
-    joining: 'Joining',
-    welcome: 'Welcome',
-    connectedAddress: 'Address connected',
-    confInWallet: 'Confirm in wallet ... ',
-    submitted: 'submitted ...',
-    enableWallet: 'Enable a crypto wallet in your browser, for example',
-    getMetaMask: 'Get MetaMask',
-    signTx: 'Sign Transaction',
-    newNameOnly: 'Name personal profile only',
-    newName: 'Name personal profile',
-    newNameExplain: 'Name yourself, your personal profile here for your address. Later you can add anything you want to make visible in the network, like a business or your skills.',
-    emailExplainA: 'The admins of', // fills in window.location.hostname
-    emailExplainB: 'kindly ask you to provide a real email address. This address will not be publicly visible.',
-    confirmExplain: 'Check your inbox (and spam) and enter the 4 digits emailed to you.',
-    email: 'Set email',
-    confirmEmail: 'Confirm',
-    isConfirmCode: 'is your confirmation code', // email subjedt // fills in number
-    confirmNumberIncorrect: 'This 4-digit number is not correct',
-    manageProfile: 'Join with existing key',
-    disconnect: 'Confirm Disconnect',
-    useProfile: 'Use current profile',
-    copyKey: 'Click to copy the key and store it safely elsewhere',
-    copyKeyExplain: 'You\'ll need this key to manage this profile',
-    liveBalance: 'Live Balance',
-    notRetrieved: 'Sorry, account details could not be retrieved',
-    fourOfour: '404 - Page not found',
+  const ui = ( () => {
+    const strings = {
+      close: 'close',
+      connectingWallet: 'Connecting wallet',
+      connectWallet: 'Join with wallet',
+      useKey: 'Use key',
+      nameProfile: 'Name profile',
+      joining: 'Joining',
+      welcome: 'Welcome',
+      connectedAddress: 'Address connected',
+      confInWallet: 'Confirm in wallet ... ',
+      submitted: 'submitted ...',
+      enableWallet: 'Enable a crypto wallet in your browser, for example',
+      getMetaMask: 'Get MetaMask',
+      signTx: 'Sign Transaction',
+      newNameOnly: 'Name personal profile only',
+      newName: 'Name personal profile',
+      newNameExplain: 'Name yourself, your personal profile here for your address. Later you can add anything you want to make visible in the network, like a business or your skills.',
+      emailExplainA: 'The admins of', // fills in window.location.hostname
+      emailExplainB: 'kindly ask you to provide a real email address. This address will not be publicly visible.',
+      confirmExplain: 'Check your inbox (and spam) and enter the 4 digits emailed to you.',
+      email: 'Set email',
+      confirmEmail: 'Confirm',
+      isConfirmCode: 'is your confirmation code', // email subjedt // fills in number
+      confirmNumberIncorrect: 'This 4-digit number is not correct',
+      manageProfile: 'Join with existing key',
+      disconnect: 'Confirm Disconnect',
+      useProfile: 'Use current profile',
+      copyKey: 'Click to copy the key and store it safely elsewhere',
+      copyKeyExplain: 'You\'ll need this key to manage this profile',
+      liveBalance: 'Live Balance',
+      notRetrieved: 'Sorry, account details could not be retrieved',
+      fourOfour: '404 - Page not found',
 
-    loggedOut: 'You are logged out',
-    entityExists: 'This combination of title and tag already exists or is invalid',
-    txSent: '✅ Sent to network',
-    txSuccess: '✅ Transaction successful',
-    error: 'An error occured. Maybe the wallet is locked?',
-    wait: 'Please wait... requesting data',
-    walletLocked: 'Could not unlock wallet. Maybe the site\'s connectivity to the wallet was denied? Check the browser or wallet settings.',
-    noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
-  };
+      joinFirst: 'Please join first, creating a personal profile.',
+      loggedOut: 'You are logged out',
+      entityExists: 'This combination of title and tag already exists or is invalid',
+      txSent: '✅ Sent to network',
+      txSuccess: '✅ Transaction successful',
+      error: 'Something went wrong. Maybe the wallet is locked or you did not sign the transaction?',
+      wait: 'Please wait... requesting data',
+      walletLocked: 'Could not unlock wallet. Maybe the site\'s connectivity to the wallet was denied? Check the browser or wallet settings.',
+      noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'modal', scope || 'modal content' ) + ' ';
-  }
+      txTo: 'Recipient',
+      txAmount: 'Amount',
+      txContribution: 'Contribution',
+      txFee: 'Fee',
+      txTotal: 'Total',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ====================== styles ====================== */
 
@@ -72,7 +83,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'max-width': '500px',
       'height': '46vh',
       'margin': '14vh auto',
-      'padding': '0.5rem',
+      'padding': '1.5rem',
+      'border-radius': '32px',
     },
     'modal__close': {
       'position': 'absolute',
@@ -80,6 +92,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       'top': '1rem',
       'text-decoration': 'none',
       'color': 'white',
+    },
+    'modal__btn': {
+      'border-radius': '32px',
     },
     'modal__uphrase': {
       color: 'red',
@@ -93,12 +108,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     'modal-pos-3': {
       top: '15vh',
     },
-    'confirm-click-spinner': {
-      'margin-left': '14px',
-    },
   } );
 
-  const buttonClasses = 'relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
+  const buttonClasses = 'modal__btn relative flex justify-center items-center bkg-button txt-button font-medium cursor-pointer txt-center pxy-1';
   const altButtonClasses = 'relative cursor-pointer txt-center';
 
   /* ================== event handlers ================== */
@@ -114,15 +126,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleGetEntityForm() {
     const $input = InteractionComponents.formField( 'uPhrase' );
     const $new = V.cN( {
-      t: 'div',
       i: 'use-key-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntity,
-      h: getString( ui.useKey ),
+      h: V.getString( ui.useKey ),
     } );
 
-    const $response = V.sN( {
-      t: 'div',
+    const $response = V.cN( {
       c: 'form__response pxy txt-red',
     } );
 
@@ -131,7 +141,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity() {
-    V.setNode( '#use-key-btn', InteractionComponents.clickConfirmSpinner() );
+    V.setNode( '#use-key-btn', InteractionComponents.confirmClickSpinner() );
     V.setAuth( V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
         if ( data.success ) {
@@ -162,7 +172,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleWeb3Join( e ) {
     e.stopPropagation();
-    V.setNode( '#connectwallet-btn', InteractionComponents.clickConfirmSpinner() );
+    V.setNode( '#connectwallet-btn', InteractionComponents.confirmClickSpinner() );
     Join.draw( 'authenticate' );
   }
 
@@ -175,10 +185,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     $btn.style.background = 'white';
     $btn.style.color = 'rgba(' + V.getState( 'screen' ).brandSecondary + ', 1)';
     if ( V.cA() ) {
-      $btn.textContent = getString( ui.confInWallet );
+      $btn.textContent = V.getString( ui.confInWallet );
     }
     else {
-      // $btn.textContent = getString( ui.submitted );
+      // $btn.textContent = V.getString( ui.submitted );
       Modal.draw( 'transaction sent' );
       V.drawHashConfirmation( String( V.getState( 'active' ).transaction.data[0].timeSecondsUNIX ) );
     }
@@ -186,8 +196,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const aTx = V.getState( 'active' ).transaction;
 
     const adminNotify = status => {
-      console.log( status );
-      // V.setData( status, 'transaction admin notification', V.getSetting( 'notificationServer' ) );
+      const data = {
+        act: 'New transaction',
+        msg: status,
+      };
+      V.setEmailNotification( data );
+      V.setTelegramNotification( data );
+
     };
 
     V.setTransaction( aTx )
@@ -196,17 +211,17 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success || res.data.setTransaction.success ) { // res.success for connected wallet
           V.drawTxConfirmation( res.data.setTransaction ? res.data.setTransaction.data : res.data[0] );
           Account.drawHeaderBalance();
-          adminNotify( 'successfully' );
+          adminNotify( 'successful' );
         }
         else {
           Modal.draw( 'error' );
-          adminNotify( 'unsuccessfully' );
+          adminNotify( 'ERROR' );
         }
       } )
       .catch( err => {
         console.error( err );
         Modal.draw();
-        adminNotify( 'unsuccessfully' );
+        adminNotify( 'ERROR' );
       } );
   }
 
@@ -228,18 +243,24 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleDisconnect() {
-    V.setNode( '#disconnect-btn', InteractionComponents.clickConfirmSpinner() );
+    V.setNode( '#disconnect-btn', InteractionComponents.confirmClickSpinner() );
     V.setDisconnect();
   }
 
   /* ==================== join process ================== */
 
   function handleDrawTitleForm() {
-    drawModalContent(
-      'title',
-      handleSetTitle,
-      getString( ui.nameProfile )
-    );
+    if( V.getSetting( 'joinVersion' ) === 1 ) {
+      drawModalContent(
+        'title',
+        handleSetTitle,
+        V.getString( ui.nameProfile ),
+      );
+    }
+    else {
+      V.sN( 'modal', 'clear' );
+      V.setNode( 'body', JoinRoutine.draw( { role: 'Person', join: 1 } ) );
+    }
   }
 
   function handleSetTitle( e ) {
@@ -271,8 +292,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     drawModalContent(
       'email',
       handleConfirmEmail,
-      getString( ui.email ),
-      getString( ui.emailExplainA + ' ' + window.location.hostname + ' ' + ui.emailExplainB )
+      V.getString( ui.email ),
+      V.getString( ui.emailExplainA + ' ' + window.location.hostname + ' ' + ui.emailExplainB ),
     );
   }
 
@@ -289,7 +310,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     // }
 
     V.getNode( '.joinform__response' ).textContent = '';
-    e.target.append( InteractionComponents.clickConfirmSpinner() );
+    e.target.append( InteractionComponents.confirmClickSpinner() );
 
     V.setState( 'newRegistration', {
       emailPrivate: V.getNode( '#plusform__email' ).value,
@@ -300,20 +321,20 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       SecureToken: V.getSetting( 'emailKey' ),
       To: email,
       From: 'network.mailer@valueinstrument.org',
-      Subject: window.location.hostname + ': '  + randomNumber + ' ' + getString( ui.isConfirmCode ),
-      Body: window.location.hostname + ': '  + randomNumber + ' ' + getString( ui.isConfirmCode ),
+      Subject: window.location.hostname + ': '  + randomNumber + ' ' + V.getString( ui.isConfirmCode ),
+      Body: window.location.hostname + ': '  + randomNumber + ' ' + V.getString( ui.isConfirmCode ),
       // Body: 'Please enter ' + randomNumber + ' at ' + window.location.hostname + ' to confirm this email address.',
     } ).then( msg => {
       if ( 'OK' == msg ) {
         drawModalContent(
           'emailConfirm',
           handleConfirmNumber.bind( randomNumber ),
-          getString( ui.confirmEmail ),
-          getString( ui.confirmExplain )
+          V.getString( ui.confirmEmail ),
+          V.getString( ui.confirmExplain ),
         );
       }
       else {
-        e.target.textContent = getString( ui.newEmail );
+        e.target.textContent = V.getString( ui.newEmail );
 
         V.getNode( '.joinform__response' ).textContent = msg;
       }
@@ -326,7 +347,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       setEntity( e );
     }
     else {
-      V.getNode( '.joinform__response' ).textContent = getString( ui.confirmNumberIncorrect );
+      V.getNode( '.joinform__response' ).textContent = V.getString( ui.confirmNumberIncorrect );
     }
   }
 
@@ -337,10 +358,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     e.target.removeEventListener( 'click', handleConfirmNumber, false );
 
     V.sN( '.explain', 'clear' );
-    e.target.textContent = getString( ui.joining );
-    e.target.append( InteractionComponents.clickConfirmSpinner() );
+    e.target.textContent = V.getString( ui.joining );
+    e.target.append( InteractionComponents.confirmClickSpinner() );
     e.target.parentNode.append( V.cN( {
-      t: 'div',
       c: 'progress-bar',
       h: {
         t: 'span',
@@ -377,8 +397,14 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
             }
           } );
 
-        // Modal.setTempAuth( res.data[0].auth ); // make auth available temporarily on joining
-        Join.onboard( res.data[0].auth.uPhrase );
+        /** onboard routine  */
+        if ( V.getState( 'active' ).navItem ) {
+          Navigation.drawReset();
+          setTimeout( delayedOnboardRoutine, 900, res.data[0].auth.uPhrase );
+        }
+        else {
+          Join.onboard( res.data[0].auth.uPhrase );
+        }
 
         /** set state and cache */
         V.setActiveEntity( res.data[0] );
@@ -392,7 +418,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       else {
         console.log( 'could not set entity: ', res );
         // e.target.addEventListener( 'click', setEntity );
-        // e.target.textContent = getString( ui.nameProfile );
+        // e.target.textContent = V.getString( ui.nameProfile );
         V.getNode( '.joinform__response' ).textContent = res.message;
       }
     } );
@@ -400,10 +426,13 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  function delayedOnboardRoutine( uPhrase ) {
+    Join.onboard( uPhrase );
+  }
+
   function drawModalContent( field, handler, label, explain ) {
 
     const $btn = V.cN( {
-      t: 'div',
       c: buttonClasses,
       k: handler,
       h: label,
@@ -411,8 +440,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const $input = InteractionComponents.formField( field );
 
-    const $response = V.sN( {
-      t: 'div',
+    const $response = V.cN( {
       c: 'joinform__response pxy txt-red',
     } );
 
@@ -432,30 +460,48 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'modal',
       c: 'modal fixed',
-      h: {
-        t: 'div',
-        i: 'modal-close',
-        c: 'modal__close',
-        h: getString( ui.close ),
-        k: handleModalClose,
-      },
+      // h: {
+      //   i: 'modal-close',
+      //   c: 'modal__close',
+      //   h: V.getString( ui.close ),
+      //   k: handleModalClose,
+      // },
       k: handleModalClose,
     } );
   }
 
   function modalContent() {
     return V.cN( {
-      t: 'div',
       c: 'modal__content relative',
       k: handleStopPropagation,
     } );
+  }
+
+  function preview() {
+    const $content = modalContent();
+    const $msg = V.cN( {
+      t: 'p',
+      // h: InteractionComponents.confirmClickSpinner(),
+      h: [
+        {
+          c: 'preloader__ring',
+        },
+        {
+          t: 'loader',
+          c: 'preloader__text',
+          h: V.getString( ui.wait ),
+        },
+      ],
+    } );
+    V.setNode( $content, $msg );
+    return $content;
   }
 
   function simpleMessage( text ) {
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
-      h: getString( ui[text] ),
+      h: V.getString( ui[text] ),
     } );
     V.setNode( $content, $msg );
     return $content;
@@ -477,24 +523,22 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $msg = V.cN( {
       t: 'p',
       c: 'txt-center',
-      h: getString( ui.enableWallet ) + ' ' + metaMaskLink,
+      h: V.getString( ui.enableWallet ) + ' ' + metaMaskLink,
     } );
     const $fox = V.cN( {
-      t: 'div',
       c: 'mt-r mb-r ml-auto mr-auto',
       y: {
         width: '108px',
       },
       h: {
         t: 'img',
-        src: '/assets/img/metamask-fox.png',
+        r: '/assets/img/metamask-fox.png',
       },
     } );
     const $metaMask = V.cN( {
-      t: 'div',
       c: buttonClasses,
       k: handleGetMetaMask,
-      h: getString( ui.getMetaMask ),
+      h: V.getString( ui.getMetaMask ),
     } );
     V.setNode( $content, [$msg, $fox, $metaMask] );
     return $content;
@@ -503,7 +547,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function confirmTransaction( txData ) {
 
     const tx = txData.data[0];
-
     const $content = modalContent();
     const $txDetails = V.cN( {
       t: 'p',
@@ -511,28 +554,31 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'p',
-          h: `Amount: ${tx.amount}`,
+          h: `${ V.getString( ui.txAmount ) }: ${ tx.amount }`,
         },
         {
           t: 'p',
-          h: `Fee: ${tx.feeAmount}`,
+          h: `${ V.getString( ui.txFee ) }: ${ tx.feeAmount }`,
         },
         {
           t: 'p',
-          h: `Contribution: ${tx.contribution}`,
+          h: `${ V.getString( ui.txContribution ) }: ${ tx.contribution }`,
         },
         {
           t: 'p',
-          h: `Total: ${tx.txTotal}`,
+          h: `${ V.getString( ui.txTotal ) }: ${ tx.txTotal }`,
+        },
+        {
+          t: 'p',
+          h: `${ V.getString( ui.txTo ) }: ${ tx.recipient} `,
         },
       ],
     } );
     const $confirm = V.cN( {
-      t: 'div',
       i: 'sign-transaction',
       c: buttonClasses + ' modal-pos-1',
       k: handleTransaction,
-      h: getString( ui.signTx ),
+      h: V.getString( ui.signTx ),
     } );
     V.setNode( $content, [$txDetails, $confirm]  );
     return $content;
@@ -541,23 +587,22 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function web3Join() {
     const $content = modalContent();
     const $new = V.cN( {
-      t: 'div',
       i: 'connectwallet-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleWeb3Join,
-      h: getString( ui.connectWallet ),
+      h: V.getString( ui.connectWallet ),
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile ),
+      h: V.getString( ui.manageProfile ),
     } );
     const $newName = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-3',
       k: handleDrawTitleForm,
-      h: getString( ui.newNameOnly ),
+      h: V.getString( ui.newNameOnly ),
     } );
     V.setNode( $content, [$new, $key, $newName] );
     return $content;
@@ -566,16 +611,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function web2Join() {
     const $content = modalContent();
     const $new = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleDrawTitleForm,
-      h: getString( ui.newName ),
+      h: V.getString( ui.newName ),
     } );
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile ),
+      h: V.getString( ui.manageProfile ),
     } );
     V.setNode( $content, [$new, $key] );
     return $content;
@@ -584,10 +628,9 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function confirmUPhrase() {
     const $content = modalContent();
     const $key = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleGetEntityForm,
-      h: getString( ui.manageProfile ),
+      h: V.getString( ui.manageProfile ),
     } );
     V.setNode( $content, $key );
     return $content;
@@ -596,11 +639,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function disconnect() {
     const $content = modalContent();
     const $disc = V.cN( {
-      t: 'div',
       i: 'disconnect-btn',
       c: buttonClasses + ' modal-pos-1',
       k: handleDisconnect,
-      h: getString( ui.disconnect ),
+      h: V.getString( ui.disconnect ),
     } );
     V.setNode( $content, $disc );
     return $content;
@@ -609,17 +651,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function connectWallet() {
     const $content = modalContent();
     const $connect = V.cN( {
-      t: 'div',
       c: 'preloader',
       h: [
         {
-          t: 'div',
           c: 'preloader__ring',
         },
         {
           t: 'loader',
           c: 'preloader__text',
-          h: getString( ui.connectingWallet ),
+          h: V.getString( ui.connectingWallet ),
         },
       ],
     } );
@@ -630,16 +670,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   function mapAddress() {
     const $content = modalContent();
     const $current = V.cN( {
-      t: 'div',
       c: buttonClasses + ' modal-pos-1',
       k: handleAddressMapping,
-      h: getString( ui.useProfile ),
+      h: V.getString( ui.useProfile ),
     } );
     const $new = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
       k: handleDrawTitleForm,
-      h: getString( ui.newName ),
+      h: V.getString( ui.newName ),
     } );
     V.setNode( $content, [$current, $new] );
     return $content;
@@ -649,16 +688,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
 
     const $welcome = V.cN( {
-      t: 'div',
       c: 'txt-center pxy',
       h: [
-        { t: 'p', h: getString( ui.welcome ) },
+        { t: 'p', h: V.getString( ui.welcome ) },
         {
           t: 'p',
           c: 'font-medium fs-l pxy',
           h: activeEntity.fullId,
         },
-        { t: 'p', h: activeAddress ? getString( ui.connectedAddress ) : '' },
+        { t: 'p', h: activeAddress ? V.getString( ui.connectedAddress ) : '' },
         {
           t: 'p',
           c: 'fs-s pxy',
@@ -670,16 +708,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( uPhrase ) {
 
       const $uPhrase = V.cN( {
-        t: 'div',
         c: 'txt-center',
         y: {
           'background': 'aquamarine',
           'border-radius': '3px',
         },
         h: [
-          { t: 'p', c: 'pxy', h: getString( ui.copyKey ) },
+          { t: 'p', c: 'pxy', h: V.getString( ui.copyKey ) },
           UserComponents.castAccessKeyNode( uPhrase ? uPhrase : '', 'txt-red fs-l' ),
-          { t: 'p', c: 'pxy', h: getString( ui.copyKeyExplain ) },
+          { t: 'p', c: 'pxy', h: V.getString( ui.copyKeyExplain ) },
         ],
       } );
 
@@ -691,7 +728,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       //     t: 'p',
       //     c: 'modal__details',
       //     h: `
-      //     ${tokenTicker} ${ getString( ui.liveBalance ) }: ${ x.liveBalance }<br>
+      //     ${tokenTicker} ${ V.getString( ui.liveBalance ) }: ${ x.liveBalance }<br>
       //     ${coinTicker}: ${ x.coinBalance }<br>
       //     `
       //   } );
@@ -699,7 +736,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       // else {
       //   $balance = V.cN( {
       //     t: 'p',
-      //     h: getString( ui.notRetrieved )
+      //     h: V.getString( ui.notRetrieved )
       //   } );
       // }
       // if ( activeAddress ) {
@@ -717,31 +754,36 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function entityNotFound() {
-    const $content = modalContent();
-    const $new = V.cN( {
-      t: 'div',
-      c: buttonClasses + ' modal-pos-1',
-      k: handleDrawTitleForm,
-      h: getString( ui.newName ),
-    } );
-    const $current = V.cN( {
-      t: 'p',
-      c: altButtonClasses + ' modal-pos-2',
-      k: handleAddressMapping,
-      h: getString( ui.useProfile ),
-    } );
-    const $descr = V.cN( {
-      t: 'p',
-      c: 'modal-pos-3 relative txt-center',
-      h: getString( ui.newNameExplain ),
-    } );
-    if ( V.aE() ) {
-      V.setNode( $content, [$new, $current, $descr] );
+    if( V.getSetting( 'joinVersion' ) === 1 ) {
+      const $content = modalContent();
+      const $new = V.cN( {
+        c: buttonClasses + ' modal-pos-1',
+        k: handleDrawTitleForm,
+        h: V.getString( ui.newName ),
+      } );
+      const $current = V.cN( {
+        t: 'p',
+        c: altButtonClasses + ' modal-pos-2',
+        k: handleAddressMapping,
+        h: V.getString( ui.useProfile ),
+      } );
+      const $descr = V.cN( {
+        t: 'p',
+        c: 'modal-pos-3 relative txt-center',
+        h: V.getString( ui.newNameExplain ),
+      } );
+      if ( V.aE() ) {
+        V.setNode( $content, [$new, $current, $descr] );
+      }
+      else {
+        V.setNode( $content, [$new, $descr] );
+      }
+      return $content;
     }
     else {
-      V.setNode( $content, [$new, $descr] );
+      V.sN( 'modal', 'clear' );
+      V.setNode( 'body', JoinRoutine.draw( { role: 'Person', join: 1 } ) );
     }
-    return $content;
   }
 
   /* ====================== export ====================== */
@@ -749,6 +791,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   return {
     modal: modal,
     modalContent: modalContent,
+    preview: preview,
     simpleMessage: simpleMessage,
     validationError: validationError,
     getMetaMask: getMetaMask,

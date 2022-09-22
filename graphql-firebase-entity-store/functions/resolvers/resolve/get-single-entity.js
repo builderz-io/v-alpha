@@ -5,6 +5,8 @@ const { authDb } = require( '../../resources/databases-setup' );
 const colE = namespaceDb.database().ref( 'entities' );
 const colA = authDb.database().ref( 'authentication' );
 
+const { checkAuth } = require( './utils/check-auth' );
+
 module.exports = async ( context, match ) => {
 
   let entity;
@@ -12,14 +14,6 @@ module.exports = async ( context, match ) => {
   if ( match.uuidE ) {
     entity = await colE.child( match.uuidE ).once( 'value' )
       .then( snap => snap.val() );
-    if ( match.isInArray ) {
-      if ( !entity ) {
-        return { success: false };
-      }
-      else {
-        return entity;
-      }
-    }
   }
   else if ( match.title ) {
     entity = await colE.orderByChild( 'm' ).equalTo( match.title ).once( 'value' )
@@ -38,13 +32,29 @@ module.exports = async ( context, match ) => {
   }
 
   if ( !entity ) {
-    return [{
-      success: false,
-    }];
+    return match.isInArray
+      ? { /* success: false */ }
+      : [ { /* success: false */ } ];
+  }
+
+  /**
+   * block the return of the entity for non-owner/non-holder,
+   * as per setting in the tracked field f
+   */
+
+  if (
+    entity.zz && entity.zz.f && entity.zz.f > 0
+    && !checkAuth( context, entity )
+  ) {
+    return match.isInArray
+      ? { /* success: false */ }
+      : [ { /* success: false */ } ];
   }
 
   if ( match.noMixins ) {
-    return [entity];
+    return match.isInArray
+      ? entity
+      : [ entity ];
   }
 
   /**
@@ -56,9 +66,11 @@ module.exports = async ( context, match ) => {
 
   if ( entity.x ) {
     const firstHolder = await colE.child( entity.x.m || entity.x.a ).once( 'value' )
-      .then( snap => snap.val() )
-      .then( entity => entity.m + ' ' + entity.n );
-    Object.assign( entity, { holders: [ firstHolder ] } );
+      .then( snap => snap.val() );
+    const shownHolder = firstHolder.zz && firstHolder.zz.f && firstHolder.zz.f > 0
+      ? 'private' // ( entity.m + ' ' + entity.n )
+      : ( firstHolder.m + ' ' + firstHolder.n );
+    Object.assign( entity, { holders: [ shownHolder ] } );
   }
   else {
     Object.assign( entity, { holders: [ entity.m + ' ' + entity.n ] } );
@@ -71,38 +83,39 @@ module.exports = async ( context, match ) => {
    * - cache this ?
    */
 
-  const heldXM = await colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' )
-    .then( snap => {
-      const data = snap.val();
-      return data ? Object.values( data ) : [];
-    } );
+  const heldFilter = ( snap ) => {
+    const data = snap.val();
+    if ( data ) {
+      let items = Object.values( data );
+      if ( !checkAuth( context, entity ) ) {
+        items = items.filter( item => item.zz && !item.zz.f );
+      }
+      return items;
+    }
+    return [];
+  };
 
-  const heldXA = await colE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' )
-    .then( snap => {
-      const data = snap.val();
-      return data ? Object.values( data ) : [];
-    } );
-    // .then( entities => entities.map( item => item.m + ' ' + item.n ) );
+  const all = await Promise.all( [
+    colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
+    colE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
+  ] );
 
-  const points = heldXA.concat( heldXM )
+  const points = all[1].concat( all[0] )
     .map( item => ( {
       a: item.a,
       c: item.c,
       d: item.d,
       fullId: item.m + ' ' + item.n,
       geo: item.zz && item.zz.i ? item.zz.i : null,
+      continent: item.zz && item.zz.m ? item.zz.m : null,
+      privacy: item.zz && item.zz.f ? item.zz.f : null,
     } ) );
 
   Object.assign( entity, { holderOf: points } );
 
   /** authorize the mixin of private data for authenticated user */
   if (
-    context.a &&
-    (
-      entity.a == context.d || // user is entity
-      ( entity.x && entity.x.a == context.d && !entity.x.m ) || // user is creator of entity
-      ( entity.x && entity.x.m == context.d ) // user is holder of entity
-    )
+    checkAuth( context, entity )
   ) {
 
     /** fetch related auth doc */
@@ -112,5 +125,8 @@ module.exports = async ( context, match ) => {
     /** add auth token to entity object */
     Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
-  return [entity];
+
+  return match.isInArray
+    ? entity
+    : [ entity ];
 };

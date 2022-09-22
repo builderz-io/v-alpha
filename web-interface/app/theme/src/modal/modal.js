@@ -15,7 +15,10 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
     const $modal = ModalComponents.modal();
 
-    if ( which == 'entity found' ) {
+    if ( which == 'preview' ) {
+      V.setNode( $modal, ModalComponents.preview() );
+    }
+    else if ( which == 'entity found' ) {
 
       V.setNode( $modal, ModalComponents.entityFound(
         V.aE(),
@@ -53,6 +56,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'logged out' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'loggedOut' ) );
+    }
+    else if ( which == 'join first' ) {
+      V.setNode( $modal, ModalComponents.simpleMessage( 'joinFirst' ) );
     }
     else if ( which == 'confirm uPhrase' ) {
       V.setNode( $modal, ModalComponents.confirmUPhrase() );

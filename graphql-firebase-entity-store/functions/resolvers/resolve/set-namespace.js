@@ -51,11 +51,11 @@ module.exports = async ( context, input, whichCol ) => {
    */
 
   else if (
-    context.a &&
-    (
-      [ /* entity */ objToUpdate.a, /* profile */ objToUpdate.d ].includes( context.d ) || // user updating self
-      ( objToUpdate.x && objToUpdate.x.a == context.d && !objToUpdate.x.m ) || // user updating created entity
-      ( objToUpdate.x && objToUpdate.x.m == context.d ) // user updating held entity
+    context.a
+    && (
+      [ /* entity */ objToUpdate.a, /* profile */ objToUpdate.d ].includes( context.d ) // user updating self
+      || ( objToUpdate.x && objToUpdate.x.a == context.d && !objToUpdate.x.m ) // user updating created entity
+      || ( objToUpdate.x && objToUpdate.x.m == context.d ) // user updating held entity
     )
   ) {
     return require( './namespace-update' )( context, data, objToUpdate, col );

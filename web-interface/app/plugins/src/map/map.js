@@ -50,12 +50,33 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       lat: 40.792,
       zoom: 13,
     },
+    fremantle: {
+      lng: 115.753,
+      lat: -32.05,
+      zoom: 13,
+    },
     lowerafrica: {
       lng: 18,
       lat: -15,
       zoom: 4,
     },
+    germany: {
+      lng: 10.85,
+      lat: 50.66,
+      zoom: 6,
+    },
   };
+
+  const continentsLngLat = [
+    [ 17.05291, 2.07035], // Africa
+    [ 87.331111, 43.681111 ], // Asia
+    [ -56.1004, -15.6006 ], // South America, https://www.atlasobscura.com/places/geographic-center-of-south-america
+    [ 9.902056, 49.843 ], // Europe
+    [ 134.354806, -25.610111], // Australia, Lambert Gravitational Centre, https://geohack.toolforge.org/geohack.php?pagename=Centre_points_of_Australia&params=25_36_36.4_S_134_21_17.3_E_
+    [ -100, 48.166667 ], // North America, https://pubs.usgs.gov/unnumbered/70039437/report.pdf
+    [ -5.077173, -74.254112 ], // Antarctica, manually set to be more visible
+    [ -40, 35 ], // Fallback to Atlantic Ocean
+  ];
 
   const popUpSettings = {
     maxWidth: 180,
@@ -66,7 +87,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     className: 'map__popup',
   };
 
-  let viMap, highlightLayer, pointLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
+  let viMap, highlightLayer, permittedLayer, deniedLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
 
   const coordinatesCache = [];
 
@@ -78,7 +99,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     if ( Array.isArray( data ) ) {
       if ( options ) {
-        if ( options.isSearch ) {
+        if ( options.isSearch && data[0] ) {
           setSearch( data );
         }
         if ( options.isHover ) {
@@ -140,10 +161,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     return MarketplaceComponents.popupContent( feature );
   }
 
-  // async function launch() {
-  //   await V.setScript( V.getSetting( 'sourceEndpoint' ) + '/plugins/dependencies/leaflet.js' );
-  //   console.log( '*** leaflet library loaded ***' );
-  // }
+  function launch() {
+    if ( V.getSetting( 'drawMap' ) ) {
+      setMap();
+    }
+  }
 
   function castLayer( whichLayer, features ) {
     const sc = V.getState( 'screen' );
@@ -157,9 +179,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     };
 
     switch ( whichLayer ) {
-    // case 'points':
+    // case 'permitted':
     //   marker.fillColor = 'rgba(' + sc.brandPrimary + ', 1)';
     //   break;
+    case 'denied':
+      marker.fillColor = 'rgba(' + sc.brandPrimary + ', 0.55)';
+      break;
     case 'highlights':
       marker.fillColor = 'rgba(' + sc.brandSecondary + ', 1)';
       marker.radius = 6;
@@ -205,19 +230,25 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
      */
 
     if (
-      whichLayer != 'points'
+      whichLayer != 'permitted'
       && features[0]
       && !features[0].isBaseLocationUpdate
     ) {
       features.forEach( feature => {
-        const point = V.getCache( 'points' ).data.find( point => point.uuidE == feature.uuidE );
+        const cache = V.getCache( 'permitted' );
+        const point = cache ? cache.data.find( point => point.uuidE == feature.uuidE ) : undefined;
         if ( point ) {
+
+          /* if no location was entered by user, fill in the continent set by user */
+          if ( !point.geometry.coordinates ) {
+            point.geometry.coordinates = V.castJson( continentsLngLat[ point.geometry.continent - 1 ], 'clone' );
+          }
           Object.assign( feature.geometry, point.geometry );
         }
       } );
     }
 
-    if ( ['search', 'highlights', 'tempPoint'].includes( whichLayer ) ) {
+    if ( ['search', 'highlights', 'tempPoint', 'lastViewed'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, layer ) {
         layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
       };
@@ -232,6 +263,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       uuidE: item.a,
       uuidP: item.d,
       role: item.c.replace( 'Mapped', '' ),
+      privacy: item.f,
       geometry: {
         coordinates: item.zz && item.zz.i ? item.zz.i : V.castRandLatLng().lngLat,
         rand: item.zz && item.zz.i ? false : true,
@@ -255,15 +287,21 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       minZoom: sc.height > 1200 ? 3 : 2,
     };
 
-    const mapData = V.getLocal( 'map-state' );
+    const mapData = V.getLocal( 'map-center' );
 
     if ( mapData ) {
       const map = JSON.parse( mapData );
-      viMap = L.map( 'background' ).setView( [ map.lat, map.lng ], map.zoom );
+      viMap = L.map( 'background', {
+        tapTolerance: 22,
+        // renderer: L.canvas( { tolerance: 30 } ),
+      } ).setView( [ map.lat, map.lng ], map.zoom );
       V.setState( 'map', { lat: map.lat, lng: map.lng, zoom: map.zoom } );
     }
     else {
-      viMap = L.map( 'background' ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
+      viMap = L.map( 'background', {
+        tapTolerance: 22,
+        // renderer: L.canvas( { tolerance: 30 } ),
+      } ).setView( [ mapSettings.lat, mapSettings.lng ], mapSettings.zoom );
       V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
     }
 
@@ -278,18 +316,19 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     getPoints()
       .then( () => setPoints( 'all' ) );
 
-    // viMap.on( 'moveend', handleMapMoveEnd );
+    viMap.on( 'moveend', setMapCenterInState );
 
-  /*
-   .on( 'moveend' ) has bugs:
-     - causes point rendering incomplete and too small
-     - exceeded stack
-  */
+    // viMap.on( 'moveend', handleMapMoveEnd );
+    /*
+     .on( 'moveend', handleMapMoveEnd ) creates bugs:
+       - causes point rendering incomplete and too small
+       - exceeded stack
+    */
 
   }
 
   function getMapDefault(
-    which = V.getSetting( 'mapDefault' )
+    which = V.getSetting( 'mapDefault' ),
   ) {
     return mapDefaults[which];
   }
@@ -298,28 +337,52 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     return V.getEntity( 'point' ).then( res => {
       if ( res.success ) {
         const castPoints = res.data.map( item => {
-          if ( item.zz && item.zz.i ) {
-            const geoStr = JSON.stringify( item.zz.i );
-            if ( coordinatesCache.includes( geoStr ) ) {
-              item.zz.i[0] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
-              item.zz.i[1] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
-              coordinatesCache.push( JSON.stringify( item.zz.i ) );
-            }
-            else {
-              coordinatesCache.push( geoStr );
-            }
+
+          /* if no location was entered by user, fill in the continent set by user */
+          if ( !item.zz ) {
+            item.zz = { i: V.castJson( continentsLngLat[ 7 ], 'clone' ) };
           }
+          else if ( !item.zz.i ) {
+            item.zz.i = V.castJson( continentsLngLat[ item.zz.m - 1 ], 'clone' );
+          }
+
+          /* slightly offset same coordinates */
+          const geoStr = JSON.stringify( item.zz.i );
+          if ( coordinatesCache.includes( geoStr ) ) {
+            item.zz.i[0] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+            item.zz.i[1] += ( ( Math.random() - 0.5 ) / 10  ).toFixed( 4 ) * 1;
+            coordinatesCache.push( JSON.stringify( item.zz.i ) );
+          }
+          else {
+            coordinatesCache.push( geoStr );
+          }
+
+          /* cast points data */
           return castReturnedPointData( item );
         } );
+
+        /* set a cache with all points */
         V.setCache( 'points', castPoints );
+
+        /* set a cache with permitted points */
+        const permitted = castPoints.filter( item => [ 0, null ].includes( item.privacy ) );
+        V.setCache( 'permitted', permitted );
+
+        /* set a cache with denied points */
+        const denied = castPoints.filter( item => item.privacy == 2 );
+        V.setCache( 'denied', denied );
       }
     } );
   }
 
   function setPoints( whichRole ) {
 
-    if ( pointLayer ) {
-      pointLayer.remove();
+    if ( permittedLayer ) {
+      permittedLayer.remove();
+    }
+
+    if ( deniedLayer ) {
+      deniedLayer.remove();
     }
 
     const cache = V.getCache( 'points' );
@@ -334,12 +397,24 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'all' != whichRole ) {
       filtered = filtered.filter( item => item.role == V.castRole( whichRole ) );
     }
-    // console.log( 'filtered points', filtered );
-    pointLayer = castLayer( 'points', filtered );
 
-    pointLayer.on( 'click', handlePointClick );
+    /* draw publicly accessible points (permitted points) */
 
-    pointLayer.addTo( viMap );
+    const permitted = filtered.filter( item => [ 0, null ].includes( item.privacy ) );
+
+    permittedLayer = castLayer( 'permitted', permitted );
+
+    permittedLayer.on( 'click', handlePointClick );
+
+    permittedLayer.addTo( viMap );
+
+    /* draw non-accessible, but visible points (denied points) */
+
+    const denied = filtered.filter( item => item.privacy == 2 );
+
+    deniedLayer = castLayer( 'denied', denied );
+
+    deniedLayer.addTo( viMap );
   }
 
   function setHighlights( whichRole ) {
@@ -386,6 +461,15 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     searchLayer.addTo( viMap );
 
+    const lat = features[0].geometry.coordinates[1];
+    const lng = features[0].geometry.coordinates[0];
+
+    viMap.setView( [lat, lng], 3 );
+    V.setState( 'map', {
+      lat: lat,
+      lng: lng,
+      zoom: 3,
+    } );
   }
 
   function setHover( features ) {
@@ -407,6 +491,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   function setLastViewed( features ) {
     if ( lastViewedLayer ) {
       lastViewedLayer.remove();
+    }
+
+    /* if no location was entered by user, fill in the continent set by user */
+    if ( !features[0].geometry.coordinates ) {
+      features[0].geometry.coordinates = V.castJson( continentsLngLat[ features[0].geometry.continent - 1 ], 'clone' );
     }
 
     lastViewedLayer = castLayer( 'lastViewed', features );
@@ -461,6 +550,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     //   lastLngLat: [ e.layer.getLatLng().lng, e.layer.getLatLng().lat ],
     // } );
 
+    if ( e.layer.feature.privacy > 0 ) {
+      return;
+    }
+
     const uuidE = e.layer.feature.uuidE;
     const uuidP = e.layer.feature.uuidP;
     const popup = L.popup().setContent( castPopup( { uuidE: uuidE } ) );
@@ -476,7 +569,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     let entity;
 
-    const inCache = V.getViewed( uuidE );
+    const inCache = V.getFromCache( 'viewed', uuidE );
 
     if ( inCache ) {
       entity = V.successTrue( 'used cache', inCache );
@@ -502,18 +595,25 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function handleMapMoveEnd() {
-    console.log( 'map moved' );
-    viMap.off( 'moveend' );
-    setMapPositionInState();
-    viMap.on( 'moveend', handleMapMoveEnd );
-  }
+  // function handleMapMoveEnd() {
+  //   console.log( 'map moved' );
+  //   viMap.off( 'moveend' );
+  //   setMapPositionInState();
+  //   viMap.on( 'moveend', handleMapMoveEnd );
+  // }
 
-  function setMapPositionInState() {
-    const map = viMap.getCenter();
-    Object.assign( map, { zoom: viMap.getZoom() } );
-    V.setState( 'map', map );
-    V.setLocal( 'map-state', map );
+  // function setMapPositionInState() {
+  //   const map = viMap.getCenter();
+  //   Object.assign( map, { zoom: viMap.getZoom() } );
+  //   V.setState( 'map', map );
+  //   V.setLocal( 'map-state', map );
+  // }
+
+  function setMapCenterInState() {
+    const mapCenter = viMap.getCenter();
+    Object.assign( mapCenter, { zoom: viMap.getZoom() } );
+    V.setState( 'mapCenter', mapCenter );
+    V.setLocal( 'map-center', mapCenter );
   }
 
   /* ============ public methods and exports ============ */
@@ -533,9 +633,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
-    // launch: launch,
+    launch: launch,
     draw: draw,
-    setMap: setMap,
     getState: getState,
   };
 

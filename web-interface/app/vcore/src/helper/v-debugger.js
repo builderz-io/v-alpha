@@ -25,10 +25,10 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   const sessionNr = Date.now();
 
   console.log( '*** NEW SESSION ***' );
-  console.log( '', window.location.href );
-  console.log( '', new Date().toString() );
-  console.log( '', navigator.userAgent );
-  console.log( 'App ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '*** ', window.location.href );
+  console.log( '*** ', new Date().toString() );
+  console.log( '*** ', navigator.userAgent );
+  console.log( '*** ', VConfig.getSetting( 'appVersion' ) );
   console.log( '*** NEW SESSION END ***' );
 
   function handleConsoleMessage( msg, data ) {
@@ -49,18 +49,17 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
 
   setInterval( ( q ) => { if( q.length ) { postQueue( q ) } }, 9000, queue );
 
-  const $debug = VDom.setNode( {
-    tag: 'debug',
-    classes: 'debug',
-    setStyle: {
+  const $debug = V.cN( {
+    t: 'debug',
+    c: 'debug',
+    s: {
       debug: {
         'position': 'fixed',
-        'top': '10rem',
-        'margin': '6px',
+        'top': '174px',
+        'left': '28px',
         'font-size': '0.9rem',
         'cursor': 'pointer',
         'background': 'bisque',
-        'z-index': 9999,
         'max-width': '340px',
         'word-wrap': 'anywhere',
         'padding': '10px',
@@ -69,13 +68,10 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
         'overflow-y': 'scroll',
       },
     },
-    html: VDom.setNode( {
+    h: {
       tag: 'ul',
-    } ),
-  } );
-
-  $debug.addEventListener( 'click', function() {
-    V.setNode( 'debug', 'clear' );
+    },
+    k: handleClearDebugNode,
   } );
 
   /* ================== public methods ================== */
@@ -99,12 +95,93 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( 'body', $debug );
   }
 
+  function debugLogs() {
+    return V.cN( {
+      c: 'debog-log__btn cursor-pointer',
+      s: {
+        'debog-log__btn': {
+          position: 'fixed',
+          top: '174px',
+          left: '0px',
+          background: 'green',
+          color: 'white',
+          padding: '4px 6px',
+        },
+      },
+      k: handleDebugLogs,
+      h: 'L',
+    } );
+  }
+
+  function downloadStrings() {
+    return V.cN( {
+      c: 'download-strings__btn cursor-pointer',
+      s: {
+        'download-strings__btn': {
+          position: 'fixed',
+          top: '200px',
+          left: '0px',
+          background: 'orange',
+          color: 'white',
+          padding: '4px 5px',
+        },
+      },
+      k: handleStringsDownload,
+      h: 'T',
+    } );
+  }
+
+  function resetApp() {
+    return V.cN( {
+      c: 'reset-app__btn cursor-pointer',
+      s: {
+        'reset-app__btn': {
+          position: 'fixed',
+          top: '226px',
+          left: '0px',
+          background: 'blue',
+          color: 'white',
+          padding: '4px 5px',
+        },
+      },
+      k: handleAppReset,
+      h: 'R',
+    } );
+  }
+
+  /* ====================== handlers ====================== */
+
+  function handleClearDebugNode() {
+    V.setNode( 'debug', 'clear' );
+  }
+
+  function handleAppReset() {
+    localStorage.clear();
+    location = window.location.origin;
+  }
+
+  function handleDebugLogs() {
+    V.setToggle( 'debug' );
+  }
+
+  function handleStringsDownload() {
+    const json = JSON.stringify( VTranslation.getStringsToTranslate(), null, 2 );
+    const blob = new Blob( [json], { type: 'application/json' } );
+    const $a = document.createElement( 'a' );
+    $a.download = 'strings.json';
+    $a.href = window.URL.createObjectURL( blob );
+    $a.click();
+  }
+
   /* ====================== export ====================== */
 
   V.debug = debug;
 
   return {
     debug: debug,
+    debugLogs: debugLogs,
+    downloadStrings: downloadStrings,
+    resetApp: resetApp,
   };
 
 } )();

@@ -15,15 +15,19 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   /* ============== user interface strings ============== */
 
-  const ui = {
-    community: 'Community',
-    fee: 'Transaction Fee',
-    unknown: 'unknown',
-  };
+  const ui = ( () => {
+    const strings = {
+      community: 'Community',
+      fee: 'Transaction Fee',
+      unknown: 'unknown',
+    };
 
-  function getString( string, scope ) {
-    return V.i18n( string, 'evm', scope || 'transaction' ) + ' ';
-  }
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
 
   /* ================== event handlers ================== */
 
@@ -75,7 +79,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castTokenBalance( balance, decimals ) {
-    const divisibility = V.getState( 'contract' ).divisibility || 18;
+    const divisibility = V.getState( 'contract' ) ? V.getState( 'contract' ).divisibility : 18;
     return Number( balance / 10**( divisibility ) ).toFixed( decimals || 0 );
   }
 
@@ -117,7 +121,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     window.Web3Obj = new Web3( provider );
     contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getTokenContract().contractAddress );
 
-    const state = await V.getContractState();
+    const state = V.getSetting( 'queryContractState' ) ? await V.getContractState() : {};
 
     if ( state.success ) {
       // V.setState( 'contract', state.data ? state.data[0] : {} );
@@ -196,7 +200,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       const lifetime = contract.methods.getLifetime.call().call();
       const fee = contract.methods.getTransactionFee.call().call();
       const contribution = contract.methods.getCommunityContribution.call().call();
-      const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
+      const divisibility = Promise.resolve( 18 ); // now fixed to 18, instead of contract.methods.decimals.call().call();
 
       // const allEvents = contract.getPastEvents( 'allEvents', {
       // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -220,7 +224,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         blockNumber,
         fee,
         contribution,
-        // divisibility,
+        divisibility,
         // payout,
         // interval,
         // lifetime,
@@ -321,7 +325,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  async function getAddressHistory( data
+  async function getAddressHistory( data,
     // which = V.cA() || V.aE().evmCredentials.address,
     // data = { fromBlock: 0, toBlock: 'latest' },
     // whichEvent = 'TransferSummary'
@@ -481,10 +485,11 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const totalFee =
-      contractState.fee == 3333 ? amount * 0.5 :
-        contractState.fee == 2500 ? Math.round( amount * 0.33333333 * 100 ) / 100 :
-          Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
+    const totalFee = contractState.fee == 3333
+      ? amount * 0.5
+      : contractState.fee == 2500
+        ? Math.round( amount * 0.33333333 * 100 ) / 100
+        : Math.round( ( amount / ( 1 - ( ( Number( contractState.fee ) + 1 ) / 100**2 ) ) - amount ) * 100 ) / 100;
 
     const contribution = Math.round( ( totalFee * ( Number( contractState.contribution ) / 100**2 ) ) * 100 ) / 100;
     const feeAmount = Math.round( ( totalFee - contribution ) * 100 ) / 100;
@@ -504,8 +509,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     const filteredAndEnhanced = await transfers.filter( tx => {
       const data = tx.returnValues;
-      return data.from.toLowerCase() == which ||
-              data.to.toLowerCase() == which;
+      return data.from.toLowerCase() == which
+              || data.to.toLowerCase() == which;
 
     } ).map( async tx => {
       const txData = {};
@@ -539,7 +544,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       await addEntityData( txData, 'from' );
       await addEntityData( txData, 'to' );
 
-      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = getString( ui.community ) : null;
+      txData.fromAddress == contract._address.toLowerCase() ? txData.fromEntity = V.getString( ui.community ) : null;
 
       if ( txData.txType == 'in' ) {
         txData.title = txData.fromEntity;
@@ -548,10 +553,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         txData.title = txData.toEntity;
       }
       else if ( txData.txType == 'fee' ) {
-        txData.title = getString( ui.fee );
+        txData.title = V.getString( ui.fee );
       }
       else if ( txData.txType == 'generated' ) {
-        txData.title = getString( ui.community );
+        txData.title = V.getString( ui.community );
       }
 
       return txData;
@@ -564,7 +569,10 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function addEntityData( txData, which ) {
-    if ( txData[which + 'Address'] == V.aE().evmCredentials.address ) {
+    if (
+      V.aE()
+      && V.aE().evmCredentials.address == txData[which + 'Address']
+    ) {
       txData[which + 'Entity'] = V.aE().fullId;
       txData[which + 'UuidE'] = V.aE().uuidE;
     }
@@ -576,7 +584,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       }
       else {
         txData[which + 'Entity'] = V.castShortAddress( txData[which + 'Address'] );
-        txData[which + 'UuidE'] = getString( ui.unknown );
+        txData[which + 'UuidE'] = V.getString( ui.unknown );
       }
     }
   }

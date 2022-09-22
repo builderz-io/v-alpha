@@ -10,6 +10,8 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   const settings = {
     useClientData: false,
     namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
+    continent: 8, // Fallback to Atlantic Ocean
+    avatar: 6, // Fallback to Reset-Tangram
   };
 
   /** In-memory jwt */
@@ -22,7 +24,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
-  const singleP = 'm { a b c m n r } n { a c } o { a } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 }';
+  const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
 
   /**
    * Preview View returns only a few fields:
@@ -31,7 +33,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const previewE = 'a c d m n';
-  const previewP = 'm { a r } o { b }'; // n { a }
+  const previewP = 'f m { a r } n { a c z } o { a b z }';
 
   /* ================== private methods ================= */
 
@@ -105,6 +107,9 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       emailPrivate: data.props.emailPrivate,
       target: data.props.target,
       unit: data.props.unit,
+      continent: data.continent,
+      avatar: data.avatar,
+      privacy: data.privacy,
       lngLat: data.geometry.coordinates,
       loc: data.geometry.baseLocation,
       tinyImg: data.tinyImageDU,
@@ -123,13 +128,17 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   function castNewProfileData( data ) {
 
     /**
-    * casts a full set of profile data, to be used when
-    * server-side initialisation of entity is disabled.
-    */
+     * TODO: Needs updating
+     *
+     * casts a full set of profile data, to be used when
+     * server-side initialisation of entity is disabled.
+     */
 
     const a = data.uuidP;
     const b = data.contextP;
     const d = data.uuidE; // note that this is NOT creatorUuid
+
+    // const f = // privacy
 
     const m = {
       a: data.props.descr,
@@ -140,12 +149,14 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     const n = {
       a: data.geometry.coordinates,
       c: data.geometry.baseLocation,
+      // z: // continent
     };
     const o = {
       a: data.tinyImageDU,
       b: data.thumbnailDU,
       c: data.mediumImageDU,
       n: data.imageName,
+      // z: // avatar
     };
 
     const x = {
@@ -199,6 +210,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       uuidP: E.d || P.a,
       role: V.castRole( E.c ),
       roleCode: E.c,
+      privacy: P.f,
       title: E.m,
       tag: E.n,
       profile: { // placed here also for UI compatibility
@@ -223,11 +235,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         tinyImage: P.o ? P.o.a : undefined,
         thumbnail: P.o ? P.o.b : undefined,
         mediumImage: I && I.o ? I.o.c : undefined,
+        avatar: P.o && P.o.z ? P.o.z : settings.avatar, // Fallback to Reset-Tangram
       },
       geometry: {
         coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
         baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
+        continent: P.n && P.n.z ? P.n.z : settings.continent, // Fallback to Atlantic Ocean
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
@@ -260,6 +274,18 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         q8: P.q ? P.q.q8 : undefined,
         q9: P.q ? P.q.q9 : undefined,
         q10: P.q ? P.q.q10 : undefined,
+      },
+      servicefields: {
+        s1: P.s ? P.s.s1 : undefined,
+        s2: P.s ? P.s.s2 : undefined,
+        s3: P.s ? P.s.s3 : undefined,
+        s4: P.s ? P.s.s4 : undefined,
+        s5: P.s ? P.s.s5 : undefined,
+        s6: P.s ? P.s.s6 : undefined,
+        s7: P.s ? P.s.s7 : undefined,
+        s8: P.s ? P.s.s8 : undefined,
+        s9: P.s ? P.s.s9 : undefined,
+        s10: P.s ? P.s.s10 : undefined,
       },
     };
   }
@@ -377,7 +403,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     console.log( 'UPDATING PROFILE: ', data );
     const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidP;
 
-    let m, n, o, p, q;
+    let f, m, n, o, p, q, s;
     let returnFields = '';
 
     if ( data.field.includes( 'questionnaire' ) ) {
@@ -385,6 +411,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       q = {};
       for ( let i = 1; i <= 10; i++ ) {
         n == i ? q['q' + n] = data.data : null;
+      }
+    }
+    else if ( data.field.includes( 'servicefields' ) ) {
+      const n = data.field.replace( 'servicefields.s', '' );
+      s = {};
+      for ( let i = 1; i <= 10; i++ ) {
+        n == i ? s['s' + n] = data.data : null;
       }
     }
 
@@ -406,9 +439,9 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       break;
 
     case 'geometry.baseLocation':
-      n = data.data.value ? {
+      n = data.data.loc ? {
         a: [ Number( data.data.lng ), Number( data.data.lat ) ],
-        c: data.data.value,
+        c: data.data.loc,
       } : null;
       returnFields = 'n { a c }';
       break;
@@ -429,10 +462,15 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       };
       returnFields = 'p { z }'; // p { a { a b g h i j m n o p s t } z }
       break;
+
+    case 'privacy':
+      f = Number( data.data.privacy );
+      returnFields = 'f';
+      break;
     }
 
     const variables = {
-      input: { a, m, n, o, p, q },
+      input: { a, f, m, n, o, p, q, s },
     };
 
     const query = `mutation SetProfileUpdate( $input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }! ) {
@@ -590,7 +628,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     console.log( 111, 'by point' );
 
     const query = `query GetEntitiesByPoint ( $where: WhereGeo ){
-                 getPoints(where: $where) { a c d zz { i } }
+                 getPoints(where: $where) { a c d f zz { i m } }
                }`;
 
     const variables = {
@@ -712,13 +750,13 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         const combined = castReturnedEntityAndProfileData(
           all[0].data.getEntities[0],
           all[1].data.getProfile[0],
-          all[2].data.getImage[0]
+          all[2].data.getImage[0],
         );
         return V.successTrue( 'got entity and profile', combined );
       }
     }
 
-    console.log( 'GET MULTIPLE ENTITIES: ', data );
+    console.log( 'GET ENTITIE(S): ', data );
 
     /** Query multiple entities and profiles in sequence (arrays) */
 
@@ -771,12 +809,12 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( 'transaction log' == whichEndpoint ) {
       const transactionLog = await getTransactionLog( data ); // data is uuidP
-      if ( !transactionLog.errors &&
-        transactionLog.data.getProfiles[0].p != null &&
-        transactionLog.data.getProfiles[0].p.a != null
+      if ( !transactionLog.errors
+        && transactionLog.data.getProfiles[0].p != null
+        && transactionLog.data.getProfiles[0].p.a != null
       ) {
         const castTx = transactionLog.data.getProfiles[0].p.a.map(
-          tx => castReturnedTransferData( tx )
+          tx => castReturnedTransferData( tx ),
         );
         return V.successTrue( 'got transfer log', castTx );
       }
@@ -791,26 +829,46 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     /** Query profiles for E fetched regularly or by query */
 
     if (
-      !E.errors &&
-      (
-        ( E.data.getEntities && E.data.getEntities[0] != null ) ||
-        ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
+      !E.errors
+      && (
+        ( E.data.getEntities && E.data.getEntities[0] != null )
+        || ( E.data.getEntityQuery && E.data.getEntityQuery[0] != null )
       )
     ) {
       const entitiesArray = E.data.getEntities || E.data.getEntityQuery;
 
-      const P = await getProfiles( entitiesArray );
-
-      /** Combine profile and entity data */
-
-      if ( !P.errors && P.data.getProfiles[0] != null ) {
-        const combined = entitiesArray.map(
-          ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] )
+      if ( data.isAutofill ) {
+        const titles = entitiesArray.map(
+          item => castReturnedEntityAndProfileData( item, {} ),
         );
-        return V.successTrue( 'got entities and profiles', combined );
+        return V.successTrue( 'got entity titles for autofill', titles );
+      }
+
+      if ( entitiesArray.length == 1 ) {
+
+        /** Run fetch again for a single entity */
+        const singleEntity = {
+          isDisplay: true,
+          uuidE: entitiesArray[0].a,
+          uuidP: entitiesArray[0].d,
+        };
+        return getNamespace( singleEntity );
       }
       else {
-        return V.successFalse( 'get profiles' );
+
+        /** Get Profiles for all entities in array ... */
+        const P = await getProfiles( entitiesArray );
+
+        /** ... then combine entity with profile data */
+        if ( !P.errors && P.data.getProfiles[0] != null ) {
+          const combined = entitiesArray.map(
+            ( item, i ) => castReturnedEntityAndProfileData( item, P.data.getProfiles[i] ),
+          );
+          return V.successTrue( 'got entities and profiles', combined );
+        }
+        else {
+          return V.successFalse( 'get profiles' );
+        }
       }
     }
     else {

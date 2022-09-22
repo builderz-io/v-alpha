@@ -2,7 +2,7 @@
 const { profileDb } = require( '../../resources/databases-setup' );
 const colP = profileDb.database().ref( 'profiles' );
 
-module.exports = async ( profileArray ) => {
+module.exports = async ( context, profileArray ) => {
   const promises = profileArray.map( function( uuidP ) {
     return colP.child( uuidP )
       .once( 'value' )

@@ -1,0 +1,684 @@
+{
+  "request": {
+    "schema": {
+      "CROP": {
+        "ID": -1
+      },
+      "FTLZ": {
+        "ORG": {
+          "ID": -1,
+          "QTY": -1
+        }
+      },
+      "BMASS": {
+        "MP": {
+          "QTY": -1,
+          "HVST": true
+        },
+        "SP": {
+          "QTY": -1,
+          "HVST": true
+        }
+      },
+      "SITE": {
+        "CN": -1,
+        "FCAP": -1,
+        "PCIP": {
+          "QTY": -1,
+          "MUL": -1
+        },
+        "N": {
+          "DEP": -1
+        }
+      }
+    },
+    "legend": {
+      "en_US": {
+        "CROP": {
+          "displayName": "Crop",
+          "descr": "Crop",
+          "ID": {
+            "displayName": "Type",
+            "descr": "Crop id for internal use",
+            "unit": ""
+          },
+          "NAME": {
+            "displayName": "Type",
+            "descr": "Name of the crop in English language",
+            "unit": ""
+          }
+        },
+        "FTLZ": {
+          "displayName": "Fertilizer",
+          "descr": "Fertilizer",
+          "ORG": {
+            "displayName": "Organic",
+            "descr": "Organic",
+            "ID": {
+              "displayName": "Type",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Type",
+              "descr": "Name of the fertilizer in English language",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity applied",
+              "descr": "Quantity of applied fertilizer",
+              "unit": ""
+            }
+          }
+        },
+        "BMASS": {
+          "displayName": "Bio mass",
+          "descr": "Bio mass",
+          "MP": {
+            "displayName": "Main Product",
+            "descr": "Main Product",
+            "QTY": {
+              "displayName": "Quantity available",
+              "descr": "Main Product Quantity",
+              "unit": ""
+            },
+            "HVST": {
+              "displayName": "Harvested",
+              "descr": "Whether main product has been harvested",
+              "unit": ""
+            }
+          },
+          "SP": {
+            "displayName": "Side Product",
+            "descr": "Side Product",
+            "QTY": {
+              "displayName": "Quantity available",
+              "descr": "Side Product Quantity",
+              "unit": ""
+            },
+            "HVST": {
+              "displayName": "Harvested",
+              "descr": "Whether side product has been harvested",
+              "unit": ""
+            }
+          }
+        },
+        "SITE": {
+          "displayName": "Plot data",
+          "descr": "Plot data",
+          "CN": {
+            "displayName": "C/N Ratio",
+            "descr": "Plot C/N Ratio",
+            "unit": ""
+          },
+          "FCAP": {
+            "displayName": "Capacity",
+            "descr": "Field Capacity",
+            "unit": ""
+          },
+          "PCIP": {
+            "displayName": "Precipitation",
+            "descr": "Precipitation",
+            "QTY": {
+              "displayName": "Quantity average",
+              "descr": "Plot precipitation",
+              "unit": ""
+            },
+            "MUL": {
+              "displayName": "Multiplier",
+              "descr": "precipitation multiplier",
+              "unit": "Decimal share"
+            }
+          },
+          "N": {
+            "displayName": "N",
+            "descr": "N",
+            "DEP": {
+              "displayName": "Atmospheric N Deposition",
+              "descr": "Atmospheric N Deposition",
+              "unit": ""
+            }
+          }
+        }
+      },
+      "de_DE": {
+        "CROP": {
+          "displayName": "Fruchtart",
+          "descr": "Fruchtart",
+          "ID": {
+            "displayName": "Typ",
+            "descr": "Crop id for internal use",
+            "unit": ""
+          },
+          "NAME": {
+            "displayName": "Typ",
+            "descr": "Name of the crop in English language",
+            "unit": ""
+          }
+        },
+        "FTLZ": {
+          "displayName": "Dünger",
+          "descr": "Fertilizer",
+          "ORG": {
+            "displayName": "Organisch",
+            "descr": "Organic",
+            "ID": {
+              "displayName": "Typ",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Typ",
+              "descr": "Name of the fertilizer in English language",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t/ha"
+            }
+          }
+        },
+        "BMASS": {
+          "displayName": "Biomasse",
+          "descr": "Biomasse",
+          "MP": {
+            "displayName": "Hauptprodukt",
+            "descr": "Main Product",
+            "QTY": {
+              "displayName": "Ertrag",
+              "descr": "Main Product Quantity",
+              "unit": "FM t/ha"
+            },
+            "HVST": {
+              "displayName": "Ernte",
+              "descr": "Whether main product has been harvested",
+              "unit": ""
+            }
+          },
+          "SP": {
+            "displayName": "Nebenprodukt",
+            "descr": "Side Product",
+            "QTY": {
+              "displayName": "Ertrag",
+              "descr": "Side Product Quantity",
+              "unit": "FM t/ha"
+            },
+            "HVST": {
+              "displayName": "Ernte",
+              "descr": "Whether side product has been harvested",
+              "unit": ""
+            }
+          }
+        },
+        "SITE": {
+          "displayName": "Schlag Daten",
+          "descr": "Plot data",
+          "CN": {
+            "displayName": "C/N Verhältnis",
+            "descr": "Plot C/N Ratio",
+            "unit": " "
+          },
+          "FCAP": {
+            "displayName": "Feldkapazität",
+            "descr": "Field Capacity",
+            "unit": "cm/m"
+          },
+          "PCIP": {
+            "displayName": "Niederschlag",
+            "descr": "Niederschlag",
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Plot precipitation",
+              "unit": "mm/a"
+            },
+            "MUL": {
+              "displayName": "Multiplikator",
+              "descr": "precipitation multiplier",
+              "unit": " "
+            }
+          },
+          "N": {
+            "displayName": "N",
+            "descr": "N",
+            "DEP": {
+              "displayName": "Atmospherische N Deposition",
+              "descr": "Atmospherische N Deposition",
+              "unit": "kg/ha/a"
+            }
+          }
+        }
+      }
+    }
+  },
+  "results": {
+    "schema": {
+      "SOM": {
+        "LOSS": -1,
+        "SUPP": -1,
+        "BAL": {
+          "C": -1,
+          "N": -1
+        }
+      },
+      "N": {
+        "PB": -1,
+        "FIX": -1,
+        "DEP": -1,
+        "NYR": -1,
+        "CR": -1,
+        "FTLZ": {
+          "ORG": -1,
+          "GRS": -1,
+          "REM": -1
+        }
+      },
+      "C": {
+        "CR": -1,
+        "FTLZ": {
+          "REM": -1
+        }
+      }
+    },
+    "legend": {
+      "en_US": {
+        "T": {
+          "BAL": {
+            "C": {
+              "displayName": "C Balance",
+              "descr": "C Balance",
+              "unit": ""
+            },
+            "N": {
+              "displayName": "N Balance",
+              "descr": "N Balance",
+              "unit": ""
+            }
+          }
+        },
+        "SOM": {
+          "displayName": "Soil Organic Matter",
+          "descr": "Soil Organic Matter",
+          "LOSS": {
+            "displayName": "Loss",
+            "descr": "Soil Organic Matter Loss",
+            "unit": ""
+          },
+          "SUPP": {
+            "displayName": "Supply",
+            "descr": "Soil Organic Matter Supply",
+            "unit": ""
+          },
+          "BAL": {
+            "C": {
+              "displayName": "C Balance",
+              "descr": "C Balance",
+              "unit": ""
+            },
+            "N": {
+              "displayName": "N Balance",
+              "descr": "N Balance",
+              "unit": ""
+            }
+          }
+        },
+        "N": {
+          "displayName": "N",
+          "descr": "N",
+          "PB": {
+            "displayName": "N Plant Biomass",
+            "descr": "N Plant Biomass",
+            "unit": ""
+          },
+          "FIX": {
+            "displayName": "N Fixation",
+            "descr": "N Fixation",
+            "unit": ""
+          },
+          "DEP": {
+            "displayName": "N Deposition",
+            "descr": "N Deposition",
+            "unit": ""
+          },
+          "NYR": {
+            "displayName": "N Not Yield Related",
+            "descr": "N Not Yield Related",
+            "unit": ""
+          },
+          "CR": {
+            "displayName": "N Fixation",
+            "descr": "N Fixation",
+            "unit": ""
+          },
+          "FTLZ": {
+            "displayName": "Fertilizer",
+            "descr": "Fertilizer",
+            "ORG": {
+              "displayName": "N Organic Fertilizer",
+              "descr": "N Organic Fertilizer",
+              "unit": ""
+            },
+            "GRS": {
+              "displayName": "N from Green/Straw",
+              "descr": "N from Green/Straw",
+              "unit": ""
+            },
+            "REM": {
+              "displayName": "N Fertilizer Remaining",
+              "descr": "N Fertilizer Remaining",
+              "unit": ""
+            }
+          }
+        },
+        "C": {
+          "CR": {
+            "displayName": "C Fixation",
+            "descr": "C Fixation",
+            "unit": ""
+          },
+          "FTLZ": {
+            "REM": {
+              "displayName": "C Fertilizer Remaining",
+              "descr": "C Fertilizer Remaining",
+              "unit": ""
+            }
+          }
+        }
+      },
+      "de_DE": {
+        "T": {
+          "BAL": {
+            "C": {
+              "displayName": "C Bilanz",
+              "descr": "C Balance",
+              "unit": "kg/ha"
+            },
+            "N": {
+              "displayName": "N Bilanz",
+              "descr": "N Balance",
+              "unit": "kg/ha"
+            }
+          }
+        },
+        "SOM": {
+          "displayName": "Soil Organic Matter",
+          "descr": "Soil Organic Matter",
+          "LOSS": {
+            "displayName": "Substanz Abbau",
+            "descr": "Soil Organic Matter Loss",
+            "unit": "kg/ha"
+          },
+          "SUPP": {
+            "displayName": "Substanz Aufbau",
+            "descr": "Soil Organic Matter Supply",
+            "unit": "kg/ha"
+          },
+          "BAL": {
+            "C": {
+              "displayName": "Humusbilanz C",
+              "descr": "C Balance",
+              "unit": "kg/ha"
+            },
+            "N": {
+              "displayName": "Humusbilanz N",
+              "descr": "N Balance",
+              "unit": "kg/ha"
+            }
+          }
+        },
+        "N": {
+          "displayName": "N",
+          "descr": "N",
+          "PB": {
+            "displayName": "N in Pflanzenbiomasse",
+            "descr": "N in Pflanzenbiomasse",
+            "unit": "kg/ha"
+          },
+          "FIX": {
+            "displayName": "N aus Fixierung",
+            "descr": "N aus Fixierung",
+            "unit": "kg/ha"
+          },
+          "DEP": {
+            "displayName": "N aus Deposition",
+            "descr": "N aus atmosphärischer Deposition",
+            "unit": "kg/ha"
+          },
+          "NYR": {
+            "displayName": "N nicht aufgenommen",
+            "descr": "N nicht aufgenommen",
+            "unit": "kg/ha"
+          },
+          "CR": {
+            "displayName": "N in Pflanzenrückständen",
+            "descr": "N in Pflanzenrückständen",
+            "unit": "kg/ha"
+          },
+          "FTLZ": {
+            "displayName": "Fertilizer",
+            "descr": "Fertilizer",
+            "ORG": {
+              "displayName": "N aus organischen Düngern",
+              "descr": "N Organischer Dünger",
+              "unit": "kg/ha"
+            },
+            "GRS": {
+              "displayName": "N aus Grün/Stroh",
+              "descr": "N aus Grün/Stroh",
+              "unit": ""
+            },
+            "REM": {
+              "displayName": "N in Düngerrückständen",
+              "descr": "N Nachlieferung",
+              "unit": "kg/ha"
+            }
+          }
+        },
+        "C": {
+          "CR": {
+            "displayName": "C in Pflanzenrückständen",
+            "descr": "C in Pflanzenrückständen",
+            "unit": "kg/ha"
+          },
+          "FTLZ": {
+            "REM": {
+              "displayName": "C in Düngerrückständen",
+              "descr": "C in Düngerrückständen",
+              "unit": "kg/ha"
+            }
+          }
+        }
+      }
+    }
+  },
+  "crop": {
+    "schema": {
+      "ID": -1,
+      "NAME": "none",
+      "LS": -1,
+      "N": {
+        "BFN": -1,
+        "NYR": -1
+      },
+      "MP": {
+        "DM": -1,
+        "C": -1,
+        "N": -1
+      },
+      "SP": {
+        "DM": -1,
+        "C": -1,
+        "N": -1
+      },
+      "LIT": {
+        "DM": -1,
+        "C": -1,
+        "N": -1
+      },
+      "STB": {
+        "DM": -1,
+        "C": -1,
+        "N": -1
+      },
+      "RTS": {
+        "DM": -1,
+        "C": -1,
+        "N": -1
+      },
+      "RATIO": {
+        "SPMP": -1,
+        "LITMP": -1,
+        "STBMP": -1,
+        "RTSMP": -1
+      }
+    },
+    "legend": {
+      "ID": {
+        "descr": "Crop id for internal use",
+        "unit": ""
+      },
+      "NAME": {
+        "descr": "Name of the crop in English language",
+        "unit": ""
+      },
+      "LS": {
+        "descr": "Share of legumes in mixture",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "BFN": {
+          "descr": "Biological N fixation as share of total plant N (NPB)",
+          "unit": "Decimal share"
+        },
+        "NYR": {
+          "descr": "Not yield-related nitrogen mineralized from organic matter",
+          "unit": "kg N * ha-1"
+        }
+      },
+      "MP": {
+        "DM": {
+          "descr": "Main product dry matter content",
+          "unit": "Decimal share"
+        },
+        "C": {
+          "descr": "Main product C content in dry matter",
+          "unit": "Decimal share"
+        },
+        "N": {
+          "descr": "Main product N content in dry matter",
+          "unit": "Decimal share"
+        }
+      },
+      "SP": {
+        "DM": {
+          "descr": "Side product dry matter content",
+          "unit": "Decimal share"
+        },
+        "C": {
+          "descr": "Side product C content in dry matter",
+          "unit": "Decimal share"
+        },
+        "N": {
+          "descr": "Side product N content in dry matter",
+          "unit": "Decimal share"
+        }
+      },
+      "LIT": {
+        "DM": {
+          "descr": "Litter dry matter content",
+          "unit": "Decimal share"
+        },
+        "C": {
+          "descr": "Litter C content in dry matter",
+          "unit": "Decimal share"
+        },
+        "N": {
+          "descr": "Litter N content in dry matter",
+          "unit": "Decimal share"
+        }
+      },
+      "STB": {
+        "DM": {
+          "descr": "Stubble dry matter content",
+          "unit": "Decimal share"
+        },
+        "C": {
+          "descr": "Stubble C content in dry matter",
+          "unit": "Decimal share"
+        },
+        "N": {
+          "descr": "Stubble N content in dry matter",
+          "unit": "Decimal share"
+        }
+      },
+      "RTS": {
+        "DM": {
+          "descr": "Roots dry matter content",
+          "unit": "Decimal share"
+        },
+        "C": {
+          "descr": "Roots C content in dry matter",
+          "unit": "Decimal share"
+        },
+        "N": {
+          "descr": "Roots N content in dry matter",
+          "unit": "Decimal share"
+        }
+      },
+      "RATIO": {
+        "SPMP": {
+          "descr": "",
+          "unit": "Decimal share"
+        },
+        "LITMP": {
+          "descr": "",
+          "unit": "Decimal share"
+        },
+        "STBMP": {
+          "descr": "",
+          "unit": "Decimal share"
+        },
+        "RTSMP": {
+          "descr": "",
+          "unit": "Decimal share"
+        }
+      }
+    }
+  },
+  "fertilizer": {
+    "schema": {
+      "ID": -1,
+      "NAME": "none",
+      "DM": -1,
+      "C": -1,
+      "N": -1,
+      "NAV": -1
+    },
+    "legend": {
+      "ID": {
+        "descr": "Fertilizer id for internal use",
+        "unit": ""
+      },
+      "NAME": {
+        "descr": "Name of the fertilizer in English language",
+        "unit": ""
+      },
+      "DM": {
+        "descr": "Fertilizer dry matter content",
+        "unit": "Decimal share"
+      },
+      "C": {
+        "descr": "Fertilizer C content in dry matter",
+        "unit": "Decimal share"
+      },
+      "N": {
+        "descr": "Fertilizer N content in dry matter",
+        "unit": "Decimal share"
+      },
+      "NAV": {
+        "descr": "short-term available N from fertilizer",
+        "unit": "Decimal share"
+      }
+    }
+  }
+}

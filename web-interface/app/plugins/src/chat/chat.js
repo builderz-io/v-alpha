@@ -7,6 +7,22 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  let rerun;
+
+  /* ============== user interface strings ============== */
+
+  const ui = ( () => {
+    const strings = {
+      chat: 'Chat',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== event handlers ================== */
 
   function handleInputFocus() {
@@ -14,16 +30,24 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     $response.textContent = '';
   }
 
-  function handleSetMessageBot() {
-    const $form = V.getNode( '.messageform__input' );
+  function handleSetMessageBot( e, rerunMessage ) {
+    const $form = V.getNode( '.messageform__input' ) || V.getNode( '.magic-btn__input' );
     const $response = V.getNode( '.messageform__response' );
 
-    const message = $form.value;
+    $form.style.height = '37px';
+
+    const message = !rerunMessage
+      ? $form.value
+      : rerunMessage + ' ' + V.getString( 'to' ) + ' ' + V.getState( 'active' ).lastViewed;
 
     V.setMessageBot( message ).then( res => {
       V.sN( $response, '' );
       V.setState( 'active', { autofillUuidE: undefined } );
-      if ( res.success || ( res.data.setHighlight && res.data.setHighlight.a ) ) {
+      if (
+        res.success
+        || ( res.data && res.data.setHighlight && res.data.setHighlight.a )
+      ) {
+        rerun = false;
         if ( res.endpoint == 'transaction' ) {
           V.setState( 'active', { transaction: res } );
           Modal.draw( 'confirm transaction' );
@@ -32,16 +56,24 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
           $form.value = '';
         }
       }
+      else if (
+        res.endpoint == 'transaction'
+        && res.error == 'invalid recipient'
+        && !rerun
+        && V.getState( 'active' ).navItem.includes( 'profile' )
+      ) {
+        rerun = true;
+        handleSetMessageBot( undefined, message ); // rerun with active profile
+      }
       else {
-        $response.append( V.sN( {
-          t: 'div',
-          c: 'messageform__respinner',
-          s: {
-            messageform__respinner: {
-              color: 'red',
-              background: 'white',
-              padding: '2px 8px',
-            },
+        rerun = false;
+        $response.append( V.cN( {
+          c: 'messageform__res-inner pill-shadow',
+          y: {
+            'color': 'red',
+            'background': 'white',
+            'padding': '4px 12px',
+            'border-radius': '20px',
           },
           h: res.status || res.errors[0].message,
         } ) );
@@ -92,21 +124,23 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   function view( viewData ) {
 
     const $topcontent = ChatComponents.topcontent();
-    const $list = CanvasComponents.list( 'narrow' );
+    const $list = CanvasComponents.list();
 
     let previousSender;
 
     if ( viewData.success ) {
       viewData.data[0].messages.forEach( cardData => {
 
-        previousSender == cardData.sender ?
-          cardData.hideSender = true : null;
+        previousSender == cardData.sender
+          ? cardData.hideSender = true
+          : null;
 
         previousSender = cardData.sender;
 
         if ( viewData.data[0].aE ) {
-          viewData.data[0].aE.fullId == cardData.sender ?
-            cardData.sender = 'Me' : null;
+          viewData.data[0].aE.fullId == cardData.sender
+            ? cardData.sender = 'Me'
+            : null;
         }
 
         const $card = ChatComponents.message( cardData );
@@ -198,7 +232,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNavItem( 'serviceNav', [
       {
-        title: 'Chat',
+        title: ui.chat,
         path: '/chat/everyone',
         draw: function() {
           Chat.draw( '/chat/everyone' );
@@ -225,7 +259,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     const $input = ChatComponents.messageInput( prefill );
     const $response = ChatComponents.messageResponse();
 
-    const $send = InteractionComponents.sendBtn();
+    const $send = ChatComponents.messageSend();
 
     $send.addEventListener( 'click', handleSetMessageBot );
     $input.addEventListener( 'focus', handleInputFocus );
@@ -240,14 +274,15 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     presenter( path ).then( viewData => { view( viewData ) } );
   }
 
-  V.setState( 'availablePlugins', { chat: function() { Chat.launch() } } );
+  V.setState( 'availablePlugins', { chat: launch } );
 
   /* ====================== export ====================== */
 
   return {
     launch: launch,
-    drawMessageForm: drawMessageForm,
     draw: draw,
+    drawMessageForm: drawMessageForm,
+    handleSetMessageBot: handleSetMessageBot,
   };
 
 } )();

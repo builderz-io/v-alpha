@@ -102,6 +102,8 @@ module.exports = ( context, data ) => {
       b: entitySetup.profileDocVersion,
       d: uuidE,
 
+      f: data.profileInputServerSide.privacy,
+
       m: {
         a: data.profileInputServerSide.descr,
         b: data.profileInputServerSide.email,
@@ -115,12 +117,14 @@ module.exports = ( context, data ) => {
         a: data.profileInputServerSide.lngLat,
         b: geoHash,
         c: data.profileInputServerSide.loc,
+        z: data.profileInputServerSide.continent,
       },
       o: {
         a: data.profileInputServerSide.tinyImg,
         b: data.profileInputServerSide.thumb,
         // c: data.profileInputServerSide.medImg,
         // n: data.profileInputServerSide.imgName,
+        z: data.profileInputServerSide.avatar,
       },
 
       x: {
@@ -136,6 +140,8 @@ module.exports = ( context, data ) => {
       a: uuidP,
       b: entitySetup.imageDocVersion,
       d: uuidE,
+
+      f: data.profileInputServerSide.privacy,
 
       o: {
         c: data.profileInputServerSide.medImg,

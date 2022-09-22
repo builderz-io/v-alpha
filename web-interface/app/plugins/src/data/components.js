@@ -11,8 +11,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const cardLeftWidth = 25;
 
-    return V.setNode( {
-      tag: 'div',
+    return V.castNode( {
       classes: 'contents',
       setStyle: {
         icon: {
@@ -24,53 +23,54 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
         forecast: {
           'width': '57px',
           'text-align': '-moz-center',
+          'margin-right': '10px',
         },
       },
-      innerHtml: '<div class="card__top-left flex justify-center items-center">' +
-                '<div class="circle-3 flex justify-center items-center rounded-full" style="background: antiquewhite; background-position: center center; background-size: cover;">' +
-                  '<div class="card__initials font-bold fs-xxl txt-white"><img src="' + cardData.iconUrl + '"></div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="card__top-right flex items-center pxy">' +
-                '<h2 class="font-bold fs-l leading-snug">' + cardData.place + '</h2>' +
-              '</div>' +
-              '<div class="card__bottom-left items-center">' +
-                '<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">' + cardData.tempC + '</div>' +
-                '<p class="card__unit fs-xxs">' + 'Now' + '</p>' +
-              '</div>' +
-              '<div class="card__bottom-right pxy">' +
-                '<div class="flex justify-center items-center">' +
-                  '<div class="forecast">' +
-                    '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">' +
-                      '<div><img class="icon" src="' + forecastData.iconUrl.hr24  + '"></div>' +
-                    '</div>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.tempC.hr24 + '</p>' +
-                    '<p class="card__unit fs-xxs">' + 'Tomorrow' + '</p>' +
-                  '</div>' +
-                  '<div class="forecast">' +
-                    '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">' +
-                      '<div><img class="icon" src="' + forecastData.iconUrl.hr48  + '"></div>' +
-                    '</div>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.tempC.hr48 + '</p>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.date.hr48 + '</p>' +
-                  '</div>' +
-                  '<div class="forecast">' +
-                    '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">' +
-                      '<div><img class="icon" src="' + forecastData.iconUrl.hr72  + '"></div>' +
-                    '</div>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.tempC.hr72 + '</p>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.date.hr72 + '</p>' +
-                  '</div>' +
-                  '<div class="forecast">' +
-                    '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">' +
-                      '<div><img class="icon" src="' + forecastData.iconUrl.hr96  + '"></div>' +
-                    '</div>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.tempC.hr96 + '</p>' +
-                    '<p class="card__unit fs-xxs">' + forecastData.date.hr96 + '</p>' +
-                  '</div>' +
-                '</div>' +
+      innerHtml: '<div class="card__top-left flex justify-center items-center">'
+                + '<div class="circle-3 flex justify-center items-center rounded-full" style="background: antiquewhite; background-position: center center; background-size: cover;">'
+                  + '<div class="card__initials font-bold fs-xxl txt-white"><img src="' + cardData.iconUrl + '"></div>'
+                + '</div>'
+              + '</div>'
+              + '<div class="card__top-right flex items-center pxy">'
+                + '<h2 class="font-bold fs-l leading-snug">' + cardData.place + '</h2>'
+              + '</div>'
+              + '<div class="card__bottom-left items-center">'
+                + '<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">' + cardData.tempC + '</div>'
+                + '<p class="card__unit fs-xxs">' + 'Now' + '</p>'
+              + '</div>'
+              + '<div class="card__bottom-right pxy">'
+                + '<div class="flex justify-center items-center">'
+                  + '<div class="forecast">'
+                    + '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">'
+                      + '<div><img class="icon" src="' + forecastData.iconUrl.hr24  + '"></div>'
+                    + '</div>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.tempC.hr24 + '</p>'
+                    + '<p class="card__unit fs-xxs">' + 'Tomorrow' + '</p>'
+                  + '</div>'
+                  + '<div class="forecast">'
+                    + '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">'
+                      + '<div><img class="icon" src="' + forecastData.iconUrl.hr48  + '"></div>'
+                    + '</div>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.tempC.hr48 + '</p>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.date.hr48 + '</p>'
+                  + '</div>'
+                  + '<div class="forecast">'
+                    + '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">'
+                      + '<div><img class="icon" src="' + forecastData.iconUrl.hr72  + '"></div>'
+                    + '</div>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.tempC.hr72 + '</p>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.date.hr72 + '</p>'
+                  + '</div>'
+                  + '<div class="forecast">'
+                    + '<div style="background: antiquewhite;" class="circle-2 flex justify-center items-center rounded-full">'
+                      + '<div><img class="icon" src="' + forecastData.iconUrl.hr96  + '"></div>'
+                    + '</div>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.tempC.hr96 + '</p>'
+                    + '<p class="card__unit fs-xxs">' + forecastData.date.hr96 + '</p>'
+                  + '</div>'
+                + '</div>'
       // '<p>' + cardData.sunrise + '<br/>' + cardData.sunset + '</p>' +
-              '</div>',
+              + '</div>',
     } );
   }
 
@@ -117,8 +117,7 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
 
     const cardLeftWidth = 25;
 
-    return V.setNode( {
-      tag: 'div',
+    return V.castNode( {
       classes: 'contents',
       setStyle: {
         icon: {
@@ -132,20 +131,20 @@ const DataComponents = ( function() { // eslint-disable-line no-unused-vars
           'text-align': '-moz-center',
         },
       },
-      innerHtml: '<div class="card__top-left flex justify-center items-center">' +
-                '<div class="circle-2 flex justify-center items-center rounded-full" style="background-color: ' + level( cardData.pollution.aqius ).c + ';background-position: center center; background-size: cover;">' +
-                '</div>' +
-              '</div>' +
-              '<div class="card__top-right flex items-center pxy">' +
-                '<h2 class="font-bold fs-l leading-snug">' + cardData.city + '</h2>' +
-              '</div>' +
-              '<div class="card__bottom-left items-center">' +
-                '<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">' + cardData.pollution.aqius + '</div>' +
-                '<p class="card__unit fs-xxs">' + 'US AQI' + '</p>' +
-              '</div>' +
-              '<div class="card__bottom-right pxy">' +
-                '<p>' + level( cardData.pollution.aqius ).h + '</p>' +
-              '</div>',
+      innerHtml: '<div class="card__top-left flex justify-center items-center">'
+                + '<div class="circle-2 flex justify-center items-center rounded-full" style="background-color: ' + level( cardData.pollution.aqius ).c + ';background-position: center center; background-size: cover;">'
+                + '</div>'
+              + '</div>'
+              + '<div class="card__top-right flex items-center pxy">'
+                + '<h2 class="font-bold fs-l leading-snug">' + cardData.city + '</h2>'
+              + '</div>'
+              + '<div class="card__bottom-left items-center">'
+                + '<div class="circle-2 flex justify-center items-center rounded-full border-shadow font-medium no-txt-select">' + cardData.pollution.aqius + '</div>'
+                + '<p class="card__unit fs-xxs">' + 'US AQI' + '</p>'
+              + '</div>'
+              + '<div class="card__bottom-right pxy">'
+                + '<p>' + level( cardData.pollution.aqius ).h + '</p>'
+              + '</div>',
     } );
   }
 

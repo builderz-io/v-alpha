@@ -39,35 +39,42 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
     await Promise.all( [
       setInitScript( host + '/vcore/dependencies/primary/velocity.min.js' ),
       setInitScript( host + '/vcore/dependencies/primary/universal-router.js' ),
-      setInitScript( host + '/vcore/dependencies/primary/smtp.js' ),
     ] )
       .then( () => console.log( 'Success loading vcore dependencies' ) )
       .catch( () => console.error( 'Error loading vcore dependencies' ) );
 
-    /** load config */
+    /** load config and primary files */
 
     await Promise.all( [
       setInitScript( host + '/vcore/src/v/v-config.js' ),
+      setInitScript( host + '/vcore/src/state/v-state.js' ),
+      setInitScript( host + '/vcore/src/dom/v-dom.js' ),
     ] )
-      .then( () => console.log( 'Success loading v-config.js' ) )
-      .catch( () => console.error( 'Error loading v-config.js' ) );
+      .then( () => console.log( 'Success loading vcore primary files' ) )
+      .catch( () => console.error( 'Error loading vcore primary files' ) );
+
+    /** load config and primary files */
+
+    await Promise.all( [
+      setInitScript( host + '/vcore/src/helper/v-translation.js' ),
+    ] )
+      .then( () => console.log( 'Success loading vcore secondary files.js' ) )
+      .catch( () => console.error( 'Error loading vcore secondary files.js' ) );
 
     /** load all source files */
 
     await Promise.all( [
       setInitScript( host + '/vcore/src/v/v-key.js' ),
-      setInitScript( host + '/vcore/src/v/v-translations.js' ),
-      setInitScript( host + '/vcore/src/dom/v-dom.js' ),
       setInitScript( host + '/vcore/src/dom/v-route.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-auth.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-entity.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-message.js' ),
+      setInitScript( host + '/vcore/src/endpoint/v-notification.js' ),
       setInitScript( host + '/vcore/src/endpoint/v-transaction.js' ),
       setInitScript( host + '/vcore/src/helper/v-debugger.js' ),
       setInitScript( host + '/vcore/src/helper/v-description.js' ),
       setInitScript( host + '/vcore/src/helper/v-helper.js' ),
       setInitScript( host + '/vcore/src/ledger/primary/v-ledger.js' ),
-      setInitScript( host + '/vcore/src/state/v-state.js' ),
     ] )
       .then( () => console.log( 'Success loading vcore source files' ) )
       .catch( () => console.error( 'Error loading vcore source files' ) );
@@ -109,6 +116,7 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       bottom: 0;
       left: 0;
       background: rgba(0,0,0,0.8)
+
     }
     .modal__content {
       background: white;
@@ -116,7 +124,8 @@ const VCoreInit = ( async function() { // eslint-disable-line no-unused-vars
       max-width: 500px;
       height: 46vh;
       margin: 14vh auto;
-      padding: 0.5rem;
+      padding: 1.5rem;
+      border-radius: 32px;
     }
     .preloader {
       display:block;

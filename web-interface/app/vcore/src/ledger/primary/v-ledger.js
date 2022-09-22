@@ -119,7 +119,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         resolve( socket.id + ' connected' );
       } );
 
-      window.socket.on( 'connect_error', ( error ) => {
+      window.socket.on( 'connect_error', () => {
         // V.debug( error );
         reject( 'could not connect socket' );
       } );
@@ -127,8 +127,7 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function http( which, data ) {
-
+  function apiInteraction( which, data ) {
     const options = data
       ? {
         method: 'POST',
@@ -194,6 +193,9 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         // todo
       }
     }
+    else if ( whichLedger == 'api' ) {
+      return apiInteraction( whichEndpoint, data );
+    }
   }
 
   function getData( data, whichEndpoint, whichLedger ) {
@@ -221,8 +223,8 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
     else if ( whichLedger == '3Box' ) {
       return V.get3BoxSpace( data ).then( res => res );
     }
-    else if ( whichLedger == 'http' ) {
-      return http( data );
+    else if ( whichLedger == 'api' ) {
+      return apiInteraction( whichEndpoint );
     }
   }
 

@@ -12,19 +12,22 @@
           // START editing
 
           sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
-          useAppVersion: '3.3.1', // e.g. '3.2.1' or '' for latest version
+          useAppVersion: '3.5.0', // e.g. '3.4.0' or '' for latest version
           useBuilds: true,
 
-          namespaceEndpoint: 'firebase-local',
-          mongodbEndpoint: 'builderz',
+          namespaceEndpoint: 'firebase-client-dfr',
 
-          mapDefault: 'atlantic',
+          language: 'german official',
+          mapDefault: 'germany',
+          highlights: 15,
+          defaultPrivacy: 0, // 0 -> no restriction, 1 -> level 1 (maximum) restriction (point invisible), 2 -> level 2 restriction (point visible, content invisible)
           featureVideo: 'builderz',
           questionnaire: false,
 
-          askforEmail: false,
+          askforEmail: true,
           requireEmail: false,
-          emailKey: '4ea0ac41-dbc5-4775-b32a-89a0e534a3df', // as per https://www.smtpjs.com/
+          confirmEmail: false,
+          networkAdminEmail: '',
 
           tagLine: 'builderz.io - Go create!',
           networkDescription: 'The blockchain-driven marketplace, where you can post and look for skills, create job offers and also initiate crowdfunding campaigns. Built around its dedicated crypto currency, you can earn and spend while also receiving a basic income.',
@@ -36,7 +39,16 @@
             * list and order the plugins and their menu items here,
             * which should show in the UI
             */
-
+            farm: [
+              'plots',
+              'farms',
+            ],
+            hall: [
+              // 'hall',
+            ],
+            pool: [
+              'pools',
+            ],
             marketplace: [
               // 'tagEnergyTransportation',
               // 'tagIndigenousValues',
@@ -63,21 +75,25 @@
               // 'networks',
               // 'pools',
               // 'places',
-              // 'events',
+              'events',
             ],
             media: [
               'media',
               // 'moocs'
             ],
-            // data: []
+            data: [],
             chat: [],
           },
+
+          devMode: false,
 
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
           chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)
           transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
-          managedTransactionLedger: 'Firebase',
-          notificationServer: 'MongoDB',
+          managedTransactionApi: 'Firebase',
+
+          mongodbEndpoint: 'builderz',
+          apiEndpoint: '', // defaults to 'builderz' // provides email and telegram api, as well as a crypto api
 
           tokenContract: 'rinkeby1',
 
@@ -102,7 +118,7 @@
          */
 
          const sourceEndpoints = {
-           local: 'http://localhost:4021',
+           local: window.location.origin,
            development: 'https://dev.valueinstrument.org',
            staging: 'https://staging.valueinstrument.org',
            production: 'https://production.valueinstrument.org',

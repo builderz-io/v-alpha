@@ -3,6 +3,8 @@
 // Connect to firebase database
 const { namespaceDb } = require( '../../resources/databases-setup' );
 const colE = namespaceDb.database().ref( 'entities' );
+const { imageDb } = require( '../../resources/databases-setup' );
+const colI = imageDb.database().ref( 'images' );
 
 const castObjectPaths = require( './utils/cast-object-paths' );
 const trackProfileFields = require( './utils/track-profile-fields' );
@@ -37,8 +39,11 @@ module.exports = async ( context, data, objToUpdate, col ) => {
     objToUpdate.b.includes( '/i' ) ? require( './set-namespace' )( context, imgCopy, 'profile' ) : null;
   }
 
-  /** Track profile fields in entity db */
-  objToUpdate.b.includes( '/p' ) ? trackProfileFields( objToUpdate.d, data ) : null;
+  if ( objToUpdate.b.includes( '/p' ) ) {
+
+    /** Track profile fields in entity db */
+    trackProfileFields( objToUpdate.d, data );
+  }
 
   const fields = castObjectPaths( data );
 
@@ -48,10 +53,19 @@ module.exports = async ( context, data, objToUpdate, col ) => {
   /** Omit role when updating entity (entity title) */
   objToUpdate.b.includes( '/e' ) ? delete fields.c : null;
 
-  /** Update single fields */
+  /**
+   * Update single fields in collection and
+   * set privacy field in image db also
+   */
   await new Promise( resolve => {
     col.child( data.a ).update( fields, () => resolve( data ) );
   } );
+
+  if ( data.f || data.f === 0 ) {
+    await new Promise( resolve => {
+      colI.child( data.a ).update( fields, () => resolve( data ) );
+    } );
+  }
 
   /** Update the network cluster and point-cache */
   setNetwork( context );

@@ -16,12 +16,12 @@ module.exports = {
         return require( './get-all-entities' )( context );
       }
     },
-    getProfile: ( parent, args ) => require( './get-single-profile' )( args.where.a ),
-    getProfiles: ( parent, args ) => require( './get-profiles' )( args.array ),
+    getProfile: ( parent, args, { context } ) => require( './get-single-profile' )( context, args.where.a ),
+    getProfiles: ( parent, args, { context } ) => require( './get-profiles' )( context, args.array ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
     getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
-    getImage: ( parent, args ) => require( './get-image' )( args.where.a ),
+    getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),
