@@ -125,39 +125,11 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const tokenContracts = {
 
-    default: 'rinkeby1',
+    default: 'goerli',
 
-    trufflePAV1: {
-      contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
-      rpc: 'http://127.0.0.1:9545',
-    },
-    trufflePAV2: {
-      contractAddress: '0x7F4c6BA99864fCF201f6cb07B0DF8dA0ffD0b818',
-      rpc: 'http://127.0.0.1:9545',
-    },
-    idchain: {
-      contractAddress: '',
-      rpc: 'https://idchain.one/rpc/',
-    },
-    rinkeby1: {
-      contractAddress: '0x23f1d397Bc94439C6159D618855d6D176CEad4E0', // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1', // builderz.io
+    goerli: {
+      contractAddress: '0x7c5ac8610bf0391409220b1dbdc285af9e2c885e',
       rpc: '',
-    },
-    ropstenDevelop: {
-      contractAddress: '0x87a100DFe128616e1e53e499EB0ae99Ff9Cf0d8c', // daily rice coin
-      rpc: 'wss://ropsten.infura.io/v3/199ad2592bb243e2b00118d4c6de0641',
-    },
-    ganacheDevelop: {
-      contractAddress: '0x669e17db2Db2334fDbC9CBC01D117528e5F84488', // '0xC89Ce4735882C9F0f0FE26686c53074E09B0D550',
-      rpc: 'http://161.97.97.238:8547',
-    },
-    kovan1: {
-      contractAddress: '0x793315F6E7dAA99d6000fb2B4347F5301E20dB09',
-      rpc: 'https://kovan.infura.io/v3/199ad2592bb243e2b00118d4c6de0641',
-    },
-    kovan2: {
-      contractAddress: '0xA4788b5EB689fd886AD4Ee27119D89DC587c084E', // daily rice coin
-      rpc: 'wss://kovan.infura.io/v3/199ad2592bb243e2b00118d4c6de0641',
     },
     symbol1: {
       type: 'TEST_NET',

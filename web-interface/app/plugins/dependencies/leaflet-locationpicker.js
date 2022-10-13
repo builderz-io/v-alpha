@@ -211,7 +211,8 @@
       self.locationOri = self.$input.val();
 
       self.onChangeLocation = function() {
-        if ( pickerZoom === 0 ) { pickerZoom = 10 }
+        if ( pickerZoom >= 13 ) { pickerZoom = undefined }
+        else if ( pickerZoom === 0 ) { pickerZoom = 10 }
         else if ( pickerZoom === 10 ) { pickerZoom = 13 }
         // else if ( pickerZoom === 12 ) { pickerZoom = 13 }
 

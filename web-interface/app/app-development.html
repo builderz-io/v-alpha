@@ -13,9 +13,9 @@
 
           sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
           useAppVersion: '3.5.0', // e.g. '3.4.0' or '' for latest version
-          useBuilds: true,
+          useBuilds: false,
 
-          namespaceEndpoint: 'firebase-client-dfr',
+          namespaceEndpoint: 'firebase-local',
 
           language: 'german official',
           mapDefault: 'germany',
@@ -85,7 +85,7 @@
             chat: [],
           },
 
-          devMode: false,
+          devMode: true,
 
           entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
           chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)
@@ -95,7 +95,7 @@
           mongodbEndpoint: 'builderz',
           apiEndpoint: '', // defaults to 'builderz' // provides email and telegram api, as well as a crypto api
 
-          tokenContract: 'rinkeby1',
+          tokenContract: 'goerli',
 
           // logo used above page element
           // https://base64.guru/converter/encode/image

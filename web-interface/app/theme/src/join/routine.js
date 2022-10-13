@@ -295,7 +295,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       const hasRadio = getRadioIndex( 'continent' );
 
       if (
-        hasLoc
+        hasLat
         && $location.value
       ) {
         entityData.location = hasLoc;
@@ -478,8 +478,17 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           console.log( 'successfully set entity: ', res );
 
-          Navigation.drawEntityNavPill( res.data[0] );
+          /** Clear cache to force reload users profile */
+          V.setCache( 'viewed', 'clear' );
+
+          /** Prepare map position & draw map */
+          V.setState( 'active', {
+            lastLngLat: res.data[0].geometry.coordinates,
+          } );
           VMap.draw( res.data );
+
+          /** Place navigation pill */
+          Navigation.drawEntityNavPill( res.data[0] );
 
           uPhrase = res.data[0].auth.uPhrase;
           fullId = res.data[0].fullId;
@@ -492,7 +501,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             return;
           }
 
-          /** automatically join */
+          /** Automatically join */
           V.setAuth( uPhrase )
             .then( data => {
               console.log( data );
@@ -513,7 +522,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
               drawUphraseDisplay( uPhrase );
             } );
 
-          /** set state and cache */
+          /** Set active entity state for user */
           V.setActiveEntity( res.data[0] );
           Join.draw( 'new entity was set up' );
         }

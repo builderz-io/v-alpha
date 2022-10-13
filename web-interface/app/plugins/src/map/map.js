@@ -82,7 +82,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     maxWidth: 180,
     minWidth: 130,
     closeButton: false,
-    autoPanPaddingTopLeft: [100, 180],
+    autoPanPadding: [120, 200],
     keepInView: true,
     className: 'map__popup',
   };
@@ -249,8 +249,13 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( ['search', 'highlights', 'tempPoint', 'lastViewed'].includes( whichLayer ) ) {
-      exec.onEachFeature = function( feature, layer ) {
-        layer.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
+      exec.onEachFeature = function( feature, marker ) {
+        marker.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
+        if ( features.length == 1 ) {
+          marker.on( 'add', function( event ) {
+            event.target.openPopup();
+          } );
+        }
       };
     }
 

@@ -30,7 +30,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinLocTop: 'Add your location.',
       joinLocBottom: 'Start typing, then pick from the suggestions.',
       joinLocPickerTop: 'Pick the exact location.',
-      joinLocPickerBottom: 'Select the area to zoom in closer.',
+      joinLocPickerBottom: 'Click the area to zoom in closer.',
       joinImgTop: 'Add your image.',
       joinImgBottom: '',
       joinEmailTop: 'Add your email.',
@@ -93,6 +93,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'width': '95vw',
       'max-width': '1000px',
       'min-height': '70vh',
+      'margin': '9vh auto',
     },
     // wrapper
     'join-card-inner-wrapper': {
