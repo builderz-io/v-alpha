@@ -185,22 +185,18 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getContractState() {
+    console.log( '*** CONTRACT STATE ***' );
+    // console.log( '*** Contract: ', contract._address );
+    console.log( '*** Contract: ', V.getTokenContract() );
     if ( contract ) {
 
-      // kovan2
-      // const blockNumber = contract.methods.getBlockNumber().call();
-      // const fee = contract.methods.transactionFee.call().call();
-      // const contribution = contract.methods.communityContribution.call().call();
-      // const divisibility = contract.methods.decimals.call().call();
-
-      // ganache remote
       const blockNumber = contract.methods.getBlockNumber().call();
-      const payout = contract.methods.getGenerationAmount.call().call();
-      const interval = contract.methods.getGenerationPeriod.call().call();
-      const lifetime = contract.methods.getLifetime.call().call();
       const fee = contract.methods.getTransactionFee.call().call();
       const contribution = contract.methods.getCommunityContribution.call().call();
-      const divisibility = Promise.resolve( 18 ); // now fixed to 18, instead of contract.methods.decimals.call().call();
+      const divisibility = 18; // now fixed to 18, instead of contract.methods.decimals.call().call();
+      // const payout = contract.methods.getGenerationAmount.call().call();
+      // const interval = contract.methods.getGenerationPeriod.call().call();
+      // const lifetime = contract.methods.getLifetime.call().call();
 
       // const allEvents = contract.getPastEvents( 'allEvents', {
       // // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'},
@@ -233,18 +229,14 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         .catch( err => { console.log( err ) } );
 
       if ( all && all[0] ) {
-
-        console.log( '*** CONTRACT STATE ***' );
-        console.log( 'Contract: ', contract._address );
-        console.log( 'Current Block: ', all[0] );
-        // console.log( 'Payout: ', all[4] / 10**18 );
-        // console.log( 'Interval: ', all[5] );
-        // console.log( 'Lifetime: ', all[6] );
-        // console.log( 'Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        // console.log( 'Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        // console.log( 'Divisibility: ', all[3] );
-        // console.log( 'All Events:', all[4] );
-        console.log( '*** CONTRACT STATE END ***' );
+        console.log( '*** Current Block: ', all[0] );
+        // console.log( '*** Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        // console.log( '*** Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        // console.log( '*** Divisibility: ', all[3] );
+        // console.log( '*** Payout: ', all[4] / 10**18 );
+        // console.log( '*** Interval: ', all[5] );
+        // console.log( '*** Lifetime: ', all[6] );
+        // console.log( '*** All Events:', all[7] );
 
         const data = {
           currentBlock: Number( all[0] ),
@@ -267,6 +259,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       else {
 
         console.warn( 'Could not get contract state' );
+        console.log( '*** CONTRACT STATE END ***' );
 
         return {
           success: false,
@@ -276,6 +269,8 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       }
     }
     else {
+      console.warn( 'Could not set a contract' );
+      console.log( '*** CONTRACT STATE END ***' );
       return {
         success: false,
         status: 'contract state not retrieved',

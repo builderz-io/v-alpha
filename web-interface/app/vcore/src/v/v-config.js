@@ -54,6 +54,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   const settings = {
 
     appVersion: 'Alpha 3.5.0',
+    uploadVersion: '1',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
@@ -128,8 +129,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     default: 'goerli',
 
     goerli: {
+      network: 'Goerli Testnet',
       contractAddress: '0x7c5ac8610bf0391409220b1dbdc285af9e2c885e',
-      rpc: '',
     },
     symbol1: {
       type: 'TEST_NET',

@@ -96,12 +96,13 @@ async function managedTransaction( txData ) {
 
 async function floatEth( which ) {
   console.log( 'Float address: ', which );
+  console.log( 'Float account: ', web3.eth.defaultAccount );
 
   const txObject = {
     from: web3.eth.defaultAccount,
     to: which,
     value: web3.utils.toWei( settings.floatEthAmount.toString(), 'ether' ),
-    gas: 6001000,
+    gas: 21000,
   };
 
   return web3.eth.sendTransaction( txObject )
@@ -142,7 +143,11 @@ async function floatEth( which ) {
 
 function verify( which ) {
   console.log( 'Verification address: ', which );
-  return contract.methods.verifyAccount( which ).send( { from: web3.eth.defaultAccount, gas: 6001000 } )
+  console.log( 'Verification account: ', web3.eth.defaultAccount );
+  return contract.methods.verifyAccount( which ).send( {
+    from: web3.eth.defaultAccount,
+    gas: 180000,
+  } )
     .once( 'transactionHash', ( hash ) => {
       console.log( 'Verification Hash: ', hash );
       // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {
