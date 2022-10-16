@@ -19,7 +19,7 @@ module.exports = {
     getProfile: ( parent, args, { context } ) => require( './get-single-profile' )( context, args.where.a ),
     getProfiles: ( parent, args, { context } ) => require( './get-profiles' )( context, args.array ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
-    getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
+    getEmphasis: ( parent, args, { context } ) => require( './get-emphasis' )( context, args.where.emphasis ),
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
     getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
   },

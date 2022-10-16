@@ -20,10 +20,28 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     /** Combines 'PersonMapped' with 'Person' */
     whichRole = whichRole.replace( 'Mapped', '' );
 
-    let query, isSearch = false;
+    let query, isSearch = false, features;
+    const now = Date.now();
+
+    /* Get features cache */
+
+    const cachedFeatures = V.getCache( 'features' );
+
+    if (
+      cachedFeatures
+      && ( now - cachedFeatures.timestamp ) < ( V.getSetting( 'entityCachesDuration' ) * 60 * 1000 )
+    ) {
+      features = {
+        success: true,
+        status: 'cachedFeatures used',
+        elapsed: now - cachedFeatures.timestamp,
+        data: V.castJson( cachedFeatures.data, 'clone' ),
+      };
+    }
+
+    /* Get highlights cache */
 
     const cachedHighlights = V.getCache( 'highlights' );
-    const now = Date.now();
 
     /* Mixin a few extra highlighted points on first load */
     if ( !cachedHighlights ) {
@@ -65,7 +83,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     else if (
       cachedHighlights
-      && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'highlightsCacheDuration' ) * 60 * 1000 )
+      && ( now - cachedHighlights.timestamp ) < ( V.getSetting( 'entityCachesDuration' ) * 60 * 1000 )
     ) {
       query = {
         success: true,
@@ -76,6 +94,14 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       V.setCache( 'highlights', 'clear' );
+      V.setCache( 'features', 'clear' );
+      features = await V.getEntity( 'feature' ).then( res => {
+        if ( res.success ) {
+          V.setCache( 'features', res.data );
+        }
+        return res;
+      } );
+
       query = await V.getEntity( 'highlight' ).then( res => {
         console.log( res );
         if ( res.success ) {
@@ -101,6 +127,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           whichRole: whichRole,
           whichPath: whichPath,
           entities: filtered,
+          features: features && features.data || features,
         }],
       };
     }
@@ -140,13 +167,19 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $slider, $addcard );
       }
 
+      if ( viewData.features ) {
+        viewData.features.forEach( cardData => {
+          setSliderContent( cardData );
+        } );
+      }
+
       if ( viewData.entities.length > 10 ) {
         const last = viewData.entities.pop();
         const secondLast = viewData.entities.pop();
         setListContent( last );
         setListContent( secondLast );
 
-        setSliderContent( last );
+        // setSliderContent( last );
 
         const hasThumbnail = viewData.entities.filter( item => item.images.thumbnail != undefined );
         const hasNoThumbnail = viewData.entities.filter( item => item.images.thumbnail === undefined );
@@ -155,20 +188,20 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           setListContent( cardData );
         } );
 
-        shuffleArray( hasThumbnail ).forEach( cardData => {
-          setSliderContent( cardData );
-        } );
+        // shuffleArray( hasThumbnail ).forEach( cardData => {
+        //   setSliderContent( cardData );
+        // } );
 
         hasNoThumbnail.reverse().forEach( cardData => {
           if ( hasThumbnail.length < 8 ) {
-            setSliderContent( cardData );
+            // setSliderContent( cardData );
           }
           setListContent( cardData );
         } );
       }
       else {
         viewData.entities.reverse().forEach( cardData => {
-          setSliderContent( cardData );
+          // setSliderContent( cardData );
           setListContent( cardData );
         } );
       }

@@ -509,6 +509,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       ) {
         filter = 'fullId';
       }
+      else if ( 'feature' == which ) {
+        filter = which;
+      }
       else if ( 'highlight' == which ) {
         filter = which;
       }

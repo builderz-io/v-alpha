@@ -637,17 +637,23 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     return fetchEndpoint( query, variables );
   }
 
-  function getHighlights() {
-    console.log( 222, 'by highlight' );
+  function getEmphasis( data ) {
+    console.log( 222, 'by ' + data );
 
-    const queryH = `query GetHighlights {
-                      getHighlights {
+    const queryEmphasis = `query getEmphasis ( $where: WhereEmphasis ){
+                      getEmphasis(where: $where) {
                         a
                       }
                     }
                   `;
 
-    return fetchEndpoint( queryH );
+    const variables = {
+      where: {
+        emphasis: data,
+      },
+    };
+
+    return fetchEndpoint( queryEmphasis, variables );
   }
 
   function setHighlight( which, whichEndpoint ) {
@@ -771,16 +777,28 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         return V.successFalse( 'get entities by point' );
       }
     }
+    else if ( 'entity by feature' == whichEndpoint ) {
+      const featuredE = await getEmphasis( data );
+      if ( !featuredE.errors && featuredE.data.getEmphasis[0] != null ) {
+        const features = featuredE.data.getEmphasis.map( item => item.a );
+
+        E = await getEntities( features, 'entity by uuidE' );
+
+      }
+      else {
+        return V.successFalse( 'get entities by feature' );
+      }
+    }
     else if ( 'entity by highlight' == whichEndpoint ) {
 
       // uncomment to not load highlights
       // return V.successFalse( 'get entities by highlight' );
 
-      const highlightedE = await getHighlights();
+      const highlightedE = await getEmphasis( data );
       const mixin = V.getCache( 'mixin-highlights' ); // from points
 
-      if ( !highlightedE.errors && highlightedE.data.getHighlights[0] != null ) {
-        let highlights = highlightedE.data.getHighlights.map( item => item.a );
+      if ( !highlightedE.errors && highlightedE.data.getEmphasis[0] != null ) {
+        let highlights = highlightedE.data.getEmphasis.map( item => item.a );
 
         if ( mixin ) {
           highlights = [...new Set( highlights.concat( mixin.data ) )];

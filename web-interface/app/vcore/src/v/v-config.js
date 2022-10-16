@@ -103,7 +103,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    highlightsCacheDuration: 60 * 8, // in minutes
+    entityCachesDuration: 60 * 8, // in minutes
     viewedCacheDuration: 60 * 8, // in minutes
 
     uuidStringLength: 10,
