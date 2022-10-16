@@ -230,9 +230,9 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
       if ( all && all[0] ) {
         console.log( '*** Current Block: ', all[0] );
-        // console.log( '*** Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
-        // console.log( '*** Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
-        // console.log( '*** Divisibility: ', all[3] );
+        console.log( '*** Fee: ', ( all[1] / 100 ).toFixed( 2 ) );
+        console.log( '*** Contribution: ', ( all[2] / 100 ).toFixed( 2 ) );
+        console.log( '*** Divisibility: ', all[3] );
         // console.log( '*** Payout: ', all[4] / 10**18 );
         // console.log( '*** Interval: ', all[5] );
         // console.log( '*** Lifetime: ', all[6] );

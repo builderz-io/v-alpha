@@ -130,7 +130,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     goerli: {
       network: 'Goerli Testnet',
-      contractAddress: '0x7c5ac8610bf0391409220b1dbdc285af9e2c885e',
+      contractAddress: '0x0c0e165eb968e6e62b7089c091483ec95cb0e43f',
     },
     symbol1: {
       type: 'TEST_NET',
