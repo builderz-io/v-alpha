@@ -167,8 +167,13 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         V.setNode( $slider, $addcard );
       }
 
-      if ( viewData.features ) {
+      if ( viewData.features && viewData.features[0] ) {
         viewData.features.forEach( cardData => {
+          setSliderContent( cardData );
+        } );
+      }
+      else {
+        shuffleArray( viewData.entities ).forEach( cardData => {
           setSliderContent( cardData );
         } );
       }

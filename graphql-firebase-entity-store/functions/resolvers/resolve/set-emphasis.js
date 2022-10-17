@@ -3,16 +3,16 @@
 const { namespaceDb } = require( '../../resources/databases-setup' );
 
 module.exports = async ( context, input ) => {
-
+  console.log( input );
   const network = context.host.replace( /\./g, '_' ).replace( ':', '_' );
-  const colHighlights = namespaceDb.database().ref( 'networks/' + network + '/highlights' );
-  const colAdmins = namespaceDb.database().ref( 'networks/' + network + '/admins' );
+  const coll = namespaceDb.database().ref( 'networks/' + network + '/' + input.emphasis + 's' );
+  const collAdmins = namespaceDb.database().ref( 'networks/' + network + '/admins' );
 
   if ( !context.a ) {
     throw new Error( '-2003 not authenticated to set highlight' );
   }
 
-  const admins = await colAdmins.once( 'value' )
+  const admins = await collAdmins.once( 'value' )
     .then( snap => snap.val() );
 
   if ( !admins ) {
@@ -20,8 +20,10 @@ module.exports = async ( context, input ) => {
   }
 
   if ( admins.includes( context.d ) ) {
+    delete input.emphasis;
+
     return new Promise( resolve => {
-      colHighlights.child( input.a ).update( input, () => resolve( input ) );
+      coll.child( input.a ).update( input, () => resolve( input ) );
     } );
   }
   else {

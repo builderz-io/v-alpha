@@ -30,7 +30,7 @@ module.exports = {
     setEntity: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'entity' ),
     setProfile: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'profile' ),
     setImage: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'image' ),
-    setHighlight: ( parent, { input }, { context } ) => require( './set-highlight' )( context, input ),
+    setEmphasis: ( parent, { input }, { context } ) => require( './set-emphasis' )( context, input ),
   },
 };
 

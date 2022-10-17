@@ -49,7 +49,8 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function drawPopup( path, hover ) {
-    const entity = V.getCache( 'highlights' ).data.find( item => item.path == path );
+    const entity = V.getCache( 'highlights' ).data.find( item => item.path == path )
+    || V.getCache( 'features' ).data.find( item => item.path == path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );
@@ -122,7 +123,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
             : handleProfileDraw.bind( circleData ),
         mouseover: whichHandler == 'popup'
           ? handlePopupHover.bind( circleData )
-          : '',
+          : undefined,
       },
     } );
   }
@@ -156,9 +157,7 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
       h: {
         t: 'smallcard',
         c: 'smallcard__container flex flex-wrap justify-center items-center',
-        h: [
-          castCircle( cardData, 'popup' ),
-        ],
+        h: castCircle( cardData, 'popup' ),
       },
     } );
   }

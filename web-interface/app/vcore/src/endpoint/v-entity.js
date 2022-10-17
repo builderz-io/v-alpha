@@ -581,7 +581,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'verification' == data ) {
       return V.setData( whichEntity, 'verification', V.getSetting( 'transactionLedger' ) );
     }
-    else if ( ['highlight', 'revokehighlight'].includes( data ) ) {
+    else if ( V.checkForEmphasisTrigger( data ) ) {
       return V.setData( whichEntity, data, V.getSetting( 'entityLedger' ) );
     }
     else {

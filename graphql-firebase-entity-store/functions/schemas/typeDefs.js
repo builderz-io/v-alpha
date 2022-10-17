@@ -53,9 +53,10 @@ const Filters = `
     y: Int
   }
 
-  input InputHighlight {
+  input InputEmphasis {
     a: String
     y: InputHighlightY
+    emphasis: String
   }
 
   input InputHighlightY {
@@ -125,7 +126,7 @@ const Mutations = `
     setAuth: Jwt
     setDisconnect: Success
     setTransaction(tx: InputTransaction!): SuccessTx
-    setHighlight(input: InputHighlight!): Emphasis
+    setEmphasis(input: InputEmphasis!): Emphasis
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
     setImage(input: ImageInputServerSide!): Image

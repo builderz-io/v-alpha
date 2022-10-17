@@ -17,9 +17,16 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
     commandsHelp: ['help', 'hilfe', '도움'],
 
-    commandsSearch: ['search', 'suche', 'find', 'finde', 'fx', 'f!', 'view'],
+    commandsSearch: ['search', 'suche', 'find', 'finde', 'fx', 'view'],
 
-    commands: ['nukeme', 'crashapp', 'verify', 'disable', 'enable', 'makeadmin', 'revokeadmin', 'analyse', 'a!', 'payouttokennow', 'highlight', 'h!', 'revokehighlight', 'rh!'],
+    commands: [
+      'nukeme', 'crashapp', 'verify', 'disable', 'enable', 'analyse', 'a!', 'payouttokennow',
+    ],
+    emphasis: [
+      // 'admin', 'revokeadmin',
+      'vip', 'v!', 'revokevip', 'feature', 'f!',
+      'highlight', 'revokehighlight', 'h!', 'rh!',
+    ],
     commandsEN: ['+', '-', 'pay', 'send', 'request', 'transfer', 'sx', 's!', 'rx', 'r!', 'tx', 't!'],
     commandsDE: ['zahle', 'sende', 'empfange', 'leite', 'zahlen', 'senden', 'empfangen', 'leiten'],
     commandsKO: ['더하기', '지불하다', '전송', '요청'], // TODO: add 'transfer' and check sychronicity of 'request' and 'transfer' with backend translation file
@@ -30,8 +37,14 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  function sanitize( input ) {
+    return input.trim().replace( /(?:\r\n|\r|\n)/g, ' ' ).replace( /<[^>]+>/g, '' );
+  }
+
+  /* ================== public methods ================== */
+
   function checkForTriggers( text ) {
-    const triggersConcat = triggers.commands.concat( triggers.commandsHelp, triggers.commandsSearch, triggers.commandsEN, triggers.commandsDE, triggers.commandsKO );
+    const triggersConcat = triggers.commands.concat( triggers.emphasis, triggers.commandsHelp, triggers.commandsSearch, triggers.commandsEN, triggers.commandsDE, triggers.commandsKO );
 
     const checkParts = text.trim().split( ' ' );
 
@@ -50,11 +63,9 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function sanitize( input ) {
-    return input.trim().replace( /(?:\r\n|\r|\n)/g, ' ' ).replace( /<[^>]+>/g, '' );
+  function checkForEmphasisTrigger( which ) {
+    return triggers.emphasis.includes( which );
   }
-
-  /* ================== public methods ================== */
 
   async function setMessageBot( message ) {
 
@@ -109,10 +120,18 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
           return V.setEntity( uuidE, 'highlight' )
             .then( res => res );
         }
-        else if ( ['revokehighlight', 'rh!'].includes( caseArray[0] ) ) {
-          return V.setEntity( uuidE, 'revokehighlight' )
+        else if ( ['feature', 'f!'].includes( caseArray[0] ) ) {
+          return V.setEntity( uuidE, 'feature' )
             .then( res => res );
         }
+        else if ( ['vip', 'v!'].includes( caseArray[0] ) ) {
+          return V.setEntity( uuidE, 'vip' )
+            .then( res => res );
+        }
+        // else if ( ['revokehighlight', 'rh!'].includes( caseArray[0] ) ) {
+        //   return V.setEntity( uuidE, 'revokehighlight' )
+        //     .then( res => res );
+        // }
         // else if ( caseArray[0] === 'nukeme' ) {
         //   return V.setData( 'nukeme' );
         // }
@@ -228,12 +247,14 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
   /* ====================== export ====================== */
 
   V.checkForTriggers = checkForTriggers;
+  V.checkForEmphasisTrigger = checkForEmphasisTrigger;
   V.getMessage = getMessage;
   V.setMessage = setMessage;
   V.setMessageBot = setMessageBot;
 
   return {
     checkForTriggers: checkForTriggers,
+    checkForEmphasisTrigger: checkForEmphasisTrigger,
     getMessage: getMessage,
     setMessage: setMessage,
     setMessageBot: setMessageBot,

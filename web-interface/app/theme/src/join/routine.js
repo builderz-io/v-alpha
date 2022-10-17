@@ -485,7 +485,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           V.setState( 'active', {
             lastLngLat: res.data[0].geometry.coordinates,
           } );
-          VMap.draw( res.data );
+          VMap.draw( res.data, { isJoin: true } );
 
           /** Place navigation pill */
           Navigation.drawEntityNavPill( res.data[0] );

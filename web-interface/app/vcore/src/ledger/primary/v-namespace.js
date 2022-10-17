@@ -656,20 +656,26 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     return fetchEndpoint( queryEmphasis, variables );
   }
 
-  function setHighlight( which, whichEndpoint ) {
-    const query = `mutation SetHighlight( $input: InputHighlight! ) {
-                setHighlight(input: $input) {
+  function setEmphasis( which, whichEndpoint ) {
+    const query = `mutation setEmphasis( $input: InputEmphasis! ) {
+                setEmphasis(input: $input) {
                   a
                 }
               }
             `;
 
-    const expiry = whichEndpoint == 'highlight'
-      ? V.castUnix() + 60 * 60 * 24 * 60
-      : V.castUnix() - 1;
+    // const expiry = whichEndpoint == 'highlight'
+    //   ? V.castUnix() + 60 * 60 * 24 * 60
+    //   : V.castUnix() - 1;
+
+    const expiry = V.castUnix() + 60 * 60 * 24 * 60;
 
     const variables = {
-      input: { a: which, y: { c: expiry } },
+      input: {
+        a: which,
+        y: { c: expiry },
+        emphasis: whichEndpoint,
+      },
     };
 
     return fetchEndpoint( query, variables );
@@ -963,8 +969,8 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'message' == whichEndpoint ) {
       return setChatMessage( data );
     }
-    else if ( whichEndpoint.includes( 'highlight' ) ) {
-      return setHighlight( data, whichEndpoint );
+    else if ( V.checkForEmphasisTrigger( whichEndpoint ) ) {
+      return setEmphasis( data, whichEndpoint );
     }
     else if ( 'managed transaction' == whichEndpoint ) {
       return setManagedTransaction( data );

@@ -102,8 +102,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
         if ( options.isSearch && data[0] ) {
           setSearch( data );
         }
-        if ( options.isHover ) {
+        else if ( options.isHover ) {
           setHover( data );
+        }
+        else if ( options.isJoin ) {
+          setLastViewed( data, options );
         }
       }
       else {
@@ -167,7 +170,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function castLayer( whichLayer, features ) {
+  function castLayer( whichLayer, features, options ) {
     const sc = V.getState( 'screen' );
 
     const marker = {
@@ -251,7 +254,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     if ( ['search', 'highlights', 'tempPoint', 'lastViewed'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, marker ) {
         marker.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
-        if ( features.length == 1 ) {
+        if ( options && options.isJoin ) {
           marker.on( 'add', function( event ) {
             event.target.openPopup();
           } );
@@ -493,7 +496,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
-  function setLastViewed( features ) {
+  function setLastViewed( features, options ) {
     if ( lastViewedLayer ) {
       lastViewedLayer.remove();
     }
@@ -503,7 +506,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       features[0].geometry.coordinates = V.castJson( continentsLngLat[ features[0].geometry.continent - 1 ], 'clone' );
     }
 
-    lastViewedLayer = castLayer( 'lastViewed', features );
+    lastViewedLayer = castLayer( 'lastViewed', features, options );
 
     const sc = V.getState( 'screen' );
 
