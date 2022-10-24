@@ -49,6 +49,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       txSent: '✅ Sent to network',
       txSuccess: '✅ Transaction successful',
       error: 'Something went wrong. Maybe the wallet is locked or you did not sign the transaction?',
+      unknownTxError: 'Unknown transaction error',
+      txErrorExplain: 'One of your previous transactions may take unusually long to process. Please wait and try another transaction in 4 hours. Check your history or a blockexplorer to determine which transactions have processed. Inform the admins, if the problem persists.',
       wait: 'Please wait... requesting data',
       walletLocked: 'Could not unlock wallet. Maybe the site\'s connectivity to the wallet was denied? Check the browser or wallet settings.',
       noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
@@ -214,8 +216,11 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
           adminNotify( 'successful' );
         }
         else {
-          Modal.draw( 'error' );
-          adminNotify( 'ERROR' );
+          let error = '❌ ';
+          error += ' ' + res.errors[0] ? res.errors[0].message : V.getString( ui.unknownTxError );
+          error += ' - ' + V.getString( ui.txErrorExplain );
+          Modal.draw( 'transaction error', error );
+          adminNotify( 'ERROR: ' + error );
         }
       } )
       .catch( err => {
@@ -501,7 +506,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
-      h: V.getString( ui[text] ),
+      h: V.getString( ui[text] ? ui[text] : text ),
     } );
     V.setNode( $content, $msg );
     return $content;

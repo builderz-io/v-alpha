@@ -104,7 +104,9 @@ const types = {
   TransactionLog: `
     {
       a: [TxEntry]       // logging transactions
-      z: Int              // last block queried
+      t: String          // last transaction hash
+      v: String          // verification hash
+      z: Int             // last block queried
     }
   `,
   TxEntry: `

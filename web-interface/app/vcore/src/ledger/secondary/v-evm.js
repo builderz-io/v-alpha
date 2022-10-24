@@ -469,9 +469,15 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getGrossVAmount( amount ) {
-    const fee = V.getSetting( 'transactionFee' );
-    const contr = V.getSetting( 'communityContribution' );
-    const contractState = V.getState( 'contract' ) || { fee: fee, contribution: contr };
+
+    let contractState = V.getState( 'contract' );
+
+    if ( !contractState ) {
+      contractState = {
+        fee: V.getTokenContract().transactionFee,
+        contribution: V.getTokenContract().communityContribution,
+      };
+    }
 
     /**
      * 33.33% and 25% are two possible and likely choices for a transaction fee

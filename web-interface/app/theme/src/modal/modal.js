@@ -7,7 +7,7 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
-  let tempAuth;
+  let tempAuth, timeout;
 
   /* ================== private methods ================= */
 
@@ -78,11 +78,16 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( which == 'transaction sent' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'txSent' ) );
-      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 3500 );
+      timeout = setTimeout( delayedModalClear, 3500 );
     }
     else if ( which == 'transaction successful' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'txSuccess' ) );
-      setTimeout( () => { V.setNode( '.modal', 'clear' ) }, 3500 );
+      timeout = setTimeout( delayedModalClear, 3500 );
+    }
+    else if ( which == 'transaction error' ) {
+      clearTimeout( timeout - 1 );
+      clearTimeout( timeout );
+      V.setNode( $modal, ModalComponents.simpleMessage( data ) );
     }
     else if ( which == '404' ) {
       V.setNode( $modal, ModalComponents.simpleMessage( 'fourOfour' ) );
@@ -96,6 +101,10 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
     V.setNode( '.modal', 'clear' );
     V.setNode( 'body', $modal );
+  }
+
+  function delayedModalClear() {
+    V.setNode( '.modal', 'clear' );
   }
 
   /* ============ public methods and exports ============ */

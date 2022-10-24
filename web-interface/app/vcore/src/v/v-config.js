@@ -94,7 +94,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     devMode: VNetworkInit.devMode,
     drawMap: true,
-    queryContractState: false,
+    queryContractState: true,
 
     joinVersion: 2,
 
@@ -118,10 +118,6 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     coinTicker: 'ETH',
     tokenTicker: 'V',
 
-    tokenDivisibility: 18,
-    transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
-    communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
-
   };
 
   const tokenContracts = {
@@ -130,7 +126,9 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     goerli: {
       network: 'Goerli Testnet',
-      contractAddress: '0x0c0e165eb968e6e62b7089c091483ec95cb0e43f',
+      contractAddress: '0xa540555ea07BF5fd5476717A94F52E48b86d4648',
+      transactionFee: 3333, // Fallback, percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
+      communityContribution: 200, // Fallback, Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
     },
     symbol1: {
       type: 'TEST_NET',
