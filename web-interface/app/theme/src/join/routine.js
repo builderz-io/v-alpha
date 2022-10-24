@@ -15,7 +15,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {};
 
-  let cardSet, fourDigitString, uPhrase, fullId, role, cardIndex = 0;
+  let cardSet, fourDigitString, newEntity, uPhrase, fullId, role, cardIndex = 0;
 
   /* ============== user interface strings ============== */
 
@@ -478,21 +478,22 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           console.log( 'successfully set entity: ', res );
 
+          newEntity = res.data[0];
+          uPhrase = newEntity.auth.uPhrase;
+          fullId = newEntity.fullId;
+          role = newEntity.role;
+
           /** Clear cache to force reload users profile */
           V.setCache( 'viewed', 'clear' );
 
           /** Prepare map position & draw map */
           V.setState( 'active', {
-            lastLngLat: res.data[0].geometry.coordinates,
+            lastLngLat: newEntity.geometry.coordinates,
           } );
           VMap.draw( res.data, { isJoin: true } );
 
           /** Place navigation pill */
-          Navigation.drawEntityNavPill( res.data[0] );
-
-          uPhrase = res.data[0].auth.uPhrase;
-          fullId = res.data[0].fullId;
-          role = res.data[0].role;
+          Navigation.drawEntityNavPill( newEntity );
 
           if ( role != 'Person' ) {
             drawSuccess();
@@ -507,6 +508,11 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
               console.log( data );
               if ( data.success ) {
                 console.log( 'auth success' );
+
+                /** Set active entity state for user */
+                V.setActiveEntity( newEntity );
+                Join.draw( 'new entity was set up' );
+
                 drawSuccess();
                 notifySuccess( fullId, role );
                 setDownloadKeyBtn();
@@ -521,10 +527,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
               setResponse( 'authFail' );
               drawUphraseDisplay( uPhrase );
             } );
-
-          /** Set active entity state for user */
-          V.setActiveEntity( res.data[0] );
-          Join.draw( 'new entity was set up' );
         }
         else {
           throw new Error( res.message );
