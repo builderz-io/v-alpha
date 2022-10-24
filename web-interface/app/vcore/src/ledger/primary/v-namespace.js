@@ -23,7 +23,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf { c fullId } auth { f i j }';
   const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
 
   /**
@@ -246,7 +246,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
       holders: E.holders,
-      holderOf: E.holderOf ? E.holderOf.map( item => item.fullId ) : undefined,
+      holderOf: E.holderOf ? E.holderOf /*.map( item => item.fullId ) */ : undefined,
       evmCredentials: {
         address: E.i,
       },
@@ -768,7 +768,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    console.log( 'GET ENTITIE(S): ', data );
+    console.log( 'GET ENTITIE(S): ', data, whichEndpoint );
 
     /** Query multiple entities and profiles in sequence (arrays) */
 
@@ -783,7 +783,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         return V.successFalse( 'get entities by point' );
       }
     }
-    else if ( 'entity by feature' == whichEndpoint ) {
+    else if ( ['entity by feature', 'entity by vip'].includes( whichEndpoint ) ) {
       const featuredE = await getEmphasis( data );
       if ( !featuredE.errors && featuredE.data.getEmphasis[0] != null ) {
         const features = featuredE.data.getEmphasis.map( item => item.a );

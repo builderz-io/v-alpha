@@ -509,10 +509,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       ) {
         filter = 'fullId';
       }
-      else if ( 'feature' == which ) {
-        filter = which;
-      }
-      else if ( 'highlight' == which ) {
+      else if ( V.checkForEmphasisTrigger( which ) ) {
         filter = which;
       }
       else if ( 'point' == which ) {

@@ -1095,7 +1095,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         y: {
           cursor: 'pointer',
         },
-        h: item,
+        h: item.fullId,
         k: handleProfileDraw,
       } ) ),
     } );

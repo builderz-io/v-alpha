@@ -62,6 +62,13 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
           } ),
         },
         {
+          path: '/hall',
+          action: () => ( {
+            status: 'hall',
+            data: [ '/network/hall' ],
+          } ),
+        },
+        {
           path: '/:id',
           action: ( context ) => ( {
             status: 'market category',

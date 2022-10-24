@@ -95,9 +95,11 @@
   "404 - Page not found": "404 - Seite nicht gefunden",
   "You are logged out": "Sie sind abgemeldet",
   "This combination of title and tag already exists or is invalid": "Diese Kombination aus Titel und #Tag existiert bereits oder ist ungültig",
-  "✅ Sent to network": "✅  An das Netz gesendet",
+  "✅ Sent to network": "✅  An das Netzwerk gesendet",
   "✅ Transaction successful": "✅  Transaktion erfolgreich",
   "Something went wrong. Maybe the wallet is locked or you did not sign the transaction?": "Etwas ist schief gelaufen. Vielleicht ist das Konto gesperrt oder Sie haben die Transaktion nicht unterschrieben?",
+  "Unknown transaction error": "Unbekannter Fehler in der Überweisung",
+  "One of your previous transactions may take unusually long to process. Please wait and try another transaction in 4 hours. Check your history or a blockexplorer to determine which transactions have processed. Inform the admins, if the problem persists.": "Die Ausführung einer Ihrer früheren Transaktionen dauert möglicherweise ungewöhnlich lange. Bitte warten und wiederholen Sie die neue Transaktion in 4 Stunden. Überprüfen Sie Ihr Konto oder einen Blockexplorer, um festzustellen, welche Transaktionen ausgeführt wurden. Informieren Sie die Admins, wenn das Problem weiterhin besteht.",
   "Please wait... requesting data": "Bitte warten... Daten werden angefordert",
   "Could not unlock wallet. Maybe the site's connectivity to the wallet was denied? Check the browser or wallet settings.": "Konnte das Konto nicht entsperren. Vielleicht wurde die Verbindung zwischen der Website und dem Konto verweigert? Überprüfen Sie den Browser oder die Konto-Einstellungen.",
   "Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.": " Konnte keinen Kontostand abrufen. Haben Sie das richtige Netzwerk in für Ihr Konto gewählt? <br><br>Bitte stellen Sie es auf RINKEBY um.",
@@ -138,7 +140,7 @@
   "yes": "ja",
   "no": "nein",
   "from": "von",
-  "to": "zu",
+  "to": "an",
   "fee": "Gebühr",
   "contribution": "Beitrag",
   "amount": "Betrag",
@@ -241,5 +243,10 @@
   "Transfers": "Konto",
   "Settings": "Einstellungen",
   "Disconnect": "Abmelden",
-  "skip": "überspringen"
+  "skip": "überspringen",
+  "About": "Über",
+  "Featured Members": "Wichtige Mitglieder",
+  "Imprint": "Impressum",
+  "Data Protection": "Datenschutz",
+  "Privacy Policy": "Schutz der Privatsphäre"
 }

@@ -13,6 +13,10 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
     builderz: 'https://youtu.be/kJbto4TISKA',
   };
 
+  let legalDocs;
+  const sourceLegalDocs = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/hall/legal/legal-${ V.getSetting( 'locale' ) }.json`;
+  V.getData( '', sourceLegalDocs, 'api' ).then( res => legalDocs = Object.assign( res.data[0], { networkImprint: V.getSetting( 'imprint' ) } ) );
+
   /* ============== user interface strings ============== */
 
   const ui = ( () => {
@@ -31,44 +35,106 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
 
   async function presenter() {
 
-    const mediaPoints = V.getCache( 'points' ).data
-      .filter( item => item.role == 'al' );
+    let vips;
+    const now = Date.now();
 
-    if ( !mediaPoints ) {
-      return {
-        success: false,
+    /* Get vip cache */
+
+    const cachedVips = V.getCache( 'vips' );
+
+    if (
+      cachedVips
+      && ( now - cachedVips.timestamp ) < ( V.getSetting( 'entityCachesDuration' ) * 60 * 1000 )
+    ) {
+      vips = {
+        success: true,
+        status: 'cachedVips used',
+        elapsed: now - cachedVips.timestamp,
+        data: V.castJson( cachedVips.data, 'clone' ),
       };
     }
-
-    const entities = await V.getEntity( mediaPoints.map( item => item.uuidE ) );
-
-    return entities;
-  }
-
-  function view( mediaData ) {
-    const $slider = CanvasComponents.slider();
-    const $list = CanvasComponents.list();
-
-    const $addcard = MarketplaceComponents.entitiesAddCard();
-    V.setNode( $slider, $addcard );
-
-    if ( mediaData.data[0] ) {
-      mediaData.data.forEach( cardData => {
-        const $cardContent = MediaComponents.mediaCard( cardData );
-        const $card = CanvasComponents.card( $cardContent );
-        V.setNode( $list, $card );
-
+    else {
+      V.setCache( 'vips', 'clear' );
+      vips = await V.getEntity( 'vip' ).then( res => {
+        if ( res.success ) {
+          V.setCache( 'vips', res.data );
+        }
+        return res;
       } );
     }
+
+    if ( vips.success ) {
+      const networkE = vips.data.find( item => item.role == 'Network' );
+
+      await V.getEntity( networkE.uuidE ).then( res => {
+        if ( res.success ) {
+          V.setCache( 'vips', res.data );
+        }
+        return res;
+      } );
+
+      return vips;
+    }
     else {
-      V.setNode( $list, CanvasComponents.notFound( 'media' ) );
+      return {
+        success: false,
+        status: 'cound not retrieve any entities',
+        data: [],
+      };
+    }
+  }
+
+  function view() {
+
+    const cachedVips = V.getCache( 'vips' );
+
+    const $list = CanvasComponents.list();
+
+    if ( cachedVips && cachedVips.data[0] ) {
+      cachedVips.data.forEach( cardData => {
+        if ( 'Network' == cardData.role ) {
+          setNetworkContent( cardData );
+          VMap.draw( [cardData] );
+        }
+        else {
+          setListContent( cardData );
+        }
+      } );
+      setLegalBlabla();
+      setCallToActions();
+    }
+    else {
+      V.setNode( $list, CanvasComponents.notFound( 'vips' ) );
     }
 
     Page.draw( {
-      topslider: $slider,
       listings: $list,
       position: 'feature',
     } );
+
+    // View methods
+
+    function setLegalBlabla() {
+      const $legalBlabla = HallComponents.legalBlabla( legalDocs );
+      V.setNode( $list, $legalBlabla );
+    }
+
+    function setNetworkContent( cardData ) { // eslint-disable-line no-inner-declarations
+      const $networkLayout = HallComponents.networkLayout( cardData );
+      V.setNode( $list, $networkLayout, 'prepend' );
+    }
+
+    function setListContent( cardData ) { // eslint-disable-line no-inner-declarations
+      const $cardContent = MarketplaceComponents.cardContent( cardData );
+      const $card = CanvasComponents.card( $cardContent );
+      V.setNode( $list, $card );
+    }
+
+    function setCallToActions() {
+      if ( !V.aE() ) {return}
+      const $callsToAction = HallComponents.callsToAction( V.aE() );
+      V.setNode( $list, $callsToAction, 'prepend' );
+    }
   }
 
   function preview( path ) {
@@ -117,15 +183,15 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
     const navItems = {
       hall: {
         title: ui.hall,
-        path: '/hall',
+        path: '/network/hall',
         divertFundsToOwner: true,
         use: {
           // button: 'plus',
-          form: 'new entity',
-          role: 'Media',
+          // form: 'new entity',
+          // role: 'Hall',
         },
         draw: function() {
-          Hall.draw( '/hall' );
+          Hall.draw( '/network/hall' );
         },
       },
     };

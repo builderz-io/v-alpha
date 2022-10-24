@@ -3,7 +3,6 @@
 const { namespaceDb } = require( '../../resources/databases-setup' );
 
 module.exports = async ( context, input ) => {
-  console.log( input );
   const network = context.host.replace( /\./g, '_' ).replace( ':', '_' );
   const coll = namespaceDb.database().ref( 'networks/' + network + '/' + input.emphasis + 's' );
   const collAdmins = namespaceDb.database().ref( 'networks/' + network + '/admins' );
