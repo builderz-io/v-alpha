@@ -169,7 +169,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( window.Web3Obj ) {
-      setEventSubscription( 'TransferSummary' );
+      // setEventSubscription( 'TransferSummary' );
       return {
         success: true,
         status: 'address set',

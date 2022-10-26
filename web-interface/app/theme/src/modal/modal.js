@@ -30,19 +30,19 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
 
       tempAuth = undefined; // reset after joining
     }
-    else if ( which == 'entity not found' ) {
-      V.setNode( $modal, ModalComponents.entityNotFound() );
-    }
     else if ( which == 'authenticate existing entity' ) {
       V.setNode( $modal, ModalComponents.mapAddress() );
+    }
+    else if ( which == 'web3 entity not found' ) {
+      V.setNode( $modal, ModalComponents.entityNotFound() );
     }
     else if ( which == 'web3 provider not found' ) {
       V.setNode( $modal, ModalComponents.tempUser() );
     }
-    else if ( which == 'initialize web3 join' ) {
+    else if ( which == 'web3 initialize join' ) {
       V.setNode( $modal, ModalComponents.web3Join() );
     }
-    else if ( which == 'initialize web2 join' ) {
+    else if ( which == 'web2 initialize join' ) {
       V.setNode( $modal, ModalComponents.web2Join() );
     }
     else if ( which == 'user denied auth' ) {
