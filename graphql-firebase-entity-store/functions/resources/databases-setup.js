@@ -8,60 +8,93 @@ to list projects run -> firebase projects:list
 
 */
 
-const env = {
-
-  use: 'clientDFR',
-
-  local: false, /* set to "true" to save data locally when running importer */
-
-  prod: {
-    dbAffix: '',
-  },
-  dev: {
-    dbAffix: '-dev',
-  },
-  clientDFR: {
-    dbAffix: '-client-dfr',
-  },
-};
-
 const admin = require( 'firebase-admin' );
 
 const credentials = require( '../credentials/credentials' );
 
-// var authServiceAccount = require( './entity-authentication-creds.json' );
-// var namespaceServiceAccount = require( './entity-namespace-creds.json' );
-// var profileServiceAccount = require( './entity-profile-creds.json' );
+function dBInit( dbEnv ) {
 
-const authDb = admin.initializeApp( {
-  credential: admin.credential.cert( credentials.auth ),
-  databaseURL: env.local
-    ? 'http://localhost:9000/?ns=entity-authentication-dev'
-    : 'https://entity-authentication' + env[env.use].dbAffix + '.firebaseio.com',
-}, 'authentication' );
+  const env = {
 
-const namespaceDb = admin.initializeApp( {
-  credential: admin.credential.cert( credentials.namespace ),
-  databaseURL: env.local
-    ? 'http://localhost:9000/?ns=entity-namespace-dev'
-    : 'https://entity-namespace' + env[env.use].dbAffix + '.firebaseio.com/',
-}, 'namespace' );
+    use: 'dev',
 
-const profileDb = admin.initializeApp( {
-  credential: admin.credential.cert( credentials.profile ),
-  databaseURL: env.local
-    ? 'http://localhost:9000/?ns=entity-profile-dev'
-    : 'https://entity-profile' + env[env.use].dbAffix + '.firebaseio.com/',
-}, 'profile' );
+    local: false, /* set to "true" to save data locally when running importer */
 
-const imageDb = admin.initializeApp( {
-  credential: admin.credential.cert( credentials.profile ),
-  databaseURL: env.local
-    ? 'http://localhost:9000/?ns=entity-profile-image-dev'
-    : 'https://entity-profile-image' + env[env.use].dbAffix + '.firebaseio.com/',
-}, 'image' );
+    host: {
+      dbAffix: '-' + dbEnv,
+    },
+    prod: {
+      dbAffix: '',
+    },
+    dev: {
+      dbAffix: '-dev',
+    },
+    clientDFR: {
+      dbAffix: '-client-dfr',
+    },
+  };
 
-module.exports.authDb = authDb;
-module.exports.namespaceDb = namespaceDb;
-module.exports.profileDb = profileDb;
-module.exports.imageDb = imageDb;
+  const authDb = admin.initializeApp( {
+    credential: admin.credential.cert( credentials.auth ),
+    databaseURL: env.local
+      ? 'http://localhost:9000/?ns=entity-authentication-dev'
+      : 'https://entity-authentication' + env[env.use].dbAffix + '.firebaseio.com',
+  }, 'authentication' );
+
+  const namespaceDb = admin.initializeApp( {
+    credential: admin.credential.cert( credentials.namespace ),
+    databaseURL: env.local
+      ? 'http://localhost:9000/?ns=entity-namespace-dev'
+      : 'https://entity-namespace' + env[env.use].dbAffix + '.firebaseio.com/',
+  }, 'namespace' );
+
+  const profileDb = admin.initializeApp( {
+    credential: admin.credential.cert( credentials.profile ),
+    databaseURL: env.local
+      ? 'http://localhost:9000/?ns=entity-profile-dev'
+      : 'https://entity-profile' + env[env.use].dbAffix + '.firebaseio.com/',
+  }, 'profile' );
+
+  const imageDb = admin.initializeApp( {
+    credential: admin.credential.cert( credentials.profile ),
+    databaseURL: env.local
+      ? 'http://localhost:9000/?ns=entity-profile-image-dev'
+      : 'https://entity-profile-image' + env[env.use].dbAffix + '.firebaseio.com/',
+  }, 'image' );
+
+  const collE = namespaceDb.database().ref( 'databases/default/' + 'entities' );
+  const collP = profileDb.database().ref( 'databases/default/' + 'profiles' );
+  const collA = authDb.database().ref( 'databases/default/' + 'authentication' );
+  const collI = imageDb.database().ref( 'databases/default/' + 'images' );
+
+  return {
+    authDb: authDb,
+    namespaceDb: namespaceDb,
+    profileDb: profileDb,
+    imageDb: imageDb,
+
+    collE: collE,
+    collP: collP,
+    collA: collA,
+    collI: collI,
+  };
+}
+
+function setDbReference( referer ) {
+  // TODO: change database reference as per html request
+  const network = referer.replace( /[.:]/g, '-' );
+  console.log( '\n\x1b[33m', network, '\x1b[0m\n' );
+
+  // global.db.authDb.options_.databaseURL = 'https://entity-authentication' + dbAffix + '.firebaseio.com/';
+  // global.db.namespaceDb.options_.databaseURL = 'https://entity-namespace' + dbAffix + '.firebaseio.com/';
+  // global.db.profileDb.options_.databaseURL = 'https://entity-profile' + dbAffix + '.firebaseio.com/';
+  // global.db.imageDb.options_.databaseURL = 'https://entity-profile-image' + dbAffix + '.firebaseio.com/';
+
+  global.db.collE = global.db.namespaceDb.database().ref( 'databases/' + network + '/' + 'entities' );
+  global.db.collP = global.db.profileDb.database().ref( 'databases/' + network + '/' + 'profiles' );
+  global.db.collA = global.db.authDb.database().ref( 'databases/' + network + '/' + 'authentication' );
+  global.db.collI = global.db.imageDb.database().ref( 'databases/' + network + '/' + 'images' );
+}
+
+module.exports.dBInit = dBInit;
+module.exports.setDbReference = setDbReference;

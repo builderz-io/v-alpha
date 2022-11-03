@@ -1,9 +1,8 @@
 
-// Connect to namespace firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
+const namespaceDb = global.db.namespaceDb;
 
 module.exports = async ( context, input ) => {
-  const network = context.host.replace( /\./g, '_' ).replace( ':', '_' );
+  const network = context.host.replace( /[.:]/g, '_' );
   const coll = namespaceDb.database().ref( 'networks/' + network + '/' + input.emphasis + 's' );
   const collAdmins = namespaceDb.database().ref( 'networks/' + network + '/admins' );
 

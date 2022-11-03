@@ -33,10 +33,3 @@ module.exports = {
     setEmphasis: ( parent, { input }, { context } ) => require( './set-emphasis' )( context, input ),
   },
 };
-
-// function setNewExpiryDate( context ) {
-//   const unix = Math.floor( Date.now() / 1000 );
-//   const expires = String( unix + 60 * 60 * 24 * 365 * 2 );
-//   const input = { input: { a: context.m, y: { c: expires } } };
-//   setNamespace( colE, input, context );
-// }

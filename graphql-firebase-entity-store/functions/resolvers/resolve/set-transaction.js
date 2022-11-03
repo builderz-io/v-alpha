@@ -8,9 +8,7 @@ const settings = {
   // gasPrice: 80, // in Gwei // x * 1e9 = Gwei
 };
 
-// Connect to firebase database
-const { profileDb } = require( '../../resources/databases-setup' );
-const colP = profileDb.database().ref( 'profiles' );
+const collP = global.db.collP;
 
 const findAuth = require( './find-by-auth' );
 
@@ -80,7 +78,7 @@ async function managedTransaction( txData, increase ) {
   return web3.eth.sendSignedTransaction( '0x' + transaction.serialize().toString( 'hex' ) )
     .once( 'transactionHash', function( hash ) {
       console.log( 'Managed transaction triggered. Hash: ' + hash );
-      colP.child( getSenderAuth.e ).update( { 'p/t': hash } );
+      collP.child( getSenderAuth.e ).update( { 'p/t': hash } );
     } )
     .on( 'error', function( error ) {
       console.log( 'Managed Transaction Error: ' + JSON.stringify( error ) );

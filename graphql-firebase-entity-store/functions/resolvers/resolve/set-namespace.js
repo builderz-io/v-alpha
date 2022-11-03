@@ -6,26 +6,17 @@ const settings = {
 
 module.exports = async ( context, input, whichCol ) => {
 
-  let col;
+  let coll;
 
-  if ( whichCol == 'entity' ) {
-    const { namespaceDb } = require( '../../resources/databases-setup' );
-    col = namespaceDb.database().ref( 'entities' );
-  }
-  else if ( whichCol == 'profile' ) {
-    const { profileDb } = require( '../../resources/databases-setup' );
-    col = profileDb.database().ref( 'profiles' );
-  }
-  else if ( whichCol == 'image' ) {
-    const { imageDb } = require( '../../resources/databases-setup' );
-    col = imageDb.database().ref( 'images' );
-  }
+  'entity' == whichCol && ( coll = global.db.collE )
+  || 'profile' == whichCol && ( coll = global.db.collP )
+  || 'image' == whichCol && ( coll = global.db.collI );
 
   /** Cast a copy of input */
   const data = JSON.parse( JSON.stringify( input ) );
 
   /** Get the profile or entity object to be updated */
-  const objToUpdate = data.a != '-' ? await col.child( data.a ).once( 'value' )
+  const objToUpdate = data.a != '-' ? await coll.child( data.a ).once( 'value' )
     .then( snap => snap.val() ) : undefined;
 
   /** Determine set new or update action */
@@ -43,7 +34,7 @@ module.exports = async ( context, input, whichCol ) => {
   else if (
     !objToUpdate && settings.useClientData
   ) {
-    return require( './namespace-init-cd' )( context, data, col );
+    return require( './namespace-init-cd' )( context, data, coll );
   }
 
   /**
@@ -58,7 +49,7 @@ module.exports = async ( context, input, whichCol ) => {
       || ( objToUpdate.x && objToUpdate.x.m == context.d ) // user updating held entity
     )
   ) {
-    return require( './namespace-update' )( context, data, objToUpdate, col );
+    return require( './namespace-update' )( context, data, objToUpdate, coll );
   }
   else if ( !context.a ) {
     throw new Error( '-2001 not authenticated to update' );

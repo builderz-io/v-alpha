@@ -1,6 +1,5 @@
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
-const colE = namespaceDb.database().ref( 'entities' );
+
+const collE = global.db.collE;
 
 module.exports = ( context, filter ) => {
 
@@ -12,7 +11,7 @@ module.exports = ( context, filter ) => {
     + filter.query[1].toLowerCase()
     + filter.query[2].toLowerCase();
 
-    return colE.orderByChild( 'm' )
+    return collE.orderByChild( 'm' )
       .startAt( q )
       .endAt( q + '\uf8ff' )
       .once( 'value' )
@@ -23,11 +22,11 @@ module.exports = ( context, filter ) => {
     context.host.includes( 'localhost' )
     || context.host.includes( 'staging' )
   ) {
-    return colE.limitToLast( 1000 ).once( 'value' )
+    return collE.limitToLast( 1000 ).once( 'value' )
       .then( snap => Object.values( snap.val() ) );
   }
   else {
-    return colE.orderByChild( 'g' ).equalTo( context.host )
+    return collE.orderByChild( 'g' ).equalTo( context.host )
       .limitToLast( 1000 ).once( 'value' )
       .then( snap => Object.values( snap.val() ) );
   }

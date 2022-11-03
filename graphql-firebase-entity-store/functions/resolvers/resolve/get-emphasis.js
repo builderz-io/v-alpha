@@ -1,8 +1,8 @@
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
+
+const namespaceDb = global.db.namespaceDb;
 
 module.exports = ( context, emphasis ) => {
-  const network = context.host.replace( /\./g, '_' ).replace( ':', '_' );
+  const network = context.host.replace( /[.:]/g, '_' );
   const coll = namespaceDb.database().ref( 'networks/' + network + '/' + emphasis + 's' );
 
   return coll

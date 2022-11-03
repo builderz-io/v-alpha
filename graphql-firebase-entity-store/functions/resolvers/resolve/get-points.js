@@ -1,11 +1,11 @@
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
+
+const namespaceDb = global.db.namespaceDb;
 
 module.exports = async ( context ) => {
-  const network = context.host.replace( /\./g, '_' ).replace( ':', '_' );
-  const colCache = namespaceDb.database().ref( 'networks/' + network + '/cache' );
+  const network = context.host.replace( /[.:]/g, '_' );
+  const collCache = namespaceDb.database().ref( 'networks/' + network + '/cache' );
 
-  const points = await colCache.child( 'points' ).once( 'value' )
+  const points = await collCache.child( 'points' ).once( 'value' )
     .then( snap => {
       let items = Object.values( snap.val() );
       items = items.filter( item => item.f != 1 );

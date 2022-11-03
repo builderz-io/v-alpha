@@ -1,12 +1,11 @@
-// Connect to firebase database
-const { authDb } = require( '../../resources/databases-setup' );
-const colA = authDb.database().ref( 'authentication' );
+
+const collA = global.db.collA;
 
 module.exports = async ( context, res ) => {
 
   const disconnect = await new Promise( resolve => {
     context.a
-      ? colA.child( context.a ).update( { g: null, h: null }, () => resolve( { success: true } ) )
+      ? collA.child( context.a ).update( { g: null, h: null }, () => resolve( { success: true } ) )
       : resolve( { success: false } );
   } );
 
