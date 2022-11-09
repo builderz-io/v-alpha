@@ -2,6 +2,7 @@
 
 1. set deployment location in firebase
 For production env run -> firebase use entity-namespace
+For staging env run -> firebase use entity-authentication
 For development env run -> firebase use entity-profile
 
 to list projects run -> firebase projects:list
@@ -16,7 +17,7 @@ function dBInit( dbEnv ) {
 
   const env = {
 
-    use: 'dev',
+    use: 'staging',
 
     local: false, /* set to "true" to save data locally when running importer */
 
@@ -25,6 +26,9 @@ function dBInit( dbEnv ) {
     },
     prod: {
       dbAffix: '',
+    },
+    staging: {
+      dbAffix: '-staging',
     },
     dev: {
       dbAffix: '-dev',
