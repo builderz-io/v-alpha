@@ -15,3 +15,13 @@ const firebaseChatConfig = {
 firebase.initializeApp( firebaseChatConfig );
 
 const NetworkMainRoom = firebase.database().ref( window.location.host.replace( /\./g, '_' ) );
+
+NetworkMainRoom.on( 'child_added', function childAddedLive( snap ) {
+  const res = snap.val();
+  Chat.drawMessage( {
+    time: res.a,
+    uuidE: res.i,
+    sender: res.j,
+    msg: res.m,
+  } );
+} );

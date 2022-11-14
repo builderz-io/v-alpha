@@ -149,7 +149,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
       V.setNode( 'listings', $list );
-      NetworkMainRoom.on( 'child_added', function( snap ) {
+      NetworkMainRoom.once( 'child_added', function childAddedPrevious( snap ) {
         const res = snap.val();
         drawMessage( {
           time: res.a,
@@ -281,6 +281,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
   return {
     launch: launch,
     draw: draw,
+    drawMessage: drawMessage,
     drawMessageForm: drawMessageForm,
     handleSetMessageBot: handleSetMessageBot,
   };
