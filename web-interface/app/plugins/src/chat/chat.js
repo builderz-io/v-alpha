@@ -149,15 +149,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
       V.setNode( 'listings', $list );
-      NetworkMainRoom.on( 'child_added', function( snap ) {
-        const res = snap.val();
-        drawMessage( {
-          time: res.a,
-          uuidE: res.i,
-          sender: res.j,
-          msg: res.m,
-        } );
-      } );
+      NetworkMainRoom.once( 'child_added', childAdded );
     }
     else {
       V.setNode( $topcontent, CanvasComponents.notFound( 'message' ) );
@@ -177,6 +169,16 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
 
     Page.draw( {
       position: 'top',
+    } );
+  }
+
+  function childAdded( snap ) {
+    const res = snap.val();
+    drawMessage( {
+      time: res.a,
+      uuidE: res.i,
+      sender: res.j,
+      msg: res.m,
     } );
   }
 
@@ -244,6 +246,14 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       window.socket.on( 'community message', drawMessage );
 
       window.socket.on( 'a user is typing', drawUserIsTyping );
+
+      return;
+    }
+
+    if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
+      NetworkMainRoom.on( 'child_added',   function childAddedLive( snap ) {
+        childAdded( snap );
+      } );
     }
 
   }

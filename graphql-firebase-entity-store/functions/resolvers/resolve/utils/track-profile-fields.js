@@ -1,6 +1,4 @@
-// Connect to firebase database
-const { namespaceDb } = require( '../../../resources/databases-setup' );
-const colE = namespaceDb.database().ref( 'entities' );
+const collE = global.db.collE;
 
 const castObjectPaths = require( './cast-object-paths' );
 
@@ -26,7 +24,7 @@ module.exports = ( uuidE, data ) => {
 
   if ( Object.keys( fields ).length ) {
     return new Promise( resolve => {
-      colE.child( uuidE ).update( fields, () => resolve( track ) );
+      collE.child( uuidE ).update( fields, () => resolve( track ) );
     } );
   }
 };

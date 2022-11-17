@@ -570,7 +570,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     V.setLocal( 'entity-nav-order', entityNavOrder );
 
     /** Place into view */
-    const $pill = NavComponents.entityPill( obj );
+    const $pill = NavComponents.entityPill( obj, 'use title' );
     V.getNode( 'entity-nav > ul' ).prepend( $pill );
     drawJoinedUserPill();
   }

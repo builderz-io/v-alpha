@@ -1,5 +1,5 @@
 
-const { namespaceDb } = require( '../../../resources/databases-setup' );
+const namespaceDb = global.db.namespaceDb;
 
 const findByAuth = require( '../find-by-auth' );
 const getSingleEntity = require( '../get-single-entity' );

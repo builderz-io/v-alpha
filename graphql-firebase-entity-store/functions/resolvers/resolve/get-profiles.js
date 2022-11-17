@@ -1,10 +1,8 @@
-// Connect to firebase database
-const { profileDb } = require( '../../resources/databases-setup' );
-const colP = profileDb.database().ref( 'profiles' );
+const collP = global.db.collP;
 
 module.exports = async ( context, profileArray ) => {
   const promises = profileArray.map( function( uuidP ) {
-    return colP.child( uuidP )
+    return collP.child( uuidP )
       .once( 'value' )
       .then( snap => snap.val() );
   } );

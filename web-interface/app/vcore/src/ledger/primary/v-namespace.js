@@ -23,7 +23,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders holderOf { fullId } auth { f i j }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf { c fullId } auth { f i j }';
   const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
 
   /**
@@ -246,7 +246,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
       holders: E.holders,
-      holderOf: E.holderOf ? E.holderOf.map( item => item.fullId ) : undefined,
+      holderOf: E.holderOf ? E.holderOf /*.map( item => item.fullId ) */ : undefined,
       evmCredentials: {
         address: E.i,
       },
@@ -637,33 +637,45 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     return fetchEndpoint( query, variables );
   }
 
-  function getHighlights() {
-    console.log( 222, 'by highlight' );
+  function getEmphasis( data ) {
+    console.log( 222, 'by ' + data );
 
-    const queryH = `query GetHighlights {
-                      getHighlights {
+    const queryEmphasis = `query getEmphasis ( $where: WhereEmphasis ){
+                      getEmphasis(where: $where) {
                         a
                       }
                     }
                   `;
 
-    return fetchEndpoint( queryH );
+    const variables = {
+      where: {
+        emphasis: data,
+      },
+    };
+
+    return fetchEndpoint( queryEmphasis, variables );
   }
 
-  function setHighlight( which, whichEndpoint ) {
-    const query = `mutation SetHighlight( $input: InputHighlight! ) {
-                setHighlight(input: $input) {
+  function setEmphasis( which, whichEndpoint ) {
+    const query = `mutation setEmphasis( $input: InputEmphasis! ) {
+                setEmphasis(input: $input) {
                   a
                 }
               }
             `;
 
-    const expiry = whichEndpoint == 'highlight'
-      ? V.castUnix() + 60 * 60 * 24 * 60
-      : V.castUnix() - 1;
+    // const expiry = whichEndpoint == 'highlight'
+    //   ? V.castUnix() + 60 * 60 * 24 * 60
+    //   : V.castUnix() - 1;
+
+    const expiry = V.castUnix() + 60 * 60 * 24 * 60;
 
     const variables = {
-      input: { a: which, y: { c: expiry } },
+      input: {
+        a: which,
+        y: { c: expiry },
+        emphasis: whichEndpoint,
+      },
     };
 
     return fetchEndpoint( query, variables );
@@ -756,7 +768,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    console.log( 'GET ENTITIE(S): ', data );
+    console.log( 'GET ENTITIE(S): ', data, whichEndpoint );
 
     /** Query multiple entities and profiles in sequence (arrays) */
 
@@ -771,16 +783,28 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         return V.successFalse( 'get entities by point' );
       }
     }
+    else if ( ['entity by feature', 'entity by vip'].includes( whichEndpoint ) ) {
+      const featuredE = await getEmphasis( data );
+      if ( !featuredE.errors && featuredE.data.getEmphasis[0] != null ) {
+        const features = featuredE.data.getEmphasis.map( item => item.a );
+
+        E = await getEntities( features, 'entity by uuidE' );
+
+      }
+      else {
+        return V.successFalse( 'get entities by feature' );
+      }
+    }
     else if ( 'entity by highlight' == whichEndpoint ) {
 
       // uncomment to not load highlights
       // return V.successFalse( 'get entities by highlight' );
 
-      const highlightedE = await getHighlights();
+      const highlightedE = await getEmphasis( data );
       const mixin = V.getCache( 'mixin-highlights' ); // from points
 
-      if ( !highlightedE.errors && highlightedE.data.getHighlights[0] != null ) {
-        let highlights = highlightedE.data.getHighlights.map( item => item.a );
+      if ( !highlightedE.errors && highlightedE.data.getEmphasis[0] != null ) {
+        let highlights = highlightedE.data.getEmphasis.map( item => item.a );
 
         if ( mixin ) {
           highlights = [...new Set( highlights.concat( mixin.data ) )];
@@ -945,8 +969,8 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     else if ( 'message' == whichEndpoint ) {
       return setChatMessage( data );
     }
-    else if ( whichEndpoint.includes( 'highlight' ) ) {
-      return setHighlight( data, whichEndpoint );
+    else if ( V.checkForEmphasisTrigger( whichEndpoint ) ) {
+      return setEmphasis( data, whichEndpoint );
     }
     else if ( 'managed transaction' == whichEndpoint ) {
       return setManagedTransaction( data );

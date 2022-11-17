@@ -19,7 +19,7 @@ module.exports = {
     getProfile: ( parent, args, { context } ) => require( './get-single-profile' )( context, args.where.a ),
     getProfiles: ( parent, args, { context } ) => require( './get-profiles' )( context, args.array ),
     getEntityQuery: ( parent, args, { context } ) => require( './filter-entities' )( context, args.filter ),
-    getHighlights: ( parent, args, { context } ) => require( './get-highlights' )( context ),
+    getEmphasis: ( parent, args, { context } ) => require( './get-emphasis' )( context, args.where.emphasis ),
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
     getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
   },
@@ -30,13 +30,6 @@ module.exports = {
     setEntity: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'entity' ),
     setProfile: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'profile' ),
     setImage: ( parent, { input }, { context } ) => require( './set-namespace' )( context, input, 'image' ),
-    setHighlight: ( parent, { input }, { context } ) => require( './set-highlight' )( context, input ),
+    setEmphasis: ( parent, { input }, { context } ) => require( './set-emphasis' )( context, input ),
   },
 };
-
-// function setNewExpiryDate( context ) {
-//   const unix = Math.floor( Date.now() / 1000 );
-//   const expires = String( unix + 60 * 60 * 24 * 365 * 2 );
-//   const input = { input: { a: context.m, y: { c: expires } } };
-//   setNamespace( colE, input, context );
-// }

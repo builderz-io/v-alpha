@@ -1,9 +1,6 @@
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
-const { authDb } = require( '../../resources/databases-setup' );
 
-const colE = namespaceDb.database().ref( 'entities' );
-const colA = authDb.database().ref( 'authentication' );
+const collE = global.db.collE;
+const collA = global.db.collA;
 
 const { checkAuth } = require( './utils/check-auth' );
 
@@ -12,11 +9,11 @@ module.exports = async ( context, match ) => {
   let entity;
 
   if ( match.uuidE ) {
-    entity = await colE.child( match.uuidE ).once( 'value' )
+    entity = await collE.child( match.uuidE ).once( 'value' )
       .then( snap => snap.val() );
   }
   else if ( match.title ) {
-    entity = await colE.orderByChild( 'm' ).equalTo( match.title ).once( 'value' )
+    entity = await collE.orderByChild( 'm' ).equalTo( match.title ).once( 'value' )
       .then( snap => {
         const data = snap.val();
         return data ? Object.values( data ) : [];
@@ -24,7 +21,7 @@ module.exports = async ( context, match ) => {
       .then( entities => entities.find( item => ( item.m + item.n ) == ( match.title + match.tag ) ) );
   }
   else {
-    entity = await colE.orderByChild( match.key ).equalTo( match.value ).once( 'value' )
+    entity = await collE.orderByChild( match.key ).equalTo( match.value ).once( 'value' )
       .then( snap => {
         const data = snap.val();
         return data ? Object.values( data )[0] : null;
@@ -65,7 +62,7 @@ module.exports = async ( context, match ) => {
    */
 
   if ( entity.x ) {
-    const firstHolder = await colE.child( entity.x.m || entity.x.a ).once( 'value' )
+    const firstHolder = await collE.child( entity.x.m || entity.x.a ).once( 'value' )
       .then( snap => snap.val() );
     const shownHolder = firstHolder.zz && firstHolder.zz.f && firstHolder.zz.f > 0
       ? 'private' // ( entity.m + ' ' + entity.n )
@@ -96,8 +93,8 @@ module.exports = async ( context, match ) => {
   };
 
   const all = await Promise.all( [
-    colE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
-    colE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
+    collE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
+    collE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
   ] );
 
   const points = all[1].concat( all[0] )
@@ -119,7 +116,7 @@ module.exports = async ( context, match ) => {
   ) {
 
     /** fetch related auth doc */
-    const authDoc = await colA.child( entity.e ).once( 'value' )
+    const authDoc = await collA.child( entity.e ).once( 'value' )
       .then( snap => snap.val() );
 
     /** add auth token to entity object */

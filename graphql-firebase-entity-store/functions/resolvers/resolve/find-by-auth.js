@@ -1,6 +1,5 @@
-// Connect to firebase database
-const { authDb } = require( '../../resources/databases-setup' );
-const colA = authDb.database().ref( 'authentication' );
+
+const collA = global.db.collA;
 
 module.exports = async ( token ) => {
 
@@ -44,7 +43,7 @@ module.exports = async ( token ) => {
 };
 
 async function getAuthDoc( field, match ) {
-  return colA.orderByChild( field ).equalTo( match ).once( 'value' )
+  return collA.orderByChild( field ).equalTo( match ).once( 'value' )
     .then( snap => {
       let data = snap.val();
       data ? data = Object.values( data )[0] : null;

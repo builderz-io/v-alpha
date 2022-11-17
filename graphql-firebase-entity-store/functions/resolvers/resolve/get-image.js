@@ -1,10 +1,9 @@
-// Connect to firebase database
-const { imageDb } = require( '../../resources/databases-setup' );
-const colI = imageDb.database().ref( 'images' );
+
+const collI = global.db.collI;
 
 const { checkAuth } = require( './utils/check-auth' );
 
-module.exports = ( context, uuidP ) => colI.child( uuidP ).once( 'value' )
+module.exports = ( context, uuidP ) => collI.child( uuidP ).once( 'value' )
   .then( snap => {
     const item = snap.val();
 

@@ -15,7 +15,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {};
 
-  let cardSet, fourDigitString, uPhrase, fullId, role, cardIndex = 0;
+  let cardSet, fourDigitString, newEntity, uPhrase, fullId, role, cardIndex = 0;
 
   /* ============== user interface strings ============== */
 
@@ -295,7 +295,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       const hasRadio = getRadioIndex( 'continent' );
 
       if (
-        hasLoc
+        hasLat
         && $location.value
       ) {
         entityData.location = hasLoc;
@@ -478,12 +478,22 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
         if ( res.success ) {
           console.log( 'successfully set entity: ', res );
 
-          Navigation.drawEntityNavPill( res.data[0] );
-          VMap.draw( res.data );
+          newEntity = res.data[0];
+          uPhrase = newEntity.auth.uPhrase;
+          fullId = newEntity.fullId;
+          role = newEntity.role;
 
-          uPhrase = res.data[0].auth.uPhrase;
-          fullId = res.data[0].fullId;
-          role = res.data[0].role;
+          /** Clear cache to force reload users profile */
+          V.setCache( 'viewed', 'clear' );
+
+          /** Prepare map position & draw map */
+          V.setState( 'active', {
+            lastLngLat: newEntity.geometry.coordinates,
+          } );
+          VMap.draw( res.data, { isJoin: true } );
+
+          /** Place navigation pill */
+          Navigation.drawEntityNavPill( newEntity );
 
           if ( role != 'Person' ) {
             drawSuccess();
@@ -492,12 +502,17 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             return;
           }
 
-          /** automatically join */
+          /** Automatically join */
           V.setAuth( uPhrase )
             .then( data => {
               console.log( data );
               if ( data.success ) {
                 console.log( 'auth success' );
+
+                /** Set active entity state for user */
+                V.setActiveEntity( newEntity );
+                Join.draw( 'new entity was set up' );
+
                 drawSuccess();
                 notifySuccess( fullId, role );
                 setDownloadKeyBtn();
@@ -512,10 +527,6 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
               setResponse( 'authFail' );
               drawUphraseDisplay( uPhrase );
             } );
-
-          /** set state and cache */
-          V.setActiveEntity( res.data[0] );
-          Join.draw( 'new entity was set up' );
         }
         else {
           throw new Error( res.message );

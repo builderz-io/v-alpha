@@ -15,7 +15,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       && V.getSetting( 'transactionLedger' ) == 'EVM'
     ) {
       if ( which == 'initialize join' ) {
-        which = 'initialize web3 join';
+        which = 'web3 initialize join';
       }
       else if ( which.includes( 'authenticate' ) ) {
         // Modal.draw( 'please wait' );
@@ -58,7 +58,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
     }
     else { // web2 join
       if ( which == 'initialize join' ) {
-        which = 'initialize web2 join';
+        which = 'web2 initialize join';
       }
       else if ( which == 'new entity was set up' ) {
         which = 'entity found';
@@ -101,10 +101,16 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
 
     }
-    else if ( which == 'entity not found' ) {
-      V.sN( 'balance > svg', 'clear' );
-      Join.launch();
-      Modal.draw( which );
+    else if ( which == 'web3 entity not found' ) {
+      if( V.getSetting( 'joinVersion' ) === 1 ) {
+        V.sN( 'balance > svg', 'clear' );
+        Join.launch();
+        Modal.draw( which );
+      }
+      else {
+        V.sN( 'modal', 'clear' );
+        V.setNode( 'body', JoinRoutine.draw( { role: 'Person', join: 1 } ) );
+      }
     }
     else if ( which == 'logged out' ) {
       Join.launch();
@@ -116,7 +122,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       Navigation.draw();
       Modal.draw( which );
     }
-    else if ( which.includes( 'initialize' ) ) {
+    else if ( which.includes( 'initialize join' ) ) {
       Navigation.draw();
       Modal.draw( which );
     }
@@ -132,7 +138,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       ? V.getEntity( 'JOIN' + '--' + V.cA() ).then( async res => {
 
         if ( res.reset ) {
-          return 'entity not found';
+          return 'web3 entity not found';
         }
         else if ( res.success ) {
 
@@ -158,7 +164,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
           return 'entity found';
         }
         else {
-          return 'entity not found';
+          return 'web3 entity not found';
         }
       } )
       : 'error';

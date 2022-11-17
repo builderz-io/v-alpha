@@ -6,9 +6,7 @@ const { castUuid } = require( '../../resources/v-core' );
 const setNetwork = require( './utils/set-network' );
 const findByAuth = require( './find-by-auth' );
 
-// Connect to firebase database
-const { authDb } = require( '../../resources/databases-setup' );
-const colA = authDb.database().ref( 'authentication' );
+const collA = global.db.collA;
 
 const settings = {
   jwtExpiry: 60 * 60 * 24 * 365 * 10, // seconds
@@ -63,7 +61,7 @@ module.exports = async ( context /*, res */ ) => {
   }
 
   await new Promise( resolve => {
-    colA.child( authDoc.a ).update( { g: networksArr, h: refreshTokensArr }, () => resolve( true ) );
+    collA.child( authDoc.a ).update( { g: networksArr, h: refreshTokensArr }, () => resolve( true ) );
   } );
 
   /** Update the network cluster and point-cache */

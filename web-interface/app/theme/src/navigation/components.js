@@ -132,7 +132,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  function entityPill( item ) {
+  function entityPill( item, useTitle ) {
     const backgr = castBackground( item );
 
     const placeholderImage =  {
@@ -183,7 +183,7 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'span',
           c: 'pill__initials',
-          h: item.initials,
+          h: useTitle ? item.title : item.initials,
         },
       ],
     } );

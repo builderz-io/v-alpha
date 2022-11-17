@@ -37,6 +37,10 @@ const Filters = `
     i: String
   }
 
+  input WhereEmphasis {
+    emphasis: String
+  }
+
   type Image {
     a: String
     f: Int
@@ -44,14 +48,15 @@ const Filters = `
     x: RelationsP
   }
 
-  type Highlight {
+  type Emphasis {
     a: String
     y: Int
   }
 
-  input InputHighlight {
+  input InputEmphasis {
     a: String
     y: InputHighlightY
+    emphasis: String
   }
 
   input InputHighlightY {
@@ -111,7 +116,7 @@ const Queries = `
     getEntityQuery(filter: Filter!): [Entity]
     getProfile(where: WhereProfile): [Profile]
     getPoints(where: WhereGeo): [Point]
-    getHighlights: [Highlight]
+    getEmphasis(where: WhereEmphasis): [Emphasis]
     getImage(where: WhereProfile): [Image]
   }
 `;
@@ -121,7 +126,7 @@ const Mutations = `
     setAuth: Jwt
     setDisconnect: Success
     setTransaction(tx: InputTransaction!): SuccessTx
-    setHighlight(input: InputHighlight!): Highlight
+    setEmphasis(input: InputEmphasis!): Emphasis
     setEntity(input: ${ settings.useClientData ? 'InputEntity' : 'EntityInputServerSide' }!): Entity
     setProfile(input: ${ settings.useClientData ? 'InputProfile' : 'ProfileInputServerSide' }!): Profile
     setImage(input: ImageInputServerSide!): Image
