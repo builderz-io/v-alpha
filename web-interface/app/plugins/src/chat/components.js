@@ -480,7 +480,10 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
     const background = msg.sender == 'Me' ? msg.msg.match( 'You\'ve sent' ) ? '#c0d6b9' : '#e0e7eb' : '#f7f7f8';
     const linkedMsg = V.castLinks( msg.msg );
     linkedMsg.iframes.includes( 'iframe' ) ? width = '330px' : null;
-    const style = msg.sender == 'Me' ? { 'margin-left': 'auto', 'width': width } : { 'margin-right': 'auto', 'width': width };
+
+    const messageStyle = msg.sender == 'Me'
+      ? { 'margin-left': 'auto', 'width': width, 'background': background }
+      : { 'margin-right': 'auto', 'width': width, 'background': background };
 
     return V.cN( {
       t: 'li',
@@ -489,13 +492,11 @@ const ChatComponents = ( function() { // eslint-disable-line no-unused-vars
         uuidE: msg.uuidE || msg._id, // _id in MongoDB
         time: msg.time || 'na',
       },
-      y: style,
+      // y: style,
       h: {
         t: 'message',
         c: 'message__container flex card-shadow rounded bkg-white pxy',
-        y: {
-          background: background,
-        },
+        y: messageStyle,
         h: {
           c: 'font-medium pxy',
           h: [

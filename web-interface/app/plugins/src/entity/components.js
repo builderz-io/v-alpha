@@ -93,11 +93,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     'entity-mng-radio-wrapper': {
       'display': 'flex',
       'justify-content': 'space-around',
-      'border': '1px solid lightgray',
       'margin': '0.5rem',
-      'padding': '0.5rem',
-      'border-radius': '20px',
-      'width': '24rem',
+      'width': '23rem',
     },
   } );
 
@@ -1098,7 +1095,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         y: {
           cursor: 'pointer',
         },
-        h: item,
+        h: item.fullId,
         k: handleProfileDraw,
       } ) ),
     } );

@@ -1,10 +1,9 @@
-// Connect to firebase database
-const { profileDb } = require( '../../resources/databases-setup' );
-const colP = profileDb.database().ref( 'profiles' );
+
+const collP = global.db.collP;
 
 const { checkAuth } = require( './utils/check-auth' );
 
-module.exports = ( context, uuidP ) => colP.child( uuidP ).once( 'value' )
+module.exports = ( context, uuidP ) => collP.child( uuidP ).once( 'value' )
   .then( snap => {
     const item = snap.val();
 

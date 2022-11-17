@@ -386,6 +386,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if ( ['farms', 'farms category'].includes( status ) ) {
           Farm.draw( which );
         }
+        else if ( ['hall'].includes( status ) ) {
+          Hall.draw( which );
+        }
         else if ( ['data'].includes( status ) ) {
           Data.draw( which );
         }

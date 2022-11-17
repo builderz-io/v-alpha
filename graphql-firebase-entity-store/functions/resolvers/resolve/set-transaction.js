@@ -1,7 +1,14 @@
 const settings = {
   floatEthAmount: 0.05,
   autoVerify: true,
+  txGasPriceMplr: 1.1, // used in managed tx
+  txIncGasPriceMplr: 1.3, // used in managed tx
+  verifyGasPriceMplr: 1.5, // used in verification
+  gasLimit: 200000, // used in all tx
+  // gasPrice: 80, // in Gwei // x * 1e9 = Gwei
 };
+
+const collP = global.db.collP;
 
 const findAuth = require( './find-by-auth' );
 
@@ -42,20 +49,23 @@ module.exports = async ( context, tx, type ) => {
   }
 };
 
-async function managedTransaction( txData ) {
+async function managedTransaction( txData, increase ) {
 
   const getSenderAuth = await findAuth( txData.initiatorAddress );
   // getSenderAuth = getSenderAuth[0];
+  const gasPriceOffer = await castGasPriceOffer( increase == 'gas' ? 'txInc' : 'tx' );
 
-  const txCount = await web3.eth.getTransactionCount( getSenderAuth.i );
+  let txCount = await web3.eth.getTransactionCount( getSenderAuth.i );
+
+  increase == 'nonce' && ( txCount += 1 );
 
   const amount = toBaseUnit( String( txData.txTotal ), 18, web3.utils.BN );
 
   const rawTransaction = {
     from: getSenderAuth.i,
     nonce: web3.utils.toHex( txCount ),
-    gasPrice: web3.utils.toHex( 20 * 1e9 ),
-    gasLimit: web3.utils.toHex( 210000 ),
+    gasPrice: gasPriceOffer,
+    gasLimit: web3.utils.toHex( settings.gasLimit ),
     to: contractAddress,
     value: '0x0',
     data: contract.methods.transfer( txData.recipientAddress, amount ).encodeABI(),
@@ -68,6 +78,7 @@ async function managedTransaction( txData ) {
   return web3.eth.sendSignedTransaction( '0x' + transaction.serialize().toString( 'hex' ) )
     .once( 'transactionHash', function( hash ) {
       console.log( 'Managed transaction triggered. Hash: ' + hash );
+      collP.child( getSenderAuth.e ).update( { 'p/t': hash } );
     } )
     .on( 'error', function( error ) {
       console.log( 'Managed Transaction Error: ' + JSON.stringify( error ) );
@@ -81,27 +92,44 @@ async function managedTransaction( txData ) {
     } )
     .catch( error => {
       execCounts[txData.recipientAddress].managed += 1;
-      if ( execCounts[txData.recipientAddress].managed < 3 ) {
-        return managedTransaction( txData );
-      }
-      else {
+
+      if ( execCounts[txData.recipientAddress].managed > 3 ) {
         return {
           success: false,
           error: error,
         };
       }
+
+      if (
+        error.message.includes( 'replacement transaction underpriced' )
+      ) {
+        return managedTransaction( txData /*, 'gas' */ );
+      }
+      else if (
+        error.message.includes( 'already known' )
+      ) {
+        return managedTransaction( txData /*, 'nonce' */ );
+      }
+      else {
+        return managedTransaction( txData );
+      }
+
     } );
 
 }
 
 async function floatEth( which ) {
   console.log( 'Float address: ', which );
+  console.log( 'Float account: ', web3.eth.defaultAccount );
+
+  const gasPriceOffer = await castGasPriceOffer( 'verify' );
 
   const txObject = {
     from: web3.eth.defaultAccount,
     to: which,
     value: web3.utils.toWei( settings.floatEthAmount.toString(), 'ether' ),
-    gas: 6001000,
+    gasPrice: gasPriceOffer,
+    gas: 21000,
   };
 
   return web3.eth.sendTransaction( txObject )
@@ -140,11 +168,20 @@ async function floatEth( which ) {
 
 }
 
-function verify( which ) {
+async function verify( which ) {
   console.log( 'Verification address: ', which );
-  return contract.methods.verifyAccount( which ).send( { from: web3.eth.defaultAccount, gas: 6001000 } )
+  console.log( 'Verification account: ', web3.eth.defaultAccount );
+
+  const gasPriceOffer = await castGasPriceOffer( 'verify' );
+
+  return contract.methods.verifyAccount( which ).send( {
+    from: web3.eth.defaultAccount,
+    gasPrice: gasPriceOffer,
+    gasLimit: web3.utils.toHex( settings.gasLimit ),
+  } )
     .once( 'transactionHash', ( hash ) => {
       console.log( 'Verification Hash: ', hash );
+      // colP.child( /* todo */ ).update( { 'p/v': hash } );
       // contract.methods.accountApproved( ethAddress ).call( ( err, result ) => {
       //   console.log( 'accountApproved result (confirm):', result, ' error: ', err );
       // } );
@@ -171,6 +208,16 @@ function verify( which ) {
         };
       }
     } );
+}
+
+async function castGasPriceOffer( which ) {
+  const block = await web3.eth.getBlock( 'latest' );
+  return web3.utils.toHex(
+    Math.floor(
+      web3.utils.hexToNumber( block.baseFeePerGas )
+      * settings[which  + 'GasPriceMplr'],
+    ),
+  );
 }
 
 function isString( s ) {

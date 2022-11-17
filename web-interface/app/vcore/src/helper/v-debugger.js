@@ -27,8 +27,9 @@ const VDebugger = ( function() { // eslint-disable-line no-unused-vars
   console.log( '*** NEW SESSION ***' );
   console.log( '*** ', window.location.href );
   console.log( '*** ', new Date().toString() );
-  console.log( '*** ', navigator.userAgent );
-  console.log( '*** ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '*** ', navigator.userAgentData );
+  console.log( '*** App version ', VConfig.getSetting( 'appVersion' ) );
+  console.log( '*** Upload version ', VConfig.getSetting( 'uploadVersion' ) );
   console.log( '*** NEW SESSION END ***' );
 
   function handleConsoleMessage( msg, data ) {

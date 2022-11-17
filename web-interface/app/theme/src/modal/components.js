@@ -48,7 +48,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       entityExists: 'This combination of title and tag already exists or is invalid',
       txSent: '✅ Sent to network',
       txSuccess: '✅ Transaction successful',
-      error: 'Something went wrong. Maybe the wallet is locked or you did not sign the transaction?',
+      error: 'Transaction not processed. Maybe you did not confirm it or the wallet is locked.',
+      unknownTxError: 'Unknown transaction error',
+      txErrorDelay: 'One of your previous transactions may take unusually long to process. Please wait and try another transaction in 4 hours. Check your history or a blockexplorer to determine which transactions have processed. Inform the admins, if the problem persists.',
+      txErrorNoFunds: 'You currently can not settle the transaction cost. Either the cost is very high righ now, in which case try again later. Or your allowance has depleted, in which case contact the admins to increase it.',
       wait: 'Please wait... requesting data',
       walletLocked: 'Could not unlock wallet. Maybe the site\'s connectivity to the wallet was denied? Check the browser or wallet settings.',
       noBalance: 'Could not get account balance. Is the network set correctly in your wallet? <br><br>Please set to RINKEBY.',
@@ -208,20 +211,37 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setTransaction( aTx )
       .then( ( res ) => {
         console.log( res );
-        if ( res.success || res.data.setTransaction.success ) { // res.success for connected wallet
+        if (
+          res.success // for connected wallet
+          || /* res.data.setTransaction && */ res.data.setTransaction.success // for managed tx, the commented is a hack to trigger catch block on locked wallet
+        ) {
           V.drawTxConfirmation( res.data.setTransaction ? res.data.setTransaction.data : res.data[0] );
           Account.drawHeaderBalance();
           adminNotify( 'successful' );
         }
         else {
-          Modal.draw( 'error' );
-          adminNotify( 'ERROR' );
+          let error = '❌ ';
+          if ( res.errors ) {
+            if ( res.errors[0].message.includes( 'insufficient funds' ) ) {
+              error += ' ' + V.getString( ui.txErrorNoFunds );
+            }
+            else {
+              error += ' ' + V.getString( ui.txErrorDelay );
+            }
+            error += ' -- ' + res.errors[0].message;
+          }
+          else {
+            error += ' -- ' + V.getString( ui.unknownTxError );
+          }
+          Modal.draw( 'transaction error', error );
+          adminNotify( 'ERROR returned: ' + error );
         }
       } )
       .catch( err => {
         console.error( err );
-        Modal.draw();
-        adminNotify( 'ERROR' );
+        const error = err ? V.getString( ui.error ) + ' -- ' + err.message : '';
+        Modal.draw( 'transaction error', error );
+        adminNotify( 'ERROR caught: ' + error );
       } );
   }
 
@@ -501,7 +521,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $content = modalContent();
     const $msg = V.cN( {
       t: 'p',
-      h: V.getString( ui[text] ),
+      h: V.getString( ui[text] ? ui[text] : text ),
     } );
     V.setNode( $content, $msg );
     return $content;

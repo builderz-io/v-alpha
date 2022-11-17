@@ -4,16 +4,10 @@ const settings = {
   floatEth: true,
 };
 
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
-const { profileDb } = require( '../../resources/databases-setup' );
-const { authDb } = require( '../../resources/databases-setup' );
-const { imageDb } = require( '../../resources/databases-setup' );
-
-const colE = namespaceDb.database().ref( 'entities' );
-const colP = profileDb.database().ref( 'profiles' );
-const colA = authDb.database().ref( 'authentication' );
-const colI = imageDb.database().ref( 'images' );
+const collE = global.db.collE;
+const collP = global.db.collP;
+const collA = global.db.collA;
+const collI = global.db.collI;
 
 const castObjectPaths = require( './utils/cast-object-paths' );
 const trackProfileFields = require( './utils/track-profile-fields' );
@@ -30,19 +24,19 @@ module.exports = async ( context, data ) => {
   const namespace = require( './utils/cast-namespace' )( context, data );
 
   const setA = new Promise( resolve => {
-    colA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
+    collA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
   } );
 
   const setE = new Promise( resolve => {
-    colE.child( namespace.entity.a ).update( castObjectPaths( namespace.entity ), () => resolve( 'set Entity' ) );
+    collE.child( namespace.entity.a ).update( castObjectPaths( namespace.entity ), () => resolve( 'set Entity' ) );
   } );
 
   const setP = new Promise( resolve => {
-    colP.child( namespace.profile.a ).update( castObjectPaths( namespace.profile ), () => resolve( 'set Profile' ) );
+    collP.child( namespace.profile.a ).update( castObjectPaths( namespace.profile ), () => resolve( 'set Profile' ) );
   } );
 
   const setI = new Promise( resolve => {
-    colI.child( namespace.profile.a ).update( castObjectPaths( namespace.image ), () => resolve( 'set Image' ) );
+    collI.child( namespace.profile.a ).update( castObjectPaths( namespace.image ), () => resolve( 'set Image' ) );
   } );
 
   const all = await Promise.all( [setA, setE, setP, setI] );

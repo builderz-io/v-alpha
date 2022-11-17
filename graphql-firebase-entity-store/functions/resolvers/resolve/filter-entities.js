@@ -1,6 +1,4 @@
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
-const colE = namespaceDb.database().ref( 'entities' );
+const collE = global.db.collE;
 
 const getAllEntities = require( './get-all-entities' );
 
@@ -29,7 +27,7 @@ module.exports = async ( context, filter ) => {
       strings = E.zz ? strings.concat( [ E.zz.a, E.zz.b, E.zz.d, E.zz.k ] ) : strings;
       strings = strings.concat( [ E.i /*, E.a, E.d */ ] );
       text = strings.join( ' ' );
-      colE.child( E.a ).update( { 'zz/z': text } );
+      collE.child( E.a ).update( { 'zz/z': text } );
     }
 
     text = text.toLowerCase();

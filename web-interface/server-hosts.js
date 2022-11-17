@@ -1,7 +1,6 @@
 const settings = {
-  port: 4021, // development 4021
+  port: 4042, // development 4021
   network: 'development',
-  // network: 'faithfinance',
 };
 
 const http = require( 'http' );
@@ -18,9 +17,13 @@ server.listen( settings.port, function( err ) {
 } );
 
 app.get( '/logo', function( req, res ) {
-  res.sendFile( __dirname + '/app/assets/img/faithfinance-logo.png' );
+  res.sendFile( __dirname + '/hosts/' + castHost( req ) + '/logo.png' );
 } );
 
 app.get( '*', function( req, res ) {
-  res.sendFile( __dirname + '/app/app-' + settings.network + '.html' );
+  res.sendFile( __dirname + '/hosts/' + castHost( req ) + '/app-' + castHost( req ) + '.html' );
 } );
+
+function castHost( req ) {
+  return req.headers.host.replace( /[.:]/g, '-' );
+}

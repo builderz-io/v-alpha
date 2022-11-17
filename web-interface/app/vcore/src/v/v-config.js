@@ -9,7 +9,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     /* for development, firebase function is deployed to "entity-profile"-project */
     'firebase-local': 'http://localhost:5001/entity-profile/us-central1/api/v1',
-    'firebase-staging': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
+    'firebase-staging': 'https://us-central1-entity-authentication.cloudfunctions.net/api/v1',
     'firebase-development': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     'firebase-production': 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
     'firebase-client-dfr': 'https://us-central1-client-dfr.cloudfunctions.net/api/v1',
@@ -53,7 +53,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.5.0',
+    appVersion: 'Alpha 3.5.1',
+    uploadVersion: '5',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
@@ -72,6 +73,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     sourceEndpoint: VNetworkInit.sourceEndpoint,
 
     logo: VNetworkInit.logo,
+    additionalImage: VNetworkInit.additionalImage,
+    imprint: VNetworkInit.imprint,
     mapDefault: VNetworkInit.mapDefault,
     highlights: VNetworkInit.highlights,
     locale: localeSettings[ VNetworkInit.language ],
@@ -93,7 +96,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     devMode: VNetworkInit.devMode,
     drawMap: true,
-    queryContractState: false,
+    queryContractState: true,
 
     joinVersion: 2,
 
@@ -102,7 +105,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,
-    highlightsCacheDuration: 60 * 8, // in minutes
+    entityCachesDuration: 60 * 8, // in minutes
     viewedCacheDuration: 60 * 8, // in minutes
 
     uuidStringLength: 10,
@@ -117,47 +120,17 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     coinTicker: 'ETH',
     tokenTicker: 'V',
 
-    tokenDivisibility: 18,
-    transactionFee: 2500, // Total percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
-    communityContribution: 1000, // Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
-
   };
 
   const tokenContracts = {
 
-    default: 'rinkeby1',
+    default: 'goerli',
 
-    trufflePAV1: {
-      contractAddress: '0xfb8f1f762801e54b300E3679645fBB3571339Bc0',
-      rpc: 'http://127.0.0.1:9545',
-    },
-    trufflePAV2: {
-      contractAddress: '0x7F4c6BA99864fCF201f6cb07B0DF8dA0ffD0b818',
-      rpc: 'http://127.0.0.1:9545',
-    },
-    idchain: {
-      contractAddress: '',
-      rpc: 'https://idchain.one/rpc/',
-    },
-    rinkeby1: {
-      contractAddress: '0x23f1d397Bc94439C6159D618855d6D176CEad4E0', // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1', // builderz.io
-      rpc: '',
-    },
-    ropstenDevelop: {
-      contractAddress: '0x87a100DFe128616e1e53e499EB0ae99Ff9Cf0d8c', // daily rice coin
-      rpc: 'wss://ropsten.infura.io/v3/199ad2592bb243e2b00118d4c6de0641',
-    },
-    ganacheDevelop: {
-      contractAddress: '0x669e17db2Db2334fDbC9CBC01D117528e5F84488', // '0xC89Ce4735882C9F0f0FE26686c53074E09B0D550',
-      rpc: 'http://161.97.97.238:8547',
-    },
-    kovan1: {
-      contractAddress: '0x793315F6E7dAA99d6000fb2B4347F5301E20dB09',
-      rpc: 'https://kovan.infura.io/v3/199ad2592bb243e2b00118d4c6de0641',
-    },
-    kovan2: {
-      contractAddress: '0xA4788b5EB689fd886AD4Ee27119D89DC587c084E', // daily rice coin
-      rpc: 'wss://kovan.infura.io/v3/199ad2592bb243e2b00118d4c6de0641',
+    goerli: {
+      network: 'Goerli Testnet',
+      contractAddress: '0xa540555ea07BF5fd5476717A94F52E48b86d4648',
+      transactionFee: 3333, // Fallback, percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
+      communityContribution: 200, // Fallback, Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
     },
     symbol1: {
       type: 'TEST_NET',

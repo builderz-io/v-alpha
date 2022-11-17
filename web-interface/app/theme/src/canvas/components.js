@@ -82,6 +82,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       message: 'No messages found',
       entity: 'No entities found',
       marketplace: 'No items found',
+      emptyFoyer: 'Foyer not populated',
       media: 'No media items found',
       close: 'close',
     };
@@ -112,7 +113,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     return V.cN( {
       t: 'p',
       c: 'pxy',
-      h: V.getString( ui[which] ),
+      h: V.getString( ui[which] || ui.emptyFoyer  ),
     } );
   }
 
@@ -304,9 +305,21 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function networkLogo() {
     return V.cN( {
-      t: 'img',
-      c: 'network-logo',
-      r: V.getSetting( 'logo' ),
+      c: 'logo-legal__wrapper flex justify-between',
+      h: [
+        {
+          t: 'img',
+          c: 'network-logo',
+          r: V.getSetting( 'logo' ),
+        },
+        {
+          c: 'legal-link fs-s cursor-pointer',
+          h: 'Impressum | Datenschutz',
+          k: function handleLegalLinkClick() {
+            V.getNode( '[path="/network/hall"]' ).click();
+          },
+        },
+      ],
     } );
   }
 

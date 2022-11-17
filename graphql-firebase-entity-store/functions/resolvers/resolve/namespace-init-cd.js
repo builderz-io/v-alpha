@@ -7,9 +7,7 @@ const settings = {
   floatEth: true,
 };
 
-// Connect to firebase database
-const { authDb } = require( '../../resources/databases-setup' );
-const colA = authDb.database().ref( 'authentication' );
+const collA = global.db.collA;
 
 const trackProfileFields = require( './utils/track-profile-fields' );
 
@@ -24,7 +22,7 @@ module.exports = ( context, data, col ) => new Promise( async resolve => {
   if ( data.b.includes( '/e' ) ) {
 
     /** Write auth data into auth db */
-    colA.child( data.auth.a ).update( data.auth );
+    collA.child( data.auth.a ).update( data.auth );
 
     /** Float some ETH and optionally auto-verify */
     // "awaiting" this would make the joining slow for the user

@@ -1,19 +1,16 @@
 /* eslint global-require: "off" */
 
-// Connect to firebase database
-const { namespaceDb } = require( '../../resources/databases-setup' );
-const colE = namespaceDb.database().ref( 'entities' );
-const { imageDb } = require( '../../resources/databases-setup' );
-const colI = imageDb.database().ref( 'images' );
+const collE = global.db.collE;
+const collI = global.db.collI;
 
 const castObjectPaths = require( './utils/cast-object-paths' );
 const trackProfileFields = require( './utils/track-profile-fields' );
 const setNetwork = require( './utils/set-network' );
 
-module.exports = async ( context, data, objToUpdate, col ) => {
+module.exports = async ( context, data, objToUpdate, coll ) => {
 
   /** Clear keyword cache */
-  colE.child( objToUpdate.b.includes( '/e' ) ? objToUpdate.a : objToUpdate.d ).update( { 'zz/z': null } );
+  collE.child( objToUpdate.b.includes( '/e' ) ? objToUpdate.a : objToUpdate.d ).update( { 'zz/z': null } );
 
   /** Validate inputs */
   await require( '../validate/validate' )( context, data, objToUpdate );
@@ -58,12 +55,12 @@ module.exports = async ( context, data, objToUpdate, col ) => {
    * set privacy field in image db also
    */
   await new Promise( resolve => {
-    col.child( data.a ).update( fields, () => resolve( data ) );
+    coll.child( data.a ).update( fields, () => resolve( data ) );
   } );
 
   if ( data.f || data.f === 0 ) {
     await new Promise( resolve => {
-      colI.child( data.a ).update( fields, () => resolve( data ) );
+      collI.child( data.a ).update( fields, () => resolve( data ) );
     } );
   }
 
