@@ -472,6 +472,25 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function returningUser() {
     if( !V.aE() ) {
+      if ( V.getLocal( 'last-connected-address' ) && window.ethereum ) {
+        Join.draw( 'authenticate' );
+      }
+      else {
+        Join.launch(); // sets node: join button
+      }
+    }
+    else {
+      setTimeout( function delayedDrawJoinedUserPill() {
+        // setTimeout ensures pill is found in nav
+        Navigation.drawJoinedUserPill();
+      }, 0 );
+      Join.draw( 'new entity was set up' );
+    }
+  }
+
+  /*
+  function returningUser() {
+    if( !V.aE() ) {
       V.setAuth()
         .then( data => {
           if ( data.success ) {
@@ -505,35 +524,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         } );
     }
   }
-
-  /*
-  function returningUser() {
-    if( !V.aE() ) {
-      const returningWallet = V.getLocal( 'last-connected-address' );
-      const returningUphrase = V.getLocal( 'last-active-uphrase' );
-
-      if ( returningWallet && window.ethereum ) {
-        Join.draw( 'authenticate' );
-      }
-      else if ( returningUphrase ) {
-        ( async () => {
-          await V.getEntity( V.castJson( returningUphrase ) )
-            .then( authDoc => {
-              return authDoc.data[0].i;
-            } )
-            .then( evmAddress => V.getEntity( evmAddress ) )
-            .then( entity => {
-              V.setState( 'activeEntity', entity.data[0] );
-              Join.draw( 'new entity was set up' );
-            } );
-        } )();
-      }
-      else {
-        Join.launch(); // sets node: join button
-      }
-    }
-  }
 */
+
   function handleKeyboard( array ) {
     array.some( elem => {
       if ( V.getVisibility( '#' + elem ) ) {

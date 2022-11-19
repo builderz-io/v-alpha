@@ -16,6 +16,33 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     return strings;
   } )();
 
+  const returningUser = () => {
+    V.setAuth()
+      .then( data => {
+        if ( data.success ) {
+          console.log( 'auth success' );
+          return data.data[0];
+        }
+        else {
+          throw new Error( 'could not set auth' );
+        }
+      } )
+      .then( data => V.getEntity( { uuidE: data.uuidE, uuidP: data.uuidP, isReturningUser: true } ) )
+      .then( entity => {
+        if ( entity.success ) {
+          V.setActiveEntity( entity.data[0] );
+          return true;
+        }
+        else {
+          throw new Error( 'could not get entity after set auth' );
+        }
+      } )
+      .catch( err =>  {
+        V.setTempRefreshToken(); // clears temp_refresh
+        console.log( 'auth unsuccessful -', err );
+      } );
+  };
+
   /**
     * Launch language file
     */
@@ -31,6 +58,8 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
   V.setNode( 'loader', V.getString( ui.ledgerLoad ) );
 
   await VLedger.launch();
+
+  returningUser();
 
   /**
    * Also load the canvas script (the first theme script)
