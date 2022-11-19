@@ -159,6 +159,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       .then( entity => {
         if ( entity.success ) {
           V.setActiveEntity( entity.data[0] );
+
+          const $userPill = V.getNode( '[uuide="' + entity.data[0].uuidE + '"]' );
+          if ( $userPill ) {
+            Navigation.drawJoinedUserPill();
+          }
+          else {
+            Navigation.drawEntityNavPill( entity.data[0] );
+          }
+
           Join.draw( 'new entity was set up' );
         }
         else {
