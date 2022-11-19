@@ -149,7 +149,13 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     }
     else if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
       V.setNode( 'listings', $list );
-      NetworkMainRoom.once( 'child_added', childAdded );
+      setTimeout( function delayedChildAddedOnce() {
+        const $list = V.getNode( 'list' );
+        if( !$list.firstChild ) {
+          NetworkMainRoom.once( 'child_added', childAdded );
+        }
+      }, 1200 );
+
     }
     else {
       V.setNode( $topcontent, CanvasComponents.notFound( 'message' ) );
@@ -251,7 +257,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( V.getSetting( 'chatLedger' ) == 'Firebase' ) {
-      NetworkMainRoom.on( 'child_added',   function childAddedLive( snap ) {
+      NetworkMainRoom.on( 'child_added', function childAddedOn( snap ) {
         childAdded( snap );
       } );
     }
