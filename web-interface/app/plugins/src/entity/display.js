@@ -207,14 +207,12 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     ) {
       Navigation.draw( data ).then( () => {
         Page.draw( {
-          position: 'top',
           listings: $list,
         } );
       } );
     }
     else {
       Page.draw( {
-        position: 'top',
         listings: $list,
       } );
     }
