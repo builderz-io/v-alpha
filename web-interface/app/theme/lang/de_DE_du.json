@@ -249,5 +249,9 @@
   "Featured Members": "Wichtige Mitglieder",
   "Imprint": "Impressum",
   "Data Protection": "Datenschutz",
-  "Privacy Policy": "Schutz der Privatsphäre"
+  "Privacy Policy": "Schutz der Privatsphäre",
+  "Use key file": "Schlüssel-Datei verwenden",
+  "No file selected": "Keine Datei hochgeladen",
+  "No key found in file": "Kein Schlüssel in Datei gefunden",
+  "Enter key manually": "Schlüssel manuell eingeben"
 }
