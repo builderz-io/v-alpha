@@ -177,15 +177,11 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   function setState() {
 
     V.setState( 'screen', {
-      height: Number( window.innerHeight ),
-      width: Number( window.innerWidth ),
       brandPrimary: V.getCss( '--brandPrimary' ),
       brandSecondary: V.getCss( '--brandSecondary' ),
       buttonBkg: V.getCss( '--buttonBkg' ),
     } );
-    V.setState( 'active', {
-      path: window.location.pathname,
-    } );
+
     V.setState( 'page', {
       height: V.getCss( '--page-position-peek' ),
       top: V.setPipe( V.getCss, V.castRemToPixel )( '--page-position-top' ),
@@ -194,6 +190,25 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       closed: V.getCss( '--page-position-closed' ),
       detach: V.setPipe( V.getCss, V.castRemToPixel )( '--desktop-page-detach' ),
       // rectOffset: 11, // getBoundingClientRect-for-pill-bug-mitigation
+    } );
+
+    V.setState( 'header', {
+      isHazed: false,
+      serviceNavTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--service-nav-top' ),
+      serviceNavLeft: V.getCss( '--service-nav-left' ),
+      entityNavTop: V.getCss( '--entity-nav-top' ),
+      entityNavLeft: V.getCss( '--entity-nav-left' ),
+    } );
+
+    V.setState( 'active', {
+      path: window.location.pathname,
+    } );
+  }
+
+  function setStatePage() {
+    V.setState( 'screen', {
+      height: Number( window.innerHeight ),
+      width: Number( window.innerWidth ),
     } );
 
     /* calculate page size for the feature and top position according to screen dimensions */
@@ -216,17 +231,6 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     },
     } );
 
-    V.setState( 'header', {
-
-      isHazed: false,
-
-      serviceNavTop: V.setPipe( V.getCss, V.castRemToPixel, Number )( '--service-nav-top' ),
-      serviceNavLeft: V.getCss( '--service-nav-left' ),
-
-      entityNavTop: V.getCss( '--entity-nav-top' ),
-      entityNavLeft: V.getCss( '--entity-nav-left' ),
-
-    } );
   }
 
   function setCss() {
@@ -472,6 +476,25 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   function returningUser() {
     if( !V.aE() ) {
+      if ( V.getLocal( 'last-connected-address' ) && window.ethereum ) {
+        Join.draw( 'authenticate' );
+      }
+      else {
+        Join.launch(); // sets node: join button
+      }
+    }
+    else {
+      setTimeout( function delayedDrawJoinedUserPill() {
+        // setTimeout ensures pill is found in nav
+        Navigation.drawJoinedUserPill();
+      }, 0 );
+      Join.draw( 'new entity was set up' );
+    }
+  }
+
+  /*
+  function returningUser() {
+    if( !V.aE() ) {
       V.setAuth()
         .then( data => {
           if ( data.success ) {
@@ -505,35 +528,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         } );
     }
   }
-
-  /*
-  function returningUser() {
-    if( !V.aE() ) {
-      const returningWallet = V.getLocal( 'last-connected-address' );
-      const returningUphrase = V.getLocal( 'last-active-uphrase' );
-
-      if ( returningWallet && window.ethereum ) {
-        Join.draw( 'authenticate' );
-      }
-      else if ( returningUphrase ) {
-        ( async () => {
-          await V.getEntity( V.castJson( returningUphrase ) )
-            .then( authDoc => {
-              return authDoc.data[0].i;
-            } )
-            .then( evmAddress => V.getEntity( evmAddress ) )
-            .then( entity => {
-              V.setState( 'activeEntity', entity.data[0] );
-              Join.draw( 'new entity was set up' );
-            } );
-        } )();
-      }
-      else {
-        Join.launch(); // sets node: join button
-      }
-    }
-  }
 */
+
   function handleKeyboard( array ) {
     array.some( elem => {
       if ( V.getVisibility( '#' + elem ) ) {
@@ -550,6 +546,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     await launchScripts();
 
     setState();
+    setStatePage();
     setDocument();
     setCss();
     setFont();
@@ -561,6 +558,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
   }
 
   return {
+    setStatePage: setStatePage,
     launch: launch,
     draw: draw,
   };

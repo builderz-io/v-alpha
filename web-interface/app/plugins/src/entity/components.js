@@ -208,17 +208,17 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function handleViewMode() {
-    const data = {
-      uuidE: V.getState( 'active' ).lastViewedUuidE,
-      uuidP: V.getState( 'active' ).lastViewedUuidP,
-      navReset: false,
-    };
-    this.checked
-      ? User.draw( data )
-      : Profile.draw( data );
-
-  }
+  // function handleViewMode() {
+  //   const data = {
+  //     uuidE: V.getState( 'active' ).lastViewedUuidE,
+  //     uuidP: V.getState( 'active' ).lastViewedUuidP,
+  //     navReset: false,
+  //   };
+  //   this.checked
+  //     ? User.draw( data )
+  //     : Profile.draw( data );
+  //
+  // }
 
   function handlePrivacyRadioButton( e ) {
     setField( 'privacy', { privacy: e.target.value } );
@@ -798,34 +798,34 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
             ],
           },
-          {
-            c: 'pxy flex ',
-            h: [
-              {
-                t: 'input',
-                i: 'view-mode',
-                c: 'toggle-switch__input',
-                a: {
-                  type: 'checkbox',
-                  checked: editable ? true : undefined,
-                },
-                e: {
-                  change: handleViewMode,
-                },
-              },
-              {
-                t: 'label',
-                c: 'toggle-switch',
-                a: { for: 'view-mode' },
-                h: 'toggle',
-              },
-              {
-                t: 'p',
-                c: 'active__title fs-xs pxy',
-                h: V.getString( editable ? ui.editMode : ui.viewMode ),
-              },
-            ],
-          },
+          // {
+          //   c: 'pxy flex ',
+          //   h: [
+          //     {
+          //       t: 'input',
+          //       i: 'view-mode',
+          //       c: 'toggle-switch__input',
+          //       a: {
+          //         type: 'checkbox',
+          //         checked: editable ? true : undefined,
+          //       },
+          //       e: {
+          //         change: handleViewMode,
+          //       },
+          //     },
+          //     {
+          //       t: 'label',
+          //       c: 'toggle-switch',
+          //       a: { for: 'view-mode' },
+          //       h: 'toggle',
+          //     },
+          //     {
+          //       t: 'p',
+          //       c: 'active__title fs-xs pxy',
+          //       h: V.getString( editable ? ui.editMode : ui.viewMode ),
+          //     },
+          //   ],
+          // },
         ],
       } );
 

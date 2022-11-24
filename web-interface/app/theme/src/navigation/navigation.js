@@ -188,6 +188,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
     const which = viewData.data[0].which;
 
     if ( which ) {
+      V.setState( 'active', { navItem: which } );
 
       /**
        * timeout ensures that popup is removed from DOM,
@@ -453,8 +454,6 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   function animate( which ) {
 
     const $itemToAnimate = V.getNode( '[path="' + which + '"]' );
-
-    V.setState( 'active', { navItem: $itemToAnimate.getAttribute( 'path' ) } );
 
     const $navToAnimate = $itemToAnimate.closest( '.nav' );
     const nav = $navToAnimate.localName;
