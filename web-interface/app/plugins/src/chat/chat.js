@@ -75,7 +75,7 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
             'padding': '4px 12px',
             'border-radius': '20px',
           },
-          h: res.status || res.errors[0].message,
+          h: res.status || res.errors && res.errors[0].message,
         } ) );
       }
     } );
