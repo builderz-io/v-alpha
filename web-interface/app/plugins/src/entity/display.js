@@ -114,7 +114,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.financialCard(),
       UserComponents.evmAddressCard(),
       UserComponents.evmReceiverAddressCard(),
-      UserComponents.managementCard(),
+      // UserComponents.managementCard(),
       UserComponents.holderOfCard(),
       UserComponents.socialShareButtons(),
     ] );
@@ -147,7 +147,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           position: 'top',
           listings: $list,
         } );
-        MagicButton.draw( 'chat' );
+        // MagicButton.draw( 'chat' );
         // delayedMessageForm( entity );
       } );
     }
@@ -157,8 +157,20 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         position: 'top',
         listings: $list,
       } );
-      MagicButton.draw( 'chat' );
+      // MagicButton.draw( 'chat' );
       // delayedMessageForm( entity );
+    }
+
+    if (
+      V.aE()
+      && V.getLastViewed().holders.includes( V.aE().fullId )
+    ) {
+      MagicButton.draw( 'edit' );
+      // Chat.drawMessageForm();
+      // delayedMessageForm( entity );
+    }
+    else {
+      MagicButton.draw( 'chat' );
     }
 
     if ( entity.images.tinyImage ) {
@@ -172,9 +184,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
   //
   //   /** This is a hacky way to wait for V.aE( 'uuidE' ) to be available */
   //   setTimeout( function delayMsgForm() {
-  //     entity.uuidE != V.aE( 'uuidE' )
-  //       ? Chat.drawMessageForm()
-  //       : null;
+  //     Chat.drawMessageForm();
+  //     // entity.uuidE != V.aE( 'uuidE' )
+  //     //   ? Chat.drawMessageForm()
+  //     //   : null;
   //   }, 1800, entity );
   // }
 

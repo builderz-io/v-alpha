@@ -130,6 +130,19 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
 
   }
 
+  function handleViewMode() {
+    const data = {
+      uuidE: V.getState( 'active' ).lastViewedUuidE,
+      uuidP: V.getState( 'active' ).lastViewedUuidP,
+      navReset: false,
+    };
+
+    this.edit
+      ? User.draw( data )
+      : Profile.draw( data );
+
+  }
+
   function handleMagicBtn() {
     $overlay = V.getNode( '.magic-btn__overlay' );
     $magicButton = V.getNode( 'magic-btn' );
@@ -244,6 +257,20 @@ const MagicButton = ( function() { // eslint-disable-line no-unused-vars
         c: 'magic-btn__btn flex absolute justify-center',
         h: V.getIcon( 'upload', '19px' ),
         k: handleSetEntity,
+      } );
+    }
+    else if ( 'edit' == which ) {
+      V.setNode( $magicButton, {
+        c: 'magic-btn__btn flex absolute justify-center',
+        h: V.getIcon( 'edit', '19px' ),
+        k: handleViewMode.bind( { edit: true } ),
+      } );
+    }
+    else if ( 'done' == which ) {
+      V.setNode( $magicButton, {
+        c: 'magic-btn__btn flex absolute justify-center',
+        h: V.getIcon( 'done', '19px' ),
+        k: handleViewMode.bind( { edit: false } ),
       } );
     }
     else if ( 'chat' == which ) {

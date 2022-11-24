@@ -200,14 +200,9 @@ const User = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function preview( /* path */ ) {
-    MagicButton.draw( 'chat' );
+  function preview() {
 
-    // Button.draw( 'all', { fade: 'out' } );
-
-    // if ( path == '/me/profile' ) {
-    //   Navigation.draw( path );
-    // }
+    MagicButton.draw( 'done' );
 
     Page.draw( {
       position: 'top',
@@ -273,7 +268,7 @@ const User = ( function() { // eslint-disable-line no-unused-vars
       Modal.draw( 'disconnect' );
     }
     else {
-      preview( /* path */ );
+      preview();
       presenter( data ).then( viewData => { view( viewData ) } );
     }
   }
