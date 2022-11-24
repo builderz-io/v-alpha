@@ -15,6 +15,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       connectingWallet: 'Connecting wallet',
       connectWallet: 'Join with wallet',
       useKey: 'Use key',
+      uploadKey: 'Use key file',
+      noKeyFile: 'No file selected',
+      noKey: 'No key found in file',
+      enterKey: 'Enter key manually',
       nameProfile: 'Name profile',
       joining: 'Joining',
       welcome: 'Welcome',
@@ -130,7 +134,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $input = InteractionComponents.formField( 'uPhrase' );
     const $new = V.cN( {
       i: 'use-key-btn',
-      c: buttonClasses + ' modal-pos-1',
+      c: buttonClasses + ' modal-pos-1 place-spinner',
       k: handleGetEntity,
       h: V.getString( ui.useKey ),
     } );
@@ -143,9 +147,80 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setNode( '.modal__content', [$input, $response, $new] );
   }
 
-  function handleGetEntity() {
-    V.setNode( '#use-key-btn', InteractionComponents.confirmClickSpinner() );
-    V.setAuth( V.getNode( '#loginform__uphrase' ).value )
+  function handleUploadKeyForm() {
+
+    const $upload = V.cN(
+      {
+        c: 'upload-key-form',
+        h: {
+          c: 'upload-key-form__inner',
+          h: [
+            {
+              t: 'label',
+              i: 'key-upload__label',
+              c: buttonClasses + ' modal-pos-1',
+              a: {
+                for: 'key-upload__file',
+              },
+              h: V.getString( ui.uploadKey ),
+            },
+            {
+              t: 'input',
+              i: 'key-upload__file',
+              c: 'hidden place-spinner',
+              a: {
+                type: 'file',
+                accept: 'text/plain',
+              },
+              e: {
+                change: handleUploadKey,
+              },
+            },
+          ],
+        },
+      },
+
+    );
+
+    const $enter = V.cN( {
+      t: 'p',
+      c: altButtonClasses + ' modal-pos-2',
+      k: handleGetEntityForm,
+      h: V.getString( ui.enterKey ),
+    } );
+
+    const $response = V.cN( {
+      c: 'form__response relative pxy txt-red modal-pos-3',
+    } );
+
+    V.sN( '.modal__content', '' );
+    V.setNode( '.modal__content', [$upload, $response, $enter] );
+  }
+
+  function handleUploadKey() {
+    if ( this.files.length === 0 ) {
+      V.getNode( '.form__response' ).textContent = V.getString( ui.noKeyFile );
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function( event ) {
+      const key = event.target.result.match( /vx.{16}/ );
+      if ( !key || !key[0] ) {
+        V.getNode( '.form__response' ).textContent = V.getString( ui.noKey );
+        return;
+      }
+      handleGetEntity( undefined, key[0] );
+    };
+
+    reader.readAsText( this.files[0] );
+  }
+
+  function handleGetEntity( e, uPhrase ) {
+    V.setNode( '.place-spinner', InteractionComponents.confirmClickSpinner() );
+
+    V.setAuth( uPhrase || V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
         if ( data.success ) {
           console.log( 'auth success' );
@@ -159,6 +234,15 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
       .then( entity => {
         if ( entity.success ) {
           V.setActiveEntity( entity.data[0] );
+
+          const $userPill = V.getNode( '[uuide="' + entity.data[0].uuidE + '"]' );
+          if ( $userPill ) {
+            Navigation.drawJoinedUserPill();
+          }
+          else {
+            Navigation.drawEntityNavPill( entity.data[0] );
+          }
+
           Join.draw( 'new entity was set up' );
         }
         else {
@@ -638,7 +722,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
-      k: handleGetEntityForm,
+      k: handleUploadKeyForm,
       h: V.getString( ui.manageProfile ),
     } );
     V.setNode( $content, [$new, $key] );

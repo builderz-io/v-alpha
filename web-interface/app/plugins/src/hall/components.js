@@ -203,13 +203,19 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
                 },
               } ),
             },
-            {
-              c: 'network-layout__featured font-bold fs-l mt-r mb-r',
-              h: V.getString( ui.featuredPeople ),
-            },
+            // {
+            //   c: 'network-layout__featured font-bold fs-l mt-r mb-r',
+            //   h: V.getString( ui.featuredPeople ),
+            // },
           ],
         } ),
       ],
+    } );
+  }
+  function vipTitle() {
+    return V.cN( {
+      c: 'network-layout__featured font-bold fs-l mt-r mb-r',
+      h: V.getString( ui.featuredPeople ),
     } );
   }
 
@@ -255,6 +261,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
     networkLayout: networkLayout,
     legalBlabla: legalBlabla,
     callsToAction: callsToAction,
+    vipTitle: vipTitle,
   };
 
 } )();

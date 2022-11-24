@@ -126,6 +126,9 @@ const Page = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getPageHeight( pagePos ) {
+
+    Canvas.setStatePage();
+
     const p = V.getState( 'page' );
     const aI = V.getState( 'active' );
     switch ( pagePos ) {

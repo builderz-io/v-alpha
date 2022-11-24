@@ -65,7 +65,9 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
 
     if ( vips.success ) {
       const networkE = vips.data.find( item => item.role == 'Network' );
-
+      if ( !networkE ) {
+        return vips;
+      }
       await V.getEntity( networkE.uuidE ).then( res => {
         if ( res.success ) {
           V.setCache( 'vips', res.data );
@@ -91,17 +93,18 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
     const $list = CanvasComponents.list();
 
     if ( cachedVips && cachedVips.data[0] ) {
+      setVipTitle();
       cachedVips.data.forEach( cardData => {
         if ( 'Network' == cardData.role ) {
           setNetworkContent( cardData );
           VMap.draw( [cardData] );
         }
         else {
-          setListContent( cardData );
+          setVipContent( cardData );
         }
       } );
       setLegalBlabla();
-      setCallToActions();
+      // setCallToActions();
     }
     else {
       V.setNode( $list, CanvasComponents.notFound( 'vips' ) );
@@ -121,10 +124,15 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
 
     function setNetworkContent( cardData ) { // eslint-disable-line no-inner-declarations
       const $networkLayout = HallComponents.networkLayout( cardData );
-      V.setNode( $list, $networkLayout, 'prepend' );
+      V.setNode( $list, [$networkLayout], 'prepend' );
     }
 
-    function setListContent( cardData ) { // eslint-disable-line no-inner-declarations
+    function setVipTitle() {
+      const $vipTitle = HallComponents.vipTitle();
+      V.setNode( $list, $vipTitle );
+    }
+
+    function setVipContent( cardData ) { // eslint-disable-line no-inner-declarations
       const $cardContent = MarketplaceComponents.cardContent( cardData );
       const $card = CanvasComponents.card( $cardContent );
       V.setNode( $list, $card );
