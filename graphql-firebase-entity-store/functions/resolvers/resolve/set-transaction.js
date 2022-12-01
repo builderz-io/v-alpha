@@ -1,10 +1,10 @@
 const settings = {
-  floatEthAmount: 0.05,
+  floatEthAmount: 0.01,
   autoVerify: true,
   txGasPriceMplr: 1.1, // used in managed tx
   txIncGasPriceMplr: 1.3, // used in managed tx
   verifyGasPriceMplr: 1.5, // used in verification
-  gasLimit: 200000, // used in all tx
+  gasLimit: 2000000, // used in all tx
   // gasPrice: 80, // in Gwei // x * 1e9 = Gwei
 };
 
