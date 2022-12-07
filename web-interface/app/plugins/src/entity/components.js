@@ -363,7 +363,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setLocal( 'locale', entry );
     setTimeout( function reloadAfterLangChange() {
       location = window.location.origin;
-    }, 800 );
+    }, 600 );
   }
 
   function handleImageUpload( e ) {
@@ -1221,6 +1221,38 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'span',
             h: '🇩🇪 "Sie"',
+          },
+          {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'it_IT',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'it_IT' ? true : undefined,
+            },
+            k: handleRadioEntry,
+          },
+          {
+            t: 'span',
+            h: '🇮🇹',
+          },
+          {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'ru_RU',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'ru_RU' ? true : undefined,
+            },
+            k: handleRadioEntry,
+          },
+          {
+            t: 'span',
+            h: '🇷🇺',
           },
         ],
       } );
