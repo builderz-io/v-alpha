@@ -131,6 +131,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
       contractAddress: '0xa540555ea07BF5fd5476717A94F52E48b86d4648',
       transactionFee: 3333, // Fallback, percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
       communityContribution: 200, // Fallback, Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
+      explorerTx: 'https://goerli.etherscan.io/tx/', // include trailing slash
+      explorerAddr: 'https://goerli.etherscan.io/address/', // include trailing slash
     },
     symbol1: {
       type: 'TEST_NET',
