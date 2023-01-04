@@ -1,11 +1,12 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.17;
 
 /**
     @title An open source smart contract for a UBI token with demurrage that
         gives control of the currency to the community, with adjustable
         parameters.
     @author The Value Instrument Team
-    @notice 
+    @notice
 */
 
 import "./VICoin.sol";

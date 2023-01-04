@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 import "./IRelayRecipient.sol";
 import "./IRelayHub.sol";
@@ -99,7 +100,7 @@ abstract contract GSNRecipientUpgradeSafe is Initializable, IRelayRecipient, Con
      */
     function _msgSender() internal view virtual override returns (address payable) {
         if (msg.sender != _relayHub) {
-            return msg.sender;
+            return payable(msg.sender);
         } else {
             return _getRelayedCallSender();
         }

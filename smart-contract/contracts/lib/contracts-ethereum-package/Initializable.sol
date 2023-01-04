@@ -1,4 +1,5 @@
-pragma solidity >=0.4.24 <0.7.0;
+// SPDX-License-Identifier: ISC
+pragma solidity >=0.4.24 <0.9.0;
 
 
 /**

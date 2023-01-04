@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 /**
  * @dev String operations.
@@ -24,7 +25,7 @@ library Strings {
         uint256 index = digits - 1;
         temp = value;
         while (temp != 0) {
-            buffer[index--] = byte(uint8(48 + temp % 10));
+            buffer[index--] = bytes1(uint8(48 + temp % 10));
             temp /= 10;
         }
         return string(buffer);

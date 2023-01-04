@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 /**
  * @dev Interface for `RelayHub`, the core contract of the GSN. Users should not need to interact with this contract

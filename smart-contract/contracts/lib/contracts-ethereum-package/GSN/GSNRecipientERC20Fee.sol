@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 import "./GSNRecipient.sol";
 import "../math/SafeMath.sol";
@@ -129,7 +130,7 @@ contract __unstable__ERC20Owned is Initializable, ERC20UpgradeSafe, OwnableUpgra
     uint256 private constant _UINT256_MAX = 2**256 - 1;
 
 
-    constructor(string memory name, string memory symbol) public  {
+    constructor(string memory name, string memory symbol)  {
         ____unstable__ERC20Owned_init(name, symbol);
     }
 

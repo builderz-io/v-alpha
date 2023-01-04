@@ -1,4 +1,5 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.17;
 
 import "./IVICoin.sol";
 

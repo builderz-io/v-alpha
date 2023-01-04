@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 /**
  * @dev Library for managing an enumerable variant of Solidity's
@@ -175,7 +176,7 @@ library EnumerableMap {
      * already present.
      */
     function set(UintToAddressMap storage map, uint256 key, address value) internal returns (bool) {
-        return _set(map._inner, bytes32(key), bytes32(uint256(value)));
+        return _set(map._inner, bytes32(key), bytes32(uint256(uint160(value))));
     }
 
     /**
@@ -212,7 +213,7 @@ library EnumerableMap {
     */
     function at(UintToAddressMap storage map, uint256 index) internal view returns (uint256, address) {
         (bytes32 key, bytes32 value) = _at(map._inner, index);
-        return (uint256(key), address(uint256(value)));
+        return (uint256(key), address(uint160(uint256(index))));
     }
 
     /**
@@ -223,13 +224,13 @@ library EnumerableMap {
      * - `key` must be in the map.
      */
     function get(UintToAddressMap storage map, uint256 key) internal view returns (address) {
-        return address(uint256(_get(map._inner, bytes32(key))));
+        return address(uint160(uint256(_get(map._inner, bytes32(key)))));
     }
 
     /**
      * @dev Same as {get}, with a custom error message when `key` is not in the map.
      */
     function get(UintToAddressMap storage map, uint256 key, string memory errorMessage) internal view returns (address) {
-        return address(uint256(_get(map._inner, bytes32(key), errorMessage)));
+        return address(uint160(uint256(_get(map._inner, bytes32(key), errorMessage))));
     }
 }

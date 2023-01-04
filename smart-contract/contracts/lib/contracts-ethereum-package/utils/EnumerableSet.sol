@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 /**
  * @dev Library for managing
@@ -143,7 +144,7 @@ library EnumerableSet {
      * already present.
      */
     function add(AddressSet storage set, address value) internal returns (bool) {
-        return _add(set._inner, bytes32(uint256(value)));
+        return _add(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
@@ -153,14 +154,14 @@ library EnumerableSet {
      * present.
      */
     function remove(AddressSet storage set, address value) internal returns (bool) {
-        return _remove(set._inner, bytes32(uint256(value)));
+        return _remove(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
     function contains(AddressSet storage set, address value) internal view returns (bool) {
-        return _contains(set._inner, bytes32(uint256(value)));
+        return _contains(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
@@ -181,7 +182,7 @@ library EnumerableSet {
     * - `index` must be strictly less than {length}.
     */
     function at(AddressSet storage set, uint256 index) internal view returns (address) {
-        return address(uint256(_at(set._inner, index)));
+        return address(uint160(uint256(_at(set._inner, index))));
     }
 
 

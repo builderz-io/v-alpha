@@ -1,4 +1,5 @@
 var VICoin = artifacts.require("VICoin");
+var Calculations = artifacts.require("Calculations");
 const truffleAssert = require("truffle-assertions");
 const chalk = require("chalk");
 

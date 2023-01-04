@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 import "./ERC20.sol";
 import "../../Initializable.sol";
@@ -14,16 +15,16 @@ abstract contract ERC20CappedUpgradeSafe is Initializable, ERC20UpgradeSafe {
      * set once during construction.
      */
 
-    function __ERC20Capped_init(uint256 cap) internal initializer {
+    function __ERC20Capped_init(uint256 tokenCap) internal initializer {
         __Context_init_unchained();
-        __ERC20Capped_init_unchained(cap);
+        __ERC20Capped_init_unchained(tokenCap);
     }
 
-    function __ERC20Capped_init_unchained(uint256 cap) internal initializer {
+    function __ERC20Capped_init_unchained(uint256 tokenCap) internal initializer {
 
 
-        require(cap > 0, "ERC20Capped: cap is 0");
-        _cap = cap;
+        require(tokenCap > 0, "ERC20Capped: cap is 0");
+        _cap = tokenCap;
 
     }
 
@@ -46,7 +47,7 @@ abstract contract ERC20CappedUpgradeSafe is Initializable, ERC20UpgradeSafe {
         super._beforeTokenTransfer(from, to, amount);
 
         if (from == address(0)) { // When minting tokens
-            require(totalSupply().add(amount) <= _cap, "ERC20Capped: cap exceeded");
+            require(totalSupply() + amount <= _cap, "ERC20Capped: cap exceeded");
         }
     }
 

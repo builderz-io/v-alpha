@@ -1,4 +1,5 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.0;
 
 import "../../GSN/Context.sol";
 import "./IERC20.sol";
@@ -54,16 +55,16 @@ contract ERC20UpgradeSafe is Initializable, ContextUpgradeSafe, IERC20 {
      * construction.
      */
 
-    function __ERC20_init(string memory name, string memory symbol) internal initializer {
+    function __ERC20_init(string memory initName, string memory initSymbol) internal initializer {
         __Context_init_unchained();
-        __ERC20_init_unchained(name, symbol);
+        __ERC20_init_unchained(initName, initSymbol);
     }
 
-    function __ERC20_init_unchained(string memory name, string memory symbol) internal initializer {
+    function __ERC20_init_unchained(string memory tokenName, string memory tokenSymbol) internal initializer {
 
 
-        _name = name;
-        _symbol = symbol;
+        _name = tokenName;
+        _symbol = tokenSymbol;
         _decimals = 18;
 
     }

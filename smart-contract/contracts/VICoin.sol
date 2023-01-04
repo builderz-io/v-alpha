@@ -1,11 +1,12 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: ISC
+pragma solidity ^0.8.17;
 
 /**
     @title An open source smart contract for a UBI token with demurrage that
         gives control of the currency to the community, with adjustable
         parameters.
     @author The Value Instrument Team
-    @notice 
+    @notice
     @dev This contract was developed for solc 0.6.6
 */
 
@@ -37,6 +38,7 @@ struct Settings {
 contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     using SafeMath for uint256;
     using SafeMath for int256;
+    using Calculations for *;
 
     Settings settings;
     mapping(address => uint256) public lastTransactionBlock;
@@ -92,6 +94,14 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     receive() external payable {
         revert("Do not send money to the contract");
     }
+
+//    function calcNumCompletedPeriods(
+//        uint256 _blockNumber,
+//        uint256 _lastGenerationBlock,
+//        uint256 _generationPeriod
+//    ) public pure returns (uint256){
+//        return Calculations.calcNumCompletedPeriods(_blockNumber,_lastGenerationBlock,_generationPeriod);
+//    }
 
     /** @notice Manually trigger an onchain update of the live balance
         @return Generation accrued since last balance update */
@@ -384,7 +394,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     }
 
     /** @notice Return community contribution, to 2 decimal places
-        @return The percentage that will be taken from the transaction fee 
+        @return The percentage that will be taken from the transaction fee
                 as a community contribution (2 d.p) */
     function getCommunityContribution() external view returns (uint256) {
         return settings.communityContribution;
