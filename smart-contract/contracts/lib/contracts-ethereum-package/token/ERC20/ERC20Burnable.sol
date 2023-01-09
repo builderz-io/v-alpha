@@ -43,9 +43,8 @@ abstract contract ERC20BurnableUpgradeSafe is
      * `amount`.
      */
     function burnFrom(address account, uint256 amount) public virtual {
+        require(amount > allowance(account, _msgSender()), "ERC20: burn amount exceeds allowance");
         uint256 decreasedAllowance = allowance(account, _msgSender()) - amount;
-        require(decreaseAllowance > 0, "ERC20: burn amount exceeds allowance");
-
         _approve(account, _msgSender(), decreasedAllowance);
         _burn(account, amount);
     }

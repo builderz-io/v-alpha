@@ -96,7 +96,7 @@ contract GSNRecipientERC20FeeUpgradeSafe is Initializable, GSNRecipientUpgradeSa
         (address from, uint256 maxPossibleCharge) = abi.decode(context, (address, uint256));
 
         // The maximum token charge is pre-charged from the user
-        _token.safeTransferFrom(from, address(this), maxPossibleCharge);
+       _token.safeTransferFrom(from, address(this), maxPossibleCharge);
     }
 
     /**
