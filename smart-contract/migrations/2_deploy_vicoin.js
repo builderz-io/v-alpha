@@ -1,5 +1,4 @@
 var VICoin = artifacts.require("./VICoin.sol");
-var CalculationsLib = artifacts.require("./Calculations.sol")
 
 module.exports = async function (deployer) {
   /**
@@ -69,30 +68,8 @@ module.exports = async function (deployer) {
     communityContributionAccount = "0x0000000000000000000000000000000000000000",
     controller = "0x0000000000000000000000000000000000000000";
 
-  // deployer.then(async()=>{
-    await deployer.deploy(CalculationsLib)
-    await deployer.link(CalculationsLib, VICoin)
-
     await deployer.deploy(
         VICoin,
-        [
-          name,
-          symbol,
-          lifetimeInBlocks,
-          generationAmount,
-          generationPeriod,
-          communityContributionPercentage,
-          transactionFeePercentage,
-          initialBalance,
-          communityContributionAccount,
-          controller
-        ],
-        { deployer}
-    );
-  // })
-
-  const contract = await VICoin.deployed()
-    await contract.initialize(
         name,
         symbol,
         lifetimeInBlocks,
@@ -102,10 +79,8 @@ module.exports = async function (deployer) {
         transactionFeePercentage,
         initialBalance,
         communityContributionAccount,
-        controller)
-  const contractName = await contract.name.call()
-  console.log("VIContract deployed", {contractName,address: contract.address} )
-
+        controller,
+    );
 };
 
 /**

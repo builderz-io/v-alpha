@@ -213,7 +213,7 @@ library EnumerableMap {
     */
     function at(UintToAddressMap storage map, uint256 index) internal view returns (uint256, address) {
         (bytes32 key, bytes32 value) = _at(map._inner, index);
-        return (uint256(key), address(uint160(uint256(index))));
+        return (uint256(key), address(uint160(uint256(value))));
     }
 
     /**

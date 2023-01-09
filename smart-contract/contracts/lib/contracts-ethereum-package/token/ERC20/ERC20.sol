@@ -55,9 +55,9 @@ contract ERC20UpgradeSafe is Initializable, ContextUpgradeSafe, IERC20 {
      * construction.
      */
 
-    function __ERC20_init(string memory initName, string memory initSymbol) internal initializer {
+    function __ERC20_init(string memory tokenName, string memory tokenSymbol) internal initializer {
         __Context_init_unchained();
-        __ERC20_init_unchained(initName, initSymbol);
+        __ERC20_init_unchained(tokenName, tokenSymbol);
     }
 
     function __ERC20_init_unchained(string memory tokenName, string memory tokenSymbol) internal initializer {

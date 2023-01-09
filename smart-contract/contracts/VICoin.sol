@@ -38,7 +38,6 @@ struct Settings {
 contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     using SafeMath for uint256;
     using SafeMath for int256;
-    using Calculations for *;
 
     Settings settings;
     mapping(address => uint256) public lastTransactionBlock;
@@ -94,14 +93,6 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     receive() external payable {
         revert("Do not send money to the contract");
     }
-
-//    function calcNumCompletedPeriods(
-//        uint256 _blockNumber,
-//        uint256 _lastGenerationBlock,
-//        uint256 _generationPeriod
-//    ) public pure returns (uint256){
-//        return Calculations.calcNumCompletedPeriods(_blockNumber,_lastGenerationBlock,_generationPeriod);
-//    }
 
     /** @notice Manually trigger an onchain update of the live balance
         @return Generation accrued since last balance update */

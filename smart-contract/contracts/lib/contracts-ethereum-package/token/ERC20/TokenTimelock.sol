@@ -26,18 +26,18 @@ contract TokenTimelockUpgradeSafe is Initializable {
     uint256 private _releaseTime;
 
 
-    function __TokenTimelock_init(IERC20 initToken, address initBeneficiary, uint256 initReleaseTime) internal initializer {
-        __TokenTimelock_init_unchained(initToken, initBeneficiary, initReleaseTime);
+    function __TokenTimelock_init(IERC20 timelockToken, address timelockBeneficiary, uint256 timelockReleaseTime) internal initializer {
+        __TokenTimelock_init_unchained(timelockToken, timelockBeneficiary, timelockReleaseTime);
     }
 
-    function __TokenTimelock_init_unchained(IERC20 initToken, address initBeneficiary, uint256 initReleaseTime) internal initializer {
+    function __TokenTimelock_init_unchained(IERC20 timelockToken, address timelockBeneficiary, uint256 timelockReleaseTime) internal initializer {
 
 
         // solhint-disable-next-line not-rely-on-time
-        require(initReleaseTime > block.timestamp, "TokenTimelock: release time is before current time");
-        _token = initToken;
-        _beneficiary = initBeneficiary;
-        _releaseTime = initReleaseTime;
+        require(timelockReleaseTime > block.timestamp, "TokenTimelock: release time is before current time");
+        _token = timelockToken;
+        _beneficiary = timelockBeneficiary;
+        _releaseTime = timelockReleaseTime;
 
     }
 
