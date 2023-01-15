@@ -699,7 +699,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const $key = V.cN( {
       t: 'p',
       c: altButtonClasses + ' modal-pos-2',
-      k: handleGetEntityForm,
+      k: handleUploadKeyForm,
       h: V.getString( ui.manageProfile ),
     } );
     const $newName = V.cN( {
