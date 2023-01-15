@@ -1,5 +1,5 @@
 const settings = {
-  port: 4042, // development 4021
+  port: 4021, // development 4021
   network: 'development',
 };
 

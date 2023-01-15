@@ -192,7 +192,6 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
       hall: {
         title: ui.hall,
         path: '/network/hall',
-        divertFundsToOwner: true,
         use: {
           // button: 'plus',
           // form: 'new entity',

@@ -1,5 +1,5 @@
 const settings = {
-  floatEthAmount: 0.01,
+  floatEthAmount: 0.2,
   autoVerify: true,
   txGasPriceMplr: 1.1, // used in managed tx
   txIncGasPriceMplr: 1.3, // used in managed tx

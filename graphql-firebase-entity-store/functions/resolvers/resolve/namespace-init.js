@@ -1,7 +1,7 @@
 /* eslint global-require: "off" */
 
 const settings = {
-  floatEth: false,
+  floatEth: true,
 };
 
 const collE = global.db.collE;

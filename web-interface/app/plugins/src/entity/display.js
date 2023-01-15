@@ -163,7 +163,10 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     if (
       V.aE()
-      && V.getLastViewed().holders.includes( V.aE().fullId )
+      && (
+        V.aE().fullId == V.getLastViewed().fullId
+        || V.getLastViewed().holders.includes( V.aE().fullId )
+      )
     ) {
       MagicButton.draw( 'edit' );
       // Chat.drawMessageForm();
