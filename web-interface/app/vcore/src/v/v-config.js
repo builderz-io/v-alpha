@@ -34,7 +34,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     builderz: {
       email: 'https://api.builderz.io/v1/email',
       telegram: 'https://api.builderz.io/v1/telegram',
-      float: 'https://api.builderz.io/v1/crypto/float/eth',
+      float: 'https://api.builderz.io/v1/crypto/float',
     },
     local: {
       email: 'http://localhost:8889/v1/email',
@@ -55,7 +55,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.5.2',
+    appVersion: 'Alpha 3.5.3',
     uploadVersion: '7',
 
     entityLedger: VNetworkInit.entityLedger,
@@ -139,7 +139,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
         coin: 'GöETH', // e.g. 'GöETH' // set to false to disable
         amount: 0.2,
         threshold: 0.15,
-        api: apiEndpoints[ 'local' ].float,
+        api: apiEndpoints[ 'builderz' ].float,
       },
     },
     symbol1: {

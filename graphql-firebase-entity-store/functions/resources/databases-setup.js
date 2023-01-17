@@ -17,7 +17,7 @@ function dBInit( dbEnv ) {
 
   const env = {
 
-    use: 'dev',
+    use: 'staging',
 
     local: false, /* set to "true" to save data locally when running importer */
 
