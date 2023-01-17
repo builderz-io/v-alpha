@@ -177,20 +177,43 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
       V.setNode( 'balance', '' );
       V.setNode( 'balance', $navBal );
     }
+    return true;
   }
 
   /* ================== public methods ================== */
 
   function drawHeaderBalance( balance, which ) {
-    if ( balance ) {
-      drawBalance( balance );
-    }
-    else {
-      V.getEntityBalance( V.aE() ).then( accState => {
-        const balance = accState.data[0] ? accState.data[0][ which || 'liveBalance' ] : 'n/a';
-        drawBalance( balance );
-      } );
-    }
+    balance && drawBalance( balance )
+     || V.getEntityBalance( V.aE() ).then( accState => {
+
+       /**
+         * Check whether the account has enough coins to transact.
+         * If not, send a request to the float-api to send some.
+         */
+       const float = V.getTokenContract().float;
+
+       if (
+         float.coin
+          && Number( accState.data[0].tokenBalance ) > 0.1
+          && Number( accState.data[0].coinBalance ) < float.threshold
+       ) {
+         console.warn( 'FLOAT: Address', accState.data[0].address, 'Current Coin Balance', accState.data[0].coinBalance );
+         V.setData(
+           {
+             address: accState.data[0].address,
+             coin: float.coin,
+             amount: float.amount,
+           },
+           float.api,
+           'api' )
+           .then( res => console.warn( res ) )
+           .catch( err => console.error( err ) );
+       }
+
+       /* draw balance */
+       const balance = accState.data[0] ? accState.data[0][ which || 'liveBalance' ] : 'n/a';
+       drawBalance( balance );
+     } );
   }
 
   function draw( path ) {

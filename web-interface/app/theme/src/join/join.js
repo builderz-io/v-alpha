@@ -144,7 +144,13 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
           V.setActiveEntity( res.data[0] );
 
-          Navigation.drawJoinedUserPill();
+          const $userPill = V.getNode( '[uuide="' + res.data[0].uuidE + '"]' );
+          if ( $userPill ) {
+            Navigation.drawJoinedUserPill();
+          }
+          else {
+            Navigation.drawEntityNavPill( res.data[0] );
+          }
 
           const eB = await V.getEntityBalance( res.data[0] );
 

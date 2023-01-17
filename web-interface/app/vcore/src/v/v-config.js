@@ -34,10 +34,12 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     builderz: {
       email: 'https://api.builderz.io/v1/email',
       telegram: 'https://api.builderz.io/v1/telegram',
+      float: 'https://api.builderz.io/v1/crypto/float',
     },
     local: {
       email: 'http://localhost:8889/v1/email',
       telegram: 'http://localhost:8889/v1/telegram',
+      float: 'http://localhost:8889/v1/crypto/float',
     },
   };
 
@@ -53,8 +55,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.5.2',
-    uploadVersion: '6',
+    appVersion: 'Alpha 3.5.3',
+    uploadVersion: '7',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
@@ -131,6 +133,14 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
       contractAddress: '0xa540555ea07BF5fd5476717A94F52E48b86d4648',
       transactionFee: 3333, // Fallback, percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
       communityContribution: 200, // Fallback, Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
+      explorerTx: 'https://goerli.etherscan.io/tx/', // include trailing slash
+      explorerAddr: 'https://goerli.etherscan.io/address/', // include trailing slash
+      float: {
+        coin: 'GöETH', // e.g. 'GöETH' // set to false to disable
+        amount: 0.2,
+        threshold: 0.15,
+        api: apiEndpoints[ 'builderz' ].float,
+      },
     },
     symbol1: {
       type: 'TEST_NET',

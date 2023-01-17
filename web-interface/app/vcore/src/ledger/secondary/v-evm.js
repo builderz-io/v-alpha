@@ -300,6 +300,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
         zeroBlock: all[2]._zeroBlock,
         currentBlock: all[3],
         isVerified: all[4],
+        address: which,
       };
 
       return {

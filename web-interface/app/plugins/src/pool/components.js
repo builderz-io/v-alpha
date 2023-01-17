@@ -33,7 +33,7 @@ const PoolComponents = ( function() { // eslint-disable-line no-unused-vars
       : 1 );
 
     const spent = Math.ceil( data.sendVolume > 0
-      ? ( data.sendVolume * ( 1 + V.getSetting( 'transactionFee' ) / 100**2 ) ) / data.receiveVolume * 100
+      ? ( data.sendVolume * ( 1 + V.getTokenContract().transactionFee / 100**2 ) ) / data.receiveVolume * 100
       : 1 );
 
     const svgFunded = '<svg width="100" height="100" class="pool__funding-chart">\
@@ -78,7 +78,9 @@ const PoolComponents = ( function() { // eslint-disable-line no-unused-vars
               innerHtml: ( spent <= 1 ? '0' : spent ) + ' % '
                            + V.getString( ui.of ) + ' ' + data.receiveVolume + ' V'
                            + '<br><br>'
-                           + V.getString( ui.noneSpent ),
+                           + ( spent > 0
+                             ? ''
+                             : V.getString( ui.noneSpent ) ),
             },
           ],
         },

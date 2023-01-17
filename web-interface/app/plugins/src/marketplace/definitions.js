@@ -152,7 +152,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
     tasks: {
       title: ui.tasks,
       path: '/network/tasks',
-      divertFundsToOwner: true,
+      // divertFundsToOwner: true,
       use: {
         form: 'new entity',
         role: 'Task',
