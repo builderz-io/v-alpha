@@ -224,6 +224,13 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     setField( 'privacy', { privacy: e.target.value } );
   }
 
+  function handleInCardChat() {
+    MagicButton.draw( 'chat' );
+    setTimeout( function clickMacgicBtn() {
+      document.getElementsByClassName( 'magic-btn__btn' )[0].click();
+    }, 100 );
+  }
+
   /* ============ event handlers (edit entity) ========== */
 
   function handleActive() {
@@ -363,7 +370,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     V.setLocal( 'locale', entry );
     setTimeout( function reloadAfterLangChange() {
       location = window.location.origin;
-    }, 800 );
+    }, 600 );
   }
 
   function handleImageUpload( e ) {
@@ -864,9 +871,22 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       //   h: `<text x="0" y="15">${address}</text>`,
       // } );
       const $innerContent = V.cN( {
-        t: 'p',
-        c: 'pxy fs-s',
-        h: address,
+        c: '',
+        h: [
+          {
+            t: 'p',
+            c: 'pxy fs-s',
+            h: address,
+          },
+          {
+            c: 'pxy flex',
+            y: {
+              opacity: 0.35,
+            },
+            h: V.getIcon( 'send' ),
+            k: handleInCardChat,
+          },
+        ],
       } );
 
       return castCard( $innerContent, V.getString( ui.ethAddress ) );
@@ -877,7 +897,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function evmReceiverAddressCard() {
-    let address = entity.evmCredentials ? entity.evmCredentials.address : undefined;
+
+    let address; // = entity.evmCredentials ? entity.evmCredentials.address : undefined;
 
     /**
      * Overwrite address if another receivingAddress has been defined by user
@@ -1221,6 +1242,38 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           {
             t: 'span',
             h: '🇩🇪 "Sie"',
+          },
+          {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'it_IT',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'it_IT' ? true : undefined,
+            },
+            k: handleRadioEntry,
+          },
+          {
+            t: 'span',
+            h: '🇮🇹',
+          },
+          {
+            t: 'input',
+            a: {
+              type: 'radio',
+              name: 'app-lang',
+              value: 'ru_RU',
+              title: 'appLang',
+              db: 'properties',
+              checked: appLang == 'ru_RU' ? true : undefined,
+            },
+            k: handleRadioEntry,
+          },
+          {
+            t: 'span',
+            h: '🇷🇺',
           },
         ],
       } );

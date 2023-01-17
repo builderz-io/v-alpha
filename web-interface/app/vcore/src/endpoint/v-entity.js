@@ -173,14 +173,18 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
     if ( 'EVM' == V.getSetting( 'transactionLedger' ) ) {
 
-      if ( !entityData.evmAddress ) {
+      if (
+        'Person' == entityData.role
+        && V.cA()
+      ) {
+        entityData.evmAddress = V.cA();
+        entityData.evmIssuer = 'SELF';
+      }
+      else {
         const newEvmAccount = window.Web3Obj.eth.accounts.create();
         entityData.evmAddress = newEvmAccount.address.toLowerCase();
         entityData.evmPrivateKey = newEvmAccount.privateKey.toLowerCase();
         entityData.evmIssuer = 'IDXNS';
-      }
-      else {
-        entityData.evmIssuer = 'SELF';
       }
 
       if ( Object.keys( V.getState( 'rolesWithReceivingAddress' ) ).includes( entityData.role ) ) {

@@ -27,6 +27,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       total: 'total',
       payout: 'payout',
       block: 'block',
+      hash: 'Link',
+      address: 'Address',
+      contract: 'Contract',
       date: 'date',
       time: 'time',
       net: 'Spendable',
@@ -95,6 +98,16 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
                 [ V.getString( ui.zeroBlock ), bal.data[0].zeroBlock ],
                 [ V.getString( ui.currentBlock ), bal.data[0].currentBlock  ],
                 [ V.getString( ui.currentDate ), new Date().toString().substr( 4, 17 ) ],
+                [ V.getString( ui.address ), V.cN( {
+                  t: 'a',
+                  f: V.getTokenContract().explorerAddr + bal.data[0].address,
+                  h: V.castShortAddress( bal.data[0].address, 4 ),
+                } )],
+                [ V.getString( ui.contract ), V.cN( {
+                  t: 'a',
+                  f: V.getTokenContract().explorerAddr + V.getTokenContract().contractAddress,
+                  h: V.castShortAddress( V.getTokenContract().contractAddress, 3 ),
+                } )],
               ].filter( index => Array.isArray( index ) ).map( row => V.cN( {
                 t: 'tr',
                 h: [
@@ -310,6 +323,15 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
           txData.block
             ? [ V.getString( ui.block ), txData.block ]
             : [ V.getString( ui.date ), txData.date.substr( 4, 11 ) + ' ' + txData.date.substr( 15, 6 ) ],
+
+          [
+            V.getString( ui.hash ),
+            V.cN( {
+              t: 'a',
+              f: V.getTokenContract().explorerTx + txData.hash,
+              h: V.castShortAddress( txData.hash, 4 ),
+            } ),
+          ],
 
           [
             V.getString( ui.amount ),

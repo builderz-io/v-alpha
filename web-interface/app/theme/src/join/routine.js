@@ -15,7 +15,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {};
 
-  let cardSet, fourDigitString, newEntity, uPhrase, fullId, role, cardIndex = 0;
+  let cardSet, fourDigitString, newEntity, uPhrase, address, privKey, fullId, role, cardIndex = 0;
 
   /* ============== user interface strings ============== */
 
@@ -201,7 +201,16 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleSaveKey() {
-    const text = `Key: ${ this.uPhrase }\n\nTitle: ${ this.fullId }\n\nRole: ${ this.role }\n\nJoined: ${ new Date().toString().substr( 4, 17 ) }\n\nInitialized by: ${ window.location.host }`;
+    const text = `
+Key: ${ this.uPhrase }\n\n
+EVM Address: ${ this.address }\n\n
+EVM key: ${ this.privKey || 'SELF' }\n\n
+Title: ${ this.fullId }\n\n
+Role: ${ this.role }\n\n
+Joined: ${ new Date().toString().substr( 4, 17 ) }\n\n
+Initialized by: ${ window.location.host }
+`;
+
     const blob = new Blob( [text], { type: 'text/plain' } );
 
     const $a = document.createElement( 'a' );
@@ -469,9 +478,17 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   function setNewEntity() {
     // entityData.title = '1234'; // uncomment for testing a server error
 
-    if( V.cA() ) { // user has own wallet
-      entityData.evmAddress = V.cA();
-    }
+    // if (
+    //   'Person' == entityData.role
+    //   && V.cA()
+    // ) {
+    //
+    //   /*
+    //    * user has own wallet,
+    //    * also used in v-entity to detect need for private key creation
+    //    */
+    //   entityData.evmAddress = V.cA();
+    // }
 
     V.setEntity( entityData )
       .then( res => {
@@ -480,6 +497,8 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
           newEntity = res.data[0];
           uPhrase = newEntity.auth.uPhrase;
+          address = newEntity.auth.evmCredentials.address;
+          privKey = newEntity.auth.evmCredentials.privateKey;
           fullId = newEntity.fullId;
           role = newEntity.role;
 
@@ -545,6 +564,8 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     $btn.innerText = V.getString( ui.download );
     $btn.addEventListener( 'click', handleSaveKey.bind( {
       uPhrase: uPhrase,
+      address: address,
+      privKey: privKey,
       fullId: fullId,
       role: role,
     } ) );

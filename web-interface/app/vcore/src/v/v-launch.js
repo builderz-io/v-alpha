@@ -85,7 +85,7 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     *
     */
 
-  V.setNode( 'loader', V.getString( ui.pluginsLoad ) );
+  V.setNode( 'loader', V.getString( ui.pluginsLoad ) + ' - App Version: ' + V.getSetting( 'appVersion' ) + '.' + V.getSetting( 'uploadVersion' ) );
 
   clearTimeout( preloaderTimeout );
 
