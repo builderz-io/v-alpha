@@ -1,8 +1,9 @@
 const settings = {
   floatEthAmount: 0.2,
+  floatTokenAmount: 0,
   autoVerify: true,
-  txGasPriceMplr: 1.1, // used in managed tx
-  txIncGasPriceMplr: 1.3, // used in managed tx
+  txGasPriceMplr: 1.3, // used in managed tx
+  txIncGasPriceMplr: 1.8, // used in managed tx
   verifyGasPriceMplr: 1.5, // used in verification
   gasLimit: 2000000, // used in all tx
   // gasPrice: 80, // in Gwei // x * 1e9 = Gwei
@@ -141,6 +142,18 @@ async function floatEth( which ) {
     } )
     .then( function( receipt ) {
       console.log( 'Float ETH Transaction Success' /* + JSON.stringify( receipt ) */ );
+
+      /*
+       * float token
+       * NOTE: private key must exist in namespace-database in auth doc
+       */
+      if ( settings.floatTokenAmount ) {
+        managedTransaction( {
+          initiatorAddress: web3.eth.defaultAccount.toLowerCase(),
+          recipientAddress: which,
+          txTotal: settings.floatTokenAmount,
+        } );
+      }
 
       /* auto verify */
       if ( settings.autoVerify ) {
