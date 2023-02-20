@@ -400,7 +400,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     target == '' ? target = undefined : null;
 
     if (  target ) {
-      unit == '' ? error = V.getString( ui.noUnit ) : null;
+      unit == '' ? error = V.getString( ui.noUnit ) : (unit.includes(" ") ? error = V.getString( ui.noUnit ) : null);
       isNaN( target ) ? error = V.getString( ui.isNaN ) : null;
     }
 
