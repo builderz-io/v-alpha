@@ -285,8 +285,8 @@ Initialized by: ${ window.location.host }
       const target = V.castTarget( trgt, unit, entityData.role );
 
       if ( target.success ) {
-        entityData.target = trgt;
-        entityData.unit = unit;
+        entityData.target = target.data.target;
+        entityData.unit = target.data.unit;
         return true;
       }
       else {
