@@ -40,6 +40,13 @@ const Chat = ( function() { // eslint-disable-line no-unused-vars
       ? $form.value
       : rerunMessage + ' ' + V.getString( 'to' ) + ' ' + V.getState( 'active' ).lastViewed;
 
+      const notificationData = {
+        act: 'New chat message',
+        msg: message
+      }
+      V.setTelegramNotification( notificationData )
+      V.setEmailNotification( notificationData )
+
     V.setMessageBot( message ).then( res => {
       V.sN( $response, '' );
       V.setState( 'active', { autofillUuidE: undefined } );
