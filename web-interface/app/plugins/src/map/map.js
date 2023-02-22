@@ -45,6 +45,11 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       lat: 41.858,
       zoom: 13,
     },
+    tokyo: {
+      lng: 139.8,
+      lat: 35.652,
+      zoom: 11,
+    },
     nyc: {
       lng: -73.958,
       lat: 40.792,
