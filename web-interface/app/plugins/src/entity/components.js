@@ -128,8 +128,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       img: 'Image',
       holder: 'Holder',
       holderOf: 'Holder of',
-      skills: 'Skills',
-      tasks: 'Tasks',
+
+      network: 'Network',
+      skill: 'Skill',
+      task: 'Task',
+      place: 'Place',
+      event: 'Event',
+      media: 'Media',
+      dataset: 'Dataset',
+      pool: 'Pool',
+      farm: 'Farm',
+      plot: 'Plot',
+
       mappedBy: 'Mapped by',
       accessKeys: 'Access Keys',
       notAuthenticated: 'not authorized to view',
@@ -1112,10 +1122,51 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
 
     let holderOf;
-    if (type === 'skills')
+    let titleString;
+    if (type === 'Network') {
+      titleString = ui.network;
+      holderOf = entity.holderOf?.filter((option) => option.c === "ag");
+    }
+    else if (type === 'Skill') {
+      titleString = ui.skill;
       holderOf = entity.holderOf?.filter((option) => option.c === "ah");
-    else if (type === 'tasks')
+    }
+    else if (type === 'Task') {
+      titleString = ui.task;
       holderOf = entity.holderOf?.filter((option) => option.c === "ai");
+    }
+    else if (type === 'Place') {
+      titleString = ui.place;
+      holderOf = entity.holderOf?.filter((option) => option.c === "aj");
+    }
+    else if (type === 'Event') {
+      titleString = ui.event;
+      holderOf = entity.holderOf?.filter((option) => option.c === "ak");
+    }
+    else if (type === 'Media') {
+      titleString = ui.media;
+      holderOf = entity.holderOf?.filter((option) => option.c === "al");
+    }
+    else if (type === 'Dataset') {
+      titleString = ui.dataset;
+      holderOf = entity.holderOf?.filter((option) => option.c === "am");
+    }
+    else if (type === 'Pool') {
+      titleString = ui.pool;
+      holderOf = entity.holderOf?.filter((option) => option.c === "an");
+    }
+    else if (type === 'Farm') {
+      titleString = ui.farm;
+      holderOf = entity.holderOf?.filter((option) => option.c === "ao");
+    }
+    else if (type === 'Plot') {
+      titleString = ui.plot;
+      holderOf = entity.holderOf?.filter((option) => option.c === "ap");
+    }
+
+    if ( !holderOf.length ) {
+      return '';
+    }
 
     const $innerContent = V.cN( {
       h:  holderOf.map( item => V.cN( {
@@ -1128,7 +1179,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             k: handleProfileDraw,
           } ))
     } );
-    return castCard( $innerContent, V.getString( type === 'skills' ? ui.skills : ui.tasks ) );
+    return castCard( $innerContent, V.getString( titleString ) );
   }
 
   function financialCard() {

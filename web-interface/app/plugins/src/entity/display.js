@@ -115,8 +115,16 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.evmAddressCard(),
       UserComponents.evmReceiverAddressCard(),
       // UserComponents.managementCard(),
-      UserComponents.holderOfCard('skills'),
-      UserComponents.holderOfCard('tasks'),
+      UserComponents.holderOfCard('Network'),
+      UserComponents.holderOfCard('Skill'),
+      UserComponents.holderOfCard('Task'),
+      UserComponents.holderOfCard('Place'),
+      UserComponents.holderOfCard('Event'),
+      UserComponents.holderOfCard('Media'),
+      UserComponents.holderOfCard('Dataset'),
+      UserComponents.holderOfCard('Pool'),
+      UserComponents.holderOfCard('Farm'),
+      UserComponents.holderOfCard('Plot'),
       UserComponents.socialShareButtons(),
     ] );
 
