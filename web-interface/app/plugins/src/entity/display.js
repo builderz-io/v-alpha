@@ -115,7 +115,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       UserComponents.evmAddressCard(),
       UserComponents.evmReceiverAddressCard(),
       // UserComponents.managementCard(),
-      UserComponents.holderOfCard(),
+      UserComponents.holderOfCard('skills'),
+      UserComponents.holderOfCard('tasks'),
       UserComponents.socialShareButtons(),
     ] );
 

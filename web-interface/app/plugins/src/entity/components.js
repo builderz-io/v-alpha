@@ -128,6 +128,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       img: 'Image',
       holder: 'Holder',
       holderOf: 'Holder of',
+      skills: 'Skills',
+      tasks: 'Tasks',
       mappedBy: 'Mapped by',
       accessKeys: 'Access Keys',
       notAuthenticated: 'not authorized to view',
@@ -1101,7 +1103,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
-  function holderOfCard() {
+  function holderOfCard(type) {
     // const holderOf = V.castJson( entity.holderOf, 'clone' );
     // holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
 
@@ -1109,18 +1111,24 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       return '';
     }
 
+    let holderOf;
+    if (type === 'skills')
+      holderOf = entity.holderOf?.filter((option) => option.c === "ah");
+    else if (type === 'tasks')
+      holderOf = entity.holderOf?.filter((option) => option.c === "ai");
+
     const $innerContent = V.cN( {
-      h: entity.holderOf.map( item => V.cN( {
-        t: 'p',
-        c: 'pxy',
-        y: {
-          cursor: 'pointer',
-        },
-        h: item.fullId,
-        k: handleProfileDraw,
-      } ) ),
+      h:  holderOf.map( item => V.cN( {
+            t: 'p',
+            c: 'pxy',
+            y: {
+              cursor: 'pointer',
+            },
+            h: item.fullId,
+            k: handleProfileDraw,
+          } ))
     } );
-    return castCard( $innerContent, V.getString( ui.holderOf ) );
+    return castCard( $innerContent, V.getString( type === 'skills' ? ui.skills : ui.tasks ) );
   }
 
   function financialCard() {
