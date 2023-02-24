@@ -129,17 +129,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       holder: 'Holder',
       holderOf: 'Holder of',
 
-      network: 'Network',
-      skill: 'Skill',
-      task: 'Task',
-      place: 'Place',
-      event: 'Event',
-      media: 'Media',
-      dataset: 'Dataset',
-      pool: 'Pool',
-      farm: 'Farm',
-      plot: 'Plot',
-
       mappedBy: 'Mapped by',
       accessKeys: 'Access Keys',
       notAuthenticated: 'not authorized to view',
@@ -1113,73 +1102,47 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
-  function holderOfCard(type) {
-    // const holderOf = V.castJson( entity.holderOf, 'clone' );
-    // holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
-
+  function holderOfCard() {
     if ( !entity.holderOf.length ) {
       return '';
     }
-
-    let holderOf;
-    let titleString;
-    if (type === 'Network') {
-      titleString = ui.network;
-      holderOf = entity.holderOf?.filter((option) => option.c === "ag");
-    }
-    else if (type === 'Skill') {
-      titleString = ui.skill;
-      holderOf = entity.holderOf?.filter((option) => option.c === "ah");
-    }
-    else if (type === 'Task') {
-      titleString = ui.task;
-      holderOf = entity.holderOf?.filter((option) => option.c === "ai");
-    }
-    else if (type === 'Place') {
-      titleString = ui.place;
-      holderOf = entity.holderOf?.filter((option) => option.c === "aj");
-    }
-    else if (type === 'Event') {
-      titleString = ui.event;
-      holderOf = entity.holderOf?.filter((option) => option.c === "ak");
-    }
-    else if (type === 'Media') {
-      titleString = ui.media;
-      holderOf = entity.holderOf?.filter((option) => option.c === "al");
-    }
-    else if (type === 'Dataset') {
-      titleString = ui.dataset;
-      holderOf = entity.holderOf?.filter((option) => option.c === "am");
-    }
-    else if (type === 'Pool') {
-      titleString = ui.pool;
-      holderOf = entity.holderOf?.filter((option) => option.c === "an");
-    }
-    else if (type === 'Farm') {
-      titleString = ui.farm;
-      holderOf = entity.holderOf?.filter((option) => option.c === "ao");
-    }
-    else if (type === 'Plot') {
-      titleString = ui.plot;
-      holderOf = entity.holderOf?.filter((option) => option.c === "ap");
-    }
-
-    if ( !holderOf.length ) {
-      return '';
-    }
-
-    const $innerContent = V.cN( {
-      h:  holderOf.map( item => V.cN( {
-            t: 'p',
-            c: 'pxy',
-            y: {
-              cursor: 'pointer',
-            },
-            h: item.fullId,
-            k: handleProfileDraw,
-          } ))
+    
+    const roleObj = {};
+    
+    entity.holderOf.forEach( item => {
+      const role = V.castRole( item.c );
+      const fullId = item.fullId;
+    
+      !roleObj[ role ]
+        ? roleObj[ role ] = [ fullId ]
+        : roleObj[ role ].push( fullId );
     } );
-    return castCard( $innerContent, V.getString( titleString ) );
+    
+    const $innerContent = V.cN( {
+      h: ( () => {
+        const nodes = [];
+        for ( const role in roleObj ) {
+          nodes.push( V.cN( {
+            t: 'h2',
+            c: 'w-full font-bold pxy',
+            h: role,
+          } ) );
+          roleObj[role].forEach( item => {
+            nodes.push( V.cN( {
+              t: 'p',
+              c: 'pxy',
+              y: {
+                cursor: 'pointer',
+              },
+              h: item,
+              k: handleProfileDraw,
+            } ) );
+          } );
+        }
+        return nodes;
+      } )(),
+    } );
+    return castCard( $innerContent, V.getString( ui.holderOf ) );
   }
 
   function financialCard() {
