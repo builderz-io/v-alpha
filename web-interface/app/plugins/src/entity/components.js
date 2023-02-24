@@ -1106,18 +1106,18 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if ( !entity.holderOf.length ) {
       return '';
     }
-    
+
     const roleObj = {};
-    
+
     entity.holderOf.forEach( item => {
       const role = V.castRole( item.c );
       const fullId = item.fullId;
-    
+
       !roleObj[ role ]
         ? roleObj[ role ] = [ fullId ]
         : roleObj[ role ].push( fullId );
     } );
-    
+
     const $innerContent = V.cN( {
       h: ( () => {
         const nodes = [];

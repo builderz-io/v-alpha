@@ -50,14 +50,14 @@ const V3Box = ( function() { // eslint-disable-line no-unused-vars
         return {
           success: true,
           status: 'retrieved 3Box V Alpha 2 entity data',
-          data: [ entityData ]
+          data: [ entityData ],
         };
       }
       else {
         return {
           success: false,
           status: 'could not retrieve 3Box V Alpha 2 entity data',
-          data: []
+          data: [],
         };
       }
 
@@ -66,7 +66,7 @@ const V3Box = ( function() { // eslint-disable-line no-unused-vars
       return {
         success: false,
         status: '3Box not retrieved/no provider',
-        data: []
+        data: [],
       };
     }
   }

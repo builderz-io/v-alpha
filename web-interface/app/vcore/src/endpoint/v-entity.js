@@ -255,7 +255,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       props: {
         descr: entityData.description || undefined,
-        target: Number(entityData.target),
+        target: Number( entityData.target ),
         unit: entityData.unit || undefined,
         email: email,
         emailPrivate: entityData.emailPrivate || undefined,
@@ -403,12 +403,12 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     if (  target ) {
       unitWord = unitWord.trimStart();
       unitWord = unitWord.trimEnd();
-      if ( unitWord.startsWith("per ") ) {
-        unitWord = unitWord.replace("per ", "");
+      if ( unitWord.startsWith( 'per ' ) ) {
+        unitWord = unitWord.replace( 'per ', '' );
         unitWord = unitWord.trimStart();
       }
 
-      unitWord == '' ? error = V.getString( ui.noUnit ) : (unitWord.includes(" ") ? error = V.getString( ui.noWhitespace ) : null);
+      unitWord == '' ? error = V.getString( ui.noUnit ) : ( unitWord.includes( ' ' ) ? error = V.getString( ui.noWhitespace ) : null );
       isNaN( target ) ? error = V.getString( ui.isNaN ) : null;
     }
 
