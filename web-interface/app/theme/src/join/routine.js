@@ -671,6 +671,10 @@ Initialized by: ${ window.location.host }
     entityData = {};
   }
 
+  function getEntityData() {
+    return entityData;
+  }
+
   /* ====================== export ====================== */
 
   return {
@@ -678,5 +682,6 @@ Initialized by: ${ window.location.host }
     reset: reset,
 
     handleNext: handleNext,
+    getEntityData: getEntityData,
   };
 } )();

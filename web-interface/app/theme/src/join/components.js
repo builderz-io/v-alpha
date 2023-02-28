@@ -319,7 +319,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               c: 'join-form__input'
                    + ( addition ? '-' + addition : '' ),
               a: {
-                placeholder: V.getString( ui[formTitle] ),
+                  placeholder: V.getString( (formTitle == 'joinFormTitle' ? JoinRoutine.getEntityData().role + ' ' : '') + ui[formTitle] ),
               },
               e: {
                 focus: handleFormFocus,
