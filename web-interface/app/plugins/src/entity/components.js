@@ -1125,7 +1125,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           nodes.push( V.cN( {
             t: 'h2',
             c: 'w-full font-bold pxy',
-            h: role,
+            h: V.getString( role ),
           } ) );
           roleObj[role].forEach( item => {
             nodes.push( V.cN( {
