@@ -544,32 +544,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                 'padding': '0.75rem 1.25rem',
                 'border-radius': '5px',
                 'border-left': '3px solid',
-                'color': 'teal',
-              },
-              h: [
-                {
-                  t: 'span',
-                  y: {
-                    'margin-right': '1.5rem',
-                  },
-                  h: 'N',
-                },
-                {
-                  t: 'span',
-                  y: {
-                    color: 'teal',
-                  },
-                  i: 's-calc-result' + '__' + 'T_BAL_N',
-                  h: '0.00',
-                },
-              ],
-            },
-            {
-              y: {
-                // 'background': '#eee',
-                'padding': '0.75rem 1.25rem',
-                'border-radius': '5px',
-                'border-left': '3px solid',
                 'color': 'steelblue',
               },
               h: [
@@ -586,6 +560,32 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                     color: 'steelblue',
                   },
                   i: 's-calc-result' + '__' + 'T_BAL_C',
+                  h: '0.00',
+                },
+              ],
+            },
+            {
+              y: {
+                // 'background': '#eee',
+                'padding': '0.75rem 1.25rem',
+                'border-radius': '5px',
+                'border-left': '3px solid',
+                'color': 'teal',
+              },
+              h: [
+                {
+                  t: 'span',
+                  y: {
+                    'margin-right': '1.5rem',
+                  },
+                  h: 'N',
+                },
+                {
+                  t: 'span',
+                  y: {
+                    color: 'teal',
+                  },
+                  i: 's-calc-result' + '__' + 'T_BAL_N',
                   h: '0.00',
                 },
               ],
