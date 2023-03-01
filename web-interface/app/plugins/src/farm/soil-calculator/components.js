@@ -481,7 +481,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: {
         t: 'table',
         c: 's-calc-results-table w-full',
-        h: mapFields( ['SOM_LOSS', 'SOM_SUPP', 'SOM_BAL_N', 'SOM_BAL_C'], tabNum ),
+        h: mapFields( ['SOM_LOSS', 'SOM_SUPP', 'SOM_BAL_C', 'SOM_BAL_N'], tabNum ),
       },
     };
   }
