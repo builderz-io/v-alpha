@@ -684,6 +684,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             tabNum != 'AA'
               ? form( tabNum, dataset, /* exclude: */ ['SITE'] )
               : summary( this.data ),
+            resultsSOM( tabNum ),
             {
               c: 's-calc-results-show-btn',
               h: V.getIcon( 'expand_more', '24px' ), // V.getString( 'Show details' ),
@@ -692,7 +693,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             V.cN( {
               c: 's-calc-results-wrapper hidden',
               h: [
-                resultsSOM( tabNum ),
                 resultsDemand( tabNum ),
                 resultsSupply( tabNum ),
                 // resultsCsupply( tabNum ),
