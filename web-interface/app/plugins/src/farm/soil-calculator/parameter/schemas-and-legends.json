@@ -404,23 +404,23 @@
           "displayName": "Soil Organic Matter",
           "descr": "Soil Organic Matter",
           "LOSS": {
-            "displayName": "Substanz Abbau",
+            "displayName": "C Substanz Abbau",
             "descr": "Soil Organic Matter Loss",
             "unit": "kg/ha"
           },
           "SUPP": {
-            "displayName": "Substanz Aufbau",
+            "displayName": "C Substanz Aufbau",
             "descr": "Soil Organic Matter Supply",
             "unit": "kg/ha"
           },
           "BAL": {
             "C": {
-              "displayName": "Humusbilanz C",
+              "displayName": "C Humusbilanz",
               "descr": "C Balance",
               "unit": "kg/ha"
             },
             "N": {
-              "displayName": "Humusbilanz N",
+              "displayName": "N Humusbilanz",
               "descr": "N Balance",
               "unit": "kg/ha"
             }
