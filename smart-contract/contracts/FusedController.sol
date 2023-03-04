@@ -1,6 +1,8 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: MIT
 
-import "./lib/contracts-ethereum-package/Initializable.sol";
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 /**
     @title A controllable contract that can incrementally transition to an

@@ -1,18 +1,11 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: MIT
 
-/**
-    @title An open source smart contract for a UBI token with demurrage that
-        gives control of the currency to the community, with adjustable
-        parameters.
-    @author The Value Instrument Team
-    @notice 
-    @dev This contract was developed for solc 0.6.6
-*/
+pragma solidity ^0.8.0;
 
-import "./lib/contracts-ethereum-package/token/ERC20/ERC20Burnable.sol";
-import "./lib/contracts-ethereum-package/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "./FusedController.sol";
-import "./lib/contracts-ethereum-package/Initializable.sol";
 import "./Calculations.sol";
 
 struct Settings {
@@ -34,7 +27,7 @@ struct Settings {
 
 /// @notice One contract is deployed for each community
 /// @dev Based on openzeppelin's burnable and mintable ERC20 tokens
-contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
+contract VICoin is ERC20Burnable, FusedController, Calculations {
     using SafeMath for uint256;
     using SafeMath for int256;
 
@@ -58,7 +51,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     event UnapproveAccount(address account);
     event Log(string name, uint256 value);
 
-    function initialize(
+    constructor (
         string memory _name,
         string memory _symbol,
         uint256 _lifetime,
@@ -69,10 +62,33 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
         uint256 _initialBalance,
         address _communityContributionAccount,
         address _controller
-    ) public initializer {
+    ) ERC20(_name, _symbol) public {
         FusedController.initialize(_controller);
-        __ERC20_init(_name, _symbol);
+        address communityContributionAccount = _communityContributionAccount;
+        if (_communityContributionAccount == address(0)) {
+            communityContributionAccount = msg.sender;
+        }
 
+        settings.lifetime = _lifetime;
+        settings.generationAmount = _generationAmount;
+        settings.generationPeriod = _generationPeriod;
+        settings.communityContribution = _communityContribution;
+        settings.transactionFee = _transactionFee;
+        settings.initialBalance = _initialBalance;
+        settings.communityContributionAccount = communityContributionAccount;
+
+        numAccounts = 0;
+    }
+
+    function initializeSettings(
+        uint256 _lifetime,
+        uint256 _generationAmount,
+        uint256 _generationPeriod,
+        uint256 _communityContribution,
+        uint256 _transactionFee,
+        uint256 _initialBalance,
+        address _communityContributionAccount
+    ) external onlyController {
         address communityContributionAccount = _communityContributionAccount;
         if (_communityContributionAccount == address(0)) {
             communityContributionAccount = msg.sender;
@@ -100,7 +116,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
         returns (uint256)
     {
         // 1. Decay the balance
-        uint256 decay = Calculations.calcDecay(
+        uint256 decay = calcDecay(
             lastTransactionBlock[_account],
             balanceOf(_account),
             block.number,
@@ -115,7 +131,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
         uint256 generationAccrued;
         if (accountApproved[_account]) {
             // Calculate the accrued generation, taking into account decay
-            generationAccrued = Calculations.calcGeneration(
+            generationAccrued = calcGeneration(
                 block.number,
                 lastGenerationBlock[_account],
                 settings.lifetime,
@@ -139,7 +155,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
                     .mul(settings.generationPeriod);
 
                 // Extend the zero block
-                zeroBlock[_account] = Calculations.calcZeroBlock(
+                zeroBlock[_account] = calcZeroBlock(
                     generationAccrued,
                     decayedBalance,
                     block.number,
@@ -158,7 +174,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
     /** @notice Return the real balance of the account, as of this block
         @return Latest balance */
     function liveBalanceOf(address _account) public view returns (uint256) {
-        uint256 decay = Calculations.calcDecay(
+        uint256 decay = calcDecay(
             lastTransactionBlock[_account],
             balanceOf(_account),
             block.number,
@@ -170,7 +186,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
         }
         uint256 generationAccrued = 0;
         if (accountApproved[_account]) {
-            generationAccrued = Calculations.calcGeneration(
+            generationAccrued = calcGeneration(
                 block.number,
                 lastGenerationBlock[_account],
                 settings.lifetime,
@@ -218,7 +234,7 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
         uint256 valueAfterFees = _value.sub(feesBurned).sub(contribution);
 
         //Extend zero block based on transfer
-        zeroBlock[_to] = Calculations.calcZeroBlock(
+        zeroBlock[_to] = calcZeroBlock(
             valueAfterFees,
             balanceOf(_to),
             block.number,
@@ -267,16 +283,16 @@ contract VICoin is Initializable, ERC20BurnableUpgradeSafe, FusedController {
         uint256 _transactionFee,
         uint256 _communityContribution
     ) internal returns (uint256, uint256) {
-        uint256 feesIncContribution = Calculations.calcFeesIncContribution(
+        uint256 feesIncContribution = calcFeesIncContribution(
             _value,
             _transactionFee
         );
-        uint256 contribution = Calculations.calcContribution(
+        uint256 contribution = calcContribution(
             _value,
             _transactionFee,
             _communityContribution
         );
-        uint256 feesToBurn = Calculations.calcFeesToBurn(
+        uint256 feesToBurn = calcFeesToBurn(
             _value,
             _transactionFee,
             _communityContribution

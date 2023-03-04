@@ -1,8 +1,10 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: MIT
 
-import "./lib/contracts-ethereum-package/math/SafeMath.sol";
+pragma solidity ^0.8.0;
 
-library Calculations {
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+contract Calculations {
     using SafeMath for uint256;
 
     uint256 constant contributionFeeDecimals = 2;
