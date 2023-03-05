@@ -103,6 +103,13 @@ const VMessage = ( function() { // eslint-disable-line no-unused-vars
         * if message is good and no trigger word was detected just send a message
         *
         */
+       
+        const notificationData = {
+          act: 'New chat message',
+          msg: message,
+        };
+        V.setTelegramNotification( notificationData );
+        V.setEmailNotification( notificationData );
 
         return V.setMessage( text );
       }
