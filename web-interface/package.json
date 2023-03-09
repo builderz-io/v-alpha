@@ -17,14 +17,15 @@
   },
   "homepage": "https://github.com/valueinstrument/v-alpha#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "ethers": "^6.1.0",
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "eslint": "^8.34.0",
-    "gulp": "^4.0.2",
+    "gulp": "^3.9.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-terser-js": "^5.2.2",
-    "gulp-watch": "^5.0.1"
+    "gulp-watch": "^4.0.1"
   }
 }
