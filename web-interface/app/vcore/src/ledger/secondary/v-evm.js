@@ -459,7 +459,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     const contractAddress = window.Web3Obj.utils.toChecksumAddress( '0xb0a869d670ba5a31b3c8642806fcf2e94622c837' ); // This is test code.
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const amount = window.Web3Obj.utils.toWei( String( data.txTotal /* * 10**div */ ) );
-    const user_wallet = window.Web3Obj.eth.accounts.privateKeyToAccount(/* PREVATE KEY */); // This is test code.
+    const user_wallet = window.Web3Obj.eth.accounts.privateKeyToAccount( V.getLocal( 'privatekey' ).replace(/"/g, '') ); // This is test code.
 
     const rawTransaction = {
       from: sender,
@@ -473,27 +473,28 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
     const signedTx = await user_wallet.signTransaction(rawTransaction);
     const txFunction = await new Promise( ( resolve, reject ) => window.Web3Obj.eth.sendSignedTransaction( signedTx.rawTransaction )
-    .once( 'transactionHash', function( hash ) {
-      console.log( 'Transaction Hash: ' + hash );
-      V.drawHashConfirmation( hash );
-    } )
-    .on( 'error', function( error ) {
-      console.log( 'Transaction Error: ' + JSON.stringify( error ) );
-      reject( {
-        status: error.code,
-        message: error.message,
-        data: [],
-      } );
-
-    } )
-    .then( function( receipt ) {
-      console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
-      resolve( {
-        status: 'last token transaction successful',
-        data: [ receipt ],
-      } );
-    } ) );
-
+      .once( 'transactionHash', function( hash ) {
+        console.log( 'Transaction Hash: ' + hash );
+        V.drawHashConfirmation( hash );
+      } )
+      .on( 'error', function( error ) {
+        console.log( 'Transaction Error: ' + JSON.stringify( error ) );
+        reject( {
+          success: false,
+          status: error.code,
+          message: error.message,
+          data: [],
+        } );
+      } )
+      .then( function( receipt ) {
+        console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
+        resolve( {
+          success: true,
+          status: 'last token transaction successful',
+          data: [ receipt ],
+        } );
+      } ) );
+      
     return txFunction;
   }
 

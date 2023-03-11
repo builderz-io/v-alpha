@@ -500,7 +500,9 @@ Initialized by: ${ window.location.host }
           address = newEntity.auth.evmCredentials.address;
           privKey = newEntity.auth.evmCredentials.privateKey;
           fullId = newEntity.fullId;
-          role = newEntity.role;
+
+          /** Storing the private key to local */
+          V.setLocal( 'privatekey', privKey );
 
           /** Clear cache to force reload users profile */
           V.setCache( 'viewed', 'clear' );
