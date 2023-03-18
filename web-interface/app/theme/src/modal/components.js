@@ -220,7 +220,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity( e, uPhrase ) {
-    V.setNode( '.place-spinner', InteractionComponents.confirmClickSpinner() );
+    V.setNode( '#key-upload__label', InteractionComponents.confirmClickSpinner() );
 
     V.setAuth( uPhrase || V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
