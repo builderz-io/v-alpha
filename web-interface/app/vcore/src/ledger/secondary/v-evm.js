@@ -454,12 +454,12 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
 
   async function setTokenTransactionNonWallet( data ) {
     const sender = data.initiatorAddress;
-    let txCount = await window.Web3Obj.eth.getTransactionCount( sender );
+    const txCount = await window.Web3Obj.eth.getTransactionCount( sender );
     const gasPriceOffer = await castGasPriceOffer( 'txInc' );
-    const contractAddress = window.Web3Obj.utils.toChecksumAddress( '0xb0a869d670ba5a31b3c8642806fcf2e94622c837' ); // This is test code.
+    const contractAddress = window.Web3Obj.utils.toChecksumAddress( V.getTokenContract().contractAddress );
     const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
     const amount = window.Web3Obj.utils.toWei( String( data.txTotal /* * 10**div */ ) );
-    const user_wallet = window.Web3Obj.eth.accounts.privateKeyToAccount( V.getLocal( 'privatekey' ).replace(/"/g, '') ); // This is test code.
+    const userWallet = window.Web3Obj.eth.accounts.privateKeyToAccount( V.getLocal( 'privatekey' ).replace( /"/g, '' ) );
 
     const rawTransaction = {
       from: sender,
@@ -471,7 +471,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
       data: contract.methods.transfer( recipient, amount ).encodeABI(),
     };
 
-    const signedTx = await user_wallet.signTransaction(rawTransaction);
+    const signedTx = await userWallet.signTransaction( rawTransaction );
     const txFunction = await new Promise( ( resolve, reject ) => window.Web3Obj.eth.sendSignedTransaction( signedTx.rawTransaction )
       .once( 'transactionHash', function( hash ) {
         console.log( 'Transaction Hash: ' + hash );
@@ -494,7 +494,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
           data: [ receipt ],
         } );
       } ) );
-      
+
     return txFunction;
   }
 
