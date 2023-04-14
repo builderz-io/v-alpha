@@ -84,6 +84,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     questionnaire: VNetworkInit.questionnaire,
     featureVideo: VNetworkInit.featureVideo,
     plugins: VNetworkInit.plugins,
+    landingPage: VNetworkInit.landingPage,
 
     defaultPrivacy: VNetworkInit.defaultPrivacy,
     askforEmail: VNetworkInit.askforEmail,
