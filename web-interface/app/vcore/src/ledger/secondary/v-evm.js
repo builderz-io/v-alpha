@@ -452,6 +452,62 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     return txFunction;
   }
 
+  async function setTokenTransactionNonWallet( data ) {
+    const sender = data.initiatorAddress;
+    let txCount = await window.Web3Obj.eth.getTransactionCount( sender );
+    const gasPriceOffer = await castGasPriceOffer( 'txInc' );
+    const contractAddress = window.Web3Obj.utils.toChecksumAddress( '0xb0a869d670ba5a31b3c8642806fcf2e94622c837' ); // This is test code.
+    const recipient = window.Web3Obj.utils.toChecksumAddress( data.recipientAddress );
+    const amount = window.Web3Obj.utils.toWei( String( data.txTotal /* * 10**div */ ) );
+    const user_wallet = window.Web3Obj.eth.accounts.privateKeyToAccount( V.getLocal( 'privatekey' ).replace(/"/g, '') ); // This is test code.
+
+    const rawTransaction = {
+      from: sender,
+      nonce: window.Web3Obj.utils.toHex( txCount ),
+      gasPrice: gasPriceOffer,
+      gasLimit: window.Web3Obj.utils.toHex( 500000 ),
+      to: contractAddress,
+      value: '0x0',
+      data: contract.methods.transfer( recipient, amount ).encodeABI(),
+    };
+
+    const signedTx = await user_wallet.signTransaction(rawTransaction);
+    const txFunction = await new Promise( ( resolve, reject ) => window.Web3Obj.eth.sendSignedTransaction( signedTx.rawTransaction )
+      .once( 'transactionHash', function( hash ) {
+        console.log( 'Transaction Hash: ' + hash );
+        V.drawHashConfirmation( hash );
+      } )
+      .on( 'error', function( error ) {
+        console.log( 'Transaction Error: ' + JSON.stringify( error ) );
+        reject( {
+          success: false,
+          status: error.code,
+          message: error.message,
+          data: [],
+        } );
+      } )
+      .then( function( receipt ) {
+        console.log( 'Transaction Success' /* + JSON.stringify( receipt ) */ );
+        resolve( {
+          success: true,
+          status: 'last token transaction successful',
+          data: [ receipt ],
+        } );
+      } ) );
+      
+    return txFunction;
+  }
+
+  async function castGasPriceOffer( which ) {
+    const block = await window.Web3Obj.eth.getBlock( 'latest' );
+    return window.Web3Obj.utils.toHex(
+      Math.floor(
+        window.Web3Obj.utils.hexToNumber( block.baseFeePerGas )
+        * 1.8,
+      ),
+    );
+  }
+
   function getNetVAmount( amount ) {
     const fee = V.getSetting( 'transactionFee' );
     const contr = V.getSetting( 'communityContribution' );
@@ -637,6 +693,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
   V.setAddressVerification = setAddressVerification;
   V.setCoinTransaction = setCoinTransaction;
   V.setTokenTransaction = setTokenTransaction;
+  V.setTokenTransactionNonWallet = setTokenTransactionNonWallet;
   V.getNetVAmount = getNetVAmount;
   V.getGrossVAmount = getGrossVAmount;
   V.castTransfers = castTransfers;
@@ -650,6 +707,7 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     setAddressVerification: setAddressVerification,
     setCoinTransaction: setCoinTransaction,
     setTokenTransaction: setTokenTransaction,
+    setTokenTransactionNonWallet: setTokenTransactionNonWallet,
     getNetVAmount: getNetVAmount,
     getGrossVAmount: getGrossVAmount,
     castTransfers: castTransfers,

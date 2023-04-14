@@ -478,22 +478,46 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   function resultsSOM( tabNum ) {
     return {
       c: 's-calc-results s-calc-results__som',
-      h: {
-        t: 'table',
-        c: 's-calc-results-table w-full',
-        h: mapFields( ['SOM_LOSS', 'SOM_SUPP', 'SOM_BAL_N', 'SOM_BAL_C'], tabNum ),
-      },
+      h: [
+        {
+          t: 'table',
+          c: 's-calc-results-table w-full',
+          h: mapFields( ['SOM_LOSS', 'SOM_SUPP', 'SOM_BAL_C', 'SOM_BAL_N'], tabNum ),
+        },
+        {
+          y: {
+            'text-align': 'right',
+            'padding': '0 1.5rem 1rem',
+            'font-size': '0.75rem',
+            'font-style': 'italic',
+            'color': '#aaa',
+          },
+          h: 'in kg/ha',
+        },
+      ]
     };
   }
 
   function resultsDemand( tabNum ) {
     return {
       c: 's-calc-results',
-      h: {
-        t: 'table',
-        c: 's-calc-results-table w-full',
-        h: mapFields( ['N_PB', 'N_FIX', 'N_FTLZ_ORG', 'N_FTLZ_GRS', 'N_DEP', 'N_NYR'], tabNum ),
-      },
+      h: [
+        {
+          t: 'table',
+          c: 's-calc-results-table w-full',
+          h: mapFields( ['N_PB', 'N_FIX', 'N_FTLZ_ORG', 'N_FTLZ_GRS', 'N_DEP', 'N_NYR'], tabNum ),
+        },
+        {
+          y: {
+            'text-align': 'right',
+            'padding': '0 1.5rem 1rem',
+            'font-size': '0.75rem',
+            'font-style': 'italic',
+            'color': '#aaa',
+          },
+          h: 'in kg/ha',
+        },
+      ]
     };
   }
 
@@ -544,32 +568,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                 'padding': '0.75rem 1.25rem',
                 'border-radius': '5px',
                 'border-left': '3px solid',
-                'color': 'teal',
-              },
-              h: [
-                {
-                  t: 'span',
-                  y: {
-                    'margin-right': '1.5rem',
-                  },
-                  h: 'N',
-                },
-                {
-                  t: 'span',
-                  y: {
-                    color: 'teal',
-                  },
-                  i: 's-calc-result' + '__' + 'T_BAL_N',
-                  h: '0.00',
-                },
-              ],
-            },
-            {
-              y: {
-                // 'background': '#eee',
-                'padding': '0.75rem 1.25rem',
-                'border-radius': '5px',
-                'border-left': '3px solid',
                 'color': 'steelblue',
               },
               h: [
@@ -586,6 +584,32 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                     color: 'steelblue',
                   },
                   i: 's-calc-result' + '__' + 'T_BAL_C',
+                  h: '0.00',
+                },
+              ],
+            },
+            {
+              y: {
+                // 'background': '#eee',
+                'padding': '0.75rem 1.25rem',
+                'border-radius': '5px',
+                'border-left': '3px solid',
+                'color': 'teal',
+              },
+              h: [
+                {
+                  t: 'span',
+                  y: {
+                    'margin-right': '1.5rem',
+                  },
+                  h: 'N',
+                },
+                {
+                  t: 'span',
+                  y: {
+                    color: 'teal',
+                  },
+                  i: 's-calc-result' + '__' + 'T_BAL_N',
                   h: '0.00',
                 },
               ],
@@ -684,6 +708,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             tabNum != 'AA'
               ? form( tabNum, dataset, /* exclude: */ ['SITE'] )
               : summary( this.data ),
+            resultsSOM( tabNum ),
             {
               c: 's-calc-results-show-btn',
               h: V.getIcon( 'expand_more', '24px' ), // V.getString( 'Show details' ),
@@ -692,7 +717,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             V.cN( {
               c: 's-calc-results-wrapper hidden',
               h: [
-                resultsSOM( tabNum ),
                 resultsDemand( tabNum ),
                 resultsSupply( tabNum ),
                 // resultsCsupply( tabNum ),

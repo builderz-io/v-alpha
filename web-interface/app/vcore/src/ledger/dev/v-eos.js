@@ -38,7 +38,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.cA()
+    which = V.cA(),
   ) {
 
     const address = 'todo...';
@@ -67,7 +67,7 @@ const VEOS = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.cA()
+    which = V.cA(),
   ) {
 
     const address = 'todo...';

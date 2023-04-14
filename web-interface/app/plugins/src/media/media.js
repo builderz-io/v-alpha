@@ -10,7 +10,6 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   const featureVideos = {
-    faithfinance: 'https://vimeo.com/236725407',
     builderz: 'https://youtu.be/kJbto4TISKA',
   };
 
@@ -69,7 +68,6 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     Page.draw( {
       topslider: $slider,
       listings: $list,
-      position: 'feature',
     } );
   }
 
@@ -90,11 +88,12 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
 
     Page.draw( {
       listings: $list,
-      position: 'feature',
+      position: getFeatureVideo() ? 'feature' : 'top',
     } );
   }
 
   function featurePresenterAndView() {
+    if ( !getFeatureVideo() ) { return }
     // presenter
     const $featureUl = MediaComponents.featureUl();
     const $videoFeature = MediaComponents.videoFeature( getFeatureVideo() );

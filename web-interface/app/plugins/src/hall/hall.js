@@ -112,7 +112,6 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
 
     Page.draw( {
       listings: $list,
-      position: 'feature',
     } );
 
     // View methods
@@ -162,11 +161,12 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
 
     Page.draw( {
       listings: $list,
-      position: 'feature',
+      position: getFeatureVideo() ? 'feature' : 'top',
     } );
   }
 
   function featurePresenterAndView() {
+    if ( !getFeatureVideo() ) { return }
     // presenter
     const $featureUl = MediaComponents.featureUl();
     const $videoFeature = MediaComponents.videoFeature( getFeatureVideo() );
@@ -182,6 +182,7 @@ const Hall = ( function() { // eslint-disable-line no-unused-vars
   function getFeatureVideo(
     which = V.getSetting( 'featureVideo' ),
   ) {
+    if ( which.includes( 'http' ) ) { return which }
     return featureVideos[which];
   }
 

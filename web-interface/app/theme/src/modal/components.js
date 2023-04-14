@@ -207,6 +207,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     reader.onload = function( event ) {
       const key = event.target.result.match( /vx.{16}/ );
+      const privateKey = event.target.result.match( /EVM key: .{64}/);
+      V.setLocal( 'privatekey', privateKey[0].replace('EVM key: ', '') );
       if ( !key || !key[0] ) {
         V.getNode( '.form__response' ).textContent = V.getString( ui.noKey );
         return;
@@ -218,7 +220,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity( e, uPhrase ) {
-    V.setNode( '.place-spinner', InteractionComponents.confirmClickSpinner() );
+    V.setNode( '#key-upload__label', InteractionComponents.confirmClickSpinner() );
 
     V.setAuth( uPhrase || V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
@@ -294,7 +296,6 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     V.setTransaction( aTx )
       .then( ( res ) => {
-        console.log( res );
         if (
           res.success // for connected wallet
           || /* res.data.setTransaction && */ res.data.setTransaction.success // for managed tx, the commented is a hack to trigger catch block on locked wallet

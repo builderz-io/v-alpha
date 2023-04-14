@@ -14,29 +14,29 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: true,
           internalType: 'address',
           name: 'owner',
-          type: 'address'
+          type: 'address',
         },
         {
           indexed: true,
           internalType: 'address',
           name: 'spender',
-          type: 'address'
+          type: 'address',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'value',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'Approval',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
       inputs: [],
       name: 'BlowAllFuses',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -45,11 +45,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint8',
           name: '_fuseID',
-          type: 'uint8'
-        }
+          type: 'uint8',
+        },
       ],
       name: 'BlowFuse',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -58,11 +58,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'address',
           name: '_newController',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'ChangeController',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -71,17 +71,17 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'string',
           name: 'name',
-          type: 'string'
+          type: 'string',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'value',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'Log',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -90,23 +90,23 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: true,
           internalType: 'address',
           name: 'from',
-          type: 'address'
+          type: 'address',
         },
         {
           indexed: true,
           internalType: 'address',
           name: 'to',
-          type: 'address'
+          type: 'address',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'value',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'Transfer',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -115,47 +115,47 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: true,
           internalType: 'address',
           name: 'from',
-          type: 'address'
+          type: 'address',
         },
         {
           indexed: true,
           internalType: 'address',
           name: 'to',
-          type: 'address'
+          type: 'address',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'value',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'feesBurned',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'contribution',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'payoutSender',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           indexed: false,
           internalType: 'uint256',
           name: 'payoutRecipient',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'TransferSummary',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -164,11 +164,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'address',
           name: 'account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'UnapproveAccount',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -177,11 +177,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint256',
           name: 'communityContribution',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'UpdateCommunityContribution',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -190,11 +190,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'address',
           name: 'newCommunityContributionAccount',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'UpdateCommunityContributionAccount',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -203,11 +203,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint256',
           name: 'generationAmount',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'UpdateGenerationAmount',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -216,11 +216,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint256',
           name: 'generationPeriod',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'UpdateGenerationPeriod',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -229,11 +229,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint256',
           name: 'initialBalance',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'UpdateInitialBalance',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -242,11 +242,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint256',
           name: 'lifetime',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'UpdateLifetime',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -255,11 +255,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: false,
           internalType: 'uint256',
           name: 'transactionFee',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'UpdateTransactionFee',
-      type: 'event'
+      type: 'event',
     },
     {
       anonymous: false,
@@ -268,190 +268,190 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
           indexed: true,
           internalType: 'address',
           name: 'account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'VerifyAccount',
-      type: 'event'
+      type: 'event',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'accountApproved',
       outputs: [
         {
           internalType: 'bool',
           name: '',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'owner',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'address',
           name: 'spender',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'allowance',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'spender',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: 'amount',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'approve',
       outputs: [
         {
           internalType: 'bool',
           name: '',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'balanceOf',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'bool',
           name: '_confirm',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       name: 'blowAllFuses',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint8',
           name: '_fuseID',
-          type: 'uint8'
+          type: 'uint8',
         },
         {
           internalType: 'bool',
           name: '_confirm',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       name: 'blowFuse',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: 'amount',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'burn',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'account',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: 'amount',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'burnAt',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'account',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: 'amount',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'burnFrom',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_newController',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'changeController',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -460,11 +460,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'address',
           name: '',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -473,35 +473,35 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint8',
           name: '',
-          type: 'uint8'
-        }
+          type: 'uint8',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'spender',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: 'subtractedValue',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'decreaseAllowance',
       outputs: [
         {
           internalType: 'bool',
           name: '',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -510,11 +510,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -523,11 +523,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -536,40 +536,40 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'address',
           name: '',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'getDetails',
       outputs: [
         {
           internalType: 'uint256',
           name: '_lastBlock',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_balance',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_zeroBlock',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -578,11 +578,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -591,11 +591,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -604,11 +604,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -617,11 +617,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -630,163 +630,163 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: 'spender',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: 'addedValue',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'increaseAllowance',
       outputs: [
         {
           internalType: 'bool',
           name: '',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'string',
           name: '_name',
-          type: 'string'
+          type: 'string',
         },
         {
           internalType: 'string',
           name: '_symbol',
-          type: 'string'
+          type: 'string',
         },
         {
           internalType: 'uint256',
           name: '_lifetime',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_generationAmount',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_generationPeriod',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_communityContribution',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_transactionFee',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'uint256',
           name: '_initialBalance',
-          type: 'uint256'
+          type: 'uint256',
         },
         {
           internalType: 'address',
           name: '_communityContributionAccount',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'address',
           name: '_controller',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'initialize',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_controller',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'initialize',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'lastGenerationBlock',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'lastTransactionBlock',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'liveBalanceOf',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -795,11 +795,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'string',
           name: '',
-          type: 'string'
-        }
+          type: 'string',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -808,11 +808,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -821,11 +821,11 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'string',
           name: '',
-          type: 'string'
-        }
+          type: 'string',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [],
@@ -834,225 +834,225 @@ const VEvmAbi = JSON.parse( JSON.stringify( // eslint-disable-line no-unused-var
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_to',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: '_value',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'transfer',
       outputs: [
         {
           internalType: 'bool',
           name: '',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'address',
           name: '',
-          type: 'address'
+          type: 'address',
         },
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'transferFrom',
       outputs: [
         {
           internalType: 'bool',
           name: '',
-          type: 'bool'
-        }
+          type: 'bool',
+        },
       ],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'triggerOnchainBalanceUpdate',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'unapproveAccount',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: '_communityContribution',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'updateCommunityContribution',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_newCommunityContributionAccount',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'updateCommunityContributionAccount',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: '_generationAmount',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'updateGenerationAmount',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: '_generationPeriod',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'updateGenerationPeriod',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: '_initialBalance',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'updateInitialBalance',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: '_lifetime',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'updateLifetime',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'uint256',
           name: '_transactionFee',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       name: 'updateTransactionFee',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '_account',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'verifyAccount',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
+      type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
           name: '',
-          type: 'address'
-        }
+          type: 'address',
+        },
       ],
       name: 'zeroBlock',
       outputs: [
         {
           internalType: 'uint256',
           name: '',
-          type: 'uint256'
-        }
+          type: 'uint256',
+        },
       ],
       stateMutability: 'view',
-      type: 'function'
+      type: 'function',
     },
     {
       stateMutability: 'payable',
-      type: 'receive'
-    }
-  ]
+      type: 'receive',
+    },
+  ],
 
   // Ropsten Dev Contract ABI
   /*

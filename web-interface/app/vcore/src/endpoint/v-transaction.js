@@ -250,7 +250,7 @@ const VTransaction = ( function() { // eslint-disable-line no-unused-vars
 
   function setTransaction( txData ) {
     if ( txData.success ) {
-      if ( V.cA() ) {
+      if ( true /* V.cA() */ ) {
         return V.setData( txData.data[0], 'transaction', V.getSetting( 'transactionLedger' ) );
       }
       else {
