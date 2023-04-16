@@ -55,8 +55,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.5.4',
-    uploadVersion: '9',
+    appVersion: 'Alpha 3.5.5',
+    uploadVersion: '10',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
