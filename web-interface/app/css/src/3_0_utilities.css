@@ -276,6 +276,10 @@
 .content-start {
   align-content: flex-start;
 }
+
+.flex-col {
+  flex-direction: column;
+}
 .txt-anchor-mid {
   text-anchor: middle;
 }

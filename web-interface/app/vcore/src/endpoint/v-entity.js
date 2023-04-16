@@ -38,6 +38,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       targetRange: 'Target must be within 0 - 9999',
       isNaN: 'Target must be a number',
       noUnit: 'Please add a unit, such as "hour"',
+      noWhitespace: 'Whitespace not allowed in unit',
       noTarget: 'Please add a target',
     };
 
@@ -254,7 +255,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
       props: {
         descr: entityData.description || undefined,
-        target: target.data[0],
+        target: Number( entityData.target ),
         unit: entityData.unit || undefined,
         email: email,
         emailPrivate: entityData.emailPrivate || undefined,
@@ -396,16 +397,23 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
 
   function castTarget( target, unit, role )  {
     let error;
-
+    let unitWord = unit;
     target == '' ? target = undefined : null;
 
     if (  target ) {
-      unit == '' ? error = V.getString( ui.noUnit ) : null;
+      unitWord = unitWord.trimStart();
+      unitWord = unitWord.trimEnd();
+      if ( unitWord.startsWith( 'per ' ) ) {
+        unitWord = unitWord.replace( 'per ', '' );
+        unitWord = unitWord.trimStart();
+      }
+
+      unitWord == '' ? error = V.getString( ui.noUnit ) : ( unitWord.includes( ' ' ) ? error = V.getString( ui.noWhitespace ) : null );
       isNaN( target ) ? error = V.getString( ui.isNaN ) : null;
     }
 
     if ( ['Pool'].includes( role ) ) {
-      unit == '' ? error = undefined : null;
+      unitWord == '' ? error = undefined : null;
       !target ? error = V.getString( ui.noTarget ) : null;
       // target.toLowerCase().trim() == V.getString( ui.free ).trim() ? target = 0 : null;
     }
@@ -425,7 +433,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         success: true,
         endpoint: 'entity',
         status: 'cast entity target',
-        data: [ Number( target ) || undefined ],
+        data: { target: target, unit: unitWord },
       };
     }
 

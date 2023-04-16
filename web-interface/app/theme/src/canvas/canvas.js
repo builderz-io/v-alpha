@@ -363,6 +363,16 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
+    const lP = V.getSetting( 'landingPage' );
+
+    if (
+      window.location.pathname == '/'
+      && lP
+    ) {
+      path = lP;
+      V.setBrowserHistory( lP );
+    }
+
     Chat.drawMessageForm( 'clear' );
 
     setNavStates(); // if !serviceNav

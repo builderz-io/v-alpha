@@ -37,7 +37,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressState(
-    which = V.cA()
+    which = V.cA(),
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );
@@ -72,7 +72,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
   }
 
   async function getAddressHistory(
-    which = V.cA()
+    which = V.cA(),
   ) {
 
     const address = Symbol.Address.createFromRawAddress( which );
@@ -150,7 +150,7 @@ const VSymbol = ( function() { // eslint-disable-line no-unused-vars
       [ new Symbol.Mosaic( networkCurrencyMosaicId, Symbol.UInt64.fromUint( data.txTotal * 10**( divisibility ) ) ) ],
       Symbol.PlainMessage.create( data.reference ),
       networkType,
-      Symbol.UInt64.fromUint( 2000000 )
+      Symbol.UInt64.fromUint( 2000000 ),
     );
 
     // 2. Sign the transaction

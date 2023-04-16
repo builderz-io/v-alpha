@@ -1,6 +1,8 @@
-pragma solidity ^0.6.6;
+// SPDX-License-Identifier: MIT
 
-import "./lib/contracts-ethereum-package/token/ERC20/IERC20.sol";
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IVICoin is IERC20 {
     function unapproveAccount(address _account) external;

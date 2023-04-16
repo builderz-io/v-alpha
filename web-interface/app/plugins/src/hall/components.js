@@ -8,6 +8,24 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   V.setStyle( {
+    'call-to-action__btn1': {
+      'display': 'flex',
+      'height': '1.5rem',
+      'align-items': 'center',
+      'padding': '1rem 4rem',
+      'background': 'rgba(var(--brandPrimary),1)',
+      'color': 'white',
+      'border-radius': '16px',
+    },
+    'call-to-action__btn2': {
+      'display': 'flex',
+      'height': '1.5rem',
+      'align-items': 'center',
+      'padding': '1rem 4rem',
+      'background': 'rgba(var(--brandPrimary),1)',
+      'color': 'white',
+      'border-radius': '16px',
+    },
     'iframe-wrapper': {
       'position': 'relative',
       'padding-bottom': '56.25%',
@@ -28,10 +46,10 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
     'network-layout__wrapper': {
       width: '100%',
     },
-    'calls-to-action__wrapper': {
+    'create-entity-nudges__wrapper': {
       width: '100%',
     },
-    'call-to-action': {
+    'create-entity-nudge': {
       'padding': '1rem 3rem',
       'background': 'lemonchiffon',
       'margin': '1rem',
@@ -58,6 +76,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
       imprint: 'Imprint',
       dataProtection: 'Data Protection',
       privacyPolicy: 'Privacy Policy',
+      join: 'Join',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -68,6 +87,15 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   } )();
 
   function handleCallToActionClick() {
+    if ( 'btn1' == this ) {
+      Profile.draw( V.getSetting( 'callToActionProfile' ) );
+    }
+    else if ( 'btn2' == this ) {
+      Join.draw( 'initialize join' );
+    }
+  }
+
+  function handleCreateEntityNudgeClick() {
     this == 'Skill' && V.setBrowserHistory( '/network/skills' )
     || this == 'Task' && V.setBrowserHistory( '/network/tasks' )
     || this == 'Plot' && V.setBrowserHistory( '/farms/plots' );
@@ -148,7 +176,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
 
     return V.cN( {
       c: 'legal-blabla__wrapper',
-      h: ['imprint', 'dataProtection', 'privacyPolicy'].map( item => V.cN( {
+      h: ['imprint', 'dataProtection' /*, 'privacyPolicy'*/].map( item => V.cN( {
         c: '',
         h: [
           {
@@ -160,7 +188,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
             y: {
               'white-space': 'break-spaces',
             },
-            h: lD[item],
+            h: item == 'imprint' ? lD[item] : V.cN( { t: 'a', f: x.dataProtectionLink, h: V.getString( ui[item] ) } ),
           },
         ],
       } ) ),
@@ -212,14 +240,15 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
       ],
     } );
   }
+
   function vipTitle() {
     return V.cN( {
-      c: 'network-layout__featured font-bold fs-l mt-r mb-r',
+      c: 'network-layout__featured font-bold fs-l mt-r mb-r w-full txt-center',
       h: V.getString( ui.featuredPeople ),
     } );
   }
 
-  function callsToAction( aE ) {
+  function createEntityNudges( aE ) {
 
     const rolesHeldbyAe = aE.holderOf.map( item => V.castRole( item.c ) );
 
@@ -245,12 +274,31 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
     calls.length = 2;
 
     return V.cN( {
-      c: 'calls-to-action__wrapper',
+      c: 'create-entity-nudges__wrapper',
       h: calls.map( item => V.cN( {
-        c: 'call-to-action cursor-pointer',
+        c: 'create-entity-nudge cursor-pointer',
         h: '👋 ' + item.text,
-        k: handleCallToActionClick.bind( item.onClick ),
+        k: handleCreateEntityNudgeClick.bind( item.onClick ),
       } ) ),
+    } );
+  }
+
+  function callToActionBtns() {
+    return V.cN( {
+      c: 'call-to-action__wrapper flex items-center flex-col',
+      h: [
+        {
+          x: V.getSetting( 'callToActionText' ),
+          c: 'call-to-action__btn1 cursor-pointer',
+          h: V.getString( V.getSetting( 'callToActionText' ) ),
+          k: handleCallToActionClick.bind( 'btn1' ),
+        },
+        {
+          c: 'call-to-action__btn2 mt-r cursor-pointer',
+          h: V.getString( ui.join ),
+          k: handleCallToActionClick.bind( 'btn2' ),
+        },
+      ],
     } );
   }
 
@@ -260,8 +308,9 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
     featureUl: featureUl,
     networkLayout: networkLayout,
     legalBlabla: legalBlabla,
-    callsToAction: callsToAction,
     vipTitle: vipTitle,
+    createEntityNudges: createEntityNudges,
+    callToActionBtns: callToActionBtns,
   };
 
 } )();
