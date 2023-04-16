@@ -128,6 +128,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       img: 'Image',
       holder: 'Holder',
       holderOf: 'Holder of',
+
       mappedBy: 'Mapped by',
       accessKeys: 'Access Keys',
       notAuthenticated: 'not authorized to view',
@@ -1102,23 +1103,44 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function holderOfCard() {
-    // const holderOf = V.castJson( entity.holderOf, 'clone' );
-    // holderOf.splice( holderOf.indexOf( entity.fullId ), 1 );
-
     if ( !entity.holderOf.length ) {
       return '';
     }
 
+    const roleObj = {};
+
+    entity.holderOf.forEach( item => {
+      const role = V.castRole( item.c );
+      const fullId = item.fullId;
+
+      !roleObj[ role ]
+        ? roleObj[ role ] = [ fullId ]
+        : roleObj[ role ].push( fullId );
+    } );
+
     const $innerContent = V.cN( {
-      h: entity.holderOf.map( item => V.cN( {
-        t: 'p',
-        c: 'pxy',
-        y: {
-          cursor: 'pointer',
-        },
-        h: item.fullId,
-        k: handleProfileDraw,
-      } ) ),
+      h: ( () => {
+        const nodes = [];
+        for ( const role in roleObj ) {
+          nodes.push( V.cN( {
+            t: 'h2',
+            c: 'w-full font-bold pxy',
+            h: V.getString( role ),
+          } ) );
+          roleObj[role].forEach( item => {
+            nodes.push( V.cN( {
+              t: 'p',
+              c: 'pxy',
+              y: {
+                cursor: 'pointer',
+              },
+              h: item,
+              k: handleProfileDraw,
+            } ) );
+          } );
+        }
+        return nodes;
+      } )(),
     } );
     return castCard( $innerContent, V.getString( ui.holderOf ) );
   }

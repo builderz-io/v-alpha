@@ -19,7 +19,7 @@ const VMongoDB = ( function() { // eslint-disable-line no-unused-vars
       path: path,
       private: {
         uPhrase: data.auth,
-        evmCredentials: data.evmCredentials
+        evmCredentials: data.evmCredentials,
       },
       profile: {
         fullId: fullId,
@@ -36,24 +36,24 @@ const VMongoDB = ( function() { // eslint-disable-line no-unused-vars
             block: data.block,
             rpc: data.rpc,
             contract: data.contract,
-          }
+          },
         },
         uuidV4: data.uuidE,
       },
       paths: {
         entity: path,
-        base64: '/' + data.uuidE
+        base64: '/' + data.uuidE,
       },
       status: {
         active: true,
-        verified: V.getSetting( 'defaultVerification' )
+        verified: V.getSetting( 'defaultVerification' ),
       },
       evmCredentials: {
         address: data.evmCredentials.evmAddress,
         issuer: data.evmCredentials.evmIssuer,
       },
       receivingAddresses: {
-        evm: data.receivingAddresses.evm
+        evm: data.receivingAddresses.evm,
       },
       symbolCredentials: data.symbolCredentials,
       owners: [{
@@ -72,7 +72,7 @@ const VMongoDB = ( function() { // eslint-disable-line no-unused-vars
       geometry: data.geometry,
       social: {
         email: data.props.email,
-      }
+      },
     };
   }
 

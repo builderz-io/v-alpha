@@ -55,8 +55,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.5.4',
-    uploadVersion: '8',
+    appVersion: 'Alpha 3.5.5',
+    uploadVersion: '10',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
@@ -84,6 +84,10 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     questionnaire: VNetworkInit.questionnaire,
     featureVideo: VNetworkInit.featureVideo,
     plugins: VNetworkInit.plugins,
+
+    landingPage: VNetworkInit.landingPage,
+    callToActionText: VNetworkInit.callToActionText,
+    callToActionProfile: VNetworkInit.callToActionProfile,
 
     defaultPrivacy: VNetworkInit.defaultPrivacy,
     askforEmail: VNetworkInit.askforEmail,
@@ -130,7 +134,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
     goerli: {
       network: 'Goerli Testnet',
-      contractAddress: '0xb0a869d670ba5a31B3c8642806Fcf2E94622c837', // new deployment
+      contractAddress: '0x8EC9AF6BAa83F3256101049dF7c691553B310EBA', // new deployment
       transactionFee: 3333, // Fallback, percentage taken from the signed amount to be burned, multiplied by 10 to the power of 2, e.g. 3333 for 33.33%
       communityContribution: 200, // Fallback, Percentage taken from transactionFee before burned, to be credited to the communityContributionAccount, multiplied by 10 to the power of 2, e.g. 1000 for 10.00%
       explorerTx: 'https://goerli.etherscan.io/tx/', // include trailing slash

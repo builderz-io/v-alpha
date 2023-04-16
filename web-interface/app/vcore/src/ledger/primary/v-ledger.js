@@ -168,7 +168,12 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           return V.setCoinTransaction( data );
         }
         else if ( data.currency == 'V' ) {
-          return V.setTokenTransaction( data );
+          if ( V.cA() ) {
+            return V.setTokenTransaction( data );
+          }
+          else {
+            return V.setTokenTransactionNonWallet( data );
+          }
         }
       }
       else if ( whichEndpoint == 'verification' ) {

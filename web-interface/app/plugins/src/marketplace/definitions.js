@@ -132,6 +132,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       use: {
         form: 'new entity',
         role: 'Network',
+        join: 5,
       },
       draw: function( path ) {
         Marketplace.draw( path );
@@ -167,6 +168,7 @@ const MarketplaceDefinitions = ( function() { // eslint-disable-line no-unused-v
       use: {
         form: 'new entity',
         role: 'Place',
+        join: 5,
       },
       draw: function( path ) {
         Marketplace.draw( path );
