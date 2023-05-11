@@ -8,6 +8,9 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   'use strict';
 
   V.setStyle( {
+    'call-to-action__wrapper': {
+      margin: '3rem 0',
+    },
     'call-to-action__btn1': {
       'display': 'flex',
       'height': '1.5rem',
@@ -72,11 +75,13 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
     const strings = {
       about: 'About',
       featuredPeople: 'Featured Members',
+      contactDetails: 'Contact Details',
 
       imprint: 'Imprint',
       dataProtection: 'Data Protection',
       privacyPolicy: 'Privacy Policy',
       join: 'Join',
+      signup: 'Sign up',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -204,28 +209,31 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
           y: {
             'display': 'flex',
             'justify-content': 'center',
-            'min-height': '15vh',
+            'min-height': '225px',
             'max-height': '20vh',
             'background-image': `url(${ data.images.mediumImage })`,
             'background-repeat': 'no-repeat',
             'background-position': 'center',
+            'margin-bottom': '1rem',
           },
         } ),
         V.cN( {
           c: 'network-layout__texts',
           h: [
-            {
-              c: 'network-layout__about font-bold fs-l mb-r',
-              h: V.getString( ui.about ),
-            },
+            // {
+            //   c: 'network-layout__about font-bold fs-l mb-r',
+            //   h: V.getString( ui.about ),
+            // },
             {
               c: 'network-layout__descr',
               h: V.castDescription( data.properties.description ).$description,
             },
             {
+              x: V.getSetting( 'additionalImage' ),
               c: 'network-layout__additional-img',
               h: V.cN( {
                 t: 'img',
+                c: 'w-full',
                 a: {
                   src: V.getSetting( 'additionalImage' ),
                 },
@@ -244,7 +252,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   function vipTitle() {
     return V.cN( {
       c: 'network-layout__featured font-bold fs-l mt-r mb-r w-full txt-center',
-      h: V.getString( ui.featuredPeople ),
+      h: V.getString( ui.contactDetails ),
     } );
   }
 
@@ -295,7 +303,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         {
           c: 'call-to-action__btn2 mt-r cursor-pointer',
-          h: V.getString( ui.join ),
+          h: V.getString( ui.signup ),
           k: handleCallToActionClick.bind( 'btn2' ),
         },
       ],

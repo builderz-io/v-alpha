@@ -1320,7 +1320,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         y: {
           'display': 'flex',
           'justify-content': 'center',
-          'min-height': '20vh',
+          'min-height': '225px',
           'max-height': '20vh',
           'background-image': `url(${ entity.images.mediumImage })`,
           'background-repeat': 'no-repeat',
