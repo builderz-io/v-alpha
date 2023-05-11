@@ -222,7 +222,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
 
     if ( options && options.top == 'indent' ) {
       $list.style.position = 'relative';
-      $list.style.top = '-30px';
+      $list.style.top = '-25px';
     }
 
     return $list;
