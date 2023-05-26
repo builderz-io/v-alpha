@@ -105,8 +105,14 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-form__section-title': {
       // height: '2rem',
     },
+    's-calc__crop-sequence-nav': {
+      overflow: 'hidden',
+      display: 'flex',
+    },
     's-calc-tab-nav': {
       // background: 'azure',
+      overflow: 'scroll',
+      width: '67%',
     },
     's-calc-input-unit': {
       'font-size': '0.75rem',
@@ -494,7 +500,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           },
           h: 'in kg/ha',
         },
-      ]
+      ],
     };
   }
 
@@ -517,7 +523,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           },
           h: 'in kg/ha',
         },
-      ]
+      ],
     };
   }
 
@@ -648,7 +654,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     data = V.castClone( data );
 
-    for ( let i = 1; i <= 8; i++ ) {
+    for ( let i = 1; i <= 24; i++ ) {
       if ( !data['s' + i] ) {
         data['s' + i] = JSON.stringify( SoilCalculator.getSchema( 'request' ) );
       }
@@ -677,23 +683,43 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     $tabs.append( V.cN( {
       t: 'nav',
+      c: 's-calc__crop-sequence-nav',
       h: [
         // {
         //   c: 's-calc-form__section-title pxy font-bold',
         //   h: V.getString( ui.year ),
         // },
         {
+          t: 'label',
+          // c: 'tab' + 'AA' + '__label',
+          // for: 'tab' + 'AA',
+          h: V.getIcon( 'arrow_left', '30px' ),
+        },
+        {
           t: 'ul',
           c: 's-calc-tab-nav',
           h: sequence.map( tabNum => ( {
             t: 'li',
             h: {
+              x: tabNum != 'AA',
               t: 'label',
               c: 'tab' + tabNum + '__label',
               for: 'tab' + tabNum,
-              h: tabNum == 'AA' ? V.getIcon( 'summarize' ) : tabNum,
+              h: tabNum,
             },
           } ) ),
+        },
+        {
+          t: 'label',
+          // c: 'tab' + 'AA' + '__label',
+          // for: 'tab' + 'AA',
+          h: V.getIcon( 'arrow_right', '30px' ),
+        },
+        {
+          t: 'label',
+          c: 'tab' + 'AA' + '__label',
+          for: 'tab' + 'AA',
+          h: V.getIcon( 'summarize' ),
         },
       ],
     } ) );
