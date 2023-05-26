@@ -81,7 +81,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function view( data ) {
+  async function view( data ) {
 
     if ( !data.success ) {
       Page.draw( {
@@ -97,6 +97,8 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       entity: entity,
       editable: false,
     } );
+
+    const $topContent = await UserComponents.mediumImageCard();
 
     const $list = CanvasComponents.list( { top: entity.images.mediumImage ? 'indent' : '' } );
 
@@ -139,11 +141,34 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       } );
     }, 100 );
 
+    setTimeout( function setNewListStyles() {
+
+      /**
+       * Ensures that the list scrolls over the entire profile image
+       * Thank you ChatGPT
+       */
+
+      const $img = document.getElementsByClassName( 'profile-image' )[0];
+      const $list = document.getElementsByClassName( 'list' )[0];
+
+      if ( $img && $list ) {
+        const divHeight = $img.offsetHeight;
+
+        // Apply styles to the list element
+        $list.style.top = -divHeight + 1 + 'px';
+        $list.style.paddingTop = divHeight - 54 + 'px';
+
+      }
+      else {
+        console.log( 'No div element or list element found with the specified class.' );
+      }
+    }, 20 );
+
     if ( data.data[0].typeOfWhich == 'string' ) {
       // in this case the profile is fetched using a path and the navigation has not been set in preview
       Navigation.draw( entity ).then( () => {
         Page.draw( {
-          topcontent: UserComponents.mediumImageCard(),
+          topcontent: $topContent,
           position: 'top',
           listings: $list,
         } );
@@ -153,7 +178,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
     }
     else {
       Page.draw( {
-        topcontent: UserComponents.mediumImageCard(),
+        topcontent: $topContent,
         position: 'top',
         listings: $list,
       } );

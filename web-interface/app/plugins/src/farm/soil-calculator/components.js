@@ -7,6 +7,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   'use strict';
 
+  const settings = {
+    numCropEntries: 24,
+    dbFieldSITE: 31,
+  };
+
   const locale = V.getAppLocale();
 
   V.setStyle( {
@@ -105,8 +110,14 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-form__section-title': {
       // height: '2rem',
     },
+    's-calc__crop-sequence-nav': {
+      overflow: 'hidden',
+      display: 'flex',
+    },
     's-calc-tab-nav': {
       // background: 'azure',
+      overflow: 'scroll',
+      width: '67%',
     },
     's-calc-input-unit': {
       'font-size': '0.75rem',
@@ -221,6 +232,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   }
 
+  function handleNavScroll() {
+    // Thanks ChatGPT
+    const tabContainer = document.querySelector( '.s-calc-tab-nav' );
+    const scrollAmount = this === 'left' ? -tabContainer.offsetWidth : tabContainer.offsetWidth;
+    tabContainer.scrollBy( { left: scrollAmount, behavior: 'smooth' } );
+  }
+
   /* ================== private methods ================= */
 
   function drawRadioBtnChange( e ) {
@@ -235,8 +253,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function setStateDatapoint() {
-    V.setState( 'cropSequence', { s10: getFormData( 'SITE' ) } );
-    for ( let i = 1; i <= 8; i++ ) {
+    const obj = {};
+    obj[ 's' + settings.dbFieldSITE ] = getFormData( 'SITE' );
+    V.setState( 'cropSequence', obj );
+    for ( let i = 1; i <= settings.numCropEntries; i++ ) {
       const obj = {};
       obj[ 's' + i ] = { datapoint: getFormData( 'CROP-' + i ) };
       V.setState( 'cropSequence', obj );
@@ -244,12 +264,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function setStateDatapointResults() {
-    const siteData = V.getState( 'cropSequence' )[ 's10' ];
-    for ( let i = 1; i <= 8; i++ ) {
+    const siteData = V.getState( 'cropSequence' )[ 's' + settings.dbFieldSITE ];
+    for ( let i = 1; i <= settings.numCropEntries; i++ ) {
       const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
       if ( typeof cropData === 'number' ) { continue }
-      const prevCropData = i == 1 ? null : V.getState( 'cropSequence' )[ 's' + ( i - 1 ) ].datapoint;
+
+      const prevCropData = getFirstPrevious( i );
+
       Object.assign( cropData, siteData ); // merge
+
       if ( cropData && siteData ) {
         SoilCalculator
           .getDatapointResults( cropData, prevCropData )
@@ -259,6 +282,18 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           } );
       }
     }
+  }
+
+  function getFirstPrevious( i ) {
+    for ( let j = 1; j <= settings.numCropEntries - 1; j++ ) {
+      if ( i - j < 1 ) { return null }
+      // console.log( i-j );
+      const cropData = V.getState( 'cropSequence' )[ 's' + ( i - j ) ].datapoint;
+      if ( typeof cropData != 'number'  ) {
+        return cropData;
+      }
+    }
+    return null;
   }
 
   function drawResetResults() {
@@ -279,7 +314,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       ) {
 
         /* remove highlight from tab number */
-        if ( tabNum <= 8 ) {
+        if ( tabNum <= settings.numCropEntries ) {
           V.getNode( 'label[for="tab' + tabNum + '"]' ).classList.remove( 'font-bold' );
         }
 
@@ -304,9 +339,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function drawSummary() {
-    const sequence = V.castClone( V.getState( 'cropSequence' ) );
-    delete sequence.s9;
-    delete sequence.s10;
+    const sequence = deleteFields( V.castClone( V.getState( 'cropSequence' ) ) );
     V.setNode( '.s-calc-summary__data', 'clear' );
     V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
@@ -316,7 +349,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const formName = e.target.closest( 'form' ).getAttribute( 'name' );
 
     const subFieldNum = formName === 'SITE'
-      ? '10'
+      ? settings.dbFieldSITE
       : formName.replace( 'CROP-', '' );
 
     const newDatapoint = getFormData( formName );
@@ -450,6 +483,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return x.toString().replace( /\B(?=(\d{3})+(?!\d))/g, '.' );
   }
 
+  function deleteFields( data ) {
+    delete data.s25;
+    delete data.s26;
+    delete data.s27;
+    delete data.s28;
+    delete data.s29;
+    delete data.s30;
+    delete data.s31;
+    return data;
+  }
+
   /* ================== components ================= */
 
   function rowObj( row, tabNum ) {
@@ -494,7 +538,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           },
           h: 'in kg/ha',
         },
-      ]
+      ],
     };
   }
 
@@ -517,7 +561,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           },
           h: 'in kg/ha',
         },
-      ]
+      ],
     };
   }
 
@@ -646,16 +690,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function cropSequence( data = {} ) {
 
-    data = V.castClone( data );
+    data = deleteFields( V.castClone( data ) );
 
-    for ( let i = 1; i <= 8; i++ ) {
+    for ( let i = 1; i <= settings.numCropEntries; i++ ) {
       if ( !data['s' + i] ) {
         data['s' + i] = JSON.stringify( SoilCalculator.getSchema( 'request' ) );
       }
     }
-
-    delete data.s9;
-    delete data.s10;
 
     const sequence = Object.keys( data ).map( key => key.replace( 's', '' ) );
 
@@ -677,23 +718,45 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     $tabs.append( V.cN( {
       t: 'nav',
+      c: 's-calc__crop-sequence-nav',
       h: [
         // {
         //   c: 's-calc-form__section-title pxy font-bold',
         //   h: V.getString( ui.year ),
         // },
         {
+          t: 'label',
+          // c: 'tab' + 'AA' + '__label',
+          // for: 'tab' + 'AA',
+          k: handleNavScroll.bind( 'left' ),
+          h: V.getIcon( 'arrow_left', '30px' ),
+        },
+        {
           t: 'ul',
           c: 's-calc-tab-nav',
           h: sequence.map( tabNum => ( {
             t: 'li',
             h: {
+              x: tabNum != 'AA',
               t: 'label',
               c: 'tab' + tabNum + '__label',
               for: 'tab' + tabNum,
-              h: tabNum == 'AA' ? V.getIcon( 'summarize' ) : tabNum,
+              h: tabNum,
             },
           } ) ),
+        },
+        {
+          t: 'label',
+          // c: 'tab' + 'AA' + '__label',
+          // for: 'tab' + 'AA',
+          k: handleNavScroll.bind( 'right' ),
+          h: V.getIcon( 'arrow_right', '30px' ),
+        },
+        {
+          t: 'label',
+          c: 'tab' + 'AA' + '__label',
+          for: 'tab' + 'AA',
+          h: V.getIcon( 'summarize' ),
         },
       ],
     } ) );
@@ -740,26 +803,25 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if (
       !data
-      || ( data && !data.s10 )
+      || ( data && !data[ 's' + settings.dbFieldSITE ] )
     ) {
-      data = {
-        s10: JSON.stringify( {
-          SITE: {
-            CN: 10,
-            FCAP: 40,
-            PCIP: {
-              QTY: 650,
-              MUL: 0.5,
-            },
-            N: {
-              DEP: 20,
-            },
+      data = {};
+      data[ 's' + settings.dbFieldSITE ] = JSON.stringify( {
+        SITE: {
+          CN: 10,
+          FCAP: 40,
+          PCIP: {
+            QTY: 650,
+            MUL: 0.5,
           },
-        } ),
-      };
+          N: {
+            DEP: 20,
+          },
+        },
+      } );
     }
 
-    const dataset = V.castJson( data.s10 );
+    const dataset = V.castJson( data[ 's' + settings.dbFieldSITE ] );
     return form( 0, dataset, /* exclude: */ ['BMASS', 'CROP', 'FTLZ'] );
 
   }
@@ -1041,6 +1103,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         //   } );
         // }
         return V.cN( {
+          x: i < 2 || item.CROP,
           t: 'p',
           c: 's-calc-summary__item flex',
           h: [

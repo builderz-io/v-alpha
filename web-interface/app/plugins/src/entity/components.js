@@ -1306,7 +1306,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
-  function mediumImageCard() {
+  async function mediumImageCard() {
     if ( entity.mediumImage ) {
       const $img = V.castEntityThumbnail( entity.mediumImage  ).img;
       return V.cN( {
@@ -1316,20 +1316,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
       // return castCard( $img, '' );
     }
     else if ( entity.images.mediumImage ) { // new model
-      return V.cN( {
-        y: {
-          'display': 'flex',
-          'justify-content': 'center',
-          'min-height': '225px',
-          'max-height': '20vh',
-          'background-image': `url(${ entity.images.mediumImage })`,
-          'background-repeat': 'no-repeat',
-          'background-position': 'center',
-        },
-        // h: {
-        //   t: 'img',
-        //   r: entity.images.mediumImage,
-        // },
+      return V.castProfileImageNode( entity.images.mediumImage, {
+        backgroundPosition: 'center 33%',
+        className: 'profile-image',
       } );
     }
     else {

@@ -201,6 +201,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function networkLayout( data ) {
+    const castDescr = V.castDescription( data.properties.description );
     return V.cN( {
       t: 'li',
       c: 'network-layout__wrapper',
@@ -225,8 +226,12 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
             //   h: V.getString( ui.about ),
             // },
             {
+              c: 'network-layout__feature mb-r',
+              h: castDescr.$feature,
+            },
+            {
               c: 'network-layout__descr',
-              h: V.castDescription( data.properties.description ).$description,
+              h: castDescr.$description,
             },
             {
               x: V.getSetting( 'additionalImage' ),

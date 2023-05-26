@@ -428,7 +428,23 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 #tab5:checked ~ content .tab5__content,
 #tab6:checked ~ content .tab6__content,
 #tab7:checked ~ content .tab7__content,
-#tab8:checked ~ content .tab8__content {
+#tab8:checked ~ content .tab8__content,
+#tab9:checked ~ content .tab9__content,
+#tab10:checked ~ content .tab10__content,
+#tab11:checked ~ content .tab11__content,
+#tab12:checked ~ content .tab12__content,
+#tab13:checked ~ content .tab13__content,
+#tab14:checked ~ content .tab14__content,
+#tab15:checked ~ content .tab15__content,
+#tab16:checked ~ content .tab16__content,
+#tab17:checked ~ content .tab17__content,
+#tab18:checked ~ content .tab18__content,
+#tab19:checked ~ content .tab19__content,
+#tab20:checked ~ content .tab20__content,
+#tab21:checked ~ content .tab21__content,
+#tab22:checked ~ content .tab22__content,
+#tab23:checked ~ content .tab23__content,
+#tab24:checked ~ content .tab24__content {
   display: block;
 }
 
@@ -440,7 +456,23 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 #tab5:checked ~ nav .tab5__label,
 #tab6:checked ~ nav .tab6__label,
 #tab7:checked ~ nav .tab7__label,
-#tab8:checked ~ nav .tab8__label {
+#tab8:checked ~ nav .tab8__label,
+#tab9:checked ~ nav .tab9__label,
+#tab10:checked ~ nav .tab10__label,
+#tab11:checked ~ nav .tab11__label,
+#tab12:checked ~ nav .tab12__label,
+#tab13:checked ~ nav .tab13__label,
+#tab14:checked ~ nav .tab14__label,
+#tab15:checked ~ nav .tab15__label,
+#tab16:checked ~ nav .tab16__label,
+#tab17:checked ~ nav .tab17__label,
+#tab18:checked ~ nav .tab18__label,
+#tab19:checked ~ nav .tab19__label,
+#tab20:checked ~ nav .tab20__label,
+#tab21:checked ~ nav .tab21__label,
+#tab22:checked ~ nav .tab22__label,
+#tab23:checked ~ nav .tab23__label,
+#tab24:checked ~ nav .tab24__label {
   background: #eee;
 }
 
@@ -484,7 +516,7 @@ tabs ul {
 tabs ul li {
   display: flex;
 }
-tabs ul li label {
+tabs nav label {
   width: 40px;
     position: relative;
     border-bottom: 0;

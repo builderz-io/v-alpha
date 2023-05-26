@@ -15,6 +15,78 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== public methods ================== */
 
+  const ImageNodeModule = ( function() {
+
+    /**
+     * ProfileImageNodeModule (by ChatGPT v3.5.2, v1.0.0)
+     * Module for creating a DOM container element with an image as the background.
+     */
+
+    async function getImageDimensions( imageSrc ) {
+
+      /**
+       * Retrieves the dimensions (width and height) of an image from its source URL.
+       *
+       * @param {string} imageSrc - The source URL of the image.
+       * @returns {Promise<{width: number, height: number}>} A promise that resolves with the image dimensions.
+       */
+
+      return new Promise( ( resolve, reject ) => {
+        const tempImg = new Image();
+        tempImg.onload = function() {
+          const { width, height } = tempImg;
+          resolve( { width, height } );
+        };
+        tempImg.onerror = function() {
+          reject( new Error( 'Failed to load image' ) );
+        };
+        tempImg.src = imageSrc;
+      } );
+    }
+
+    async function createImageNode( imageSrc, options ) {
+
+      /**
+       * Creates a DOM container element with an image as the background.
+       * The container will have a specified minimum height, maximum height, width, and background position.
+       *
+       * @param {string} imageSrc - The source URL of the image.
+       * @param {Object} options - Additional options for configuring the container. Supports properties like minHeight, maxHeight, width, backgroundPosition, and className.
+       * @returns {HTMLElement} The created container element with the image as the background.
+       */
+
+      // Create the container element
+      const container = document.createElement( 'div' );
+
+      // Get the image dimensions
+      const imageDimensions = await getImageDimensions( imageSrc );
+      const { width, height } = imageDimensions;
+
+      // Set the background image properties
+      container.style.backgroundImage = `url(${imageSrc})`;
+      container.style.backgroundSize = 'cover';
+      container.style.backgroundPosition = options.backgroundPosition || 'center';
+
+      // Set other container styles
+      container.style.width = options.width || '100%';
+      container.style.minHeight = options.minHeight || '225px';
+      container.style.maxHeight = options.maxHeight || '25vh';
+      container.style.height = `${height}px`;
+
+      // Add class name to the container
+      if ( options.className ) {
+        container.className = options.className;
+      }
+
+      return container;
+    }
+
+    // Revealing the public functions
+    return {
+      createImageNode,
+    };
+  } )();
+
   function castImageUpload( e ) {
     // credit to https://zocada.com/compress-resize-images-javascript-browser/
 
@@ -696,6 +768,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
 
   /* ====================== export ====================== */
 
+  V.castProfileImageNode = ImageNodeModule.createImageNode;
   V.castImageUpload = castImageUpload;
   V.castEntityThumbnail = castEntityThumbnail;
   V.setSrc = setSrc;
