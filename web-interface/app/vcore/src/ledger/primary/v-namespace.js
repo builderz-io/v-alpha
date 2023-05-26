@@ -24,7 +24,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const singleE = 'a c d i j m n y { a b m } holders holderOf { c fullId } auth { f i j }';
-  const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 }';
+  const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13 s14 s15 s16 s17 s18 s19 s20 s21 s22 s23 s24 s25 s26 s27 s28 s29 s30 s31  }';
 
   /**
    * Preview View returns only a few fields:
@@ -286,6 +286,27 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         s8: P.s ? P.s.s8 : undefined,
         s9: P.s ? P.s.s9 : undefined,
         s10: P.s ? P.s.s10 : undefined,
+        s11: P.s ? P.s.s11 : undefined,
+        s12: P.s ? P.s.s12 : undefined,
+        s13: P.s ? P.s.s13 : undefined,
+        s14: P.s ? P.s.s14 : undefined,
+        s15: P.s ? P.s.s15 : undefined,
+        s16: P.s ? P.s.s16 : undefined,
+        s17: P.s ? P.s.s17 : undefined,
+        s18: P.s ? P.s.s18 : undefined,
+        s19: P.s ? P.s.s19 : undefined,
+        s20: P.s ? P.s.s20 : undefined,
+        s21: P.s ? P.s.s21 : undefined,
+        s22: P.s ? P.s.s22 : undefined,
+        s23: P.s ? P.s.s23 : undefined,
+        s24: P.s ? P.s.s24 : undefined,
+        s25: P.s ? P.s.s25 : undefined,
+        s26: P.s ? P.s.s26 : undefined,
+        s27: P.s ? P.s.s27 : undefined,
+        s28: P.s ? P.s.s28 : undefined,
+        s29: P.s ? P.s.s29 : undefined,
+        s30: P.s ? P.s.s30 : undefined,
+        s31: P.s ? P.s.s31 : undefined,
       },
     };
   }
@@ -416,7 +437,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     else if ( data.field.includes( 'servicefields' ) ) {
       const n = data.field.replace( 'servicefields.s', '' );
       s = {};
-      for ( let i = 1; i <= 10; i++ ) {
+      for ( let i = 1; i <= 31; i++ ) {
         n == i ? s['s' + n] = data.data : null;
       }
     }
