@@ -34,6 +34,7 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   function setupModule() {
+
     items = [];
 
     feature = false;
@@ -55,10 +56,12 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
       c: 'paragraph pb-r',
     } );
 
-    $socialUl = V.cN( {
-      t: 'ul',
-      c: 'social-links flex overflow-x-scroll list-none pt-rr pb-rr',
-    } );
+    $socialUl = undefined;
+
+    // $socialUl = V.cN( {
+    //   t: 'ul',
+    //   c: 'social-links flex overflow-x-scroll list-none pt-rr pb-rr',
+    // } );
 
     $feature = undefined;
   }
@@ -207,10 +210,24 @@ const VDescription = ( function() { // eslint-disable-line no-unused-vars
     let host = link.split( '/' )[2];
     host = host.replace( 'www.', '' );
 
+    const slug = link.split( '/' ).pop();
+
     if ( isIntro ) {
       $paragraph.appendChild( castRegularLink( link, host ) );
     }
+    else if ( slug.match( /-\d{4}$/ ) ) {
+      $paragraph.appendChild( castRegularLink( link, V.castSlugOrId( slug ) ) );
+    }
+    else if ( host == window.location.host ) {
+      $paragraph.appendChild( castRegularLink( link, slug ) );
+    }
     else if ( host.match( new RegExp( settings.socialMatches ) ) ) {
+      if ( !$socialUl ) {
+        $socialUl = V.cN( {
+          t: 'ul',
+          c: 'social-links flex overflow-x-scroll list-none pt-rr pb-rr',
+        } );
+      }
       $socialUl.appendChild( castSocialLinkImg( link, host ) );
     }
     else if ( host.match( new RegExp( settings.videoMatches ) ) ) {

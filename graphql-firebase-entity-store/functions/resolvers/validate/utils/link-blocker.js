@@ -7,15 +7,15 @@
  */
 
 const whiteList = [
-  /* networks */ 'faithfinance.app',
+  // /* networks */ '',
   /* podcasts */ 'soundcloud.com', 'anchor.fm', 'podcasts.apple.com',
   /* videos   */ 'youtu.be', 'youtube.com', 'vimeo.com',
   /* social   */ 'facebook.com', 'twitter.com', 'linkedin.com', 't.me', 'medium.com', 'instagram.com', 'tiktok.com',
   /* largest  */ 'google.com', 'scholar.google.com', 'en.wikipedia.org', 'amazon.com',
 ];
 
-const clearlyPorn = new RegExp( /bbw|blowjob|handjob|facial|gangbang|fisting|bondage|bukkake|busty|cumshot|big\stits|big\sdick/, 'gi' );
-const maybePorn = new RegExp( /\sporn\s|\ssex\s|\sxxx\s|\sanal\s|\sass\s|\scum\s|\swebcams?\s/, 'gi' );
+const clearlyPorn = new RegExp( /blowjob|handjob|facial|gangbang|fisting|bondage|bukkake|busty|cumshot|big\stits|big\sdick/, 'gi' );
+const maybePorn = new RegExp( /\sporn\s|\ssex\s|\sxxx\s|\sbbw\s|\sanal\s|\sass\s|\scum\s|\swebcams?\s/, 'gi' );
 
 let fetch;
 

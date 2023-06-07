@@ -293,7 +293,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       const key = window.event ? e.keyCode : e.which;
       if ( key == 13 ) {
         if ( 'TEXTAREA' == document.activeElement.tagName ) {
-          e.preventDefault();
+          // e.preventDefault();
         }
 
         if (
