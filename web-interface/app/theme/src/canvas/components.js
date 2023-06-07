@@ -213,6 +213,35 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
     const $list = V.cN( {
       t: 'list',
       c: 'list flex flex-wrap content-start justify-evenly overflow-y-scroll list-none h-full',
+      e: {
+        scroll: function() {
+
+          /**
+           * Author: ChatGPT
+           * Date: 2023-05-30
+           * Description: This function fades an image to 100% transparent and back
+           *              while scrolling a list element up and down.
+           *              It uses a scrolling distance of 300px.
+           */
+
+          const divWithImage = document.querySelector( '.profile-image' );
+
+          // Check if the divWithImage exists, and return if it doesn't
+          if ( !divWithImage ) {
+            return;
+          }
+
+          // Get the current scroll position of the element that triggers the event
+          const scrollTop = this.scrollTop;
+          const scrollDistance = 300;
+
+          // Calculate the opacity based on the scroll position
+          const opacity = scrollTop > 0 ? ( scrollTop <= scrollDistance ? scrollTop / scrollDistance : 1 ) : 0;
+
+          // Set the opacity of the div with the image
+          divWithImage.style.opacity = 1 - opacity;
+        },
+      },
     } );
 
     if ( options && options.width == 'narrow' ) {
