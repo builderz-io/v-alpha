@@ -94,6 +94,7 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   function handleCallToActionClick() {
     if ( 'btn1' == this ) {
       Profile.draw( V.getSetting( 'callToActionProfile' ) );
+      V.setBrowserHistory( '/profile/' + V.getSetting( 'callToActionProfile' ) );
     }
     else if ( 'btn2' == this ) {
       Join.draw( 'initialize join' );

@@ -158,7 +158,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'label',
               i: 'key-upload__label',
-              c: buttonClasses + ' modal-pos-1',
+              c: buttonClasses + ' modal-pos-1 place-spinner',
               a: {
                 for: 'key-upload__file',
               },
@@ -207,8 +207,8 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
 
     reader.onload = function( event ) {
       const key = event.target.result.match( /vx.{16}/ );
-      const privateKey = event.target.result.match( /EVM key: .{64}/);
-      V.setLocal( 'privatekey', privateKey[0].replace('EVM key: ', '') );
+      const privateKey = event.target.result.match( /EVM key: .{64}/ );
+      V.setLocal( 'privatekey', privateKey[0].replace( 'EVM key: ', '' ) );
       if ( !key || !key[0] ) {
         V.getNode( '.form__response' ).textContent = V.getString( ui.noKey );
         return;
@@ -220,7 +220,7 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleGetEntity( e, uPhrase ) {
-    V.setNode( '#key-upload__label', InteractionComponents.confirmClickSpinner() );
+    V.setNode( '.place-spinner', InteractionComponents.confirmClickSpinner() );
 
     V.setAuth( uPhrase || V.getNode( '#loginform__uphrase' ).value )
       .then( data => {
