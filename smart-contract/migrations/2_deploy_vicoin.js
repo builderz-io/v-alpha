@@ -1,6 +1,7 @@
 var VICoin = artifacts.require("./VICoin.sol");
+const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
-module.exports = function (deployer) {
+module.exports = async function (deployer) {
   /**
    * @param name {string} - Token name, e.g. VI Berlin.
    * @param symbol {string} - Token symbol, e.g. VALUE.
@@ -22,34 +23,6 @@ module.exports = function (deployer) {
    *
    */
 
-  // const name = 'VI Berlin',
-  //   symbol = 'VALUE',
-  //   decimals = 6,
-  //   generationAmount = 100 * (10**decimals),
-  //   generationPeriod = 1,
-  //   lifetimeInBlocks = 100000000,
-  //   transactionFeePercentage = 33.33 * (10**2),
-  //   communityContributionPercentage = 10 * (10**2),
-  //   initialBalance = 200 * (10**decimals),
-  //   communityContributionAccount = '0xdfb69ffdfe70fd00698891b753c2b029bceb3807', // trufflePAV2 2nd Account
-  //   controller = '0x0000000000000000000000000000000000000000';
-
-  /**
-   * Daily Rice Token
-   *
-   */
-
-  // const name = 'Rice Token',
-  //   symbol = 'RTKN',
-  //   decimals = 6,
-  //   generationAmount = 10 * (10**decimals),
-  //   generationPeriod = 180, // every 15 min on Kovan Testnet
-  //   lifetimeInBlocks = 720 * 24, // 1 day on Kovan Testnet
-  //   transactionFeePercentage = 33.33 * (10**2),
-  //   communityContributionPercentage = 10 * (10**2),
-  //   initialBalance = 100 * (10**decimals),
-  //   communityContributionAccount = '0x0000000000000000000000000000000000000000',
-  //   controller = '0x0000000000000000000000000000000000000000';
 
   /**
    * settings for running code tests
@@ -68,11 +41,9 @@ module.exports = function (deployer) {
     communityContributionAccount = "0x0000000000000000000000000000000000000000",
     controller = "0x0000000000000000000000000000000000000000";
 
-  deployer.deploy(
-    VICoin,
-    name,
+  const instance = await deployProxy(VICoin,
+    [name,
     symbol,
-    decimals,
     lifetimeInBlocks,
     generationAmount,
     generationPeriod,
@@ -80,19 +51,9 @@ module.exports = function (deployer) {
     transactionFeePercentage,
     initialBalance,
     communityContributionAccount,
-    controller
-  );
-};
+    controller], 
+    { deployer } );  
 
-/**
- * Instructions to deploy to remix:
- *
- * Load remix plugins: Compiler, Deploy & Run Transactions
- * (optional): Debugger, Gas Profiler
- *
- * First use solidity-flattener to flatten to one file
- * git clone https://github.com/poanetwork/solidity-flattener
- * Deploy contract with args below:
- * "VI Berlin","VALUE",6,10,100,10,0,0,200000000,"0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000"
- *
- */
+  //const upgraded = await upgradeProxy(instance.address, VICoin2, { deployer });
+
+};

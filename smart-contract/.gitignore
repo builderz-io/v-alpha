@@ -3,5 +3,7 @@ private.js
 node_modules
 .DS_Store
 
-.openzeppelin/.session
+.openzeppelin
 unused
+
+yarn.lock

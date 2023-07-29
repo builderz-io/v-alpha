@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 import "./FusedController.sol";
 import "./Calculations.sol";
 
@@ -27,16 +25,15 @@ struct Settings {
 
 /// @notice One contract is deployed for each community
 /// @dev Based on openzeppelin's burnable and mintable ERC20 tokens
-contract VICoin is ERC20Burnable, FusedController, Calculations {
-    using SafeMath for uint256;
-    using SafeMath for int256;
+contract VICoin is ERC20BurnableUpgradeable, FusedController, Calculations {
 
-    Settings settings;
+    Settings public settings;
     mapping(address => uint256) public lastTransactionBlock;
     mapping(address => uint256) public lastGenerationBlock;
     mapping(address => uint256) public zeroBlock;
     mapping(address => bool) public accountApproved;
     uint256 public numAccounts;
+    bool private initialized;
 
     event TransferSummary(
         address indexed from,
@@ -50,8 +47,18 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
     event VerifyAccount(address indexed account);
     event UnapproveAccount(address account);
     event Log(string name, uint256 value);
+    event UpdateLifetime(uint256 lifetime);
+    event UpdateInitialBalance(uint256 initialBalance);
+    event UpdateGenerationAmount(uint256 generationAmount);
+    event UpdateGenerationPeriod(uint256 generationPeriod);
+    event UpdateCommunityContributionAccount(
+        address newCommunityContributionAccount
+    );
+    event UpdateTransactionFee(uint256 transactionFee);
+    event UpdateCommunityContribution(uint256 communityContribution);
 
-    constructor (
+
+    function initialize (
         string memory _name,
         string memory _symbol,
         uint256 _lifetime,
@@ -62,8 +69,10 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
         uint256 _initialBalance,
         address _communityContributionAccount,
         address _controller
-    ) ERC20(_name, _symbol) public {
+    ) initializer public {
+        require(!initialized, "Contract already initialized");
         FusedController.initialize(_controller);
+        __ERC20_init(_name, _symbol);
         address communityContributionAccount = _communityContributionAccount;
         if (_communityContributionAccount == address(0)) {
             communityContributionAccount = msg.sender;
@@ -78,6 +87,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
         settings.communityContributionAccount = communityContributionAccount;
 
         numAccounts = 0;
+        initialized = true;
     }
 
     function initializeSettings(
@@ -152,7 +162,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
                     settings
                         .generationPeriod
                 )
-                    .mul(settings.generationPeriod);
+                    * settings.generationPeriod;
 
                 // Extend the zero block
                 zeroBlock[_account] = calcZeroBlock(
@@ -180,7 +190,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
             block.number,
             zeroBlock[_account]
         );
-        uint256 decayedBalance = balanceOf(_account).sub(decay);
+        uint256 decayedBalance = balanceOf(_account) - decay;
         if (lastGenerationBlock[_account] == 0) {
             return (decayedBalance);
         }
@@ -194,7 +204,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
                 settings.generationPeriod
             );
         }
-        return decayedBalance.add(generationAccrued);
+        return decayedBalance + generationAccrued;
     }
 
     /** @notice Transfer the currency from one account to another,
@@ -231,7 +241,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
             settings.transactionFee,
             settings.communityContribution
         );
-        uint256 valueAfterFees = _value.sub(feesBurned).sub(contribution);
+        uint256 valueAfterFees = _value - feesBurned - contribution;
 
         //Extend zero block based on transfer
         zeroBlock[_to] = calcZeroBlock(
@@ -298,7 +308,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
             _communityContribution
         );
         require(
-            feesIncContribution == contribution.add(feesToBurn),
+            feesIncContribution == contribution + feesToBurn,
             "feesIncContribution should equal contribution + feesToBurn"
         );
 
@@ -335,7 +345,7 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
             // This is a new account !
             numAccounts++;
             _mint(_account, settings.initialBalance);
-            zeroBlock[_account] = block.number.add(settings.lifetime);
+            zeroBlock[_account] = block.number + settings.lifetime;
             lastTransactionBlock[_account] = block.number;
         }
         lastGenerationBlock[_account] = block.number;
@@ -417,4 +427,97 @@ contract VICoin is ERC20Burnable, FusedController, Calculations {
     function getCommunityContributionAccount() external view returns (address) {
         return settings.communityContributionAccount;
     }
+
+    function updateCommunityContributionAccount(
+        address _newCommunityContributionAccount
+    ) external onlyController fused(0) {
+        settings
+            .communityContributionAccount = _newCommunityContributionAccount;
+        emit UpdateCommunityContributionAccount(
+            _newCommunityContributionAccount
+        );
+    }
+
+    /// @notice Set the contribution percentage, to be taken from the fee %
+    function updateCommunityContribution(uint256 _communityContribution)
+        external
+        onlyController
+        fused(1)
+    {
+        settings.communityContribution = _communityContribution;
+        emit UpdateCommunityContribution(_communityContribution);
+    }
+
+    /// @notice Set the fee %, to be taken from every transaction
+    function updateTransactionFee(uint256 _transactionFee)
+        external
+        onlyController
+        fused(2)
+    {
+        settings.transactionFee = _transactionFee;
+        emit UpdateTransactionFee(_transactionFee);
+    }
+
+    /// @notice Update the settings.lifetime for this currency.
+    /// (The number of blocks after which a balance decays to zero)
+    function updateLifetime(uint256 _lifetime)
+        external
+        onlyController
+        fused(5)
+    {
+        settings.lifetime = _lifetime;
+        emit UpdateLifetime(_lifetime);
+    }
+
+    /// @notice Update the balance issued to an account on creation
+    function updateInitialBalance(uint256 _initialBalance)
+        external
+        onlyController
+        fused(8)
+    {
+        settings.initialBalance = _initialBalance;
+        emit UpdateInitialBalance(_initialBalance);
+    }
+
+    /// @notice Update the number of blocks between each generation period
+    function updateGenerationPeriod(uint256 _generationPeriod)
+        external
+        onlyController
+        fused(4)
+    {
+        require(
+            numAccounts == 0,
+            "Generation period cannot be changed once contract is in active use"
+        );
+        settings.generationPeriod = _generationPeriod;
+        emit UpdateGenerationPeriod(_generationPeriod);
+    }
+
+    /** @notice Update the number of tokens issued to each account after each
+            generation period */
+    function updateGenerationAmount(uint256 _generationAmount)
+        external
+        onlyController
+        fused(3)
+    {
+        settings.generationAmount = _generationAmount;
+        emit UpdateGenerationAmount(_generationAmount);
+    }
+
+    function generationAmount() public view returns(uint) { 
+        return settings.generationAmount;
+    }    
+    
+    function initialBalance() public view returns(uint) { 
+        return settings.initialBalance;
+    }    
+
+    function transactionFee() public view returns(uint) { 
+        return settings.transactionFee;
+    }    
+
+    function communityContributionAccount() public view returns(address) { 
+        return settings.communityContributionAccount;
+    }
+
 }

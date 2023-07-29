@@ -15,10 +15,10 @@ contract("VICoin", async (accounts) => {
     assert.equal(symbol, "VALUE", "Does not have correct symbol");
   });
 
-  it("has 6 decimals", async () => {
+  it("has 18 decimals", async () => {
     const vicoin = await VICoin.deployed();
     const decimals = await vicoin.decimals.call();
-    assert.equal(Number(decimals.valueOf()), 6, "Does not have 6 decimals");
+    assert.equal(Number(decimals.valueOf()), 18, "Does not have 18 decimals");
   });
 
   it("calculates number of generation periods", async () => {
@@ -304,7 +304,7 @@ contract("VICoin", async (accounts) => {
     const vicoin = await VICoin.deployed();
     const blockNumberBefore = await vicoin.getBlockNumber.call();
     for (var i = 0; i < 50; i++) {
-      const mined = await vicoin.mine();
+      await vicoin.updateLifetime(10);
     }
     const blockNumberAfter = await vicoin.getBlockNumber.call();
     assert.isAtLeast(
@@ -358,15 +358,16 @@ contract("VICoin", async (accounts) => {
 
   it("lifetime in blocks is 10", async () => {
     const vicoin = await VICoin.deployed();
-    const lifetime = await vicoin.lifetime.call();
+    const settings = await vicoin.settings.call();
+    const lifetime = settings.lifetime;
     assert.equal(Number(lifetime.valueOf()), 10, "Lifetime not correct");
   });
 
   it("balance after 6 blocks is 40%", async () => {
     const vicoin = await VICoin.deployed();
     //Mine one block:
-    vicoin.mine();
-    const burnedBalance = await vicoin.getDecayedBalance.call(accounts[6]);
+    await vicoin.updateLifetime(10);
+    const burnedBalance = await vicoin.liveBalanceOf.call(accounts[6]);
 
     assert.equal(
       Number(burnedBalance.valueOf()),
@@ -376,7 +377,7 @@ contract("VICoin", async (accounts) => {
     const blockNumberBefore = await vicoin.getBlockNumber.call();
     const blocksPassed = 5;
     for (var i = 0; i < blocksPassed; i++) {
-      const mined = await vicoin.mine();
+      await vicoin.updateLifetime(10);
     }
     const blockNumberAfter = await vicoin.getBlockNumber.call();
     assert.equal(
@@ -384,7 +385,7 @@ contract("VICoin", async (accounts) => {
       Number(blockNumberBefore.valueOf()) + blocksPassed,
       "Not enough blocks passed"
     );
-    const burnedBalanceAfterMining = await vicoin.getDecayedBalance.call(
+    const burnedBalanceAfterMining = await vicoin.liveBalanceOf.call(
       accounts[6]
     );
     assert.equal(
@@ -399,7 +400,7 @@ contract("VICoin", async (accounts) => {
     const blockNumberBefore = await vicoin.getBlockNumber.call();
     const blocksPassed = 2;
     for (var i = 0; i < blocksPassed; i++) {
-      const mined = await vicoin.mine();
+      await vicoin.updateLifetime(10);
     }
     const blockNumberAfter = await vicoin.getBlockNumber.call();
     assert.equal(
@@ -407,7 +408,7 @@ contract("VICoin", async (accounts) => {
       Number(blockNumberBefore.valueOf()) + blocksPassed,
       "Not enough blocks passed"
     );
-    const burnedBalanceAfterMining = await vicoin.getDecayedBalance.call(
+    const burnedBalanceAfterMining = await vicoin.liveBalanceOf.call(
       accounts[6]
     );
     assert.equal(
@@ -422,7 +423,7 @@ contract("VICoin", async (accounts) => {
     const blockNumberBefore = await vicoin.getBlockNumber.call();
     const blocksPassed = 2;
     for (var i = 0; i < blocksPassed; i++) {
-      const mined = await vicoin.mine();
+      await vicoin.updateLifetime(10);
     }
     const blockNumberAfter = await vicoin.getBlockNumber.call();
     assert.equal(
@@ -430,7 +431,7 @@ contract("VICoin", async (accounts) => {
       Number(blockNumberBefore.valueOf()) + blocksPassed,
       "Not enough blocks passed"
     );
-    const burnedBalanceAfterMining = await vicoin.getDecayedBalance.call(
+    const burnedBalanceAfterMining = await vicoin.liveBalanceOf.call(
       accounts[6]
     );
     assert.equal(
@@ -445,7 +446,7 @@ contract("VICoin", async (accounts) => {
     const blockNumberBefore = await vicoin.getBlockNumber.call();
     const blocksPassed = 5;
     for (var i = 0; i < blocksPassed; i++) {
-      const mined = await vicoin.mine();
+      await vicoin.updateLifetime(10);
     }
     const blockNumberAfter = await vicoin.getBlockNumber.call();
     assert.equal(
@@ -453,7 +454,7 @@ contract("VICoin", async (accounts) => {
       Number(blockNumberBefore.valueOf()) + blocksPassed,
       "Not enough blocks passed"
     );
-    const burnedBalanceAfterMining = await vicoin.getDecayedBalance.call(
+    const burnedBalanceAfterMining = await vicoin.liveBalanceOf.call(
       accounts[6]
     );
     assert.equal(
@@ -465,14 +466,16 @@ contract("VICoin", async (accounts) => {
 
   it("can adjust contribution", async () => {
     const vicoin = await VICoin.deployed();
-    const originalContribution = await vicoin.communityContribution.call();
+    const settings = await vicoin.settings.call();
+    const originalContribution = settings.communityContribution;
     assert.equal(
       Number(originalContribution.valueOf()),
       0,
       "Contribution not 0"
     );
     const tx = await vicoin.updateCommunityContribution(1000);
-    const newContribution = await vicoin.communityContribution.call();
+    const newSettings = await vicoin.settings.call();
+    const newContribution = await newSettings.communityContribution;
     assert.equal(
       Number(newContribution.valueOf()),
       1000,
@@ -487,7 +490,8 @@ contract("VICoin", async (accounts) => {
     const zeroBlockBefore = await vicoin.zeroBlock.call(accounts[0]).valueOf();
     await vicoin.transfer(accounts[0], 1000, { from: accounts[5] });
     const zeroBlockAfter = await vicoin.zeroBlock.call(accounts[0]).valueOf();
-    const lifetime = await vicoin.lifetime.call();
+    const settings = await vicoin.settings.call();
+    const lifetime = settings.lifetime;
     const thisBlock = await vicoin.getBlockNumber.call().valueOf();
     assert.equal(
       Number(zeroBlockAfter),
@@ -499,7 +503,7 @@ contract("VICoin", async (accounts) => {
   it("Medium incoming transfer renews partial lifetime", async () => {
     const vicoin = await VICoin.deployed();
     for (var i = 0; i < 5; i++) {
-      const mined = await vicoin.mine();
+      await vicoin.updateLifetime(10);
     }
     await vicoin.verifyAccount(accounts[8]);
 
@@ -515,7 +519,8 @@ contract("VICoin", async (accounts) => {
       .call(accounts[0])
       .valueOf();
     const changeToZeroBlock = Number(zeroBlockAfter) - Number(zeroBlockBefore);
-    const expectedChange = Number(await vicoin.lifetime.call().valueOf()) / 2;
+    const settings = await vicoin.settings.call();
+    const expectedChange = Number(settings.lifetime.valueOf()) / 2;
     const differenceToExpected = Math.abs(changeToZeroBlock - expectedChange);
     assert.isAtMost(
       differenceToExpected,
@@ -539,7 +544,8 @@ contract("VICoin", async (accounts) => {
       .valueOf();
 
     const changeToZeroBlock = Number(zeroBlockAfter) - Number(zeroBlockBefore);
-    const expectedChange = Number(await vicoin.lifetime.call().valueOf()) / 10;
+    const settings = await vicoin.settings.call();
+    const expectedChange = Number(settings.lifetime.valueOf()) / 10;
     const differenceToExpected = Math.abs(changeToZeroBlock - expectedChange);
     assert.isAtMost(
       differenceToExpected,
