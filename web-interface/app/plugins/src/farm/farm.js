@@ -124,7 +124,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
 
     /* replaces preview with retrieved data */
 
-    setTimeout( function testDatasetRetrieval() {
+    setTimeout( function datasetRetrieval() {
       SoilCalculatorComponents.drawWidgetContent( display, entity.servicefields );
     }, 800 );
 

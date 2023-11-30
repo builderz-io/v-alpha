@@ -93,6 +93,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'border-radius': '3px',
       'text-align': 'right',
     },
+    's-calc-input-date': {
+      padding: '0.2rem 0.4rem',
+    },
     's-calc-input-select': {
       'width': '210px',
       'border': 'none',
@@ -384,6 +387,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function getFormData( formName ) {
     // const s = document.forms.SITE.elements;
+
     const _ = document.forms[formName].elements;
 
     const validation = validateFormData( _, formName );
@@ -396,6 +400,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete __.CROP;
       delete __.FTLZ;
       delete __.BMASS;
+      delete __.DATE;
       __.SITE.CN = Number( _.SITE_CN.value );
       __.SITE.FCAP = Number( _.SITE_FCAP.value );
       __.SITE.PCIP.QTY = Number( _.SITE_PCIP_QTY.value );
@@ -415,6 +420,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.BMASS.SP.QTY = Number( _.BMASS_SP_QTY.value );
       __.BMASS.SP.HVST = ( _.BMASS_SP_HVST.value === 'true' );
+
+      __.DATE.SOWN = _.DATE_SOWN.value;
+      __.DATE.HVST = _.DATE_HVST.value;
     }
 
     // console.log( 'New Dataset: ', __ );
@@ -838,7 +846,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete data[section];
     } );
 
-    const formName = Object.keys( data )[0] + ( formNumber ? '-' + formNumber : '' );
+    const formName = Object.keys( data )[0] == 'SITE'
+      ? 'SITE'
+      : 'CROP'
+    + ( formNumber
+      ? '-' + formNumber
+      : ''
+    );
 
     const input = ( $inputElem, fieldTitle, unit ) => ( {
       c: 's-calc-input-wrapper',
@@ -996,6 +1010,24 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       return input( $inputRadioElem, fieldTitle );
     };
 
+    const inputDate = ( val, fieldTitle ) => {
+      const unit = SoilCalculator.getFieldString( fieldTitle, locale, 'unit' );
+      const $inputDateObj = V.cN( {
+        t: 'input',
+        c: 's-calc-input-date',
+        i: 's-calc-input__' + fieldTitle,
+        a: {
+          type: 'date',
+          name: fieldTitle,
+        },
+        e: {
+          input: V.debounce( handleDatapointChange, 320 ),
+        },
+        v: val === -1 ? 0 : val,
+      } );
+      return input( $inputDateObj, fieldTitle, unit );
+    };
+
     const templates = {
       CROP: {
         ID: inputDropID,
@@ -1015,6 +1047,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           QTY: inputNum,
           HVST: inputRadio,
         },
+      },
+      DATE: {
+        SOWN: inputDate,
+        HVST: inputDate,
       },
       SITE: {
         CN: inputNum,

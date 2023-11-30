@@ -20,6 +20,10 @@
           "HVST": true
         }
       },
+      "DATE": {
+        "SOWN": -1,
+        "HVST": -1
+      },
       "SITE": {
         "CN": -1,
         "FCAP": -1,
@@ -101,6 +105,20 @@
               "descr": "Whether side product has been harvested",
               "unit": ""
             }
+          }
+        },
+        "DATE": {
+          "displayName": "Date",
+          "descr": "Date",
+          "SOWN": {
+            "displayName": "Sown on",
+            "descr": "Date of crop sown",
+            "unit": ""
+          },
+          "HVST": {
+            "displayName": "Harvested on",
+            "descr": "Date of crop harvested",
+            "unit": ""
           }
         },
         "SITE": {
@@ -209,6 +227,20 @@
               "descr": "Whether side product has been harvested",
               "unit": ""
             }
+          }
+        },
+        "DATE": {
+          "displayName": "Datum",
+          "descr": "Datum",
+          "SOWN": {
+            "displayName": "Aussaat am",
+            "descr": "Datum der Aussaat",
+            "unit": ""
+          },
+          "HVST": {
+            "displayName": "Ernte am",
+            "descr": "Datum der Ernte",
+            "unit": ""
           }
         },
         "SITE": {
