@@ -201,7 +201,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     setStateDatapoint();
 
-    setStateDatapointResults();
+    setStateDatapointResults()
+      .then( () => setStateYearlyResults() )
+      .then( () => {
+        drawYearlyResults();
+      } );
 
     /**
      * Though timeout looks good in ui, it is also needed
@@ -211,7 +215,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     setTimeout( function delayedDrawResults() {
       drawResetResults();
       drawDatapointResults();
-      drawSequenceResults(); /* the total */
+      drawEntireSequenceResults(); /* the total */
       drawSummary();
     }, 170 );
 
@@ -266,7 +270,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function setStateDatapointResults() {
+  async function setStateDatapointResults() {
     const siteData = V.getState( 'cropSequence' )[ 's' + settings.dbFieldSITE ];
     for ( let i = 1; i <= settings.numCropEntries; i++ ) {
       const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
@@ -280,11 +284,54 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         SoilCalculator
           .getDatapointResults( cropData, prevCropData )
           .then( res => {
-            // console.log( 'Calculation Results: ', res );
             Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { results: res.results } );
           } );
       }
     }
+
+    return {
+      success: true,
+    };
+  }
+
+  async function setStateYearlyResults() {
+
+    const sequence = V.getState( 'cropSequence' );
+
+    const sequencesByYear = {};
+
+    // write sequences by year into sequencesByYear object
+    for ( const key in sequence ) {
+
+      if (
+        ['undefined', 'number'].includes( typeof sequence[key].datapoint )
+        || !sequence[key].datapoint.DATE.HVST
+      ) {
+        continue;
+      }
+
+      const year = sequence[key].datapoint.DATE.HVST.substr( 0, 4 );
+
+      if ( !sequencesByYear[year] ) { sequencesByYear[year] = {} }
+
+      sequencesByYear[year][key] = sequence[key];
+
+    }
+
+    // calculate result for each year
+    for ( const year in sequencesByYear ) {
+      SoilCalculator
+        .getSequenceResults( sequencesByYear[year] )
+        .then( res => {
+          const obj = {};
+          obj[year] = res;
+          V.setState( 'cropSequenceResultsByYear', obj );
+        } );
+    }
+
+    return {
+      success: true,
+    };
   }
 
   function getFirstPrevious( i ) {
@@ -312,6 +359,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     for ( const key in sequence ) {
 
       const tabNum = key.replace( 's', '' );
+
       if (
         ['undefined', 'number'].includes( typeof sequence[key].datapoint )
       ) {
@@ -331,9 +379,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function drawSequenceResults() {
-    // console.log( 'drawSequenceResults' );
+  function drawYearlyResults() {
+    const years = V.getState( 'cropSequenceResultsByYear' );
+    // console.log( 'drawDatapointResults' );
+    console.log( years );
+    for ( const year in years ) {
 
+      //  TODO: draw here
+    }
+  }
+
+  function drawEntireSequenceResults() {
     SoilCalculator
       .getSequenceResults( V.getState( 'cropSequence' ) )
       .then( res => {
