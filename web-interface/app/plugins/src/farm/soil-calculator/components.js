@@ -56,8 +56,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     's-calc-summary__item': {
       'margin-bottom': '0.7rem',
     },
+    's-calc-summary__yearly-item': {
+      'justify-content': 'space-between',
+      'margin': '0.7rem 0',
+    },
     's-calc-summary__item-number': {
       'margin-right': '0.7rem',
+      'min-width': '64px',
     },
     's-calc-results-visibility': {
       display: 'block !important',
@@ -179,7 +184,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       noFertilizerSelected: 'No fertilizer',
       safeDataset: 'Save this set',
       showDetails: 'Show details',
-      summary: 'Summary',
+      overview: 'Overview',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -202,10 +207,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     setStateDatapoint();
 
     setStateDatapointResults()
-      .then( () => setStateYearlyResults() )
-      .then( () => {
-        drawYearlyResults();
-      } );
+      .then( () => setStateYearlyResults() );
 
     /**
      * Though timeout looks good in ui, it is also needed
@@ -329,6 +331,14 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         } );
     }
 
+    if ( !Object.keys( sequencesByYear ).length ) {
+      V.setState( 'cropSequenceResultsByYear', 'clear' );
+      const now = new Date();
+      const obj = {};
+      obj[now.getFullYear()] = SoilCalculator.getSchema( 'results' );
+      V.setState( 'cropSequenceResultsByYear', obj );
+    }
+
     return {
       success: true,
     };
@@ -379,16 +389,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function drawYearlyResults() {
-    const years = V.getState( 'cropSequenceResultsByYear' );
-    // console.log( 'drawDatapointResults' );
-    console.log( years );
-    for ( const year in years ) {
-
-      //  TODO: draw here
-    }
-  }
-
   function drawEntireSequenceResults() {
     SoilCalculator
       .getSequenceResults( V.getState( 'cropSequence' ) )
@@ -398,8 +398,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function drawSummary() {
+    const years = V.getState( 'cropSequenceResultsByYear' );
     const sequence = deleteFields( V.castClone( V.getState( 'cropSequence' ) ) );
+
+    V.setNode( '.s-calc-summary__yearly', 'clear' );
     V.setNode( '.s-calc-summary__data', 'clear' );
+    V.getNode( '.s-calc-summary' ).append( summaryTableYearly( years ) );
     V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
 
@@ -1173,7 +1177,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return V.cN( {
       c: 's-calc-summary',
       h: [
-        V.cN( { c: 's-calc-summary__title font-bold', h: V.getString( ui.summary ) } ),
+        V.cN( { c: 's-calc-summary__title font-bold', h: V.getString( ui.overview ) } ),
+        summaryTableYearly(),
         summaryTable( data ),
       ],
     } );
@@ -1202,7 +1207,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             {
               t: 'span',
               c: 's-calc-summary__item-number',
-              h: i + 1,
+              h: SoilCalculator.getFieldString( 'CROP', locale ) + ' ' + ( i + 1 ),
             },
             {
               t: 'span',
@@ -1210,13 +1215,41 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                 ? '' // V.getString( ui.noCropSelected )
                 : (
                   SoilCalculator.getCropName( item.CROP.ID, locale )
-                  + ' / '
+                  + ' & '
                   + SoilCalculator.getFertilizerName( item.FTLZ.ORG.ID, locale )
                 ),
             },
           ],
         } );
       } ),
+    } );
+  }
+
+  function summaryTableYearly( data = {} ) {
+
+    return V.cN( {
+      c: 's-calc-summary__yearly',
+      h: Object.keys( data ).map( year => V.cN( {
+        t: 'p',
+        c: 's-calc-summary__yearly-item flex',
+        h: [
+          {
+            t: 'span',
+            c: 's-calc-summary__year',
+            h: year,
+          },
+          {
+            t: 'span',
+            c: 's-calc-summary__year-c',
+            h: 'C ' + data[year].T.BAL.C.toFixed( 1 ),
+          },
+          {
+            t: 'span',
+            c: 's-calc-summary__year-n',
+            h: 'N ' + data[year].T.BAL.N.toFixed( 1 ),
+          },
+        ],
+      } ) ),
     } );
   }
 

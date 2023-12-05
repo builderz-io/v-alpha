@@ -288,14 +288,12 @@ const SoilCalculator = ( () => {
 
     if ( !divisor ) { return }
 
-    return {
-      T: {
-        BAL: {
-          C: cTotal / divisor,
-          N: nTotal / divisor,
-        },
-      },
-    };
+    const schema = JSON.parse( JSON.stringify( getSchema( 'results' ) ) );
+
+    schema.T.BAL.C = cTotal / divisor;
+    schema.T.BAL.N = nTotal / divisor;
+
+    return schema;
   }
 
   /* =================  Private Methods Helpers =================== */
