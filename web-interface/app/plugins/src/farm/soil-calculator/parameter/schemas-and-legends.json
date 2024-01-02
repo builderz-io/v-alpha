@@ -71,7 +71,7 @@
             "QTY": {
               "displayName": "Quantity applied",
               "descr": "Quantity of applied fertilizer",
-              "unit": ""
+              "unit": "FM t/ha"
             }
           }
         },
@@ -84,7 +84,7 @@
             "QTY": {
               "displayName": "Quantity available",
               "descr": "Main Product Quantity",
-              "unit": ""
+              "unit": "FM t/ha"
             },
             "HVST": {
               "displayName": "Harvested",
@@ -98,7 +98,7 @@
             "QTY": {
               "displayName": "Quantity available",
               "descr": "Side Product Quantity",
-              "unit": ""
+              "unit": "FM t/ha"
             },
             "HVST": {
               "displayName": "Harvested",
@@ -287,9 +287,10 @@
     "schema": {
       "T": {
         "BAL": {
-          "C": -1,
-          "N": -1
-        }
+          "C": null,
+          "N": null
+        },
+        "UNIT": "no unit defined"
       },
       "SOM": {
         "LOSS": -1,
@@ -321,6 +322,9 @@
     "legend": {
       "en_US": {
         "T": {
+          "displayName": "Sequence average in ka/ha",
+          "descr": "Crop sequence average, if no dates were entered by user",
+          "unit": "ka/ha",
           "BAL": {
             "C": {
               "displayName": "C Balance",
@@ -333,6 +337,11 @@
               "unit": ""
             }
           }
+        },
+        "TY": {
+          "displayName": "Yearly average in ka/ha/a",
+          "descr": "Crop sequence yearly average, when dates were entered by user",
+          "unit": "ka/ha/a"
         },
         "SOM": {
           "displayName": "Soil Organic Matter",
@@ -425,6 +434,9 @@
       },
       "de_DE": {
         "T": {
+          "displayName": "Fruchtfolgedurchschnitt in ka/ha",
+          "descr": "Durchschnitt der Fruchtfolge, wenn keine Datumsangaben vom Nutzer eingetragen wurden",
+          "unit": "ka/ha",
           "BAL": {
             "C": {
               "displayName": "C Bilanz",
@@ -437,6 +449,11 @@
               "unit": "kg/ha"
             }
           }
+        },
+        "TY": {
+          "displayName": "Jahresdurchschnitt in ka/ha/a",
+          "descr": "Jahresdurschschnitt der Fruchtfolge, wenn Datumsangaben vom Nutzer eingetragen wurden",
+          "unit": "ka/ha/a"
         },
         "SOM": {
           "displayName": "Soil Organic Matter",

@@ -272,7 +272,7 @@ const SoilCalculator = ( () => {
     return ( SOM.SUPP - SOM.LOSS ) / _.SITE.CN;
   }
 
-  function sequenceTotalCandN( sequence ) {
+  function sequenceTotalCandN( sequence, locale ) {
     let divisor = 0, cTotal = 0, nTotal = 0;
 
     for ( const key in sequence ) {
@@ -292,6 +292,32 @@ const SoilCalculator = ( () => {
 
     schema.T.BAL.C = cTotal / divisor;
     schema.T.BAL.N = nTotal / divisor;
+    schema.T.UNIT = getFieldString( 'T', locale );
+
+    return schema;
+  }
+
+  function yearlyTotalCandN( years, locale ) {
+    let divisor = 0, cTotal = 0, nTotal = 0;
+
+    for ( const year in years ) {
+      if ( years[year].T && years[year].T.BAL ) {
+        const { C, N } = years[year].T.BAL;
+        if ( typeof C === 'number' && typeof N === 'number' ) {
+          cTotal += C;
+          nTotal += N;
+          divisor++;
+        }
+      }
+    }
+
+    if ( !divisor ) { return }
+
+    const schema = JSON.parse( JSON.stringify( getSchema( 'results' ) ) );
+
+    schema.T.BAL.C = cTotal / divisor;
+    schema.T.BAL.N = nTotal / divisor;
+    schema.T.UNIT = getFieldString( 'TY', locale );
 
     return schema;
   }
@@ -433,8 +459,12 @@ const SoilCalculator = ( () => {
     return STATE;
   }
 
-  async function getSequenceResults( req ) {
-    return sequenceTotalCandN( req );
+  async function getSequenceResults( req, locale ) {
+    return sequenceTotalCandN( req, locale );
+  }
+
+  async function getYearsAverageResults( req, locale ) {
+    return yearlyTotalCandN( req, locale );
   }
 
   return {
@@ -448,6 +478,7 @@ const SoilCalculator = ( () => {
     getFieldString: getFieldString,
     getDatapointResults: getDatapointResults,
     getSequenceResults: getSequenceResults,
+    getYearsAverageResults: getYearsAverageResults,
   };
 
 } )();

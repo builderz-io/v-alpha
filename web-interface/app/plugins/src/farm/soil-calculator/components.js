@@ -207,7 +207,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     setStateDatapoint();
 
     setStateDatapointResults()
-      .then( () => setStateYearlyResults() );
+      .then( () => setStateYearlyResults() )
+      .then( () => setStateSequenceAverageResult() )
+      .then( () => setStateYearsAverageResult() );
 
     /**
      * Though timeout looks good in ui, it is also needed
@@ -217,7 +219,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     setTimeout( function delayedDrawResults() {
       drawResetResults();
       drawDatapointResults();
-      drawEntireSequenceResults(); /* the total */
+      drawTotalResult();
       drawSummary();
     }, 170 );
 
@@ -300,16 +302,27 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     const sequence = V.getState( 'cropSequence' );
 
-    const sequencesByYear = {};
+    let sequencesByYear = {};
 
     // write sequences by year into sequencesByYear object
     for ( const key in sequence ) {
 
       if (
         ['undefined', 'number'].includes( typeof sequence[key].datapoint )
-        || !sequence[key].datapoint.DATE.HVST
       ) {
         continue;
+      }
+
+      if (
+        !sequence[key].datapoint.DATE.HVST
+      ) {
+
+        /** reset the object to no content and break out of the loop,
+        if user did not fill out all dates, which causes the UI to display
+         the sequence average instead of the yearly average */
+
+        sequencesByYear = {};
+        break;
       }
 
       const year = sequence[key].datapoint.DATE.HVST.substr( 0, 4 );
@@ -323,7 +336,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     // calculate result for each year
     for ( const year in sequencesByYear ) {
       SoilCalculator
-        .getSequenceResults( sequencesByYear[year] )
+        .getSequenceResults( sequencesByYear[year], locale )
         .then( res => {
           const obj = {};
           obj[year] = res;
@@ -331,17 +344,42 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         } );
     }
 
+    // create a placeholder, if user did not fill out all dates
     if ( !Object.keys( sequencesByYear ).length ) {
       V.setState( 'cropSequenceResultsByYear', 'clear' );
       const now = new Date();
       const obj = {};
-      obj[now.getFullYear()] = SoilCalculator.getSchema( 'results' );
+      obj[now.getFullYear()] = { T: SoilCalculator.getSchema( 'results' ).T };
       V.setState( 'cropSequenceResultsByYear', obj );
     }
 
     return {
       success: true,
     };
+  }
+
+  async function setStateSequenceAverageResult() {
+    SoilCalculator
+      .getSequenceResults( V.getState( 'cropSequence' ), locale )
+      .then( res => {
+        if ( !res || !res.T || res.T.BAL.C === null ) {
+          V.setState( 'cropSequenceAverageResult', 'clear' );
+          return;
+        }
+        V.setState( 'cropSequenceAverageResult', { T: res.T } );
+      } );
+  }
+
+  async function setStateYearsAverageResult() {
+    SoilCalculator
+      .getYearsAverageResults( V.getState( 'cropSequenceResultsByYear' ), locale )
+      .then( res => {
+        if ( !res || !res.T || res.T.BAL.C === null ) {
+          V.setState( 'cropSequenceYearsAverageResult', 'clear' );
+          return;
+        }
+        V.setState( 'cropSequenceYearsAverageResult', { T: res.T } );
+      } );
   }
 
   function getFirstPrevious( i ) {
@@ -389,12 +427,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function drawEntireSequenceResults() {
-    SoilCalculator
-      .getSequenceResults( V.getState( 'cropSequence' ) )
-      .then( res => {
-        drawResults( res );
-      } );
+  function drawTotalResult() {
+    const totalsToDisplay = V.getState( 'cropSequenceYearsAverageResult' )
+    || V.getState( 'cropSequenceAverageResult' );
+
+    drawResults( totalsToDisplay );
   }
 
   function drawSummary() {
@@ -526,13 +563,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         if ( typeof res[section][field] == 'object' ) {
           for ( const subField in res[section][field] ) {
             const fieldString = section + '_' + field + '_' + subField;
-            const value = res[section][field][subField].toFixed( 1 );
+            let value = res[section][field][subField];
+            if ( !value ) { continue }
+            if ( typeof value === 'number' ) { value = value.toFixed( 1 ) }
             V.setNode( prefix + fieldString, value );
           }
         }
         else {
           const fieldString = section + '_' + field;
-          const value = res[section][field].toFixed( 1 );
+          let value = res[section][field];
+          if ( !value ) { continue }
+          if ( typeof value === 'number' ) { value = value.toFixed( 1 ) }
           V.setNode( prefix + fieldString, value );
         }
       }
@@ -731,24 +772,25 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         {
           y: {
             'text-align': 'right',
-            'padding': '0 0.7rem',
+            'padding': '0.2rem 1rem 0.5rem',
             'font-style': 'italic',
             'color': '#aaa',
           },
           h: [
-            {
-              t: 'span',
-              y: {
-                'font-size': '1.1rem',
-              },
-              h: 'x̄',
-            },
+            // {
+            //   t: 'span',
+            //   y: {
+            //     'font-size': '1.1rem',
+            //   },
+            //   h: 'x̄',
+            // },
             {
               t: 'span',
               y: {
                 'font-size': '0.75rem',
               },
-              h: ' in kg/ha',
+              i: 's-calc-result' + '__' + 'T_UNIT',
+              h: '',
             },
           ],
         },
@@ -1241,12 +1283,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             t: 'span',
             c: 's-calc-summary__year-c',
-            h: 'C ' + data[year].T.BAL.C.toFixed( 1 ),
+            h: 'C ' + ( data[year].T.BAL.C ? data[year].T.BAL.C.toFixed( 1 ) : '0.00' ),
           },
           {
             t: 'span',
             c: 's-calc-summary__year-n',
-            h: 'N ' + data[year].T.BAL.N.toFixed( 1 ),
+            h: 'N ' + ( data[year].T.BAL.N ? data[year].T.BAL.N.toFixed( 1 ) : '0.00' ),
           },
         ],
       } ) ),

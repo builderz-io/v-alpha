@@ -19,7 +19,7 @@
   },
   {
     "ID": 5020,
-    "NAME": "cattle dung water",
+    "NAME": "Cattle dung water",
     "NAME_DE": "Gülle kotarm",
     "DM": 0.05,
     "C": 0.3,
@@ -28,7 +28,7 @@
   },
   {
     "ID": 5030,
-    "NAME": "pig slurry",
+    "NAME": "Pig slurry",
     "NAME_DE": "Schweingülle",
     "DM": 0.03,
     "C": 0.375,
@@ -37,7 +37,7 @@
   },
   {
     "ID": 5040,
-    "NAME": "poultry manure",
+    "NAME": "Poultry manure",
     "NAME_DE": "Hühnertrockenkot",
     "DM": 0.55,
     "C": 0.272,
@@ -46,7 +46,7 @@
   },
   {
     "ID": 5050,
-    "NAME": "fresh cattle stable manure",
+    "NAME": "Fresh cattle stable manure",
     "NAME_DE": "Rinder-Stallmist frisch",
     "DM": 0.2,
     "C": 0.4,
@@ -55,7 +55,7 @@
   },
   {
     "ID": 5060,
-    "NAME": "rotten cattle stable manure",
+    "NAME": "Rotten cattle stable manure",
     "NAME_DE": "Rinder-Stallmist verrottet (Rottemist)",
     "DM": 0.25,
     "C": 0.4,
@@ -64,7 +64,7 @@
   },
   {
     "ID": 5070,
-    "NAME": "composted cattle stable manure",
+    "NAME": "Composted cattle stable manure",
     "NAME_DE": "Rinder-Stallmist kompostiert",
     "DM": 0.35,
     "C": 0.4,
@@ -73,7 +73,7 @@
   },
   {
     "ID": 5080,
-    "NAME": "horse stable manure",
+    "NAME": "Horse stable manure",
     "NAME_DE": "Pferdemist",
     "DM": 0.3,
     "C": 0.4,
