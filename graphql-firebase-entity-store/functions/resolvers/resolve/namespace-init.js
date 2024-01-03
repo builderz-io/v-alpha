@@ -21,10 +21,14 @@ module.exports = async ( context, data ) => {
   }
 
   /** Cast full set of namespace fields and store in DB. */
-  const namespace = require( './utils/cast-namespace' )( context, data );
+  const namespace = await require( './utils/cast-namespace' )( context, data );
 
   const setA = new Promise( resolve => {
-    collA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
+
+    /** delete the uPhrase mixin from an object-copy before saving the copy db */
+    const authCopy = { ...namespace.auth };
+    delete authCopy.uPhrase;
+    collA.child( authCopy.a ).update( castObjectPaths( authCopy ), () => resolve( 'set Auth' ) );
   } );
 
   const setE = new Promise( resolve => {

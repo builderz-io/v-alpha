@@ -10,7 +10,11 @@ module.exports.float = {
   privKey: '0x ...',
 };
 
-module.exports.jwtSignature = '...',
+module.exports.jwtSignature = ' ... ';
+
+module.exports.jwtRefreshSignature = ' ... ';
+
+module.exports.salt = ' ... ';
 
 module.exports.auth = {
   type: 'service_account',

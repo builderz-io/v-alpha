@@ -19,8 +19,9 @@ const entitySetup = {
 };
 
 const { castUuid } = require( '../../../resources/v-core' );
+const { getSalt, encrypt } = require( '../../../resources/crypt' );
 
-module.exports = ( context, data ) => {
+module.exports = async ( context, data ) => {
 
   /** Prepare data */
 
@@ -29,6 +30,7 @@ module.exports = ( context, data ) => {
   const uuidA = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
+  const encyptedUPhrase = await encrypt( uPhrase, getSalt() );
 
   let creatorUuid, heldBy, geoHash;
 
@@ -158,9 +160,10 @@ module.exports = ( context, data ) => {
       b: entitySetup.authDocVersion,
       d: uuidE,
       e: uuidP,
-      f: data.authInputServerSide.fImporter || uPhrase,
+      f: data.authInputServerSide.fImporter || encyptedUPhrase,
       i: data.authInputServerSide.i,
       j: data.authInputServerSide.j,
+      uPhrase: uPhrase, // mixin of uPhrase to send back to user
     },
   };
 };

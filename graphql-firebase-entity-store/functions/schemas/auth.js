@@ -8,7 +8,7 @@ const types = {
       d: String        // related entity document
       e: String        // related profile document
 
-      f: String        // auth string
+      f: String        // hash of uPhrase and salt
       g: [String]      // networks
       h: [String]      // refreshTokens
 
