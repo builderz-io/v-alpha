@@ -93,6 +93,7 @@ const types = {
       f: String        // hash of uPhrase and salt
 
       uPhrase: String  // decrypted uPhrase
+      creatorUPhrase: String  // decrypted creatorUPhrase
 
       i: String        // evm address
       j: String        // evm address private key

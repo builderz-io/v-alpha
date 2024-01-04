@@ -30,13 +30,16 @@ module.exports = async ( context, data ) => {
   const uuidA = castUuid().base64Url.substr( 3, entitySetup.uuidStringLength );
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
+  const creatorUPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
   const encyptedUPhrase = await encrypt( uPhrase, getSalt() );
 
-  let creatorUuid, heldBy, geoHash;
+  let encryptedCreatorUPhrase, heldBy, geoHash;
 
   if ( context.a ) {
     // heldBy = context.d;
-    creatorUuid = context.d;
+    // creatorUuid = context.d;
+    const combined = context.d + '--' + ' from context (jwt) here ';
+    encryptedCreatorUPhrase = await encrypt( combined, getSalt() );
   }
   // else {
   //   heldBy = [uuidE];
@@ -82,7 +85,7 @@ module.exports = async ( context, data ) => {
       n: data.n,
 
       x: {
-        a: creatorUuid,
+        a: encryptedCreatorUPhrase,
         m: heldBy,
       },
 
@@ -130,7 +133,7 @@ module.exports = async ( context, data ) => {
       },
 
       x: {
-        a: creatorUuid,
+        a: encryptedCreatorUPhrase,
         m: heldBy,
       },
 
@@ -151,7 +154,7 @@ module.exports = async ( context, data ) => {
       },
 
       x: {
-        a: creatorUuid,
+        a: encryptedCreatorUPhrase,
         m: heldBy,
       },
     },
@@ -164,6 +167,7 @@ module.exports = async ( context, data ) => {
       i: data.authInputServerSide.i,
       j: data.authInputServerSide.j,
       uPhrase: uPhrase, // mixin of uPhrase to send back to user
+      creatorUPhrase: creatorUPhrase, // mixin of creatorUPhrase to send back to user
     },
   };
 };

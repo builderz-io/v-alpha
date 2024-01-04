@@ -23,7 +23,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    * Fields may be undefined.
    */
 
-  const singleE = 'a c d i j m n y { a b m } holders holderOf { c fullId } auth { i j uPhrase }';
+  const singleE = 'a c d i j m n y { a b m } holders holderOf { c fullId } auth { i j uPhrase creatorUPhrase }';
   const singleP = 'f m { a b c m n r } n { a c z } o { a b z } p { z } q { q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 } s { s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13 s14 s15 s16 s17 s18 s19 s20 s21 s22 s23 s24 s25 s26 s27 s28 s29 s30 s31  }';
 
   /**
@@ -255,6 +255,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       },
       auth: {
         uPhrase: E.auth ? E.auth.uPhrase : undefined,
+        creatorUPhrase: E.auth ? E.auth.creatorUPhrase : undefined,
         evmCredentials: {
           address: E.auth ? E.auth.i : undefined,
           privateKey: E.auth ? E.auth.j : undefined,

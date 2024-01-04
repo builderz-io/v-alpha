@@ -15,7 +15,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {};
 
-  let cardSet, fourDigitString, newEntity, uPhrase, address, privKey, fullId, role, cardIndex = 0;
+  let cardSet, cardIndex = 0, fourDigitString, keyFileText;
 
   /* ============== user interface strings ============== */
 
@@ -201,26 +201,19 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleSaveKey() {
-    const text = `
-Key: ${ this.uPhrase }\n\n
-EVM Address: ${ this.address }\n\n
-EVM key: ${ this.privKey || 'SELF' }\n\n
-Title: ${ this.fullId }\n\n
-Role: ${ this.role }\n\n
-Joined: ${ new Date().toString().substr( 4, 17 ) }\n\n
-Initialized by: ${ window.location.host }
-`;
 
-    const blob = new Blob( [text], { type: 'text/plain' } );
+    const blob = new Blob( [keyFileText], { type: 'text/plain' } );
+    const matchFullId = keyFileText.match( /Full ID: (.+)$/m );
+    const fullId = matchFullId[1];
 
     const $a = document.createElement( 'a' );
-    $a.download = this.fullId + ' __key.txt'; // + window.location.hostname
+    $a.download = fullId + ' __key.txt'; // + window.location.hostname
     $a.href = window.URL.createObjectURL( blob );
     $a.click();
 
     V.setNode( '.join-download__btn', InteractionComponents.confirmClickSpinner() );
 
-    setTimeout( delayCallToActionBtn.bind( { fullId: this.fullId } ), 1200 );
+    setTimeout( delayCallToActionBtn.bind( { fullId: fullId } ), 1200 );
   }
 
   function delayCallToActionBtn() {
@@ -495,48 +488,54 @@ Initialized by: ${ window.location.host }
         if ( res.success ) {
           console.log( 'successfully set entity: ', res );
 
-          newEntity = res.data[0];
-          uPhrase = newEntity.auth.uPhrase;
-          address = newEntity.auth.evmCredentials.address;
-          privKey = newEntity.auth.evmCredentials.privateKey;
-          fullId = newEntity.fullId;
-          role = newEntity.role;
+          const E = res.data[0];
+
+          keyFileText = `
+Key: ${ E.auth.uPhrase }\n\n
+Creator Key: ${ E.auth.creatorUPhrase }\n\n
+EVM Address: ${ E.auth.evmCredentials.address }\n\n
+EVM Key: ${ E.auth.evmCredentials.privateKey || 'SELF' }\n\n
+Full ID: ${ E.fullId }\n\n
+Role: ${ E.role }\n\n
+Joined: ${ new Date().toString().substr( 4, 17 ) }\n\n
+Initialized by: ${ window.location.host }
+`;
 
           /** Storing the private key to local */
-          V.setLocal( 'privatekey', privKey );
+          V.setLocal( 'privatekey', E.auth.evmCredentials.privateKey );
 
           /** Clear cache to force reload users profile */
           V.setCache( 'viewed', 'clear' );
 
           /** Prepare map position & draw map */
           V.setState( 'active', {
-            lastLngLat: newEntity.geometry.coordinates,
+            lastLngLat: E.geometry.coordinates,
           } );
           VMap.draw( res.data, { isJoin: true } );
 
           /** Place navigation pill */
-          Navigation.drawEntityNavPill( newEntity );
+          Navigation.drawEntityNavPill( E );
 
-          if ( role != 'Person' ) {
+          if ( E.role != 'Person' ) {
             drawSuccess();
-            notifySuccess( fullId, role );
+            notifySuccess( E.fullId, E.role );
             setDownloadKeyBtn();
             return;
           }
 
           /** Automatically join */
-          V.setAuth( uPhrase )
+          V.setAuth( E.auth.uPhrase )
             .then( data => {
               console.log( data );
               if ( data.success ) {
                 console.log( 'auth success' );
 
                 /** Set active entity state for user */
-                V.setActiveEntity( newEntity );
+                V.setActiveEntity( E );
                 Join.draw( 'new entity was set up' );
 
                 drawSuccess();
-                notifySuccess( fullId, role );
+                notifySuccess( E.fullId, E.role );
                 setDownloadKeyBtn();
               }
               else {
@@ -547,7 +546,7 @@ Initialized by: ${ window.location.host }
               console.log( err );
               notifyError( err.message || err );
               setResponse( 'authFail' );
-              drawUphraseDisplay( uPhrase );
+              drawUphraseDisplay( E.auth.uPhrase );
             } );
         }
         else {
@@ -565,13 +564,7 @@ Initialized by: ${ window.location.host }
   function setDownloadKeyBtn() {
     const $btn = V.gN( '.join-download__btn' );
     $btn.innerText = V.getString( ui.download );
-    $btn.addEventListener( 'click', handleSaveKey.bind( {
-      uPhrase: uPhrase,
-      address: address,
-      privKey: privKey,
-      fullId: fullId,
-      role: role,
-    } ) );
+    $btn.addEventListener( 'click', handleSaveKey );
   }
 
   function drawUphraseDisplay( uPhrase ) {
