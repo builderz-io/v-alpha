@@ -34,10 +34,20 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     }
 
     if ( !state[which] ) {
-      state[which] = {};
+      if ( Array.isArray( data ) ) {
+        state[which] = [];
+      }
+      else {
+        state[which] = {};
+      }
     }
 
-    if ( typeof data == 'object' ) {
+    if ( Array.isArray( data ) ) {
+      for ( let i = 0; i < data.length; i++ ) {
+        state[which].push( data[i] );
+      }
+    }
+    else if ( typeof data == 'object' ) {
       Object.assign( state[which], data );
     }
     else {

@@ -517,6 +517,7 @@ Initialized by: ${ window.location.host }
           Navigation.drawEntityNavPill( E );
 
           if ( E.role != 'Person' ) {
+            V.setState( 'tmpEditable', [ E.fullId ] );
             drawSuccess();
             notifySuccess( E.fullId, E.role );
             setDownloadKeyBtn();
@@ -524,7 +525,7 @@ Initialized by: ${ window.location.host }
           }
 
           /** Automatically join */
-          V.setAuth( E.auth.uPhrase )
+          V.setAuth( E.auth.uPhrase, E.auth.creatorUPhrase )
             .then( data => {
               console.log( data );
               if ( data.success ) {

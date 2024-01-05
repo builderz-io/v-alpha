@@ -3,6 +3,7 @@
 const { jwtSignature } = require( '../../credentials/credentials' );
 const { sign } = require( 'jsonwebtoken' );
 const { castUuid } = require( '../../resources/v-core' );
+const { encrypt } = require( '../../resources/crypt' );
 const setNetwork = require( './utils/set-network' );
 const findByAuth = require( './find-by-auth' );
 
@@ -77,6 +78,21 @@ module.exports = async ( context /*, res */ ) => {
 
   // res.cookie( 'refresh_token', newRefreshToken, options );
 
+  const jwt = sign(
+    {
+      user: {
+        a: authDoc.a,
+        d: authDoc.d,
+        i: authDoc.i,
+        eCU: encrypt( context.cU ),
+      },
+    },
+    jwtSignature,
+    {
+      expiresIn: settings.jwtExpiry,
+    },
+  );
+
   return {
     success: true,
     message: 'successfully set refreshToken and sent cookie',
@@ -84,18 +100,6 @@ module.exports = async ( context /*, res */ ) => {
     uuidE: authDoc.d,
     uuidP: authDoc.e,
     tempRefresh: 'REFR' + '--' + authDoc.a + '--' + newRefreshToken,
-    jwt: sign(
-      {
-        user: {
-          a: authDoc.a,
-          d: authDoc.d,
-          i: authDoc.i,
-        },
-      },
-      jwtSignature,
-      {
-        expiresIn: settings.jwtExpiry,
-      },
-    ),
+    jwt: jwt,
   };
 };

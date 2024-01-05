@@ -3,8 +3,8 @@ module.exports.checkAuth = ( context, entity ) => {
     context.a
     && (
       entity.a == context.d // user is entity
-      || ( entity.x && entity.x.a == context.d && !entity.x.m ) // user is creator of entity
-      || ( entity.x && entity.x.m == context.d ) // user is holder of entity
+      || ( entity.x && context.bCU && entity.x.a == context.bCU && !entity.x.m ) // user is creator of entity
+      // TODO: || ( entity.x && entity.x.m == context.d ) // user is holder of entity
     )
   ) {
     return true;

@@ -206,23 +206,23 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
     const reader = new FileReader();
 
     reader.onload = function( event ) {
-      const key = event.target.result.match( /vx.{16}/ );
-      const privateKey = event.target.result.match( /EVM key: .{64}/ );
-      V.setLocal( 'privatekey', privateKey[0].replace( 'EVM key: ', '' ) );
-      if ( !key || !key[0] ) {
+      const keys = event.target.result.match( /vx.{16}/g );
+      const privateKey = event.target.result.match( /EVM Key: .{64}/ );
+      V.setLocal( 'privatekey', privateKey[0].replace( 'EVM Key: ', '' ) );
+      if ( !keys || !keys[0] ) {
         V.getNode( '.form__response' ).textContent = V.getString( ui.noKey );
         return;
       }
-      handleGetEntity( undefined, key[0] );
+      handleGetEntity( undefined, keys[0], keys[1] );
     };
 
     reader.readAsText( this.files[0] );
   }
 
-  function handleGetEntity( e, uPhrase ) {
+  function handleGetEntity( e, uPhrase, creatorUPhrase ) {
     V.setNode( '.place-spinner', InteractionComponents.confirmClickSpinner() );
 
-    V.setAuth( uPhrase || V.getNode( '#loginform__uphrase' ).value )
+    V.setAuth( uPhrase || V.getNode( '#loginform__uphrase' ).value, creatorUPhrase )
       .then( data => {
         if ( data.success ) {
           console.log( 'auth success' );

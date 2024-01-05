@@ -57,58 +57,66 @@ module.exports = async ( context, match ) => {
   /**
    * mixin the fullId of the first "external" entity holder, if available
    * TODO:
+   * - needs reworking, due to encryption
    * - check field "n" and "o" also
    * - cache this ?
    */
 
-  if ( entity.x ) {
-    const firstHolder = await collE.child( entity.x.m || entity.x.a ).once( 'value' )
-      .then( snap => snap.val() );
-    const shownHolder = firstHolder.zz && firstHolder.zz.f && firstHolder.zz.f > 0
-      ? 'private' // ( entity.m + ' ' + entity.n )
-      : ( firstHolder.m + ' ' + firstHolder.n );
-    Object.assign( entity, { holders: [ shownHolder ] } );
-  }
-  else {
-    Object.assign( entity, { holders: [ entity.m + ' ' + entity.n ] } );
-  }
+  // if ( entity.x ) {
+  //   const firstHolder = await collE.child( entity.x.m || entity.x.a ).once( 'value' )
+  //     .then( snap => snap.val() );
+  //   const shownHolder = firstHolder.zz && firstHolder.zz.f && firstHolder.zz.f > 0
+  //     ? 'private' // ( entity.m + ' ' + entity.n )
+  //     : ( firstHolder.m + ' ' + firstHolder.n );
+  //   Object.assign( entity, { holders: [ shownHolder ] } );
+  // }
+  // else {
+  Object.assign( entity, { holders: [ entity.m + ' ' + entity.n ] } );
+  // }
 
   /**
-   * mixin the fullIds of entities held
+   * mixin the fullIds of entities held for user's own profile
    * TODO:
    * - check field "n" and "o" also
    * - cache this ?
    */
 
-  const heldFilter = ( snap ) => {
-    const data = snap.val();
-    if ( data ) {
-      let items = Object.values( data );
-      if ( !checkAuth( context, entity ) ) {
-        items = items.filter( item => item.zz && !item.zz.f );
+  if ( entity.a == context.d ) {
+
+    const heldFilter = ( snap ) => {
+      const data = snap.val();
+      if ( data ) {
+        let items = Object.values( data );
+        if ( !checkAuth( context, entity ) ) {
+          items = items.filter( item => item.zz && !item.zz.f );
+        }
+        return items;
       }
-      return items;
-    }
-    return [];
-  };
+      return [];
+    };
 
-  const all = await Promise.all( [
-    collE.orderByChild( 'x/m' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
-    collE.orderByChild( 'x/a' ).equalTo( entity.a ).once( 'value' ).then( heldFilter ),
-  ] );
+    const all = await Promise.all( [
+      [], // TODO: collE.orderByChild( 'x/m' ).equalTo( context.bCU ).once( 'value' ).then( heldFilter ),
+      collE.orderByChild( 'x/a' ).equalTo( context.bCU ).once( 'value' ).then( heldFilter ),
+    ] );
 
-  const points = all[1].concat( all[0] )
-    .map( item => ( {
-      a: item.a,
-      c: item.c,
-      d: item.d,
-      fullId: item.m + ' ' + item.n,
-      geo: item.zz && item.zz.i ? item.zz.i : null,
-      continent: item.zz && item.zz.m ? item.zz.m : null,
-      privacy: item.zz && item.zz.f ? item.zz.f : null,
-    } ) );
+    const points = all[1].concat( all[0] )
+      .map( item => ( {
+        a: item.a,
+        c: item.c,
+        d: item.d,
+        fullId: item.m + ' ' + item.n,
+        geo: item.zz && item.zz.i ? item.zz.i : null,
+        continent: item.zz && item.zz.m ? item.zz.m : null,
+        privacy: item.zz && item.zz.f ? item.zz.f : null,
+      } ) );
 
-  Object.assign( entity, { holderOf: points } );
+    Object.assign( entity, { holderOf: points } );
+
+  }
+  else {
+    Object.assign( entity, { holderOf: [] } );
+  }
 
   /** authorize the mixin of private data for authenticated user */
   if (

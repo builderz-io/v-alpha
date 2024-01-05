@@ -1,5 +1,5 @@
 
-const { getSalt, encrypt } = require( '../../resources/crypt' );
+const { getSalt, bcrypt } = require( '../../resources/crypt' );
 
 const collA = global.db.collA;
 
@@ -11,7 +11,7 @@ module.exports = async ( token ) => {
     'vx' == token.substr( 0, 2 )
     && token.length == 18
   ) {
-    const encryptedToken = await encrypt( token, getSalt() );
+    const encryptedToken = await bcrypt( token, getSalt() );
     return getAuthDoc( 'f', encryptedToken );
   }
 

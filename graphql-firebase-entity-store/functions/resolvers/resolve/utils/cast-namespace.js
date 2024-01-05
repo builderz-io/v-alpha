@@ -19,7 +19,7 @@ const entitySetup = {
 };
 
 const { castUuid } = require( '../../../resources/v-core' );
-const { getSalt, encrypt } = require( '../../../resources/crypt' );
+const { getSalt, bcrypt } = require( '../../../resources/crypt' );
 
 module.exports = async ( context, data ) => {
 
@@ -31,20 +31,13 @@ module.exports = async ( context, data ) => {
   const unix = Math.floor( Date.now() / 1000 );
   const uPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
   const creatorUPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
-  const encyptedUPhrase = await encrypt( uPhrase, getSalt() );
+  const bcyptedUPhrase = await bcrypt( uPhrase, getSalt() );
 
-  let encryptedCreatorUPhrase, heldBy, geoHash;
+  let bcryptedCreatorUPhrase, heldBy, geoHash;
 
   if ( context.a ) {
-    // heldBy = context.d;
-    // creatorUuid = context.d;
-    const combined = context.d + '--' + ' from context (jwt) here ';
-    encryptedCreatorUPhrase = await encrypt( combined, getSalt() );
+    bcryptedCreatorUPhrase = await bcrypt( context.cU, getSalt() );
   }
-  // else {
-  //   heldBy = [uuidE];
-  //   creatorUuid = uuidE;
-  // }
 
   if ( data.profileInputServerSide.lngLat ) {
     geoHash = require( 'geofire-common' ).geohashForLocation( [
@@ -85,7 +78,7 @@ module.exports = async ( context, data ) => {
       n: data.n,
 
       x: {
-        a: encryptedCreatorUPhrase,
+        a: bcryptedCreatorUPhrase,
         m: heldBy,
       },
 
@@ -133,7 +126,7 @@ module.exports = async ( context, data ) => {
       },
 
       x: {
-        a: encryptedCreatorUPhrase,
+        a: bcryptedCreatorUPhrase,
         m: heldBy,
       },
 
@@ -154,7 +147,7 @@ module.exports = async ( context, data ) => {
       },
 
       x: {
-        a: encryptedCreatorUPhrase,
+        a: bcryptedCreatorUPhrase,
         m: heldBy,
       },
     },
@@ -163,9 +156,11 @@ module.exports = async ( context, data ) => {
       b: entitySetup.authDocVersion,
       d: uuidE,
       e: uuidP,
-      f: data.authInputServerSide.fImporter || encyptedUPhrase,
+      f: data.authInputServerSide.fImporter || bcyptedUPhrase,
       i: data.authInputServerSide.i,
       j: data.authInputServerSide.j,
+    },
+    toKeyFile: {
       uPhrase: uPhrase, // mixin of uPhrase to send back to user
       creatorUPhrase: creatorUPhrase, // mixin of creatorUPhrase to send back to user
     },

@@ -14,6 +14,7 @@ const credentials = require( './credentials/credentials' );
 const { whitelist } = require( './credentials/credentials' );
 
 const { dBInit, setDbReference } = require( './resources/databases-setup' );
+const { getSalt, bcrypt, decrypt } = require( './resources/crypt' );
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = require( './schemas/typeDefs' );
@@ -67,6 +68,7 @@ const server = new ApolloServer( {
 
     const auth = req.headers.authorization;
     const lastConnectedAddress = req.headers['last-connected-address'];
+    const creatorUPhrase = req.headers['creator-uphrase'];
     const browserId = req.headers['browser-id'];
 
     const tempRefresh = req.headers['temp-refresh'] != 'not set'
@@ -88,19 +90,28 @@ const server = new ApolloServer( {
       const authDoc = await findByAuth( auth.replace( 'uPhrase ', '' ) );
       if ( authDoc ) {
 
-        /** If an address is set, uPhrase must match entity address */
-        if ( lastConnectedAddress != 'not set' ) {
-          authDoc.i == lastConnectedAddress ? Object.assign( context, authDoc ) : null;
+        /** If an address is set, enforce that uPhrase must match entity of that address */
+        if (
+          lastConnectedAddress != 'not set'
+          && authDoc.i != lastConnectedAddress
+        ) {
+          // do not set context object
         }
         else {
           Object.assign( context, authDoc );
+          Object.assign( context, { cU: creatorUPhrase } );
         }
       }
+      // else do not set context object
     }
     else if ( auth.includes( 'Bearer' ) ) {
       try {
         const jwt = verify( auth.replace( 'Bearer ', '' ), credentials.jwtSignature );
+        const creatorUPhrase = decrypt( jwt.user.eCU );
+        const bcryptedCreatorUPhrase = await bcrypt( creatorUPhrase, getSalt() );
+
         Object.assign( context, jwt.user );
+        Object.assign( context, { cU: creatorUPhrase, bCU: bcryptedCreatorUPhrase } );
       }
       catch ( err ) {
         console.log( err );

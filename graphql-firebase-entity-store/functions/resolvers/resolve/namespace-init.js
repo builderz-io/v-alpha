@@ -24,11 +24,7 @@ module.exports = async ( context, data ) => {
   const namespace = await require( './utils/cast-namespace' )( context, data );
 
   const setA = new Promise( resolve => {
-
-    /** delete the uPhrase mixin from an object-copy before saving the copy db */
-    const authCopy = { ...namespace.auth };
-    delete authCopy.uPhrase;
-    collA.child( authCopy.a ).update( castObjectPaths( authCopy ), () => resolve( 'set Auth' ) );
+    collA.child( namespace.auth.a ).update( castObjectPaths( namespace.auth ), () => resolve( 'set Auth' ) );
   } );
 
   const setE = new Promise( resolve => {
@@ -65,6 +61,7 @@ module.exports = async ( context, data ) => {
 
   /** Mixin the auth and return entity Doc */
   namespace.entity.auth = namespace.auth;
+  Object.assign( namespace.entity.auth, namespace.toKeyFile );
 
   return namespace.entity;
 

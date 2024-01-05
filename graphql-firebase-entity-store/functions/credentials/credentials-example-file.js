@@ -16,6 +16,8 @@ module.exports.jwtRefreshSignature = ' ... ';
 
 module.exports.salt = ' ... ';
 
+module.exports.cryptoSecret = ' ... ';
+
 module.exports.auth = {
   type: 'service_account',
   project_id: ' ... ',

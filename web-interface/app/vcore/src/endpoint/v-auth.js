@@ -11,27 +11,32 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     namespaceEndpoint: V.getSetting( 'namespaceEndpoint' ),
   };
 
-  let uPhrase, lastConnectedAddress, tempRefresh;
-
   /* ================== private methods ================= */
 
-  function fetchAuth() {
+  function fetchAuth( uPhrase, creatorUPhrase ) {
     const queryA = `mutation SetEntityAuth {
             setAuth { success message uuidE uuidP exp jwt tempRefresh }
           }`;
 
-    return fetchFirebase( queryA );
+    const lastCA = V.getLocal( 'last-connected-address' )
+      ? V.getLocal( 'last-connected-address' ).replace( /"/g, '' )
+      : undefined;
+
+    const tempRefr = getTempRefreshToken();
+
+    return fetchFirebase( queryA, undefined, uPhrase, creatorUPhrase, lastCA, tempRefr );
   }
 
-  function fetchFirebase( query, variables ) {
+  function fetchFirebase( query, variables, uPhrase, creatorUPhrase, lastCA, tempRefr ) {
     return fetch( settings.namespaceEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': uPhrase ? 'uPhrase ' + uPhrase : '',
-        'Last-Connected-Address': lastConnectedAddress ? lastConnectedAddress : 'not set',
-        'Temp-Refresh': tempRefresh ? tempRefresh : 'not set',
+        'Creator-UPhrase': creatorUPhrase ? creatorUPhrase : 'not set',
+        'Last-Connected-Address': lastCA ? lastCA : 'not set',
+        'Temp-Refresh': tempRefr ? tempRefr : 'not set',
         'Browser-ID': V.getLocal( 'browser-id' ).replace( /"/g, '' ),
       },
       body: JSON.stringify( {
@@ -57,7 +62,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
   function setDisconnect() {
     console.log( 777, 'setDisconnect' );
 
-    tempRefresh = getTempRefreshToken();
+    // tempRefresh = getTempRefreshToken();
 
     const queryD = `mutation SetDisconnect {
             setDisconnect { success }
@@ -74,14 +79,10 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
     } );
   }
 
-  async function setAuth( whichUphrase ) {
+  async function setAuth( uPhrase, creatorUPhrase ) {
     console.log( 888, 'setAuth' );
 
-    uPhrase = whichUphrase;
-    lastConnectedAddress = V.getLocal( 'last-connected-address' ) ? V.getLocal( 'last-connected-address' ).replace( /"/g, '' ) : undefined;
-    tempRefresh = getTempRefreshToken();
-
-    const data = await fetchAuth().then( res => {
+    const data = await fetchAuth( uPhrase, creatorUPhrase ).then( res => {
 
       if ( !res.errors ) {
 
