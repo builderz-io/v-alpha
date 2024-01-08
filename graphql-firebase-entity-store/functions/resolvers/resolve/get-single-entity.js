@@ -3,6 +3,7 @@ const collE = global.db.collE;
 const collA = global.db.collA;
 
 const { checkAuth } = require( './utils/check-auth' );
+const { decrypt } = require( '../../resources/crypt' );
 
 module.exports = async ( context, match ) => {
 
@@ -106,7 +107,11 @@ module.exports = async ( context, match ) => {
         c: item.c,
         d: item.d,
         fullId: item.m + ' ' + item.n,
-        geo: item.zz && item.zz.i ? item.zz.i : null,
+        geo: item.zz && item.zz.i
+          ? item.zz.i
+          : ( item.zz.l
+            ? JSON.parse( decrypt( JSON.parse( item.zz.l ) ) )
+            : null ),
         continent: item.zz && item.zz.m ? item.zz.m : null,
         privacy: item.zz && item.zz.f ? item.zz.f : null,
       } ) );
@@ -122,6 +127,13 @@ module.exports = async ( context, match ) => {
   if (
     checkAuth( context, entity )
   ) {
+
+    /** convert encrypted geo data to visible geo data */
+    if (
+      entity.zz && entity.zz.l
+    ) {
+      entity.zz.i = JSON.parse( decrypt( JSON.parse( item.zz.l ) ) );
+    }
 
     /** fetch related auth doc */
     const authDoc = await collA.child( entity.e ).once( 'value' )

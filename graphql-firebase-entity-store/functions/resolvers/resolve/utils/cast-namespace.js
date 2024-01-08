@@ -19,7 +19,7 @@ const entitySetup = {
 };
 
 const { castUuid } = require( '../../../resources/v-core' );
-const { getSalt, bcrypt } = require( '../../../resources/crypt' );
+const { getSalt, bcrypt, encrypt } = require( '../../../resources/crypt' );
 
 module.exports = async ( context, data ) => {
 
@@ -33,18 +33,32 @@ module.exports = async ( context, data ) => {
   const creatorUPhrase = 'vx' + castUuid().base64Url.slice( 0, 15 ) + 'X';
   const bcyptedUPhrase = await bcrypt( uPhrase, getSalt() );
 
-  let bcryptedCreatorUPhrase, heldBy, geoHash;
+  let bcryptedCreatorUPhrase, heldBy, encryptedLngLat_as_string; //, geoHash, encryptedGeoHash;
 
   if ( context.a ) {
     bcryptedCreatorUPhrase = await bcrypt( context.cU, getSalt() );
   }
 
+  /* encrypt geo data for Plots and remove original */
+  if ( data.c == 'ah' && data.profileInputServerSide.lngLat ) {
+
+    /* Note for testing: Skill is 'ah' and Plot is 'ap' */
+
+    encryptedLngLat_as_string = JSON.stringify( encrypt( JSON.stringify( data.profileInputServerSide.lngLat ) ) );
+
+    delete data.profileInputServerSide.lngLat;
+
+  }
+
+  /** TODO
   if ( data.profileInputServerSide.lngLat ) {
     geoHash = require( 'geofire-common' ).geohashForLocation( [
       data.profileInputServerSide.lngLat[1],
       data.profileInputServerSide.lngLat[0],
     ] );
+    encryptedGeoHash = encrypt( geoHash );
   }
+  */
 
   // let block, rpc, contract;
 
@@ -91,8 +105,9 @@ module.exports = async ( context, data ) => {
 
       zz: {
         i: data.profileInputServerSide.lngLat,
-        j: geoHash,
+        // j: geoHash,
         k: data.profileInputServerSide.loc,
+        l: encryptedLngLat_as_string,
       },
     },
     profile: {
@@ -113,7 +128,8 @@ module.exports = async ( context, data ) => {
       },
       n: {
         a: data.profileInputServerSide.lngLat,
-        b: geoHash,
+        // b: encryptedGeoHash,
+        d: encryptedLngLat_as_string,
         c: data.profileInputServerSide.loc,
         z: data.profileInputServerSide.continent,
       },

@@ -46,7 +46,8 @@ const types = {
 
       i: [Float]      // base coordinates
       j: String       // geo hash
-      k: String       // base Location
+      k: String       // base location
+      l: String       // encrypted base location
 
       m: Int          // continent
       n: Int          // avatar

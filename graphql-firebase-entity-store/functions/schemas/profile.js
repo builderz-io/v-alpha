@@ -36,10 +36,11 @@ const types = {
     {
       a: [Float]      // base coordinates
       b: String       // geo hash
-      c: String       // base Location
+      c: String       // base location
+      d: String       // encrypted base location
       g: [Float]      // current coordinates
       h: String       // geo hash
-      i: String       // current Location
+      i: String       // current location
       z: Int          // default continent
     }
   `,
