@@ -128,13 +128,6 @@ module.exports = async ( context, match ) => {
     checkAuth( context, entity )
   ) {
 
-    /** convert encrypted geo data to visible geo data */
-    if (
-      entity.zz && entity.zz.l
-    ) {
-      entity.zz.i = JSON.parse( decrypt( JSON.parse( item.zz.l ) ) );
-    }
-
     /** fetch related auth doc */
     const authDoc = await collA.child( entity.e ).once( 'value' )
       .then( snap => snap.val() );

@@ -40,7 +40,7 @@ module.exports = async ( context, data ) => {
   }
 
   /* encrypt geo data for Plots and remove original */
-  if ( data.c == 'ah' && data.profileInputServerSide.lngLat ) {
+  if ( data.c == 'ap' && data.profileInputServerSide.lngLat ) {
 
     /* Note for testing: Skill is 'ah' and Plot is 'ap' */
 
