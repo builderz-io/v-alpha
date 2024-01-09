@@ -941,8 +941,8 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
           else {
 
             /** If server is used, get the profile */
-            const P = await getProfiles( [ E.data.setEntity ] );
-            combined = castReturnedEntityAndProfileData( E.data.setEntity, P.data.getProfiles[0] );
+            const P = await getProfile( { uuidP: E.data.setEntity.d } );
+            combined = castReturnedEntityAndProfileData( E.data.setEntity, P.data.getProfile[0] );
           }
           return V.successTrue( 'set entity', combined );
         } )
