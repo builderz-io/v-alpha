@@ -88,7 +88,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
         /** Set temp refresh token */
         // setTempRefreshToken(); // clears temp_refresh
-        setTempRefreshToken( res.data.setAuth.tempRefresh );
+        setTempRefreshToken( res.data.setAuth.jwt );
         // document.cookie = 'temp_refresh=' + res.data.setAuth.tempRefresh;
 
         /** Set JWT for Authorization header */

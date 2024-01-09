@@ -83,8 +83,19 @@ const server = new ApolloServer( {
     const findByAuth = require( './resolvers/resolve/find-by-auth' );
 
     if ( tempRefresh ) {
-      const authDoc = await findByAuth( tempRefresh );
-      authDoc ? Object.assign( context, authDoc ) : null;
+
+      /* using the same token for temp refresh and in fetch auth header */
+      try {
+        const jwt = verify( tempRefresh, credentials.jwtSignature );
+        const creatorUPhrase = decrypt( jwt.user.eCU );
+        const bcryptedCreatorUPhrase = await bcrypt( creatorUPhrase, getSalt() );
+
+        Object.assign( context, jwt.user );
+        Object.assign( context, { cU: creatorUPhrase, bCU: bcryptedCreatorUPhrase } );
+      }
+      catch ( err ) {
+        console.log( err );
+      }
     }
     else if ( auth.includes( 'uPhrase' ) ) {
       const authDoc = await findByAuth( auth.replace( 'uPhrase ', '' ) );
@@ -105,6 +116,8 @@ const server = new ApolloServer( {
       // else do not set context object
     }
     else if ( auth.includes( 'Bearer' ) ) {
+
+      /* using the same token for temp refresh and in fetch auth header */
       try {
         const jwt = verify( auth.replace( 'Bearer ', '' ), credentials.jwtSignature );
         const creatorUPhrase = decrypt( jwt.user.eCU );
