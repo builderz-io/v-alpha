@@ -700,8 +700,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     if (
       V.aE()
       && (
-        V.getLastViewed().holders.includes( V.aE().fullId ) // || // new model
-        // V.aE().adminOf.includes( V.getState( 'active' ).lastViewed ) // previous model
+        V.aE().fullId == V.getLastViewed().fullId
+        || (
+          V.aE().holderOf
+          && V.aE().holderOf.map( item => item.fullId ).includes( V.getLastViewed().fullId )
+        )
+        || (
+          V.getState( 'tmpEditable' )
+          && V.getState( 'tmpEditable' ).includes( V.getLastViewed().fullId )
+        )
       )
     ) {
 
