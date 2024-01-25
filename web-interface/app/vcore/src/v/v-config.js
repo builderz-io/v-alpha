@@ -47,6 +47,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     'slug': '/theme/lang', // omit trailing "/"
     'english': 'en_US',
     'englisch': 'en_US',
+    'german': 'de_DE_sie',
     'german official': 'de_DE_sie',
     'deutsch offiziell': 'de_DE_sie',
     'german personal': 'de_DE_du',
@@ -55,8 +56,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.5.8',
-    uploadVersion: '13',
+    appVersion: 'Alpha 3.6.0',
+    uploadVersion: '14',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
