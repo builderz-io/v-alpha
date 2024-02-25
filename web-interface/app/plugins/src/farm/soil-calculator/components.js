@@ -336,7 +336,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     }
 
-    // calculate result for each year
+    // reset and calculate result for each year
+    V.setState( 'cropSequenceResultsByYear', 'clear' );
+
     for ( const year in sequencesByYear ) {
       SoilCalculator
         .getSequenceResults( sequencesByYear[year], locale )
