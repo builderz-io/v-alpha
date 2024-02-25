@@ -553,6 +553,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const isValidDate = ( dateString ) => {
       // Parse the input string to create a Date object
 
+      if ( dateString === '' ) {
+        return true;
+      }
+
       const enteredDate = new Date( dateString );
 
       // Check if the enteredDate is a valid date and not NaN
@@ -593,7 +597,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       _.DATE_SOWN
       && !isValidDate( _.DATE_SOWN.value )
     ) {
-      // console.log( 'SOWN', isValidDate( _.DATE_SOWN.value ) );
       return -30;
     }
 
@@ -601,7 +604,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       _.DATE_HVST
       && !isValidDate( _.DATE_HVST.value )
     ) {
-      // console.log( 'HVST', isValidDate( _.DATE_HVST.value ) );
       return -30;
     }
 

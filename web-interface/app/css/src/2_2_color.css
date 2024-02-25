@@ -111,21 +111,11 @@ input:focus, textarea:focus {
 .red-background {
       animation: fadeRedBackground 0.4s ease-out forwards;
     }
-.green-background {
-      animation: fadeGreenBackground 0.4s ease-out forwards;
-    }
+
 
     @keyframes fadeRedBackground {
       0% {
         background-color: red;
-      }
-      100% {
-        background-color: transparent;
-      }
-    }
-    @keyframes fadeRedBackground {
-      0% {
-        background-color: green;
       }
       100% {
         background-color: transparent;
