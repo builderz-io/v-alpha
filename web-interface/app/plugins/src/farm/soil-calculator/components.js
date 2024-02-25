@@ -197,12 +197,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   /* ===================== handlers ==================== */
 
   function handleDatapointChange( e ) {
+    let run = true;
 
     if ( e ) {
 
       /* is not the case when loading data from db */
-      setDatapoint( e ); /* save to db */
+      run = setDatapoint( e ); /* save to db */
     }
+
+    if ( !run ) { return }
 
     setStateDatapoint();
 
@@ -455,9 +458,22 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const newDatapoint = getFormData( formName );
 
     if (
+      newDatapoint === -30
+    ) {
+      document.activeElement.classList.add( 'red-background', 'txt-red' );
+      setTimeout( () => {
+        document.activeElement.classList.remove( 'red-background' );
+      }, 400 );
+
+      return false;
+    }
+
+    document.activeElement.classList.remove( 'txt-red' );
+
+    if (
       newDatapoint === -20
     ) {
-      return;
+      return false;
     }
 
     if (
@@ -470,7 +486,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         field: 'servicefields.s' + subFieldNum,
         data: null,
       } );
-      return;
+      return true;
     }
 
     const jsonStr = V.castJson( newDatapoint );
@@ -479,6 +495,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
     } );
+
+    return true;
 
   }
 
@@ -532,13 +550,35 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function validateFormData( _, formName ) {
 
+    const isValidDate = ( dateString ) => {
+      // Parse the input string to create a Date object
+
+      const enteredDate = new Date( dateString );
+
+      // Check if the enteredDate is a valid date and not NaN
+      if ( isNaN( enteredDate.getTime() ) ) {
+        return false;
+      }
+
+      // Check if the year is witin accepted range
+      const year = enteredDate.getFullYear();
+      return year >= 1850 && year <= 2070;
+    };
+
+    const hasEntry = ( formName ) => {
+      const formNumber = Number( formName.replace( 'CROP-', '' ) );
+      const entry = V.getState( 'cropSequence' )[ 's' + formNumber ];
+      return entry ? typeof entry.datapoint != 'number' : undefined;
+    };
+
     if ( formName === 'SITE' ) { return 1 } // TODO
 
     if(
-      _.CROP_ID.value == 1000
+      hasEntry( formName )
+      && _.CROP_ID.value == 1000
       && !_.BMASS_MP_QTY.value
     ) {
-      return -10;
+      return -10; // resets entry
     }
 
     if(
@@ -547,6 +587,22 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       || !_.BMASS_MP_QTY.value
     ) {
       return -20;
+    }
+
+    if(
+      _.DATE_SOWN
+      && !isValidDate( _.DATE_SOWN.value )
+    ) {
+      // console.log( 'SOWN', isValidDate( _.DATE_SOWN.value ) );
+      return -30;
+    }
+
+    if(
+      _.DATE_HVST
+      && !isValidDate( _.DATE_HVST.value )
+    ) {
+      // console.log( 'HVST', isValidDate( _.DATE_HVST.value ) );
+      return -30;
     }
 
     return 1;
