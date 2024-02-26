@@ -55,6 +55,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     },
     's-calc-summary__item': {
       'margin-bottom': '0.7rem',
+      'font-size': '0.9rem',
     },
     's-calc-summary__yearly-item': {
       'justify-content': 'space-between',
@@ -62,7 +63,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     },
     's-calc-summary__item-number': {
       'margin-right': '0.7rem',
-      'min-width': '64px',
+      'min-width': '88px',
     },
     's-calc-results-visibility': {
       display: 'block !important',
@@ -638,6 +639,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         }
       }
     }
+
+    // Get the unit elements
+    const tUnit = document.getElementById( 's-calc-result__T_UNIT' );
+
+    // Replace all occurrences of "-1" with superscripted "-1"
+    tUnit.innerHTML = tUnit.innerHTML.replace( /-1/g, '<sup>-1</sup>' );
+
   }
 
   function castFlatFieldTitle( section, field, subField ) {
@@ -705,7 +713,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha',
+          innerHtml: 'in kg ha<sup>-1</sup>',
         },
       ],
     };
@@ -728,7 +736,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha',
+          innerHtml: 'in kg ha<sup>-1</sup>',
         },
       ],
     };
@@ -751,7 +759,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha',
+          innerHtml: 'in kg ha<sup>-1</sup>',
         },
       ],
     };
@@ -845,7 +853,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             //   h: 'x̄',
             // },
             {
-              t: 'span',
+              t: 'p',
               y: {
                 'font-size': '0.75rem',
               },
@@ -1033,7 +1041,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             },
             {
               c: 's-calc-input-unit',
-              h: unit,
+              innerHtml: unit ? unit.replace( /-1/g, '<sup>-1</sup>' ) : '',
             },
           ],
         } ),
