@@ -322,7 +322,7 @@
     "legend": {
       "en_US": {
         "T": {
-          "displayName": "Sequence average in kg ha-1",
+          "displayName": "Sequence average in kg ha-1 WARN",
           "descr": "Crop sequence average, if no dates were entered by user",
           "unit": "kg ha-1",
           "BAL": {
@@ -434,7 +434,7 @@
       },
       "de_DE": {
         "T": {
-          "displayName": "Fruchtfolgedurchschnitt in kg ha-1",
+          "displayName": "Fruchtfolgedurchschnitt in kg ha-1 WARN",
           "descr": "Durchschnitt der Fruchtfolge, wenn keine Datumsangaben vom Nutzer eingetragen wurden",
           "unit": "kg ha-1",
           "BAL": {

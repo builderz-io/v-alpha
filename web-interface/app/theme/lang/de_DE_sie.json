@@ -257,5 +257,6 @@
   "No file selected": "Keine Datei hochgeladen",
   "No key found in file": "Kein Schlüssel in Datei gefunden",
   "Enter key manually": "Schlüssel manuell eingeben",
-  "Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.": "Wichtig: Einige Ihrer Daten werden verschlüsselt. Wenn Sie die Schlüsseldatei oder deren Inhalt verlieren, geht Ihr Konto dauerhaft verloren. Speichern Sie Ihre Schlüssel an einem sicheren Ort."
+  "Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.": "Wichtig: Einige Ihrer Daten werden verschlüsselt. Wenn Sie die Schlüsseldatei oder deren Inhalt verlieren, geht Ihr Konto dauerhaft verloren. Speichern Sie Ihre Schlüssel an einem sicheren Ort.",
+  "Date entries are currently incomplete. As a result, the total reflects the average of the crop sequence rather than the yearly average.": "Die Datumsangaben sind unvollständig. Daher zeigt die Gesamtsumme den Durchschnitt der Fruchtfolge an und nicht den Jahresdurchschnitt."
 }

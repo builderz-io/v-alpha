@@ -186,6 +186,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       safeDataset: 'Save this set',
       showDetails: 'Show details',
       overview: 'Overview',
+      incompleteDates: 'Date entries are currently incomplete. As a result, the total reflects the average of the crop sequence rather than the yearly average.',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -640,11 +641,33 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       }
     }
 
-    // Get the unit elements
+    castNewUnitStringOnTotals();
+
+  }
+
+  function castNewUnitStringOnTotals() {
+
     const tUnit = document.getElementById( 's-calc-result__T_UNIT' );
 
-    // Replace all occurrences of "-1" with superscripted "-1"
-    tUnit.innerHTML = tUnit.innerHTML.replace( /-1/g, '<sup>-1</sup>' );
+    if( tUnit.innerHTML.includes( 'WARN' ) ) {
+      setTimeout( function delayedWarnAppend() {
+        tUnit.append( V.cN( {
+          t: 'span',
+          y: {
+            'margin-left': '0.2rem',
+            'cursor': 'pointer',
+            'position': 'relative',
+            'top': '2px',
+          },
+          k: function handleIncompleteDateWarning() {
+            Modal.draw( 'validation error', V.getString( ui.incompleteDates ) );
+          },
+          h: V.getIcon( 'warn_mark', '16px' ),
+        } ) );
+      }, 50 );
+    }
+
+    tUnit.innerHTML = tUnit.innerHTML.replace( /-1/g, '<sup>-1</sup>' ).replace( 'WARN', '' );
 
   }
 
@@ -839,7 +862,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
         {
           y: {
-            'text-align': 'right',
+            'display': 'flex',
+            'justify-content': 'end',
             'padding': '0.2rem 1rem 0.5rem',
             'font-style': 'italic',
             'color': '#aaa',
