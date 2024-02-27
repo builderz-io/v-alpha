@@ -256,5 +256,6 @@
   "Use key file": "Schlüssel-Datei verwenden",
   "No file selected": "Keine Datei hochgeladen",
   "No key found in file": "Kein Schlüssel in Datei gefunden",
-  "Enter key manually": "Schlüssel manuell eingeben"
+  "Enter key manually": "Schlüssel manuell eingeben",
+  "Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.": "Wichtig: Einige Ihrer Daten werden verschlüsselt. Wenn Sie die Schlüsseldatei oder deren Inhalt verlieren, geht Ihr Konto dauerhaft verloren. Speichern Sie Ihre Schlüssel an einem sicheren Ort."
 }

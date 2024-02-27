@@ -37,6 +37,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinEmailBottom: 'This is private, visible to admins only.',
       joinAwaitKeyTop: 'One moment... setting up the identity.',
       joinAwaitKeyBottom: '',
+      joinKeyImportance: 'Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.',
 
       joinFormName: 'Name',
       joinFormTitle: 'Title',
@@ -205,6 +206,15 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'flex': 1,
       'align-items': 'center',
     },
+    'join-key-importance': {
+      'background': 'moccasin',
+      'padding': '2rem',
+      'margin': '2rem 1rem',
+      'border-radius': '20px',
+    },
+    'join-key-importance-text': {
+      color: 'red',
+    },
 
     'join-submit__response': {
       'color': 'crimson',
@@ -319,9 +329,9 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
               c: 'join-form__input'
                    + ( addition ? '-' + addition : '' ),
               a: {
-                  placeholder: ( formTitle == 'joinFormTitle'
-                      ? V.getString( JoinRoutine.getEntityData().role ) + ' '
-                      : '' )
+                placeholder: ( formTitle == 'joinFormTitle'
+                  ? V.getString( JoinRoutine.getEntityData().role ) + ' '
+                  : '' )
                       + V.getString(
                         ui[formTitle],
                       ),
@@ -559,6 +569,18 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
+  function joinKeyImportanceWarning() {
+    return V.cN(
+      {
+        c: 'join-key-importance',
+        h: {
+          c: 'join-key-importance-text',
+          h: V.getString( ui.joinKeyImportance ),
+        },
+      },
+    );
+  }
+
   function nextButton() {
     return V.cN(
       {
@@ -673,6 +695,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     return [
       joinHeader( 'joinAwaitKeyTop', 'joinAwaitKeyBottom' ),
       joinDownloadKeyBtn(),
+      joinKeyImportanceWarning(),
     ];
   }
 
