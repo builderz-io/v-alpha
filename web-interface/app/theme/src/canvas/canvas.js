@@ -364,13 +364,16 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
      */
 
     const lP = V.getSetting( 'landingPage' );
+    const lPVisits = Number( V.getLocal( 'landing-page-visits' ) );
 
     if (
       window.location.pathname == '/'
       && lP
+      && ( !lPVisits || lPVisits < 2 )
     ) {
       path = lP;
       V.setBrowserHistory( lP );
+      V.setLocal( 'landing-page-visits', lPVisits + 1 );
     }
 
     Chat.drawMessageForm( 'clear' );
