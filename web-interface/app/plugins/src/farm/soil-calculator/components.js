@@ -55,6 +55,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     },
     's-calc-summary__item': {
       'margin-bottom': '0.7rem',
+      'font-size': '0.9rem',
     },
     's-calc-summary__yearly-item': {
       'justify-content': 'space-between',
@@ -62,7 +63,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     },
     's-calc-summary__item-number': {
       'margin-right': '0.7rem',
-      'min-width': '64px',
+      'min-width': '88px',
     },
     's-calc-results-visibility': {
       display: 'block !important',
@@ -185,6 +186,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       safeDataset: 'Save this set',
       showDetails: 'Show details',
       overview: 'Overview',
+      incompleteDates: 'Date entries are currently incomplete. As a result, the total reflects the average of the crop sequence rather than the yearly average.',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -197,12 +199,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   /* ===================== handlers ==================== */
 
   function handleDatapointChange( e ) {
+    let run = true;
 
     if ( e ) {
 
       /* is not the case when loading data from db */
-      setDatapoint( e ); /* save to db */
+      run = setDatapoint( e ); /* save to db */
     }
+
+    if ( !run ) { return }
 
     setStateDatapoint();
 
@@ -333,7 +338,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     }
 
-    // calculate result for each year
+    // reset and calculate result for each year
+    V.setState( 'cropSequenceResultsByYear', 'clear' );
+
     for ( const year in sequencesByYear ) {
       SoilCalculator
         .getSequenceResults( sequencesByYear[year], locale )
@@ -455,9 +462,22 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const newDatapoint = getFormData( formName );
 
     if (
+      newDatapoint === -30
+    ) {
+      document.activeElement.classList.add( 'red-background', 'txt-red' );
+      setTimeout( () => {
+        document.activeElement.classList.remove( 'red-background' );
+      }, 400 );
+
+      return false;
+    }
+
+    document.activeElement.classList.remove( 'txt-red' );
+
+    if (
       newDatapoint === -20
     ) {
-      return;
+      return false;
     }
 
     if (
@@ -470,7 +490,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         field: 'servicefields.s' + subFieldNum,
         data: null,
       } );
-      return;
+      return true;
     }
 
     const jsonStr = V.castJson( newDatapoint );
@@ -479,6 +499,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
     } );
+
+    return true;
 
   }
 
@@ -532,13 +554,39 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function validateFormData( _, formName ) {
 
+    const isValidDate = ( dateString ) => {
+      // Parse the input string to create a Date object
+
+      if ( dateString === '' ) {
+        return true;
+      }
+
+      const enteredDate = new Date( dateString );
+
+      // Check if the enteredDate is a valid date and not NaN
+      if ( isNaN( enteredDate.getTime() ) ) {
+        return false;
+      }
+
+      // Check if the year is witin accepted range
+      const year = enteredDate.getFullYear();
+      return year >= 1850 && year <= 2070;
+    };
+
+    const hasEntry = ( formName ) => {
+      const formNumber = Number( formName.replace( 'CROP-', '' ) );
+      const entry = V.getState( 'cropSequence' )[ 's' + formNumber ];
+      return entry ? typeof entry.datapoint != 'number' : undefined;
+    };
+
     if ( formName === 'SITE' ) { return 1 } // TODO
 
     if(
-      _.CROP_ID.value == 1000
+      hasEntry( formName )
+      && _.CROP_ID.value == 1000
       && !_.BMASS_MP_QTY.value
     ) {
-      return -10;
+      return -10; // resets entry
     }
 
     if(
@@ -547,6 +595,20 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       || !_.BMASS_MP_QTY.value
     ) {
       return -20;
+    }
+
+    if(
+      _.DATE_SOWN
+      && !isValidDate( _.DATE_SOWN.value )
+    ) {
+      return -30;
+    }
+
+    if(
+      _.DATE_HVST
+      && !isValidDate( _.DATE_HVST.value )
+    ) {
+      return -30;
     }
 
     return 1;
@@ -578,6 +640,35 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         }
       }
     }
+
+    castNewUnitStringOnTotals();
+
+  }
+
+  function castNewUnitStringOnTotals() {
+
+    const tUnit = document.getElementById( 's-calc-result__T_UNIT' );
+
+    if( tUnit.innerHTML.includes( 'WARN' ) ) {
+      setTimeout( function delayedWarnAppend() {
+        tUnit.append( V.cN( {
+          t: 'span',
+          y: {
+            'margin-left': '0.2rem',
+            'cursor': 'pointer',
+            'position': 'relative',
+            'top': '2px',
+          },
+          k: function handleIncompleteDateWarning() {
+            Modal.draw( 'validation error', V.getString( ui.incompleteDates ) );
+          },
+          h: V.getIcon( 'warn_mark', '16px' ),
+        } ) );
+      }, 50 );
+    }
+
+    tUnit.innerHTML = tUnit.innerHTML.replace( /-1/g, '<sup>-1</sup>' ).replace( 'WARN', '' );
+
   }
 
   function castFlatFieldTitle( section, field, subField ) {
@@ -645,7 +736,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha',
+          innerHtml: 'in kg ha<sup>-1</sup>',
         },
       ],
     };
@@ -668,7 +759,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha',
+          innerHtml: 'in kg ha<sup>-1</sup>',
         },
       ],
     };
@@ -691,7 +782,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'font-style': 'italic',
             'color': '#aaa',
           },
-          h: 'in kg/ha',
+          innerHtml: 'in kg ha<sup>-1</sup>',
         },
       ],
     };
@@ -771,7 +862,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
         {
           y: {
-            'text-align': 'right',
+            'display': 'flex',
+            'justify-content': 'end',
             'padding': '0.2rem 1rem 0.5rem',
             'font-style': 'italic',
             'color': '#aaa',
@@ -785,7 +877,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             //   h: 'x̄',
             // },
             {
-              t: 'span',
+              t: 'p',
               y: {
                 'font-size': '0.75rem',
               },
@@ -973,7 +1065,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             },
             {
               c: 's-calc-input-unit',
-              h: unit,
+              innerHtml: unit ? unit.replace( /-1/g, '<sup>-1</sup>' ) : '',
             },
           ],
         } ),

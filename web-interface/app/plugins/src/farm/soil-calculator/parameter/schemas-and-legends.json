@@ -71,7 +71,7 @@
             "QTY": {
               "displayName": "Quantity applied",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t/ha"
+              "unit": "FM t ha-1"
             }
           }
         },
@@ -84,7 +84,7 @@
             "QTY": {
               "displayName": "Quantity available",
               "descr": "Main Product Quantity",
-              "unit": "FM t/ha"
+              "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Harvested",
@@ -98,7 +98,7 @@
             "QTY": {
               "displayName": "Quantity available",
               "descr": "Side Product Quantity",
-              "unit": "FM t/ha"
+              "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Harvested",
@@ -193,7 +193,7 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t/ha"
+              "unit": "FM t ha-1"
             }
           }
         },
@@ -206,7 +206,7 @@
             "QTY": {
               "displayName": "Ertrag",
               "descr": "Main Product Quantity",
-              "unit": "FM t/ha"
+              "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Ernte",
@@ -220,7 +220,7 @@
             "QTY": {
               "displayName": "Ertrag",
               "descr": "Side Product Quantity",
-              "unit": "FM t/ha"
+              "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Ernte",
@@ -254,7 +254,7 @@
           "FCAP": {
             "displayName": "Feldkapazität",
             "descr": "Field Capacity",
-            "unit": "cm/m"
+            "unit": "cm m-1"
           },
           "PCIP": {
             "displayName": "Niederschlag",
@@ -262,7 +262,7 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Plot precipitation",
-              "unit": "mm/a"
+              "unit": "mm a-1"
             },
             "MUL": {
               "displayName": "Multiplikator",
@@ -276,7 +276,7 @@
             "DEP": {
               "displayName": "Atmospherische N Deposition",
               "descr": "Atmospherische N Deposition",
-              "unit": "kg/ha/a"
+              "unit": "kg ha-1 a-1"
             }
           }
         }
@@ -322,26 +322,26 @@
     "legend": {
       "en_US": {
         "T": {
-          "displayName": "Sequence average in ka/ha",
+          "displayName": "Sequence average in kg ha-1 WARN",
           "descr": "Crop sequence average, if no dates were entered by user",
-          "unit": "ka/ha",
+          "unit": "kg ha-1",
           "BAL": {
             "C": {
               "displayName": "C Balance",
               "descr": "C Balance",
-              "unit": ""
+              "unit": "kg ha-1"
             },
             "N": {
               "displayName": "N Balance",
               "descr": "N Balance",
-              "unit": ""
+              "unit": "kg ha-1"
             }
           }
         },
         "TY": {
-          "displayName": "Yearly average in ka/ha/a",
+          "displayName": "Yearly average in kg ha-1 a-1",
           "descr": "Crop sequence yearly average, when dates were entered by user",
-          "unit": "ka/ha/a"
+          "unit": "kg ha-1 a-1"
         },
         "SOM": {
           "displayName": "Soil Organic Matter",
@@ -434,26 +434,26 @@
       },
       "de_DE": {
         "T": {
-          "displayName": "Fruchtfolgedurchschnitt in ka/ha",
+          "displayName": "Fruchtfolgedurchschnitt in kg ha-1 WARN",
           "descr": "Durchschnitt der Fruchtfolge, wenn keine Datumsangaben vom Nutzer eingetragen wurden",
-          "unit": "ka/ha",
+          "unit": "kg ha-1",
           "BAL": {
             "C": {
               "displayName": "C Bilanz",
               "descr": "C Balance",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             },
             "N": {
               "displayName": "N Bilanz",
               "descr": "N Balance",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             }
           }
         },
         "TY": {
-          "displayName": "Jahresdurchschnitt in ka/ha/a",
+          "displayName": "Jahresdurchschnitt in kg ha-1 a-1",
           "descr": "Jahresdurschschnitt der Fruchtfolge, wenn Datumsangaben vom Nutzer eingetragen wurden",
-          "unit": "ka/ha/a"
+          "unit": "kg ha-1 a-1"
         },
         "SOM": {
           "displayName": "Soil Organic Matter",
@@ -461,23 +461,23 @@
           "LOSS": {
             "displayName": "C Substanz Abbau",
             "descr": "Soil Organic Matter Loss",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "SUPP": {
             "displayName": "C Substanz Aufbau",
             "descr": "Soil Organic Matter Supply",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "BAL": {
             "C": {
               "displayName": "C Humusbilanz",
               "descr": "C Balance",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             },
             "N": {
               "displayName": "N Humusbilanz",
               "descr": "N Balance",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             }
           }
         },
@@ -487,27 +487,27 @@
           "PB": {
             "displayName": "N in Pflanzenbiomasse",
             "descr": "N in Pflanzenbiomasse",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "FIX": {
             "displayName": "N aus Fixierung",
             "descr": "N aus Fixierung",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "DEP": {
             "displayName": "N aus Deposition",
             "descr": "N aus atmosphärischer Deposition",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "NYR": {
             "displayName": "N nicht aufgenommen",
             "descr": "N nicht aufgenommen",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "CR": {
             "displayName": "N in Pflanzenrückständen",
             "descr": "N in Pflanzenrückständen",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "FTLZ": {
             "displayName": "Fertilizer",
@@ -515,7 +515,7 @@
             "ORG": {
               "displayName": "N aus organischen Düngern",
               "descr": "N Organischer Dünger",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             },
             "GRS": {
               "displayName": "N aus Grün/Stroh",
@@ -525,7 +525,7 @@
             "REM": {
               "displayName": "N in Düngerrückständen",
               "descr": "N Nachlieferung",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             }
           }
         },
@@ -533,13 +533,13 @@
           "CR": {
             "displayName": "C in Pflanzenrückständen",
             "descr": "C in Pflanzenrückständen",
-            "unit": "kg/ha"
+            "unit": "kg ha-1"
           },
           "FTLZ": {
             "REM": {
               "displayName": "C in Düngerrückständen",
               "descr": "C in Düngerrückständen",
-              "unit": "kg/ha"
+              "unit": "kg ha-1"
             }
           }
         }

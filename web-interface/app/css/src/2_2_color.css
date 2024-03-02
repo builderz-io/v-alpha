@@ -106,3 +106,18 @@ input:focus, textarea:focus {
 .circle-1:hover {
   /* border: 1px solid rgba(var(--brandPrimary), 1); */
 }
+
+
+.red-background {
+      animation: fadeRedBackground 0.4s ease-out forwards;
+    }
+
+
+    @keyframes fadeRedBackground {
+      0% {
+        background-color: red;
+      }
+      100% {
+        background-color: transparent;
+      }
+    }
