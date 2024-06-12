@@ -4,6 +4,16 @@ module.exports.whitelist = [
   ' ... ',
 ];
 
+module.exports.dbEnvs = {
+  'function-region': ' ... ',
+  'env-name-here': {
+    'authentication': ' ... ',
+    'namespace': ' ... ',
+    'profile': ' ... ',
+    'profile-image': ' ... ',
+  },
+};
+
 module.exports.float = {
   rpc: ' ... ',
   contractAddress: '0x ...', // '0xfe611d4a98760fC70B030F9c5A418Da07adD18C1'; builderz.io

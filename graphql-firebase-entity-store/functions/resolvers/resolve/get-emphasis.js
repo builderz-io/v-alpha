@@ -6,8 +6,9 @@ module.exports = ( context, emphasis ) => {
   const coll = namespaceDb.database().ref( 'networks/' + network + '/' + emphasis + 's' );
 
   return coll
-    .orderByChild( 'y/c' )
-    .startAt( Math.floor( Date.now() / 1000 ) )
+    // .orderByChild( 'y/c' )
+    // .startAt( Math.floor( Date.now() / 1000 ) )
+    // .limitToLast( 30 )
     .once( 'value' )
     .then( snap => Object.values( snap.val() ) );
 

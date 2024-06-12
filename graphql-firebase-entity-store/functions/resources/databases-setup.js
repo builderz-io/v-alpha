@@ -17,7 +17,7 @@ function dBInit( dbEnv ) {
 
   const env = {
 
-    use: 'dev',
+    use: 'external',
 
     local: false, /* set to "true" to save data locally when running importer */
 
@@ -36,34 +36,43 @@ function dBInit( dbEnv ) {
     clientDFR: {
       dbAffix: '-client-dfr',
     },
+    external: 'clientDFR',
   };
 
   const authDb = admin.initializeApp( {
     credential: admin.credential.cert( credentials.auth ),
     databaseURL: env.local
       ? 'http://localhost:9000/?ns=entity-authentication-dev'
-      : 'https://entity-authentication' + env[env.use].dbAffix + '.firebaseio.com',
+      : env.use == 'external'
+        ? credentials.dbEnvs[env.external]['authentication']
+        : 'https://entity-authentication' + env[env.use].dbAffix + '.firebaseio.com',
   }, 'authentication' );
 
   const namespaceDb = admin.initializeApp( {
     credential: admin.credential.cert( credentials.namespace ),
     databaseURL: env.local
       ? 'http://localhost:9000/?ns=entity-namespace-dev'
-      : 'https://entity-namespace' + env[env.use].dbAffix + '.firebaseio.com/',
+      : env.use == 'external'
+        ? credentials.dbEnvs[env.external]['namespace']
+        : 'https://entity-namespace' + env[env.use].dbAffix + '.firebaseio.com',
   }, 'namespace' );
 
   const profileDb = admin.initializeApp( {
     credential: admin.credential.cert( credentials.profile ),
     databaseURL: env.local
       ? 'http://localhost:9000/?ns=entity-profile-dev'
-      : 'https://entity-profile' + env[env.use].dbAffix + '.firebaseio.com/',
+      : env.use == 'external'
+        ? credentials.dbEnvs[env.external]['profile']
+        : 'https://entity-profile' + env[env.use].dbAffix + '.firebaseio.com',
   }, 'profile' );
 
   const imageDb = admin.initializeApp( {
     credential: admin.credential.cert( credentials.profile ),
     databaseURL: env.local
       ? 'http://localhost:9000/?ns=entity-profile-image-dev'
-      : 'https://entity-profile-image' + env[env.use].dbAffix + '.firebaseio.com/',
+      : env.use == 'external'
+        ? credentials.dbEnvs[env.external]['profile-image']
+        : 'https://entity-profile-image' + env[env.use].dbAffix + '.firebaseio.com',
   }, 'image' );
 
   const collE = namespaceDb.database().ref( 'databases/default/' + 'entities' );

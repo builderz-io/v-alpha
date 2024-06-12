@@ -138,4 +138,4 @@ server.applyMiddleware( { app, path: '/v1', cors: false } );
 
 console.log( ' ***  Started Apollo Server at', new Date().toString().split( ' ' )[4], ' ***' );
 
-exports.api = functions.https.onRequest( app );
+exports.api = functions.region( credentials.dbEnvs['function-region'] ).https.onRequest( app );

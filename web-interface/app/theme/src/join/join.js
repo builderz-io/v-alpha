@@ -193,7 +193,7 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       V.setLocal( 'welcome-modal', 1 );
 
       /** Draw the version of the join button according to the app setting */
-      V.setNode( 'balance > svg', 'clear' );
+      // V.setNode( 'balance > svg', 'clear' );
       V.setNode( 'header', JoinComponents.joinBtn() );
     }
   }
