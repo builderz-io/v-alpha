@@ -186,6 +186,10 @@ const Account = ( function() { // eslint-disable-line no-unused-vars
     balance && drawBalance( balance )
      || V.getEntityBalance( V.aE() ).then( accState => {
 
+       if ( !accState.success ) {
+         return;
+       }
+
        /**
          * Check whether the account has enough coins to transact.
          * If not, send a request to the float-api to send some.

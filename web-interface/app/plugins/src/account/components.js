@@ -131,7 +131,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function headerBalance( balance ) {
     if ( balance === -1 ) {
-      balance = '..';
+      // balance = '..';
+
+      // V.getIcon( 'person', '16px' );
     }
     else {
       balance = V.getNetVAmount( balance ).net;
@@ -164,15 +166,24 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
             'stroke-dashoffset': '-200',
           },
         },
-        {
-          t: 'text',
-          c: `font-medium fs-xxs ${ textColor } no-txt-select`,
-          a: {
-            x: '50%',
-            y: '59%',
+        balance === -1
+          ? {
+            t: 'path',
+            a: {
+              fill: strokeColor,
+              transform: 'translate(11.8, 10.8) scale(0.55, 0.55)',
+              d: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z',
+            },
+          }
+          : {
+            t: 'text',
+            c: `font-medium fs-xxs ${ textColor } no-txt-select`,
+            a: {
+              x: '50%',
+              y: '59%',
+            },
+            h: balance,
           },
-          h: balance,
-        },
       ],
     } );
   }

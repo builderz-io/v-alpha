@@ -56,8 +56,8 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.6.1',
-    uploadVersion: '15',
+    appVersion: 'Alpha 3.6.2',
+    uploadVersion: '1',
 
     entityLedger: VNetworkInit.entityLedger,
     chatLedger: VNetworkInit.chatLedger,
@@ -67,7 +67,9 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     socketHost: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].host,
     socketPort: mongodbEndpoints[ VNetworkInit.mongodbEndpoint ].port,
 
-    namespaceEndpoint: namespaceEndpoints[ VNetworkInit.namespaceEndpoint ],
+    namespaceEndpoint: VNetworkInit.namespaceEndpoint.includes( 'https' )
+      ? VNetworkInit.namespaceEndpoint
+      : namespaceEndpoints[ VNetworkInit.namespaceEndpoint ],
     telegramEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint || 'builderz' ].telegram,
     emailEndpoint: apiEndpoints[ VNetworkInit.apiEndpoint || 'builderz' ].email,
 
@@ -108,7 +110,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     joinVersion: 2,
 
     subscribeToChainEvents: false,
-    balanceCheckInterval: 90, // in sec
+    balanceCheckInterval: 60 * 60 * 2, // in sec
     demoContent: false, // set to 'true', then reload page once, then set to 'false'
     defaultVerification: false,
     update3BoxEntityStore: false,

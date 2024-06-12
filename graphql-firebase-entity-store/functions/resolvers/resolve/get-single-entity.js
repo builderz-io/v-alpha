@@ -82,7 +82,7 @@ module.exports = async ( context, match ) => {
    * - cache this ?
    */
 
-  if ( entity.a == context.d ) {
+  if ( ( entity.a == context.d ) && context.bCU ) {
 
     const heldFilter = ( snap ) => {
       const data = snap.val();
