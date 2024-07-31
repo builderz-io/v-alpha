@@ -106,6 +106,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/pool/components.js' ),
         V.setScript( host + '/plugins/src/pool/pool.js' ),
         V.setScript( host + '/plugins/src/farm/soil-calculator/components.js' ),
+        V.setScript( host + '/plugins/src/farm/soil-calculator/precipitation-calculator.js' ),
         V.setScript( host + '/plugins/src/farm/soil-calculator/soil-calculator.js' ),
         V.setScript( host + '/plugins/src/farm/farm.js' ),
         V.setScript( host + '/plugins/src/marketplace/components.js' ),

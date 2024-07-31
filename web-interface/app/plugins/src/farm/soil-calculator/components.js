@@ -269,15 +269,24 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function setStateDatapoint() {
+    //get site data
     const obj = {};
     obj[ 's' + settings.dbFieldSITE ] = getFormData( 'SITE' );
     V.setState( 'cropSequence', obj );
+    //get crop data
     for ( let i = 1; i <= settings.numCropEntries; i++ ) {
       const obj = {};
       obj[ 's' + i ] = { datapoint: getFormData( 'CROP-' + i ) };
       V.setState( 'cropSequence', obj );
     }
   }
+
+  //param datum start
+  //param datum end
+  //param lat
+  //param long
+  //fetch -> precip data
+  //data save als obj key precip (adjust schema)
 
   async function setStateDatapointResults() {
     const siteData = V.getState( 'cropSequence' )[ 's' + settings.dbFieldSITE ];

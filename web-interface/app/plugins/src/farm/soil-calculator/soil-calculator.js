@@ -56,6 +56,21 @@ const SoilCalculator = ( () => {
     return time;
   }
 
+  function castPcip() {
+
+    /**
+     * @returns { Object } precipitation - amount of precip on a crop in the given time frame
+     */
+
+    const pcip = {
+      pcip: PcipCalculator.getPcip(),
+    }
+
+    return pcip;
+
+
+  }
+
   function castInputs( datapoint, prevDatapoint ) {
 
     /**
@@ -452,8 +467,13 @@ const SoilCalculator = ( () => {
     /* add input data to state */
     Object.assign( STATE, castInputs( datapoint, prevDatapoint ) );
 
+    /*add precip*/
+    Object.assign( STATE, castPcip() );
+
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
+
+    console.log(STATE);
 
     /* return state */
     return STATE;
