@@ -62,8 +62,17 @@ const SoilCalculator = ( () => {
      * @returns { Object } precipitation - amount of precip on a crop in the given time frame
      */
 
+    const requestParams = {
+      lat: V.getState( 'active' ).lastLngLat[1],
+      lng: V.getState( 'active' ).lastLngLat[0],
+      startDate: STATE.inputs.DATE.SOWN,
+      endDate: STATE.inputs.DATE.HVST,
+      maxDist: 50000, // in meter
+    };
+    console.log( requestParams );
+
     const pcip = {
-      pcip: PcipCalculator.getPcip(),
+      pcip: PcipCalculator.getPcip( requestParams ),
     }
 
     return pcip;
