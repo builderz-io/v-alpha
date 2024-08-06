@@ -18,12 +18,12 @@ const PcipCalculator = ( () => {
             return totalPrecipitation;
           }
           else {
-            return 'No data available for the selected date range.';
+            return 0;
           }
         }
         catch ( error ) {
           console.error( 'Error fetching weather data:', error );
-          return 'Error fetching data';
+          return null;
         }
       }
       else {
@@ -32,7 +32,6 @@ const PcipCalculator = ( () => {
       }
     }
     else {
-      alert( 'Please select both start and end dates.' );
       return null;
     }
   }

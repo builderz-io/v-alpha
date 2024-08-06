@@ -56,7 +56,7 @@ const SoilCalculator = ( () => {
     return time;
   }
 
-  function castPcip() {
+  async function castPcip() {
 
     /**
      * @returns { Object } precipitation - amount of precip on a crop in the given time frame
@@ -69,15 +69,15 @@ const SoilCalculator = ( () => {
       endDate: STATE.inputs.DATE.HVST,
       maxDist: 50000, // in meter
     };
-    console.log( requestParams );
 
-    const pcip = {
-      pcip: PcipCalculator.getPcip( requestParams ),
+    try {
+      const precipitation = await PcipCalculator.getPcip( requestParams );
+      console.log( 'Calculated Precipitation:', precipitation );
+      return { pcip: precipitation };
+    } catch ( error ) {
+      console.error( 'Error calculating precipitation:', error );
+      return { pcip: null };
     }
-
-    return pcip;
-
-
   }
 
   function castInputs( datapoint, prevDatapoint ) {
@@ -477,7 +477,8 @@ const SoilCalculator = ( () => {
     Object.assign( STATE, castInputs( datapoint, prevDatapoint ) );
 
     /*add precip*/
-    Object.assign( STATE, castPcip() );
+    const pcipData = await castPcip();
+    Object.assign(STATE, pcipData);
 
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );

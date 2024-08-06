@@ -209,7 +209,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if ( !run ) { return }
 
-    setStateDatapoint();
+    setStateDatapoint()
 
     setStateDatapointResults()
       .then( () => setStateYearlyResults() )
@@ -226,7 +226,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       drawDatapointResults();
       drawTotalResult();
       drawSummary();
-    }, 170 );
+    }, 10000 );
 
   }
 
@@ -292,6 +292,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const siteData = V.getState( 'cropSequence' )[ 's' + settings.dbFieldSITE ];
     for ( let i = 1; i <= settings.numCropEntries; i++ ) {
       const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
+      console.log( i );
       if ( typeof cropData === 'number' ) { continue }
 
       const prevCropData = getFirstPrevious( i );
@@ -299,9 +300,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       Object.assign( cropData, siteData ); // merge
 
       if ( cropData && siteData ) {
-        SoilCalculator
+        await SoilCalculator
           .getDatapointResults( cropData, prevCropData )
           .then( res => {
+            console.log( 'aaaaa' + i );
             Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { results: res.results } );
           } );
       }
@@ -313,7 +315,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   async function setStateYearlyResults() {
-
     const sequence = V.getState( 'cropSequence' );
 
     let sequencesByYear = {};
