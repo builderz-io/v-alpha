@@ -71,9 +71,9 @@ const SoilCalculator = ( () => {
     };
 
     try {
-      const precipitation = await PcipCalculator.getPcip( requestParams );
-      console.log( 'Calculated Precipitation:', precipitation );
-      return { pcip: precipitation };
+      const pcipData = await PcipCalculator.getPcip( requestParams );
+      console.log( 'Calculated Precipitation:', pcipData );
+      return pcipData;
     } catch ( error ) {
       console.error( 'Error calculating precipitation:', error );
       return { pcip: null };
@@ -478,8 +478,8 @@ const SoilCalculator = ( () => {
 
     /*add precip*/
     const pcipData = await castPcip();
-    Object.assign(STATE, pcipData);
-
+    Object.assign( STATE.inputs, pcipData );
+    
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
 

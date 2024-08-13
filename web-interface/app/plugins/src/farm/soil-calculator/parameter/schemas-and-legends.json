@@ -24,6 +24,19 @@
         "SOWN": -1,
         "HVST": -1
       },
+      "PCIP_MM": {
+        "MM": -1,
+        "STATION": {
+          "ID": -1,
+          "NAME": "",
+          "LAT": -1,
+          "LON": -1
+        },
+        "DATE": {
+          "FIRST": -1,
+          "LAST": -1
+        }
+      },
       "SITE": {
         "CN": -1,
         "FCAP": -1,
@@ -119,6 +132,35 @@
             "displayName": "Harvested on",
             "descr": "Date of crop harvested",
             "unit": ""
+          }
+        },
+        "PCIP_MM": {
+          "displayName": "Amount of precipitation in given time frame",
+          "descr": "Amount of precipitation in given time frame",
+          "MM": {
+            "displayName": "Precipitation in mm",
+            "descr": "Precipitation in mm",
+            "unit": "",
+            "STATION": {
+              "displayName": "Closest station",
+              "descr": "Closest station",
+              "unit": "",
+              "NAME": {
+                "displayName": "Closest station name",
+                "descr": "Closest station name",
+                "unit": ""
+              },
+              "LAT": {
+                "displayName": "Closest station latitude",
+                "descr": "Closest station latitude",
+                "unit": ""
+              },
+              "LON": {
+                "displayName": "Closest station longitude",
+                "descr": "Closest station longitude",
+                "unit": ""
+              }
+            }
           }
         },
         "SITE": {
@@ -241,6 +283,35 @@
             "displayName": "Ernte am",
             "descr": "Datum der Ernte",
             "unit": ""
+          }
+        },
+        "PCIP_MM": {
+          "displayName": "Niederschlagmenge in Zeitraum",
+          "descr": "Niederschlagmenge in Zeitraum",
+          "MM": {
+            "displayName": "Niederschlag in mm",
+            "descr": "Niederschlag in mm",
+            "unit": "",
+            "STATION": {
+              "displayName": "Nächstgelegenen Station",
+              "descr": "Nächstgelegenen Station",
+              "unit": "",
+              "NAME": {
+                "displayName": "Name der nächstgelegenen Station",
+                "descr": "Name der nächstgelegenen Station",
+                "unit": ""
+              },
+              "LAT": {
+                "displayName": "Breitengrad der nächstgelegenen Station",
+                "descr": "Breitengrad der nächstgelegenen Station",
+                "unit": ""
+              },
+              "LON": {
+                "displayName": "Längengrad der nächstgelegenen Station",
+                "descr": "Längengrad der nächstgelegenen Station",
+                "unit": ""
+              }
+            }
           }
         },
         "SITE": {

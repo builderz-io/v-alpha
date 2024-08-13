@@ -198,7 +198,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ===================== handlers ==================== */
 
-  function handleDatapointChange( e ) {
+  async function handleDatapointChange( e ) {
     let run = true;
 
     if ( e ) {
@@ -211,22 +211,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     setStateDatapoint()
 
-    setStateDatapointResults()
-      .then( () => setStateYearlyResults() )
-      .then( () => setStateSequenceAverageResult() )
-      .then( () => setStateYearsAverageResult() );
+    try {
+      await setStateDatapointResults();
+      await setStateYearlyResults();
+      await setStateSequenceAverageResult();
+      await setStateYearsAverageResult();
 
-    /**
-     * Though timeout looks good in ui, it is also needed
-     * to ensure results are set (should be changed to promise)
-     */
-
-    setTimeout( function delayedDrawResults() {
       drawResetResults();
       drawDatapointResults();
       drawTotalResult();
       drawSummary();
-    }, 10000 );
+  } catch (error) {
+      console.error('Error while setting state or drawing results:', error);
+  }
 
   }
 
@@ -530,6 +527,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete __.FTLZ;
       delete __.BMASS;
       delete __.DATE;
+      delete __.PCIP_MM;
       __.SITE.CN = Number( _.SITE_CN.value );
       __.SITE.FCAP = Number( _.SITE_FCAP.value );
       __.SITE.PCIP.QTY = Number( _.SITE_PCIP_QTY.value );
@@ -552,6 +550,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.DATE.SOWN = _.DATE_SOWN.value;
       __.DATE.HVST = _.DATE_HVST.value;
+      __.PCIP_MM = Number ( __.PCIP_MM.MM || { MM: -1 } );
     }
 
     // console.log( 'New Dataset: ', __ );
@@ -1255,6 +1254,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       DATE: {
         SOWN: inputDate,
         HVST: inputDate,
+      },
+      PCIP_MM: {
+        MM: inputNum,
+        STATION: {
+          ID: inputNum,
+          NAME: inputNum,
+          LAT: inputNum,
+          LON: inputNum,
+        },
+        DATE: {
+          FIRST: inputNum,
+          LAST: inputNum,
+        }
       },
       SITE: {
         CN: inputNum,
