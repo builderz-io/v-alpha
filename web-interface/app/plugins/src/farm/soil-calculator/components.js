@@ -199,15 +199,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   /* ===================== handlers ==================== */
 
   async function handleDatapointChange( e ) {
-    let run = true;
+    let run = { run: true };
 
     if ( e ) {
 
       /* is not the case when loading data from db */
-      run = setDatapoint( e ); /* save to db */
+      run = getDatapoint( e );
     }
 
-    if ( !run ) { return }
+    if ( !run.run ) { return }
 
     setStateDatapoint();
 
@@ -218,27 +218,23 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
 
     const yearlyResults = await setStateYearlyResults();
-    if ( !yearlyResults ) {
-      console.error( 'Error while setting state yearly results.' );
-      return;
-    }
 
     const sequenceAverageResult = await setStateSequenceAverageResult();
-    if ( !sequenceAverageResult ) {
-      console.error( 'Error while setting state sequence average results.' );
-      return;
-    }
 
     const yearsAverageResult = await setStateYearsAverageResult();
-    if ( !yearsAverageResult ) {
-      console.error( 'Error while setting state years average results.' );
-      return;
-    }
 
     drawResetResults();
     drawDatapointResults();
     drawTotalResult();
     drawSummary();
+
+    if ( e && run.newDatapoint === -10 ) {
+      resetDatapointInDb( run.subFieldNum );
+    }
+    else if ( e ) {
+      Object.assign( run.newDatapoint.PCIP_MM, V.getState( 'cropSequence' )[ 's' + run.subFieldNum ].inputs.PCIP_MM );
+      setInputsAndResultInDb( run.subFieldNum, run.newDatapoint );
+    }
 
   }
 
@@ -315,8 +311,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         await SoilCalculator
           .getDatapointResults( cropData, prevCropData )
           .then( res => {
-            console.log( 'aaaaa' + i );
-            Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { results: res.results } );
+            console.log( res );
+            Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { inputs: res.inputs, results: res.results } );
           } );
       }
     }
@@ -397,6 +393,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         }
         V.setState( 'cropSequenceAverageResult', { T: res.T } );
       } );
+
   }
 
   async function setStateYearsAverageResult() {
@@ -473,7 +470,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
 
-  function setDatapoint( e ) {
+  function getDatapoint( e ) {
 
     const formName = e.target.closest( 'form' ).getAttribute( 'name' );
 
@@ -491,7 +488,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         document.activeElement.classList.remove( 'red-background' );
       }, 400 );
 
-      return false;
+      return {
+        run: false,
+        newDatapoint: newDatapoint,
+        subFieldNum: subFieldNum,
+      };
     }
 
     document.activeElement.classList.remove( 'txt-red' );
@@ -499,7 +500,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     if (
       newDatapoint === -20
     ) {
-      return false;
+      return {
+        run: false,
+        newDatapoint: newDatapoint,
+        subFieldNum: subFieldNum,
+      };
     }
 
     if (
@@ -508,22 +513,36 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     ) {
 
       /* resets entry */
-      V.setEntity( V.getState( 'active' ).lastViewed, {
-        field: 'servicefields.s' + subFieldNum,
-        data: null,
-      } );
-      return true;
+
+      return {
+        run: true,
+        newDatapoint: newDatapoint,
+        subFieldNum: subFieldNum,
+      };
     }
 
-    const jsonStr = V.castJson( newDatapoint );
+    return {
+      run: true,
+      newDatapoint: newDatapoint,
+      subFieldNum: subFieldNum,
+    };
+
+  }
+
+  function resetDatapointInDb( subFieldNum ) {
+    V.setEntity( V.getState( 'active' ).lastViewed, {
+      field: 'servicefields.s' + subFieldNum,
+      data: null,
+    } );
+  }
+
+  function setInputsAndResultInDb( subFieldNum, newDatapointAndPcip ) {
+    const jsonStr = V.castJson( newDatapointAndPcip );
 
     V.setEntity( V.getState( 'active' ).lastViewed, {
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
     } );
-
-    return true;
-
   }
 
   function getFormData( formName ) {
@@ -565,7 +584,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.DATE.SOWN = _.DATE_SOWN.value;
       __.DATE.HVST = _.DATE_HVST.value;
-      __.PCIP_MM = Number( __.PCIP_MM.MM || { MM: -1 } );
     }
 
     // console.log( 'New Dataset: ', __ );
