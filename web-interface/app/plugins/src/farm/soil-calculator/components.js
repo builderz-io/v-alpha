@@ -209,21 +209,36 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if ( !run ) { return }
 
-    setStateDatapoint()
+    setStateDatapoint();
 
-    try {
-      await setStateDatapointResults();
-      await setStateYearlyResults();
-      await setStateSequenceAverageResult();
-      await setStateYearsAverageResult();
+    const results = await setStateDatapointResults();
+    if ( !results ) {
+      console.error( 'Error while setting state datapoint results.' );
+      return;
+    }
 
-      drawResetResults();
-      drawDatapointResults();
-      drawTotalResult();
-      drawSummary();
-  } catch (error) {
-      console.error('Error while setting state or drawing results:', error);
-  }
+    const yearlyResults = await setStateYearlyResults();
+    if ( !yearlyResults ) {
+      console.error( 'Error while setting state yearly results.' );
+      return;
+    }
+
+    const sequenceAverageResult = await setStateSequenceAverageResult();
+    if ( !sequenceAverageResult ) {
+      console.error( 'Error while setting state sequence average results.' );
+      return;
+    }
+
+    const yearsAverageResult = await setStateYearsAverageResult();
+    if ( !yearsAverageResult ) {
+      console.error( 'Error while setting state years average results.' );
+      return;
+    }
+
+    drawResetResults();
+    drawDatapointResults();
+    drawTotalResult();
+    drawSummary();
 
   }
 
@@ -550,7 +565,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.DATE.SOWN = _.DATE_SOWN.value;
       __.DATE.HVST = _.DATE_HVST.value;
-      __.PCIP_MM = Number ( __.PCIP_MM.MM || { MM: -1 } );
+      __.PCIP_MM = Number( __.PCIP_MM.MM || { MM: -1 } );
     }
 
     // console.log( 'New Dataset: ', __ );
@@ -1266,7 +1281,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         DATE: {
           FIRST: inputNum,
           LAST: inputNum,
-        }
+        },
       },
       SITE: {
         CN: inputNum,

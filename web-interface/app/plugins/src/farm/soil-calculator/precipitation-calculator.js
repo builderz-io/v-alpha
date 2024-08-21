@@ -1,16 +1,11 @@
 const PcipCalculator = ( () => {
-
-  let previousStartDate = null;
-  let previousEndDate = null;
+  
 
   async function getPcip( _ ) {
-
-    if ( _.startDate && _.endDate
-      && ( _.startDate !== previousStartDate || _.endDate !== previousEndDate ) ) {
-
-      previousStartDate = _.startDate;
-      previousEndDate = _.endDate;
-
+    if (
+      _.startDate && _.endDate
+      && ( _.startDate !== _.previousStartDate || _.endDate !== _.previousEndDate )
+    ) {
       if ( new Date( _.startDate ) <= new Date( _.endDate ) ) {
         try {
           const response = await fetch(
@@ -30,7 +25,7 @@ const PcipCalculator = ( () => {
             const stationLat = station.lat;
             const stationLon = station.lon;
             const first = data.weather[0].timestamp;
-            const last = data.weather[data.weather.length-1].timestamp;
+            const last = data.weather[data.weather.length - 1].timestamp;
 
             return {
               PCIP_MM: {
@@ -70,5 +65,4 @@ const PcipCalculator = ( () => {
   return {
     getPcip: getPcip,
   };
-
 } )();

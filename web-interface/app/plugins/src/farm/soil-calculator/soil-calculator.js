@@ -67,6 +67,8 @@ const SoilCalculator = ( () => {
       lng: V.getState( 'active' ).lastLngLat[0],
       startDate: STATE.inputs.DATE.SOWN,
       endDate: STATE.inputs.DATE.HVST,
+      previousStartDate: STATE.inputs.previousStartDate,
+      previousEndDate: STATE.inputs.previousEndDate,
       maxDist: 50000, // in meter
     };
 
@@ -74,7 +76,8 @@ const SoilCalculator = ( () => {
       const pcipData = await PcipCalculator.getPcip( requestParams );
       console.log( 'Calculated Precipitation:', pcipData );
       return pcipData;
-    } catch ( error ) {
+    }
+    catch ( error ) {
       console.error( 'Error calculating precipitation:', error );
       return { pcip: null };
     }
@@ -479,11 +482,11 @@ const SoilCalculator = ( () => {
     /*add precip*/
     const pcipData = await castPcip();
     Object.assign( STATE.inputs, pcipData );
-    
+
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
 
-    console.log(STATE);
+    console.log( STATE );
 
     /* return state */
     return STATE;
