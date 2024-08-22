@@ -57,6 +57,7 @@
   --red: 255, 0, 0;       /* rgba(65, 183, 135, 1) */
   --viorange: 255, 164, 27;
   --viblue: 27, 26, 255;
+  --gray: 196, 200, 203; /* #C4C8CB */
 
   /* --brandPrimary: 241, 59, 64; */ /* Geneva Hackathon Red */
   --brandPrimary: 83, 96, 101; /* Geneva Hackathon Red */

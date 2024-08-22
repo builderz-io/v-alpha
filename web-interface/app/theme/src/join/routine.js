@@ -62,6 +62,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       undefined,
       x.joinImage,
       x.joinEmail,
+      undefined,
       x.joinAwaitKey,
     ],
     set2: [
@@ -72,6 +73,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       undefined,
       undefined,
       x.joinImage,
+      undefined,
       undefined,
       x.joinAwaitKey,
     ],
@@ -84,6 +86,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       x.joinDateTime,
       x.joinImage,
       undefined,
+      undefined,
       x.joinAwaitKey,
     ],
     set4: [
@@ -92,6 +95,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       undefined,
       undefined,
       x.joinLocationPicker,
+      undefined,
       undefined,
       undefined,
       undefined,
@@ -106,6 +110,19 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       undefined,
       x.joinImage,
       undefined,
+      undefined,
+      x.joinAwaitKey,
+    ],
+    set6: [
+      x.joinTitle,
+      x.joinDescription,
+      undefined,
+      x.joinLocation,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      x.joinSelectGroups,
       x.joinAwaitKey,
     ],
   };
@@ -153,6 +170,11 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
        || entityData.role != 'Person' )
     ) {
       cardIndex += 1;
+
+      if ( !cardSets[cardSet][cardIndex] ) {
+        handleNext();
+        return;
+      }
     }
 
     /* draw new card */
@@ -191,7 +213,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     }
 
     /* set the new human entity on "download key" card */
-    else if ( cardIndex == 8 ) {
+    else if ( cardIndex == 9 ) {
       if ( !V.getSetting( 'devMode' ) ) {
         V.gN( 'joinoverlay' ).removeEventListener( 'click', JoinComponents.handleJoinOverlayClick );
       }
@@ -414,8 +436,26 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    /* call to action */
+    /* group selection */
     else if ( cardIndex == 8 ) {
+      const checkboxes = V.getNodes( '.join-option-box__option input:checked' );
+      if ( !checkboxes ) {return false}
+
+      const plotIds = [];
+      for ( const checkbox of checkboxes.values() ) {
+        if ( checkbox.checked ) {
+          plotIds.push( checkbox.value );
+        }
+      }
+
+      if ( !entityData.servicefields ) {entityData.servicefields = {}}
+      entityData.servicefields.s30 = plotIds.join( ',' );
+
+      return true;
+    }
+
+    /* call to action */
+    else if ( cardIndex == 9 ) {
       return true;
     }
   }
@@ -489,6 +529,14 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           console.log( 'successfully set entity: ', res );
 
           const E = res.data[0];
+
+          if ( entityData.role === 'Group' ) {
+            V.setEntity( E.fullId, {
+              field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
+              data: entityData.servicefields.s30,
+              activeProfile: E.uuidP,
+            } );
+          }
 
           keyFileText = `
 Key: ${ E.auth.uPhrase }\n\n

@@ -1420,6 +1420,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ================== public methods ================= */
 
+  function drawTotalBalance() {
+    return totalBalance();
+  }
+
   function drawWidgetContent( display, data ) {
     V.setNode( '.s-calc-widget', '' );
     V.setNode( '.s-calc-widget', content( display, data ) );
@@ -1436,6 +1440,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   return {
     widget: widget,
     drawWidgetContent: drawWidgetContent,
+    drawTotalBalance: drawTotalBalance,
   };
 
 } )();
