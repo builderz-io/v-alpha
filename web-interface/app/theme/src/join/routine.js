@@ -538,6 +538,23 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             } );
           }
 
+          const activeEntity = V.getState( 'activeEntity' );
+          if ( activeEntity ) {
+            const heldEntities = activeEntity.holderOf;
+            const newHeld = {
+              fullId: E.fullId,
+              a: E.uuidE,
+              c: E.roleCode,
+            };
+
+            if ( heldEntities ) {
+              activeEntity.holderOf.push( newHeld );
+            }
+            else {
+              activeEntity.holderOf = [newHeld];
+            }
+          }
+
           keyFileText = `
 Key: ${ E.auth.uPhrase }\n\n
 Creator Key: ${ E.auth.creatorUPhrase }\n\n
