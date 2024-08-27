@@ -70,12 +70,12 @@ const GroupComponents = ( function() {
   }
 
   function drawGroupCheckboxes( groups ) {
-    const entity = V.getState( 'active' ).lastViewedEntity;
+    // const entity = V.getState( 'active' ).lastViewedEntity;
 
-    return groups.sort( sortGroupsByPlotExistence( entity ) ).map( group => {
-      const entityInGroup = group.servicefields[V.castServiceField( 'groupedEntities' )]
-        ? group.servicefields[V.castServiceField( 'groupedEntities' )].includes( entity.uuidE )
-        : false;
+    return groups /*.sort( sortGroupsByPlotExistence( entity ) ) */ .map( group => {
+      // const entityInGroup = group.servicefields[V.castServiceField( 'groupedEntities' )]
+      //   ? group.servicefields[V.castServiceField( 'groupedEntities' )].includes( entity.uuidE )
+      //   : false;
 
       const children = [
         V.cN( {
@@ -88,9 +88,9 @@ const GroupComponents = ( function() {
                 type: 'checkbox',
                 id: group.uuidE,
                 value: group.uuidE,
-                checked: entityInGroup,
+                // checked: entityInGroup,
               },
-              k: handleGroupSelection( group, entity ),
+              // k: handleGroupSelection( group, entity ),
             },
             {
               t: 'label',
@@ -100,15 +100,15 @@ const GroupComponents = ( function() {
           ] } ),
       ];
 
-      if ( entityInGroup ) {
-        const groupTotalBalanceWidget =  V.cN( {
-          a: {
-            'data-group-calc': group.uuidE,
-          },
-          h: SoilCalculatorComponents.drawTotalBalance(),
-        } );
-        children.push( groupTotalBalanceWidget );
-      }
+      // if ( entityInGroup ) {
+      //   const groupTotalBalanceWidget =  V.cN( {
+      //     a: {
+      //       'data-group-calc': group.uuidE,
+      //     },
+      //     h: SoilCalculatorComponents.drawTotalBalance(),
+      //   } );
+      //   children.push( groupTotalBalanceWidget );
+      // }
 
       return V.cN( {
         c: 'pxy',
@@ -127,42 +127,54 @@ const GroupComponents = ( function() {
 
     if ( entity.role !== 'Plot' ) {return ''}
 
-    V.getEntity()
-      .then( ( { data } ) => {
-        const groups = data.filter( item => item.role === 'Group' );
+    const groupsOfUser = V.aE().holderOf
+      .filter( item => item.c === 'Group' );
 
-        const groupSelection = V.getNode( '.plot-group-selection' );
-        groupSelection.classList.remove( 'zero-auto' );
-        groupSelection.classList.add( 'w-full' );
-        V.getNode( '.plot-group-selection .confirm-click-spinner' ).remove();
-        groupSelection.append(
-          V.cN(
-            {
-              h: [
-                ...drawGroupCheckboxes( groups ),
-                V.cN(
-                  {
-                    t: 'button',
-                    c: 'w-full pxy text-left bkg-lightblue txt-gray',
-                    h: V.getString( 'New group' ),
-                    k: () => {
-                      Page.draw( { position: 'closed', reset: false, navReset: false } );
-                      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
-                    },
-                  },
-                ),
-              ],
-            },
-          ),
-        );
-      } );
+    // const groupSelection = V.getNode( '.plot-group-selection' );
+    // groupSelection.classList.remove( 'zero-auto' );
+    // groupSelection.classList.add( 'w-full' );
+    // V.setNode( '.plot-group-selection', '' );
+    //
+    // groupSelection.append(
+    //   V.cN(
+    //     {
+    //       h: [
+    //         ...drawGroupCheckboxes( groupsOfUser ),
+    //         V.cN(
+    //           {
+    //             t: 'button',
+    //             c: 'w-full pxy text-left bkg-lightblue txt-gray',
+    //             h: V.getString( 'New group' ),
+    //             k: () => {
+    //               Page.draw( { position: 'closed', reset: false, navReset: false } );
+    //               V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
+    //             },
+    //           },
+    //         ),
+    //       ],
+    //     },
+    //   ),
+    // );
 
-    const parent = V.cN( {
+    const groups = V.cN( {
       c: 'pxy plot-group-selection zero-auto',
-      h: [InteractionComponents.confirmClickSpinner( { color: 'black' } )],
+      h: [
+        ...drawGroupCheckboxes( groupsOfUser ),
+        V.cN(
+          {
+            t: 'button',
+            c: 'w-full pxy text-left bkg-lightblue txt-gray',
+            h: V.getString( 'New group' ),
+            k: () => {
+              Page.draw( { position: 'closed', reset: false, navReset: false } );
+              V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
+            },
+          },
+        ),
+      ],
     } );
 
-    return CanvasComponents.card( parent, V.getString( 'Groups' ) );
+    return CanvasComponents.card( groups, V.getString( 'Groups' ) );
   }
 
   function drawGroupPlotWidget() {
