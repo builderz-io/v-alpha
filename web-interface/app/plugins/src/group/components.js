@@ -1,5 +1,21 @@
 const GroupComponents = ( function() {
 
+  const ui = ( () => {
+    const strings = {
+      newGroup: 'New group',
+      noGroups: 'No groups available',
+      groups: 'Groups',
+      noAssignedEntities: 'No entities assigned to group',
+      plots: 'Plots',
+    };
+
+    if ( V.getSetting( 'devMode' ) ) {
+      VTranslation.setStringsToTranslate( strings );
+    }
+
+    return strings;
+  } )();
+
   /* ================== private methods ================= */
 
   function sortGroupsByPlotExistence( entity ) {
@@ -19,24 +35,24 @@ const GroupComponents = ( function() {
     };
   }
 
+  function updateGroupedEntities( event, group, groupedEntities ) {
+    return V.setEntity( group.fullId, {
+      field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
+      data: V.castJson( groupedEntities ),
+      activeProfile: group.uuidP,
+    } ).then( () => { event.target.disabled = false } );
+  }
+
   function handleGroupSelection( group, entity ) {
     return ( event ) => {
       event.target.disabled = true;
 
-      const groupFields = group.servicefields[V.castServiceField( 'groupedEntities' )]
-        ? group.servicefields[V.castServiceField( 'groupedEntities' )].split( ',' )
-        : [];
+      const groupFields = V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ) || [];
 
       if ( event.target.checked ) {
         groupFields.push( entity.uuidE );
 
-        V.setEntity( group.fullId, {
-          field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
-          data: groupFields.join( ',' ),
-          activeProfile: group.uuidP,
-        } ).then( () => {
-          event.target.disabled = false;
-        } );
+        updateGroupedEntities( event, group, groupFields );
 
         const totalBalanceWidget = V.cN( {
           a: {
@@ -55,13 +71,7 @@ const GroupComponents = ( function() {
             groupFields.splice( idx, 1 );
           }
 
-          V.setEntity( group.fullId, {
-            field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
-            data: groupFields.join( ',' ),
-            activeProfile: group.uuidP,
-          } ).then( () => {
-            event.target.disabled = false;
-          } );
+          updateGroupedEntities( event, group, groupFields );
 
           totalBalanceWidget.remove();
         }
@@ -70,12 +80,11 @@ const GroupComponents = ( function() {
   }
 
   function drawGroupCheckboxes( groups ) {
-    // const entity = V.getState( 'active' ).lastViewedEntity;
+    const entity = V.getState( 'active' ).lastViewedEntity;
 
-    return groups /*.sort( sortGroupsByPlotExistence( entity ) ) */ .map( group => {
-      // const entityInGroup = group.servicefields[V.castServiceField( 'groupedEntities' )]
-      //   ? group.servicefields[V.castServiceField( 'groupedEntities' )].includes( entity.uuidE )
-      //   : false;
+    return groups.sort( sortGroupsByPlotExistence( entity ) ).map( group => {
+      const plotsInGroup = V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ) || [];
+      const entityInGroup = plotsInGroup.includes( entity.uuidE );
 
       const children = [
         V.cN( {
@@ -88,9 +97,9 @@ const GroupComponents = ( function() {
                 type: 'checkbox',
                 id: group.uuidE,
                 value: group.uuidE,
-                // checked: entityInGroup,
+                checked: entityInGroup,
               },
-              // k: handleGroupSelection( group, entity ),
+              k: handleGroupSelection( group, entity ),
             },
             {
               t: 'label',
@@ -100,15 +109,15 @@ const GroupComponents = ( function() {
           ] } ),
       ];
 
-      // if ( entityInGroup ) {
-      //   const groupTotalBalanceWidget =  V.cN( {
-      //     a: {
-      //       'data-group-calc': group.uuidE,
-      //     },
-      //     h: SoilCalculatorComponents.drawTotalBalance(),
-      //   } );
-      //   children.push( groupTotalBalanceWidget );
-      // }
+      if ( entityInGroup ) {
+        const groupTotalBalanceWidget =  V.cN( {
+          a: {
+            'data-group-calc': group.uuidE,
+          },
+          h: SoilCalculatorComponents.drawTotalBalance(),
+        } );
+        children.push( groupTotalBalanceWidget );
+      }
 
       return V.cN( {
         c: 'pxy',
@@ -128,53 +137,49 @@ const GroupComponents = ( function() {
     if ( entity.role !== 'Plot' ) {return ''}
 
     const groupsOfUser = V.aE().holderOf
-      .filter( item => item.c === 'Group' );
+      .filter( item => item.c === 'Group' )
+      .map( item => item.a );
 
-    // const groupSelection = V.getNode( '.plot-group-selection' );
-    // groupSelection.classList.remove( 'zero-auto' );
-    // groupSelection.classList.add( 'w-full' );
-    // V.setNode( '.plot-group-selection', '' );
-    //
-    // groupSelection.append(
-    //   V.cN(
-    //     {
-    //       h: [
-    //         ...drawGroupCheckboxes( groupsOfUser ),
-    //         V.cN(
-    //           {
-    //             t: 'button',
-    //             c: 'w-full pxy text-left bkg-lightblue txt-gray',
-    //             h: V.getString( 'New group' ),
-    //             k: () => {
-    //               Page.draw( { position: 'closed', reset: false, navReset: false } );
-    //               V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
-    //             },
-    //           },
-    //         ),
-    //       ],
-    //     },
-    //   ),
-    // );
+    if ( groupsOfUser.length > 0 ) {
+      V.getEntity( groupsOfUser ).then( ( { data } ) => {
+        const groupSelection = V.getNode( '.plot-group-selection' );
+        groupSelection.classList.remove( 'zero-auto' );
+        groupSelection.classList.add( 'w-full' );
+        V.setNode( '.plot-group-selection', '' );
 
-    const groups = V.cN( {
-      c: 'pxy plot-group-selection zero-auto',
-      h: [
-        ...drawGroupCheckboxes( groupsOfUser ),
-        V.cN(
-          {
-            t: 'button',
-            c: 'w-full pxy text-left bkg-lightblue txt-gray',
-            h: V.getString( 'New group' ),
-            k: () => {
-              Page.draw( { position: 'closed', reset: false, navReset: false } );
-              V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
+        groupSelection.append(
+          V.cN(
+            {
+              h: [
+                ...drawGroupCheckboxes( data ),
+                V.cN(
+                  {
+                    t: 'button',
+                    c: 'w-full pxy text-left bkg-lightblue txt-gray',
+                    h: V.getString( ui.newGroup ),
+                    k: () => {
+                      Page.draw( { position: 'closed', reset: false, navReset: false } );
+                      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
+                    },
+                  },
+                ),
+              ],
             },
-          },
-        ),
+          ),
+        );
+      } );
+    }
+
+    const parent = V.cN( {
+      c: `pxy plot-group-selection ${groupsOfUser.length > 0 ? 'zero-auto' : ''}`,
+      h: [
+        groupsOfUser.length > 0
+          ? InteractionComponents.confirmClickSpinner( { color: 'black' } )
+          : V.cN( { h: V.getString( ui.noGroups ) } ),
       ],
     } );
 
-    return CanvasComponents.card( groups, V.getString( 'Groups' ) );
+    return CanvasComponents.card( parent, V.getString( ui.groups ) );
   }
 
   function drawGroupPlotWidget() {
@@ -182,13 +187,13 @@ const GroupComponents = ( function() {
 
     if ( entity.role !== 'Group' ) { return '' }
 
-    const groupedEntities = entity.servicefields[V.castServiceField( 'groupedEntities' )].split( ',' ); // TODO: use V.castJson
+    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
 
     if ( !groupedEntities[0] ) {
       return CanvasComponents.card( V.cN( {
         c: 'pxy',
-        h: V.getString( 'No entities assigned to group' ), // TODO: move all strings to top of module using const ui = ...
-      } ), V.getString( 'Plots' ) );
+        h: V.getString( ui.noAssignedEntities ),
+      } ), V.getString( ui.plots ) );
     }
 
     V.getEntity( groupedEntities )
@@ -213,7 +218,7 @@ const GroupComponents = ( function() {
       h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
     } );
 
-    return CanvasComponents.card( node, V.getString( 'Plots' ) );
+    return CanvasComponents.card( node, V.getString( ui.plots ) );
   }
 
   return {

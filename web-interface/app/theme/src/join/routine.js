@@ -449,7 +449,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       }
 
       if ( !entityData.servicefields ) {entityData.servicefields = {}}
-      entityData.servicefields.s30 = plotIds.join( ',' );
+      entityData.servicefields[V.castServiceField( 'groupedEntities' )] = V.castJson( plotIds );
 
       return true;
     }
