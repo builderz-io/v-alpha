@@ -35,12 +35,12 @@ const GroupComponents = ( function() {
     };
   }
 
-  function updateGroupedEntities( event, group, groupedEntities ) {
+  function updateGroupedEntities( group, groupedEntities ) {
     return V.setEntity( group.fullId, {
       field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
       data: V.castJson( groupedEntities ),
       activeProfile: group.uuidP,
-    } ).then( () => { event.target.disabled = false } );
+    } );
   }
 
   function handleGroupSelection( group, entity ) {
@@ -52,16 +52,28 @@ const GroupComponents = ( function() {
       if ( event.target.checked ) {
         groupFields.push( entity.uuidE );
 
-        updateGroupedEntities( event, group, groupFields );
+        updateGroupedEntities( group, groupFields );
 
-        const totalBalanceWidget = V.cN( {
-          a: {
-            'data-group-calc': group.uuidE,
-          },
-          h: SoilCalculatorComponents.drawTotalBalance(),
-        } );
+        setTimeout( () => {
+          const loadingElement = V.gN( `[data-plot-group=${group.uuidE}] .calculator-loader` );
+          if ( loadingElement ) {loadingElement.remove()}
 
-        V.setNode( `[data-plot-group=${group.uuidE}]`, totalBalanceWidget );
+          const totalBalanceWidget = V.cN( {
+            a: {
+              'data-group-calc': group.uuidE,
+            },
+            h: SoilCalculatorComponents.drawTotalBalance(),
+          } );
+
+          event.target.disabled = false;
+          V.setNode( `[data-plot-group=${group.uuidE}]`, totalBalanceWidget );
+        }, 1000 );
+
+        V.setNode( `[data-plot-group=${group.uuidE}]`, V.cN( {
+          c: 'zero-auto pxy calculator-loader',
+          a: { style: 'max-width: fit-content;' },
+          h: InteractionComponents.confirmClickSpinner( { color: 'black' } ),
+        } ) );
       }
       else {
         const totalBalanceWidget = V.gN( `[data-group-calc=${group.uuidE}]` );
@@ -71,7 +83,8 @@ const GroupComponents = ( function() {
             groupFields.splice( idx, 1 );
           }
 
-          updateGroupedEntities( event, group, groupFields );
+          updateGroupedEntities( group, groupFields )
+            .then( () =>  ( event.target.disabled = false )  );
 
           totalBalanceWidget.remove();
         }
@@ -110,13 +123,15 @@ const GroupComponents = ( function() {
       ];
 
       if ( entityInGroup ) {
-        const groupTotalBalanceWidget =  V.cN( {
-          a: {
-            'data-group-calc': group.uuidE,
-          },
-          h: SoilCalculatorComponents.drawTotalBalance(),
-        } );
-        children.push( groupTotalBalanceWidget );
+        setTimeout( () => {
+          const groupTotalBalanceWidget =  V.cN( {
+            a: {
+              'data-group-calc': group.uuidE,
+            },
+            h: SoilCalculatorComponents.drawTotalBalance(),
+          } );
+          V.setNode( `[data-plot-group=${group.uuidE}]`, groupTotalBalanceWidget );
+        }, 2000 );
       }
 
       return V.cN( {
