@@ -214,22 +214,18 @@ const GroupComponents = ( function() {
     V.getEntity( groupedEntities )
       .then( result => {
         const plots = V.cN( {
-          c: 'pxy',
+          c: 'group-plots pxy',
           h: result.data
             .map( plot => V.cN( { h: plot.fullId } ) ),
         } );
 
-        const container = V.getNode( `[data-assigned-plots=${entity.uuidE}]` );
-        container.classList.remove( 'zero-auto' );
-        V.setNode( `[data-assigned-plots=${entity.uuidE}]`, '' );
+        const container = V.getNode( '.group-plots__list' );
+        V.setNode( container, '' );
         container.append( plots );
       } );
 
     const node = V.cN( {
-      c: 'zero-auto',
-      a: {
-        'data-assigned-plots': entity.uuidE,
-      },
+      c: 'group-plots__list',
       h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
     } );
 

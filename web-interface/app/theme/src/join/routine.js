@@ -533,7 +533,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           if ( entityData.role === 'Group' ) {
             V.setEntity( E.fullId, {
               field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
-              data: entityData.servicefields.s30,
+              data: entityData.servicefields[V.castServiceField( 'groupedEntities' )],
               activeProfile: E.uuidP,
             } );
           }
