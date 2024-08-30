@@ -158,8 +158,7 @@ const GroupComponents = ( function() {
     if ( groupsOfUser.length > 0 ) {
       V.getEntity( groupsOfUser ).then( ( { data } ) => {
         const groupSelection = V.getNode( '.plot-group-selection' );
-        groupSelection.classList.remove( 'zero-auto' );
-        groupSelection.classList.add( 'w-full' );
+
         V.setNode( '.plot-group-selection', '' );
 
         groupSelection.append(
@@ -186,7 +185,7 @@ const GroupComponents = ( function() {
     }
 
     const parent = V.cN( {
-      c: `pxy plot-group-selection ${groupsOfUser.length > 0 ? 'zero-auto' : ''}`,
+      c: 'plot-group-selection w-full',
       h: [
         groupsOfUser.length > 0
           ? InteractionComponents.confirmClickSpinner( { color: 'black' } )
@@ -204,7 +203,7 @@ const GroupComponents = ( function() {
 
     const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
 
-    if ( !groupedEntities[0] ) {
+    if ( !groupedEntities ) {
       return CanvasComponents.card( V.cN( {
         c: 'pxy',
         h: V.getString( ui.noAssignedEntities ),
