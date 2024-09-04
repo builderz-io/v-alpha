@@ -232,7 +232,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       resetDatapointInDb( run.subFieldNum );
     }
     else if ( e ) {
-      Object.assign( run.newDatapoint.PCIP_MM, V.getState( 'cropSequence' )[ 's' + run.subFieldNum ].inputs.PCIP_MM );
+      Object.assign( run.newDatapoint.PCIPAPI, V.getState( 'cropSequence' )[ 's' + run.subFieldNum ].inputs.PCIPAPI );
       setInputsAndResultInDb( run.subFieldNum, run.newDatapoint );
     }
 
@@ -299,13 +299,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   async function setStateDatapointResults() {
     const siteData = V.getState( 'cropSequence' )[ 's' + settings.dbFieldSITE ];
     for ( let i = 1; i <= settings.numCropEntries; i++ ) {
-      const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
-      console.log( i );
+      const cropData = V.getState( 'cropSequence' )[ 's' + i ];
       if ( typeof cropData === 'number' ) { continue }
 
       const prevCropData = getFirstPrevious( i );
 
-      Object.assign( cropData, siteData ); // merge
+      Object.assign( cropData.datapoint, siteData ); // merge
 
       if ( cropData && siteData ) {
         await SoilCalculator
@@ -429,7 +428,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   function drawDatapointResults() {
     const sequence = V.getState( 'cropSequence' );
     // console.log( 'drawDatapointResults' );
-    // console.log( sequence );
+    console.log( sequence );
     for ( const key in sequence ) {
 
       const tabNum = key.replace( 's', '' );
@@ -561,7 +560,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete __.FTLZ;
       delete __.BMASS;
       delete __.DATE;
-      delete __.PCIP_MM;
+      delete __.PCIPAPI;
       __.SITE.CN = Number( _.SITE_CN.value );
       __.SITE.FCAP = Number( _.SITE_FCAP.value );
       __.SITE.PCIP.QTY = Number( _.SITE_PCIP_QTY.value );
@@ -1288,7 +1287,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         SOWN: inputDate,
         HVST: inputDate,
       },
-      PCIP_MM: {
+      PCIPAPI: {
         MM: inputNum,
         STATION: {
           ID: inputNum,

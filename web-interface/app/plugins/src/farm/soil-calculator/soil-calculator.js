@@ -56,19 +56,39 @@ const SoilCalculator = ( () => {
     return time;
   }
 
-  async function castPcip() {
-
+  async function castPcip( cropData ) {
+    console.log( cropData );
     /**
      * @returns { Object } precipitation - amount of precip on a crop in the given time frame
      */
+
+    function formatDate( dateString ) {
+      if ( dateString === -1 ) {return null}
+      return dateString.split( 'T' )[0];
+    }
+
+    const previousStartDate = formatDate( cropData.inputs.PCIPAPI.DATE.FIRST );
+    const previousEndDate = formatDate( cropData.inputs.PCIPAPI.DATE.LAST );
+    console.log( previousStartDate );
+    const currentStartDate = cropData.datapoint.DATE.SOWN;
+    const currentEndDate = cropData.datapoint.DATE.HVST;
+    console.log( currentStartDate );
+
+    /* Add precip if dates have changed */
+    const pcipData = {};
+
+    if ( !currentStartDate || !currentEndDate ) {
+      return;
+    }
+    if ( previousStartDate == currentStartDate || previousEndDate == currentEndDate ) {
+      return;
+    }
 
     const requestParams = {
       lat: V.getState( 'active' ).lastLngLat[1],
       lng: V.getState( 'active' ).lastLngLat[0],
       startDate: STATE.inputs.DATE.SOWN,
       endDate: STATE.inputs.DATE.HVST,
-      previousStartDate: STATE.inputs.previousStartDate,
-      previousEndDate: STATE.inputs.previousEndDate,
       maxDist: 50000, // in meter
     };
 
@@ -463,10 +483,11 @@ const SoilCalculator = ( () => {
 
   }
 
-  async function getDatapointResults( datapoint, prevDatapoint ) {
+  async function getDatapointResults( cropData, prevDatapoint ) {
+    console.log( cropData );
 
     /**
-       * @arg { Object } datapoint - Request, as in data provided by user, e.g. CROP.ID
+       * @arg { Object } cropData - Request, as in data provided by user, e.g. CROP.ID,plus previous inputs and results
        * @arg { Object } prevDatapoint - The previous datapoint needed to calc ftlz from green/straw
        * @returns { Object } STATE - API response including all inputs and results
        */
@@ -477,16 +498,15 @@ const SoilCalculator = ( () => {
     Object.assign( STATE, castTime() );
 
     /* add input data to state */
-    Object.assign( STATE, castInputs( datapoint, prevDatapoint ) );
+    Object.assign( STATE, castInputs( cropData.datapoint, prevDatapoint ) );
 
     /*add precip*/
-    const pcipData = await castPcip();
+    const pcipData = await castPcip( cropData );
     Object.assign( STATE.inputs, pcipData );
 
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
-
-    console.log( STATE );
+    Object.assign( STATE.results, pcipData );
 
     /* return state */
     return STATE;

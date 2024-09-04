@@ -1,7 +1,7 @@
 const PcipCalculator = ( () => {
-  
 
   async function getPcip( _ ) {
+    console.log( 'castPcip called' );
     if (
       _.startDate && _.endDate
       && ( _.startDate !== _.previousStartDate || _.endDate !== _.previousEndDate )
@@ -28,7 +28,7 @@ const PcipCalculator = ( () => {
             const last = data.weather[data.weather.length - 1].timestamp;
 
             return {
-              PCIP_MM: {
+              PCIPAPI: {
                 MM: totalPrecipitation,
                 STATION: {
                   ID: stationId,
