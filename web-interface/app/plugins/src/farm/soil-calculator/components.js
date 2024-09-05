@@ -198,35 +198,43 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ===================== handlers ==================== */
 
-  function handleDatapointChange( e ) {
-    let run = true;
+  async function handleDatapointChange( e ) {
+    let run = { run: true };
 
     if ( e ) {
 
       /* is not the case when loading data from db */
-      run = setDatapoint( e ); /* save to db */
+      run = getDatapoint( e );
     }
 
-    if ( !run ) { return }
+    if ( !run.run ) { return }
 
     setStateDatapoint();
 
-    setStateDatapointResults()
-      .then( () => setStateYearlyResults() )
-      .then( () => setStateSequenceAverageResult() )
-      .then( () => setStateYearsAverageResult() );
+    await setStateDatapointResults();
+    await setStateYearlyResults();
+    await setStateSequenceAverageResult();
+    await setStateYearsAverageResult();
 
-    /**
-     * Though timeout looks good in ui, it is also needed
-     * to ensure results are set (should be changed to promise)
-     */
+    drawResetResults();
+    drawDatapointResults();
+    drawTotalResult();
+    drawSummary();
 
-    setTimeout( function delayedDrawResults() {
-      drawResetResults();
-      drawDatapointResults();
-      drawTotalResult();
-      drawSummary();
-    }, 170 );
+    if ( e && run.newDatapoint === -10 ) {
+      resetDatapointInDb( run.subFieldNum );
+    }
+    else if ( e ) {
+
+      /* add PCIPAPI and SOM to the CROP data to be saved */
+      if ( run.subFieldNum != settings.dbFieldSITE ) {
+        Object.assign( run.newDatapoint.PCIPAPI, V.getState( 'cropSequence' )[ 's' + run.subFieldNum ].results.PCIPAPI );
+        Object.assign( run.newDatapoint, { SOM: { BAL: {} } } );
+        Object.assign( run.newDatapoint.SOM.BAL, V.getState( 'cropSequence' )[ 's' + run.subFieldNum ].results.SOM.BAL );
+      }
+
+      setDatabase( run.subFieldNum, run.newDatapoint );
+    }
 
   }
 
@@ -282,20 +290,25 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   async function setStateDatapointResults() {
     const siteData = V.getState( 'cropSequence' )[ 's' + settings.dbFieldSITE ];
     for ( let i = 1; i <= settings.numCropEntries; i++ ) {
-      const cropData = V.getState( 'cropSequence' )[ 's' + i ].datapoint;
-      if ( typeof cropData === 'number' ) { continue }
+      const cropData = V.getState( 'cropSequence' )[ 's' + i ];
+      if ( typeof cropData.datapoint === 'number' ) { continue }
 
       const prevCropData = getFirstPrevious( i );
 
-      Object.assign( cropData, siteData ); // merge
+      Object.assign( cropData.datapoint, siteData ); // merge SITE into the datapoint
 
-      if ( cropData && siteData ) {
-        SoilCalculator
-          .getDatapointResults( cropData, prevCropData )
-          .then( res => {
-            Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { results: res.results } );
-          } );
-      }
+      /**
+       * Note that at this stage the cropData includes
+       * new inputs from the user (in the datapoint key),
+       * but previous inputs and results
+       */
+
+      await SoilCalculator
+        .getDatapointResults( cropData, prevCropData )
+        .then( res => {
+          Object.assign( V.getState( 'cropSequence' )[ 's' + i ], { inputs: res.inputs, results: res.results } );
+        } );
+
     }
 
     return {
@@ -304,7 +317,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   async function setStateYearlyResults() {
-
     const sequence = V.getState( 'cropSequence' );
 
     let sequencesByYear = {};
@@ -451,7 +463,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
 
-  function setDatapoint( e ) {
+  function getDatapoint( e ) {
 
     const formName = e.target.closest( 'form' ).getAttribute( 'name' );
 
@@ -461,47 +473,52 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     const newDatapoint = getFormData( formName );
 
-    if (
-      newDatapoint === -30
-    ) {
-      document.activeElement.classList.add( 'red-background', 'txt-red' );
-      setTimeout( () => {
-        document.activeElement.classList.remove( 'red-background' );
-      }, 400 );
-
-      return false;
-    }
+    const returnObj = {
+      run: true,
+      newDatapoint: newDatapoint,
+      subFieldNum: subFieldNum,
+    };
 
     document.activeElement.classList.remove( 'txt-red' );
 
     if (
-      newDatapoint === -20
+      newDatapoint === -30
     ) {
-      return false;
+
+      document.activeElement.classList.add( 'red-background', 'txt-red' );
+
+      setTimeout( () => {
+        document.activeElement.classList.remove( 'red-background' );
+      }, 400 );
+
+      returnObj.run = false;
+
     }
 
     if (
-      newDatapoint === -10
-      // && ... // todo: check if we have a state entry
+      newDatapoint === -20
     ) {
-
-      /* resets entry */
-      V.setEntity( V.getState( 'active' ).lastViewed, {
-        field: 'servicefields.s' + subFieldNum,
-        data: null,
-      } );
-      return true;
+      returnObj.run = false;
     }
 
-    const jsonStr = V.castJson( newDatapoint );
+    return returnObj;
+
+  }
+
+  function resetDatapointInDb( subFieldNum ) {
+    V.setEntity( V.getState( 'active' ).lastViewed, {
+      field: 'servicefields.s' + subFieldNum,
+      data: null,
+    } );
+  }
+
+  function setDatabase( subFieldNum, data ) {
+    const jsonStr = V.castJson( data );
 
     V.setEntity( V.getState( 'active' ).lastViewed, {
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
     } );
-
-    return true;
-
   }
 
   function getFormData( formName ) {
@@ -520,6 +537,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete __.FTLZ;
       delete __.BMASS;
       delete __.DATE;
+      delete __.PCIPAPI;
       __.SITE.CN = Number( _.SITE_CN.value );
       __.SITE.FCAP = Number( _.SITE_FCAP.value );
       __.SITE.PCIP.QTY = Number( _.SITE_PCIP_QTY.value );
@@ -542,6 +560,14 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.DATE.SOWN = _.DATE_SOWN.value;
       __.DATE.HVST = _.DATE_HVST.value;
+
+      __.PCIPAPI.MM = _.PCIPAPI_MM.value || -1;
+      __.PCIPAPI.STATION.ID = _.PCIPAPI_STATION_ID.value || -1;
+      __.PCIPAPI.STATION.NAME = _.PCIPAPI_STATION_NAME.value;
+      __.PCIPAPI.STATION.LAT = _.PCIPAPI_STATION_LAT.value || -1;
+      __.PCIPAPI.STATION.LON = _.PCIPAPI_STATION_LON.value || -1;
+      __.PCIPAPI.DATE.FIRST = _.PCIPAPI_DATE_FIRST.value;
+      __.PCIPAPI.DATE.LAST = _.PCIPAPI_DATE_LAST.value;
     }
 
     // console.log( 'New Dataset: ', __ );
@@ -611,6 +637,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       return -30;
     }
 
+    if(
+      _.DATE_SOWN && _.DATE_HVST
+      && new Date( _.DATE_SOWN.value ) >= new Date( _.DATE_HVST.value )
+    ) {
+      return -30;
+    }
+
     return 1;
 
   }
@@ -628,6 +661,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             let value = res[section][field][subField];
             if ( !value ) { continue }
             if ( typeof value === 'number' ) { value = value.toFixed( 1 ) }
+            if ( value == -1 ) { value = '' }
             V.setNode( prefix + fieldString, value );
           }
         }
@@ -636,6 +670,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           let value = res[section][field];
           if ( !value ) { continue }
           if ( typeof value === 'number' ) { value = value.toFixed( 1 ) }
+          if ( value == -1 ) { value = '' }
           V.setNode( prefix + fieldString, value );
         }
       }
@@ -783,6 +818,29 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             'color': '#aaa',
           },
           innerHtml: 'in kg ha<sup>-1</sup>',
+        },
+      ],
+    };
+  }
+
+  function resultsPcip( tabNum ) {
+    return {
+      c: 's-calc-results',
+      h: [
+        {
+          t: 'table',
+          c: 's-calc-results-table w-full',
+          h: mapFields( ['PCIPAPI_MM', 'PCIPAPI_STATION_NAME' /*, 'PCIPAPI_DATE_FIRST', 'PCIPAPI_DATE_LAST' */], tabNum ),
+        },
+        {
+          y: {
+            'text-align': 'right',
+            'padding': '0 1.5rem 1rem',
+            'font-size': '0.75rem',
+            'font-style': 'italic',
+            'color': '#aaa',
+          },
+          innerHtml: 'in mm',
         },
       ],
     };
@@ -984,6 +1042,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
               h: [
                 resultsDemand( tabNum ),
                 resultsSupply( tabNum ),
+                resultsPcip( tabNum ),
                 // resultsCsupply( tabNum ),
               ],
             } ),
@@ -1108,6 +1167,24 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         v: val === -1 ? 0 : val,
       } );
       return input( $inputNumObj, fieldTitle, unit );
+    };
+
+    const inputText = ( val, fieldTitle ) => {
+      const unit = SoilCalculator.getFieldString( fieldTitle, locale, 'unit' );
+      const $inputTextObj = V.cN( {
+        t: 'input',
+        c: 's-calc-input-text',
+        i: 's-calc-input__' + fieldTitle,
+        a: {
+          type: 'text',
+          name: fieldTitle,
+        },
+        e: {
+          input: V.debounce( handleDatapointChange, 320 ),
+        },
+        v: val === '' ? '' : val,
+      } );
+      return input( $inputTextObj, fieldTitle, unit );
     };
 
     const inputDropID = ( val, fieldTitle ) => {
@@ -1246,6 +1323,20 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         SOWN: inputDate,
         HVST: inputDate,
       },
+      PCIPAPI: {
+        hide: true,
+        MM: inputNum,
+        STATION: {
+          ID: inputNum,
+          NAME: inputText,
+          LAT: inputNum,
+          LON: inputNum,
+        },
+        DATE: {
+          FIRST: inputText,
+          LAST: inputText,
+        },
+      },
       SITE: {
         CN: inputNum,
         FCAP: inputNum,
@@ -1261,10 +1352,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     const fieldSingle = ( section, field ) => V.cN( {
       c: 's-calc-form__field-single',
-      h: templates[section][field]( data[section][field], castFlatFieldTitle( section, field, false ) ),
+      h: !templates[section][field] ? '' : templates[section][field]( data[section][field], castFlatFieldTitle( section, field, false ) ),
     } );
 
-    const fieldGroup = ( section, field ) => V.cN( {
+    const fieldGroup = ( section, field ) => !templates[section][field] ? '' : V.cN( {
       c: 's-calc-form__field-group',
       h: [
         {
@@ -1285,8 +1376,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         name: formName,
       },
       c: 's-calc-form w-full',
-      h: Object.keys( data ).map( section => ( {
-        c: 's-calc-form__section',
+      h: Object.keys( data ).map( section => !templates[section] ? '' : {
+        c: 's-calc-form__section' + ( templates[section].hide ? ' hidden' : '' ),
         h: [
           {
             c: 's-calc-form__section-title font-bold',
@@ -1301,7 +1392,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
               ),
           },
         ],
-      } ) ),
+      } ),
     } );
 
     return $form;

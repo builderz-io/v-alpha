@@ -56,6 +56,54 @@ const SoilCalculator = ( () => {
     return time;
   }
 
+  async function castPcip( cropData ) {
+
+    /**
+     * @returns { Object } precipitation - amount of precip on a crop in the given time frame
+     */
+
+    const currentStartDate = cropData.datapoint.DATE.SOWN;
+    const currentEndDate = cropData.datapoint.DATE.HVST;
+
+    if ( !currentStartDate || !currentEndDate ) {
+      return;
+    }
+
+    const previousStartDate = cropData.datapoint.PCIPAPI.DATE.FIRST;
+    const previousEndDate = cropData.datapoint.PCIPAPI.DATE.LAST;
+
+    /* return the existing pcip api data ... */
+
+    if (
+      previousStartDate == currentStartDate
+      && previousEndDate == currentEndDate
+    ) {
+      return {
+        PCIPAPI: cropData.datapoint.PCIPAPI,
+      };
+    }
+
+    /* ... or fetch and return new pcip api data */
+
+    const requestParams = {
+      lat: V.getState( 'active' ).lastLngLat[1],
+      lng: V.getState( 'active' ).lastLngLat[0],
+      startDate: currentStartDate,
+      endDate: currentEndDate,
+      maxDist: 50000, // in meter
+    };
+
+    try {
+      const pcipData = await PcipCalculator.getPcip( requestParams );
+      console.log( 'Calculated Precipitation:', pcipData );
+      return pcipData;
+    }
+    catch ( error ) {
+      console.error( 'Error calculating precipitation:', error );
+
+    }
+  }
+
   function castInputs( datapoint, prevDatapoint ) {
 
     /**
@@ -157,7 +205,7 @@ const SoilCalculator = ( () => {
     /**
      * nLoss:
      * is actually not "loss", but available N after "loss" (due to "1 - ..." )
-     * - divided by 10 in order to account for mm vs. cm in PCIP.QTY
+     * - divided by 10 in order to account for cm in FCAP vs. mm in PCIP.QTY or PCIPAPI.MM
      * - 90 is cm below ground
      */
 
@@ -166,9 +214,17 @@ const SoilCalculator = ( () => {
       litQty: _.BMASS.MP.QTY * _.CROP.RATIO.LITMP,
       stbQty: _.BMASS.MP.QTY * _.CROP.RATIO.STBMP,
       rtsQty: _.BMASS.MP.QTY * _.CROP.MP.DM * _.CROP.RATIO.RTSMP,
-      nLoss: 1 - ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL )
-             / ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL ) + _.SITE.FCAP / 10 ) )**90,
+      nLoss: _.PCIPAPI.MM != -1 ? pcipFromAPI( _ ) : pcipFallbackFromSITE( _ ),
     };
+  }
+
+  function pcipFallbackFromSITE( _ ) {
+    return 1 - ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL )
+           / ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL ) + _.SITE.FCAP / 10 ) )**90;
+  }
+
+  function pcipFromAPI( _ ) {
+    return 1 - ( _.PCIPAPI.MM / (  _.PCIPAPI.MM + _.SITE.FCAP / 10 ) )**90;
   }
 
   function cnQuantities( _, which, total ) {
@@ -436,10 +492,11 @@ const SoilCalculator = ( () => {
 
   }
 
-  async function getDatapointResults( datapoint, prevDatapoint ) {
+  async function getDatapointResults( cropData, prevDatapoint ) {
+    console.log( cropData );
 
     /**
-       * @arg { Object } datapoint - Request, as in data provided by user, e.g. CROP.ID
+       * @arg { Object } cropData - Request, as in data provided by user, e.g. CROP.ID, plus previous inputs and results
        * @arg { Object } prevDatapoint - The previous datapoint needed to calc ftlz from green/straw
        * @returns { Object } STATE - API response including all inputs and results
        */
@@ -450,10 +507,15 @@ const SoilCalculator = ( () => {
     Object.assign( STATE, castTime() );
 
     /* add input data to state */
-    Object.assign( STATE, castInputs( datapoint, prevDatapoint ) );
+    Object.assign( STATE, castInputs( cropData.datapoint, prevDatapoint ) );
+
+    /*add precip*/
+    const pcipData = await castPcip( cropData );
+    Object.assign( STATE.inputs, pcipData );
 
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
+    Object.assign( STATE.results, pcipData );
 
     /* return state */
     return STATE;
