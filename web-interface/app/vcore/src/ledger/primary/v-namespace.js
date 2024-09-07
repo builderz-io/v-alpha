@@ -372,13 +372,15 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
 
   function setEntityField( data ) {
     console.log( 'UPDATING ENTITY: ', data );
-    const a = V.getState( 'active' ).lastViewedUuidE;
+    const a = data.activeProfile || V.getState( 'active' ).lastViewedUuidE;
 
     let c, j, m, y;
 
     switch ( data.field ) {
     case 'profile.title':
-      c = V.getLastViewed().role;
+      c = V.getLastViewed()
+        ? V.getLastViewed().role
+        : V.getState( 'active' ).lastViewedEntity.role;
       m = data.data;
       break;
     case 'receivingAddresses.evm':

@@ -231,7 +231,8 @@
 }
 
 .hidden {
-  display: none;
+  /* if something has to be not visible, then override all other display values */
+  display: none !important;
 }
 
 .contents {

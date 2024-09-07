@@ -92,10 +92,40 @@ const GroupComponents = ( function() {
     };
   }
 
+  function handleInputType( group, inputType ) {
+    const selectGroupNodes = V.getNodes( `[data-plot-group=${group.uuidE}] .group-selection-element`  );
+    const editTitleNodes = V.getNodes( `[data-plot-group=${group.uuidE}] .group-title-edit-element`  );
+
+    for ( const el of selectGroupNodes ) {
+      el.classList.toggle( 'hidden', inputType === 'editTitle' );
+    }
+
+    for ( const el of editTitleNodes ) {
+      el.classList.toggle( 'hidden', inputType === 'selectGroup' );
+    }
+  }
+
+  function toggleChangeTitleLoading( element, inputElement, isLoading, elementAfterLoad ) {
+    element.innerHTML = '';
+    element.append(
+      isLoading
+        ? InteractionComponents.confirmClickSpinner( { color: 'black' } )
+        : elementAfterLoad || ''
+    );
+    inputElement.disabled = isLoading;
+  }
+
   function drawGroupCheckbox( group, entity, entityInGroup ) {
-    const children = [
+    const selectGroupLabel = V.cN( {
+      t: 'button',
+      c: 'group-selection-element w-full text-left',
+      h: group.title,
+      k: () => handleInputType( group, 'editTitle' )
+    } );
+
+    const selectGroupComponent = [
       V.cN( {
-        c: 'plot-group-selection__item',
+        c: 'group-selection-element w-full flex',
         h: [
           {
             c: 'mr-rr',
@@ -108,12 +138,61 @@ const GroupComponents = ( function() {
             },
             k: handleGroupSelection( group, entity ),
           },
-          {
-            t: 'label',
-            a: { for: group.uuidE },
-            h: group.fullId,
-          },
-        ] } ),
+          selectGroupLabel
+        ]
+      } )
+    ];
+
+    const inputTitleElement = V.cN( {
+      t: 'input',
+      c: 'w-full',
+      a: { value: group.title }
+    } );
+
+    const doneImageComponent = V.cN( {
+      t: 'span',
+      a: { style: 'pointer-events: none' },
+      h: V.getIcon( 'done' )
+    } );
+
+    const titleChangeButtonComponent =  V.cN( {
+      c: 'hidden group-title-edit-element',
+      t: 'button',
+      h: [doneImageComponent],
+      k: ( event ) => {
+        const inputElement = V.getNode( `[data-plot-group="${group.uuidE}"] .group-title-edit-element input` );
+        const newValue = inputElement.value;
+
+        if ( group.title === newValue ) {
+          handleInputType( group, 'selectGroup' );
+          return;
+        }
+
+        toggleChangeTitleLoading( event.target, inputElement, true );
+
+        V.setEntity( group.fullId, {
+          field: 'profile.title',
+          data: newValue,
+          activeProfile: group.uuidE,
+        } ).then( () =>  {
+          inputTitleElement.value = newValue;
+          selectGroupLabel.textContent = newValue;
+          toggleChangeTitleLoading( event.target, inputElement, false, doneImageComponent );
+          handleInputType( group, 'selectGroup' );
+        } );
+      }
+    } );
+
+    const editTitleComponent = [
+      V.cN( {
+        c: 'w-full hidden group-title-edit-element',
+        h: [inputTitleElement]
+      } ),
+      titleChangeButtonComponent
+    ];
+
+    const children = [
+      V.cN( { c: 'plot-group-selection__item flex justify-between', h: [ ...selectGroupComponent, ...editTitleComponent ] } ),
     ];
 
     if ( entityInGroup ) {
@@ -128,13 +207,7 @@ const GroupComponents = ( function() {
       }, 2000 );
     }
 
-    return V.cN( {
-      c: 'pxy',
-      a: {
-        'data-plot-group': group.uuidE,
-      },
-      h: children,
-    } );
+    return V.cN( { c: 'pxy', a: { 'data-plot-group': group.uuidE }, h: children } );
   }
 
   function drawGroupCheckboxes( groups ) {
@@ -175,7 +248,6 @@ const GroupComponents = ( function() {
                     c: 'w-full pxy text-left bkg-lightblue txt-gray new-group-button',
                     h: V.getString( ui.newGroup ),
                     k: () => {
-                      // Page.draw( { position: 'closed', reset: false, navReset: false } );
                       V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
                     },
                   },
