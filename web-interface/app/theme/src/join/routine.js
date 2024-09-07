@@ -536,6 +536,9 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
               data: entityData.servicefields[V.castServiceField( 'groupedEntities' )],
               activeProfile: E.uuidP,
             } );
+
+            E.servicefields[V.castServiceField( 'groupedEntities' )]
+              = entityData.servicefields[V.castServiceField( 'groupedEntities' )];
           }
 
           const activeEntity = V.getState( 'activeEntity' );
@@ -580,6 +583,12 @@ Initialized by: ${ window.location.host }
 
           /** Place navigation pill */
           Navigation.drawEntityNavPill( E );
+
+          document.dispatchEvent(
+            new CustomEvent( 'ENTITY_CREATED', {
+              detail: { entity: E }
+            } )
+          );
 
           if ( E.role != 'Person' ) {
             V.setState( 'tmpEditable', [ E.fullId ] );
