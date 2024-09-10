@@ -38,6 +38,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinAwaitKeyTop: 'One moment... setting up the identity.',
       joinAwaitKeyBottom: '',
       joinKeyImportance: 'Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.',
+      joinSelectGroupsTop: 'Select plots',
+      joinSelectGroupsBottom: 'Select more than one plot to join in a single group',
 
       joinFormName: 'Name',
       joinFormTitle: 'Title',
@@ -234,6 +236,16 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       'background': 'rgba(var(--brandPrimary),1)',
       'color': 'white',
       'border-radius': '16px',
+    },
+
+    'join-option-box': {
+      padding: '1.5rem',
+    },
+    'join-option-box__option': {
+      padding: '0.5rem 0',
+    },
+    'join-option-box__option__label': {
+      'margin-left': '0.5rem',
     },
   },
   );
@@ -699,6 +711,45 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     ];
   }
 
+  function joinOptionBox( options ) {
+    return V.cN(
+      {
+        c: 'join-option-box',
+        h: options.map( option => ( {
+          c: 'join-option-box__option',
+          h: [
+            {
+              t: 'input',
+              a: {
+                type: 'checkbox',
+                id: option.value,
+                value: option.id,
+              },
+            },
+            {
+              c: 'join-option-box__option__label',
+              t: 'label',
+              a: { for: option.value },
+              h: option.value,
+            },
+          ],
+        } ) ),
+      },
+    );
+  }
+
+  function joinSelectGroups() {
+    const currentActiveEntity = V.getState( 'activeEntity' );
+    const holdedPlots = currentActiveEntity.holderOf
+      .filter( entity => V.castRole( entity.c ) === 'Plot' )
+      .map( entity => ( { value: entity.fullId, id: entity.a } ) );
+
+    return [
+      joinHeader( 'joinSelectGroupsTop', 'joinSelectGroupsBottom' ),
+      joinOptionBox( holdedPlots ),
+    ];
+  }
+
   /* Main overlay with card being "filled in" */
 
   function joinOverlay( card ) {
@@ -790,6 +841,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinLocationPicker: joinLocationPicker,
     joinImage: joinImage,
     joinEmail: joinEmail,
+    joinOptionBox: joinOptionBox,
+    joinSelectGroups: joinSelectGroups,
     joinAwaitKey: joinAwaitKey,
 
     handleJoinOverlayClick: handleJoinOverlayClick,
