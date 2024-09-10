@@ -47,12 +47,14 @@ const GroupComponents = ( function() {
     return ( event ) => {
       event.target.disabled = true;
 
-      const groupFields = V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ) || [];
+      const groupFields = new Set( V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ) ||  [] );
 
       if ( event.target.checked ) {
-        groupFields.push( entity.uuidE );
+        if ( !groupFields.has( entity.uuidE ) ) {
+          groupFields.add( entity.uuidE );
+        }
 
-        updateGroupedEntities( group, groupFields );
+        updateGroupedEntities( group, [...groupFields.values()] );
 
         setTimeout( () => {
           const loadingElement = V.gN( `[data-plot-group=${group.uuidE}] .calculator-loader` );
@@ -78,12 +80,11 @@ const GroupComponents = ( function() {
       else {
         const totalBalanceWidget = V.gN( `[data-group-calc=${group.uuidE}]` );
         if ( totalBalanceWidget ) {
-          if ( groupFields.includes( entity.uuidE ) ) {
-            const idx = groupFields.indexOf( entity.uuidE );
-            groupFields.splice( idx, 1 );
+          if ( groupFields.has( entity.uuidE ) ) {
+            groupFields.delete( entity.uuidE );
           }
 
-          updateGroupedEntities( group, groupFields )
+          updateGroupedEntities( group, [...groupFields.values()] )
             .then( () =>  ( event.target.disabled = false )  );
 
           totalBalanceWidget.remove();
@@ -97,11 +98,11 @@ const GroupComponents = ( function() {
     const editTitleNodes = V.getNodes( `[data-plot-group=${group.uuidE}] .group-title-edit-element`  );
 
     for ( const el of selectGroupNodes ) {
-      el.classList.toggle( 'hidden', inputType === 'editTitle' );
+      el.classList.toggle( 'hide', inputType === 'editTitle' );
     }
 
     for ( const el of editTitleNodes ) {
-      el.classList.toggle( 'hidden', inputType === 'selectGroup' );
+      el.classList.toggle( 'hide', inputType === 'selectGroup' );
     }
   }
 
@@ -110,7 +111,7 @@ const GroupComponents = ( function() {
     element.append(
       isLoading
         ? InteractionComponents.confirmClickSpinner( { color: 'black' } )
-        : elementAfterLoad || ''
+        : elementAfterLoad || '',
     );
     inputElement.disabled = isLoading;
   }
@@ -120,7 +121,7 @@ const GroupComponents = ( function() {
       t: 'button',
       c: 'group-selection-element w-full text-left',
       h: group.title,
-      k: () => handleInputType( group, 'editTitle' )
+      k: () => handleInputType( group, 'editTitle' ),
     } );
 
     const selectGroupComponent = [
@@ -138,25 +139,25 @@ const GroupComponents = ( function() {
             },
             k: handleGroupSelection( group, entity ),
           },
-          selectGroupLabel
-        ]
-      } )
+          selectGroupLabel,
+        ],
+      } ),
     ];
 
     const inputTitleElement = V.cN( {
       t: 'input',
       c: 'w-full',
-      a: { value: group.title }
+      a: { value: group.title },
     } );
 
     const doneImageComponent = V.cN( {
       t: 'span',
       a: { style: 'pointer-events: none' },
-      h: V.getIcon( 'done' )
+      h: V.getIcon( 'done' ),
     } );
 
     const titleChangeButtonComponent =  V.cN( {
-      c: 'hidden group-title-edit-element',
+      c: 'hide group-title-edit-element',
       t: 'button',
       h: [doneImageComponent],
       k: ( event ) => {
@@ -180,15 +181,15 @@ const GroupComponents = ( function() {
           toggleChangeTitleLoading( event.target, inputElement, false, doneImageComponent );
           handleInputType( group, 'selectGroup' );
         } );
-      }
+      },
     } );
 
     const editTitleComponent = [
       V.cN( {
-        c: 'w-full hidden group-title-edit-element',
-        h: [inputTitleElement]
+        c: 'w-full hide group-title-edit-element',
+        h: [inputTitleElement],
       } ),
-      titleChangeButtonComponent
+      titleChangeButtonComponent,
     ];
 
     const children = [
@@ -215,7 +216,7 @@ const GroupComponents = ( function() {
 
     return groups.sort( sortGroupsByPlotExistence( entity ) ).map( group => {
       const plotsInGroup = V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ) || [];
-      const entityInGroup = plotsInGroup.includes( entity.uuidE );
+      const entityInGroup = Array.isArray( plotsInGroup ) && plotsInGroup.includes( entity.uuidE );
       return drawGroupCheckbox( group, entity, entityInGroup );
     } );
   }

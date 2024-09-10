@@ -231,7 +231,10 @@
 }
 
 .hidden {
-  /* if something has to be not visible, then override all other display values */
+  display: none;
+}
+
+.hide {
   display: none !important;
 }
 
