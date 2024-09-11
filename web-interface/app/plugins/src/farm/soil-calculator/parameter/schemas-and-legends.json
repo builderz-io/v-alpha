@@ -5,9 +5,30 @@
         "ID": -1
       },
       "FTLZ": {
-        "ORG": {
+        "F1": {
           "ID": -1,
-          "QTY": -1
+          "QTY": -1,
+          "APPLON": -1
+        },
+        "F2": {
+          "ID": -1,
+          "QTY": -1,
+          "APPLON": -1
+        },
+        "F3": {
+          "ID": -1,
+          "QTY": -1,
+          "APPLON": -1
+        },
+        "F4": {
+          "ID": -1,
+          "QTY": -1,
+          "APPLON": -1
+        },
+        "F5": {
+          "ID": -1,
+          "QTY": -1,
+          "APPLON": -1
         }
       },
       "BMASS": {
@@ -55,23 +76,89 @@
         "FTLZ": {
           "displayName": "Fertilizer",
           "descr": "Fertilizer",
-          "ORG": {
-            "displayName": "Organic",
-            "descr": "Organic",
+          "F1": {
             "ID": {
-              "displayName": "Type",
+              "displayName": "Fertilizer 1",
               "descr": "Fertilizer id for internal use",
-              "unit": ""
-            },
-            "NAME": {
-              "displayName": "Type",
-              "descr": "Name of the fertilizer in English language",
               "unit": ""
             },
             "QTY": {
               "displayName": "Quantity applied",
               "descr": "Quantity of applied fertilizer",
               "unit": "FM t ha-1"
+            },
+            "APPLON": {
+              "displayName": "Applied on",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F2": {
+            "ID": {
+              "displayName": "Fertilizer 2",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity applied",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "APPLON": {
+              "displayName": "Applied on",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F3": {
+            "ID": {
+              "displayName": "Fertilizer 3",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity applied",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "APPLON": {
+              "displayName": "Applied on",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F4": {
+            "ID": {
+              "displayName": "Fertilizer 4",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity applied",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "APPLON": {
+              "displayName": "Applied on",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F5": {
+            "ID": {
+              "displayName": "Fertilizer 5",
+              "descr": "Fertilizer id for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity applied",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "APPLON": {
+              "displayName": "Applied on",
+              "descr": "Date of fertilizer application",
+              "unit": ""
             }
           }
         },
