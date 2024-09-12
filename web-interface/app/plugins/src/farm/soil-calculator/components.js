@@ -168,6 +168,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'border-radius': '50px',
 
     },
+
+    // 'fertilizers .s-calc-input-wrapper:first-of-type': {
+    //   'font-weight': '700',
+    //   'font-family': 'IBM Plex Bold',
+    // },
+
+    'fertilizers .s-calc-input-wrapper:not(:first-of-type)': {
+      'padding': '0 0 1rem 1rem',
+      'margin': '0',
+      'border-left': '1px solid black',
+    },
   } );
 
   /* ============== user interface strings ============== */
@@ -205,6 +216,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       /* is not the case when loading data from db */
       run = getDatapoint( e );
+    }
+
+    if ( !e ) {
+
+      /* checking if on profile load, we need to toggle any fertilizer groups */
+      toggleFertliziersGroups( 'CROP-1' );
     }
 
     if ( !run.run ) { return }
@@ -463,6 +480,25 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
 
+  function toggleFertliziersGroups( formName ) {
+    const _ = document.forms[formName].elements;
+    for ( let i = 1; i <= 5; ++i ) {
+      const nextFertilizerGroupIdx = i+1;
+      const groupElement = document.querySelector( `.FTLZ_F${nextFertilizerGroupIdx}` );
+
+      const shouldDisplayTheNextFertilizerGroup = _[`FTLZ_F${i}_ID`].value !== '5000'
+        && !!_[`FTLZ_F${i}_QTY`].value
+        && !!_[`FTLZ_F${i}_DATE`].value;
+
+      if ( shouldDisplayTheNextFertilizerGroup && nextFertilizerGroupIdx <= 5 && groupElement ) {
+        groupElement.classList.toggle( 'hidden', false );
+      }
+      else if ( nextFertilizerGroupIdx <= 5 && groupElement &&  _[`FTLZ_F${i}_ID`].value === '5000' && !_[`FTLZ_F${i}_QTY`].value ) {
+        groupElement.classList.toggle( 'hidden', true );
+      }
+    }
+  }
+
   function getDatapoint( e ) {
 
     const formName = e.target.closest( 'form' ).getAttribute( 'name' );
@@ -480,6 +516,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
 
     document.activeElement.classList.remove( 'txt-red' );
+
+    if ( e.target.name.includes( 'FTLZ' ) ) {
+      toggleFertliziersGroups( formName );
+    }
 
     if (
       newDatapoint === -30
@@ -549,8 +589,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.CROP.ID = Number( _.CROP_ID.value );
 
-      __.FTLZ.ORG.ID = Number( _.FTLZ_ORG_ID.value );
-      __.FTLZ.ORG.QTY = Number( _.FTLZ_ORG_QTY.value );
+      // __.FTLZ.ORG.ID = Number( _.FTLZ_ORG_ID.value );
+      // __.FTLZ.ORG.QTY = Number( _.FTLZ_ORG_QTY.value );
+      for ( let i = 1; i <= 5; ++i ) {
+        __.FTLZ[`F${i}`].ID = Number( _[`FTLZ_F${i}_ID`].value );
+        __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`].value );
+        __.FTLZ[`F${i}`].DATE = _[`FTLZ_F${i}_DATE`].value;
+      }
 
       __.BMASS.MP.QTY = Number( _.BMASS_MP_QTY.value );
       __.BMASS.MP.HVST = ( _.BMASS_MP_HVST.value === 'true' );
@@ -1304,6 +1349,31 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         ID: inputDropID,
       },
       FTLZ: {
+        F1: {
+          ID: inputDropID,
+          QTY: inputNum,
+          DATE: inputDate,
+        },
+        F2: {
+          ID: inputDropID,
+          QTY: inputNum,
+          DATE: inputDate,
+        },
+        F3: {
+          ID: inputDropID,
+          QTY: inputNum,
+          DATE: inputDate,
+        },
+        F4: {
+          ID: inputDropID,
+          QTY: inputNum,
+          DATE: inputDate,
+        },
+        F5: {
+          ID: inputDropID,
+          QTY: inputNum,
+          DATE: inputDate,
+        },
         ORG: {
           ID: inputDropID,
           QTY: inputNum,
@@ -1355,15 +1425,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: !templates[section][field] ? '' : templates[section][field]( data[section][field], castFlatFieldTitle( section, field, false ) ),
     } );
 
-    const fieldGroup = ( section, field ) => !templates[section][field] ? '' : V.cN( {
-      c: 's-calc-form__field-group',
+    const fieldGroup = ( section, field ) => V.cN( {
+      c: `s-calc-form__field-group ${section}_${field}`,
       h: [
         {
           c: 's-calc-form__field-group-title font-bold',
           h: SoilCalculator.getFieldString( section + '_' + field, locale ),
         },
         {
-          c: 's-calc-form__field-group-fields',
+          c: `s-calc-form__field-group-fields ${section === 'FTLZ' ? 'fertilizers' : ''}`,
           h: Object.keys( data[section][field] )
             .map( subField => templates[section][field][subField]( data[section][field][subField], castFlatFieldTitle( section, field, subField ) ) ),
         },
@@ -1386,10 +1456,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             c: 's-calc-form__section-fields',
             h: Object.keys( data[section] )
-              .map( field => typeof data[section][field] == 'object'
-                ? fieldGroup( section, field )
-                : fieldSingle( section, field ),
-              ),
+              .map( field => {
+                const group = typeof data[section][field] == 'object'
+                  ? fieldGroup( section, field )
+                  : fieldSingle( section, field );
+
+                if ( section === 'FTLZ' && field !== 'F1' ) {
+                  group.classList.add( 'hidden' );
+                }
+
+                return group;
+              } ),
           },
         ],
       } ),
@@ -1441,7 +1518,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                 : (
                   SoilCalculator.getCropName( item.CROP.ID, locale )
                   + ' & '
-                  + SoilCalculator.getFertilizerName( item.FTLZ.ORG.ID, locale )
+                  + SoilCalculator.getFertilizerName( item.FTLZ.F1.ID, locale ) // @TODO(fertilizers): handle the multiple fertilizers?
                 ),
             },
           ],

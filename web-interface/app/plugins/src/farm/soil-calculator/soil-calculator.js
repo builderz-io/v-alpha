@@ -116,14 +116,18 @@ const SoilCalculator = ( () => {
 
     /* mixin the full set of crop and fertilizer parameters into clone */
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
-    Object.assign( clone.FTLZ.ORG, getFertilizer( clone.FTLZ.ORG.ID || clone.FTLZ.ORG.NAME ) );
+
+    // @TODO(fertilizers): handle the multiple fertilizers?
+    Object.assign( clone.FTLZ.F1, getFertilizer( clone.FTLZ.F1.ID || clone.FTLZ.F1.NAME ) );
 
     /* do the same for the previous datapoint */
     let clonePrev = null;
     if ( prevDatapoint ) {
       clonePrev = JSON.parse( JSON.stringify( prevDatapoint ) );
       Object.assign( clonePrev.CROP, getCrop( clonePrev.CROP.ID || clonePrev.CROP.NAME ) );
-      Object.assign( clonePrev.FTLZ.ORG, getFertilizer( clonePrev.FTLZ.ORG.ID || clonePrev.FTLZ.ORG.NAME ) );
+
+      // @TODO(fertilizers): handle the multiple fertilizers?
+      Object.assign( clonePrev.FTLZ.ORG, getFertilizer( clonePrev.FTLZ.F1.ID || clonePrev.FTLZ.F1.NAME ) );
     }
 
     // TODO: run validations on clone and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
@@ -248,10 +252,11 @@ const SoilCalculator = ( () => {
   }
 
   function nFertilizerOrganic( _ ) {
-    return _.FTLZ.ORG.QTY
-         * _.FTLZ.ORG.DM
-         * _.FTLZ.ORG.N
-         * _.FTLZ.ORG.NAV
+    // @TODO(fertilizers): handle the multiple fertilizers?
+    return _.FTLZ.F1.QTY
+         * _.FTLZ.F1.DM
+         * _.FTLZ.F1.N
+         * _.FTLZ.F1.NAV
          * _.SITE.N.LOSS;
   }
 
@@ -298,14 +303,16 @@ const SoilCalculator = ( () => {
   }
 
   function nFertilizerRemaining( _ ) {
-    return _.FTLZ.ORG.QTY
-         * _.FTLZ.ORG.DM
-         * _.FTLZ.ORG.N
-         * ( 1-_.FTLZ.ORG.NAV );
+    // @TODO(fertilizers): handle the multiple fertilizers?
+    return _.FTLZ.F1.QTY
+         * _.FTLZ.F1.DM
+         * _.FTLZ.F1.N
+         * ( 1-_.FTLZ.F1.NAV );
   }
 
   function cFertilizerRemaining( _ ) {
-    return _.FTLZ.ORG.QTY * _.FTLZ.ORG.DM * _.FTLZ.ORG.C;
+    // @TODO(fertilizers): handle the multiple fertilizers?
+    return _.FTLZ.F1.QTY * _.FTLZ.F1.DM * _.FTLZ.F1.C;
   }
 
   function soilOrganicMatterLoss( _, N ) {
