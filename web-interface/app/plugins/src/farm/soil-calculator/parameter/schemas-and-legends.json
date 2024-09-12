@@ -5,9 +5,30 @@
         "ID": -1
       },
       "FTLZ": {
-        "ORG": {
+        "F1": {
           "ID": -1,
-          "QTY": -1
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F2": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F3": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F4": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F5": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
         }
       },
       "BMASS": {
@@ -53,25 +74,91 @@
           }
         },
         "FTLZ": {
-          "displayName": "Fertilizer",
-          "descr": "Fertilizer",
-          "ORG": {
-            "displayName": "Organic",
-            "descr": "Organic",
+          "displayName": "Fertilizers",
+          "descr": "Application of up to 5 fertilizers",
+          "F1": {
             "ID": {
-              "displayName": "Type",
-              "descr": "Fertilizer id for internal use",
-              "unit": ""
-            },
-            "NAME": {
-              "displayName": "Type",
-              "descr": "Name of the fertilizer in English language",
+              "displayName": "Fertilizer 1",
+              "descr": "Fertilizer ID for internal use",
               "unit": ""
             },
             "QTY": {
-              "displayName": "Quantity applied",
+              "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
               "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F2": {
+            "ID": {
+              "displayName": "Fertilizer 2",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F3": {
+            "ID": {
+              "displayName": "Fertilizer 3",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F4": {
+            "ID": {
+              "displayName": "Fertilizer 4",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F5": {
+            "ID": {
+              "displayName": "Fertilizer 5",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
             }
           }
         },
@@ -175,25 +262,91 @@
           }
         },
         "FTLZ": {
-          "displayName": "Dünger",
-          "descr": "Fertilizer",
-          "ORG": {
-            "displayName": "Organisch",
-            "descr": "Organic",
+          "displayName": "Düngung",
+          "descr": "Ausbringung von bis zu 5 Düngern",
+          "F1": {
             "ID": {
-              "displayName": "Typ",
-              "descr": "Fertilizer id for internal use",
-              "unit": ""
-            },
-            "NAME": {
-              "displayName": "Typ",
-              "descr": "Name of the fertilizer in English language",
+              "displayName": "Dünger 1",
+              "descr": "Dünger ID für interne Berechnungen",
               "unit": ""
             },
             "QTY": {
               "displayName": "Menge",
-              "descr": "Quantity of applied fertilizer",
+              "descr": "Menge des ausgebrachten Düngers",
               "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F2": {
+            "ID": {
+              "displayName": "Dünger 2",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F3": {
+            "ID": {
+              "displayName": "Dünger 3",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F4": {
+            "ID": {
+              "displayName": "Dünger 4",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F5": {
+            "ID": {
+              "displayName": "Dünger 5",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
             }
           }
         },
