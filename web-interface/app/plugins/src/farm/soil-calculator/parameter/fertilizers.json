@@ -9,13 +9,13 @@
     "NAV": 0
   },
   {
-    "ID": 5000,
+    "ID": 5005,
     "NAME": "Mineral fertilizer",
     "NAME_DE": "Mineralischer Dünger",
-    "DM": 0,
+    "DM": 0.001,
     "C": 0,
-    "N": 0,
-    "NAV": 0
+    "N": 1,
+    "NAV": 1
   },
   {
     "ID": 5010,

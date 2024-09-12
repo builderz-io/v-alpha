@@ -117,17 +117,21 @@ const SoilCalculator = ( () => {
     /* mixin the full set of crop and fertilizer parameters into clone */
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
 
-    // @TODO(fertilizers): handle the multiple fertilizers?
-    Object.assign( clone.FTLZ.F1, getFertilizer( clone.FTLZ.F1.ID || clone.FTLZ.F1.NAME ) );
+    for ( let i = 1; i <= 5; ++i ) {
+      Object.assign( clone.FTLZ[`F${i}`], getFertilizer( clone.FTLZ[`F${i}`].ID || clone.FTLZ[`F${i}`].NAME ) );
+    }
 
     /* do the same for the previous datapoint */
     let clonePrev = null;
+
     if ( prevDatapoint ) {
       clonePrev = JSON.parse( JSON.stringify( prevDatapoint ) );
       Object.assign( clonePrev.CROP, getCrop( clonePrev.CROP.ID || clonePrev.CROP.NAME ) );
 
-      // @TODO(fertilizers): handle the multiple fertilizers?
-      Object.assign( clonePrev.FTLZ.ORG, getFertilizer( clonePrev.FTLZ.F1.ID || clonePrev.FTLZ.F1.NAME ) );
+      for ( let i = 1; i <= 5; ++i ) {
+        Object.assign( clonePrev.FTLZ[`F${i}`], getFertilizer( clonePrev.FTLZ[`F${i}`].ID || clonePrev.FTLZ[`F${i}`].NAME ) );
+      }
+
     }
 
     // TODO: run validations on clone and enforce a full set (e.g adding BMASS.LIT.QTY equals -1)
@@ -172,7 +176,7 @@ const SoilCalculator = ( () => {
 
     __.N.PB = toKilo( nPlantBiomass( _ ) );
 
-    __.N.FTLZ.ORG = toKilo( nFertilizerOrganic( _ ) );
+    __.N.FTLZ.SUM = toKilo( nFertilizers( _ ) );
     __.N.FTLZ.GRS = toKilo( nFertilizerFromPrev( _, _prev ) );
     __.N.FTLZ.REM = toKilo( nFertilizerRemaining( _ ) );
     __.N.FIX = nFixation( _, __.N );
@@ -251,13 +255,18 @@ const SoilCalculator = ( () => {
     return cnQuantities( _, 'C' );
   }
 
-  function nFertilizerOrganic( _ ) {
-    // @TODO(fertilizers): handle the multiple fertilizers?
-    return _.FTLZ.F1.QTY
-         * _.FTLZ.F1.DM
-         * _.FTLZ.F1.N
-         * _.FTLZ.F1.NAV
-         * _.SITE.N.LOSS;
+  function nFertilizers( _ ) {
+    let sum = 0;
+
+    for ( let i = 1; i <= 5; ++i ) {
+      sum += _.FTLZ[`F${i}`].QTY
+      * _.FTLZ[`F${i}`].DM
+      * _.FTLZ[`F${i}`].N
+      * _.FTLZ[`F${i}`].NAV
+      * _.SITE.N.LOSS;
+    }
+
+    return sum;
   }
 
   function nFertilizerFromPrev( _, _prev ) {
@@ -288,7 +297,7 @@ const SoilCalculator = ( () => {
 
   function nFixation( _, N ) {
 
-    const a = N.PB * _.CROP.LS * _.CROP.N.BFN - N.FTLZ.ORG - N.FTLZ.GRS;
+    const a = N.PB * _.CROP.LS * _.CROP.N.BFN - N.FTLZ.SUM - N.FTLZ.GRS;
     const b = 0;
 
     return Math.max( a, b );
@@ -316,7 +325,7 @@ const SoilCalculator = ( () => {
   }
 
   function soilOrganicMatterLoss( _, N ) {
-    return ( N.PB - N.FIX - N.FTLZ.ORG - N.FTLZ.GRS - N.DEP + N.NYR ) * _.SITE.CN;
+    return ( N.PB - N.FIX - N.FTLZ.SUM - N.FTLZ.GRS - N.DEP + N.NYR ) * _.SITE.CN;
   }
 
   function soilOrganicMatterSupp( _, N, C ) {

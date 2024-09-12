@@ -182,13 +182,13 @@
             "displayName": "Main Product",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Quantity available",
+              "displayName": "Main Product Quantity",
               "descr": "Main Product Quantity",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Harvested",
-              "descr": "Whether main product has been harvested",
+              "descr": "Has main product been harvested?",
               "unit": ""
             }
           },
@@ -196,13 +196,13 @@
             "displayName": "Side Product",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Quantity available",
+              "displayName": "Side Product Quantity",
               "descr": "Side Product Quantity",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Harvested",
-              "descr": "Whether side product has been harvested",
+              "descr": "Has side product been harvested?",
               "unit": ""
             }
           }
@@ -222,7 +222,7 @@
           }
         },
         "SITE": {
-          "displayName": "Plot data",
+          "displayName": "Plot",
           "descr": "Plot data",
           "CN": {
             "displayName": "C/N Ratio",
@@ -238,13 +238,13 @@
             "displayName": "Precipitation",
             "descr": "Precipitation",
             "QTY": {
-              "displayName": "Quantity average",
-              "descr": "Plot precipitation",
-              "unit": ""
+              "displayName": "Average Precipitation",
+              "descr": "Average precipitation in plot area",
+              "unit": "mm a-1"
             },
             "MUL": {
-              "displayName": "Multiplier",
-              "descr": "precipitation multiplier",
+              "displayName": "Precipitation Multiplier",
+              "descr": "Precipitation multiplier",
               "unit": "Decimal share"
             }
           },
@@ -370,13 +370,13 @@
             "displayName": "Hauptprodukt",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Ertrag",
-              "descr": "Main Product Quantity",
+              "displayName": "Hauptprodukt Ertrag",
+              "descr": "Hauptprodukt Ertrag",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Ernte",
-              "descr": "Whether main product has been harvested",
+              "descr": "Wurde das Hauptprodukt geerntet?",
               "unit": ""
             }
           },
@@ -384,13 +384,13 @@
             "displayName": "Nebenprodukt",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Ertrag",
-              "descr": "Side Product Quantity",
+              "displayName": "Nebenprodukt Ertrag",
+              "descr": "Nebenprodukt Ertrag",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Ernte",
-              "descr": "Whether side product has been harvested",
+              "descr": "Wurde das Nebenprodukt geerntet?",
               "unit": ""
             }
           }
@@ -410,7 +410,7 @@
           }
         },
         "SITE": {
-          "displayName": "Schlag Daten",
+          "displayName": "Schlag",
           "descr": "Plot data",
           "CN": {
             "displayName": "C/N Verhältnis",
@@ -426,14 +426,14 @@
             "displayName": "Niederschlag",
             "descr": "Niederschlag",
             "QTY": {
-              "displayName": "Menge",
-              "descr": "Plot precipitation",
+              "displayName": "Niederschlag Menge",
+              "descr": "Niederschlag Menge",
               "unit": "mm a-1"
             },
             "MUL": {
-              "displayName": "Multiplikator",
-              "descr": "precipitation multiplier",
-              "unit": " "
+              "displayName": "Niederschlag Multiplikator",
+              "descr": "Niederschlag Multiplikator",
+              "unit": ""
             }
           },
           "N": {
@@ -473,7 +473,7 @@
         "NYR": -1,
         "CR": -1,
         "FTLZ": {
-          "ORG": -1,
+          "SUM": -1,
           "GRS": -1,
           "REM": -1
         }
@@ -579,14 +579,14 @@
           "FTLZ": {
             "displayName": "Fertilizer",
             "descr": "Fertilizer",
-            "ORG": {
-              "displayName": "N Organic Fertilizer",
-              "descr": "N Organic Fertilizer",
+            "SUM": {
+              "displayName": "N Fertilizers",
+              "descr": "N from Fertilizers",
               "unit": ""
             },
             "GRS": {
-              "displayName": "N from Green/Straw",
-              "descr": "N from Green/Straw",
+              "displayName": "N Green/Straw",
+              "descr": "N from green/straw",
               "unit": ""
             },
             "REM": {
@@ -740,9 +740,9 @@
           "FTLZ": {
             "displayName": "Fertilizer",
             "descr": "Fertilizer",
-            "ORG": {
-              "displayName": "N aus organischen Düngern",
-              "descr": "N Organischer Dünger",
+            "SUM": {
+              "displayName": "N durch Dünger",
+              "descr": "N durch Dünger",
               "unit": "kg ha-1"
             },
             "GRS": {

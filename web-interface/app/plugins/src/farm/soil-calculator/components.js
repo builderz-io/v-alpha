@@ -27,6 +27,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       // background: '#eee',
 
     },
+    's-calc-form-background': {
+      'background': '#eee',
+      'padding': '0.5rem',
+      'margin': '0.5rem',
+      'border-radius': '5px',
+    },
     's-calc-results-show-btn': {
       'text-align': 'center',
       'text-decoration': 'underline',
@@ -117,7 +123,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'margin-bottom': '0.7rem',
     },
     's-calc-form__section-title': {
-      // height: '2rem',
+      'margin-bottom': '0.5rem',
     },
     's-calc__crop-sequence-nav': {
       overflow: 'hidden',
@@ -133,13 +139,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'font-style': 'italic',
       'margin-left': '1rem',
     },
-    's-calc-tab-content': {
-      // background: 'azure',
-      'background': '#eee',
-      'padding': '0.5rem',
-      'border-radius': '0 0 5px 5px',
-
-    },
+    // 's-calc-tab-content': {
+    //   // background: 'azure',
+    //   'background': '#eee',
+    //   'padding': '0.5rem',
+    //   'border-radius': '0 0 5px 5px',
+    //
+    // },
     's-calc-results-table': {
       // background: 'azure',
       padding: '1.2rem',
@@ -187,7 +193,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const strings = {
       cropSequenceTitle: 'Crop Sequence',
       soilBalanceTitle: 'Soil Balance',
-      siteDataTitle: 'Site Data',
+      siteDataTitle: 'Plot Data',
       year: 'Jahr',
 
       yes: 'yes',
@@ -589,8 +595,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.CROP.ID = Number( _.CROP_ID.value );
 
-      // __.FTLZ.ORG.ID = Number( _.FTLZ_ORG_ID.value );
-      // __.FTLZ.ORG.QTY = Number( _.FTLZ_ORG_QTY.value );
       for ( let i = 1; i <= 5; ++i ) {
         __.FTLZ[`F${i}`].ID = Number( _[`FTLZ_F${i}_ID`].value );
         __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`].value );
@@ -662,7 +666,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if(
       _.CROP_ID.value == 1000
-      // || ( _.FTLZ_ORG_ID.value != 5000 && !_.FTLZ_ORG_QTY.value )
       || !_.BMASS_MP_QTY.value
     ) {
       return -20;
@@ -829,7 +832,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         {
           t: 'table',
           c: 's-calc-results-table w-full',
-          h: mapFields( ['N_PB', 'N_FIX', 'N_FTLZ_ORG', 'N_FTLZ_GRS', 'N_DEP', 'N_NYR'], tabNum ),
+          h: mapFields( ['N_PB', 'N_FIX', 'N_FTLZ_SUM', 'N_FTLZ_GRS', 'N_DEP', 'N_NYR'], tabNum ),
         },
         {
           y: {
@@ -1071,7 +1074,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: sequence.map( function placeForm( tabNum ) {
         const dataset = V.castJson( this.data[ 's' + tabNum] );
         return {
-          c: 's-calc-tab-content tab-content tab' + tabNum + '__content',
+          c: 's-calc-tab-content s-calc-form-background tab-content tab' + tabNum + '__content',
+          y: {
+            margin: 0,
+          },
           h: [
             tabNum != 'AA'
               ? form( tabNum, dataset, /* exclude: */ ['SITE'] )
@@ -1152,8 +1158,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       : ''
     );
 
-    const input = ( $inputElem, fieldTitle, unit ) => ( {
-      c: 's-calc-input-wrapper',
+    const input = ( $inputElem, fieldTitle, unit, hide ) => ( {
+      c: 's-calc-input-wrapper' + ( hide ? ' hidden' : '' ),
       h: [
         V.cN( {
           y: {
@@ -1194,7 +1200,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       ],
     } );
 
-    const inputNum = ( val, fieldTitle ) => {
+    const inputNum = ( val, fieldTitle, hide ) => {
       const unit = SoilCalculator.getFieldString( fieldTitle, locale, 'unit' );
       const $inputNumObj = V.cN( {
         t: 'input',
@@ -1211,7 +1217,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
         v: val === -1 ? 0 : val,
       } );
-      return input( $inputNumObj, fieldTitle, unit );
+      return input( $inputNumObj, fieldTitle, unit, hide );
     };
 
     const inputText = ( val, fieldTitle ) => {
@@ -1374,10 +1380,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           QTY: inputNum,
           DATE: inputDate,
         },
-        ORG: {
-          ID: inputDropID,
-          QTY: inputNum,
-        },
       },
       BMASS: {
         MP: {
@@ -1412,7 +1414,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         FCAP: inputNum,
         PCIP: {
           QTY: inputNum,
-          MUL: inputNum,
+          MUL: {
+            hide: true,
+            template: inputNum,
+          },
         },
         N: {
           DEP: inputNum,
@@ -1429,13 +1434,18 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       c: `s-calc-form__field-group ${section}_${field}`,
       h: [
         {
-          c: 's-calc-form__field-group-title font-bold',
+          c: 's-calc-form__field-group-title font-bold hidden',
           h: SoilCalculator.getFieldString( section + '_' + field, locale ),
         },
         {
           c: `s-calc-form__field-group-fields ${section === 'FTLZ' ? 'fertilizers' : ''}`,
           h: Object.keys( data[section][field] )
-            .map( subField => templates[section][field][subField]( data[section][field][subField], castFlatFieldTitle( section, field, subField ) ) ),
+            .map( subField => {
+              const x = templates[section][field][subField];
+              const template = typeof x == 'object' ? x.template : x;
+              const hide = typeof x == 'object' ? x.hide : false;
+              return template( data[section][field][subField], castFlatFieldTitle( section, field, subField ), hide );
+            } ),
         },
       ],
     } );
@@ -1445,7 +1455,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       a: {
         name: formName,
       },
-      c: 's-calc-form w-full',
+      c: 's-calc-form w-full' + ( formName == 'SITE' ? ' s-calc-form-background' : '' ),
       h: Object.keys( data ).map( section => !templates[section] ? '' : {
         c: 's-calc-form__section' + ( templates[section].hide ? ' hidden' : '' ),
         h: [
@@ -1457,15 +1467,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             c: 's-calc-form__section-fields',
             h: Object.keys( data[section] )
               .map( field => {
-                const group = typeof data[section][field] == 'object'
+                const elem = typeof data[section][field] == 'object'
                   ? fieldGroup( section, field )
                   : fieldSingle( section, field );
 
                 if ( section === 'FTLZ' && field !== 'F1' ) {
-                  group.classList.add( 'hidden' );
+                  elem.classList.add( 'hidden' );
                 }
 
-                return group;
+                return elem;
               } ),
           },
         ],
@@ -1579,7 +1589,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       ),
       CanvasComponents.card(
         siteData( data ),
-        '',
+        V.getString( ui.siteDataTitle ),
         undefined,
         display,
       ),

@@ -4,8 +4,8 @@ const Group = ( function() { // eslint-disable-line no-unused-vars
 
   function launch() {
     V.setNavItem( 'serviceNav', [{
-      title: 'Group',
-      path: '/group',
+      title: 'Groups',
+      path: '/groups',
       use: {
         form: 'new entity', // this is still unknown
         privacy: 2,

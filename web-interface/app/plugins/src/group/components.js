@@ -2,9 +2,10 @@ const GroupComponents = ( function() {
 
   const ui = ( () => {
     const strings = {
-      newGroup: 'New group',
+      newGroup: 'Add new group',
       noGroups: 'No groups available',
       groups: 'Groups',
+      grouping: 'Grouping',
       noAssignedEntities: 'No entities assigned to group',
       plots: 'Plots',
     };
@@ -17,6 +18,13 @@ const GroupComponents = ( function() {
   } )();
 
   /* ================== private methods ================= */
+
+  function handleProfileDraw() {
+    const path = V.castPathOrId( this.textContent );
+    V.setState( 'active', { navItem: path } );
+    V.setBrowserHistory( path );
+    Profile.draw( path );
+  }
 
   function sortGroupsByPlotExistence( entity ) {
     return ( a, b ) => {
@@ -241,15 +249,19 @@ const GroupComponents = ( function() {
         groupSelection.append(
           V.cN(
             {
+              c: 's-calc-form-background',
               h: [
                 ...drawGroupCheckboxes( data ),
                 V.cN(
                   {
                     t: 'button',
-                    c: 'w-full pxy text-left bkg-lightblue txt-gray new-group-button',
+                    y: {
+                      'margin-top': '0.5rem',
+                    },
+                    c: 'new-group-button w-full pxy text-left bkg-white txt-gray',
                     h: V.getString( ui.newGroup ),
                     k: () => {
-                      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/group', 'serviceNav' ).use ) );
+                      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/groups', 'serviceNav' ).use ) );
                     },
                   },
                 ),
@@ -269,7 +281,7 @@ const GroupComponents = ( function() {
       ],
     } );
 
-    return CanvasComponents.card( parent, V.getString( ui.groups ) );
+    return CanvasComponents.card( parent, V.getString( ui.grouping ) );
   }
 
   function drawGroupPlotWidget() {
@@ -291,7 +303,15 @@ const GroupComponents = ( function() {
         const plots = V.cN( {
           c: 'group-plots pxy',
           h: result.data
-            .map( plot => V.cN( { h: plot.fullId } ) ),
+            .map( plot => V.cN( {
+              t: 'p',
+              c: 'pxy',
+              y: {
+                cursor: 'pointer',
+              },
+              h: plot.fullId,
+              k: handleProfileDraw,
+            } ) ),
         } );
 
         const container = V.getNode( '.group-plots__list' );
