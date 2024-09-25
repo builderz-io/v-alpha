@@ -98,7 +98,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -115,7 +116,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -132,7 +134,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -149,7 +152,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -166,7 +170,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
