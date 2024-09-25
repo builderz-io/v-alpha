@@ -409,6 +409,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           return;
         }
         V.setState( 'cropSequenceAverageResult', { T: res.T } );
+
+        const activeEntity = V.getState( 'active' ).lastViewedEntity;
+        V.setEntity( activeEntity.fullId, {
+          field: `servicefields.${V.castServiceField( 'averageSequence' )}`,
+          data: V.castJson( res.T ),
+        } );
       } );
   }
 
@@ -421,6 +427,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           return;
         }
         V.setState( 'cropSequenceYearsAverageResult', { T: res.T } );
+
+        const activeEntity = V.getState( 'active' ).lastViewedEntity;
+        V.setEntity( activeEntity.fullId, {
+          field: `servicefields.${V.castServiceField( 'yearsAverageSequence' )}`,
+          data: V.castJson( res.T ),
+        } );
       } );
   }
 

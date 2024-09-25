@@ -545,6 +545,19 @@ const SoilCalculator = ( () => {
     return yearlyTotalCandN( req, locale );
   }
 
+  function getAccumulatedSequenceResults( sequences ) {
+    const accumulatedValue =  sequences.reduce( ( acc, curr ) => {
+      acc.C += curr.BAL.C;
+      acc.N += curr.BAL.N;
+      return acc;
+    }, { C: 0, N: 0 } );
+
+    return {
+      C: accumulatedValue.C / sequences.length,
+      N: accumulatedValue.N / sequences.length,
+    };
+  }
+
   return {
     getCrop: getCrop,
     getFertilizer: getFertilizer,
@@ -557,6 +570,7 @@ const SoilCalculator = ( () => {
     getDatapointResults: getDatapointResults,
     getSequenceResults: getSequenceResults,
     getYearsAverageResults: getYearsAverageResults,
+    getAccumulatedSequenceResults: getAccumulatedSequenceResults,
   };
 
 } )();

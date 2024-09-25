@@ -8,6 +8,7 @@ const GroupComponents = ( function() {
       grouping: 'Grouping',
       noAssignedEntities: 'No entities assigned to group',
       plots: 'Plots',
+      soilBalanceTitle: 'Soil Balance',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -349,16 +350,43 @@ const GroupComponents = ( function() {
 
     const newGroupCheckbox = drawGroupCheckbox( group, activeEntity, isActivePlotInGroup );
 
-    if ( isActivePlotInGroup ) {
-      groupsContainer.insertAdjacentElement( 'afterbegin', newGroupCheckbox );
-    }
-    else {
-      groupsContainer.insertBefore( newGroupCheckbox, V.getNode( '.new-group-button' ) );
+    if ( groupsContainer ) {
+      if ( isActivePlotInGroup ) {
+        groupsContainer.insertAdjacentElement( 'afterbegin', newGroupCheckbox );
+      }
+      else {
+        groupsContainer.insertBefore( newGroupCheckbox, V.getNode( '.new-group-button' ) );
+      }
     }
   } );
+
+  function drawGroupTotalBalanceWidget() {
+    const entity = V.getState( 'active' ).lastViewedEntity;
+
+    if ( entity.role != 'Group' ) { return '' }
+
+    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
+
+    V.getEntity( groupedEntities )
+      .then( ( { data } ) => {
+        const plotAccumulatedData = SoilCalculator.getAccumulatedSequenceResults(
+          data.map(
+            plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
+              ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
+              : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
+          ),
+        );
+
+        document.querySelector( '#s-calc-result__T_BAL_N' ).textContent = plotAccumulatedData.N.toFixed( 1 );
+        document.querySelector( '#s-calc-result__T_BAL_C' ).textContent = plotAccumulatedData.C.toFixed( 1 );
+      } );
+
+    return CanvasComponents.card( SoilCalculatorComponents.drawTotalBalance(), V.getString( ui.soilBalanceTitle ) );
+  }
 
   return {
     drawGroupWidget: drawGroupWidget,
     drawGroupPlotWidget: drawGroupPlotWidget,
+    drawGroupTotalBalanceWidget: drawGroupTotalBalanceWidget,
   };
 } )();
