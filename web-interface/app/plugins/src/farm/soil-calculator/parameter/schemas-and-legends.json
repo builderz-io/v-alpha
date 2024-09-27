@@ -291,7 +291,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -308,7 +309,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -325,7 +327,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -342,7 +345,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -359,7 +363,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",

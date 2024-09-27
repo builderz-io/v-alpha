@@ -490,7 +490,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function toggleFertilizerUnit() {
-    const mineralFertilizers = ['5005', '5190'];
+    const mineralFertilizers = ['5005'];
 
     for ( let cropIdx = 1; cropIdx <= settings.numCropEntries; ++cropIdx ) {
       for ( let fertilizerGroupIdx = 1; fertilizerGroupIdx <= settings.numFertilizerGroups; ++fertilizerGroupIdx ) {
