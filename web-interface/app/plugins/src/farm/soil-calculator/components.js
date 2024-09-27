@@ -492,14 +492,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       const nextFertilizerGroupIdx = i+1;
       const groupElement = document.querySelector( `.FTLZ_F${nextFertilizerGroupIdx}` );
 
-      const shouldDisplayTheNextFertilizerGroup = _[`FTLZ_F${i}_ID`].value !== '5000'
-        && !!_[`FTLZ_F${i}_QTY`].value
-        && !!_[`FTLZ_F${i}_DATE`].value;
+      const shouldDisplayTheNextFertilizerGroup = _[`FTLZ_F${i}_ID`].value !== '5000' && !!_[`FTLZ_F${i}_QTY`].value;
 
       if ( shouldDisplayTheNextFertilizerGroup && nextFertilizerGroupIdx <= 5 && groupElement ) {
         groupElement.classList.toggle( 'hidden', false );
       }
-      else if ( nextFertilizerGroupIdx <= 5 && groupElement &&  _[`FTLZ_F${i}_ID`].value === '5000' && !_[`FTLZ_F${i}_QTY`].value ) {
+      else if ( nextFertilizerGroupIdx <= 5 && groupElement &&  _[`FTLZ_F${i}_ID`].value === '5000' ) {
         groupElement.classList.toggle( 'hidden', true );
       }
     }
@@ -596,7 +594,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       __.CROP.ID = Number( _.CROP_ID.value );
 
       for ( let i = 1; i <= 5; ++i ) {
-        __.FTLZ[`F${i}`].ID = Number( _[`FTLZ_F${i}_ID`].value );
+        const fertilizerId = Number( _[`FTLZ_F${i}_ID`].value );
+        if ( fertilizerId === 5000 )  {
+          delete __.FTLZ[`F${i}`];
+          continue;
+        }
+
+        __.FTLZ[`F${i}`].ID = fertilizerId;
         __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`].value );
         __.FTLZ[`F${i}`].DATE = _[`FTLZ_F${i}_DATE`].value;
       }
@@ -690,6 +694,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       && new Date( _.DATE_SOWN.value ) >= new Date( _.DATE_HVST.value )
     ) {
       return -30;
+    }
+
+    for ( let i = 1; i <= 5; ++i ) {
+      const isValid = isValidDate( _[`FTLZ_F${i}_DATE`].value );
+      if ( !isValid ) {
+        return -30;
+      }
     }
 
     return 1;

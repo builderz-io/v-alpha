@@ -118,6 +118,9 @@ const SoilCalculator = ( () => {
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
 
     for ( let i = 1; i <= 5; ++i ) {
+      if ( !clone.FTLZ[`F${i}`] ) {
+        continue;
+      }
       Object.assign( clone.FTLZ[`F${i}`], getFertilizer( clone.FTLZ[`F${i}`].ID || clone.FTLZ[`F${i}`].NAME ) );
     }
 
@@ -259,6 +262,7 @@ const SoilCalculator = ( () => {
     let sum = 0;
 
     for ( let i = 1; i <= 5; ++i ) {
+      if ( !_.FTLZ[`F${i}`] ) {continue}
       sum += _.FTLZ[`F${i}`].QTY
       * _.FTLZ[`F${i}`].DM
       * _.FTLZ[`F${i}`].N
