@@ -119,6 +119,8 @@ const SoilCalculator = ( () => {
 
     for ( let i = 1; i <= 5; ++i ) {
       if ( !clone.FTLZ[`F${i}`] ) {
+        clone.FTLZ[`F${i}`] = {};
+        Object.assign( clone.FTLZ[`F${i}`], getFertilizer( 5000 ) );
         continue;
       }
       Object.assign( clone.FTLZ[`F${i}`], getFertilizer( clone.FTLZ[`F${i}`].ID || clone.FTLZ[`F${i}`].NAME ) );
