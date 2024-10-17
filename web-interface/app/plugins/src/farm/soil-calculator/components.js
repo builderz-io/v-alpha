@@ -492,8 +492,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       const nextFertilizerGroupIdx = i+1;
 
       const shouldDisplayTheNextFertilizerGroup
-        = ( _[`FTLZ_F${i}_ID`] && _[`FTLZ_F${i}_ID`].value  !== '5000' )
-          && ( _[`FTLZ_F${i}_ID`] && !!_[`FTLZ_F${i}_QTY`].value );
+        = ( ( _[`FTLZ_F${i}_ID`] && _[`FTLZ_F${i}_ID`].value  !== '5000' ) && ( _[`FTLZ_F${i}_ID`] && !!_[`FTLZ_F${i}_QTY`].value ) )
+          || ( ( _[`FTLZ_F${nextFertilizerGroupIdx}_ID`] && _[`FTLZ_F${nextFertilizerGroupIdx}_ID`].value  !== '5000' )
+            && ( _[`FTLZ_F${nextFertilizerGroupIdx}_ID`] && !!_[`FTLZ_F${nextFertilizerGroupIdx}_QTY`].value ) );
 
       const groupElement = document.querySelector( `.FTLZ_F${nextFertilizerGroupIdx}` );
       if ( shouldDisplayTheNextFertilizerGroup && nextFertilizerGroupIdx <= 5 && groupElement ) {
@@ -560,7 +561,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function setDatabase( subFieldNum, data ) {
     const jsonStr = V.castJson( data );
-
     V.setEntity( V.getState( 'active' ).lastViewed, {
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
@@ -597,11 +597,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       for ( let i = 1; i <= 5; ++i ) {
         const fertilizerId = Number( _[`FTLZ_F${i}_ID`] ? _[`FTLZ_F${i}_ID`].value : '' );
-        if ( fertilizerId === 5000 )  {
-          delete __.FTLZ[`F${i}`];
-          continue;
-        }
-
         __.FTLZ[`F${i}`].ID = fertilizerId;
         __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`] ? _[`FTLZ_F${i}_QTY`].value : '' );
         __.FTLZ[`F${i}`].DATE = _[`FTLZ_F${i}_DATE`] ? _[`FTLZ_F${i}_DATE`].value : '';
