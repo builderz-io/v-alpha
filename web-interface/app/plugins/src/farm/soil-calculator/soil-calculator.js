@@ -547,6 +547,7 @@ const SoilCalculator = ( () => {
 
   function getAccumulatedSequenceResults( sequences ) {
     const accumulatedValue =  sequences.reduce( ( acc, curr ) => {
+      if ( !curr || !curr.BAL || !curr.BAL.C || !curr.BAL.N ) {return acc}
       acc.C += curr.BAL.C;
       acc.N += curr.BAL.N;
       return acc;

@@ -576,7 +576,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     V.setEntity( V.getState( 'active' ).lastViewed, {
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
-    } );
+    } ).then( () =>
+      document.dispatchEvent( new CustomEvent( 'DATAPOINT_CHANGED', { detail: data } ) ) );
   }
 
   function getFormData( formName ) {
@@ -906,7 +907,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
-  function totalBalance() {
+  function totalBalance( balance ) {
     return {
       c: 's-calc-total-balance w-full',
       // h: {
@@ -946,7 +947,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                     color: 'steelblue',
                   },
                   i: 's-calc-result' + '__' + 'T_BAL_C',
-                  h: '0.00',
+                  h: balance && balance.C ? balance.C.toFixed( 1 ) : '0.00',
                 },
               ],
             },
@@ -972,7 +973,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                     color: 'teal',
                   },
                   i: 's-calc-result' + '__' + 'T_BAL_N',
-                  h: '0.00',
+                  h: balance && balance.N ? balance.N.toFixed( 1 ) : '0.00',
                 },
               ],
             },
@@ -1610,8 +1611,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ================== public methods ================= */
 
-  function drawTotalBalance() {
-    return totalBalance();
+  function drawTotalBalance( balance ) {
+    return totalBalance( balance );
   }
 
   function drawWidgetContent( display, data ) {
