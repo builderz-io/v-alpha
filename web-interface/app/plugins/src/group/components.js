@@ -246,6 +246,20 @@ const GroupComponents = ( function() {
       .filter( item => item.c === 'Group' )
       .map( item => item.a );
 
+    const addNewGroupButton = V.cN(
+      {
+        t: 'button',
+        y: {
+          'margin-top': '0.5rem',
+        },
+        c: 'new-group-button w-full pxy text-left bkg-white txt-gray',
+        h: V.getString( ui.newGroup ),
+        k: () => {
+          V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/groups', 'serviceNav' ).use ) );
+        },
+      },
+    );
+
     if ( groupsOfUser.length > 0 ) {
       V.getEntity( groupsOfUser ).then( ( { data } ) => {
         const groupSelection = V.getNode( '.plot-group-selection' );
@@ -256,22 +270,7 @@ const GroupComponents = ( function() {
           V.cN(
             {
               c: 's-calc-form-background',
-              h: [
-                ...drawGroupCheckboxes( data ),
-                V.cN(
-                  {
-                    t: 'button',
-                    y: {
-                      'margin-top': '0.5rem',
-                    },
-                    c: 'new-group-button w-full pxy text-left bkg-white txt-gray',
-                    h: V.getString( ui.newGroup ),
-                    k: () => {
-                      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/groups', 'serviceNav' ).use ) );
-                    },
-                  },
-                ),
-              ],
+              h: [...drawGroupCheckboxes( data ), addNewGroupButton],
             },
           ),
         );
@@ -283,7 +282,14 @@ const GroupComponents = ( function() {
       h: [
         groupsOfUser.length > 0
           ? InteractionComponents.confirmClickSpinner( { color: 'black' } )
-          : V.cN( { h: V.getString( ui.noGroups ) } ),
+          : V.cN(
+            {
+              c: 's-calc-form-background',
+              h: [
+                addNewGroupButton,
+              ],
+            },
+          ),
       ],
     } );
 
