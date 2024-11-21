@@ -495,7 +495,7 @@ const SoilCalculator = ( () => {
     const requestDisplayName = get( legends.request.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( requestDisplayName ) {
-      return unit ? requestDisplayName.unit : requestDisplayName.displayName;
+      return unit ? requestDisplayName[unit] : requestDisplayName.displayName;
     }
 
     const resultsDisplayName = get( legends.results.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];

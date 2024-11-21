@@ -180,15 +180,6 @@
     "NAV": 0.0061827
   },
   {
-    "ID": 5190,
-    "NAME": "Mineral N fertilizer",
-    "NAME_DE": "Mineraldünger",
-    "DM": 1,
-    "C": 0,
-    "N": 1,
-    "NAV": 1
-  },
-  {
     "ID": 5200,
     "NAME": "Hair meal pellets",
     "NAME_DE": "Haarmehlpellets",
