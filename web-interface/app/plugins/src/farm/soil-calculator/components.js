@@ -512,16 +512,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const _ = document.forms[formName].elements;
     for ( let i = 1; i <= settings.numFertilizerGroups; ++i ) {
       const nextFertilizerGroupIdx = i+1;
+
+      const shouldDisplayTheNextFertilizerGroup
+        = ( ( _[`FTLZ_F${i}_ID`] && _[`FTLZ_F${i}_ID`].value  !== '5000' ) && ( _[`FTLZ_F${i}_ID`] && !!_[`FTLZ_F${i}_QTY`].value ) )
+          || ( ( _[`FTLZ_F${nextFertilizerGroupIdx}_ID`] && _[`FTLZ_F${nextFertilizerGroupIdx}_ID`].value  !== '5000' )
+            && ( _[`FTLZ_F${nextFertilizerGroupIdx}_ID`] && !!_[`FTLZ_F${nextFertilizerGroupIdx}_QTY`].value ) );
+
       const groupElement = document.querySelector( `.FTLZ_F${nextFertilizerGroupIdx}` );
-
-      const shouldDisplayTheNextFertilizerGroup = _[`FTLZ_F${i}_ID`].value !== '5000'
-        && !!_[`FTLZ_F${i}_QTY`].value
-        && !!_[`FTLZ_F${i}_DATE`].value;
-
       if ( shouldDisplayTheNextFertilizerGroup && nextFertilizerGroupIdx <= settings.numFertilizerGroups && groupElement ) {
         groupElement.classList.toggle( 'hidden', false );
       }
-      else if ( nextFertilizerGroupIdx <= settings.numFertilizerGroups && groupElement &&  _[`FTLZ_F${i}_ID`].value === '5000' && !_[`FTLZ_F${i}_QTY`].value ) {
+      else if ( nextFertilizerGroupIdx <= settings.numFertilizerGroups && groupElement && _[`FTLZ_F${i}_ID`] && _[`FTLZ_F${i}_ID`].value === '5000' ) {
         groupElement.classList.toggle( 'hidden', true );
       }
     }
@@ -582,7 +583,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function setDatabase( subFieldNum, data ) {
     const jsonStr = V.castJson( data );
-
     V.setEntity( V.getState( 'active' ).lastViewed, {
       field: 'servicefields.s' + subFieldNum,
       data: jsonStr,
@@ -618,9 +618,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       __.CROP.ID = Number( _.CROP_ID.value );
 
       for ( let i = 1; i <= settings.numFertilizerGroups; ++i ) {
-        __.FTLZ[`F${i}`].ID = Number( _[`FTLZ_F${i}_ID`].value );
-        __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`].value );
-        __.FTLZ[`F${i}`].DATE = _[`FTLZ_F${i}_DATE`].value;
+        __.FTLZ[`F${i}`].ID = Number( _[`FTLZ_F${i}_ID`] ? _[`FTLZ_F${i}_ID`].value : '' );
+        __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`] ? _[`FTLZ_F${i}_QTY`].value : '' );
+        __.FTLZ[`F${i}`].DATE = _[`FTLZ_F${i}_DATE`] ? _[`FTLZ_F${i}_DATE`].value : '';
       }
 
       __.BMASS.MP.QTY = Number( _.BMASS_MP_QTY.value );
@@ -679,21 +679,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     if ( formName === 'SITE' ) { return 1 } // TODO
 
     if(
-      hasEntry( formName )
-      && _.CROP_ID.value == 1000
-      && !_.BMASS_MP_QTY.value
-    ) {
-      return -10; // resets entry
-    }
-
-    if(
-      _.CROP_ID.value == 1000
-      || !_.BMASS_MP_QTY.value
-    ) {
-      return -20;
-    }
-
-    if(
       _.DATE_SOWN
       && !isValidDate( _.DATE_SOWN.value )
     ) {
@@ -712,6 +697,28 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       && new Date( _.DATE_SOWN.value ) >= new Date( _.DATE_HVST.value )
     ) {
       return -30;
+    }
+
+    for ( let i = 1; i <= settings.numFertilizerGroups; ++i ) {
+      const isValid = isValidDate( _[`FTLZ_F${i}_DATE`] ? _[`FTLZ_F${i}_DATE`].value : '' );
+      if ( !isValid ) {
+        return -30;
+      }
+    }
+
+    if(
+      hasEntry( formName )
+      && _.CROP_ID.value == 1000
+      && !_.BMASS_MP_QTY.value
+    ) {
+      return -10; // resets entry
+    }
+
+    if(
+      _.CROP_ID.value == 1000
+      || !_.BMASS_MP_QTY.value
+    ) {
+      return -20;
     }
 
     return 1;
@@ -1550,7 +1557,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                 : (
                   SoilCalculator.getCropName( item.CROP.ID, locale )
                   + ' & '
-                  + SoilCalculator.getFertilizerName( item.FTLZ.F1.ID, locale ) // @TODO(fertilizers): handle the multiple fertilizers?
+                  + SoilCalculator.getFertilizerName( item.FTLZ.F1 ? item.FTLZ.F1.ID : 5000, locale ) // @TODO(fertilizers): handle the multiple fertilizers?
                 ),
             },
           ],
@@ -1641,6 +1648,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     widget: widget,
     drawWidgetContent: drawWidgetContent,
     drawTotalBalance: drawTotalBalance,
+    getNumFertilizerGroups: settings.numFertilizerGroups,
   };
 
 } )();
