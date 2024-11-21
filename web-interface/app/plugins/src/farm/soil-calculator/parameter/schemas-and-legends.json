@@ -364,13 +364,13 @@
           }
         },
         "BMASS": {
-          "displayName": "Biomasse",
-          "descr": "Biomasse",
+          "displayName": "Haupt- und Nebenprodukt",
+          "descr": "Biomasse von Haupt- und Nebenprodukt",
           "MP": {
             "displayName": "Hauptprodukt",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Hauptprodukt Ertrag",
+              "displayName": "HP Ertrag",
               "descr": "Hauptprodukt Ertrag",
               "unit": "FM t ha-1"
             },
@@ -384,7 +384,7 @@
             "displayName": "Nebenprodukt",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Nebenprodukt Ertrag",
+              "displayName": "NP Ertrag",
               "descr": "Nebenprodukt Ertrag",
               "unit": "FM t ha-1"
             },
