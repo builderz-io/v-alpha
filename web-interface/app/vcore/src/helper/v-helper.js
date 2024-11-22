@@ -769,6 +769,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castServiceField( field ) {
     switch ( field ) {
     case 'groupedEntities': return 's30';
+    case 'averageSequence': return 's29';
+    case 'yearsAverageSequence': return 's28';
     }
   }
 
