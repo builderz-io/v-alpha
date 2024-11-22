@@ -5,9 +5,30 @@
         "ID": -1
       },
       "FTLZ": {
-        "ORG": {
+        "F1": {
           "ID": -1,
-          "QTY": -1
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F2": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F3": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F4": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
+        },
+        "F5": {
+          "ID": -1,
+          "QTY": -1,
+          "DATE": ""
         }
       },
       "BMASS": {
@@ -23,6 +44,19 @@
       "DATE": {
         "SOWN": -1,
         "HVST": -1
+      },
+      "PCIPAPI": {
+        "MM": -1,
+        "STATION": {
+          "ID": -1,
+          "NAME": "",
+          "LAT": -1,
+          "LON": -1
+        },
+        "DATE": {
+          "FIRST": "",
+          "LAST": ""
+        }
       },
       "SITE": {
         "CN": -1,
@@ -53,25 +87,96 @@
           }
         },
         "FTLZ": {
-          "displayName": "Fertilizer",
-          "descr": "Fertilizer",
-          "ORG": {
-            "displayName": "Organic",
-            "descr": "Organic",
+          "displayName": "Fertilizers",
+          "descr": "Application of up to 5 fertilizers",
+          "F1": {
             "ID": {
-              "displayName": "Type",
-              "descr": "Fertilizer id for internal use",
-              "unit": ""
-            },
-            "NAME": {
-              "displayName": "Type",
-              "descr": "Name of the fertilizer in English language",
+              "displayName": "Fertilizer 1",
+              "descr": "Fertilizer ID for internal use",
               "unit": ""
             },
             "QTY": {
-              "displayName": "Quantity applied",
+              "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F2": {
+            "ID": {
+              "displayName": "Fertilizer 2",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F3": {
+            "ID": {
+              "displayName": "Fertilizer 3",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F4": {
+            "ID": {
+              "displayName": "Fertilizer 4",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
+            }
+          },
+          "F5": {
+            "ID": {
+              "displayName": "Fertilizer 5",
+              "descr": "Fertilizer ID for internal use",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Quantity",
+              "descr": "Quantity of applied fertilizer",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Applied",
+              "descr": "Date of fertilizer application",
+              "unit": ""
             }
           }
         },
@@ -82,13 +187,13 @@
             "displayName": "Main Product",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Quantity available",
+              "displayName": "Main Product Quantity",
               "descr": "Main Product Quantity",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Harvested",
-              "descr": "Whether main product has been harvested",
+              "descr": "Has main product been harvested?",
               "unit": ""
             }
           },
@@ -96,13 +201,13 @@
             "displayName": "Side Product",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Quantity available",
+              "displayName": "Side Product Quantity",
               "descr": "Side Product Quantity",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Harvested",
-              "descr": "Whether side product has been harvested",
+              "descr": "Has side product been harvested?",
               "unit": ""
             }
           }
@@ -122,7 +227,7 @@
           }
         },
         "SITE": {
-          "displayName": "Plot data",
+          "displayName": "Plot",
           "descr": "Plot data",
           "CN": {
             "displayName": "C/N Ratio",
@@ -138,13 +243,13 @@
             "displayName": "Precipitation",
             "descr": "Precipitation",
             "QTY": {
-              "displayName": "Quantity average",
-              "descr": "Plot precipitation",
-              "unit": ""
+              "displayName": "Average Precipitation",
+              "descr": "Average precipitation in plot area",
+              "unit": "mm a-1"
             },
             "MUL": {
-              "displayName": "Multiplier",
-              "descr": "precipitation multiplier",
+              "displayName": "Precipitation Multiplier",
+              "descr": "Precipitation multiplier",
               "unit": "Decimal share"
             }
           },
@@ -175,42 +280,113 @@
           }
         },
         "FTLZ": {
-          "displayName": "Dünger",
-          "descr": "Fertilizer",
-          "ORG": {
-            "displayName": "Organisch",
-            "descr": "Organic",
+          "displayName": "Düngung",
+          "descr": "Ausbringung von bis zu 5 Düngern",
+          "F1": {
             "ID": {
-              "displayName": "Typ",
-              "descr": "Fertilizer id for internal use",
-              "unit": ""
-            },
-            "NAME": {
-              "displayName": "Typ",
-              "descr": "Name of the fertilizer in English language",
+              "displayName": "Dünger 1",
+              "descr": "Dünger ID für interne Berechnungen",
               "unit": ""
             },
             "QTY": {
               "displayName": "Menge",
-              "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F2": {
+            "ID": {
+              "displayName": "Dünger 2",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F3": {
+            "ID": {
+              "displayName": "Dünger 3",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F4": {
+            "ID": {
+              "displayName": "Dünger 4",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
+            }
+          },
+          "F5": {
+            "ID": {
+              "displayName": "Dünger 5",
+              "descr": "Dünger ID für interne Berechnungen",
+              "unit": ""
+            },
+            "QTY": {
+              "displayName": "Menge",
+              "descr": "Menge des ausgebrachten Düngers",
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
+            },
+            "DATE": {
+              "displayName": "Ausbringung",
+              "descr": "Datum der Ausbringung",
+              "unit": ""
             }
           }
         },
         "BMASS": {
-          "displayName": "Biomasse",
-          "descr": "Biomasse",
+          "displayName": "Haupt- und Nebenprodukt",
+          "descr": "Biomasse von Haupt- und Nebenprodukt",
           "MP": {
             "displayName": "Hauptprodukt",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Ertrag",
-              "descr": "Main Product Quantity",
+              "displayName": "HP Ertrag",
+              "descr": "Hauptprodukt Ertrag",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Ernte",
-              "descr": "Whether main product has been harvested",
+              "descr": "Wurde das Hauptprodukt geerntet?",
               "unit": ""
             }
           },
@@ -218,13 +394,13 @@
             "displayName": "Nebenprodukt",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Ertrag",
-              "descr": "Side Product Quantity",
+              "displayName": "NP Ertrag",
+              "descr": "Nebenprodukt Ertrag",
               "unit": "FM t ha-1"
             },
             "HVST": {
               "displayName": "Ernte",
-              "descr": "Whether side product has been harvested",
+              "descr": "Wurde das Nebenprodukt geerntet?",
               "unit": ""
             }
           }
@@ -244,7 +420,7 @@
           }
         },
         "SITE": {
-          "displayName": "Schlag Daten",
+          "displayName": "Schlag",
           "descr": "Plot data",
           "CN": {
             "displayName": "C/N Verhältnis",
@@ -260,14 +436,14 @@
             "displayName": "Niederschlag",
             "descr": "Niederschlag",
             "QTY": {
-              "displayName": "Menge",
-              "descr": "Plot precipitation",
+              "displayName": "Niederschlag Menge",
+              "descr": "Niederschlag Menge",
               "unit": "mm a-1"
             },
             "MUL": {
-              "displayName": "Multiplikator",
-              "descr": "precipitation multiplier",
-              "unit": " "
+              "displayName": "Niederschlag Multiplikator",
+              "descr": "Niederschlag Multiplikator",
+              "unit": ""
             }
           },
           "N": {
@@ -307,7 +483,7 @@
         "NYR": -1,
         "CR": -1,
         "FTLZ": {
-          "ORG": -1,
+          "SUM": -1,
           "GRS": -1,
           "REM": -1
         }
@@ -316,6 +492,19 @@
         "CR": -1,
         "FTLZ": {
           "REM": -1
+        }
+      },
+      "PCIPAPI": {
+        "MM": -1,
+        "STATION": {
+          "ID": -1,
+          "NAME": "",
+          "LAT": -1,
+          "LON": -1
+        },
+        "DATE": {
+          "FIRST": "",
+          "LAST": ""
         }
       }
     },
@@ -400,14 +589,14 @@
           "FTLZ": {
             "displayName": "Fertilizer",
             "descr": "Fertilizer",
-            "ORG": {
-              "displayName": "N Organic Fertilizer",
-              "descr": "N Organic Fertilizer",
+            "SUM": {
+              "displayName": "N Fertilizers",
+              "descr": "N from Fertilizers",
               "unit": ""
             },
             "GRS": {
-              "displayName": "N from Green/Straw",
-              "descr": "N from Green/Straw",
+              "displayName": "N Green/Straw",
+              "descr": "N from green/straw",
               "unit": ""
             },
             "REM": {
@@ -427,6 +616,55 @@
             "REM": {
               "displayName": "C Fertilizer Remaining",
               "descr": "C Fertilizer Remaining",
+              "unit": ""
+            }
+          }
+        },
+        "PCIPAPI": {
+          "displayName": "Amount of precipitation in a given time frame",
+          "descr": "Amount of precipitation in a given time frame",
+          "MM": {
+            "displayName": "Precipitation in mm",
+            "descr": "Precipitation in mm",
+            "unit": ""
+          },
+          "STATION": {
+            "displayName": "Closest weather station",
+            "descr": "Closest station",
+            "unit": "",
+            "ID": {
+              "displayName": "Weather station ID",
+              "descr": "Closest station ID",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Weather station",
+              "descr": "Closest station name",
+              "unit": ""
+            },
+            "LAT": {
+              "displayName": "Station latitude",
+              "descr": "Closest station latitude",
+              "unit": ""
+            },
+            "LON": {
+              "displayName": "Station longitude",
+              "descr": "Closest station longitude",
+              "unit": ""
+            }
+          },
+          "DATE": {
+            "displayName": "Growing period",
+            "descr": "Growing period",
+            "unit": "",
+            "FIRST": {
+              "displayName": "First day",
+              "descr": "First day",
+              "unit": ""
+            },
+            "LAST": {
+              "displayName": "Last day",
+              "descr": "Last day",
               "unit": ""
             }
           }
@@ -512,9 +750,9 @@
           "FTLZ": {
             "displayName": "Fertilizer",
             "descr": "Fertilizer",
-            "ORG": {
-              "displayName": "N aus organischen Düngern",
-              "descr": "N Organischer Dünger",
+            "SUM": {
+              "displayName": "N durch Dünger",
+              "descr": "N durch Dünger",
               "unit": "kg ha-1"
             },
             "GRS": {
@@ -540,6 +778,55 @@
               "displayName": "C in Düngerrückständen",
               "descr": "C in Düngerrückständen",
               "unit": "kg ha-1"
+            }
+          }
+        },
+        "PCIPAPI": {
+          "displayName": "Niederschlagmenge im Zeitraum",
+          "descr": "Niederschlagmenge im Zeitraum",
+          "MM": {
+            "displayName": "Niederschlag",
+            "descr": "Niederschlag in mm",
+            "unit": ""
+          },
+          "STATION": {
+            "displayName": "Nächstgelegene Station",
+            "descr": "Nächstgelegenen Station",
+            "unit": "",
+            "ID": {
+              "displayName": "Station ID",
+              "descr": "ID der nächstgelegenen Station",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Wetterstation",
+              "descr": "Name der nächstgelegenen Station",
+              "unit": ""
+            },
+            "LAT": {
+              "displayName": "Station Breitengrad",
+              "descr": "Breitengrad der nächstgelegenen Station",
+              "unit": ""
+            },
+            "LON": {
+              "displayName": "Station Längengrad",
+              "descr": "Längengrad der nächstgelegenen Station",
+              "unit": ""
+            }
+          },
+          "DATE": {
+            "displayName": "Wachstumsperiode",
+            "descr": "Wachstumsperiode",
+            "unit": "",
+            "FIRST": {
+              "displayName": "Erster Tag",
+              "descr": "Erster Tag",
+              "unit": ""
+            },
+            "LAST": {
+              "displayName": "Letzter Tag",
+              "descr": "Letzter Tag",
+              "unit": ""
             }
           }
         }

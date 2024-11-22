@@ -766,6 +766,14 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     return matcher.test( string );
   }
 
+  function castServiceField( field ) {
+    switch ( field ) {
+    case 'groupedEntities': return 's30';
+    case 'averageSequence': return 's29';
+    case 'yearsAverageSequence': return 's28';
+    }
+  }
+
   /* ====================== export ====================== */
 
   V.castProfileImageNode = ImageNodeModule.createImageNode;
@@ -795,6 +803,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.successFalse = successFalse;
   V.successTrue = successTrue;
   V.isEmail = isEmail;
+  V.castServiceField = castServiceField;
 
   return {
     castImageUpload: castImageUpload,

@@ -39,6 +39,10 @@ a {
   color: rgba(var(--offblack), 1);
 }
 
+.txt-gray {
+  color: rgba(var(--gray), 1);
+}
+
 .bkg-offblack {
   background-color: rgba(var(--offblack), 1);
 }
@@ -66,6 +70,10 @@ a {
 
 .bkg-brand-secondary {
   background-color: rgba(var(--brandSecondary), 1);
+}
+
+.bkg-lightblue {
+  background-color: #F0F8FF;
 }
 
 /* .border-shadow {

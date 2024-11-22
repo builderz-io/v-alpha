@@ -9,6 +9,15 @@
     "NAV": 0
   },
   {
+    "ID": 5005,
+    "NAME": "Mineral fertilizer",
+    "NAME_DE": "Mineralischer Dünger",
+    "DM": 0.001,
+    "C": 0,
+    "N": 1,
+    "NAV": 1
+  },
+  {
     "ID": 5010,
     "NAME": "Cattle slurry",
     "NAME_DE": "Vollgülle Milchvieh",
@@ -169,15 +178,6 @@
     "C": 0.468,
     "N": 0.0072,
     "NAV": 0.0061827
-  },
-  {
-    "ID": 5190,
-    "NAME": "Mineral N fertilizer",
-    "NAME_DE": "Mineraldünger",
-    "DM": 1,
-    "C": 0,
-    "N": 1,
-    "NAV": 1
   },
   {
     "ID": 5200,
