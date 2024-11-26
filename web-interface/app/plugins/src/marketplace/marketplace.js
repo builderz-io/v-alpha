@@ -109,6 +109,21 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
         }
         return res;
       } );
+
+      if( V.aE() ) {
+        let heldUuidEs = V.aE().holderOf.map( item => item.a );
+
+        heldUuidEs = heldUuidEs.length > 15 ? heldUuidEs.slice( 0, 15 ) : heldUuidEs;
+
+        for ( let i = 0; i < heldUuidEs.length; i++ ) {
+          await V.getEntity( heldUuidEs[i] ).then( res => {
+            if ( res.success ) {
+              V.setCache( 'highlights', res.data );
+            }
+            return res;
+          } );
+        }
+      }
     }
 
     if ( query.success ) {
