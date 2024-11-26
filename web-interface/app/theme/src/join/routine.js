@@ -15,7 +15,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   let entityData = {};
 
-  let cardSet, cardIndex = 0, fourDigitString, keyFileText;
+  let cardSet, cardIndex = 0, fourDigitString, keyFileText, noKeyDwnl;
 
   /* ============== user interface strings ============== */
 
@@ -609,7 +609,13 @@ Initialized by: ${ window.location.host }
             V.setState( 'tmpEditable', [ E.fullId ] );
             drawSuccess();
             notifySuccess( E.fullId, E.role );
-            setDownloadKeyBtn();
+            if ( noKeyDwnl ) {
+              setTimeout( delayCallToActionBtn.bind( { fullId: E.fullId } ), 1200 );
+              V.setNode( '.join-header__bottom', 'clear' );
+            }
+            else {
+              setDownloadKeyBtn();
+            }
             return;
           }
 
@@ -728,6 +734,8 @@ Initialized by: ${ window.location.host }
 
     cardSet = 'set' + ( use.join || settings.defaultSet );
     cardIndex = 0;
+
+    noKeyDwnl = use.noKeyDwnl;
 
     entityData.role = use.role;
     entityData.privacy = ( use.privacy == 0 ? undefined : use.privacy )
