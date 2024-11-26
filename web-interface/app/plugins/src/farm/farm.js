@@ -101,6 +101,7 @@ const Farm = ( function() { // eslint-disable-line no-unused-vars
           role: 'Plot',
           join: 4,
           privacy: 1,
+          noKeyDwnl: true,
         },
         draw: function( path ) {
           Farm.draw( path );

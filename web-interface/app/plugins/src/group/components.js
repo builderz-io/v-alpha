@@ -242,9 +242,9 @@ const GroupComponents = ( function() {
 
     if ( entity.role !== 'Plot' ) {return ''}
 
-    const groupsOfUser = V.aE().holderOf
+    const groupsOfUser = V.aE() ? V.aE().holderOf
       .filter( item => item.c === 'Group' )
-      .map( item => item.a );
+      .map( item => item.a ) : [];
 
     const addNewGroupButton = V.cN(
       {
