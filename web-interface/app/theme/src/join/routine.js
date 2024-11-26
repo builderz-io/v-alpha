@@ -242,10 +242,25 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     V.gN( '.join-download__btn' ).innerText = V.getString( ui.downloadAgain );
     V.gN( '.join-submit__btn' ).classList.remove( 'hidden' );
     V.gN( '.join-submit__btn' ).addEventListener( 'click', reloadOnCallToActionBtn.bind( { fullId: this.fullId } ) );
+    rearrangeButtons();
   }
 
   function reloadOnCallToActionBtn() {
     // location = window.location.origin + V.castPathOrId( this.fullId );
+  }
+
+  function rearrangeButtons() {
+    // Select the elements
+    const joinDownload = document.querySelector( '.join-download' );
+    const joinSubmitWrapper = document.querySelector( '.join-submit-wrapper' );
+
+    if ( joinDownload && joinSubmitWrapper ) {
+      // Move the join-submit-wrapper to the position of join-download
+      joinDownload.parentNode.insertBefore( joinSubmitWrapper, joinDownload );
+
+      // Remove the join-download button
+      joinDownload.remove();
+    }
   }
 
   /* ================== private methods ================= */
@@ -268,7 +283,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     /* name */
     if ( cardIndex == 0 ) {
       const input = V.getNode( '.join-form__input' ).value;
-      const title = V.castEntityTitle( input, 'Person' ); // validation of the title
+      const title = V.castEntityTitle( input, entityData.role ); // validation of the title
 
       if ( title.success ) {
         entityData.title = title.data[0];
@@ -586,8 +601,8 @@ Initialized by: ${ window.location.host }
 
           document.dispatchEvent(
             new CustomEvent( 'ENTITY_CREATED', {
-              detail: { entity: E }
-            } )
+              detail: { entity: E },
+            } ),
           );
 
           if ( E.role != 'Person' ) {
