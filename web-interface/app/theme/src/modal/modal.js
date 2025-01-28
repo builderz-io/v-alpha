@@ -95,6 +95,9 @@ const Modal = ( function() { // eslint-disable-line no-unused-vars
     else if ( which == 'validation error' ) {
       V.setNode( $modal, ModalComponents.validationError( data ) );
     }
+    else if ( which == 'help' ) {
+      V.setNode( $modal, ModalComponents.simpleMessage( data ) );
+    }
     else {
       V.setNode( $modal, ModalComponents.simpleMessage( 'error' ) );
     }

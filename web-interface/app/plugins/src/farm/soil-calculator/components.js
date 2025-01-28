@@ -826,6 +826,66 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ================== components ================= */
 
+  function help( text ) {
+    return {
+                t: 'span',
+                y: {
+                  'margin-left': '0.28rem',
+                  'cursor': 'pointer',
+                  'position': 'relative',
+                  'top': '2px',
+                },
+                k: function handleHelpModal() {
+                  Modal.draw( 'help', text );
+                },
+                h: V.getIcon( 'help', '15px' ),
+              }
+  }
+
+  function castSectionTitle( section, locale ) {
+    const title = SoilCalculator.getFieldString( section, locale );
+    const helpText = SoilCalculator.getFieldString( section, locale, 'help');
+    if ( helpText ) {
+      return V.cN( {
+        h: [
+          {
+            t: 'span',
+            c: 's-calc-form__section-title font-bold',
+            h: title
+          },
+          help( helpText ),
+        ]
+      })
+    }
+    else {
+      return {
+              c: 's-calc-form__section-title font-bold',
+              h: title
+             }
+    }
+  }
+
+  function castCardTitle( title ) {
+    const cardTitles = SoilCalculator.getFieldString( 'CARD', locale );
+    const helpText = cardTitles[title]['help'];
+
+    if ( helpText ) {
+      return V.cN( {
+        h: [
+          {
+            t: 'span',
+            c: 'w-full font-bold pxy',
+            h: cardTitles[title]['title']
+          },
+          help( helpText ),
+        ]
+      })
+    }
+    else {
+      return cardTitles[title]['title']
+    }
+  }
+
   function rowObj( row, tabNum ) {
     return {
       t: 'tr',
@@ -1506,10 +1566,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: Object.keys( data ).map( section => !templates[section] ? '' : {
         c: 's-calc-form__section' + ( templates[section].hide ? ' hidden' : '' ),
         h: [
-          {
-            c: 's-calc-form__section-title font-bold',
-            h: SoilCalculator.getFieldString( section, locale ),
-          },
+          castSectionTitle( section, locale ),
           {
             c: 's-calc-form__section-fields',
             h: Object.keys( data[section] )
@@ -1626,17 +1683,17 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return [
       CanvasComponents.card(
         totalBalance(),
-        V.getString( ui.soilBalanceTitle ),
+        castCardTitle( 'balance' ),
       ),
       CanvasComponents.card(
         cropSequence( data ),
-        V.getString( ui.cropSequenceTitle ),
+        castCardTitle( 'sequence' ),
         undefined,
         display,
       ),
       CanvasComponents.card(
         siteData( data ),
-        V.getString( ui.siteDataTitle ),
+        castCardTitle( 'site' ),
         undefined,
         display,
       ),
