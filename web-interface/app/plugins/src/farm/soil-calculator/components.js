@@ -826,63 +826,43 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ================== components ================= */
 
-  function help( text ) {
+  function help( text, leftCorrect ) {
     return {
-                t: 'span',
-                y: {
-                  'margin-left': '0.28rem',
-                  'cursor': 'pointer',
-                  'position': 'relative',
-                  'top': '2px',
-                },
-                k: function handleHelpModal() {
-                  Modal.draw( 'help', text );
-                },
-                h: V.getIcon( 'help', '15px' ),
-              }
+      t: 'span',
+      y: {
+        'margin-left': '0.28rem',
+        'cursor': 'pointer',
+        'position': 'relative',
+        'top': '2px',
+        'left': leftCorrect ? '-7px' : '0px',
+      },
+      k: function handleHelpModal() {
+        Modal.draw( 'help', text );
+      },
+      h: V.getIcon( 'help', '15px' ),
+    };
   }
 
   function castSectionTitle( section, locale ) {
     const title = SoilCalculator.getFieldString( section, locale );
-    const helpText = SoilCalculator.getFieldString( section, locale, 'help');
+    const helpText = SoilCalculator.getFieldString( section, locale, 'help' );
     if ( helpText ) {
       return V.cN( {
         h: [
           {
             t: 'span',
             c: 's-calc-form__section-title font-bold',
-            h: title
+            h: title,
           },
           help( helpText ),
-        ]
-      })
+        ],
+      } );
     }
     else {
       return {
-              c: 's-calc-form__section-title font-bold',
-              h: title
-             }
-    }
-  }
-
-  function castCardTitle( title ) {
-    const cardTitles = SoilCalculator.getFieldString( 'CARD', locale );
-    const helpText = cardTitles[title]['help'];
-
-    if ( helpText ) {
-      return V.cN( {
-        h: [
-          {
-            t: 'span',
-            c: 'w-full font-bold pxy',
-            h: cardTitles[title]['title']
-          },
-          help( helpText ),
-        ]
-      })
-    }
-    else {
-      return cardTitles[title]['title']
+        c: 's-calc-form__section-title font-bold',
+        h: title,
+      };
     }
   }
 
@@ -1702,6 +1682,27 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   /* ================== public methods ================= */
 
+  function castCardTitle( title ) {
+    const cardTitles = SoilCalculator.getFieldString( 'CARD', locale );
+    const helpText = cardTitles[title]['help'];
+
+    if ( helpText ) {
+      return V.cN( {
+        h: [
+          {
+            t: 'span',
+            c: 'w-full font-bold pxy',
+            h: cardTitles[title]['title'],
+          },
+          help( helpText, 'leftCorrect' ),
+        ],
+      } );
+    }
+    else {
+      return cardTitles[title]['title'];
+    }
+  }
+
   function drawTotalBalance( balance ) {
     return totalBalance( balance );
   }
@@ -1724,6 +1725,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     drawWidgetContent: drawWidgetContent,
     drawTotalBalance: drawTotalBalance,
     getNumFertilizerGroups: settings.numFertilizerGroups,
+    castCardTitle: castCardTitle,
   };
 
 } )();

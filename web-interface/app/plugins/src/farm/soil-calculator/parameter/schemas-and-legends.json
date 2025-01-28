@@ -85,6 +85,10 @@
             "site": {
               "title": "Site Data",
               "help": "Help text to be added"
+            },
+            "groups": {
+              "title": "Grouping",
+              "help": "Help text to be added"
             }
           }
         },
@@ -293,6 +297,10 @@
             },
             "site": {
               "title": "Schlagdaten",
+              "help": "Help text to be added"
+            },
+            "groups": {
+              "title": "Gruppierung",
               "help": "Help text to be added"
             }
           }

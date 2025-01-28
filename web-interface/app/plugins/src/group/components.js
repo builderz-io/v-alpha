@@ -293,7 +293,7 @@ const GroupComponents = ( function() {
       ],
     } );
 
-    return CanvasComponents.card( parent, V.getString( ui.grouping ) );
+    return CanvasComponents.card( parent, SoilCalculatorComponents.castCardTitle( 'groups' ) );
   }
 
   function drawGroupPlotWidget() {
