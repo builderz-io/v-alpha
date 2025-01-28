@@ -72,6 +72,22 @@
     },
     "legend": {
       "en_US": {
+        "CARD": {
+          "displayName": {
+            "balance": {
+              "title": "Soil Balance",
+              "help": "Help text to be added"
+            },
+            "sequence": {
+              "title": "Crop Sequence",
+              "help": "Help text to be added"
+            },
+            "site": {
+              "title": "Site Data",
+              "help": "Help text to be added"
+            }
+          }
+        },
         "CROP": {
           "displayName": "Crop",
           "descr": "Crop",
@@ -265,9 +281,26 @@
         }
       },
       "de_DE": {
+        "CARD": {
+          "displayName": {
+            "balance": {
+              "title": "Humusbilanz der Fruchtfolge",
+              "help": "Help text to be added"
+            },
+            "sequence": {
+              "title": "Fruchtfolge",
+              "help": "Help text to be added"
+            },
+            "site": {
+              "title": "Schlagdaten",
+              "help": "Help text to be added"
+            }
+          }
+        },
         "CROP": {
           "displayName": "Fruchtart",
           "descr": "Fruchtart",
+          "help": "Geben Sie hier die Frucht an, die gesät wurde.",
           "ID": {
             "displayName": "Typ",
             "descr": "Crop id for internal use",
@@ -282,6 +315,7 @@
         "FTLZ": {
           "displayName": "Düngung",
           "descr": "Ausbringung von bis zu 5 Düngern",
+          "help": "Geben Sie hier die verschiedenen Dünger an, die ausgebracht wurden. Es können bis zu fünf Dünger angegeben werden.",
           "F1": {
             "ID": {
               "displayName": "Dünger 1",
@@ -376,6 +410,7 @@
         "BMASS": {
           "displayName": "Haupt- und Nebenprodukt",
           "descr": "Biomasse von Haupt- und Nebenprodukt",
+          "help": "Geben Sie hier die Menge des geernteten Hauptprodukts und Nebenprodukts an.",
           "MP": {
             "displayName": "Hauptprodukt",
             "descr": "Main Product",
@@ -408,6 +443,7 @@
         "DATE": {
           "displayName": "Datum",
           "descr": "Datum",
+          "help": "Geben Sie hier das Datum der Aussat und der Ernte an. Diese Angabe ist zwingend nötig, um eine Humusbilanz zu errechnen.",
           "SOWN": {
             "displayName": "Aussaat am",
             "descr": "Datum der Aussaat",

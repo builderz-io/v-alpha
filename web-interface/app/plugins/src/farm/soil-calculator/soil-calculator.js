@@ -471,7 +471,7 @@ const SoilCalculator = ( () => {
     return legends[which].schema;
   }
 
-  function getFieldString( fieldTitle, locale, unit ) {
+  function getFieldString( fieldTitle, locale, what ) {
 
     /**
      * @arg { string } fieldTitle - the field to query from the legends file in flattened format, e.g. "BMASS_MP_QTY"
@@ -501,13 +501,13 @@ const SoilCalculator = ( () => {
     const requestDisplayName = get( legends.request.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( requestDisplayName ) {
-      return unit ? requestDisplayName[unit] : requestDisplayName.displayName;
+      return what ? requestDisplayName[what] : requestDisplayName.displayName;
     }
 
     const resultsDisplayName = get( legends.results.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( resultsDisplayName ) {
-      return unit ? resultsDisplayName.unit : resultsDisplayName.displayName;
+      return what ? resultsDisplayName[what] : resultsDisplayName.displayName;
     }
 
     return fieldTitle;
