@@ -81,6 +81,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     additionalImage: VNetworkInit.additionalImage,
     imprint: VNetworkInit.imprint,
     mapDefault: VNetworkInit.mapDefault,
+    marketContent: VNetworkInit.marketContent,
     highlights: VNetworkInit.highlights,
     locale: localeSettings[ VNetworkInit.language ],
     localeSlug: localeSettings.slug,

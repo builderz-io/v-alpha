@@ -347,6 +347,9 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getPoints() {
+
+    if ( V.getSetting( 'marketContent' ) == 1 ) { return Promise.resolve() }
+
     return V.getEntity( 'point' ).then( res => {
       if ( res.success ) {
         const castPoints = res.data.map( item => {

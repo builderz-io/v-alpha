@@ -372,7 +372,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     if (
       window.location.pathname == '/'
       && lP
-      && ( !lPVisits || lPVisits < 2 )
+      && ( !lPVisits || lPVisits < 20000 )
+      && !V.aE()
     ) {
       path = lP;
       V.setBrowserHistory( lP );
