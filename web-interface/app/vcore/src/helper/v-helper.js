@@ -774,6 +774,11 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function capitalizeFirstLetter( str ) {
+    if ( str.length === 0 ) {return str}
+    return str.charAt( 0 ).toUpperCase() + str.slice( 1 );
+  }
+
   /* ====================== export ====================== */
 
   V.castProfileImageNode = ImageNodeModule.createImageNode;
@@ -804,6 +809,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.successTrue = successTrue;
   V.isEmail = isEmail;
   V.castServiceField = castServiceField;
+  V.capitalizeFirstLetter = capitalizeFirstLetter;
 
   return {
     castImageUpload: castImageUpload,
@@ -831,6 +837,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     successFalse: successFalse,
     successTrue: successTrue,
     isEmail: isEmail,
+    capitalizeFirstLetter: capitalizeFirstLetter,
   };
 
 } )();
