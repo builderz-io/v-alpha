@@ -95,20 +95,46 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     else {
       V.setCache( 'highlights', 'clear' );
       V.setCache( 'features', 'clear' );
-      features = await V.getEntity( 'feature' ).then( res => {
-        if ( res.success ) {
-          V.setCache( 'features', res.data );
-        }
-        return res;
-      } );
 
-      query = await V.getEntity( 'highlight' ).then( res => {
-        console.log( res );
-        if ( res.success ) {
-          V.setCache( 'highlights', res.data );
+      if ( V.getSetting( 'marketContent' ) == 0 ) {
+        features = await V.getEntity( 'feature' ).then( res => {
+          if ( res.success ) {
+            V.setCache( 'features', res.data );
+          }
+          return res;
+        } );
+
+        query = await V.getEntity( 'highlight' ).then( res => {
+          console.log( res );
+          if ( res.success ) {
+            V.setCache( 'highlights', res.data );
+          }
+          return res;
+        } );
+      }
+
+      if( V.aE() && V.aE().holderOf ) {
+        let heldUuidEs = V.aE().holderOf.map( item => item.a );
+
+        if ( heldUuidEs.length ) {
+          heldUuidEs = heldUuidEs.length > 15 ? heldUuidEs.slice( 0, 15 ) : heldUuidEs;
+
+          query = await V.getEntity( heldUuidEs ).then( res => {
+            console.log( res );
+
+            if ( res.success ) {
+              V.setCache( 'highlights', res.data );
+            }
+            return res;
+          } );
+
         }
-        return res;
-      } );
+      }
+      else {
+        query = {
+          success: false,
+        };
+      }
     }
 
     if ( query.success ) {

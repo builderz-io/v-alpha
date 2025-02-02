@@ -117,7 +117,12 @@ const SoilCalculator = ( () => {
     /* mixin the full set of crop and fertilizer parameters into clone */
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
 
-    for ( let i = 1; i <= 5; ++i ) {
+    for ( let i = 1; i <= SoilCalculatorComponents.getNumFertilizerGroups; ++i ) {
+      if ( !clone.FTLZ[`F${i}`] ) {
+        clone.FTLZ[`F${i}`] = {};
+        Object.assign( clone.FTLZ[`F${i}`], getFertilizer( 5000 ) );
+        continue;
+      }
       Object.assign( clone.FTLZ[`F${i}`], getFertilizer( clone.FTLZ[`F${i}`].ID || clone.FTLZ[`F${i}`].NAME ) );
     }
 
@@ -258,7 +263,8 @@ const SoilCalculator = ( () => {
   function nFertilizers( _ ) {
     let sum = 0;
 
-    for ( let i = 1; i <= 5; ++i ) {
+    for ( let i = 1; i <= SoilCalculatorComponents.getNumFertilizerGroups; ++i ) {
+      if ( !_.FTLZ[`F${i}`] ) {continue}
       sum += _.FTLZ[`F${i}`].QTY
       * _.FTLZ[`F${i}`].DM
       * _.FTLZ[`F${i}`].N
@@ -465,7 +471,7 @@ const SoilCalculator = ( () => {
     return legends[which].schema;
   }
 
-  function getFieldString( fieldTitle, locale, unit ) {
+  function getFieldString( fieldTitle, locale, what ) {
 
     /**
      * @arg { string } fieldTitle - the field to query from the legends file in flattened format, e.g. "BMASS_MP_QTY"
@@ -495,13 +501,13 @@ const SoilCalculator = ( () => {
     const requestDisplayName = get( legends.request.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( requestDisplayName ) {
-      return unit ? requestDisplayName.unit : requestDisplayName.displayName;
+      return what ? requestDisplayName[what] : requestDisplayName.displayName;
     }
 
     const resultsDisplayName = get( legends.results.legend[locale.substr( 0, 5 )], '_', fieldTitle )[0];
 
     if ( resultsDisplayName ) {
-      return unit ? resultsDisplayName.unit : resultsDisplayName.displayName;
+      return what ? resultsDisplayName[what] : resultsDisplayName.displayName;
     }
 
     return fieldTitle;
@@ -545,6 +551,20 @@ const SoilCalculator = ( () => {
     return yearlyTotalCandN( req, locale );
   }
 
+  function getAccumulatedSequenceResults( sequences ) {
+    const accumulatedValue =  sequences.reduce( ( acc, curr ) => {
+      if ( !curr || !curr.BAL || !curr.BAL.C || !curr.BAL.N ) {return acc}
+      acc.C += curr.BAL.C;
+      acc.N += curr.BAL.N;
+      return acc;
+    }, { C: 0, N: 0 } );
+
+    return {
+      C: accumulatedValue.C / sequences.length,
+      N: accumulatedValue.N / sequences.length,
+    };
+  }
+
   return {
     getCrop: getCrop,
     getFertilizer: getFertilizer,
@@ -557,6 +577,7 @@ const SoilCalculator = ( () => {
     getDatapointResults: getDatapointResults,
     getSequenceResults: getSequenceResults,
     getYearsAverageResults: getYearsAverageResults,
+    getAccumulatedSequenceResults: getAccumulatedSequenceResults,
   };
 
 } )();

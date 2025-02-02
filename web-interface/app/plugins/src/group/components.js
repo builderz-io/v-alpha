@@ -8,6 +8,7 @@ const GroupComponents = ( function() {
       grouping: 'Grouping',
       noAssignedEntities: 'No entities assigned to group',
       plots: 'Plots',
+      soilBalanceTitle: 'Soil Balance',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -64,20 +65,13 @@ const GroupComponents = ( function() {
 
         updateGroupedEntities( group, [...groupFields.values()] );
 
-        setTimeout( () => {
-          const loadingElement = V.gN( `[data-plot-group=${group.uuidE}] .calculator-loader` );
-          if ( loadingElement ) {loadingElement.remove()}
-
-          const totalBalanceWidget = V.cN( {
-            a: {
-              'data-group-calc': group.uuidE,
-            },
-            h: SoilCalculatorComponents.drawTotalBalance(),
+        drawCheckboxGroupTotalBalanceWidget( group.uuidE, [...groupFields.values()] )
+          .then( widget => {
+            const loadingElement = V.gN( `[data-plot-group=${group.uuidE}] .calculator-loader` );
+            if ( loadingElement ) {loadingElement.remove()}
+            event.target.disabled = false;
+            V.setNode( `[data-plot-group=${group.uuidE}]`, widget );
           } );
-
-          event.target.disabled = false;
-          V.setNode( `[data-plot-group=${group.uuidE}]`, totalBalanceWidget );
-        }, 1000 );
 
         V.setNode( `[data-plot-group=${group.uuidE}]`, V.cN( {
           c: 'zero-auto pxy calculator-loader',
@@ -122,6 +116,23 @@ const GroupComponents = ( function() {
         : elementAfterLoad || '',
     );
     inputElement.disabled = isLoading;
+  }
+
+  function drawCheckboxGroupTotalBalanceWidget( groupId, plotIds ) {
+    return V.getEntity( plotIds )
+      .then( result => {
+        const plotAccumulatedData = SoilCalculator.getAccumulatedSequenceResults(
+          result.data.map(
+            plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
+              ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
+              : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
+          ),
+        );
+        return V.cN( {
+          a: { 'data-group-calc': groupId },
+          h: SoilCalculatorComponents.drawTotalBalance( plotAccumulatedData ),
+        } );
+      } );
   }
 
   function drawGroupCheckbox( group, entity, entityInGroup ) {
@@ -205,15 +216,10 @@ const GroupComponents = ( function() {
     ];
 
     if ( entityInGroup ) {
-      setTimeout( () => {
-        const groupTotalBalanceWidget =  V.cN( {
-          a: {
-            'data-group-calc': group.uuidE,
-          },
-          h: SoilCalculatorComponents.drawTotalBalance(),
-        } );
-        V.setNode( `[data-plot-group=${group.uuidE}]`, groupTotalBalanceWidget );
-      }, 2000 );
+      drawCheckboxGroupTotalBalanceWidget(
+        group.uuidE,
+        V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ),
+      ).then( widget => V.setNode( `[data-plot-group=${group.uuidE}]`, widget ) );
     }
 
     return V.cN( { c: 'pxy', a: { 'data-plot-group': group.uuidE }, h: children } );
@@ -236,9 +242,23 @@ const GroupComponents = ( function() {
 
     if ( entity.role !== 'Plot' ) {return ''}
 
-    const groupsOfUser = V.aE().holderOf
+    const groupsOfUser = V.aE() ? V.aE().holderOf
       .filter( item => item.c === 'Group' )
-      .map( item => item.a );
+      .map( item => item.a ) : [];
+
+    const addNewGroupButton = V.cN(
+      {
+        t: 'button',
+        y: {
+          'margin-top': '0.5rem',
+        },
+        c: 'new-group-button w-full pxy text-left bkg-white txt-gray',
+        h: V.getString( ui.newGroup ),
+        k: () => {
+          V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/groups', 'serviceNav' ).use ) );
+        },
+      },
+    );
 
     if ( groupsOfUser.length > 0 ) {
       V.getEntity( groupsOfUser ).then( ( { data } ) => {
@@ -250,22 +270,7 @@ const GroupComponents = ( function() {
           V.cN(
             {
               c: 's-calc-form-background',
-              h: [
-                ...drawGroupCheckboxes( data ),
-                V.cN(
-                  {
-                    t: 'button',
-                    y: {
-                      'margin-top': '0.5rem',
-                    },
-                    c: 'new-group-button w-full pxy text-left bkg-white txt-gray',
-                    h: V.getString( ui.newGroup ),
-                    k: () => {
-                      V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/groups', 'serviceNav' ).use ) );
-                    },
-                  },
-                ),
-              ],
+              h: [...drawGroupCheckboxes( data ), addNewGroupButton],
             },
           ),
         );
@@ -277,11 +282,18 @@ const GroupComponents = ( function() {
       h: [
         groupsOfUser.length > 0
           ? InteractionComponents.confirmClickSpinner( { color: 'black' } )
-          : V.cN( { h: V.getString( ui.noGroups ) } ),
+          : V.cN(
+            {
+              c: 's-calc-form-background',
+              h: [
+                addNewGroupButton,
+              ],
+            },
+          ),
       ],
     } );
 
-    return CanvasComponents.card( parent, V.getString( ui.grouping ) );
+    return CanvasComponents.card( parent, SoilCalculatorComponents.castCardTitle( 'groups' ) );
   }
 
   function drawGroupPlotWidget() {
@@ -349,16 +361,68 @@ const GroupComponents = ( function() {
 
     const newGroupCheckbox = drawGroupCheckbox( group, activeEntity, isActivePlotInGroup );
 
-    if ( isActivePlotInGroup ) {
-      groupsContainer.insertAdjacentElement( 'afterbegin', newGroupCheckbox );
-    }
-    else {
-      groupsContainer.insertBefore( newGroupCheckbox, V.getNode( '.new-group-button' ) );
+    if ( groupsContainer ) {
+      if ( isActivePlotInGroup ) {
+        groupsContainer.insertAdjacentElement( 'afterbegin', newGroupCheckbox );
+      }
+      else {
+        groupsContainer.insertBefore( newGroupCheckbox, V.getNode( '.new-group-button' ) );
+      }
     }
   } );
+
+  document.addEventListener( 'DATAPOINT_CHANGED', () => {
+    const activeEntity = V.getState( 'active' ).lastViewedEntity;
+    if ( !activeEntity || activeEntity.role !== 'Plot' ) {
+      return;
+    }
+
+    const groups = document.querySelectorAll( '[data-plot-group]' );
+    for ( const groupElement of groups ) {
+      const groupId = groupElement.dataset.plotGroup;
+      V.getEntity( groupId )
+        .then( result => V.getEntity( V.castJson( result.data[0].servicefields[V.castServiceField( 'groupedEntities' )] ) ) )
+        .then( result => {
+          const avgBalance = SoilCalculator.getAccumulatedSequenceResults(
+            result.data.map(
+              plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
+                ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
+                : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
+            ),
+          );
+          groupElement.querySelector( '#s-calc-result__T_BAL_C' ).textContent = avgBalance.C.toFixed( 1 );
+          groupElement.querySelector( '#s-calc-result__T_BAL_N' ).textContent = avgBalance.N.toFixed( 1 );
+        } );
+    }
+  } );
+
+  function drawGroupTotalBalanceWidget() {
+    const entity = V.getState( 'active' ).lastViewedEntity;
+
+    if ( entity.role != 'Group' ) { return '' }
+
+    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
+
+    V.getEntity( groupedEntities )
+      .then( ( { data } ) => {
+        const plotAccumulatedData = SoilCalculator.getAccumulatedSequenceResults(
+          data.map(
+            plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
+              ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
+              : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
+          ),
+        );
+
+        document.querySelector( '#s-calc-result__T_BAL_N' ).textContent = plotAccumulatedData.N.toFixed( 1 );
+        document.querySelector( '#s-calc-result__T_BAL_C' ).textContent = plotAccumulatedData.C.toFixed( 1 );
+      } );
+
+    return CanvasComponents.card( SoilCalculatorComponents.drawTotalBalance(), V.getString( ui.soilBalanceTitle ) );
+  }
 
   return {
     drawGroupWidget: drawGroupWidget,
     drawGroupPlotWidget: drawGroupPlotWidget,
+    drawGroupTotalBalanceWidget: drawGroupTotalBalanceWidget,
   };
 } )();

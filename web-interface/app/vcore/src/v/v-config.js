@@ -8,7 +8,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
   const namespaceEndpoints = {
 
     /* for development, firebase function is deployed to "entity-profile"-project */
-    'firebase-local': 'http://localhost:5001/entity-profile/us-central1/api/v1',
+    'firebase-local': 'http://localhost:5001/entity-profile/europe-west1/api/v1',
     'firebase-staging': 'https://us-central1-entity-authentication.cloudfunctions.net/api/v1',
     'firebase-development': 'https://us-central1-entity-profile.cloudfunctions.net/api/v1',
     'firebase-production': 'https://us-central1-entity-namespace.cloudfunctions.net/api/v1',
@@ -56,7 +56,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
 
   const settings = {
 
-    appVersion: 'Alpha 3.6.2',
+    appVersion: 'Alpha 3.7.3',
     uploadVersion: '1',
 
     entityLedger: VNetworkInit.entityLedger,
@@ -81,6 +81,7 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     additionalImage: VNetworkInit.additionalImage,
     imprint: VNetworkInit.imprint,
     mapDefault: VNetworkInit.mapDefault,
+    marketContent: VNetworkInit.marketContent,
     highlights: VNetworkInit.highlights,
     locale: localeSettings[ VNetworkInit.language ],
     localeSlug: localeSettings.slug,

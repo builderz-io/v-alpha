@@ -72,6 +72,26 @@
     },
     "legend": {
       "en_US": {
+        "CARD": {
+          "displayName": {
+            "balance": {
+              "title": "Soil Balance",
+              "help": "Help text to be added"
+            },
+            "sequence": {
+              "title": "Crop Sequence",
+              "help": "Help text to be added"
+            },
+            "site": {
+              "title": "Site Data",
+              "help": "Help text to be added"
+            },
+            "groups": {
+              "title": "Grouping",
+              "help": "Help text to be added"
+            }
+          }
+        },
         "CROP": {
           "displayName": "Crop",
           "descr": "Crop",
@@ -98,7 +118,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -115,7 +136,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -132,7 +154,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -149,7 +172,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -166,7 +190,8 @@
             "QTY": {
               "displayName": "Quantity",
               "descr": "Quantity of applied fertilizer",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Applied",
@@ -260,9 +285,30 @@
         }
       },
       "de_DE": {
+        "CARD": {
+          "displayName": {
+            "balance": {
+              "title": "Humusbilanz der Fruchtfolge",
+              "help": "Help text to be added"
+            },
+            "sequence": {
+              "title": "Fruchtfolge",
+              "help": "Help text to be added"
+            },
+            "site": {
+              "title": "Schlagdaten",
+              "help": "Help text to be added"
+            },
+            "groups": {
+              "title": "Gruppierung",
+              "help": "Help text to be added"
+            }
+          }
+        },
         "CROP": {
           "displayName": "Fruchtart",
           "descr": "Fruchtart",
+          "help": "Geben Sie hier die Frucht an, die gesät wurde.",
           "ID": {
             "displayName": "Typ",
             "descr": "Crop id for internal use",
@@ -277,6 +323,7 @@
         "FTLZ": {
           "displayName": "Düngung",
           "descr": "Ausbringung von bis zu 5 Düngern",
+          "help": "Geben Sie hier die verschiedenen Dünger an, die ausgebracht wurden. Es können bis zu fünf Dünger angegeben werden.",
           "F1": {
             "ID": {
               "displayName": "Dünger 1",
@@ -286,7 +333,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -303,7 +351,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -320,7 +369,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -337,7 +387,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -354,7 +405,8 @@
             "QTY": {
               "displayName": "Menge",
               "descr": "Menge des ausgebrachten Düngers",
-              "unit": "FM t ha-1"
+              "unit": "FM t ha-1",
+              "mineralUnit": "N kg ha-1"
             },
             "DATE": {
               "displayName": "Ausbringung",
@@ -364,13 +416,14 @@
           }
         },
         "BMASS": {
-          "displayName": "Biomasse",
-          "descr": "Biomasse",
+          "displayName": "Haupt- und Nebenprodukt",
+          "descr": "Biomasse von Haupt- und Nebenprodukt",
+          "help": "Geben Sie hier die Menge des geernteten Hauptprodukts und Nebenprodukts an.",
           "MP": {
             "displayName": "Hauptprodukt",
             "descr": "Main Product",
             "QTY": {
-              "displayName": "Hauptprodukt Ertrag",
+              "displayName": "HP Ertrag",
               "descr": "Hauptprodukt Ertrag",
               "unit": "FM t ha-1"
             },
@@ -384,7 +437,7 @@
             "displayName": "Nebenprodukt",
             "descr": "Side Product",
             "QTY": {
-              "displayName": "Nebenprodukt Ertrag",
+              "displayName": "NP Ertrag",
               "descr": "Nebenprodukt Ertrag",
               "unit": "FM t ha-1"
             },
@@ -398,6 +451,7 @@
         "DATE": {
           "displayName": "Datum",
           "descr": "Datum",
+          "help": "Geben Sie hier das Datum der Aussat und der Ernte an. Diese Angabe ist zwingend nötig, um eine Humusbilanz zu errechnen.",
           "SOWN": {
             "displayName": "Aussaat am",
             "descr": "Datum der Aussaat",

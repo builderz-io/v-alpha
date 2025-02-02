@@ -769,7 +769,14 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   function castServiceField( field ) {
     switch ( field ) {
     case 'groupedEntities': return 's30';
+    case 'averageSequence': return 's29';
+    case 'yearsAverageSequence': return 's28';
     }
+  }
+
+  function capitalizeFirstLetter( str ) {
+    if ( str.length === 0 ) {return str}
+    return str.charAt( 0 ).toUpperCase() + str.slice( 1 );
   }
 
   /* ====================== export ====================== */
@@ -802,6 +809,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
   V.successTrue = successTrue;
   V.isEmail = isEmail;
   V.castServiceField = castServiceField;
+  V.capitalizeFirstLetter = capitalizeFirstLetter;
 
   return {
     castImageUpload: castImageUpload,
@@ -829,6 +837,7 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     successFalse: successFalse,
     successTrue: successTrue,
     isEmail: isEmail,
+    capitalizeFirstLetter: capitalizeFirstLetter,
   };
 
 } )();
