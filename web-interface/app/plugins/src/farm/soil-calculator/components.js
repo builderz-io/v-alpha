@@ -41,10 +41,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'transform': 'rotate(0deg)',
       'transition': 'transform 0.25s ease-out',
     },
+    's-calc-results-wrapper': {
+      'margin-top': '0.5rem',
+    },
     's-calc-results': {
       'border-radius': '5px',
       'background': 'whitesmoke',
-      'margin': '1.5rem',
+      'margin': '0 1.5rem 0.5rem',
     },
     's-calc-total-balance': {
       // background: 'azure',
@@ -107,17 +110,22 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       'text-align': 'right',
     },
     's-calc-input-date': {
-      padding: '0.2rem 0.4rem',
+      'padding': '0.2rem 0.4rem',
+      'border-radius': '3px',
+      'width': '10rem',
     },
     's-calc-input-select': {
-      'width': '210px',
+      'width': '11rem',
       'border': 'none',
       // height: '1.74rem',
       'padding': '0.2rem 0.4rem',
       // 'font-weight': '600',
       'border-radius': '3px',
       'text-align': 'right',
-      'background': '#eee',
+      // 'background': '#eee',
+    },
+    's-calc-input-label': {
+      'max-width': '145px',
     },
     's-calc-form__field-group-title': {
       // height: '2rem',
@@ -650,6 +658,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       __.DATE.SOWN = _.DATE_SOWN.value;
       __.DATE.HVST = _.DATE_HVST.value;
+      __.DATE.TURN = _.DATE_TURN.value;
+      __.DATE.CUTS = _.DATE_CUTS.value;
 
       __.PCIPAPI.MM = _.PCIPAPI_MM.value || -1;
       __.PCIPAPI.STATION.ID = _.PCIPAPI_STATION_ID.value || -1;
@@ -712,8 +722,22 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
 
     if(
+      _.DATE_TURN
+      && !isValidDate( _.DATE_TURN.value )
+    ) {
+      return -30;
+    }
+
+    if(
       _.DATE_SOWN && _.DATE_HVST
       && new Date( _.DATE_SOWN.value ) >= new Date( _.DATE_HVST.value )
+    ) {
+      return -30;
+    }
+
+    if(
+      _.DATE_TURN && _.DATE_HVST
+      && new Date( _.DATE_TURN.value ) >= new Date( _.DATE_HVST.value )
     ) {
       return -30;
     }
@@ -852,10 +876,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const helpText = SoilCalculator.getFieldString( section, locale, 'help' );
     if ( helpText ) {
       return V.cN( {
+        c: 's-calc-form__section-title font-bold',
         h: [
           {
             t: 'span',
-            c: 's-calc-form__section-title font-bold',
             h: title,
           },
           help( helpText ),
@@ -1174,6 +1198,15 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             tabNum != 'AA'
               ? form( tabNum, dataset, /* exclude: */ ['SITE'] )
               : summary( this.data ),
+            // V.cN( {
+            //   c: 's-calc-results-title pxy font-bold',
+            //   h: V.getString( ui.resultsTitle ),
+            // } ),
+            V.cN( {
+              c: 's-calc-results-title pxy font-bold',
+              h: castSectionTitle( 'CROP_RES', locale ),
+            } ),
+
             resultsSOM( tabNum ),
             {
               c: 's-calc-results-show-btn',
@@ -1490,6 +1523,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         hideTitle: true,
         SOWN: inputDate,
         HVST: inputDate,
+        TURN: inputDate,
+        CUTS: inputNum,
       },
       PCIPAPI: {
         hide: true,

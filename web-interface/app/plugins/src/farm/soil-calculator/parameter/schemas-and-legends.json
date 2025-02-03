@@ -43,7 +43,9 @@
       },
       "DATE": {
         "SOWN": -1,
-        "HVST": -1
+        "TURN": -1,
+        "HVST": -1,
+        "CUTS": -1
       },
       "PCIPAPI": {
         "MM": -1,
@@ -106,6 +108,12 @@
           "NAME": {
             "displayName": "Type",
             "descr": "Name of the crop in English language",
+            "unit": ""
+          },
+          "RES": {
+            "displayName": "Crop Results",
+            "help": "Results of the individual crop are shown here.",
+            "descr": "",
             "unit": ""
           }
         },
@@ -247,6 +255,16 @@
             "displayName": "Harvested on",
             "descr": "Date of crop harvested",
             "unit": ""
+          },
+          "TURN": {
+            "displayName": "Turn",
+            "descr": "Date of soil turn",
+            "unit": ""
+          },
+          "CUTS": {
+            "displayName": "Cuts",
+            "descr": "Number of crop cuts",
+            "unit": ""
           }
         },
         "SITE": {
@@ -334,6 +352,12 @@
           "NAME": {
             "displayName": "Typ",
             "descr": "Name of the crop in English language",
+            "unit": ""
+          },
+          "RES": {
+            "displayName": "Ergebnisse der Frucht",
+            "help": "Hier werden die individuellen Ergebnisse der Frucht angezeigt, die gesät wurde.",
+            "descr": "",
             "unit": ""
           }
         },
@@ -477,6 +501,16 @@
           "HVST": {
             "displayName": "Ernte am",
             "descr": "Datum der Ernte",
+            "unit": ""
+          },
+          "TURN": {
+            "displayName": "Umbruch",
+            "descr": "Datum des Umbruchs",
+            "unit": ""
+          },
+          "CUTS": {
+            "displayName": "Schnitte",
+            "descr": "Anzahl der Schnitte",
             "unit": ""
           }
         },
