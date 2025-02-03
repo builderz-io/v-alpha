@@ -843,7 +843,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
-  function castSectionTitle( section, locale ) {
+  function castSectionTitle( section, locale, hide ) {
+
+    if ( hide ) { return }
+
     const title = SoilCalculator.getFieldString( section, locale );
     const helpText = SoilCalculator.getFieldString( section, locale, 'help' );
     if ( helpText ) {
@@ -981,7 +984,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     };
   }
 
-  function totalBalance( balance ) {
+  function totalBalance( balance, isGroup ) {
     return {
       c: 's-calc-total-balance w-full',
       // h: {
@@ -1074,8 +1077,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
               y: {
                 'font-size': '0.75rem',
               },
-              i: 's-calc-result' + '__' + 'T_UNIT',
-              h: '',
+              i: !isGroup ? 's-calc-result' + '__' + 'T_UNIT' : '',
+              c: isGroup ? 's-calc-result' + '__' + 'T_UNIT_GROUP' : '',
+              innerHtml: isGroup ? 'kg ha<sup>-1</sup> a<sup>-1</sup>' : '',
             },
           ],
         },
@@ -1479,6 +1483,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
       },
       DATE: {
+        hideTitle: true,
         SOWN: inputDate,
         HVST: inputDate,
       },
@@ -1546,7 +1551,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       h: Object.keys( data ).map( section => !templates[section] ? '' : {
         c: 's-calc-form__section' + ( templates[section].hide ? ' hidden' : '' ),
         h: [
-          castSectionTitle( section, locale ),
+          castSectionTitle( section, locale, templates[section].hideTitle ),
           {
             c: 's-calc-form__section-fields',
             h: Object.keys( data[section] )
@@ -1611,7 +1616,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
                 ? '' // V.getString( ui.noCropSelected )
                 : (
                   SoilCalculator.getCropName( item.CROP.ID, locale )
-                  + ' & '
+                  + ', '
                   + SoilCalculator.getFertilizerName( item.FTLZ.F1 ? item.FTLZ.F1.ID : 5000, locale ) // @TODO(fertilizers): handle the multiple fertilizers?
                 ),
             },
@@ -1703,8 +1708,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function drawTotalBalance( balance ) {
-    return totalBalance( balance );
+  function drawTotalBalance( balance, isGroup ) {
+    return totalBalance( balance, isGroup );
   }
 
   function drawWidgetContent( display, data ) {

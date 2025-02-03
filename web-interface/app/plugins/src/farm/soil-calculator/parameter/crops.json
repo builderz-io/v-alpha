@@ -10,7 +10,7 @@
     "NAME_DE": "Winterweizen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -51,7 +51,7 @@
     "NAME_DE": "Sommerweizen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -92,7 +92,7 @@
     "NAME_DE": "Winterdinkel",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -133,7 +133,7 @@
     "NAME_DE": "Winterroggen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -174,7 +174,7 @@
     "NAME_DE": "Sommerroggen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -215,7 +215,7 @@
     "NAME_DE": "Wintergerste",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -256,7 +256,7 @@
     "NAME_DE": "Sommergerste",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -297,7 +297,7 @@
     "NAME_DE": "Sommerhafer",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -338,7 +338,7 @@
     "NAME_DE": "Wintertriticale",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -379,7 +379,7 @@
     "NAME_DE": "Sommertriticale",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -420,7 +420,7 @@
     "NAME_DE": "Winterbrotgetreide allgemein (inkl. Mischungen)",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -461,7 +461,7 @@
     "NAME_DE": "Sommerbrotgetreide allgemein (inkl. Mischungen)",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -502,7 +502,7 @@
     "NAME_DE": "Winterackerbohnen",
     "LS": 1,
     "N": {
-      "BFN": 0.75,
+      "BNF": 0.75,
       "NYR": 0
     },
     "MP": {
@@ -543,7 +543,7 @@
     "NAME_DE": "Sommerackerbohnen",
     "LS": 1,
     "N": {
-      "BFN": 0.75,
+      "BNF": 0.75,
       "NYR": 40
     },
     "MP": {
@@ -584,7 +584,7 @@
     "NAME_DE": "Wintererbsen",
     "LS": 1,
     "N": {
-      "BFN": 0.8,
+      "BNF": 0.8,
       "NYR": 40
     },
     "MP": {
@@ -625,7 +625,7 @@
     "NAME_DE": "Sommererbsen",
     "LS": 1,
     "N": {
-      "BFN": 0.8,
+      "BNF": 0.8,
       "NYR": 40
     },
     "MP": {
@@ -666,7 +666,7 @@
     "NAME_DE": "Soja",
     "LS": 1,
     "N": {
-      "BFN": 0.5,
+      "BNF": 0.5,
       "NYR": 40
     },
     "MP": {
@@ -707,7 +707,7 @@
     "NAME_DE": "Lupine",
     "LS": 1,
     "N": {
-      "BFN": 0.75,
+      "BNF": 0.75,
       "NYR": 40
     },
     "MP": {
@@ -748,7 +748,7 @@
     "NAME_DE": "Diverse Körnerleguminosen",
     "LS": 1,
     "N": {
-      "BFN": 0.75,
+      "BNF": 0.75,
       "NYR": 40
     },
     "MP": {
@@ -789,7 +789,7 @@
     "NAME_DE": "Winterraps",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -830,7 +830,7 @@
     "NAME_DE": "Sommerraps",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -871,7 +871,7 @@
     "NAME_DE": "Sonnenblumen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -912,7 +912,7 @@
     "NAME_DE": "Lein",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -953,7 +953,7 @@
     "NAME_DE": "Körnermais, CCM, Kolbenschrot",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -994,7 +994,7 @@
     "NAME_DE": "Kartoffeln",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -1035,7 +1035,7 @@
     "NAME_DE": "Zuckerrüben",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -1076,7 +1076,7 @@
     "NAME_DE": "Kleegras, Luzernegras (Futter)",
     "LS": 0.75,
     "N": {
-      "BFN": 0.85,
+      "BNF": 0.85,
       "NYR": 0
     },
     "MP": {
@@ -1117,7 +1117,7 @@
     "NAME_DE": "Ackergras",
     "LS": 0.1,
     "N": {
-      "BFN": 0.85,
+      "BNF": 0.85,
       "NYR": 0
     },
     "MP": {
@@ -1158,7 +1158,7 @@
     "NAME_DE": "Silomais, Trockenwürfel",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -1199,7 +1199,7 @@
     "NAME_DE": "Futterrüben",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 40
     },
     "MP": {
@@ -1240,7 +1240,7 @@
     "NAME_DE": "Wintergetreide-Körnerleguminosen-Gemenge",
     "LS": 0.5,
     "N": {
-      "BFN": 0.75,
+      "BNF": 0.75,
       "NYR": 0
     },
     "MP": {
@@ -1281,7 +1281,7 @@
     "NAME_DE": "Sommergetreide-Körnerleguminosen-Gemenge",
     "LS": 0.5,
     "N": {
-      "BFN": 0.7,
+      "BNF": 0.7,
       "NYR": 40
     },
     "MP": {
@@ -1322,7 +1322,7 @@
     "NAME_DE": "Sorghum-Hirse",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1363,7 +1363,7 @@
     "NAME_DE": "Sudangras",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1404,7 +1404,7 @@
     "NAME_DE": "Blattsalat",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1445,7 +1445,7 @@
     "NAME_DE": "Grünroggen f. Biogas",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1486,7 +1486,7 @@
     "NAME_DE": "Blumenkohl",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1527,7 +1527,7 @@
     "NAME_DE": "Brokkoli",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1568,7 +1568,7 @@
     "NAME_DE": "Fenchel",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1609,7 +1609,7 @@
     "NAME_DE": "Kohlrabi",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1650,7 +1650,7 @@
     "NAME_DE": "Kürbisse",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1691,7 +1691,7 @@
     "NAME_DE": "Möhren",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1732,7 +1732,7 @@
     "NAME_DE": "Rote Beete",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1773,7 +1773,7 @@
     "NAME_DE": "Sellerie",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1814,7 +1814,7 @@
     "NAME_DE": "Senf",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1855,7 +1855,7 @@
     "NAME_DE": "Weißkohl",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1896,7 +1896,7 @@
     "NAME_DE": "Zwiebeln",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1937,7 +1937,7 @@
     "NAME_DE": "Winterzwischenfrucht ohne Leguminosen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -1978,7 +1978,7 @@
     "NAME_DE": "Sommerzwischenfrucht ohne Leguminosen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {
@@ -2019,7 +2019,7 @@
     "NAME_DE": "Winterzwischenfrucht mit Leguminosen",
     "LS": 0.75,
     "N": {
-      "BFN": 0.85,
+      "BNF": 0.85,
       "NYR": 0
     },
     "MP": {
@@ -2060,7 +2060,7 @@
     "NAME_DE": "Sommerzwischenfrucht mit Leguminosen",
     "LS": 0,
     "N": {
-      "BFN": 0,
+      "BNF": 0,
       "NYR": 0
     },
     "MP": {

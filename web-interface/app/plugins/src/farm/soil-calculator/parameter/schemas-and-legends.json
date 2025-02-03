@@ -883,7 +883,7 @@
       "NAME": "none",
       "LS": -1,
       "N": {
-        "BFN": -1,
+        "BNF": -1,
         "NYR": -1
       },
       "MP": {
@@ -932,7 +932,7 @@
         "unit": "Decimal share"
       },
       "N": {
-        "BFN": {
+        "BNF": {
           "descr": "Biological N fixation as share of total plant N (NPB)",
           "unit": "Decimal share"
         },

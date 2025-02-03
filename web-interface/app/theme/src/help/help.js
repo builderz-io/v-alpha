@@ -133,7 +133,8 @@ const Help = ( function() { // eslint-disable-line no-unused-vars
           // },
           {
             h: 'home' == which && HelpComponents.homePage()
-               || 'profile_plot' == which && HelpComponents.singlePlot(),
+               || 'profile_plot' == which && HelpComponents.singlePlot()
+               || 'groups' == which && HelpComponents.groups(),
           },
         ],
       },

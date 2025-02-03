@@ -130,7 +130,7 @@ const GroupComponents = ( function() {
         );
         return V.cN( {
           a: { 'data-group-calc': groupId },
-          h: SoilCalculatorComponents.drawTotalBalance( plotAccumulatedData ),
+          h: SoilCalculatorComponents.drawTotalBalance( plotAccumulatedData, 'isGroup' ),
         } );
       } );
   }

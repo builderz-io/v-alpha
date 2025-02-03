@@ -303,7 +303,7 @@ const SoilCalculator = ( () => {
 
   function nFixation( _, N ) {
 
-    const a = N.PB * _.CROP.LS * _.CROP.N.BFN - N.FTLZ.SUM - N.FTLZ.GRS;
+    const a = N.PB * _.CROP.LS * _.CROP.N.BNF - N.FTLZ.SUM - N.FTLZ.GRS;
     const b = 0;
 
     return Math.max( a, b );
