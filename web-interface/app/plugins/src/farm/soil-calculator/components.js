@@ -625,7 +625,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       delete __.DATE;
       delete __.PCIPAPI;
       __.SITE.CN = Number( _.SITE_CN.value );
-      __.SITE.FCAP = Number( _.SITE_FCAP.value );
+      // __.SITE.FCAP = Number( _.SITE_FCAP.value );
+      __.SITE.STYP.ID = Number( _.SITE_STYP_ID.value );
       __.SITE.PCIP.QTY = Number( _.SITE_PCIP_QTY.value );
       __.SITE.PCIP.MUL = Number( _.SITE_PCIP_MUL.value );
       __.SITE.N.DEP = Number( _.SITE_N_DEP.value );
@@ -1211,8 +1212,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       data = {};
       data[ 's' + settings.dbFieldSITE ] = JSON.stringify( {
         SITE: {
+          STYP: {
+            ID: 2010,
+          },
+          // FCAP: 40,
           CN: 10,
-          FCAP: 40,
           PCIP: {
             QTY: 650,
             MUL: 0.5,
@@ -1336,9 +1340,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
        * as "not selcted" options
        */
 
-      const menuJson = fieldTitle == 'CROP_ID'
-        ? SoilCalculator.getCrops()
-        : SoilCalculator.getFertilizers();
+      const menuJson = fieldTitle == 'CROP_ID' && SoilCalculator.getCrops()
+                       || fieldTitle == 'SITE_STYP_ID' && SoilCalculator.getSoilTypes()
+                       || SoilCalculator.getFertilizers();
 
       const useDe = locale.includes( 'de_' );
 
@@ -1502,8 +1506,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
         },
       },
       SITE: {
+        STYP: {
+          ID: inputDropID,
+        },
+        // FCAP: inputNum,
         CN: inputNum,
-        FCAP: inputNum,
         PCIP: {
           QTY: inputNum,
           MUL: {

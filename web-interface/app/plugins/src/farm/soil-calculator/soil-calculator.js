@@ -20,10 +20,11 @@ const SoilCalculator = ( () => {
 
   /* fetch crop and fertilizer parameters, fetch legend-file (includes translations) */
 
-  let crops, fertilizers, legends;
+  let crops, fertilizers, soilTypes, legends;
 
   const sourceCrop = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/crops.json`;
   const sourceFtlz = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/fertilizers.json`;
+  const sourceStyp = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/soil-types.json`;
   const sourceLegend = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/schemas-and-legends.json`;
 
   // we may not need to await the JSON file-loading
@@ -31,11 +32,13 @@ const SoilCalculator = ( () => {
   Promise.all( [
     V.getData( '', sourceCrop, 'api' ),
     V.getData( '', sourceFtlz, 'api' ),
+    V.getData( '', sourceStyp, 'api' ),
     V.getData( '', sourceLegend, 'api' ),
   ] ).then( all => {
     crops = all[0].data[0];
     fertilizers = all[1].data[0];
-    legends = all[2].data[0];
+    soilTypes = all[2].data[0];
+    legends = all[3].data[0];
   } );
 
   /* ======================  Private Methods  ===================== */
@@ -114,7 +117,8 @@ const SoilCalculator = ( () => {
     /* clone request */
     const clone = JSON.parse( JSON.stringify( datapoint ) );
 
-    /* mixin the full set of crop and fertilizer parameters into clone */
+    /* mixin the full set of crop, fertilizer and soil type parameters into clone */
+    Object.assign( clone.SITE.STYP, getSoilType( clone.SITE.STYP.ID || clone.SITE.STYP.NAME ) );
     Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
 
     for ( let i = 1; i <= SoilCalculatorComponents.getNumFertilizerGroups; ++i ) {
@@ -131,9 +135,15 @@ const SoilCalculator = ( () => {
 
     if ( prevDatapoint ) {
       clonePrev = JSON.parse( JSON.stringify( prevDatapoint ) );
+      Object.assign( clonePrev.SITE.STYP, getSoilType( clonePrev.SITE.STYP.ID || clonePrev.SITE.STYP.NAME ) );
       Object.assign( clonePrev.CROP, getCrop( clonePrev.CROP.ID || clonePrev.CROP.NAME ) );
 
-      for ( let i = 1; i <= 5; ++i ) {
+      for ( let i = 1; i <= SoilCalculatorComponents.getNumFertilizerGroups; ++i ) {
+        if ( !clonePrev.FTLZ[`F${i}`] ) {
+          clonePrev.FTLZ[`F${i}`] = {};
+          Object.assign( clonePrev.FTLZ[`F${i}`], getFertilizer( 5000 ) );
+          continue;
+        }
         Object.assign( clonePrev.FTLZ[`F${i}`], getFertilizer( clonePrev.FTLZ[`F${i}`].ID || clonePrev.FTLZ[`F${i}`].NAME ) );
       }
 
@@ -233,11 +243,11 @@ const SoilCalculator = ( () => {
 
   function pcipFallbackFromSITE( _ ) {
     return 1 - ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL )
-           / ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL ) + _.SITE.FCAP / 10 ) )**90;
+           / ( ( _.SITE.PCIP.QTY * _.SITE.PCIP.MUL ) + _.SITE.STYP.FCAP / 10 ) )**90;
   }
 
   function pcipFromAPI( _ ) {
-    return 1 - ( _.PCIPAPI.MM / (  _.PCIPAPI.MM + _.SITE.FCAP / 10 ) )**90;
+    return 1 - ( _.PCIPAPI.MM / (  _.PCIPAPI.MM + _.SITE.STYP.FCAP / 10 ) )**90;
   }
 
   function cnQuantities( _, which, total ) {
@@ -424,15 +434,15 @@ const SoilCalculator = ( () => {
   /* ======================  Public Methods  ====================== */
 
   function getCrop( which ) {
-
-    /* see getParameters for comments */
     return getParameters( crops, which );
   }
 
   function getFertilizer( which ) {
-
-    /* see getParameters for comments */
     return getParameters( fertilizers, which );
+  }
+
+  function getSoilType( which ) {
+    return getParameters( soilTypes, which );
   }
 
   function getCropName( which, locale ) {
@@ -459,6 +469,15 @@ const SoilCalculator = ( () => {
      */
 
     return fertilizers;
+  }
+
+  function getSoilTypes() {
+
+    /**
+     * @returns { Array } soilTypes - full array of soil type parameters
+     */
+
+    return soilTypes;
   }
 
   function getSchema( which ) {
@@ -566,18 +585,20 @@ const SoilCalculator = ( () => {
   }
 
   return {
-    getCrop: getCrop,
-    getFertilizer: getFertilizer,
-    getCropName: getCropName,
-    getFertilizerName: getFertilizerName,
-    getCrops: getCrops,
-    getFertilizers: getFertilizers,
-    getSchema: getSchema,
-    getFieldString: getFieldString,
-    getDatapointResults: getDatapointResults,
-    getSequenceResults: getSequenceResults,
-    getYearsAverageResults: getYearsAverageResults,
-    getAccumulatedSequenceResults: getAccumulatedSequenceResults,
+    getCrop,
+    getFertilizer,
+    getSoilType,
+    getCropName,
+    getFertilizerName,
+    getCrops,
+    getFertilizers,
+    getSoilTypes,
+    getSchema,
+    getFieldString,
+    getDatapointResults,
+    getSequenceResults,
+    getYearsAverageResults,
+    getAccumulatedSequenceResults,
   };
 
 } )();

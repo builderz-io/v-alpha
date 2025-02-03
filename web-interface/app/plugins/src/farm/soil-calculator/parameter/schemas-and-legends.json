@@ -59,8 +59,11 @@
         }
       },
       "SITE": {
-        "CN": -1,
+        "STYP": {
+          "ID": -1
+        },
         "FCAP": -1,
+        "CN": -1,
         "PCIP": {
           "QTY": -1,
           "MUL": -1
@@ -249,14 +252,28 @@
         "SITE": {
           "displayName": "Plot",
           "descr": "Plot data",
-          "CN": {
-            "displayName": "C/N Ratio",
-            "descr": "Plot C/N Ratio",
-            "unit": ""
+          "STYP": {
+            "displayName": "Soil Type",
+            "descr": "Soil Type",
+            "ID": {
+              "displayName": "Soil Type",
+              "descr": "Soil type id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Soil Type",
+              "descr": "Name of the soil type in English language",
+              "unit": ""
+            }
           },
           "FCAP": {
             "displayName": "Capacity",
             "descr": "Field Capacity",
+            "unit": ""
+          },
+          "CN": {
+            "displayName": "C/N Ratio",
+            "descr": "Plot C/N Ratio",
             "unit": ""
           },
           "PCIP": {
@@ -466,15 +483,29 @@
         "SITE": {
           "displayName": "Schlag",
           "descr": "Plot data",
-          "CN": {
-            "displayName": "C/N Verhältnis",
-            "descr": "Plot C/N Ratio",
-            "unit": " "
+          "STYP": {
+            "displayName": "Bodenart",
+            "descr": "Bodenart",
+            "ID": {
+              "displayName": "Bodenart",
+              "descr": "Soil type id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Bodenart",
+              "descr": "Name of the soil type in German language",
+              "unit": ""
+            }
           },
           "FCAP": {
             "displayName": "Feldkapazität",
             "descr": "Field Capacity",
             "unit": "cm m-1"
+          },
+          "CN": {
+            "displayName": "C/N Verhältnis",
+            "descr": "Plot C/N Ratio",
+            "unit": " "
           },
           "PCIP": {
             "displayName": "Niederschlag",
