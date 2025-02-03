@@ -287,11 +287,21 @@
 .txt-anchor-mid {
   text-anchor: middle;
 }
+
+.txt-left {
+  text-align: left;
+}
 .txt-center {
   text-align: center;
 }
 .txt-right {
   text-align: right;
+}
+.txt-underline {
+  text-decoration: underline;
+}
+.txt-italic {
+  font-style: italic;
 }
 .capitalize {
     text-transform: capitalize;
@@ -331,8 +341,4 @@
 /* Interactivity */
 .cursor-pointer {
   cursor: pointer;
-}
-
-.text-left {
-  text-align: left
 }

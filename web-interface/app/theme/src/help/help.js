@@ -55,7 +55,7 @@ const Help = ( function() { // eslint-disable-line no-unused-vars
       right: '0',
       background: 'rgba(0,0,0,0.8)',
     },
-    'help-overlay__content': {
+    'help-overlay__content-wrapper': {
       'background': 'white',
       'width': '85vw',
       'max-width': '700px',
@@ -118,22 +118,22 @@ const Help = ( function() { // eslint-disable-line no-unused-vars
       c: 'help-overlay fixed',
       k: handleHelpOverlayClose,
       h: {
-        c: 'help-overlay__content relative',
+        c: 'help-overlay__content-wrapper relative',
         k: handleStopPropagation,
         h: [
           {
             t: 'h2',
-            c: 'font-bold mb-r',
-            h: V.getString( ui.help ),
+            c: 'font-bold fs-l mb-r',
+            h: V.getString( ui.help ) + ' - ' + V.getString( ui[which] || V.capitalizeFirstLetter( which ) ),
           },
+          // {
+          //   t: 'p',
+          //   c: 'font-bold fs-xl mb-r',
+          //   h: V.getString( ui[which] || V.capitalizeFirstLetter( which ) ),
+          // },
           {
-            t: 'p',
-            c: 'mb-r',
-            h: V.getString( ui[which] || V.capitalizeFirstLetter( which ) ),
-          },
-          {
-            t: 'p',
-            h: 'Content here',
+            h: 'home' == which && HelpComponents.homePage()
+               || 'profile_plot' == which && HelpComponents.singlePlot(),
           },
         ],
       },

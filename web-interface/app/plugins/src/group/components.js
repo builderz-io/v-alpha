@@ -138,7 +138,7 @@ const GroupComponents = ( function() {
   function drawGroupCheckbox( group, entity, entityInGroup ) {
     const selectGroupLabel = V.cN( {
       t: 'button',
-      c: 'group-selection-element w-full text-left',
+      c: 'group-selection-element w-full txt-left',
       h: group.title,
       k: () => handleInputType( group, 'editTitle' ),
     } );
@@ -252,7 +252,7 @@ const GroupComponents = ( function() {
         y: {
           'margin-top': '0.5rem',
         },
-        c: 'new-group-button w-full pxy text-left bkg-white txt-gray',
+        c: 'new-group-button w-full pxy txt-left bkg-white txt-gray',
         h: V.getString( ui.newGroup ),
         k: () => {
           V.setNode( 'body', JoinRoutine.draw( V.getNavItem( '/groups', 'serviceNav' ).use ) );
