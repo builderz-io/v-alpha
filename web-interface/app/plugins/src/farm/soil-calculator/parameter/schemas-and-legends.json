@@ -43,8 +43,8 @@
       },
       "DATE": {
         "SOWN": -1,
-        "TURN": -1,
         "HVST": -1,
+        "TURN": -1,
         "CUTS": -1
       },
       "PCIPAPI": {

@@ -553,6 +553,19 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
+  function toggleNumCuts( formName ) {
+    const crops = [ 1270, 1280 ]; // the crops for which cuts shall be displayed otherwise hide and set to 1
+    const _ = document.forms[formName].elements;
+    const elemToToggle = document.querySelector('#s-calc-input__DATE_CUTS').closest('.s-calc-form__field-single');
+    if ( crops.includes( Number(_.CROP_ID.value) ) ) {
+      elemToToggle.classList.toggle( 'hidden', false );
+    }
+    else {
+      _.DATE_CUTS.value = "1";
+      elemToToggle.classList.toggle( 'hidden', true );
+    }
+  }
+
   function getDatapoint( e ) {
 
     const formName = e.target.closest( 'form' ).getAttribute( 'name' );
@@ -573,6 +586,9 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if ( e.target.name.includes( 'FTLZ' ) ) {
       toggleFertliziersGroups( formName );
+    }
+    if ( 'CROP_ID' == e.target.name ) {
+      toggleNumCuts( formName );
     }
 
     if (
