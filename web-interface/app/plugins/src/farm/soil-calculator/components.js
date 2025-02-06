@@ -237,6 +237,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       /* checking if on profile load, we need to toggle any fertilizer groups */
       toggleFertliziersGroups( 'CROP-1' );
+      toggleNumCuts();
     }
 
     toggleFertilizerUnit();
@@ -554,15 +555,28 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function toggleNumCuts( formName ) {
-    const crops = [ 1270, 1280 ]; // the crops for which cuts shall be displayed otherwise hide and set to 1
+
+    const crops = [1270, 1280]; // the crops for which cuts shall be displayed otherwise hide and set to 1
+
+    // If formName is not provided, loop through all forms
+    if ( !formName ) {
+      for ( let i = 0; i < document.forms.length; i++ ) {
+        toggleNumCuts( document.forms[i].name ); // Recursively call toggleNumCuts for each form
+      }
+      return; // Exit function after looping through all forms
+    }
+
+    if ( 'SITE' == formName ) { return }
+
     const _ = document.forms[formName].elements;
-    const elemToToggle = document.querySelector('#s-calc-input__DATE_CUTS').closest('.s-calc-form__field-single');
-    if ( crops.includes( Number(_.CROP_ID.value) ) ) {
-      elemToToggle.classList.toggle( 'hidden', false );
+    const elemToToggle = document.forms[formName].querySelector( '#s-calc-input__DATE_CUTS' ).closest( '.s-calc-form__field-single' );
+
+    if ( crops.includes( Number( _.CROP_ID.value ) ) ) {
+      elemToToggle.classList.remove( 'hidden' ); // Ensure element is visible
     }
     else {
-      _.DATE_CUTS.value = "1";
-      elemToToggle.classList.toggle( 'hidden', true );
+      _.DATE_CUTS.value = '1';
+      elemToToggle.classList.add( 'hidden' ); // Hide element
     }
   }
 
