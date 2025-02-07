@@ -534,7 +534,6 @@ const SoilCalculator = ( () => {
   }
 
   async function getDatapointResults( cropData, prevDatapoint ) {
-    console.log( cropData );
 
     /**
        * @arg { Object } cropData - Request, as in data provided by user, e.g. CROP.ID, plus previous inputs and results

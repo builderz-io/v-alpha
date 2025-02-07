@@ -236,11 +236,11 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     if ( !e ) {
 
       /* checking if on profile load, we need to toggle any fertilizer groups */
-      toggleFertliziersGroups( 'CROP-1' );
+      toggleFTLZGroups();
       toggleNumCuts();
     }
 
-    toggleFertilizerUnit();
+    toggleFTLZUnit();
 
     if ( !run.run ) { return }
 
@@ -515,7 +515,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     V.getNode( '.s-calc-summary' ).append( summaryTable( sequence ) );
   }
 
-  function toggleFertilizerUnit() {
+  function toggleFTLZUnit() {
     const mineralFertilizers = ['5005'];
 
     for ( let cropIdx = 1; cropIdx <= settings.numCropEntries; ++cropIdx ) {
@@ -534,22 +534,59 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
-  function toggleFertliziersGroups( formName ) {
+  function toggleFTLZGroups( formName ) {
+
+    // If formName is not provided, loop through all forms
+    if ( !formName ) {
+      for ( let i = 0; i < document.forms.length; i++ ) {
+        toggleFTLZGroups( document.forms[i].name ); // Recursively call toggleFTLZGroups for each form
+      }
+      return; // Exit function after looping through all forms
+    }
+
+    if ( 'SITE' == formName ) { return }
+
     const _ = document.forms[formName].elements;
     for ( let i = 1; i <= settings.numFertilizerGroups; ++i ) {
-      const nextFertilizerGroupIdx = i+1;
+      const nxtFTLZ = i+1;
+      const groupElemToToggle = document.forms[formName].querySelector( `.FTLZ_F${nxtFTLZ}` );
 
-      const shouldDisplayTheNextFertilizerGroup
-        = ( ( _[`FTLZ_F${i}_ID`] && _[`FTLZ_F${i}_ID`].value  !== '5000' ) && ( _[`FTLZ_F${i}_ID`] && !!_[`FTLZ_F${i}_QTY`].value ) )
-          || ( ( _[`FTLZ_F${nextFertilizerGroupIdx}_ID`] && _[`FTLZ_F${nextFertilizerGroupIdx}_ID`].value  !== '5000' )
-            && ( _[`FTLZ_F${nextFertilizerGroupIdx}_ID`] && !!_[`FTLZ_F${nextFertilizerGroupIdx}_QTY`].value ) );
-
-      const groupElement = document.querySelector( `.FTLZ_F${nextFertilizerGroupIdx}` );
-      if ( shouldDisplayTheNextFertilizerGroup && nextFertilizerGroupIdx <= settings.numFertilizerGroups && groupElement ) {
-        groupElement.classList.toggle( 'hidden', false );
+      if (
+        !groupElemToToggle
+        || nxtFTLZ > settings.numFertilizerGroups
+      ) {
+        return
       }
-      else if ( nextFertilizerGroupIdx <= settings.numFertilizerGroups && groupElement && _[`FTLZ_F${i}_ID`] && _[`FTLZ_F${i}_ID`].value === '5000' ) {
-        groupElement.classList.toggle( 'hidden', true );
+
+      if (
+        (
+          (
+            _[`FTLZ_F${i}_ID`]
+            && _[`FTLZ_F${i}_ID`].value  !== '5000'
+          )
+          && (
+            _[`FTLZ_F${i}_ID`]
+            && !!_[`FTLZ_F${i}_QTY`].value
+          )
+        )
+        || (
+          (
+            _[`FTLZ_F${nxtFTLZ}_ID`]
+            && _[`FTLZ_F${nxtFTLZ}_ID`].value  !== '5000'
+          )
+          && (
+            _[`FTLZ_F${nxtFTLZ}_ID`]
+            && !!_[`FTLZ_F${nxtFTLZ}_QTY`].value
+          )
+        )
+      ) {
+        groupElemToToggle.classList.toggle( 'hidden', false );
+      }
+      else if (
+        _[`FTLZ_F${i}_ID`]
+        && _[`FTLZ_F${i}_ID`].value === '5000'
+      ) {
+        groupElemToToggle.classList.toggle( 'hidden', true );
       }
     }
   }
@@ -599,7 +636,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     document.activeElement.classList.remove( 'txt-red' );
 
     if ( e.target.name.includes( 'FTLZ' ) ) {
-      toggleFertliziersGroups( formName );
+      toggleFTLZGroups( formName );
     }
     if ( 'CROP_ID' == e.target.name ) {
       toggleNumCuts( formName );
