@@ -552,41 +552,26 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       const groupElemToToggle = document.forms[formName].querySelector( `.FTLZ_F${nxtFTLZ}` );
 
       if (
-        !groupElemToToggle
-        || nxtFTLZ > settings.numFertilizerGroups
+        nxtFTLZ > settings.numFertilizerGroups
+        || !groupElemToToggle
+        || !_[`FTLZ_F${i}_ID`]
+        || !_[`FTLZ_F${nxtFTLZ}_ID`]
       ) {
         return
       }
 
       if (
-        (
-          (
-            _[`FTLZ_F${i}_ID`]
-            && _[`FTLZ_F${i}_ID`].value  !== '5000'
-          )
-          && (
-            _[`FTLZ_F${i}_ID`]
-            && !!_[`FTLZ_F${i}_QTY`].value
-          )
-        )
-        || (
-          (
-            _[`FTLZ_F${nxtFTLZ}_ID`]
-            && _[`FTLZ_F${nxtFTLZ}_ID`].value  !== '5000'
-          )
-          && (
-            _[`FTLZ_F${nxtFTLZ}_ID`]
-            && !!_[`FTLZ_F${nxtFTLZ}_QTY`].value
-          )
-        )
+        _[`FTLZ_F${i}_ID`].value  !== '5000'
+        && !!_[`FTLZ_F${i}_QTY`].value
+        || _[`FTLZ_F${nxtFTLZ}_ID`].value  !== '5000'
+          && !!_[`FTLZ_F${nxtFTLZ}_QTY`].value
       ) {
-        groupElemToToggle.classList.toggle( 'hidden', false );
+        groupElemToToggle.classList.remove( 'hidden' ); // Ensure element is visible
       }
       else if (
-        _[`FTLZ_F${i}_ID`]
-        && _[`FTLZ_F${i}_ID`].value === '5000'
+        _[`FTLZ_F${i}_ID`].value === '5000'
       ) {
-        groupElemToToggle.classList.toggle( 'hidden', true );
+        groupElemToToggle.classList.add( 'hidden' ); // Hide element
       }
     }
   }
@@ -713,6 +698,13 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
       for ( let i = 1; i <= settings.numFertilizerGroups; ++i ) {
         __.FTLZ[`F${i}`].ID = Number( _[`FTLZ_F${i}_ID`] ? _[`FTLZ_F${i}_ID`].value : '' );
+
+        /* enforce quantity and date reset, if no fertilizer is selected */
+        if ( _[`FTLZ_F${i}_ID`].value == '5000' ) {
+          _[`FTLZ_F${i}_QTY`].value = ''
+          _[`FTLZ_F${i}_DATE`].value = ''
+        }
+
         __.FTLZ[`F${i}`].QTY = Number( _[`FTLZ_F${i}_QTY`] ? _[`FTLZ_F${i}_QTY`].value : '' );
         __.FTLZ[`F${i}`].DATE = _[`FTLZ_F${i}_DATE`] ? _[`FTLZ_F${i}_DATE`].value : '';
       }

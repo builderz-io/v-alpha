@@ -274,7 +274,13 @@ const SoilCalculator = ( () => {
     let sum = 0;
 
     for ( let i = 1; i <= SoilCalculatorComponents.getNumFertilizerGroups; ++i ) {
-      if ( !_.FTLZ[`F${i}`] ) {continue}
+      if (
+        !_.FTLZ[`F${i}`]
+        || _.FTLZ[`F${i}`].ID == 5000
+      ) {
+        continue
+      }
+
       sum += _.FTLZ[`F${i}`].QTY
       * _.FTLZ[`F${i}`].DM
       * _.FTLZ[`F${i}`].N
