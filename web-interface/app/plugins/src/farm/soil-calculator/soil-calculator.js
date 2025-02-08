@@ -550,7 +550,7 @@ const SoilCalculator = ( () => {
     STATE = {};
 
     /* add timestamps to state */
-    Object.assign( STATE, castTime() );
+    // Object.assign( STATE, castTime() );
 
     /* add input data to state */
     Object.assign( STATE, castInputs( cropData.datapoint, prevDatapoint ) );
@@ -564,6 +564,7 @@ const SoilCalculator = ( () => {
     Object.assign( STATE.results, pcipData );
 
     /* return state */
+    // console.log(JSON.stringify(STATE));
     return STATE;
   }
 
@@ -589,6 +590,13 @@ const SoilCalculator = ( () => {
     };
   }
 
+  function setTestData( data ) {
+    crops = data[0];
+    fertilizers = data[1];
+    soilTypes = data[2];
+    legends = data[3];
+  }
+
   return {
     getCrop,
     getFertilizer,
@@ -604,6 +612,9 @@ const SoilCalculator = ( () => {
     getSequenceResults,
     getYearsAverageResults,
     getAccumulatedSequenceResults,
+    setTestData,
   };
 
 } )();
+
+module.exports = SoilCalculator; // Export the module for testing with jest
