@@ -367,6 +367,8 @@ const SoilCalculator = ( () => {
   }
 
   function sequenceTotalCandN( sequence, locale ) {
+    console.log(V.castJson(sequence,'clone'));
+
     let divisor = 0, cTotal = 0, nTotal = 0;
 
     for ( const key in sequence ) {
@@ -387,6 +389,8 @@ const SoilCalculator = ( () => {
     schema.T.BAL.C = cTotal / divisor;
     schema.T.BAL.N = nTotal / divisor;
     schema.T.UNIT = getFieldString( 'T', locale );
+
+    console.log(V.castJson(schema,'clone'));
 
     return schema;
   }
@@ -540,6 +544,8 @@ const SoilCalculator = ( () => {
   }
 
   async function getDatapointResults( cropData, prevDatapoint ) {
+    console.log(V.castJson(cropData,'clone'));
+    console.log(V.castJson(prevDatapoint,'clone'));
 
     /**
        * @arg { Object } cropData - Request, as in data provided by user, e.g. CROP.ID, plus previous inputs and results
@@ -564,7 +570,7 @@ const SoilCalculator = ( () => {
     Object.assign( STATE.results, pcipData );
 
     /* return state */
-    // console.log(JSON.stringify(STATE));
+    console.log(V.castJson(STATE,'clone'));
     return STATE;
   }
 
@@ -617,4 +623,6 @@ const SoilCalculator = ( () => {
 
 } )();
 
-module.exports = SoilCalculator; // Export the module for testing with jest
+if (typeof module === "object" && module.exports) {
+  module.exports = SoilCalculator; // Export the module for testing with jest
+}
