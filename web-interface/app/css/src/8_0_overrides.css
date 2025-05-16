@@ -9,3 +9,7 @@
 .leaflet-zoom-anim .leaflet-zoom-animated {
   will-change:auto !important;
 }
+
+#s-calc-input__SITE_STYP_ID {
+  width: 6.5rem !important;
+},

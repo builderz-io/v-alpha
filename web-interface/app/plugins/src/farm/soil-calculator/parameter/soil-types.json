@@ -1,0 +1,26 @@
+[
+  {
+    "ID": 2010,
+    "NAME": "Sand",
+    "NAME_DE": "Sand",
+    "FCAP": 40
+  },
+  {
+    "ID": 2020,
+    "NAME": "Schluff",
+    "NAME_DE": "Schluff",
+    "FCAP": 35
+  },
+  {
+    "ID": 2030,
+    "NAME": "Lehm",
+    "NAME_DE": "Lehm",
+    "FCAP": 30
+  },
+  {
+    "ID": 2040,
+    "NAME": "Ton",
+    "NAME_DE": "Ton",
+    "FCAP": 20
+  }
+]

@@ -265,10 +265,14 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       h: {
         t: 'card',
         c: 'card__container max-w-list flex card-shadow rounded bkg-white pxy',
-        h: cardTitle ? [
-          { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle },
-          $cardContent,
-        ] : $cardContent,
+        h: !cardTitle
+             ? $cardContent
+             : [
+                 typeof cardTitle === 'string'
+                    ? { t: 'h2', c: 'w-full font-bold pxy', h: cardTitle }
+                    : cardTitle, // is an element at this stage, most likely containing a help-svg
+                  $cardContent
+               ]
       },
     } );
   }

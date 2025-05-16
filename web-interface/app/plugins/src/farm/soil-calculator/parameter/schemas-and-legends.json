@@ -43,7 +43,9 @@
       },
       "DATE": {
         "SOWN": -1,
-        "HVST": -1
+        "HVST": -1,
+        "TURN": -1,
+        "CUTS": -1
       },
       "PCIPAPI": {
         "MM": -1,
@@ -59,8 +61,11 @@
         }
       },
       "SITE": {
-        "CN": -1,
+        "STYP": {
+          "ID": -1
+        },
         "FCAP": -1,
+        "CN": -1,
         "PCIP": {
           "QTY": -1,
           "MUL": -1
@@ -72,6 +77,26 @@
     },
     "legend": {
       "en_US": {
+        "CARD": {
+          "displayName": {
+            "balance": {
+              "title": "Soil Balance",
+              "help": "Help text to be added"
+            },
+            "sequence": {
+              "title": "Crop Sequence",
+              "help": "Help text to be added"
+            },
+            "site": {
+              "title": "Site Data",
+              "help": "Help text to be added"
+            },
+            "groups": {
+              "title": "Grouping",
+              "help": "Help text to be added"
+            }
+          }
+        },
         "CROP": {
           "displayName": "Crop",
           "descr": "Crop",
@@ -83,6 +108,12 @@
           "NAME": {
             "displayName": "Type",
             "descr": "Name of the crop in English language",
+            "unit": ""
+          },
+          "RES": {
+            "displayName": "Crop Results",
+            "help": "Results of the individual crop are shown here.",
+            "descr": "",
             "unit": ""
           }
         },
@@ -224,19 +255,43 @@
             "displayName": "Harvested on",
             "descr": "Date of crop harvested",
             "unit": ""
+          },
+          "TURN": {
+            "displayName": "Turn",
+            "descr": "Date of soil turn",
+            "unit": ""
+          },
+          "CUTS": {
+            "displayName": "Cuts",
+            "descr": "Number of crop cuts",
+            "unit": ""
           }
         },
         "SITE": {
           "displayName": "Plot",
           "descr": "Plot data",
-          "CN": {
-            "displayName": "C/N Ratio",
-            "descr": "Plot C/N Ratio",
-            "unit": ""
+          "STYP": {
+            "displayName": "Soil Type",
+            "descr": "Soil Type",
+            "ID": {
+              "displayName": "Soil Type",
+              "descr": "Soil type id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Soil Type",
+              "descr": "Name of the soil type in English language",
+              "unit": ""
+            }
           },
           "FCAP": {
             "displayName": "Capacity",
             "descr": "Field Capacity",
+            "unit": ""
+          },
+          "CN": {
+            "displayName": "C/N Ratio",
+            "descr": "Plot C/N Ratio",
             "unit": ""
           },
           "PCIP": {
@@ -265,9 +320,30 @@
         }
       },
       "de_DE": {
+        "CARD": {
+          "displayName": {
+            "balance": {
+              "title": "Humusbilanz der Fruchtfolge",
+              "help": "Help text to be added"
+            },
+            "sequence": {
+              "title": "Fruchtfolge",
+              "help": "Help text to be added"
+            },
+            "site": {
+              "title": "Schlagdaten",
+              "help": "Help text to be added"
+            },
+            "groups": {
+              "title": "Gruppierung",
+              "help": "Help text to be added"
+            }
+          }
+        },
         "CROP": {
           "displayName": "Fruchtart",
           "descr": "Fruchtart",
+          "help": "Geben Sie hier die Frucht an, die gesät wurde.",
           "ID": {
             "displayName": "Typ",
             "descr": "Crop id for internal use",
@@ -277,11 +353,18 @@
             "displayName": "Typ",
             "descr": "Name of the crop in English language",
             "unit": ""
+          },
+          "RES": {
+            "displayName": "Ergebnisse der Frucht",
+            "help": "Hier werden die individuellen Ergebnisse der Frucht angezeigt, die gesät wurde.",
+            "descr": "",
+            "unit": ""
           }
         },
         "FTLZ": {
           "displayName": "Düngung",
           "descr": "Ausbringung von bis zu 5 Düngern",
+          "help": "Geben Sie hier die verschiedenen Dünger an, die ausgebracht wurden. Es können bis zu fünf Dünger angegeben werden.",
           "F1": {
             "ID": {
               "displayName": "Dünger 1",
@@ -376,6 +459,7 @@
         "BMASS": {
           "displayName": "Haupt- und Nebenprodukt",
           "descr": "Biomasse von Haupt- und Nebenprodukt",
+          "help": "Geben Sie hier die Menge des geernteten Hauptprodukts und Nebenprodukts an.",
           "MP": {
             "displayName": "Hauptprodukt",
             "descr": "Main Product",
@@ -408,6 +492,7 @@
         "DATE": {
           "displayName": "Datum",
           "descr": "Datum",
+          "help": "Geben Sie hier das Datum der Aussat und der Ernte an. Diese Angabe ist zwingend nötig, um eine Humusbilanz zu errechnen.",
           "SOWN": {
             "displayName": "Aussaat am",
             "descr": "Datum der Aussaat",
@@ -417,20 +502,44 @@
             "displayName": "Ernte am",
             "descr": "Datum der Ernte",
             "unit": ""
+          },
+          "TURN": {
+            "displayName": "Umbruch",
+            "descr": "Datum des Umbruchs",
+            "unit": ""
+          },
+          "CUTS": {
+            "displayName": "Schnitte",
+            "descr": "Anzahl der Schnitte",
+            "unit": ""
           }
         },
         "SITE": {
           "displayName": "Schlag",
           "descr": "Plot data",
-          "CN": {
-            "displayName": "C/N Verhältnis",
-            "descr": "Plot C/N Ratio",
-            "unit": " "
+          "STYP": {
+            "displayName": "Bodenart",
+            "descr": "Bodenart",
+            "ID": {
+              "displayName": "Bodenart",
+              "descr": "Soil type id for internal use",
+              "unit": ""
+            },
+            "NAME": {
+              "displayName": "Bodenart",
+              "descr": "Name of the soil type in German language",
+              "unit": ""
+            }
           },
           "FCAP": {
             "displayName": "Feldkapazität",
             "descr": "Field Capacity",
             "unit": "cm m-1"
+          },
+          "CN": {
+            "displayName": "C/N Verhältnis",
+            "descr": "Plot C/N Ratio",
+            "unit": " "
           },
           "PCIP": {
             "displayName": "Niederschlag",
@@ -839,7 +948,7 @@
       "NAME": "none",
       "LS": -1,
       "N": {
-        "BFN": -1,
+        "BNF": -1,
         "NYR": -1
       },
       "MP": {
@@ -888,7 +997,7 @@
         "unit": "Decimal share"
       },
       "N": {
-        "BFN": {
+        "BNF": {
           "descr": "Biological N fixation as share of total plant N (NPB)",
           "unit": "Decimal share"
         },

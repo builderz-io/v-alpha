@@ -7,12 +7,14 @@
   --card-height: 172px;
   --list-max-width: 410px;
 
-  --magic-btn-top: 11px;
-  --magic-btn-left: 69px;
+  --help-btn-top: 11px;
+  --help-btn-left: 64px;
+  --magic-btn-top: -24px;
+  --magic-btn-left: 112px;
   --entity-nav-top: 7px;
-  --entity-nav-left: 114px; /* 61 */
+  --entity-nav-left: 158px;
   --user-nav-top: 7px;
-  --user-nav-left: 114px;
+  --user-nav-left: 180px;
   --service-nav-top: 4rem;
   --service-nav-left: 7px;
 
@@ -87,12 +89,14 @@
 
 @media screen and (min-width: 800px) {
     :root {
-      --magic-btn-top: 25px;
-      --magic-btn-left: 90px;
+      --help-btn-top: 25px;
+      --help-btn-left: 90px;
+      --magic-btn-top: -15px;
+      --magic-btn-left: 140px;
       --entity-nav-top: 21px;
-      --entity-nav-left: 137px; /* 84 */
+      --entity-nav-left: 188px;
       --user-nav-top: 21px;
-      --user-nav-left: 137px;
+      --user-nav-left: 188px;
       --service-nav-top: 5.5rem;
       --service-nav-left: 12px;
 

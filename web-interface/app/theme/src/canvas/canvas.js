@@ -56,6 +56,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/theme/src/canvas/page.js' ),
         V.setScript( host + '/theme/src/modal/components.js' ),
         V.setScript( host + '/theme/src/modal/modal.js' ),
+        V.setScript( host + '/theme/src/help/components.js' ),
+        V.setScript( host + '/theme/src/help/help.js' ),
         V.setScript( host + '/theme/src/interaction/components.js' ),
         // V.setScript( host + '/theme/src/interaction/button.js' ),
         V.setScript( host + '/theme/src/interaction/magic-button.js' ),
@@ -372,7 +374,8 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
     if (
       window.location.pathname == '/'
       && lP
-      && ( !lPVisits || lPVisits < 2 )
+      && ( !lPVisits || lPVisits < 20000 )
+      && !V.aE()
     ) {
       path = lP;
       V.setBrowserHistory( lP );
