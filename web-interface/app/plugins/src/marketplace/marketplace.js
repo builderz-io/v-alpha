@@ -20,7 +20,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
     /** Combines 'PersonMapped' with 'Person' */
     whichRole = whichRole.replace( 'Mapped', '' );
 
-    let query, isSearch = false, features;
+    let query = { success: false }, isSearch = false, features;
     const now = Date.now();
 
     /* Get features cache */

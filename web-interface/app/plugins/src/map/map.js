@@ -26,11 +26,12 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   // const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
   /* cartodb voyager with lables (max zoom 19) */
-  // const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-  // const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  const tiles = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
-  const tiles = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'; // test
-  const attribution = '&copy; OpenStreetMap contributors';
+  /* openstreetmap test/debug*/
+  //const tiles = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  //const attribution = '&copy; OpenStreetMap contributors';
 
   const mapDefaults = {
     atlantic: {
@@ -321,13 +322,16 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       V.setState( 'map', { lat: mapSettings.lat, lng: mapSettings.lng, zoom: mapSettings.zoom } );
     }
 
-    L.tileLayer( tiles, {
-      attribution: attribution,
+    L.tileLayer(tiles, {
+      attribution,
       maxZoom: mapSettings.maxZoom,
       minZoom: mapSettings.minZoom,
-      // id: 'mapbox.streets',
-      // accessToken: 'your.mapbox.access.token'
-    } ).addTo( viMap );
+      detectRetina: false,
+      crossOrigin: true
+    })
+    .on('tileerror', e => console.warn('Tile error', e.tile?.src))
+    .on('tileloadstart', e => console.debug('Tile start', e.tile?.src))
+    .addTo(viMap);
 
     getPoints()
       .then( () => setPoints( 'all' ) );

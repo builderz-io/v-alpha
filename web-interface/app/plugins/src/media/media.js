@@ -31,18 +31,27 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
   /* ================== private methods ================= */
 
   async function presenter() {
-
-    const mediaPoints = V.getCache( 'points' ).data
-      .filter( item => item.role == 'al' );
-
-    if ( !mediaPoints ) {
+    const pointsCache = V.getCache( 'points' );
+    
+    if ( !pointsCache || !pointsCache.data ) {
       return {
         success: false,
+        message: 'Points cache not available'
       };
     }
-
+  
+    const mediaPoints = pointsCache.data
+      .filter( item => item.role == 'al' );
+  
+    if ( !mediaPoints || !mediaPoints.length ) {
+      return {
+        success: false,
+        message: 'No media points found'
+      };
+    }
+  
     const entities = await V.getEntity( mediaPoints.map( item => item.uuidE ) );
-
+  
     return entities;
   }
 
@@ -50,10 +59,15 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     const $slider = CanvasComponents.slider();
     const $list = CanvasComponents.list();
 
-    const $addcard = MarketplaceComponents.entitiesAddCard();
-    V.setNode( $slider, $addcard );
+    // const $addcard = MarketplaceComponents.entitiesAddCard();
+    // V.setNode( $slider, $addcard );
 
-    if ( mediaData.data[0] ) {
+    const $cardPDFContent = MediaComponents.pdfCard();
+    const $cardPDF = CanvasComponents.card( $cardPDFContent );
+
+    if ( mediaData?.data?.[0] ) {
+      V.setNode( $list, $cardPDF );
+
       mediaData.data.forEach( cardData => {
         const $cardContent = MediaComponents.mediaCard( cardData );
         const $card = CanvasComponents.card( $cardContent );
@@ -62,7 +76,9 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
     else {
-      V.setNode( $list, CanvasComponents.notFound( 'media' ) );
+      V.setNode( $list, $cardPDF );
+
+      //V.setNode( $list, CanvasComponents.notFound( 'media' ) );
     }
 
     Page.draw( {

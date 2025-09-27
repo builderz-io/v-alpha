@@ -940,8 +940,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             t: 'span',
             h: title,
-          },
-          help( helpText ),
+          }
+          //help( helpText ),
         ],
       } );
     }
@@ -1799,8 +1799,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             t: 'span',
             c: 'w-full font-bold pxy',
             h: cardTitles[title]['title'],
-          },
-          help( helpText, 'leftCorrect' ),
+          }
+          //help( helpText, 'leftCorrect' ),
         ],
       } );
     }

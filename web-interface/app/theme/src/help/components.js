@@ -124,6 +124,32 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
       h: [
         {
           t: 'p',
+          c: 'font-bold',
+          h: 'Humusbilanz der Fruchtfolge',
+        },
+        {
+          t: 'p',
+          h: 'Angezeigt wird die Humusbilanz im Durchschnitt der Fruchtfolge. Wenn Saat- und Ernte- bzw. Umbruchsdaten vollständig sind, wird die Bilanz in kg Humus-Kohlenstoff je ha und Jahr angegeben.',
+        },
+        {
+          t: 'p',
+          h: 'Sind Saat- und Ernte- bzw. Umbruchsdaten unvollständig, wird stattdessen die Bilanz im Durchschnitt aller Fruchtarten ausgewiesen. Zwischenfrüchte und Hauptfrüchte zählen dabei gleichermaßen.',
+        },
+        {
+          t: 'p',
+          h: 'Standardmäßig wird in der Humusbilanzierung die Bilanz im Durchschnitt der Jahre angegeben. Wir empfehlen daher, die Daten für Saat und Ernte oder Umbruch für alle Fruchtarten zu ergänzen (zur Not als Schätzung, falls keine Aufzeichnungen vorliegen).',
+        },
+        {
+          t: 'p',
+          h: 'Die Humusbilanz im Durchschnitt der Jahre sollte stets >0 sein. Negative Bilanzen können zu abnehmenden Vorräten an organischer Substanz im Boden und infolgedessen zu einer geringeren Bodenfruchtbarkeit führen. Stark positive Bilanzen (>500) sollten mittelfristig ebenfalls vermieden werden, da hier durch die hohe Versorgung mit organischer Substanz auch das Risiko negativer Umwelteffekte durch überschüssige Mineralisierung von Stickstoff besteht.',
+        },
+        {
+          t: 'p',
+          c: 'font-bold',
+          h: 'Fruchtfolge',
+        },
+        {
+          t: 'p',
           h: 'Für die Berechnung der Humusbilanz müssen alle Haupt- und Zwischenfrüchte im Bewertungszeitraum in ihrer zeitlichen Abfolge einzeln angegeben werden (eine Fruchtart je Registerkarte). Darüber hinaus sind Angaben zur Düngung und zu ausgewählten Standortbedingungen notwendig.',
         },
         {
@@ -155,16 +181,20 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         {
           t: 'p',
-          h: 'Werden für Haupt- und/oder Nebenprodukt keine Erträge angegeben, verwendet das Modell Standardwerte. Diese können in den Modellparametern eingesehen werden.',
+          h: 'Werden für Haupt- und/oder Nebenprodukt keine Erträge angegeben, verwendet das Modell Standardwerte.',
         },
         {
           t: 'p',
-          h: 'Bei Ernte der ganzen Pflanze bzw. von Haupt- und Nebenprodukt muss jeweils die Ernte mit „ja“ bestätigt werden. Verbleibt das Nebenprodukt auf der Fläche, wird hier die Ernte auf „nein“ gestellt. Verbleibt eine Kultur komplett als Gründüngung auf dem Feld, wird bei der Ernte des Hauptproduktes „nein“ angegeben. In diesem Fall wird die Ernte des Nebenproduktes automatisch ebenfalls auf „nein“ eingestellt.',
+          h: 'Bei Ernte der ganzen Pflanze bzw. von Haupt- und Nebenprodukt muss jeweils die Ernte mit „ja" bestätigt werden. Verbleibt das Nebenprodukt auf der Fläche, wird hier die Ernte auf „nein" gestellt.',
+        },
+        {
+          t: 'p',
+          h: 'Verbleibt eine Kultur komplett als Gründüngung auf dem Feld, wird bei der Ernte des Hauptproduktes „nein" angegeben. In diesem Fall wird die Ernte des Nebenproduktes automatisch ebenfalls auf „nein" eingestellt.',
         },
         {
           t: 'p',
           c: 'txt-italic',
-          h: 'Sonderfall Kleegras, Luzernegras und Ackergras',
+          h: 'Sonderfall Kleegras,Luzernegras und Ackergras',
         },
         {
           t: 'p',
@@ -172,7 +202,7 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         {
           t: 'p',
-          h: '„Umbruch“ bezeichnet das Datum der Bodenbearbeitung oder anderer Maßnahmen zur Terminierung des Pflanzenbestandes (auch in umbruchsfreien Verfahren, z.B. Anwendung der Messerwalze in stehenden Beständen bei Mulchsaat).',
+          h: '„Umbruch" bezeichnet das Datum der Bodenbearbeitung oder anderer Maßnahmen zur Terminierung des Pflanzenbestandes (auch in umbruchsfreien Verfahren, z.B. Anwendung der Messerwalze in stehenden Beständen bei Mulchsaat).',
         },
         {
           t: 'p',
@@ -181,16 +211,20 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         {
           t: 'p',
-          h: 'Die einzelnen Parameter der Bilanz werden in der Modellbeschreibung erläutert. Unter „C Humusbilanz“ und „N Humusbilanz“ wird die Bilanz der Kultur in kg C bzw. kg N je ha im Anbauzeitraum angegeben. C und N liegen dabei gebunden in der organischen Substanz vor und drücken den kalkulierten Aufbau neuer organischer Bodensubstanz aus. Die N-bezogene Humusbilanz gibt damit im Gegensatz zur N-bezogenen Düngerbilanz.',
+          h: 'Die einzelnen Parameter der Bilanz werden in der Modellbeschreibung erläutert. Unter „C Humusbilanz" und „N Humusbilanz" wird die Bilanz der Kultur in kg C bzw. kg N je ha im Anbauzeitraum angegeben. C und N liegen dabei gebunden in der organischen Substanz vor und drücken den kalkulierten Aufbau neuer organischer Bodensubstanz aus.',
         },
         {
           t: 'p',
-          c: 'txt-italic',
-          h: 'Schlagdaten',
+          h: 'Die N-bezogene Humusbilanz gibt damit im Gegensatz zur N-bezogenen Düngerbilanz kein Verlustpotential an, sondern ein Aufbaupotential organischer Bodensubstanz.',
         },
         {
           t: 'p',
-          h: 'Schlagdaten sollten sich grundsätzlich auf repräsentative Flächen im Schlag beziehen.',
+          c: 'font-bold',
+          h: 'Standortdaten',
+        },
+        {
+          t: 'p',
+          h: 'Standortdaten sollten sich grundsätzlich auf repräsentative Flächen im Schlag beziehen.',
         },
         {
           t: 'p',
@@ -202,7 +236,7 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         {
           t: 'p',
-          h: 'Die Angabe des mittleren Jahreniederschlages ist nur notwendig, wenn keine Wetterstation in der Nähe erkannt wird und entsprechend keine Daten automatisch abgerufen werden können.',
+          h: 'Die Angabe des mittleren Jahresniederschlages ist nur notwendig, wenn keine Wetterstation in der Nähe erkannt wird und entsprechend keine Daten automatisch abgerufen werden können.',
         },
         {
           t: 'p',
@@ -210,7 +244,7 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
         },
         {
           t: 'p',
-          c: 'txt-italic',
+          c: 'font-bold',
           h: 'Gruppierung',
         },
         {
@@ -219,7 +253,6 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
         },
       ],
     } );
-
   }
 
   function groups() {

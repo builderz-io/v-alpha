@@ -616,5 +616,3 @@ const SoilCalculator = ( () => {
   };
 
 } )();
-
-module.exports = SoilCalculator; // Export the module for testing with jest
