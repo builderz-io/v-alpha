@@ -31,7 +31,23 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
           .catch( () => console.error( 'Error loading web3.js and evm source files' ) );
       }
 
-      await V.getWeb3Provider();
+      // Make web3 provider setup non-blocking
+      V.getWeb3Provider()
+        .then( ( result ) => {
+          if ( result.success ) {
+            console.log( 'Web3 provider connected successfully' );
+            V.setState( 'web3ProviderReady', true );
+          } else {
+            console.warn( 'Web3 provider connection failed:', result.status );
+            V.setState( 'web3ProviderReady', false );
+            V.setState( 'web3ProviderError', result.status );
+          }
+        } )
+        .catch( ( error ) => {
+          console.error( 'Web3 provider setup error:', error );
+          V.setState( 'web3ProviderReady', false );
+          V.setState( 'web3ProviderError', error.message || 'Unknown web3 error' );
+        } );
 
     }
     else if ( V.getSetting( 'transactionLedger' ) == 'EOS' ) {
@@ -95,9 +111,18 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/vcore/dependencies/secondary/socket.io.min.js' ),
       ] );
       console.log( '*** MongoDB and socket.io scripts loaded ***' );
-      await setSocket().then( res => {
-        console.log( res );
-      } );
+      
+      // Make socket connection non-blocking
+      setSocket()
+        .then( res => {
+          console.log( res );
+          V.setState( 'socketConnected', true );
+        } )
+        .catch( ( error ) => {
+          console.warn( 'Socket connection failed:', error );
+          V.setState( 'socketConnected', false );
+          V.setState( 'socketError', error );
+        } );
     }
   }
 
@@ -153,6 +178,53 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ============ public methods and exports ============ */
+
+  // Add a method to check if ledger is ready
+  function isLedgerReady() {
+    const transactionLedger = V.getSetting( 'transactionLedger' );
+    const entityLedger = V.getSetting( 'entityLedger' );
+    const chatLedger = V.getSetting( 'chatLedger' );
+
+    let ready = true;
+    const status = {};
+
+    if ( transactionLedger === 'EVM' ) {
+      status.web3Provider = V.getState( 'web3ProviderReady' ) || false;
+      status.contractState = V.getState( 'contractStateReady' ) || false;
+      ready = ready && status.web3Provider;
+    }
+
+    if ( [ entityLedger, chatLedger ].includes( 'MongoDB' ) ) {
+      status.socket = V.getState( 'socketConnected' ) || false;
+      ready = ready && status.socket;
+    }
+
+    return {
+      ready: ready,
+      status: status,
+    };
+  }
+
+  // Utility function to wait for ledger to be ready with timeout
+  function waitForLedgerReady( timeoutMs = 10000 ) {
+    return new Promise( ( resolve, reject ) => {
+      const startTime = Date.now();
+      
+      const checkReady = () => {
+        const ledgerStatus = isLedgerReady();
+        
+        if ( ledgerStatus.ready ) {
+          resolve( ledgerStatus );
+        } else if ( Date.now() - startTime > timeoutMs ) {
+          reject( new Error( 'Ledger connection timeout' ) );
+        } else {
+          setTimeout( checkReady, 100 ); // Check again in 100ms
+        }
+      };
+      
+      checkReady();
+    } );
+  }
 
   function setData( data, whichEndpoint, whichLedger ) {
 
@@ -243,11 +315,15 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
 
   V.getData = getData;
   V.setData = setData;
+  V.isLedgerReady = isLedgerReady;
+  V.waitForLedgerReady = waitForLedgerReady;
 
   return {
     launch: launch,
     getData: getData,
     setData: setData,
+    isLedgerReady: isLedgerReady,
+    waitForLedgerReady: waitForLedgerReady,
   };
 
 } )();

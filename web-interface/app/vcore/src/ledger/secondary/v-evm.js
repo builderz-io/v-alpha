@@ -121,21 +121,31 @@ const VEvm = ( function() { // eslint-disable-line no-unused-vars
     window.Web3Obj = new Web3( provider );
     contract = new window.Web3Obj.eth.Contract( VEvmAbi, V.getTokenContract().contractAddress );
 
-    const state = V.getSetting( 'queryContractState' ) ? await V.getContractState() : {};
+    // Make contract state query non-blocking
+    if ( V.getSetting( 'queryContractState' ) ) {
+      V.getContractState()
+        .then( ( state ) => {
+          if ( state.success ) {
+            console.log( 'Contract state loaded successfully' );
+            V.setState( 'contractStateReady', true );
+            // V.setState( 'contract', state.data ? state.data[0] : {} );
+          } else {
+            console.warn( 'Contract state query failed:', state.status );
+            V.setState( 'contractStateReady', false );
+            V.setState( 'contractStateError', state.status );
+          }
+        } )
+        .catch( ( error ) => {
+          console.error( 'Contract state query error:', error );
+          V.setState( 'contractStateReady', false );
+          V.setState( 'contractStateError', error.message || 'Unknown contract state error' );
+        } );
+    }
 
-    if ( state.success ) {
-      // V.setState( 'contract', state.data ? state.data[0] : {} );
-      return {
-        success: true,
-        status: 'provider set',
-      };
-    }
-    else {
-      return {
-        success: false,
-        status: 'could not set provider',
-      };
-    }
+    return {
+      success: true,
+      status: 'provider set',
+    };
 
   }
 

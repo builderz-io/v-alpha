@@ -329,8 +329,8 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       detectRetina: false,
       crossOrigin: true
     })
-    .on('tileerror', e => console.warn('Tile error', e.tile?.src))
-    .on('tileloadstart', e => console.debug('Tile start', e.tile?.src))
+    .on('tileerror', e => console.warn('Tile error', e.tile && e.tile.src))
+    .on('tileloadstart', e => console.debug('Tile start', e.tile && e.tile.src))
     .addTo(viMap);
 
     getPoints()
@@ -444,27 +444,33 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     if ( highlightLayer ) {
       highlightLayer.remove();
     }
-
+  
     const cache = V.getCache( 'highlights' );
-
+  
     if ( !cache ) { return }
-
+  
     let filtered = cache.data;
-
+  
     if ( whichRole != 'all' ) {
       filtered = filtered.filter( item => item.role == whichRole );
     }
-    // console.log( 'filtered highlights', filtered );
-
+  
+    // Add validation to filter out features with null/invalid coordinates
+    filtered = filtered.filter( feature => {
+      return feature.geometry && 
+             feature.geometry.coordinates && 
+             Array.isArray(feature.geometry.coordinates) && 
+             feature.geometry.coordinates.length >= 2 &&
+             feature.geometry.coordinates[0] != null && 
+             feature.geometry.coordinates[1] != null;
+    });
+  
+    // Only proceed if we have valid features
+    if ( filtered.length === 0 ) { 
+      return; 
+    }
+  
     highlightLayer = castLayer( 'highlights', filtered );
-
-    // highlightLayer.on( 'click', handleHighlightClick );
-
-    // if( !viMap.getZoom() == 3 ) {
-    //   viMap.setView( [geo[1] - 9, geo[0]], 3 );
-    // // viMap.setView( [41.858, -87.964], 8 );
-    // }
-
     highlightLayer.addTo( viMap );
   }
 

@@ -65,7 +65,7 @@ const Media = ( function() { // eslint-disable-line no-unused-vars
     const $cardPDFContent = MediaComponents.pdfCard();
     const $cardPDF = CanvasComponents.card( $cardPDFContent );
 
-    if ( mediaData?.data?.[0] ) {
+    if ( mediaData && mediaData.data && mediaData.data[0] ) {
       V.setNode( $list, $cardPDF );
 
       mediaData.data.forEach( cardData => {

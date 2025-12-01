@@ -15,7 +15,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
   async function launchStylesheets() {
 
-    if ( V.getSetting( 'useBuilds' ) ) {
+    if ( /*V.getSetting( 'useBuilds' ) */ false ) {
       await Promise.all( [
         V.setStylesheet( host + '/css/builds/v.min.css' ),
       ] )
