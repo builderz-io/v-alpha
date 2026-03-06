@@ -434,7 +434,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   async function setStateAndDbYearsAverageResult() {
     SoilCalculator
-      .getYearsAverageResults( V.getState( 'cropSequenceResultsByYear' ), locale )
+      // NOTE:
+      // We now pass the full cropSequence so that getYearsAverageResults
+      // can compute the yearly average based on the actual time span
+      // between the first sowing and the last harvest/turn, as requested
+      // by the client, instead of averaging over pre-aggregated years.
+      .getYearsAverageResults( V.getState( 'cropSequence' ), locale )
       .then( res => {
         if ( !res || !res.T || res.T.BAL.C === null ) {
           V.setState( 'cropSequenceYearsAverageResult', 'clear' );
