@@ -606,6 +606,7 @@ Initialized by: ${ window.location.host }
           );
 
           if ( E.role != 'Person' ) {
+            refreshPostCreateNonPerson( E );
             V.setState( 'tmpEditable', [ E.fullId ] );
             drawSuccess();
             notifySuccess( E.fullId, E.role );
@@ -655,6 +656,76 @@ Initialized by: ${ window.location.host }
         setResponse( ( res.message || res ) + ' ' + V.getString( ui.startAgain ), 'setAsIs' );
         drawError();
       } );
+  }
+
+  async function refreshPostCreateNonPerson( entity ) {
+    try {
+      V.setCache( 'highlights', 'clear' );
+      V.setCache( 'features', 'clear' );
+
+      const activeState = V.getState( 'active' ) || {};
+      const activePath = activeState.path;
+      const serviceNav = V.getState( 'serviceNav' ) || {};
+      const activeNavItem = activePath ? serviceNav[activePath] : undefined;
+      const activeRole = activeNavItem && activeNavItem.use && activeNavItem.use.role
+        ? activeNavItem.use.role.replace( 'Mapped', '' )
+        : 'all';
+
+      const holderOf = V.aE() && V.aE().holderOf ? V.aE().holderOf : [];
+      let holderUuids = holderOf.map( item => item.a ).filter( Boolean );
+
+      if (
+        entity
+        && entity.uuidE
+        && !holderUuids.includes( entity.uuidE )
+      ) {
+        holderUuids = [entity.uuidE].concat( holderUuids );
+      }
+
+      if ( !holderUuids.length ) { return }
+
+      const fetchedEntities = await V.getEntity( holderUuids );
+      if ( !fetchedEntities.success || !fetchedEntities.data ) { return }
+
+      const filteredEntities = activeRole == 'all'
+        ? fetchedEntities.data
+        : fetchedEntities.data.filter( item => item.role == activeRole );
+
+      V.setCache( 'highlights', filteredEntities );
+
+      const $slider = CanvasComponents.slider();
+      const $list = CanvasComponents.list();
+
+      if (
+        activeNavItem
+        && !( [undefined, '/network/all'].includes( activePath ) )
+      ) {
+        V.setNode( $slider, MarketplaceComponents.entitiesAddCard() );
+      }
+
+      filteredEntities.forEach( cardData => {
+        V.setNode( $slider, MarketplaceComponents.entitiesSmallCard( cardData ) );
+      } );
+
+      if ( filteredEntities.length ) {
+        filteredEntities.slice().reverse().forEach( cardData => {
+          const $cardContent = MarketplaceComponents.cardContent( cardData );
+          const $card = CanvasComponents.card( $cardContent );
+          V.setNode( $list, $card );
+        } );
+      }
+      else {
+        V.setNode( $list, CanvasComponents.notFound( 'marketplace' ) );
+      }
+
+      Page.draw( {
+        topslider: $slider,
+        listings: $list,
+      } );
+    }
+    catch ( err ) {
+      console.log( 'refreshPostCreateNonPerson failed:', err );
+    }
   }
 
   function setDownloadKeyBtn() {
@@ -763,6 +834,9 @@ Initialized by: ${ window.location.host }
   function reset() {
     cardIndex = 0;
     entityData = {};
+    V.setState( 'tinyImageUpload', 'clear' );
+    V.setState( 'thumbnailUpload', 'clear' );
+    V.setState( 'mediumImageUpload', 'clear' );
   }
 
   function getEntityData() {

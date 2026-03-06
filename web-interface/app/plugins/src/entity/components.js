@@ -375,6 +375,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleImageUpload( e ) {
+    const clearUploadedImages = () => {
+      V.setState( 'tinyImageUpload', 'clear' );
+      V.setState( 'thumbnailUpload', 'clear' );
+      V.setState( 'mediumImageUpload', 'clear' );
+    };
+
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
         if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
@@ -390,6 +396,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                   },
                   r: res.src,
                 } ) );
+                clearUploadedImages();
               } );
             } );
           } );
@@ -415,6 +422,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
               r: V.getState( 'mediumImageUpload' ).dataUrl,
             } ) );
+            clearUploadedImages();
           } );
         }
       }

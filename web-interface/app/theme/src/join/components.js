@@ -39,7 +39,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinAwaitKeyBottom: '',
       joinKeyImportance: 'Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.',
       joinSelectGroupsTop: 'Select plots',
-      joinSelectGroupsBottom: 'Select more than one plot to join in a single group',
+      joinSelectGroupsBottom: 'Select more than one plot to create a group',
 
       joinFormName: 'Name',
       joinFormTitle: 'Title',

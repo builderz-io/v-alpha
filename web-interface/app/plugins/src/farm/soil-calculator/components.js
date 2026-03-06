@@ -801,7 +801,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if(
       _.DATE_TURN && _.DATE_HVST
-      && new Date( _.DATE_TURN.value ) >= new Date( _.DATE_HVST.value )
+      && new Date( _.DATE_TURN.value ) < new Date( _.DATE_HVST.value )
     ) {
       return -30;
     }
