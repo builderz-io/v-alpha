@@ -111,18 +111,17 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/vcore/dependencies/secondary/socket.io.min.js' ),
       ] );
       console.log( '*** MongoDB and socket.io scripts loaded ***' );
-      
-      // Make socket connection non-blocking
-      setSocket()
-        .then( res => {
-          console.log( res );
-          V.setState( 'socketConnected', true );
-        } )
-        .catch( ( error ) => {
-          console.warn( 'Socket connection failed:', error );
-          V.setState( 'socketConnected', false );
-          V.setState( 'socketError', error );
-        } );
+
+      try {
+        const res = await setSocket();
+        console.log( res );
+        V.setState( 'socketConnected', true );
+      }
+      catch ( error ) {
+        console.warn( 'Socket connection failed:', error );
+        V.setState( 'socketConnected', false );
+        V.setState( 'socketError', error );
+      }
     }
   }
 
@@ -134,11 +133,14 @@ const VLedger = ( function() { // eslint-disable-line no-unused-vars
       const connection = host + ( port ? ':' + port : '' );
 
       const socketSettings = {
-        // transports: ['websocket'],
-        secure: true,
+        transports: ['polling', 'websocket'],
+        secure: host.indexOf( 'localhost' ) === -1 && host.indexOf( '127.0.0.1' ) === -1,
+        reconnection: true,
+        reconnectionAttempts: 10,
+        timeout: 20000,
       };
 
-      window.socket = io.connect( connection, socketSettings );
+      window.socket = io( connection, socketSettings );
 
       window.socket.on( 'connect', () => {
         resolve( socket.id + ' connected' );

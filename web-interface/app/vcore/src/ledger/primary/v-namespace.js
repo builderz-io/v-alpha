@@ -202,7 +202,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
 
-    /** cast some random geometry */
+    /** cast some random peometry */
     const geo = V.castRandLatLng();
 
     return {

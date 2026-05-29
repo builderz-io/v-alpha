@@ -31,6 +31,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setStylesheet( host + '/css/src/2_2_color.css' ),
         V.setStylesheet( host + '/css/src/3_0_utilities.css' ),
         V.setStylesheet( host + '/css/src/4_0_components.css' ),
+        V.setStylesheet( host + '/css/src/5_0_soil-calculator.css' ),
         V.setStylesheet( host + '/css/src/8_0_overrides.css' ),
         V.setStylesheet( host + '/css/src/9_0_leaflet.css' ),
         V.setStylesheet( host + '/css/src/9_1_leaflet-locationpicker.css' ),
@@ -133,6 +134,12 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       ] )
         .then( () => console.log( 'Success loading demo content' ) )
         .catch( () => console.error( 'Error loading demo content' ) );
+    }
+
+    if ( V.getSetting( 'devSeedPlot' ) ) {
+      await V.setScript( host + '/assets/dev-seed/dev-bootstrap.js' )
+        .then( () => console.log( 'Success loading dev seed bootstrap' ) )
+        .catch( () => console.error( 'Error loading dev seed bootstrap' ) );
     }
   }
 
@@ -409,6 +416,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if ( ['farms', 'farms category'].includes( status ) ) {
           Farm.draw( which );
         }
+        else if ( ['plot calculator'].includes( status ) ) {
+          Farm.drawPlotWorkspace( which );
+        }
         else if ( ['hall'].includes( status ) ) {
           Hall.draw( which );
         }
@@ -455,6 +465,10 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
 
       /** launch the user navigation (transfer, settings ...) */
       User.launch();
+
+      if ( V.getSetting( 'devSeedPlot' ) && typeof DevBootstrap !== 'undefined' ) {
+        DevBootstrap.launch();
+      }
     }
 
     if ( V.getSetting( 'demoContent' ) ) {
@@ -501,6 +515,15 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
       else {
         Join.launch(); // sets node: join button
       }
+    }
+    else if (
+      V.getSetting( 'entityLedger' ) === 'MongoDB'
+      && /^\/(plot|profile)\//.test( window.location.pathname || '' )
+    ) {
+      setTimeout( function delayedDrawJoinedUserPill() {
+        Navigation.drawJoinedUserPill();
+      }, 0 );
+      Account.drawHeaderBalance();
     }
     else {
       setTimeout( function delayedDrawJoinedUserPill() {

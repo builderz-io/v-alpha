@@ -21,15 +21,14 @@ const SoilCalculator = ( () => {
   /* fetch crop and fertilizer parameters, fetch legend-file (includes translations) */
 
   let crops, fertilizers, soilTypes, legends;
+  let parametersReady = false;
 
   const sourceCrop = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/crops.json`;
   const sourceFtlz = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/fertilizers.json`;
   const sourceStyp = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/soil-types.json`;
   const sourceLegend = `${ V.getSetting( 'sourceEndpoint' ) }/plugins/src/farm/soil-calculator/parameter/schemas-and-legends.json`;
 
-  // we may not need to await the JSON file-loading
-
-  Promise.all( [
+  const whenReady = Promise.all( [
     V.getData( '', sourceCrop, 'api' ),
     V.getData( '', sourceFtlz, 'api' ),
     V.getData( '', sourceStyp, 'api' ),
@@ -39,7 +38,13 @@ const SoilCalculator = ( () => {
     fertilizers = all[1].data[0];
     soilTypes = all[2].data[0];
     legends = all[3].data[0];
+    parametersReady = true;
+    return true;
   } );
+
+  function isParametersReady() {
+    return parametersReady;
+  }
 
   /* ======================  Private Methods  ===================== */
 
@@ -613,6 +618,8 @@ const SoilCalculator = ( () => {
     getYearsAverageResults,
     getAccumulatedSequenceResults,
     setTestData,
+    whenReady,
+    isParametersReady,
   };
 
 } )();

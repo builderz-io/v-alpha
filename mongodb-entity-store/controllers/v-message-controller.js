@@ -1,5 +1,5 @@
 const systemInit = require( '../systemInit' );
-const sio = require( '../server-es' ).sio;
+const sio = require( '../socket' ).get();
 const telegramNotification = require( '../lib/telegram' ).adminNotify;
 
 const ChatDB = require( '../models/v-message-model' );

@@ -149,6 +149,18 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
       ],
     },
     {
+      path: '/plot',
+      children: [
+        {
+          path: '/:rawentity/calculator',
+          action: ( context ) => ( {
+            status: 'plot calculator',
+            data: [ context.params.rawentity ],
+          } ),
+        },
+      ],
+    },
+    {
       path: '/data',
       action: () => ( {
         status: 'data',

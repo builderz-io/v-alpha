@@ -78,13 +78,15 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( '.modal', 'clear' );
 
-      Navigation.drawReset();
+      const path = window.location.pathname || '';
+      const keepCurrentView = /^\/(plot|profile)\//.test( path );
 
-      // if ( V.getLocal( 'welcome-modal' ) == 1 ) {
-      //   // Modal.draw( which );
-      //   // Navigation.drawEntityNavPill( V.getState( 'activeEntity' ) );
-      //   V.setLocal( 'welcome-modal', 0 );
-      // }
+      if ( keepCurrentView ) {
+        Navigation.drawJoinedUserPill();
+      }
+      else {
+        Navigation.drawReset();
+      }
 
       const bal = V.aE().balance;
 
@@ -94,13 +96,16 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       else if ( bal && bal.success ) { // web3 signup
         Account.drawHeaderBalance( bal.balance.balance );
       }
-      else { // web3 signup, balance not found (e.g. wrong network)
+      else if ( !keepCurrentView ) { // web3 signup, balance not found (e.g. wrong network)
         Modal.draw( 'could not get balance' );
       }
 
-      // TODO: replace setInterval with eventsubscription, when possible
-      // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
-      setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+      if (
+        typeof V.getNetVAmount === 'function'
+        && V.getSetting( 'balanceCheckInterval' )
+      ) {
+        setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+      }
 
     }
     else if ( which == 'web3 entity not found' ) {

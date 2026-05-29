@@ -100,6 +100,9 @@ const VConfig = ( function() { // eslint-disable-line no-unused-vars
     emailKey: VNetworkInit.emailKey,
 
     useBuilds: VNetworkInit.useBuilds,
+    soilCalcTimeline: VNetworkInit.soilCalcTimeline !== false,
+    soilCalcExpertMode: VNetworkInit.soilCalcExpertMode === true,
+    devSeedPlot: VNetworkInit.devSeedPlot === true,
     buildsHost: 'https://production.valueinstrument.org',
 
     sendLogsToServer: false,

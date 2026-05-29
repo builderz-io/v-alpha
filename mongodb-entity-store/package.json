@@ -4,6 +4,8 @@
   "description": "The Value Instrument Alpha Version 2 MongoDB Entity Store",
   "main": "index.js",
   "scripts": {
+    "start:local": "node server-local.js",
+    "seed:dev": "node seed-dev-plot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

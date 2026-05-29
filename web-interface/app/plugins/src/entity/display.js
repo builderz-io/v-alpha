@@ -189,17 +189,23 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       // delayedMessageForm( entity );
     }
 
+    const lastViewed = V.getLastViewed();
+    const lastViewedFullId = lastViewed && lastViewed.fullId
+      ? lastViewed.fullId
+      : V.getState( 'active' ).lastViewed;
+
     if (
       V.aE()
+      && lastViewedFullId
       && (
-        V.aE().fullId == V.getLastViewed().fullId
+        V.aE().fullId == lastViewedFullId
         || (
           V.aE().holderOf
-          && V.aE().holderOf.map( item => item.fullId ).includes( V.getLastViewed().fullId )
+          && V.aE().holderOf.map( item => item.fullId ).includes( lastViewedFullId )
         )
         || (
           V.getState( 'tmpEditable' )
-          && V.getState( 'tmpEditable' ).includes( V.getLastViewed().fullId )
+          && V.getState( 'tmpEditable' ).includes( lastViewedFullId )
         )
       )
     ) {

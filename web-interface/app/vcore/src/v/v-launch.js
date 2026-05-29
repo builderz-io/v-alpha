@@ -16,30 +16,41 @@ const VLaunch = ( async function() { // eslint-disable-line no-unused-vars
     return strings;
   } )();
 
-  const returningUser = async () => V.setAuth()
-    .then( data => {
-      if ( data.success ) {
-        console.log( 'auth success' );
-        return data.data[0];
+  const returningUser = async () => {
+    /** Local MongoDB ledger uses socket auth via uPhrase, not Firebase setAuth */
+    if ( V.getSetting( 'entityLedger' ) === 'MongoDB' ) {
+      if ( V.getSetting( 'devSeedPlot' ) ) {
+        try {
+          await V.waitForLedgerReady( 15000 );
+        }
+        catch ( e ) {
+          console.warn( 'MongoDB socket not ready for dev seed:', e.message );
+        }
       }
-      else {
-        throw new Error( 'could not set auth' );
-      }
-    } )
-    .then( data => V.getEntity( { uuidE: data.uuidE, uuidP: data.uuidP, isReturningUser: true } ) )
-    .then( entity => {
-      if ( entity.success ) {
-        V.setActiveEntity( entity.data[0] );
-        return true;
-      }
-      else {
+      return;
+    }
+
+    return V.setAuth()
+      .then( data => {
+        if ( data.success ) {
+          console.log( 'auth success' );
+          return data.data[0];
+        }
+        throw new Error( data.message || 'could not set auth' );
+      } )
+      .then( data => V.getEntity( { uuidE: data.uuidE, uuidP: data.uuidP, isReturningUser: true } ) )
+      .then( entity => {
+        if ( entity.success ) {
+          V.setActiveEntity( entity.data[0] );
+          return true;
+        }
         throw new Error( 'could not get entity after set auth' );
-      }
-    } )
-    .catch( err =>  {
-      V.setTempRefreshToken(); // clears temp_refresh
-      console.log( 'auth unsuccessful -', err );
-    } );
+      } )
+      .catch( err =>  {
+        V.setTempRefreshToken(); // clears temp_refresh
+        console.log( 'auth unsuccessful -', err );
+      } );
+  };
 
   /**
     * Launch language file

@@ -477,6 +477,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
       const bal = await getEntity( entity.fullId );
 
       if ( bal.success ) {
+        const onChain = bal.data[0].onChain || { balance: 0, lastMove: 0 };
         return  {
           success: true,
           endpoint: 'entity',
@@ -484,9 +485,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
           status: 'entity balance retrieved',
           data: [
             {
-              tokenBalance: bal.data[0].onChain.balance,
-              liveBalance: bal.data[0].onChain.balance, // TODO: this is the wrong live balance
-              lastBlock: bal.data[0].onChain.lastMove,
+              tokenBalance: onChain.balance || 0,
+              liveBalance: onChain.balance || 0, // TODO: this is the wrong live balance
+              lastBlock: onChain.lastMove || 0,
             },
           ],
         };

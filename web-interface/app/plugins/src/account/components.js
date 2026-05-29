@@ -136,7 +136,9 @@ const AccountComponents = ( function() { // eslint-disable-line no-unused-vars
       // V.getIcon( 'person', '16px' );
     }
     else {
-      balance = V.getNetVAmount( balance ).net;
+      balance = typeof V.getNetVAmount === 'function'
+        ? V.getNetVAmount( balance ).net
+        : balance;
       balance = isNaN( balance ) ? '😷' : String( balance );
     }
     const sc = V.getState( 'screen' );

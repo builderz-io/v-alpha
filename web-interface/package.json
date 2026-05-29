@@ -4,6 +4,7 @@
   "description": "The Value Instrument Alpha Version 2 User Interface",
   "main": "",
   "scripts": {
+    "start": "node server-hosts.js",
     "test": "jest"
   },
   "repository": {

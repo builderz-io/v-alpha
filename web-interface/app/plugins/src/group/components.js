@@ -9,6 +9,7 @@ const GroupComponents = ( function() {
       noAssignedEntities: 'No entities assigned to group',
       plots: 'Plots',
       soilBalanceTitle: 'Soil Balance',
+      groupIncompleteRollup: 'Some plots have incomplete season data; group totals may be understated.',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -118,6 +119,22 @@ const GroupComponents = ( function() {
     inputElement.disabled = isLoading;
   }
 
+  function groupHasIncompletePlotData( plots ) {
+    if ( !plots || !plots.length ) { return false }
+    return plots.some( plot => {
+      const summary = SoilCalculatorComponents.getDataQualitySummary( plot.servicefields );
+      return summary.total > 0 && summary.complete < summary.total;
+    } );
+  }
+
+  function groupRollupDisclaimerNode( plots ) {
+    if ( !groupHasIncompletePlotData( plots ) ) { return '' }
+    return V.cN( {
+      c: 's-calc-validation-banner',
+      h: V.getString( ui.groupIncompleteRollup ),
+    } );
+  }
+
   function drawCheckboxGroupTotalBalanceWidget( groupId, plotIds ) {
     return V.getEntity( plotIds )
       .then( result => {
@@ -130,7 +147,10 @@ const GroupComponents = ( function() {
         );
         return V.cN( {
           a: { 'data-group-calc': groupId },
-          h: SoilCalculatorComponents.drawTotalBalance( plotAccumulatedData, 'isGroup' ),
+          h: [
+            SoilCalculatorComponents.drawTotalBalance( plotAccumulatedData, 'isGroup' ),
+            groupRollupDisclaimerNode( result.data ),
+          ],
         } );
       } );
   }
@@ -415,9 +435,24 @@ const GroupComponents = ( function() {
 
         document.querySelector( '#s-calc-result__T_BAL_N' ).textContent = plotAccumulatedData.N.toFixed( 1 );
         document.querySelector( '#s-calc-result__T_BAL_C' ).textContent = plotAccumulatedData.C.toFixed( 1 );
+
+        const disclaimer = document.querySelector( '.s-calc-group-disclaimer' );
+        if ( disclaimer ) {
+          disclaimer.textContent = groupHasIncompletePlotData( data )
+            ? V.getString( ui.groupIncompleteRollup )
+            : '';
+        }
       } );
 
-    return CanvasComponents.card( SoilCalculatorComponents.drawTotalBalance(), V.getString( ui.soilBalanceTitle ) );
+    return CanvasComponents.card(
+      V.cN( {
+        h: [
+          SoilCalculatorComponents.drawTotalBalance(),
+          V.cN( { c: 's-calc-validation-banner s-calc-group-disclaimer' } ),
+        ],
+      } ),
+      V.getString( ui.soilBalanceTitle ),
+    );
   }
 
   return {

@@ -1,0 +1,871 @@
+/**
+ * Soil calculator — Field Ledger
+ * Mobile-first; layout responds to the drawer width (container queries),
+ * not just the viewport — the page sheet stays ~410px even on wide screens.
+ */
+
+.s-calc-field-ledger {
+  --s-calc-paper: #f6f3ec;
+  --s-calc-ink: rgba(var(--offblack), 1);
+  --s-calc-muted: #6b6560;
+  --s-calc-border: #e2ddd3;
+  --s-calc-wheat: rgba(var(--brandSecondary), 1);
+  --s-calc-soil: rgba(var(--brandPrimary), 1);
+  --s-calc-gain: rgba(var(--green), 1);
+  --s-calc-loss: rgba(var(--viorange), 1);
+  --s-calc-warn-bg: #faf0d4;
+  --s-calc-warn-ink: #7a5a12;
+  --s-calc-touch: 44px;
+
+  container-type: inline-size;
+  container-name: soil-calc;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  color: var(--s-calc-ink);
+  font-family: 'IBM Plex Regular', sans-serif;
+}
+
+.s-calc-field-ledger *,
+.s-calc-field-ledger *::before,
+.s-calc-field-ledger *::after {
+  box-sizing: border-box;
+}
+
+/* ── Plot header ── */
+
+.s-calc-plot-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.65rem 1rem 0.5rem;
+  background: var(--s-calc-paper);
+  border-bottom: 1px solid var(--s-calc-border);
+}
+
+.s-calc-plot-header__back {
+  align-self: flex-start;
+  min-height: var(--s-calc-touch);
+  padding: 0.35rem 0;
+  border: none;
+  background: none;
+  color: var(--s-calc-soil);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.s-calc-plot-header__title {
+  margin: 0;
+  font-family: 'IBM Plex Bold', sans-serif;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+
+.s-calc-plot-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--s-calc-muted);
+}
+
+.s-calc-quality-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(var(--brandPrimary), 0.1);
+  color: var(--s-calc-soil);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.75rem;
+}
+
+/* ── Cards inside drawer: kill 100vw overflow ── */
+
+/* Cards/toolbar rows: same centered width as the rest of the page list */
+.s-calc-field-ledger > li {
+  list-style: none;
+}
+
+.s-calc-field-ledger .card__container {
+  width: 100%;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid var(--s-calc-border);
+  box-shadow: 0 1px 3px rgba(45, 55, 72, 0.06);
+}
+
+.s-calc-field-ledger .s-calc-toolbar-wrap {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0 0.5rem;
+  box-sizing: border-box;
+}
+
+/* ── Toolbar ── */
+
+.s-calc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: var(--s-calc-paper);
+  border: 1px solid var(--s-calc-border);
+}
+
+.s-calc-toolbar__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.s-calc-toolbar__group--export {
+  flex: 0 0 auto;
+}
+
+.s-calc-save-status {
+  flex: 0 0 auto;
+  margin-left: 0.35rem;
+  padding: 0.25rem 0.15rem;
+  font-size: 0.78rem;
+  color: var(--s-calc-muted);
+  white-space: nowrap;
+}
+
+.s-calc-save-status--busy { color: var(--s-calc-loss); }
+.s-calc-save-status--saved { color: var(--s-calc-gain); }
+
+.s-calc-toolbar__btn {
+  width: auto;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--s-calc-border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--s-calc-ink);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.s-calc-toolbar__btn--active {
+  border-color: var(--s-calc-soil);
+  background: var(--s-calc-soil);
+  color: #fff;
+}
+
+.s-calc-toolbar__btn--ghost {
+  background: transparent;
+}
+
+/* Narrow: stack save status when row is full */
+@container soil-calc (max-width: 360px) {
+  .s-calc-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+
+  .s-calc-toolbar__group:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .s-calc-toolbar__group--export {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .s-calc-save-status {
+    grid-column: 1 / -1;
+    margin-left: 0;
+    text-align: right;
+  }
+}
+
+.s-calc-balance-panel {
+  padding: 0.75rem 0.65rem 0.5rem;
+}
+
+.s-calc-date-pill {
+  display: block;
+  margin: 0 0.65rem 0.65rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  background: var(--s-calc-warn-bg);
+  color: var(--s-calc-warn-ink);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.s-calc-meters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0 0.35rem;
+}
+
+.s-calc-meter {
+  min-width: 0;
+  padding: 0.75rem 0.65rem;
+  border-radius: 8px;
+  background: var(--s-calc-paper);
+  border: 1px solid var(--s-calc-border);
+}
+
+.s-calc-meter__label {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--s-calc-muted);
+}
+
+.s-calc-meter__value {
+  display: block;
+  font-family: 'IBM Plex Bold', sans-serif;
+  font-size: clamp(1.25rem, 5vw, 1.65rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+}
+
+.s-calc-meter__unit,
+.s-calc-balance-unit {
+  display: block;
+  margin: 0.35rem 0.65rem 0;
+  padding: 0;
+  font-size: 0.68rem;
+  font-style: normal;
+  color: var(--s-calc-muted);
+  text-align: right;
+  line-height: 1.35;
+}
+
+.s-calc-meter__bar {
+  height: 3px;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+  background: var(--s-calc-border);
+}
+
+.s-calc-meter--gain .s-calc-meter__value { color: var(--s-calc-gain); }
+.s-calc-meter--gain .s-calc-meter__bar { background: var(--s-calc-gain); }
+.s-calc-meter--loss .s-calc-meter__value { color: var(--s-calc-loss); }
+.s-calc-meter--loss .s-calc-meter__bar { background: var(--s-calc-loss); }
+.s-calc-meter--neutral .s-calc-meter__value { color: var(--s-calc-soil); }
+.s-calc-meter--neutral .s-calc-meter__bar { background: var(--s-calc-soil); opacity: 0.35; }
+
+.s-calc-balance-interpretation {
+  margin: 0.65rem 0.65rem 0.25rem;
+  padding: 0.55rem 0.75rem;
+  border-left: 3px solid var(--s-calc-wheat);
+  background: rgba(var(--brandSecondary), 0.12);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+/* Very narrow: stack meters */
+@container soil-calc (max-width: 340px) {
+  .s-calc-meters {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Season timeline ── */
+
+.s-calc-timeline-host {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.25rem 0.35rem 0.5rem;
+}
+
+.s-calc-season-list {
+  width: 100%;
+  min-width: 0;
+}
+
+.s-calc-season-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 0.45rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--s-calc-border);
+  border-left: 4px solid transparent;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.s-calc-season-row--active {
+  border-left-color: var(--s-calc-wheat);
+  background: rgba(var(--brandSecondary), 0.08);
+}
+
+.s-calc-season-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.s-calc-season-row__year {
+  font-family: 'IBM Plex Bold', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--s-calc-muted);
+}
+
+.s-calc-season-row__crop {
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.s-calc-balance-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.s-calc-chip {
+  display: inline-block;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  background: rgba(var(--brandPrimary), 0.08);
+  color: var(--s-calc-soil);
+}
+
+.s-calc-chip--gain {
+  background: rgba(var(--green), 0.14);
+  color: #2d7a5a;
+}
+
+.s-calc-chip--loss {
+  background: rgba(var(--viorange), 0.15);
+  color: #9a5a10;
+}
+
+.s-calc-season-row__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--s-calc-border);
+}
+
+.s-calc-season-action {
+  flex: 1 1 auto;
+  min-height: 36px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--s-calc-border);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--s-calc-soil);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.s-calc-season-action--danger {
+  color: #a33;
+}
+
+.s-calc-season-action-sep {
+  display: none;
+}
+
+.s-calc-add-season {
+  width: 100%;
+  min-height: var(--s-calc-touch);
+  margin-bottom: 0.65rem;
+  padding: 0.65rem 1rem;
+  border: 1px dashed var(--s-calc-soil);
+  border-radius: 8px;
+  background: rgba(var(--brandSecondary), 0.06);
+  color: var(--s-calc-soil);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Wider drawer: season row horizontal */
+@container soil-calc (min-width: 420px) {
+  .s-calc-season-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .s-calc-season-row__main {
+    flex: 1;
+  }
+
+  .s-calc-season-row__actions {
+    flex: 0 0 auto;
+    width: auto;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .s-calc-season-action {
+    flex: 0 0 auto;
+    min-height: auto;
+  }
+}
+
+/* Two-column only when drawer is actually wide (full-screen page) */
+@container soil-calc (min-width: 680px) {
+  .s-calc-timeline-host {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 0.75rem 1rem;
+    align-items: start;
+  }
+
+  .s-calc-season-editor {
+    margin-top: 0;
+    position: sticky;
+    top: 0.5rem;
+  }
+}
+
+/* Also enable two-column when page is expanded full-screen */
+.page-full-screen .s-calc-field-ledger .s-calc-timeline-host {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 0.75rem 1rem;
+  align-items: start;
+}
+
+.page-full-screen .s-calc-field-ledger .s-calc-season-editor {
+  margin-top: 0;
+  position: sticky;
+  top: 0.5rem;
+}
+
+/* ── Season editor / forms ── */
+
+.s-calc-season-editor {
+  width: 100%;
+  min-width: 0;
+  margin-top: 0.65rem;
+}
+
+.s-calc-form-background {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.85rem 0.65rem;
+  border-radius: 8px;
+  background: var(--s-calc-paper);
+  border: 1px solid var(--s-calc-border);
+}
+
+.s-calc-form,
+.s-calc-plot-setup,
+.s-calc-form__section {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.s-calc-guided-entry {
+  width: 100%;
+  min-height: var(--s-calc-touch);
+  margin-bottom: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--s-calc-soil);
+  color: #fff;
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.92rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.s-calc-step-hint {
+  margin: 0 0 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(201, 162, 39, 0.12);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--s-calc-soil);
+}
+
+.s-calc-fertilizer-slot {
+  margin-bottom: 0.85rem;
+  padding: 0.75rem;
+  border: 1px solid var(--s-calc-border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.s-calc-fertilizer-slot__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--s-calc-border);
+}
+
+.s-calc-fertilizer-slot__num {
+  flex: 0 0 1.65rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--s-calc-soil);
+  color: #fff;
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.82rem;
+}
+
+.s-calc-fertilizer-slot__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.s-calc-fertilizer-slot__label strong {
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.92rem;
+}
+
+.s-calc-fertilizer-slot__picked {
+  font-size: 0.82rem;
+  color: var(--s-calc-gain);
+}
+
+.s-calc-fertilizer-slot__picked--empty {
+  color: var(--s-calc-muted, #718096);
+  font-style: italic;
+}
+
+.s-calc-add-fertilizer {
+  display: block;
+  width: 100%;
+  min-height: var(--s-calc-touch);
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: var(--s-calc-border);
+  border-radius: 8px;
+  background: var(--s-calc-paper);
+  color: var(--s-calc-soil);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.92rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.s-calc-add-fertilizer:hover,
+.s-calc-add-fertilizer:focus-visible {
+  border-color: var(--s-calc-wheat);
+  background: rgba(201, 162, 39, 0.08);
+}
+
+.s-calc-field-ledger .s-calc-fertilizer-slot .fertilizers .s-calc-input-wrapper:not(:first-of-type) {
+  padding: 0;
+  margin-left: 0;
+  border-left: none;
+}
+
+.s-calc-field-ledger .s-calc-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.s-calc-field-ledger .s-calc-input-label {
+  width: 100%;
+  max-width: none;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.s-calc-field-ledger .s-calc-input-unit {
+  margin-left: 0;
+  font-size: 0.72rem;
+}
+
+.s-calc-field-ledger .s-calc-input-number,
+.s-calc-field-ledger .s-calc-input-date,
+.s-calc-field-ledger .s-calc-input-select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--s-calc-border);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.95rem;
+}
+
+.s-calc-field-ledger .s-calc-input-number {
+  width: 100%;
+  max-width: 8rem;
+  text-align: right;
+}
+
+.s-calc-field-ledger .s-calc-input-radio-wrapper {
+  width: 100%;
+  max-width: 12rem;
+}
+
+.s-calc-field-ledger fertilizers .s-calc-input-wrapper:not(:first-of-type) {
+  padding: 0.5rem 0 0.5rem 0.65rem;
+  margin-left: 0.35rem;
+  border-left: 2px solid var(--s-calc-border);
+}
+
+@container soil-calc (min-width: 420px) {
+  .s-calc-field-ledger .s-calc-input-wrapper {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .s-calc-field-ledger .s-calc-input-label {
+    flex: 1 1 45%;
+    min-width: 8rem;
+  }
+
+  .s-calc-field-ledger .s-calc-input-select,
+  .s-calc-field-ledger .s-calc-input-date {
+    flex: 1 1 45%;
+    max-width: 13rem;
+    margin-left: auto;
+  }
+
+  .s-calc-field-ledger .s-calc-input-number {
+    margin-left: auto;
+  }
+}
+
+/* ── Results tables ── */
+
+.s-calc-field-ledger .s-calc-results {
+  width: 100%;
+  max-width: 100%;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid var(--s-calc-border);
+}
+
+.s-calc-field-ledger .s-calc-results-table {
+  width: 100%;
+  min-width: 0;
+  padding: 0.65rem 0.5rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.s-calc-field-ledger .s-calc-results-table td {
+  padding: 0.35rem 0.25rem;
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+}
+
+.s-calc-field-ledger .s-calc-results-table .td-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.s-calc-results-bullets {
+  margin: 0.5rem 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+
+.s-calc-results-show-btn {
+  text-align: center;
+  padding: 0.35rem;
+  cursor: pointer;
+}
+
+/* ── Wizard ── */
+
+.s-calc-wizard-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(45, 55, 72, 0.45);
+}
+
+.s-calc-wizard-panel {
+  --s-calc-paper: #f6f3ec;
+  --s-calc-border: #e2ddd3;
+  --s-calc-soil: rgba(var(--brandPrimary), 1);
+  --s-calc-wheat: rgba(var(--brandSecondary), 1);
+  --s-calc-touch: 44px;
+
+  width: 100%;
+  max-width: 100%;
+  max-height: 88vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 1rem 1rem 1.25rem;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.18);
+  box-sizing: border-box;
+}
+
+.s-calc-wizard-panel h3 {
+  margin: 0 0 0.75rem;
+  font-family: 'IBM Plex Bold', sans-serif;
+  font-size: 1.15rem;
+}
+
+.s-calc-wizard-steps {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.s-calc-wizard-step {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--s-calc-border);
+}
+
+.s-calc-wizard-step--active { background: var(--s-calc-wheat); }
+.s-calc-wizard-step--done { background: var(--s-calc-gain); }
+
+.s-calc-wizard-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--s-calc-border);
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.s-calc-wizard-actions .s-calc-wizard-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+  min-height: var(--s-calc-touch);
+  padding: 0.55rem 0.85rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--s-calc-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--s-calc-soil);
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.s-calc-wizard-actions .s-calc-wizard-btn--primary {
+  background: var(--s-calc-soil);
+  border-color: var(--s-calc-soil);
+  color: #fff;
+}
+
+.s-calc-wizard-actions .s-calc-wizard-btn:focus-visible {
+  outline: 2px solid var(--s-calc-wheat);
+  outline-offset: 2px;
+}
+
+@media screen and (min-width: 640px) {
+  .s-calc-wizard-overlay {
+    align-items: center;
+    padding: 1.5rem;
+  }
+
+  .s-calc-wizard-panel {
+    max-width: 480px;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+  }
+}
+
+/* ── Compact dashboard ── */
+
+.s-calc-compact .s-calc-open-btn {
+  width: 100%;
+  min-height: var(--s-calc-touch);
+  margin-top: 0.5rem;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--s-calc-soil);
+  color: #fff;
+  font-family: 'IBM Plex Medium', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.s-calc-compact-quality {
+  padding: 0.35rem 0.65rem 0.5rem;
+  font-size: 0.82rem;
+  color: var(--s-calc-muted);
+}
+
+/* ── Viewport-level tweaks (header only) ── */
+
+@media screen and (min-width: 640px) {
+  .s-calc-plot-header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .s-calc-plot-header__title {
+    font-size: 1.5rem;
+  }
+}

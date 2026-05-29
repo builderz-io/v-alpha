@@ -96,7 +96,20 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function getLastViewed() {
-    return getFromCache( 'viewed', getState( 'active' ).lastViewedUuidE );
+    const active = getState( 'active' );
+    if ( !active ) { return undefined }
+
+    if ( active.lastViewedUuidE ) {
+      const byUuid = getFromCache( 'viewed', active.lastViewedUuidE );
+      if ( byUuid ) { return byUuid }
+    }
+
+    if ( active.lastViewed ) {
+      const byFullId = getFromCache( 'viewed', active.lastViewed );
+      if ( byFullId ) { return byFullId }
+    }
+
+    return active.lastViewedEntity || undefined;
   }
 
   function getCache( which ) {

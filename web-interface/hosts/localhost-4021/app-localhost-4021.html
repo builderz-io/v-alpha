@@ -14,15 +14,18 @@
           sourceEndpoint: 'local', // choices are 'local', 'development', 'staging', 'production' and 'github'
           useAppVersion: '', // e.g. '3.4.0' or '' for latest version
           useBuilds: false,
+          soilCalcTimeline: true,
+          devSeedPlot: true,
 
-          namespaceEndpoint: 'https://europe-west1-humbilka-namespace.cloudfunctions.net/api/v1',
+          /** Use firebase-development or humbilka URL for remote-only UI testing */
+          namespaceEndpoint: 'firebase-development',
 
           devMode: true,
 
           language: 'german',
           mapDefault: 'atlantic',
-          marketContent: 1, // 0 -> no restriction, 1 -> user only
-          highlights: 0,
+          marketContent: 0, // 0 -> broader listing for local dev; 1 -> holder only
+          highlights: 3,
           defaultPrivacy: 0, // 0 -> no restriction, 1 -> level 1 (maximum) restriction (point invisible), 2 -> level 2 restriction (point visible, content invisible)
           featureVideo: '',
           questionnaire: false,
@@ -32,7 +35,7 @@
           confirmEmail: false,
           networkAdminEmail: '',
 
-          landingPage: '/network/hall', // e.g. '/network/hall' // '' for none
+          landingPage: '', // e.g. '/network/hall' // '' for none
           callToActionText: '',
           callToActionProfile: '',
 
@@ -93,12 +96,12 @@
             chat: [],
           },
 
-          entityLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
-          chatLedger: 'Firebase', // choices are: 'MongoDB' or 'Firebase' (case sensitive)
-          transactionLedger: 'EVM', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
+          entityLedger: 'MongoDB', // choices are: 'MongoDB' or 'Firebase' or '3Box' (case sensitive)
+          chatLedger: 'MongoDB', // choices are: 'MongoDB' or 'Firebase' (case sensitive)
+          transactionLedger: 'MongoDB', // choices are: 'MongoDB' or 'EVM' or 'Symbol' (case sensitive)
           managedTransactionApi: 'Firebase',
 
-          mongodbEndpoint: 'builderz',
+          mongodbEndpoint: 'local',
           apiEndpoint: '', // defaults to 'builderz' // provides email and telegram api, as well as a crypto api
 
           tokenContract: 'goerli',

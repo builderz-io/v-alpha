@@ -137,6 +137,16 @@ var entitySchema = mongoose.Schema( {
     receiveVolume: Number,
     allTimeVolume: Number,
   },
+  servicefields: {
+    type: mongoose.Schema.Types.Mixed,
+    default: undefined,
+  },
+  holderOf: [{
+    a: String,
+    c: String,
+    fullId: String,
+  }],
+  holders: [String],
 
 } );
 
