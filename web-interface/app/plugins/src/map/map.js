@@ -100,6 +100,33 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
   const coordinatesCache = [];
 
+  function hasValidCoordinates( coordinates ) {
+    return coordinates
+      && Array.isArray( coordinates )
+      && coordinates.length >= 2
+      && coordinates[0] != null
+      && coordinates[1] != null
+      && !Number.isNaN( coordinates[0] )
+      && !Number.isNaN( coordinates[1] );
+  }
+
+  function ensureFeatureCoordinates( feature ) {
+    if ( !feature ) { return feature }
+    feature.geometry = feature.geometry || {};
+    if ( hasValidCoordinates( feature.geometry.coordinates ) ) {
+      return feature;
+    }
+    const continentIndex = feature.geometry.continent
+      ? feature.geometry.continent - 1
+      : 2;
+    feature.geometry.coordinates = V.castJson(
+      continentsLngLat[continentIndex] || continentsLngLat[2],
+      'clone',
+    );
+    feature.geometry.rand = feature.geometry.rand !== false;
+    return feature;
+  }
+
   /* ================== private methods ================= */
 
   function view( data, options ) {
@@ -107,22 +134,30 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     const isPopupOpen = V.getNode( '.map-popup-inner' );
 
     if ( Array.isArray( data ) ) {
+      const features = data
+        .filter( item => item && !item.isBaseLocationUpdate )
+        .map( item => ensureFeatureCoordinates( item ) );
+
+      if ( !features.length ) {
+        return;
+      }
+
       if ( options ) {
-        if ( options.isSearch && data[0] ) {
-          setSearch( data );
+        if ( options.isSearch && features[0] ) {
+          setSearch( features );
         }
         else if ( options.isHover ) {
-          setHover( data );
+          setHover( features );
         }
         else if ( options.isJoin ) {
-          setLastViewed( data, options );
+          setLastViewed( features, options );
         }
       }
       else {
         if ( data[0] && data[0].isBaseLocationUpdate ) {
           setTempPoint( data );
         }
-        setLastViewed( data );
+        setLastViewed( features );
       }
       return;
     }
@@ -518,14 +553,15 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setLastViewed( features, options ) {
+    if ( !features || !features[0] ) {
+      return;
+    }
+
     if ( lastViewedLayer ) {
       lastViewedLayer.remove();
     }
 
-    /* if no location was entered by user, fill in the continent set by user */
-    if ( !features[0].geometry.coordinates ) {
-      features[0].geometry.coordinates = V.castJson( continentsLngLat[ features[0].geometry.continent - 1 ], 'clone' );
-    }
+    ensureFeatureCoordinates( features[0] );
 
     lastViewedLayer = castLayer( 'lastViewed', features, options );
 

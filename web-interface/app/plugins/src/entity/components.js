@@ -163,10 +163,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleProfileDraw() {
-    const path = V.castPathOrId( this.textContent );
+    const path = this.path
+      ? this.path
+      : V.castPathOrId( this.textContent || this.fullId );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
-    Profile.draw( path );
+    Profile.draw( this.path ? this : path );
   }
 
   function handleBaseLocationFocus() {
@@ -1179,6 +1181,8 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const openProfile = options && options.openProfile;
     const profileNav = {
       path: entity.path || V.castPathOrId( entity.fullId ),
+      fullId: entity.fullId,
+      textContent: entity.fullId,
       uuidE: entity.uuidE,
       uuidP: entity.uuidP,
     };
