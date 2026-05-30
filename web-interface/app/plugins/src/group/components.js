@@ -11,6 +11,7 @@ const GroupComponents = ( function() {
       members: 'Members',
       addMembers: 'Add from your entities',
       removeMember: 'Remove',
+      noHeldEntitiesToAdd: 'No other entities in your account to add',
       soilBalanceTitle: 'Soil Balance',
       groupIncompleteRollup: 'Some plots have incomplete season data; group totals may be understated.',
     };
@@ -23,6 +24,28 @@ const GroupComponents = ( function() {
   } )();
 
   /* ================== private methods ================= */
+
+  function setContainerContent( container, content ) {
+    if ( !container ) {
+      return;
+    }
+
+    if ( typeof container === 'string' ) {
+      container = V.getNode( container );
+    }
+
+    if ( !container ) {
+      return;
+    }
+
+    container.textContent = '';
+
+    if ( content === '' || content == null ) {
+      return;
+    }
+
+    V.setNode( container, content );
+  }
 
   function isGroupEntity( entity ) {
     if ( !entity ) { return false }
@@ -69,12 +92,40 @@ const GroupComponents = ( function() {
   }
 
   function userHoldsGroup( group ) {
-    if ( !group || !V.aE() || !V.aE().holderOf ) {
+    if ( !group || !V.aE() ) {
       return false;
     }
-    return V.aE().holderOf.some(
-      item => item.a === group.uuidE && V.castRole( item.c ) === 'Group',
-    );
+
+    const active = V.aE();
+
+    if ( active.holderOf && active.holderOf.some( item => {
+      const holdsThisGroup = item.a === group.uuidE || item.fullId === group.fullId;
+      const isGroupRef = item.c === 'aq'
+        || item.c === 'Group'
+        || V.castRole( item.c ) === 'Group';
+      return holdsThisGroup && isGroupRef;
+    } ) ) {
+      return true;
+    }
+
+    if (
+      group.holders
+      && group.holders.includes( active.fullId )
+    ) {
+      return true;
+    }
+
+    const tmpEditable = V.getState( 'tmpEditable' );
+
+    return !!( tmpEditable && tmpEditable.includes( group.fullId ) );
+  }
+
+  function getHeldEntityRefs( holderOf ) {
+    return ( holderOf || [] )
+      .filter( item => {
+        const role = V.castRole( item.c );
+        return role !== 'Group' && item.c !== 'aq';
+      } );
   }
 
   function setGroupedUuidsOnGroup( group, uuids ) {
@@ -87,7 +138,7 @@ const GroupComponents = ( function() {
     const uuids = getGroupedUuids( group );
 
     if ( !uuids.length ) {
-      V.setNode( listContainer, V.cN( {
+      setContainerContent( listContainer, V.cN( {
         c: 'pxy',
         h: V.getString( ui.noAssignedEntities ),
       } ) );
@@ -97,7 +148,15 @@ const GroupComponents = ( function() {
     const canManage = userHoldsGroup( group );
 
     V.getEntity( uuids ).then( result => {
-      V.setNode( listContainer, result.data.map( member => V.cN( {
+      if ( !result.success || !result.data || !result.data.length ) {
+        setContainerContent( listContainer, V.cN( {
+          c: 'pxy',
+          h: V.getString( ui.noAssignedEntities ),
+        } ) );
+        return;
+      }
+
+      setContainerContent( listContainer, result.data.map( member => V.cN( {
         c: 'group-member-row flex justify-between items-center pxy',
         h: [
           {
@@ -129,24 +188,38 @@ const GroupComponents = ( function() {
             : '',
         ],
       } ) ) );
+    } ).catch( () => {
+      setContainerContent( listContainer, V.cN( {
+        c: 'pxy',
+        h: V.getString( ui.noAssignedEntities ),
+      } ) );
     } );
   }
 
-  function refreshGroupMembersManage( group, manageContainer ) {
-    const heldRefs = ( V.aE().holderOf || [] )
-      .filter( item => V.castRole( item.c ) !== 'Group' );
+  function refreshGroupMembersManage( group, manageContainer, holderOfSource ) {
+    const heldRefs = getHeldEntityRefs(
+      holderOfSource || ( V.aE() && V.aE().holderOf ),
+    );
 
     if ( !heldRefs.length ) {
-      V.setNode( manageContainer, '' );
+      setContainerContent( manageContainer, V.cN( {
+        c: 'pxy fs-s',
+        h: V.getString( ui.noHeldEntitiesToAdd ),
+      } ) );
       return;
     }
 
     const heldUuids = heldRefs.map( item => item.a );
 
     V.getEntity( heldUuids ).then( result => {
+      if ( !result.success || !result.data ) {
+        setContainerContent( manageContainer, '' );
+        return;
+      }
+
       const inGroup = new Set( getGroupedUuids( group ) );
 
-      V.setNode( manageContainer, [
+      setContainerContent( manageContainer, [
         V.cN( {
           c: 'pxy font-bold fs-s',
           h: V.getString( ui.addMembers ),
@@ -182,10 +255,15 @@ const GroupComponents = ( function() {
                 } );
               },
             },
-            held.fullId + ' (' + held.role + ')',
+            {
+              t: 'span',
+              h: held.fullId + ' (' + held.role + ')',
+            },
           ],
         } ) ),
       ] );
+    } ).catch( () => {
+      setContainerContent( manageContainer, '' );
     } );
   }
 
@@ -452,6 +530,50 @@ const GroupComponents = ( function() {
     return CanvasComponents.card( parent, SoilCalculatorComponents.castCardTitle( 'groups' ) );
   }
 
+  function refreshGroupMembersPanel( group, listContainer, manageContainer ) {
+    refreshGroupMembersList( group, listContainer );
+
+    if ( !V.aE() || !V.aE().fullId ) {
+      setContainerContent( manageContainer, '' );
+      return;
+    }
+
+    setContainerContent( manageContainer, V.cN( {
+      c: 'pxy',
+      h: InteractionComponents.confirmClickSpinner( { color: 'black' } ),
+    } ) );
+
+    V.getEntity( V.aE().fullId ).then( res => {
+      if ( res.success && res.data[0] && res.data[0].holderOf ) {
+        V.setActiveEntity( Object.assign( {}, V.aE(), {
+          holderOf: res.data[0].holderOf,
+        } ) );
+      }
+
+      if ( !userHoldsGroup( group ) ) {
+        setContainerContent( manageContainer, '' );
+        return;
+      }
+
+      refreshGroupMembersManage(
+        group,
+        manageContainer,
+        V.aE().holderOf,
+      );
+    } ).catch( () => {
+      if ( !userHoldsGroup( group ) ) {
+        setContainerContent( manageContainer, '' );
+        return;
+      }
+
+      refreshGroupMembersManage(
+        group,
+        manageContainer,
+        V.aE().holderOf,
+      );
+    } );
+  }
+
   function drawGroupPlotWidget() {
     const entity = V.getState( 'active' ).lastViewedEntity;
 
@@ -459,22 +581,13 @@ const GroupComponents = ( function() {
 
     const listNode = V.cN( {
       c: 'group-members__list',
-      h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
     } );
 
-    const canManage = userHoldsGroup( entity );
-    const manageNode = canManage
-      ? V.cN( {
-        c: 'group-members-manage s-calc-form-background',
-        h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
-      } )
-      : '';
+    const manageNode = V.cN( {
+      c: 'group-members-manage s-calc-form-background',
+    } );
 
-    refreshGroupMembersList( entity, listNode );
-
-    if ( canManage ) {
-      refreshGroupMembersManage( entity, manageNode );
-    }
+    refreshGroupMembersPanel( entity, listNode, manageNode );
 
     return CanvasComponents.card(
       V.cN( { c: 'group-members', h: [listNode, manageNode] } ),
@@ -544,7 +657,11 @@ const GroupComponents = ( function() {
 
     if ( !isGroupEntity( entity ) ) { return '' }
 
-    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
+    const groupedEntities = getGroupedUuids( entity );
+
+    if ( !groupedEntities.length ) {
+      return '';
+    }
 
     V.getEntity( groupedEntities )
       .then( ( { data } ) => {

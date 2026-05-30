@@ -54,9 +54,23 @@ function buildPlotServicefields() {
   };
 }
 
+function buildSecondPlotServicefields() {
+  const s1 = makeSeason( 1030, '2022-04-10', '2022-09-05', '2022-08-28', 9, 6 );
+  const s2 = makeSeason( 1040, '2023-04-08', '2023-09-01', '2023-08-25', 6, 3 );
+  const site = buildSiteDatapoint();
+
+  return {
+    s1: JSON.stringify( s1 ),
+    s2: JSON.stringify( s2 ),
+    s31: JSON.stringify( site ),
+  };
+}
+
 module.exports = {
   buildPlotServicefields,
+  buildSecondPlotServicefields,
   DEV_UPHRASE: 'dev-soil-tester-key',
   DEV_PERSON_FULL_ID: 'Dev Tester #1001',
   DEV_PLOT_FULL_ID: 'Demo Field #2121',
+  DEV_PLOT_2_FULL_ID: 'North Field #2122',
 };

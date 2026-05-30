@@ -9,6 +9,24 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   /* ================== private methods ================= */
 
+  function findNavPill( which ) {
+    if ( !which ) {
+      return null;
+    }
+    return V.getNode(
+      'entity-nav [path="' + which + '"],'
+      + ' service-nav [path="' + which + '"],'
+      + ' user-nav [path="' + which + '"]',
+    );
+  }
+
+  function findNavRow( which ) {
+    const $pill = findNavPill( which );
+    return $pill
+      ? $pill.closest( 'entity-nav, service-nav, user-nav' )
+      : null;
+  }
+
   function presenter(
     data,
     whichPath = typeof data == 'object' ? data.path : data,
@@ -59,11 +77,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
      *
      */
 
-    const doesNodeExist = V.getNode( '[path="' + whichPath + '"]' );
+    const doesNodeExist = findNavPill( whichPath );
 
     if (
       doesNodeExist
-      && doesNodeExist.closest( 'header' )
       && !data.fullId
     ) {
       return {
@@ -187,12 +204,12 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     const which = viewData.data[0].which;
 
-    if ( which ) {
+    if ( which && ( viewData.success || findNavPill( which ) ) ) {
       V.setState( 'active', { navItem: which } );
 
       /**
-       * timeout ensures that popup is removed from DOM,
-       * to avoid conflicting node being found in $itemToAnimate in animate
+       * timeout ensures nav pills are in the DOM before animate runs;
+       * animate only targets header nav rows, not map popups etc.
        */
       setTimeout( () => ( animate( which ) ), 8 );
     }
@@ -453,13 +470,13 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
   function animate( which ) {
 
-    const $itemToAnimate = V.getNode( '[path="' + which + '"]' );
+    const $itemToAnimate = findNavPill( which );
+    const $navToAnimate = findNavRow( which );
 
-    if ( !$itemToAnimate ) {
+    if ( !$itemToAnimate || !$navToAnimate ) {
       return;
     }
 
-    const $navToAnimate = $itemToAnimate.closest( '.nav' );
     const nav = $navToAnimate.localName;
 
     if ( nav != 'user-nav' && !V.getVisibility( 'entity-nav' ) ) {
@@ -522,7 +539,7 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
       tag: tag || '#0000',
       initials: data.initials || V.castInitials( title || 'Profile' ),
       avatar: data.avatar || ( data.images ? data.images.avatar : undefined ),
-      path: data.path,
+      path: data.path || ( data.fullId ? V.castPathOrId( data.fullId ) : undefined ),
       draw: function( path ) { Profile.draw( path ) },
     };
     if ( data.tinyImage ) { // old model
@@ -583,7 +600,21 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     /** Place into view */
     const $pill = NavComponents.entityPill( obj, 'use title' );
-    V.getNode( 'entity-nav > ul' ).prepend( $pill );
+    let $entityNavUl = V.getNode( 'entity-nav > ul' );
+
+    if ( !$entityNavUl ) {
+      $entityNavUl = NavComponents.entityNavUl();
+      $entityNavUl.addEventListener( 'click', itemClickHandler );
+      const $entityNav = V.getNode( 'entity-nav' );
+      if ( $entityNav ) {
+        V.setNode( $entityNav, $entityNavUl );
+      }
+    }
+
+    if ( $entityNavUl ) {
+      $entityNavUl.prepend( $pill );
+    }
+
     drawJoinedUserPill();
   }
 

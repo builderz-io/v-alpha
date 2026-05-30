@@ -631,6 +631,12 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             else {
               activeEntity.holderOf = [newHeld];
             }
+
+            V.setEntity( activeEntity.fullId, {
+              field: 'holderOf',
+              data: activeEntity.holderOf,
+              activeProfile: activeEntity.uuidP,
+            } );
           }
 
           /** Clear cache to force reload users profile */

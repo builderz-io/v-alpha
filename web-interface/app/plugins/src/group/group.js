@@ -27,10 +27,7 @@ const Group = ( function() { // eslint-disable-line no-unused-vars
 
   function draw( path ) {
     preview( path );
-    V.getQuery( {
-      query: '',
-      role: 'Group',
-    } ).then( res => {
+    V.getEntity( 'Group' ).then( res => {
       if ( !res.success || !res.data || !res.data.length ) {
         Page.draw( {
           topcontent: CanvasComponents.notFound( 'group' ),

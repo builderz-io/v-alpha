@@ -9,6 +9,13 @@ const telegramNotification = require( '../lib/telegram' ).adminNotify;
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
 
+function roleFilter( role ) {
+  if ( role === 'Group' ) {
+    return { 'profile.role': { $in: ['Group', 'aq'] } };
+  }
+  return { 'profile.role': role };
+}
+
 async function findEntity( query, filter ) {
   return new Promise( resolve => {
     // EntityDB.find( query ).sort( { $natural: -1 } ).limit( 35 ).exec( ( err, entities ) => {
@@ -60,7 +67,7 @@ exports.findByRole = async function( req, res ) {
     };
   }
   else {
-    find = { 'profile.role': req };
+    find = roleFilter( req );
     filter = {
       private: 0,
       _id: 0,
@@ -98,6 +105,26 @@ exports.findByFullId = async function( req, res ) {
 
 };
 
+exports.findByUuidE = async function( req, res ) {
+
+  const raw = Array.isArray( req ) ? req : [req];
+  const uuids = raw.map( item => {
+    if ( typeof item === 'object' && item ) {
+      return item.uuidE || item.a;
+    }
+    return item;
+  } ).filter( Boolean );
+
+  const find = { 'profile.uuidV4': { $in: uuids } };
+  const query = { $and: [find, { 'status.active': true }] };
+
+  res( await findEntity( query, {
+    private: 0,
+    _id: 0,
+  } ) );
+
+};
+
 exports.findByUPhrase = async function( req, res ) {
 
   const find = { 'private.uPhrase': req };
@@ -108,20 +135,32 @@ exports.findByUPhrase = async function( req, res ) {
 
 exports.findByQuery = async function( req, res ) {
 
-  const regex = { $regex: new RegExp( req.query, 'i' ) };
+  const roleClause = req.role == 'all' ? {} : roleFilter( req.role );
+  const trimmedQuery = req.query ? String( req.query ).trim() : '';
+  let find;
 
-  const find = {
-    $and: [
-      req.role == 'all' ? {} : { 'profile.role': req.role },
-      { $or: [
-        { 'profile.title': regex },
-        { 'properties.baseLocation': regex },
-        { 'properties.description': regex },
-      ] },
-    ],
-  };
+  if ( !trimmedQuery ) {
+    find = { $and: [roleClause, { 'status.active': true }] };
+  }
+  else {
+    const regex = { $regex: new RegExp( trimmedQuery, 'i' ) };
+    find = {
+      $and: [
+        roleClause,
+        { 'status.active': true },
+        { $or: [
+          { 'profile.title': regex },
+          { 'properties.baseLocation': regex },
+          { 'properties.description': regex },
+        ] },
+      ],
+    };
+  }
 
-  res( await findEntity( find ) );
+  res( await findEntity( find, {
+    private: 0,
+    _id: 0,
+  } ) );
 
 };
 

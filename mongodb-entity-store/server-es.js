@@ -84,6 +84,8 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get entity by fullId', handleEntity.findByFullId );
 
+  client.on( 'get entity by uuidE', handleEntity.findByUuidE );
+
   client.on( 'get entity by uPhrase', handleEntity.findByUPhrase );
 
   client.on( 'get entity by query', handleEntity.findByQuery );

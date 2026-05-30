@@ -501,6 +501,34 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     }
   }
 
+  function castEntityLookup( which ) {
+    if ( Array.isArray( which ) ) {
+      return {
+        which: which.map( item => {
+          if ( typeof item === 'object' && item ) {
+            return item.uuidE || item.a || item.fullId || item;
+          }
+          return item;
+        } ),
+        filter: 'uuidE',
+      };
+    }
+
+    if ( typeof which === 'object' && which ) {
+      if ( which.uuidE ) {
+        return { which: which.uuidE, filter: 'uuidE' };
+      }
+      if ( which.fullId ) {
+        return { which: which.fullId, filter: 'fullId' };
+      }
+      if ( which.path ) {
+        return { which: V.castPathOrId( which.path ), filter: 'fullId' };
+      }
+    }
+
+    return { which: which, filter: null };
+  }
+
   function getEntity(
     // defaults to searching all entities (via all roles)
     which = 'all',
@@ -508,16 +536,17 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   ) {
 
     const whichLedger = V.getSetting( 'entityLedger' );
+    const lookup = castEntityLookup( which );
+
+    which = lookup.which;
+    if ( lookup.filter ) {
+      filter = lookup.filter;
+    }
 
     if ( ['MongoDB', 'Firebase'].includes( whichLedger ) ) {
 
+      if ( !lookup.filter ) {
       if (
-        typeof which == 'object'
-        || Array.isArray( which )
-      ) {
-        filter = 'uuidE';
-      }
-      else if (
         new RegExp( /\s#\d{4}/ ).test( which )
       ) {
         filter = 'fullId';
@@ -550,6 +579,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
         && which.length == 40
       ) {
         filter = 'symbolAddress';
+      }
       }
     }
     else if ( whichLedger == '3Box' ) {
