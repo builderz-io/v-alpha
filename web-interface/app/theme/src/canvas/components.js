@@ -82,6 +82,7 @@ const CanvasComponents = ( function() { // eslint-disable-line no-unused-vars
       message: 'No messages found',
       entity: 'No entities found',
       marketplace: 'No items found',
+      group: 'No groups found',
       emptyFoyer: 'Foyer not populated',
       media: 'No media items found',
       close: 'close',

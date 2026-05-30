@@ -429,6 +429,8 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     case 'ao' : return 'Farm';
     case 'Plot' : return 'ap';
     case 'ap' : return 'Plot';
+    case 'Group' : return 'aq';
+    case 'aq' : return 'Group';
     default: return role;
     }
   }
