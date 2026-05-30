@@ -18,7 +18,7 @@ const VMongoDB = ( function() { // eslint-disable-line no-unused-vars
       fullId: fullId,
       path: path,
       private: {
-        uPhrase: data.auth,
+        uPhrase: data.auth || data.uPhrase,
         evmCredentials: data.evmCredentials,
       },
       profile: {
@@ -163,7 +163,12 @@ const VMongoDB = ( function() { // eslint-disable-line no-unused-vars
     if ( whichEndpoint == 'entity' ) {
       data = castNewEntity( data );
     }
-    return emit( data, whichEndpoint, 'set' );
+    return emit( data, whichEndpoint, 'set' ).then( res => {
+      if ( res && res.success && Array.isArray( res.data ) && whichEndpoint === 'entity' ) {
+        res.data = res.data.map( castMongoEntity );
+      }
+      return res;
+    } );
   }
 
   /* ====================== export ====================== */

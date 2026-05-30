@@ -590,23 +590,39 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             const groupedData = entityData.servicefields[groupedField]
               || V.castJson( [] );
 
-            V.setEntity( E.fullId, {
+            return V.setEntity( E.fullId, {
               field: `servicefields.${groupedField}`,
               data: groupedData,
               activeProfile: E.uuidP,
+            } ).then( () => {
+              E.servicefields = E.servicefields || {};
+              E.servicefields[groupedField] = groupedData;
+              finishNewEntity( E, res );
             } );
-
-            E.servicefields = E.servicefields || {};
-            E.servicefields[groupedField] = groupedData;
           }
 
+          finishNewEntity( E, res );
+        }
+        else {
+          throw new Error( res.message );
+        }
+      } )
+      .catch( res => {
+        console.log( 'could not set entity: ', res );
+        notifyError( res.message || res );
+        setResponse( ( res.message || res ) + ' ' + V.getString( ui.startAgain ), 'setAsIs' );
+        drawError();
+      } );
+  }
+
+  function finishNewEntity( E, res ) {
           const activeEntity = V.getState( 'activeEntity' );
           if ( activeEntity ) {
             const heldEntities = activeEntity.holderOf;
             const newHeld = {
               fullId: E.fullId,
               a: E.uuidE,
-              c: E.roleCode,
+              c: E.roleCode || V.castRole( E.role ),
             };
 
             if ( heldEntities ) {
@@ -617,27 +633,15 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
             }
           }
 
-          keyFileText = `
-Key: ${ E.auth.uPhrase }\n\n
-Creator Key: ${ E.auth.creatorUPhrase }\n\n
-EVM Address: ${ E.auth.evmCredentials.address }\n\n
-EVM Key: ${ E.auth.evmCredentials.privateKey || 'SELF' }\n\n
-Full ID: ${ E.fullId }\n\n
-Role: ${ E.role }\n\n
-Joined: ${ new Date().toString().substr( 4, 17 ) }\n\n
-Initialized by: ${ window.location.host }
-`;
-
-          /** Storing the private key to local */
-          V.setLocal( 'privatekey', E.auth.evmCredentials.privateKey );
-
           /** Clear cache to force reload users profile */
           V.setCache( 'viewed', 'clear' );
 
           /** Prepare map position & draw map */
-          V.setState( 'active', {
-            lastLngLat: E.geometry.coordinates,
-          } );
+          if ( E.geometry && E.geometry.coordinates ) {
+            V.setState( 'active', {
+              lastLngLat: E.geometry.coordinates,
+            } );
+          }
           VMap.draw( res.data, { isJoin: true } );
 
           /** Place navigation pill */
@@ -657,11 +661,46 @@ Initialized by: ${ window.location.host }
               setTimeout( delayCallToActionBtn.bind( { fullId: E.fullId } ), 1200 );
               V.setNode( '.join-header__bottom', 'clear' );
             }
-            else {
+            else if ( E.auth && E.auth.uPhrase ) {
+              keyFileText = `
+Key: ${ E.auth.uPhrase }\n\n
+Creator Key: ${ E.auth.creatorUPhrase || E.auth.uPhrase }\n\n
+EVM Address: ${ E.auth.evmCredentials ? E.auth.evmCredentials.address : '' }\n\n
+EVM Key: ${ E.auth.evmCredentials ? E.auth.evmCredentials.privateKey || 'SELF' : 'SELF' }\n\n
+Full ID: ${ E.fullId }\n\n
+Role: ${ E.role }\n\n
+Joined: ${ new Date().toString().substr( 4, 17 ) }\n\n
+Initialized by: ${ window.location.host }
+`;
+              if ( E.auth.evmCredentials && E.auth.evmCredentials.privateKey ) {
+                V.setLocal( 'privatekey', E.auth.evmCredentials.privateKey );
+              }
               setDownloadKeyBtn();
+            }
+            else {
+              setTimeout( delayCallToActionBtn.bind( { fullId: E.fullId } ), 1200 );
+              V.setNode( '.join-header__bottom', 'clear' );
             }
             return;
           }
+
+          if ( !E.auth || !E.auth.uPhrase ) {
+            throw new Error( 'entity created without auth credentials' );
+          }
+
+          keyFileText = `
+Key: ${ E.auth.uPhrase }\n\n
+Creator Key: ${ E.auth.creatorUPhrase }\n\n
+EVM Address: ${ E.auth.evmCredentials.address }\n\n
+EVM Key: ${ E.auth.evmCredentials.privateKey || 'SELF' }\n\n
+Full ID: ${ E.fullId }\n\n
+Role: ${ E.role }\n\n
+Joined: ${ new Date().toString().substr( 4, 17 ) }\n\n
+Initialized by: ${ window.location.host }
+`;
+
+          /** Storing the private key to local */
+          V.setLocal( 'privatekey', E.auth.evmCredentials.privateKey );
 
           /** Automatically join */
           V.setAuth( E.auth.uPhrase, E.auth.creatorUPhrase )
@@ -688,17 +727,6 @@ Initialized by: ${ window.location.host }
               setResponse( 'authFail' );
               drawUphraseDisplay( E.auth.uPhrase );
             } );
-        }
-        else {
-          throw new Error( res.message );
-        }
-      } )
-      .catch( res => {
-        console.log( 'could not set entity: ', res );
-        notifyError( res.message || res );
-        setResponse( ( res.message || res ) + ' ' + V.getString( ui.startAgain ), 'setAsIs' );
-        drawError();
-      } );
   }
 
   function setDownloadKeyBtn() {
