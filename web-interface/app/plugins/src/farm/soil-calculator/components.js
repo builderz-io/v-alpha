@@ -423,6 +423,102 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return { year, crop };
   }
 
+  function syncWidgetDataCacheSeason( slotNum, datapoint ) {
+    if ( !ux.widgetDataCache || !datapoint || typeof datapoint !== 'object' ) { return }
+    const key = 's' + slotNum;
+    const raw = ux.widgetDataCache[key];
+    let wrapped = false;
+    if ( raw ) {
+      const parsed = typeof raw === 'string' ? V.castJson( raw ) : raw;
+      wrapped = !!( parsed && parsed.datapoint );
+    }
+    ux.widgetDataCache[key] = wrapped
+      ? JSON.stringify( { datapoint: datapoint } )
+      : JSON.stringify( datapoint );
+  }
+
+  function refreshSeasonLabelsFromForm( slotNum ) {
+    if ( !useTimeline() || !ux.widgetDataCache ) { return }
+    const form = document.forms[ 'CROP-' + slotNum ];
+    if ( !form ) { return }
+
+    const _ = form.elements;
+    const raw = ux.widgetDataCache[ 's' + slotNum ];
+    const parsed = typeof raw === 'string' ? V.castJson( raw ) : raw;
+    let datapoint = parsed && parsed.datapoint
+      ? V.castClone( parsed.datapoint )
+      : V.castClone( parsed );
+    if ( !datapoint || typeof datapoint !== 'object' ) {
+      datapoint = normalizeDatapointIds( V.castClone( SoilCalculator.getSchema( 'request' ) ) );
+    }
+    if ( _.CROP_ID ) {
+      datapoint.CROP.ID = Number( _.CROP_ID.value );
+    }
+    if ( _.DATE_HVST ) {
+      if ( !datapoint.DATE ) { datapoint.DATE = {} }
+      datapoint.DATE.HVST = _.DATE_HVST.value;
+    }
+    syncWidgetDataCacheSeason( slotNum, datapoint );
+    refreshSeasonLabels( slotNum );
+  }
+
+  function maybeRefreshSeasonLabelsFromEvent( e ) {
+    if ( !e || !e.target || !e.target.name ) { return }
+    if ( e.target.name !== 'CROP_ID' && e.target.name !== 'DATE_HVST' ) { return }
+    const form = e.target.closest( 'form' );
+    if ( !form || !form.getAttribute( 'name' ).startsWith( 'CROP-' ) ) { return }
+    refreshSeasonLabelsFromForm( form.getAttribute( 'name' ).replace( 'CROP-', '' ) );
+  }
+
+  function refreshSeasonLabels( slotNum ) {
+    if ( !useTimeline() || !ux.widgetDataCache ) { return }
+
+    const meta = getSeasonMeta( String( slotNum ), ux.widgetDataCache );
+    const row = document.querySelector(
+      '.s-calc-season-row[data-season-slot="' + slotNum + '"]',
+    );
+    if ( row ) {
+      const main = row.querySelector( '.s-calc-season-row__main' );
+      if ( main ) {
+        let yearEl = main.querySelector( '.s-calc-season-row__year' );
+        if ( meta.year ) {
+          if ( !yearEl ) {
+            yearEl = document.createElement( 'span' );
+            yearEl.className = 's-calc-season-row__year';
+            const cropEl = main.querySelector( '.s-calc-season-row__crop' );
+            main.insertBefore( yearEl, cropEl || main.firstChild );
+          }
+          yearEl.textContent = meta.year;
+        }
+        else if ( yearEl ) {
+          yearEl.remove();
+        }
+
+        const cropEl = main.querySelector( '.s-calc-season-row__crop' );
+        if ( cropEl ) {
+          cropEl.textContent = meta.crop;
+        }
+      }
+    }
+
+    if ( String( slotNum ) !== String( ux.selectedSeason ) ) { return }
+
+    const titleEl = V.getNode( '.s-calc-season-editor__title' );
+    if ( titleEl ) {
+      titleEl.textContent = getTabLabel( slotNum, ux.widgetDataCache );
+    }
+
+    const subtitleEl = V.getNode( '.s-calc-season-editor__subtitle' );
+    if ( subtitleEl ) {
+      const raw = ux.widgetDataCache[ 's' + slotNum ];
+      const dpWrap = typeof raw === 'string' ? V.castJson( raw ) : raw;
+      const datapoint = dpWrap && dpWrap.datapoint ? dpWrap.datapoint : dpWrap;
+      subtitleEl.textContent = isSeasonActive( datapoint )
+        ? V.getString( ui.seasonEditorHint )
+        : V.getString( ui.seasonEditorNewHint );
+    }
+  }
+
   function seasonEditorHeader( tabNum, data ) {
     const raw = data[ 's' + tabNum ];
     const dpWrap = typeof raw === 'string' ? V.castJson( raw ) : raw;
@@ -578,6 +674,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       else {
         showFormError( '' );
       }
+      maybeRefreshSeasonLabelsFromEvent( e );
     }
 
     if ( !e ) {
