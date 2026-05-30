@@ -182,9 +182,9 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     V.sN( '.join-card-inner-wrapper', 'clear' );
     V.sN( '.join-card', drawOverlayContent() );
 
-    /* add Google Places API to location card */
+    /* add Google Places API to location card (skipped when no real API key) */
     if ( cardIndex == 3 ) {
-      Google.initAutocomplete( 'join-form' );
+      Google.launch().then( () => Google.initAutocomplete( 'join-form' ) );
     }
 
     /* add picker to location-picker card */

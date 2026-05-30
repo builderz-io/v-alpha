@@ -8,9 +8,28 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
 
   'use strict';
 
+  function hasUsablePlacesKey() {
+    const key = V.getApiKey( 'googlePlaces' );
+    if ( !key || typeof key !== 'string' ) {
+      return false;
+    }
+    const trimmed = key.trim();
+    if ( trimmed.length <= 10 ) {
+      return false;
+    }
+    if ( /YOUR\s*API\s*KEY/i.test( trimmed ) ) {
+      return false;
+    }
+    return true;
+  }
+
   /* ============ public methods and exports ============ */
 
   function initAutocomplete( component, location ) {
+
+    if ( !hasUsablePlacesKey() || typeof google === 'undefined' || !google.maps || !google.maps.places ) {
+      return;
+    }
 
     /** $elem must be of type {!HTMLInputElement} */
     const $elem = document.getElementById( component + '__loc' );
@@ -54,25 +73,25 @@ const Google = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function launch() {
-    if ( !document.getElementById( 'google-places-script' ) ) {
-
-      const key = V.getApiKey( 'googlePlaces' );
-
-      if ( key.length > 10 ) {
-        return V.setScript( 'https://maps.googleapis.com/maps/api/js?key=' + key + '&libraries=places&language=en&region=US', 'google-places-script' );
-      }
-      else {
-        console.warn( 'Missing Google Places API key' );
-      }
-    }
-    else {
+    if ( !hasUsablePlacesKey() ) {
       return Promise.resolve();
     }
+
+    if ( !document.getElementById( 'google-places-script' ) ) {
+      const key = V.getApiKey( 'googlePlaces' ).trim();
+      return V.setScript(
+        'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent( key ) + '&libraries=places&language=en&region=US&loading=async',
+        'google-places-script',
+      );
+    }
+
+    return Promise.resolve();
   }
 
   return {
     initAutocomplete: initAutocomplete,
     launch: launch,
+    hasUsablePlacesKey: hasUsablePlacesKey,
   };
 
 } )();

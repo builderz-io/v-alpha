@@ -7,6 +7,7 @@ const VKey = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const apiKeys = {
+    // Leave as placeholder for local dev — Google Places will not load (use continent on join location step).
     googlePlaces: 'YOUR API KEY HERE',
     mapBox: 'YOUR API KEY HERE',
     rpc: 'YOUR API KEY HERE',

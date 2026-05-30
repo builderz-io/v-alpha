@@ -162,9 +162,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
         $list.style.paddingTop = divHeight - 54 + 'px';
 
       }
-      else {
-        console.log( 'No div element or list element found with the specified class.' );
-      }
+      // Groups and other entities without a medium profile image omit .profile-image — expected.
     }, 20 );
 
     if ( data.data[0].typeOfWhich == 'string' ) {
