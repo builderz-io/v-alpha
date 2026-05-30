@@ -455,6 +455,10 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
 
     const $itemToAnimate = V.getNode( '[path="' + which + '"]' );
 
+    if ( !$itemToAnimate ) {
+      return;
+    }
+
     const $navToAnimate = $itemToAnimate.closest( '.nav' );
     const nav = $navToAnimate.localName;
 
@@ -502,12 +506,21 @@ const Navigation = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castEntityNavObject( data ) {
+    let title = data.title;
+    let tag = data.tag;
+
+    if ( ( !title || !tag ) && data.fullId ) {
+      const parsed = V.castFullId( data.fullId );
+      title = title || parsed.title;
+      tag = tag || parsed.tag;
+    }
+
     const obj = {
       uuidE: data.uuidE,
       uuidP: data.uuidP,
-      title: data.title,
-      tag: data.tag,
-      initials: data.initials || V.castInitials( data.title ),
+      title: title || 'Profile',
+      tag: tag || '#0000',
+      initials: data.initials || V.castInitials( title || 'Profile' ),
       avatar: data.avatar || ( data.images ? data.images.avatar : undefined ),
       path: data.path,
       draw: function( path ) { Profile.draw( path ) },

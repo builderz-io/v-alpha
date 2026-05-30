@@ -164,11 +164,11 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
 
   function handleProfileDraw() {
     const path = this.path
-      ? this.path
-      : V.castPathOrId( this.textContent || this.fullId );
+      || ( this.fullId && V.castPathOrId( this.fullId ) )
+      || V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
-    Profile.draw( this.path ? this : path );
+    Profile.draw( this.uuidE ? this : path );
   }
 
   function handleBaseLocationFocus() {
@@ -1179,13 +1179,6 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     const uPhrase = entity.auth ? entity.auth.uPhrase : '';
     const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
     const openProfile = options && options.openProfile;
-    const profileNav = {
-      path: entity.path || V.castPathOrId( entity.fullId ),
-      fullId: entity.fullId,
-      textContent: entity.fullId,
-      uuidE: entity.uuidE,
-      uuidP: entity.uuidP,
-    };
 
     const $cardContentFrame = V.cN( {
       c: 'contents',
@@ -1199,7 +1192,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'p',
           c: 'pxy fs-s font-bold capitalize cursor-pointer',
           h: entity.role,
-          k: openProfile ? handleProfileDraw.bind( profileNav ) : undefined,
+          k: openProfile ? handleProfileDraw.bind( entity ) : undefined,
         },
       ],
     } );
@@ -1212,7 +1205,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
           k: openProfile
-            ? handleProfileDraw.bind( profileNav )
+            ? handleProfileDraw.bind( entity )
             : handleEditProfileDraw,
         },
         {

@@ -203,6 +203,10 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     Array.isArray( data ) ? null : data = [ data ];
     data.forEach( item => {
       try {
+        if ( !item || !item.path || !item.title ) {
+          console.warn( 'setNavItem: skipping item without path or title', item );
+          return;
+        }
         const maxLength = 250;
         if ( item.title.length <= maxLength ) {
           const state = getState( whichNav );
