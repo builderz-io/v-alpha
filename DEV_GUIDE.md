@@ -105,7 +105,11 @@ the soil calculator.
 
 **Create a network/community Group:** open **Groups** (`/groups`) → **Add new group**.
 Groups are first-class entities (role `Group`, compact code `aq`); membership is stored
-on the group in `servicefields.s30`.
+on the group in `servicefields.s30`. On a **group profile** you hold, use the **Members**
+card to add or remove entities from your account (plots, farms, etc.).
+
+**Deep-link `/groups`:** works after app load (route is registered in `v-route.js`).
+With `devSeedPlot`, dev bootstrap also opens `/groups` when you land on that URL.
 
 **Reset everything:** stop the stack, drop the local DB, then re-seed:
 

@@ -174,6 +174,13 @@ const VRoute = ( function() { // eslint-disable-line no-unused-vars
         data: [ '/pools' ],
       } ),
     },
+    {
+      path: '/groups',
+      action: () => ( {
+        status: 'groups',
+        data: [ '/groups' ],
+      } ),
+    },
     // {
     //   path: '/events',
     //   action: () => {

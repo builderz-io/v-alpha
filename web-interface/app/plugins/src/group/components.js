@@ -8,6 +8,9 @@ const GroupComponents = ( function() {
       grouping: 'Grouping',
       noAssignedEntities: 'No entities assigned to group',
       plots: 'Plots',
+      members: 'Members',
+      addMembers: 'Add from your entities',
+      removeMember: 'Remove',
       soilBalanceTitle: 'Soil Balance',
       groupIncompleteRollup: 'Some plots have incomplete season data; group totals may be understated.',
     };
@@ -50,6 +53,132 @@ const GroupComponents = ( function() {
       field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
       data: V.castJson( groupedEntities ),
       activeProfile: group.uuidP,
+    } );
+  }
+
+  function getGroupedUuids( group ) {
+    const raw = group.servicefields[V.castServiceField( 'groupedEntities' )];
+    return V.castJson( raw ) || [];
+  }
+
+  function userHoldsGroup( group ) {
+    if ( !group || !V.aE() || !V.aE().holderOf ) {
+      return false;
+    }
+    return V.aE().holderOf.some(
+      item => item.a === group.uuidE && V.castRole( item.c ) === 'Group',
+    );
+  }
+
+  function setGroupedUuidsOnGroup( group, uuids ) {
+    const field = V.castServiceField( 'groupedEntities' );
+    group.servicefields = group.servicefields || {};
+    group.servicefields[field] = V.castJson( uuids );
+  }
+
+  function refreshGroupMembersList( group, listContainer ) {
+    const uuids = getGroupedUuids( group );
+
+    if ( !uuids.length ) {
+      V.setNode( listContainer, V.cN( {
+        c: 'pxy',
+        h: V.getString( ui.noAssignedEntities ),
+      } ) );
+      return;
+    }
+
+    const canManage = userHoldsGroup( group );
+
+    V.getEntity( uuids ).then( result => {
+      V.setNode( listContainer, result.data.map( member => V.cN( {
+        c: 'group-member-row flex justify-between items-center pxy',
+        h: [
+          {
+            t: 'p',
+            c: 'cursor-pointer',
+            h: `${member.fullId} (${member.role})`,
+            k: handleProfileDraw,
+          },
+          canManage
+            ? V.cN( {
+              t: 'button',
+              c: 'txt-gray fs-s',
+              h: V.getString( ui.removeMember ),
+              k: ( event ) => {
+                event.stopPropagation();
+                event.target.disabled = true;
+                const next = getGroupedUuids( group ).filter( u => u !== member.uuidE );
+                updateGroupedEntities( group, next ).then( () => {
+                  setGroupedUuidsOnGroup( group, next );
+                  event.target.disabled = false;
+                  refreshGroupMembersList( group, listContainer );
+                  const manageEl = V.getNode( '.group-members-manage' );
+                  if ( manageEl ) {
+                    refreshGroupMembersManage( group, manageEl );
+                  }
+                } );
+              },
+            } )
+            : '',
+        ],
+      } ) ) );
+    } );
+  }
+
+  function refreshGroupMembersManage( group, manageContainer ) {
+    const heldRefs = ( V.aE().holderOf || [] )
+      .filter( item => V.castRole( item.c ) !== 'Group' );
+
+    if ( !heldRefs.length ) {
+      V.setNode( manageContainer, '' );
+      return;
+    }
+
+    const heldUuids = heldRefs.map( item => item.a );
+
+    V.getEntity( heldUuids ).then( result => {
+      const inGroup = new Set( getGroupedUuids( group ) );
+
+      V.setNode( manageContainer, [
+        V.cN( {
+          c: 'pxy font-bold fs-s',
+          h: V.getString( ui.addMembers ),
+        } ),
+        ...result.data.map( held => V.cN( {
+          c: 'flex pxy group-member-add-row',
+          h: [
+            {
+              c: 'mr-rr',
+              t: 'input',
+              a: {
+                type: 'checkbox',
+                checked: inGroup.has( held.uuidE ),
+              },
+              k: ( event ) => {
+                event.target.disabled = true;
+                const next = new Set( getGroupedUuids( group ) );
+
+                if ( event.target.checked ) {
+                  next.add( held.uuidE );
+                }
+                else {
+                  next.delete( held.uuidE );
+                }
+
+                const nextArr = [...next.values()];
+
+                updateGroupedEntities( group, nextArr ).then( () => {
+                  setGroupedUuidsOnGroup( group, nextArr );
+                  event.target.disabled = false;
+                  refreshGroupMembersList( group, V.getNode( '.group-members__list' ) );
+                  refreshGroupMembersManage( group, manageContainer );
+                } );
+              },
+            },
+            held.fullId + ' (' + held.role + ')',
+          ],
+        } ) ),
+      ] );
     } );
   }
 
@@ -321,42 +450,29 @@ const GroupComponents = ( function() {
 
     if ( entity.role !== 'Group' ) { return '' }
 
-    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
-
-    if ( !groupedEntities || groupedEntities.length <= 0 ) {
-      return CanvasComponents.card( V.cN( {
-        c: 'pxy',
-        h: V.getString( ui.noAssignedEntities ),
-      } ), V.getString( ui.plots ) );
-    }
-
-    V.getEntity( groupedEntities )
-      .then( result => {
-        const plots = V.cN( {
-          c: 'group-plots pxy',
-          h: result.data
-            .map( plot => V.cN( {
-              t: 'p',
-              c: 'pxy',
-              y: {
-                cursor: 'pointer',
-              },
-              h: plot.fullId,
-              k: handleProfileDraw,
-            } ) ),
-        } );
-
-        const container = V.getNode( '.group-plots__list' );
-        V.setNode( container, '' );
-        container.append( plots );
-      } );
-
-    const node = V.cN( {
-      c: 'group-plots__list',
+    const listNode = V.cN( {
+      c: 'group-members__list',
       h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
     } );
 
-    return CanvasComponents.card( node, V.getString( ui.plots ) );
+    const canManage = userHoldsGroup( entity );
+    const manageNode = canManage
+      ? V.cN( {
+        c: 'group-members-manage s-calc-form-background',
+        h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
+      } )
+      : '';
+
+    refreshGroupMembersList( entity, listNode );
+
+    if ( canManage ) {
+      refreshGroupMembersManage( entity, manageNode );
+    }
+
+    return CanvasComponents.card(
+      V.cN( { c: 'group-members', h: [listNode, manageNode] } ),
+      V.getString( ui.members ),
+    );
   }
 
   document.addEventListener( 'ENTITY_CREATED', ( { detail } ) => {

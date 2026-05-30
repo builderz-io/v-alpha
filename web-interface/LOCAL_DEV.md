@@ -44,27 +44,15 @@ The host `localhost-4021` is configured for **MongoDB** on port **6022** (fully 
 
 ---
 
-The app has **two parts**. Running only the web server gives you the UI shell; **entities, login, and the soil calculator’s saved data** come from a backend API.
+For a full onboarding guide (architecture, seeded account, troubleshooting), see **[`../DEV_GUIDE.md`](../DEV_GUIDE.md)** at the repo root.
 
-## What you have now
+With `./scripts/local-dev.sh start`, the `localhost-4021` host uses **MongoDB** locally (`entityLedger: 'MongoDB'`, entity store on **6022**). You do **not** need Firebase or remote APIs for that path.
 
-| Piece | Command | Port | Status |
-|-------|---------|------|--------|
-| **Web UI** | `node server-hosts.js` (from `web-interface/`) | **4021** | Serves static JS/CSS and host HTML |
-| **Entity API** | Not started by `server-hosts.js` | — | Required for login, plots, marketplace |
-
-Your host file `hosts/localhost-4021/app-localhost-4021.html` is configured for:
-
-- `entityLedger: 'Firebase'`
-- `namespaceEndpoint: 'https://europe-west1-humbilka-namespace.cloudfunctions.net/api/v1'` (remote cloud)
-
-So locally you only host the **frontend**; data lives on that remote network unless you set up a local API (below).
-
-Open: **http://localhost:4021**
+The sections below describe **alternate** setups if you want remote or emulator backends instead.
 
 ---
 
-## Quick start (UI + remote data)
+## Quick start (UI only — remote Firebase data)
 
 ```bash
 cd web-interface

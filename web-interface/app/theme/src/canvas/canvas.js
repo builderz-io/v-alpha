@@ -428,6 +428,9 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         else if ( ['pool'].includes( status ) ) {
           Pool.draw( which );
         }
+        else if ( ['groups'].includes( status ) ) {
+          Group.draw( which );
+        }
         else if ( ['user profile'].includes( status ) ) {
           User.draw( which );
         }

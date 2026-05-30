@@ -81,7 +81,17 @@ const DevBootstrap = ( function() {
     return plot;
   }
 
+  function verifyCastRoleGroup() {
+    if ( V.castRole( 'Group' ) !== 'aq' || V.castRole( 'aq' ) !== 'Group' ) {
+      console.error( '[dev-bootstrap] castRole Group/aq mapping failed' );
+      return false;
+    }
+    return true;
+  }
+
   async function launch() {
+    verifyCastRoleGroup();
+
     const plot = await loadDevSession();
     if ( !plot ) { return }
 
@@ -90,7 +100,15 @@ const DevBootstrap = ( function() {
       Profile.draw( plot.path );
     };
 
-    if ( window.location.pathname === '/' || window.location.pathname === '' ) {
+    const path = window.location.pathname;
+
+    if ( path === '/groups' ) {
+      V.setState( 'active', { navItem: '/groups' } );
+      Group.draw( '/groups' );
+      return;
+    }
+
+    if ( path === '/' || path === '' ) {
       goPlot();
     }
   }
