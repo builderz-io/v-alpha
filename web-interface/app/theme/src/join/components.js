@@ -29,6 +29,8 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinDateTimeBottom: '',
       joinLocTop: 'Add your location.',
       joinLocBottom: 'Start typing, then pick from the suggestions.',
+      joinLocTopContinent: 'Add your location.',
+      joinLocBottomContinent: 'Choose a continent below, or type a place name and continue.',
       joinLocPickerTop: 'Pick the exact location.',
       joinLocPickerBottom: 'Click the area to zoom in closer.',
       joinImgTop: 'Add your image.',
@@ -472,10 +474,10 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
-  function joinSelectorsCont() {
+  function joinSelectorsCont( showByDefault ) {
     return V.cN(
       {
-        c: 'join-selectors hidden',
+        c: showByDefault ? 'join-selectors' : 'join-selectors hidden',
         h: {
           t: 'form',
           c: 'join-selectors__form',
@@ -673,10 +675,17 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function joinLocation() {
+    const useContinentPicker = typeof Google !== 'undefined'
+      && Google.hasUsablePlacesKey
+      && !Google.hasUsablePlacesKey();
+
     return [
-      joinHeader( 'joinLocTop', 'joinLocBottom' ),
+      joinHeader(
+        useContinentPicker ? 'joinLocTopContinent' : 'joinLocTop',
+        useContinentPicker ? 'joinLocBottomContinent' : 'joinLocBottom',
+      ),
       joinFormLoc(),
-      joinSelectorsCont(),
+      joinSelectorsCont( useContinentPicker ),
     ];
   }
 

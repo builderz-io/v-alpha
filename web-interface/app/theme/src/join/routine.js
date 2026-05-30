@@ -345,7 +345,22 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       }
       else if ( hasRadio ) {
         entityData.continent = hasRadio;
+        applyContinentGeometry( entityData, hasRadio, $location.value || undefined );
         return true;
+      }
+      else if (
+        typeof Google !== 'undefined'
+        && Google.hasUsablePlacesKey
+        && !Google.hasUsablePlacesKey()
+      ) {
+        if ( $location.value ) {
+          entityData.location = hasLoc || $location.value;
+          entityData.lat = hasLat || '52.52';
+          entityData.lng = hasLng || '13.405';
+          return true;
+        }
+        setResponse( 'joinResLoc' );
+        return false;
       }
       else if ( $location.value ) {
         setResponse( 'joinResNoLat' );
@@ -354,6 +369,9 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       else if ( V.getNode( '.join-selectors' ).style.display == 'block' ) {
         const int = V.getSetting( 'devMode' ) ? 3 : V.castRandomInt( 0, 6 );
         document.getElementById( 'join-selector__cont' + int ).checked = true;
+        entityData.continent = int + 1;
+        applyContinentGeometry( entityData, entityData.continent );
+        return true;
       }
       else {
         setResponse( 'joinResLoc' );
@@ -485,6 +503,27 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
 
   function getRadioIndex( whichForm ) {
     return Number( document.forms[ whichForm + 's'].elements[ whichForm ].value );
+  }
+
+  /** Lng/lat pairs aligned with join continent radio values (1–7). */
+  const continentLngLat = [
+    [17.05291, 2.07035],
+    [87.331111, 43.681111],
+    [-56.1004, -15.6006],
+    [9.902056, 49.843],
+    [134.354806, -25.610111],
+    [-100, 48.166667],
+    [-5.077173, -74.254112],
+  ];
+
+  function applyContinentGeometry( entityData, continentValue, label ) {
+    const idx = Math.max( 0, Math.min( Number( continentValue ) - 1, continentLngLat.length - 1 ) );
+    const pair = continentLngLat[idx];
+    entityData.lat = String( pair[1] );
+    entityData.lng = String( pair[0] );
+    if ( label ) {
+      entityData.location = label;
+    }
   }
 
   function confirmEmail() {

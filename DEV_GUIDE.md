@@ -36,7 +36,7 @@ frontend to the local stack:
 - **MongoDB** — on macOS the script installs it via [Homebrew](https://brew.sh/) automatically on first run.
   On Linux, install MongoDB yourself (e.g. `mongodb-community`) and make sure `mongod` is on your `PATH`.
 
-No cloud accounts or credentials are required for the local stack. **Google Places** is optional: the default `v-key.js` placeholder skips the Maps script. When creating a group/plot, on the location step pick a **continent** (or add a real `googlePlaces` key to `web-interface/app/vcore/src/v/v-key.js`).
+No cloud accounts or credentials are required for the local stack. **Google Places** is optional: the default `v-key.js` placeholder skips the Maps script. When creating a group/plot, the location step shows **continent radios** automatically. Pick a continent (e.g. Europe) or type a place name like `Amsterdam` and tap **Weiter** — coordinates are filled in without Google. To use address autocomplete, add a real `googlePlaces` key in `web-interface/app/vcore/src/v/v-key.js`.
 
 ---
 
