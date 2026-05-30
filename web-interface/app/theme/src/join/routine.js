@@ -585,14 +585,19 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
           const E = res.data[0];
 
           if ( entityData.role === 'Group' ) {
+            const groupedField = V.castServiceField( 'groupedEntities' );
+            entityData.servicefields = entityData.servicefields || {};
+            const groupedData = entityData.servicefields[groupedField]
+              || V.castJson( [] );
+
             V.setEntity( E.fullId, {
-              field: `servicefields.${V.castServiceField( 'groupedEntities' )}`,
-              data: entityData.servicefields[V.castServiceField( 'groupedEntities' )],
+              field: `servicefields.${groupedField}`,
+              data: groupedData,
               activeProfile: E.uuidP,
             } );
 
-            E.servicefields[V.castServiceField( 'groupedEntities' )]
-              = entityData.servicefields[V.castServiceField( 'groupedEntities' )];
+            E.servicefields = E.servicefields || {};
+            E.servicefields[groupedField] = groupedData;
           }
 
           const activeEntity = V.getState( 'activeEntity' );
@@ -738,7 +743,15 @@ Initialized by: ${ window.location.host }
     }
   }
 
+  function skipRemoteJoinNotifications() {
+    return V.getSetting( 'devMode' )
+      || V.getSetting( 'entityLedger' ) === 'MongoDB';
+  }
+
   function notifySuccess( fullId, role ) {
+    if ( skipRemoteJoinNotifications() ) {
+      return;
+    }
     const data = {
       act: 'New join',
       msg: 'The '
@@ -752,6 +765,9 @@ Initialized by: ${ window.location.host }
   }
 
   function notifyError( error ) {
+    if ( skipRemoteJoinNotifications() ) {
+      return;
+    }
     const data = {
       act: 'New join [ERROR]',
       msg: typeof error == 'object' ? JSON.stringify( error ) : error,
@@ -779,6 +795,14 @@ Initialized by: ${ window.location.host }
     entityData.role = use.role;
     entityData.privacy = ( use.privacy == 0 ? undefined : use.privacy )
                          || ( settings.defaultPrivacy == 0 ? undefined : settings.defaultPrivacy );
+
+    if ( entityData.role === 'Group' ) {
+      entityData.servicefields = entityData.servicefields || {};
+      const groupedField = V.castServiceField( 'groupedEntities' );
+      if ( !entityData.servicefields[groupedField] ) {
+        entityData.servicefields[groupedField] = V.castJson( [] );
+      }
+    }
 
     /* Launch Google Places API */
     Google.launch();
