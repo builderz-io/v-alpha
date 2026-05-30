@@ -1173,9 +1173,15 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
     return $innerContent ? castCard( $innerContent, V.getString( ui.contact ) ) : '';
   }
 
-  function entityListCard( entity ) {
+  function entityListCard( entity, options ) {
     const uPhrase = entity.auth ? entity.auth.uPhrase : '';
     const privateKey = entity.auth ? entity.auth.evmCredentials ? entity.auth.evmCredentials.privateKey || '' : '' : '';
+    const openProfile = options && options.openProfile;
+    const profileNav = {
+      path: entity.path || V.castPathOrId( entity.fullId ),
+      uuidE: entity.uuidE,
+      uuidP: entity.uuidP,
+    };
 
     const $cardContentFrame = V.cN( {
       c: 'contents',
@@ -1189,6 +1195,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'p',
           c: 'pxy fs-s font-bold capitalize cursor-pointer',
           h: entity.role,
+          k: openProfile ? handleProfileDraw.bind( profileNav ) : undefined,
         },
       ],
     } );
@@ -1200,7 +1207,9 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'h2',
           c: 'pxy font-bold fs-l cursor-pointer',
           h: entity.fullId,
-          k: handleEditProfileDraw,
+          k: openProfile
+            ? handleProfileDraw.bind( profileNav )
+            : handleEditProfileDraw,
         },
         {
           t: 'p',

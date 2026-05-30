@@ -24,6 +24,13 @@ const GroupComponents = ( function() {
 
   /* ================== private methods ================= */
 
+  function isGroupEntity( entity ) {
+    if ( !entity ) { return false }
+    return entity.role === 'Group'
+      || entity.roleCode === 'aq'
+      || entity.role === 'aq';
+  }
+
   function handleProfileDraw() {
     const path = V.castPathOrId( this.textContent );
     V.setState( 'active', { navItem: path } );
@@ -448,7 +455,7 @@ const GroupComponents = ( function() {
   function drawGroupPlotWidget() {
     const entity = V.getState( 'active' ).lastViewedEntity;
 
-    if ( entity.role !== 'Group' ) { return '' }
+    if ( !isGroupEntity( entity ) ) { return '' }
 
     const listNode = V.cN( {
       c: 'group-members__list',
@@ -478,7 +485,7 @@ const GroupComponents = ( function() {
   document.addEventListener( 'ENTITY_CREATED', ( { detail } ) => {
     const { entity: group } = detail;
 
-    if ( group.role !== 'Group' ) {
+    if ( !isGroupEntity( group ) ) {
       return;
     }
 
@@ -535,7 +542,7 @@ const GroupComponents = ( function() {
   function drawGroupTotalBalanceWidget() {
     const entity = V.getState( 'active' ).lastViewedEntity;
 
-    if ( entity.role != 'Group' ) { return '' }
+    if ( !isGroupEntity( entity ) ) { return '' }
 
     const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
 

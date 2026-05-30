@@ -40,7 +40,7 @@ const Group = ( function() { // eslint-disable-line no-unused-vars
       const list = CanvasComponents.list();
       res.data.forEach( group => {
         V.setNode( list, [
-          UserComponents.entityListCard( group ),
+          UserComponents.entityListCard( group, { openProfile: true } ),
         ] );
       } );
       Page.draw( {
