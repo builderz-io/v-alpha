@@ -291,6 +291,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       addSeason: 'Add season',
       newSeason: 'New season',
       editSeason: 'Edit',
+      seasonEditorNewHint: 'Enter crop, fertilizer, and harvest for this season below.',
+      seasonEditorHint: 'Edit this season below.',
       duplicateSeason: 'Duplicate',
       removeSeason: 'Remove',
       addFertilizerApplication: '+ Add another application',
@@ -400,17 +402,46 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     } );
   }
 
+  function formatHarvestYear( hvst ) {
+    if ( hvst == null || hvst === '' || hvst === -1 ) { return '' }
+    const s = String( hvst );
+    if ( s.length < 4 || s.charAt( 0 ) === '-' ) { return '' }
+    const y = s.substr( 0, 4 );
+    return /^\d{4}$/.test( y ) ? y : '';
+  }
+
   function getSeasonMeta( tabNum, data ) {
     const raw = data[ 's' + tabNum ];
     const dpWrap = typeof raw === 'string' ? V.castJson( raw ) : raw;
     const datapoint = dpWrap && dpWrap.datapoint ? dpWrap.datapoint : dpWrap;
-    const year = datapoint && datapoint.DATE && datapoint.DATE.HVST
-      ? String( datapoint.DATE.HVST ).substr( 0, 4 )
+    const year = datapoint && datapoint.DATE
+      ? formatHarvestYear( datapoint.DATE.HVST )
       : '';
     const crop = isSeasonActive( datapoint )
       ? SoilCalculator.getCropName( datapoint.CROP.ID, locale )
       : V.getString( ui.newSeason );
     return { year, crop };
+  }
+
+  function seasonEditorHeader( tabNum, data ) {
+    const raw = data[ 's' + tabNum ];
+    const dpWrap = typeof raw === 'string' ? V.castJson( raw ) : raw;
+    const datapoint = dpWrap && dpWrap.datapoint ? dpWrap.datapoint : dpWrap;
+    const title = getTabLabel( tabNum, data );
+    const isNew = !isSeasonActive( datapoint );
+
+    return V.cN( {
+      c: 's-calc-season-editor__head',
+      h: [
+        V.cN( { c: 's-calc-season-editor__title', h: title } ),
+        V.cN( {
+          c: 's-calc-season-editor__subtitle',
+          h: isNew
+            ? V.getString( ui.seasonEditorNewHint )
+            : V.getString( ui.seasonEditorHint ),
+        } ),
+      ],
+    } );
   }
 
   function balanceChipClass( value ) {
@@ -639,11 +670,31 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     }
   }
 
+  function normalizeDatapointIds( datapoint ) {
+    if ( !datapoint || typeof datapoint !== 'object' ) { return datapoint }
+
+    if ( datapoint.CROP && ( datapoint.CROP.ID == null || datapoint.CROP.ID === -1 ) ) {
+      datapoint.CROP.ID = 1000;
+    }
+
+    if ( datapoint.FTLZ ) {
+      for ( let i = 1; i <= settings.numFertilizerGroups; ++i ) {
+        const slot = datapoint.FTLZ[ 'F' + i ];
+        if ( slot && ( slot.ID == null || slot.ID === -1 ) ) {
+          slot.ID = 5000;
+        }
+      }
+    }
+
+    return datapoint;
+  }
+
   function parseServicefieldDatapoint( raw ) {
     if ( !raw ) { return null }
     const parsed = typeof raw === 'string' ? V.castJson( raw ) : raw;
     if ( !parsed ) { return null }
-    return parsed.datapoint ? parsed.datapoint : parsed;
+    const datapoint = parsed.datapoint ? parsed.datapoint : parsed;
+    return normalizeDatapointIds( datapoint );
   }
 
   /** Site slot is stored flat ({ SITE: … }); crop slots use { datapoint: … }. */
@@ -1381,9 +1432,10 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   function fertilizerSlotHeader( section, field, slotData ) {
     const slotNum = field.replace( 'F', '' );
-    const fertId = slotData && slotData.ID != null ? slotData.ID : 5000;
+    const rawFertId = slotData && slotData.ID != null ? slotData.ID : 5000;
+    const fertId = rawFertId === -1 ? 5000 : rawFertId;
     const fertName = SoilCalculator.getFertilizerName( fertId, locale );
-    const picked = Number( fertId ) !== 5000;
+    const picked = Number( fertId ) !== 5000 && Number( fertId ) !== 1000;
 
     return V.cN( {
       c: 's-calc-fertilizer-slot__head',
@@ -1674,9 +1726,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const datapoint = dp && dp.datapoint ? dp.datapoint : dp;
     if ( !isSeasonActive( datapoint ) ) { return V.getString( ui.newSeason ) }
     const name = SoilCalculator.getCropName( datapoint.CROP.ID, locale );
-    const year = datapoint.DATE && datapoint.DATE.HVST
-      ? String( datapoint.DATE.HVST ).substr( 0, 4 )
-      : '';
+    const year = datapoint.DATE ? formatHarvestYear( datapoint.DATE.HVST ) : '';
     return year ? name + ' ' + year : name;
   }
 
@@ -1814,9 +1864,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
       const dpWrap = typeof raw === 'string' ? V.castJson( raw ) : raw;
       const datapoint = dpWrap && dpWrap.datapoint ? dpWrap.datapoint : dpWrap;
       const name = SoilCalculator.getCropName( datapoint.CROP.ID, locale );
-      const year = datapoint.DATE && datapoint.DATE.HVST
-        ? String( datapoint.DATE.HVST ).substr( 0, 4 )
-        : '';
+      const year = formatHarvestYear( datapoint.DATE && datapoint.DATE.HVST );
       const slotState = V.getState( 'cropSequence' )[ 's' + slot ];
       const bal = slotState && slotState.results && slotState.results.SOM
         ? slotState.results.SOM.BAL
@@ -1929,15 +1977,18 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     } );
   }
 
-  function closeSeasonWizard() {
+  function closeSeasonWizard( skipRefresh ) {
     ux.wizardOpen = false;
     const overlay = V.getNode( '.s-calc-wizard-overlay' );
     if ( overlay ) { overlay.remove() }
-    refreshTimelineUI();
+    if ( !skipRefresh ) {
+      refreshTimelineUI();
+    }
   }
 
   function mountSeasonWizard( tabNum, data ) {
-    closeSeasonWizard();
+    closeSeasonWizard( true );
+    ux.wizardOpen = true;
     const steps = [
       { title: ui.wizardStepCrop, exclude: ['SITE', 'FTLZ', 'BMASS'] },
       { title: ui.wizardStepFertilizer, exclude: ['SITE', 'CROP', 'BMASS', 'DATE'] },
@@ -2014,7 +2065,6 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
   }
 
   function openSeasonWizard( tabNum, data ) {
-    ux.wizardOpen = true;
     ux.wizardStep = 0;
     mountSeasonWizard( tabNum, data );
   }
@@ -2028,7 +2078,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     const slot = getNextFreeSeasonSlot( data );
     if ( slot == null ) { return }
     ux.selectedSeason = slot;
-    const schema = SoilCalculator.getSchema( 'request' );
+    const schema = normalizeDatapointIds( V.castClone( SoilCalculator.getSchema( 'request' ) ) );
     data[ 's' + slot ] = JSON.stringify( schema );
     queuePersist( 's' + slot, schema, true );
     ux.widgetDataCache = data;
@@ -2077,6 +2127,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
     return V.cN( {
       c: 's-calc-season-editor s-calc-form-background',
       h: [
+        seasonEditorHeader( tabNum, data ),
         V.cN( { c: 's-calc-form-error', h: ux.formError } ),
         !useExpertMode() ? V.cN( {
           t: 'button',

@@ -124,7 +124,8 @@ const SoilCalculator = ( () => {
 
     /* mixin the full set of crop, fertilizer and soil type parameters into clone */
     Object.assign( clone.SITE.STYP, getSoilType( clone.SITE.STYP.ID || clone.SITE.STYP.NAME ) );
-    Object.assign( clone.CROP, getCrop( clone.CROP.ID || clone.CROP.NAME ) );
+    const cropRef = clone.CROP.ID === -1 || clone.CROP.ID == null ? 1000 : ( clone.CROP.ID || clone.CROP.NAME );
+    Object.assign( clone.CROP, getCrop( cropRef ) || getCrop( 1000 ) );
 
     for ( let i = 1; i <= SoilCalculatorComponents.getNumFertilizerGroups; ++i ) {
       if ( !clone.FTLZ[`F${i}`] ) {
@@ -132,7 +133,9 @@ const SoilCalculator = ( () => {
         Object.assign( clone.FTLZ[`F${i}`], getFertilizer( 5000 ) );
         continue;
       }
-      Object.assign( clone.FTLZ[`F${i}`], getFertilizer( clone.FTLZ[`F${i}`].ID || clone.FTLZ[`F${i}`].NAME ) );
+      const fertId = clone.FTLZ[`F${i}`].ID;
+      const fertRef = fertId === -1 || fertId == null ? 5000 : ( fertId || clone.FTLZ[`F${i}`].NAME );
+      Object.assign( clone.FTLZ[`F${i}`], getFertilizer( fertRef ) || getFertilizer( 5000 ) );
     }
 
     /* do the same for the previous datapoint */
@@ -457,11 +460,17 @@ const SoilCalculator = ( () => {
   }
 
   function getCropName( which, locale ) {
-    return getCrop( which )[ 'NAME' + ( locale.includes( 'de' ) ? '_DE' : '' ) ];
+    const crop = getCrop( which ) || getCrop( 1000 );
+    if ( !crop ) { return '' }
+    const key = 'NAME' + ( locale.includes( 'de' ) ? '_DE' : '' );
+    return crop[key] || crop.NAME || '';
   }
 
   function getFertilizerName( which, locale ) {
-    return getFertilizer( which )[ 'NAME' + ( locale.includes( 'de' ) ? '_DE' : '' ) ];
+    const fert = getFertilizer( which ) || getFertilizer( 5000 );
+    if ( !fert ) { return '' }
+    const key = 'NAME' + ( locale.includes( 'de' ) ? '_DE' : '' );
+    return fert[key] || fert.NAME || '';
   }
 
   function getCrops() {

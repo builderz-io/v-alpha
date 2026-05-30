@@ -478,6 +478,26 @@
   margin-top: 0.65rem;
 }
 
+.s-calc-season-editor__head {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--s-calc-border);
+}
+
+.s-calc-season-editor__title {
+  font-family: 'IBM Plex Bold', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--s-calc-soil);
+}
+
+.s-calc-season-editor__subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--s-calc-muted);
+}
+
 .s-calc-form-background {
   width: 100%;
   max-width: 100%;
