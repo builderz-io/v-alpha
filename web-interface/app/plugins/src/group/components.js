@@ -162,7 +162,7 @@ const GroupComponents = ( function() {
           {
             t: 'p',
             c: 'cursor-pointer',
-            h: `${member.fullId} (${member.role})`,
+            h: `${member.fullId} (${V.getString( member.role )})`,
             k: handleProfileDraw,
           },
           canManage
@@ -257,7 +257,7 @@ const GroupComponents = ( function() {
             },
             {
               t: 'span',
-              h: held.fullId + ' (' + held.role + ')',
+              h: held.fullId + ' (' + V.getString( held.role ) + ')',
             },
           ],
         } ) ),
