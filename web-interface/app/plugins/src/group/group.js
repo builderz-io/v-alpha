@@ -92,6 +92,50 @@ const Group = ( function() { // eslint-disable-line no-unused-vars
     return group;
   }
 
+  async function createResearchGroup( {
+    title,
+    description,
+    purpose,
+    privacy = 2,
+    sharingScope = 'full_plot_data',
+  } ) {
+    const group = await createGroup( {
+      title,
+      description,
+      privacy,
+      memberUuids: [],
+    } );
+
+    const metaField = V.castServiceField( 'researchCohortMeta' );
+    const owner = V.aE();
+    const cohortMeta = V.castJson( {
+      title: title,
+      description: description || '',
+      purpose: purpose || '',
+      sharingScope: sharingScope,
+      ownerUuid: owner ? owner.uuidE : undefined,
+      ownerFullId: owner ? owner.fullId : undefined,
+      createdAt: V.castUnix(),
+      roles: {
+        researchOwner: owner ? [ owner.uuidE ] : [],
+        researchCollaborator: [],
+        farmerMember: [],
+        viewer: [],
+      },
+    } );
+
+    await V.setEntity( group.fullId, {
+      field: `servicefields.${metaField}`,
+      data: cohortMeta,
+      activeProfile: group.uuidP,
+    } );
+
+    group.servicefields = group.servicefields || {};
+    group.servicefields[metaField] = cohortMeta;
+
+    return group;
+  }
+
   V.setState( 'availablePlugins', { group: launch } );
 
   return {
@@ -99,6 +143,7 @@ const Group = ( function() { // eslint-disable-line no-unused-vars
     preview,
     draw,
     createGroup,
+    createResearchGroup,
   };
 
 } )();

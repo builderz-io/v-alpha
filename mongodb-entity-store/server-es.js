@@ -90,6 +90,12 @@ exports.sio.on( 'connection', client => {
 
   client.on( 'get entity by query', handleEntity.findByQuery );
 
+  client.on( 'get research cohorts by owner', handleEntity.findResearchCohortsByOwner );
+
+  client.on( 'set research invite state', handleEntity.setResearchInviteState );
+
+  client.on( 'get research cohort export', handleEntity.exportResearchCohortData );
+
   // client.on( 'set verification', handleEntity.verify );
 
   // client.on( 'tags', handleEntity.getTags );

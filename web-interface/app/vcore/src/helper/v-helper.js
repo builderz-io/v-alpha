@@ -773,6 +773,10 @@ const VHelper = ( function() { // eslint-disable-line no-unused-vars
     case 'groupedEntities': return 's30';
     case 'averageSequence': return 's29';
     case 'yearsAverageSequence': return 's28';
+    case 'researchCohortMeta': return 's32';
+    case 'researchGroupInvites': return 's33';
+    case 'researchConsentRecords': return 's34';
+    case 'researchAuditLog': return 's35';
     }
   }
 

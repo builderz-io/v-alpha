@@ -664,6 +664,27 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     return V.getData( data, 'entity by query', V.getSetting( 'entityLedger' ) );
   }
 
+  function getResearchCohorts( ownerUuid ) {
+    if ( V.getSetting( 'entityLedger' ) === 'MongoDB' ) {
+      return V.getMongoDB( { ownerUuid: ownerUuid }, 'research cohorts by owner' );
+    }
+    return Promise.resolve( V.successFalse( 'get research cohorts', 'not implemented for this ledger' ) );
+  }
+
+  function setResearchInviteState( data ) {
+    if ( V.getSetting( 'entityLedger' ) === 'MongoDB' ) {
+      return V.setMongoDB( data, 'research invite state' );
+    }
+    return Promise.resolve( V.successFalse( 'set research invite state', 'not implemented for this ledger' ) );
+  }
+
+  function getResearchCohortExport( data ) {
+    if ( V.getSetting( 'entityLedger' ) === 'MongoDB' ) {
+      return V.getMongoDB( data, 'research cohort export' );
+    }
+    return Promise.resolve( V.successFalse( 'get research cohort export', 'not implemented for this ledger' ) );
+  }
+
   /* ====================== export ====================== */
 
   V.castEntityTitle = castEntityTitle;
@@ -673,6 +694,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   V.setEntity = setEntity;
   V.getEntityBalance = getEntityBalance;
   V.getQuery = getQuery;
+  V.getResearchCohorts = getResearchCohorts;
+  V.setResearchInviteState = setResearchInviteState;
+  V.getResearchCohortExport = getResearchCohortExport;
 
   return {
     castEntityTitle: castEntityTitle,
@@ -682,6 +706,9 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     setEntity: setEntity,
     getEntityBalance: getEntityBalance,
     getQuery: getQuery,
+    getResearchCohorts: getResearchCohorts,
+    setResearchInviteState: setResearchInviteState,
+    getResearchCohortExport: getResearchCohortExport,
   };
 
 } )();

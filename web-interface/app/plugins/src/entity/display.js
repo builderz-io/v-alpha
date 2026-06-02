@@ -112,6 +112,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
       GroupComponents.drawGroupTotalBalanceWidget(),
       GroupComponents.drawGroupWidget(),
       GroupComponents.drawGroupPlotWidget(),
+      GroupComponents.drawResearchCohortWidget(),
       UserComponents.locationCard(),
       UserComponents.questionnaireCard(),
       UserComponents.socialCard(),

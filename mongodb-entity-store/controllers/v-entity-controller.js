@@ -8,12 +8,69 @@ const telegramNotification = require( '../lib/telegram' ).adminNotify;
 
 const EntityDB = require( '../models/v-entity-model' );
 const TxDB = require( '../models/v-transaction-model' );
+const RESEARCH_FIELDS = {
+  meta: 'servicefields.s32',
+  invites: 'servicefields.s33',
+  consent: 'servicefields.s34',
+  audit: 'servicefields.s35',
+  members: 'servicefields.s30',
+};
 
 function roleFilter( role ) {
   if ( role === 'Group' ) {
     return { 'profile.role': { $in: ['Group', 'aq'] } };
   }
   return { 'profile.role': role };
+}
+
+function castJson( value, fallback ) {
+  try {
+    if ( value == null ) { return fallback }
+    if ( typeof value === 'string' ) {
+      return JSON.parse( value );
+    }
+    return value;
+  }
+  catch ( e ) {
+    return fallback;
+  }
+}
+
+function castResearchMeta( entity ) {
+  const servicefields = entity && entity.servicefields ? entity.servicefields : {};
+  return castJson( servicefields.s32, {} ) || {};
+}
+
+function castConsentRecords( entity ) {
+  const servicefields = entity && entity.servicefields ? entity.servicefields : {};
+  return castJson( servicefields.s34, [] ) || [];
+}
+
+function castGroupedEntities( entity ) {
+  const servicefields = entity && entity.servicefields ? entity.servicefields : {};
+  return castJson( servicefields.s30, [] ) || [];
+}
+
+function canManageResearch( actorUuid, meta ) {
+  if ( !actorUuid || !meta ) { return false }
+  const roles = meta.roles || {};
+  const owners = Array.isArray( roles.researchOwner ) ? roles.researchOwner : [];
+  const collaborators = Array.isArray( roles.researchCollaborator ) ? roles.researchCollaborator : [];
+  return owners.includes( actorUuid )
+    || collaborators.includes( actorUuid )
+    || meta.ownerUuid === actorUuid;
+}
+
+function canViewFullData( actorUuid, meta ) {
+  if ( !actorUuid || !meta ) { return false }
+  const roles = meta.roles || {};
+  const owners = Array.isArray( roles.researchOwner ) ? roles.researchOwner : [];
+  const collaborators = Array.isArray( roles.researchCollaborator ) ? roles.researchCollaborator : [];
+  const farmers = Array.isArray( roles.farmerMember ) ? roles.farmerMember : [];
+  return owners.includes( actorUuid )
+    || collaborators.includes( actorUuid )
+    || farmers.includes( actorUuid )
+    || meta.ownerUuid === actorUuid;
 }
 
 async function findEntity( query, filter ) {
@@ -162,6 +219,214 @@ exports.findByQuery = async function( req, res ) {
     _id: 0,
   } ) );
 
+};
+
+exports.findResearchCohortsByOwner = async function( req, res ) {
+  const ownerUuid = typeof req === 'string' ? req : req.ownerUuid;
+  if ( !ownerUuid ) {
+    return res( {
+      success: false,
+      status: 'missing owner uuid',
+    } );
+  }
+
+  const query = {
+    $and: [
+      roleFilter( 'Group' ),
+      { 'status.active': true },
+      { [`${RESEARCH_FIELDS.meta}.ownerUuid`]: ownerUuid },
+    ],
+  };
+
+  res( await findEntity( query, {
+    private: 0,
+    _id: 0,
+  } ) );
+};
+
+exports.setResearchInviteState = async function( req, cb ) {
+  if ( !req || !req.groupFullId || !req.invites ) {
+    return cb( {
+      success: false,
+      status: 'invalid invite payload',
+    } );
+  }
+
+  const group = await EntityDB.findOne( { fullId: req.groupFullId } )
+    .select( 'fullId profile.uuidV4 servicefields status' )
+    .lean();
+
+  if ( !group || ( group.status && group.status.active === false ) ) {
+    return cb( {
+      success: false,
+      status: 'cohort not found',
+    } );
+  }
+
+  const meta = castResearchMeta( group );
+  if ( !canManageResearch( req.actorUuid, meta ) ) {
+    return cb( {
+      success: false,
+      status: 'not authorized to update invite state',
+    } );
+  }
+
+  const now = Math.floor( Date.now() / 1000 );
+  const safeInvites = req.invites.map( invite => {
+    const next = Object.assign( {}, invite );
+    if ( !next.token ) {
+      next.token = String( now ) + String( Math.floor( Math.random() * 100000 ) );
+    }
+    if ( !next.expiresAt ) {
+      next.expiresAt = now + ( 60 * 60 * 24 * 14 );
+    }
+    return next;
+  } );
+  const auditEntry = {
+    id: req.auditId || String( now ) + String( Math.floor( Math.random() * 10000 ) ),
+    action: req.action || 'invite_update',
+    actorUuid: req.actorUuid,
+    actorFullId: req.actorFullId,
+    at: now,
+  };
+
+  return EntityDB.findOneAndUpdate(
+    { fullId: req.groupFullId },
+    {
+      $set: {
+        [RESEARCH_FIELDS.invites]: safeInvites,
+        [RESEARCH_FIELDS.meta]: req.meta || meta,
+        [RESEARCH_FIELDS.members]: req.groupedEntities || castGroupedEntities( group ),
+        [RESEARCH_FIELDS.consent]: req.consentRecords || castConsentRecords( group ),
+      },
+      $push: {
+        [RESEARCH_FIELDS.audit]: auditEntry,
+      },
+    },
+    { new: true },
+    ( err, entity ) => {
+      if ( err ) {
+        return cb( {
+          success: false,
+          status: 'could not update invite state',
+          message: err,
+        } );
+      }
+      return cb( {
+        success: true,
+        status: 'invite state updated',
+        data: [ entity ],
+      } );
+    },
+  );
+};
+
+exports.exportResearchCohortData = async function( req, cb ) {
+  if ( !req || !req.groupFullId ) {
+    return cb( {
+      success: false,
+      status: 'missing groupFullId',
+    } );
+  }
+
+  const group = await EntityDB.findOne( { fullId: req.groupFullId } )
+    .select( 'fullId profile.uuidV4 servicefields status' )
+    .lean();
+
+  if ( !group || ( group.status && group.status.active === false ) ) {
+    return cb( {
+      success: false,
+      status: 'cohort not found',
+    } );
+  }
+
+  const meta = castResearchMeta( group );
+  const hasPermission = canViewFullData( req.actorUuid, meta );
+  if ( !hasPermission ) {
+    return cb( {
+      success: false,
+      status: 'not authorized for full cohort export',
+    } );
+  }
+
+  const consentRecords = castConsentRecords( group );
+  const activeConsentUuids = consentRecords
+    .filter( item => item.status === 'active' )
+    .map( item => item.farmerUuid );
+  const members = castGroupedEntities( group );
+
+  const plots = await EntityDB.find( {
+    'profile.uuidV4': { $in: members },
+    'status.active': true,
+  } ).select( {
+    fullId: 1,
+    profile: 1,
+    geometry: 1,
+    properties: 1,
+    servicefields: 1,
+    _id: 0,
+  } ).lean();
+
+  const scopedPlots = req.scope === 'aggregated_only'
+    ? plots.map( item => ( {
+      fullId: item.fullId,
+      profile: {
+        uuidV4: item.profile.uuidV4,
+        role: item.profile.role,
+      },
+      servicefields: {
+        s29: item.servicefields ? item.servicefields.s29 : undefined,
+        s28: item.servicefields ? item.servicefields.s28 : undefined,
+      },
+    } ) )
+    : plots;
+
+  const consentFilteredPlots = scopedPlots.filter( plot => {
+    if ( !plot.profile || !plot.profile.uuidV4 ) { return true }
+    if ( activeConsentUuids.length === 0 ) { return true }
+    return activeConsentUuids.includes( plot.profile.uuidV4 );
+  } );
+
+  const auditEntry = {
+    id: String( Math.floor( Date.now() / 1000 ) ) + String( Math.floor( Math.random() * 10000 ) ),
+    action: 'export_full_plot_data',
+    actorUuid: req.actorUuid,
+    actorFullId: req.actorFullId,
+    at: Math.floor( Date.now() / 1000 ),
+    count: consentFilteredPlots.length,
+  };
+
+  await EntityDB.findOneAndUpdate(
+    { fullId: req.groupFullId },
+    {
+      $push: {
+        [RESEARCH_FIELDS.audit]: auditEntry,
+      },
+    },
+    { new: false },
+  );
+
+  return cb( {
+    success: true,
+    status: 'research export ready',
+    data: [{
+      groupFullId: req.groupFullId,
+      groupUuid: group.profile && group.profile.uuidV4,
+      generatedAt: new Date().toISOString(),
+      sharingScope: req.scope || 'full_plot_data',
+      consentFiltered: activeConsentUuids.length > 0,
+      plots: consentFilteredPlots,
+    }],
+  } );
+};
+
+exports.__test = {
+  castJson: castJson,
+  castResearchMeta: castResearchMeta,
+  castConsentRecords: castConsentRecords,
+  castGroupedEntities: castGroupedEntities,
+  canManageResearch: canManageResearch,
+  canViewFullData: canViewFullData,
 };
 
 exports.register = function( req, res ) {

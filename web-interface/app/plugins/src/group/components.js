@@ -14,6 +14,29 @@ const GroupComponents = ( function() {
       noHeldEntitiesToAdd: 'No other entities in your account to add',
       soilBalanceTitle: 'Soil Balance',
       groupIncompleteRollup: 'Some plots have incomplete season data; group totals may be understated.',
+      researchCohort: 'Research Cohort',
+      researchPurpose: 'Research purpose',
+      sharingScope: 'Sharing scope',
+      fullPlotData: 'Full plot data',
+      aggregatedOnly: 'Aggregated only',
+      saveResearchSettings: 'Save research settings',
+      inviteFarmer: 'Invite farmer',
+      invitePlaceholder: 'Farmer full ID (e.g. Dev Tester #1001)',
+      sendInvite: 'Send invite',
+      pendingInvites: 'Pending invites',
+      noInvites: 'No invites yet',
+      acceptInvite: 'Accept',
+      declineInvite: 'Decline',
+      inviteSent: 'Invite sent',
+      inviteUpdated: 'Invite updated',
+      membersResearchView: 'Research members overview',
+      exportCsv: 'Export CSV',
+      exportJson: 'Export JSON',
+      noResearchPlots: 'No shared plots available for research',
+      roleResearchOwner: 'Research owner',
+      roleResearchCollaborator: 'Research collaborator',
+      roleFarmerMember: 'Farmer member',
+      roleViewer: 'Viewer',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -52,6 +75,117 @@ const GroupComponents = ( function() {
     return entity.role === 'Group'
       || entity.roleCode === 'aq'
       || entity.role === 'aq';
+  }
+
+  function fieldName( field ) {
+    return `servicefields.${V.castServiceField( field )}`;
+  }
+
+  function getServicefieldJson( group, field, fallback ) {
+    const servicefields = group && group.servicefields ? group.servicefields : {};
+    const raw = servicefields[V.castServiceField( field )];
+    const cast = V.castJson( raw );
+    return cast == null ? fallback : cast;
+  }
+
+  function updateGroupField( group, field, value ) {
+    return V.setEntity( group.fullId, {
+      field: fieldName( field ),
+      data: typeof value === 'string' ? value : V.castJson( value ),
+      activeProfile: group.uuidP,
+    } );
+  }
+
+  function setGroupFieldLocal( group, field, value ) {
+    const key = V.castServiceField( field );
+    group.servicefields = group.servicefields || {};
+    group.servicefields[key] = typeof value === 'string' ? value : V.castJson( value );
+  }
+
+  function getResearchMeta( group ) {
+    const fallback = {
+      title: group.title,
+      description: group.properties && group.properties.description ? group.properties.description : '',
+      purpose: '',
+      sharingScope: 'full_plot_data',
+      ownerUuid: V.aE() ? V.aE().uuidE : undefined,
+      ownerFullId: V.aE() ? V.aE().fullId : undefined,
+      createdAt: V.castUnix(),
+      roles: {
+        researchOwner: V.aE() ? [V.aE().uuidE] : [],
+        researchCollaborator: [],
+        farmerMember: [],
+        viewer: [],
+      },
+    };
+    const meta = getServicefieldJson( group, 'researchCohortMeta', fallback );
+    if ( !meta.roles ) {
+      meta.roles = fallback.roles;
+    }
+    return meta;
+  }
+
+  function getResearchInvites( group ) {
+    return getServicefieldJson( group, 'researchGroupInvites', [] ) || [];
+  }
+
+  function getConsentRecords( group ) {
+    return getServicefieldJson( group, 'researchConsentRecords', [] ) || [];
+  }
+
+  function getAuditLog( group ) {
+    return getServicefieldJson( group, 'researchAuditLog', [] ) || [];
+  }
+
+  function createAuditEntry( action, details ) {
+    const actor = V.aE();
+    return Object.assign( {
+      id: V.castUuid().base64Url.substr( 1, 12 ),
+      action: action,
+      at: V.castUnix(),
+      actorUuid: actor ? actor.uuidE : undefined,
+      actorFullId: actor ? actor.fullId : undefined,
+    }, details || {} );
+  }
+
+  function appendAuditEntry( group, entry ) {
+    const next = getAuditLog( group ).concat( [entry] ).slice( -200 );
+    setGroupFieldLocal( group, 'researchAuditLog', next );
+    return updateGroupField( group, 'researchAuditLog', next );
+  }
+
+  function isResearchOwner( group ) {
+    const active = V.aE();
+    if ( !active ) { return false }
+    const meta = getResearchMeta( group );
+    const owners = meta.roles && Array.isArray( meta.roles.researchOwner )
+      ? meta.roles.researchOwner
+      : [];
+    return owners.includes( active.uuidE ) || meta.ownerUuid === active.uuidE;
+  }
+
+  function hasCohortPermission( group, permission ) {
+    const active = V.aE();
+    if ( !active ) { return false }
+    const meta = getResearchMeta( group );
+    const roles = meta.roles || {};
+
+    const owner = ( roles.researchOwner || [] ).includes( active.uuidE )
+      || meta.ownerUuid === active.uuidE;
+    const collaborator = ( roles.researchCollaborator || [] ).includes( active.uuidE );
+    const farmerMember = ( roles.farmerMember || [] ).includes( active.uuidE );
+    const viewer = ( roles.viewer || [] ).includes( active.uuidE );
+
+    if ( permission === 'manage' ) {
+      return owner || collaborator;
+    }
+    if ( permission === 'view_full_data' ) {
+      return owner || collaborator || farmerMember;
+    }
+    if ( permission === 'view_aggregate' ) {
+      return owner || collaborator || farmerMember || viewer;
+    }
+    return false;
   }
 
   function handleProfileDraw() {
@@ -265,6 +399,455 @@ const GroupComponents = ( function() {
     } ).catch( () => {
       setContainerContent( manageContainer, '' );
     } );
+  }
+
+  function setConsentStatus( group, consentData ) {
+    const records = getConsentRecords( group );
+    const withoutCurrent = records.filter(
+      item => !( item.farmerUuid === consentData.farmerUuid && item.groupUuid === consentData.groupUuid ),
+    );
+    const next = withoutCurrent.concat( [consentData] );
+    setGroupFieldLocal( group, 'researchConsentRecords', next );
+    return updateGroupField( group, 'researchConsentRecords', next );
+  }
+
+  function invitePayload( farmerFullId, farmerUuid, token, scope ) {
+    return {
+      id: V.castUuid().base64Url.substr( 1, 12 ),
+      token: token,
+      farmerFullId: farmerFullId,
+      farmerUuid: farmerUuid,
+      status: 'pending',
+      sharingScope: scope || 'full_plot_data',
+      createdAt: V.castUnix(),
+      expiresAt: V.castUnix() + 60 * 60 * 24 * 14, // 14 days
+      invitedByUuid: V.aE() ? V.aE().uuidE : undefined,
+      invitedByFullId: V.aE() ? V.aE().fullId : undefined,
+    };
+  }
+
+  function saveInvites( group, invites ) {
+    setGroupFieldLocal( group, 'researchGroupInvites', invites );
+    if ( typeof V.setResearchInviteState === 'function' && V.getSetting( 'entityLedger' ) === 'MongoDB' ) {
+      return V.setResearchInviteState( {
+        groupFullId: group.fullId,
+        invites: invites,
+        groupedEntities: getGroupedUuids( group ),
+        meta: getResearchMeta( group ),
+        consentRecords: getConsentRecords( group ),
+        actorUuid: V.aE() ? V.aE().uuidE : undefined,
+        actorFullId: V.aE() ? V.aE().fullId : undefined,
+        action: 'invite_state_sync',
+      }, 'research invite state' );
+    }
+    return updateGroupField( group, 'researchGroupInvites', invites );
+  }
+
+  async function handleInviteAction( group, inviteId, nextStatus ) {
+    const invites = getResearchInvites( group );
+    const invite = invites.find( item => item.id === inviteId );
+    if ( !invite ) { return }
+
+    const now = V.castUnix();
+    const active = V.aE();
+    const isTarget = active
+      && ( active.fullId === invite.farmerFullId || active.uuidE === invite.farmerUuid );
+
+    if ( !isTarget && !hasCohortPermission( group, 'manage' ) ) {
+      return;
+    }
+
+    if ( invite.expiresAt && invite.expiresAt < now ) {
+      invite.status = 'expired';
+      await saveInvites( group, invites );
+      return;
+    }
+
+    invite.status = nextStatus;
+    invite.decidedAt = now;
+    invite.decidedByUuid = active ? active.uuidE : undefined;
+
+    if ( nextStatus === 'accepted' ) {
+      const targetEntity = await V.getEntity( invite.farmerFullId );
+      if ( targetEntity.success && targetEntity.data[0] ) {
+        const farmer = targetEntity.data[0];
+        invite.farmerUuid = farmer.uuidE;
+
+        const plotUuids = ( farmer.holderOf || [] )
+          .filter( item => V.castRole( item.c ) === 'Plot' )
+          .map( item => item.a );
+
+        const uniquePlotUuids = [ ...new Set( getGroupedUuids( group ).concat( plotUuids ) ) ];
+        await updateGroupedEntities( group, uniquePlotUuids );
+        setGroupedUuidsOnGroup( group, uniquePlotUuids );
+
+        const meta = getResearchMeta( group );
+        meta.roles = meta.roles || {};
+        meta.roles.farmerMember = [ ...( meta.roles.farmerMember || [] ) ];
+        if ( !meta.roles.farmerMember.includes( farmer.uuidE ) ) {
+          meta.roles.farmerMember.push( farmer.uuidE );
+        }
+        setGroupFieldLocal( group, 'researchCohortMeta', meta );
+        await updateGroupField( group, 'researchCohortMeta', meta );
+
+        await setConsentStatus( group, {
+          id: V.castUuid().base64Url.substr( 1, 12 ),
+          farmerUuid: farmer.uuidE,
+          farmerFullId: farmer.fullId,
+          groupUuid: group.uuidE,
+          groupFullId: group.fullId,
+          scope: invite.sharingScope || 'full_plot_data',
+          status: 'active',
+          grantedAt: now,
+          expiresAt: null,
+          grantedByUuid: farmer.uuidE,
+        } );
+      }
+    }
+    else if ( nextStatus === 'declined' ) {
+      await setConsentStatus( group, {
+        id: V.castUuid().base64Url.substr( 1, 12 ),
+        farmerUuid: invite.farmerUuid,
+        farmerFullId: invite.farmerFullId,
+        groupUuid: group.uuidE,
+        groupFullId: group.fullId,
+        scope: invite.sharingScope || 'full_plot_data',
+        status: 'revoked',
+        grantedAt: null,
+        revokedAt: now,
+        grantedByUuid: active ? active.uuidE : undefined,
+      } );
+    }
+
+    await saveInvites( group, invites );
+    await appendAuditEntry( group, createAuditEntry( 'invite_' + nextStatus, {
+      inviteId: invite.id,
+      farmerFullId: invite.farmerFullId,
+      farmerUuid: invite.farmerUuid,
+    } ) );
+  }
+
+  async function handleSendInvite( group, $input, renderCallback ) {
+    const farmerFullId = $input.value.trim();
+    if ( !farmerFullId ) { return }
+
+    const farmerRes = await V.getEntity( farmerFullId );
+    if ( !farmerRes.success || !farmerRes.data[0] ) { return }
+    const farmer = farmerRes.data[0];
+
+    const meta = getResearchMeta( group );
+    const invite = invitePayload(
+      farmer.fullId,
+      farmer.uuidE,
+      V.castUuid().base64Url.substr( 1, 16 ),
+      meta.sharingScope || 'full_plot_data',
+    );
+
+    const invites = getResearchInvites( group );
+    invites.push( invite );
+    await saveInvites( group, invites );
+    await appendAuditEntry( group, createAuditEntry( 'invite_created', {
+      inviteId: invite.id,
+      farmerFullId: farmer.fullId,
+      farmerUuid: farmer.uuidE,
+    } ) );
+    $input.value = '';
+    if ( renderCallback ) {
+      renderCallback();
+    }
+  }
+
+  function castInviteNode( group, invite, rerender ) {
+    const status = invite.status || 'pending';
+    const isPending = status === 'pending';
+    const isTarget = V.aE()
+      && ( V.aE().uuidE === invite.farmerUuid || V.aE().fullId === invite.farmerFullId );
+    const allowManage = hasCohortPermission( group, 'manage' );
+
+    return V.cN( {
+      c: 'pxy flex justify-between items-center',
+      h: [
+        V.cN( {
+          h: `${invite.farmerFullId} (${status})`,
+        } ),
+        isPending && ( isTarget || allowManage )
+          ? V.cN( {
+            c: 'flex',
+            h: [
+              V.cN( {
+                t: 'button',
+                c: 'txt-gray fs-s mr-rr',
+                h: V.getString( ui.acceptInvite ),
+                k: async () => {
+                  await handleInviteAction( group, invite.id, 'accepted' );
+                  rerender();
+                },
+              } ),
+              V.cN( {
+                t: 'button',
+                c: 'txt-gray fs-s',
+                h: V.getString( ui.declineInvite ),
+                k: async () => {
+                  await handleInviteAction( group, invite.id, 'declined' );
+                  rerender();
+                },
+              } ),
+            ],
+          } )
+          : '',
+      ],
+    } );
+  }
+
+  function buildResearchDataset( plots ) {
+    return plots.map( plot => {
+      const yearly = plot.servicefields[V.castServiceField( 'yearsAverageSequence' )];
+      const average = plot.servicefields[V.castServiceField( 'averageSequence' )];
+      const sequence = V.castJson( yearly || average ) || [];
+      const balance = SoilCalculator.getAccumulatedSequenceResults( [ sequence ] );
+      return {
+        uuidE: plot.uuidE,
+        fullId: plot.fullId,
+        role: plot.role,
+        geometry: plot.geometry,
+        servicefields: plot.servicefields,
+        humusBalance: balance,
+      };
+    } );
+  }
+
+  function downloadResearchFile( filename, payload, type ) {
+    const blob = new Blob( [ payload ], { type: type } );
+    const link = document.createElement( 'a' );
+    link.href = URL.createObjectURL( blob );
+    link.download = filename;
+    document.body.appendChild( link );
+    link.click();
+    document.body.removeChild( link );
+    URL.revokeObjectURL( link.href );
+  }
+
+  async function renderResearchPanel( group, container ) {
+    const groupedUuids = getGroupedUuids( group );
+    if ( !groupedUuids.length ) {
+      setContainerContent( container, V.cN( {
+        c: 'pxy fs-s',
+        h: V.getString( ui.noResearchPlots ),
+      } ) );
+      return;
+    }
+
+    if ( !hasCohortPermission( group, 'view_full_data' ) ) {
+      setContainerContent( container, '' );
+      return;
+    }
+
+    const result = await V.getEntity( groupedUuids );
+    if ( !result.success || !result.data ) {
+      setContainerContent( container, '' );
+      return;
+    }
+
+    const dataset = buildResearchDataset( result.data );
+    const rows = dataset.map( item => V.cN( {
+      c: 'pxy fs-s',
+      h: `${item.fullId}: C ${item.humusBalance.C.toFixed( 1 )}, N ${item.humusBalance.N.toFixed( 1 )}`,
+    } ) );
+
+    setContainerContent( container, [
+      V.cN( {
+        c: 'pxy font-bold fs-s',
+        h: V.getString( ui.membersResearchView ),
+      } ),
+      ...rows,
+      V.cN( {
+        c: 'pxy flex',
+        h: [
+          V.cN( {
+            t: 'button',
+            c: 'txt-gray fs-s mr-rr',
+            h: V.getString( ui.exportJson ),
+            k: async () => {
+              let payload = {
+                exportedAt: new Date().toISOString(),
+                group: {
+                  uuidE: group.uuidE,
+                  fullId: group.fullId,
+                },
+                scope: getResearchMeta( group ).sharingScope,
+                dataset: dataset,
+              };
+
+              if ( typeof V.getResearchCohortExport === 'function' && V.getSetting( 'entityLedger' ) === 'MongoDB' ) {
+                const exportRes = await V.getResearchCohortExport( {
+                  groupFullId: group.fullId,
+                  actorUuid: V.aE() ? V.aE().uuidE : undefined,
+                  actorFullId: V.aE() ? V.aE().fullId : undefined,
+                  scope: getResearchMeta( group ).sharingScope,
+                } );
+                if ( exportRes && exportRes.success && exportRes.data[0] ) {
+                  payload = exportRes.data[0];
+                }
+              }
+
+              downloadResearchFile(
+                `research-${group.uuidE}-${V.castUnix()}.json`,
+                JSON.stringify( payload, null, 2 ),
+                'application/json',
+              );
+              await appendAuditEntry( group, createAuditEntry( 'export_json', {
+                count: dataset.length,
+              } ) );
+            },
+          } ),
+          V.cN( {
+            t: 'button',
+            c: 'txt-gray fs-s',
+            h: V.getString( ui.exportCsv ),
+            k: async () => {
+              const rows = dataset.map( item => [
+                item.uuidE,
+                `"${item.fullId.replace( /"/g, '""' )}"`,
+                item.role,
+                item.humusBalance.C,
+                item.humusBalance.N,
+                `"${JSON.stringify( item.servicefields ).replace( /"/g, '""' )}"`,
+              ].join( ',' ) );
+
+              const csv = [
+                'uuidE,fullId,role,humusC,humusN,servicefields',
+                ...rows,
+              ].join( '\n' );
+
+              downloadResearchFile(
+                `research-${group.uuidE}-${V.castUnix()}.csv`,
+                csv,
+                'text/csv;charset=utf-8',
+              );
+              await appendAuditEntry( group, createAuditEntry( 'export_csv', {
+                count: dataset.length,
+              } ) );
+            },
+          } ),
+        ],
+      } ),
+    ] );
+  }
+
+  function renderResearchCohortCard( group ) {
+    const meta = getResearchMeta( group );
+    const invites = getResearchInvites( group );
+    const canManage = hasCohortPermission( group, 'manage' ) || isResearchOwner( group );
+    const sharingScope = meta.sharingScope || 'full_plot_data';
+    const inviteContainer = V.cN( { c: 'research-invites' } );
+    const researchDataContainer = V.cN( { c: 'research-dataset' } );
+
+    const rerenderInvites = () => {
+      const currentInvites = getResearchInvites( group );
+      setContainerContent( inviteContainer, currentInvites.length
+        ? currentInvites.map( invite => castInviteNode( group, invite, rerenderInvites ) )
+        : V.cN( { c: 'pxy fs-s', h: V.getString( ui.noInvites ) } ),
+      );
+      renderResearchPanel( group, researchDataContainer );
+    };
+
+    const inputPurpose = V.cN( {
+      t: 'textarea',
+      c: 'w-full pxy',
+      a: { rows: 3, placeholder: V.getString( ui.researchPurpose ) },
+      h: meta.purpose || '',
+    } );
+
+    const scopeSelect = V.cN( {
+      t: 'select',
+      c: 'w-full pxy',
+      h: [
+        V.cN( {
+          t: 'option',
+          a: { value: 'full_plot_data', selected: sharingScope === 'full_plot_data' ? 'selected' : undefined },
+          h: V.getString( ui.fullPlotData ),
+        } ),
+        V.cN( {
+          t: 'option',
+          a: { value: 'aggregated_only', selected: sharingScope === 'aggregated_only' ? 'selected' : undefined },
+          h: V.getString( ui.aggregatedOnly ),
+        } ),
+      ],
+    } );
+
+    const inviteInput = V.cN( {
+      t: 'input',
+      c: 'w-full pxy',
+      a: {
+        placeholder: V.getString( ui.invitePlaceholder ),
+      },
+    } );
+
+    const content = [
+      V.cN( {
+        c: 'pxy font-bold fs-s',
+        h: V.getString( ui.researchCohort ),
+      } ),
+      V.cN( {
+        c: 'pxy fs-s',
+        h: `${V.getString( ui.sharingScope )}: ${V.getString( sharingScope === 'full_plot_data' ? ui.fullPlotData : ui.aggregatedOnly )}`,
+      } ),
+      canManage
+        ? V.cN( {
+          c: 'pxy',
+          h: [
+            V.cN( { c: 'fs-s mb-rr', h: V.getString( ui.researchPurpose ) } ),
+            inputPurpose,
+            scopeSelect,
+            V.cN( {
+              t: 'button',
+              c: 'txt-gray fs-s mt-rr',
+              h: V.getString( ui.saveResearchSettings ),
+              k: async () => {
+                const nextMeta = getResearchMeta( group );
+                nextMeta.purpose = inputPurpose.value;
+                nextMeta.sharingScope = scopeSelect.value;
+                nextMeta.updatedAt = V.castUnix();
+                setGroupFieldLocal( group, 'researchCohortMeta', nextMeta );
+                await updateGroupField( group, 'researchCohortMeta', nextMeta );
+                await appendAuditEntry( group, createAuditEntry( 'cohort_meta_updated', {
+                  sharingScope: nextMeta.sharingScope,
+                } ) );
+                rerenderInvites();
+              },
+            } ),
+          ],
+        } )
+        : '',
+      canManage
+        ? V.cN( {
+          c: 'pxy',
+          h: [
+            V.cN( { c: 'fs-s mb-rr', h: V.getString( ui.inviteFarmer ) } ),
+            inviteInput,
+            V.cN( {
+              t: 'button',
+              c: 'txt-gray fs-s mt-rr',
+              h: V.getString( ui.sendInvite ),
+              k: () => handleSendInvite( group, inviteInput, rerenderInvites ),
+            } ),
+          ],
+        } )
+        : '',
+      V.cN( {
+        c: 'pxy font-bold fs-s',
+        h: V.getString( ui.pendingInvites ),
+      } ),
+      inviteContainer,
+      researchDataContainer,
+    ];
+
+    rerenderInvites();
+
+    return CanvasComponents.card(
+      V.cN( { c: 'group-research-cohort', h: content } ),
+      V.getString( ui.researchCohort ),
+    );
   }
 
   function handleGroupSelection( group, entity ) {
@@ -695,9 +1278,18 @@ const GroupComponents = ( function() {
     );
   }
 
+  function drawResearchCohortWidget() {
+    const entity = V.getState( 'active' ).lastViewedEntity;
+
+    if ( !isGroupEntity( entity ) ) { return '' }
+
+    return renderResearchCohortCard( entity );
+  }
+
   return {
     drawGroupWidget: drawGroupWidget,
     drawGroupPlotWidget: drawGroupPlotWidget,
     drawGroupTotalBalanceWidget: drawGroupTotalBalanceWidget,
+    drawResearchCohortWidget: drawResearchCohortWidget,
   };
 } )();

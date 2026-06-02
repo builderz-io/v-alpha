@@ -73,6 +73,9 @@ exports.sio.on( 'connection', client => {
   client.on( 'get entity by uuidE', handleEntity.findByUuidE );
   client.on( 'get entity by uPhrase', handleEntity.findByUPhrase );
   client.on( 'get entity by query', handleEntity.findByQuery );
+  client.on( 'get research cohorts by owner', handleEntity.findResearchCohortsByOwner );
+  client.on( 'set research invite state', handleEntity.setResearchInviteState );
+  client.on( 'get research cohort export', handleEntity.exportResearchCohortData );
   client.on( 'set message', handleMessage.set );
   client.on( 'get message', handleMessage.get );
   client.on( 'set transaction', handleTransaction.updateEntities );
