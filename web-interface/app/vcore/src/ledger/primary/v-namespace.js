@@ -33,7 +33,10 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
    */
 
   const previewE = 'a c d m n';
-  const previewP = 'f m { a r } n { a c z } o { a b z } s { s28 s29 s30 }';
+  const previewP = 'f m { a r } n { a c z } o { a b z } s { s27 s28 s29 s30 }';
+
+  /** North Sea sentinel [lng, lat] when profile coordinates are unavailable */
+  const PLACEHOLDER_COORDINATES = [ 3.612853, 56.301912 ];
 
   /* ================== private methods ================= */
 
@@ -202,8 +205,15 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
 
-    /** cast some random geometry */
-    const geo = V.castRandLatLng();
+    const profileCoordinates = P.n && P.n.a;
+    const coordinates = (
+      Array.isArray( profileCoordinates )
+      && profileCoordinates.length >= 2
+      && profileCoordinates[0] != null
+      && profileCoordinates[1] != null
+    )
+      ? profileCoordinates
+      : PLACEHOLDER_COORDINATES;
 
     return {
       uuidE: E.a || P.d,
@@ -238,15 +248,15 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         avatar: P.o && P.o.z ? P.o.z : settings.avatar, // Fallback to Reset-Tangram
       },
       geometry: {
-        coordinates: P.n ? P.n.a : [ geo.lng, geo.lat ],
+        coordinates: coordinates,
         baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
         continent: P.n && P.n.z ? P.n.z : settings.continent, // Fallback to Atlantic Ocean
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
-      holders: E.holders,
-      holderOf: E.holderOf ? E.holderOf /*.map( item => item.fullId ) */ : undefined,
+      holders: E.holders || [ fullId ],
+      holderOf: E.holderOf || [],
       evmCredentials: {
         address: E.i,
       },
@@ -620,6 +630,21 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     return fetchEndpoint( queryI, variables );
   }
 
+  function getPlotsByGroup( groupUuidE ) {
+    const query = `query GetPlotsByGroup( $groupUuidE: String! ) {
+      getPlotsByGroup( groupUuidE: $groupUuidE ) {
+        entity { ${ singleE } }
+        profile { ${ singleP } }
+      }
+    }`;
+
+    const variables = {
+      groupUuidE: groupUuidE,
+    };
+
+    return fetchEndpoint( query, variables );
+  }
+
   function getEntityQuery( data ) {
     console.log( 888, 'by query' );
 
@@ -870,6 +895,27 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         return V.successFalse( 'get transfer log' );
       }
     }
+    else if ( 'plots by group' == whichEndpoint ) {
+      const plots = await getPlotsByGroup( data.groupUuidE );
+      // console.log( '[getPlotsByGroup]', plots );
+
+      if ( plots.errors ) {
+        return V.successFalse( 'get plots by group', plots.errors[0].message );
+      }
+
+      const linkedPlots = ( plots.data.getPlotsByGroup || [] )
+        .filter( item => item && item.entity && item.profile && item.entity.a );
+
+      if ( !linkedPlots.length ) {
+        return V.successTrue( 'got entities and profiles', [] );
+      }
+
+      const combined = linkedPlots.map(
+        item => castReturnedEntityAndProfileData( item.entity, item.profile ),
+      );
+
+      return V.successTrue( 'got entities and profiles', combined );
+    }
     else {
       E = await getEntities( data, whichEndpoint );
     }
@@ -1010,11 +1056,16 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   V.getNamespace = getNamespace;
   V.setNamespace = setNamespace;
   V.setJwt = setJwt;
+  V.getPlotsByGroup = ( groupUuidE ) => getNamespace(
+    { groupUuidE: groupUuidE },
+    'plots by group',
+  );
 
   return {
     getNamespace: getNamespace,
     setNamespace: setNamespace,
     setJwt: setJwt,
+    getPlotsByGroup: V.getPlotsByGroup,
   };
 
 } )();

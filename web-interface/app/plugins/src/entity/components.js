@@ -1059,7 +1059,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         // },
         {
           // x: holders.length >= 1,
-          x: entity.holders[0] != entity.fullId,
+          x: entity.holders && entity.holders[0] != entity.fullId,
           t: 'tr',
           h: [
             {
@@ -1069,7 +1069,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
-              h: entity.holders.join( ' & ' ),
+              h: ( entity.holders || [] ).join( ' & ' ),
               k: handleProfileDraw,
             },
           ],
@@ -1118,7 +1118,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function holderOfCard() {
-    if ( !entity.holderOf.length ) {
+    if ( !entity.holderOf || !entity.holderOf.length ) {
       return '';
     }
 

@@ -54,7 +54,7 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
             clearInterval( polling );
             resolve( cache );
           }
-          else if ( counter > 115 ) {
+          else if ( counter > 10 ) {
             clearInterval( polling );
             resolve( false );
           }

@@ -230,6 +230,8 @@ const SoilCalculator = ( () => {
      * is actually not "loss", but available N after "loss" (due to "1 - ..." )
      * - divided by 10 in order to account for cm in FCAP vs. mm in PCIP.QTY or PCIPAPI.MM
      * - 90 is cm below ground
+     *
+     * PCIPAPI (Bright Sky precipitation) is on hold — use SITE.PCIP only until re-enabled.
      */
 
     return {
@@ -237,7 +239,8 @@ const SoilCalculator = ( () => {
       litQty: _.BMASS.MP.QTY * _.CROP.RATIO.LITMP,
       stbQty: _.BMASS.MP.QTY * _.CROP.RATIO.STBMP,
       rtsQty: _.BMASS.MP.QTY * _.CROP.MP.DM * _.CROP.RATIO.RTSMP,
-      nLoss: _.PCIPAPI.MM != -1 ? pcipFromAPI( _ ) : pcipFallbackFromSITE( _ ),
+      // nLoss: _.PCIPAPI.MM != -1 ? pcipFromAPI( _ ) : pcipFallbackFromSITE( _ ), // on hold
+      nLoss: pcipFallbackFromSITE( _ ),
     };
   }
 
@@ -661,13 +664,13 @@ const SoilCalculator = ( () => {
     /* add input data to state */
     Object.assign( STATE, castInputs( cropData.datapoint, prevDatapoint ) );
 
-    /*add precip*/
-    const pcipData = await castPcip( cropData );
-    Object.assign( STATE.inputs, pcipData );
+    /*add precip — PCIPAPI / Bright Sky disabled */
+    // const pcipData = await castPcip( cropData );
+    // Object.assign( STATE.inputs, pcipData );
 
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
-    Object.assign( STATE.results, pcipData );
+    // Object.assign( STATE.results, pcipData );
 
     /* return state */
     // console.log(JSON.stringify(STATE));
@@ -689,7 +692,12 @@ const SoilCalculator = ( () => {
 
   function getAccumulatedSequenceResults( sequences ) {
     const accumulatedValue =  sequences.reduce( ( acc, curr ) => {
-      if ( !curr || !curr.BAL || !curr.BAL.C || !curr.BAL.N ) {return acc}
+      if (
+        !curr
+        || !curr.BAL
+        || typeof curr.BAL.C !== 'number'
+        || typeof curr.BAL.N !== 'number'
+      ) {return acc}
       acc.C += curr.BAL.C;
       acc.N += curr.BAL.N;
       return acc;

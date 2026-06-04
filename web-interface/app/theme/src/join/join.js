@@ -78,7 +78,11 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( '.modal', 'clear' );
 
+      const path = ( V.getState( 'active' ) && V.getState( 'active' ).path )
+      || window.location.pathname;
+    if ( path === '/' || path === '' ) {
       Navigation.drawReset();
+    }
 
       // if ( V.getLocal( 'welcome-modal' ) == 1 ) {
       //   // Modal.draw( which );
