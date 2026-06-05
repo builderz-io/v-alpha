@@ -434,7 +434,12 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
   async function setStateAndDbYearsAverageResult() {
     SoilCalculator
-      .getYearsAverageResults( V.getState( 'cropSequenceResultsByYear' ), locale )
+      // NOTE:
+      // We now pass the full cropSequence so that getYearsAverageResults
+      // can compute the yearly average based on the actual time span
+      // between the first sowing and the last harvest/turn, as requested
+      // by the client, instead of averaging over pre-aggregated years.
+      .getYearsAverageResults( V.getState( 'cropSequence' ), locale )
       .then( res => {
         if ( !res || !res.T || res.T.BAL.C === null ) {
           V.setState( 'cropSequenceYearsAverageResult', 'clear' );
@@ -796,7 +801,7 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
 
     if(
       _.DATE_TURN && _.DATE_HVST
-      && new Date( _.DATE_TURN.value ) >= new Date( _.DATE_HVST.value )
+      && new Date( _.DATE_TURN.value ) < new Date( _.DATE_HVST.value )
     ) {
       return -30;
     }
@@ -940,8 +945,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
           {
             t: 'span',
             h: title,
-          },
-          help( helpText ),
+          }
+          //help( helpText ),
         ],
       } );
     }
@@ -1799,8 +1804,8 @@ const SoilCalculatorComponents = ( function() { // eslint-disable-line no-unused
             t: 'span',
             c: 'w-full font-bold pxy',
             h: cardTitles[title]['title'],
-          },
-          help( helpText, 'leftCorrect' ),
+          }
+          //help( helpText, 'leftCorrect' ),
         ],
       } );
     }

@@ -9,6 +9,10 @@ const GroupComponents = ( function() {
       noAssignedEntities: 'No entities assigned to group',
       plots: 'Plots',
       soilBalanceTitle: 'Soil Balance',
+      inviteHandleTitle: 'Invite Handle',
+      inviteHandleCopy: 'Copy',
+      inviteHandleCopied: 'Copied',
+      inviteHandleInvalid: 'Invalid invite code',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -20,8 +24,228 @@ const GroupComponents = ( function() {
 
   /* ================== private methods ================= */
 
-  function handleProfileDraw() {
-    const path = V.castPathOrId( this.textContent );
+  function canEditPlot( plot ) {
+    const active = V.aE();
+    if ( !active || !plot ) { return false }
+    if ( active.uuidE === plot.uuidE || active.uuidP === plot.uuidP ) { return true }
+    if ( active.holderOf && active.holderOf.some( item => item.a === plot.uuidE ) ) { return true }
+    return false;
+  }
+
+  function copyTextToClipboard( text ) {
+    if ( navigator.clipboard && navigator.clipboard.writeText ) {
+      return navigator.clipboard.writeText( text );
+    }
+
+    const textarea = document.createElement( 'textarea' );
+    textarea.value = text;
+    textarea.setAttribute( 'readonly', '' );
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild( textarea );
+    textarea.select();
+    document.execCommand( 'copy' );
+    document.body.removeChild( textarea );
+    return Promise.resolve();
+  }
+
+  function getMemberOfGroup( entity ) {
+    const value = entity.servicefields[V.castServiceField( 'memberOfGroup' )];
+    return value && value !== 'undefined' ? String( value ).trim() : '';
+  }
+
+  function getGroupedEntityIds( groupEntity ) {
+    const grouped = V.castJson( groupEntity.servicefields[V.castServiceField( 'groupedEntities' )] );
+    return Array.isArray( grouped ) ? grouped.filter( Boolean ) : [];
+  }
+
+  function sequenceWithBal( raw ) {
+    if ( !raw ) {
+      return null;
+    }
+
+    const sequence = V.castJson( raw );
+    if (
+      !sequence
+      || !sequence.BAL
+      || typeof sequence.BAL.C !== 'number'
+      || typeof sequence.BAL.N !== 'number'
+    ) {
+      return null;
+    }
+
+    return sequence;
+  }
+
+  function getPlotSequenceData( plot ) {
+    if ( !plot || !plot.servicefields ) {
+      return null;
+    }
+
+    const yearsField = V.castServiceField( 'yearsAverageSequence' );
+    const averageField = V.castServiceField( 'averageSequence' );
+
+    return sequenceWithBal( plot.servicefields[yearsField] )
+      || sequenceWithBal( plot.servicefields[averageField] );
+  }
+
+  function getPlotsSoilBalances( plotEntities ) {
+    const sequences = ( plotEntities || [] )
+      .map( getPlotSequenceData )
+      .filter( Boolean );
+
+    if ( !sequences.length ) {
+      return { C: 0, N: 0 };
+    }
+
+    return SoilCalculator.getAccumulatedSequenceResults( sequences );
+  }
+
+  function filterValidPlotEntities( plotEntities ) {
+    return ( plotEntities || [] ).filter( plot => plot && plot.uuidE );
+  }
+
+  function cachePlotEntitiesForView( plotEntities ) {
+    if ( !plotEntities.length ) {
+      return;
+    }
+
+    V.setCache( 'viewed', plotEntities );
+    V.setCache( 'points', plotEntities );
+  }
+
+  function getGroupedEntitiesFromElement( groupElement ) {
+    const raw = groupElement.dataset.groupedEntities;
+    if ( !raw ) {
+      return [];
+    }
+
+    const parsed = V.castJson( raw );
+    return Array.isArray( parsed ) ? parsed.filter( Boolean ) : [];
+  }
+
+  function syncGroupElementDataset( groupUuidE, plotIds, plotInGroup ) {
+    const groupElement = V.gN( `[data-plot-group="${groupUuidE}"]` );
+    if ( !groupElement ) {
+      return;
+    }
+
+    groupElement.dataset.groupedEntities = V.castJson( plotIds );
+
+    if ( plotInGroup ) {
+      groupElement.dataset.plotInGroup = 'true';
+    }
+    else {
+      delete groupElement.dataset.plotInGroup;
+    }
+  }
+
+  function refreshGroupBalanceWidget( groupElement, plotIds ) {
+    if ( !groupElement.querySelector( '[data-group-calc]' ) ) {
+      return Promise.resolve();
+    }
+
+    return fetchPlotsByIds( plotIds )
+      .then( plotEntities => {
+        const avgBalance = getPlotsSoilBalances( plotEntities );
+        const balC = groupElement.querySelector( '#s-calc-result__T_BAL_C' );
+        const balN = groupElement.querySelector( '#s-calc-result__T_BAL_N' );
+        if ( balC ) { balC.textContent = avgBalance.C.toFixed( 1 ) }
+        if ( balN ) { balN.textContent = avgBalance.N.toFixed( 1 ) }
+      } );
+  }
+
+  function fetchPlotsByIds( plotIds ) {
+    if ( !plotIds.length ) {
+      console.log( '[GroupComponents.fetchPlotsByIds] s30', { plotIds, plots: [] } );
+      return Promise.resolve( [] );
+    }
+  
+    console.log( '[GroupComponents.fetchPlotsByIds] s30 request', { plotIds } );
+  
+    return V.getEntity( plotIds )
+      .then( res => {
+        const plots = !res.success || !res.data
+          ? []
+          : filterValidPlotEntities( res.data );
+  
+        console.log( '[GroupComponents.fetchPlotsByIds] s30 response', plots );
+  
+        return plots;
+      } )
+      .catch( err => {
+        console.log( '[GroupComponents.fetchPlotsByIds] s30 error', err );
+        return [];
+      } );
+  }
+
+  function getGroupPlots( groupEntity ) {
+    const fromOwner = getGroupedEntityIds( groupEntity );
+
+    if ( fromOwner.length ) {
+      return fetchPlotsByIds( [ ...new Set( fromOwner ) ] );
+    }
+
+    return V.getPlotsByGroup( groupEntity.uuidE )
+    .then( res => {
+      const plots = !res.success || !res.data
+        ? []
+        : filterValidPlotEntities( res.data );
+      console.log( '[GroupComponents.getGroupPlots] s27 response', plots );
+      cachePlotEntitiesForView( plots );
+      return plots;
+    } )
+      .catch( () => [] );
+  }
+
+  function updateGroupTotalBalance( plotEntities ) {
+    const plotAccumulatedData = getPlotsSoilBalances( plotEntities );
+    const balN = document.querySelector( '#s-calc-result__T_BAL_N' );
+    const balC = document.querySelector( '#s-calc-result__T_BAL_C' );
+    if ( balN ) { balN.textContent = plotAccumulatedData.N.toFixed( 1 ) }
+    if ( balC ) { balC.textContent = plotAccumulatedData.C.toFixed( 1 ) }
+  }
+
+  function renderGroupPlotList( plotEntities ) {
+    const container = V.getNode( '.group-plots__list' );
+    if ( !container ) { return }
+
+    V.setNode( container, '' );
+
+    if ( !plotEntities.length ) {
+      container.append( V.cN( {
+        c: 'pxy',
+        h: V.getString( ui.noAssignedEntities ),
+      } ) );
+      return;
+    }
+
+    const plots = V.cN( {
+      c: 'group-plots pxy',
+      h: plotEntities.map( plot => V.cN( {
+        t: 'p',
+        c: 'pxy',
+        y: {
+          cursor: 'pointer',
+        },
+        h: plot.fullId,
+        k: () => handleProfileDraw( plot ),
+      } ) ),
+    } );
+    container.append( plots );
+  }
+
+  function loadGroupPlots( groupEntity ) {
+    return getGroupPlots( groupEntity )
+      .then( plotEntities => {
+        updateGroupTotalBalance( plotEntities );
+        renderGroupPlotList( plotEntities );
+      } );
+  }
+
+  function handleProfileDraw( plot ) {
+    cachePlotEntitiesForView( [ plot ] );
+    const path = V.castPathOrId( plot.fullId );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
     Profile.draw( path );
@@ -63,9 +287,11 @@ const GroupComponents = ( function() {
           groupFields.add( entity.uuidE );
         }
 
-        updateGroupedEntities( group, [...groupFields.values()] );
+        const plotIds = [...groupFields.values()];
+        syncGroupElementDataset( group.uuidE, plotIds, true );
+        updateGroupedEntities( group, plotIds );
 
-        drawCheckboxGroupTotalBalanceWidget( group.uuidE, [...groupFields.values()] )
+        drawCheckboxGroupTotalBalanceWidget( group.uuidE, plotIds )
           .then( widget => {
             const loadingElement = V.gN( `[data-plot-group=${group.uuidE}] .calculator-loader` );
             if ( loadingElement ) {loadingElement.remove()}
@@ -86,7 +312,10 @@ const GroupComponents = ( function() {
             groupFields.delete( entity.uuidE );
           }
 
-          updateGroupedEntities( group, [...groupFields.values()] )
+          const plotIds = [...groupFields.values()];
+          syncGroupElementDataset( group.uuidE, plotIds, false );
+
+          updateGroupedEntities( group, plotIds )
             .then( () =>  ( event.target.disabled = false )  );
 
           totalBalanceWidget.remove();
@@ -119,15 +348,9 @@ const GroupComponents = ( function() {
   }
 
   function drawCheckboxGroupTotalBalanceWidget( groupId, plotIds ) {
-    return V.getEntity( plotIds )
-      .then( result => {
-        const plotAccumulatedData = SoilCalculator.getAccumulatedSequenceResults(
-          result.data.map(
-            plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
-              ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
-              : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
-          ),
-        );
+    return fetchPlotsByIds( plotIds )
+      .then( plotEntities => {
+        const plotAccumulatedData = getPlotsSoilBalances( plotEntities );
         return V.cN( {
           a: { 'data-group-calc': groupId },
           h: SoilCalculatorComponents.drawTotalBalance( plotAccumulatedData, 'isGroup' ),
@@ -136,6 +359,8 @@ const GroupComponents = ( function() {
   }
 
   function drawGroupCheckbox( group, entity, entityInGroup ) {
+    const plotsInGroup = V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ) || [];
+
     const selectGroupLabel = V.cN( {
       t: 'button',
       c: 'group-selection-element w-full txt-left',
@@ -218,11 +443,20 @@ const GroupComponents = ( function() {
     if ( entityInGroup ) {
       drawCheckboxGroupTotalBalanceWidget(
         group.uuidE,
-        V.castJson( group.servicefields[V.castServiceField( 'groupedEntities' )] ),
+        plotsInGroup,
       ).then( widget => V.setNode( `[data-plot-group=${group.uuidE}]`, widget ) );
     }
 
-    return V.cN( { c: 'pxy', a: { 'data-plot-group': group.uuidE }, h: children } );
+    const groupAttrs = {
+      'data-plot-group': group.uuidE,
+      'data-grouped-entities': V.castJson( plotsInGroup ),
+    };
+
+    if ( entityInGroup ) {
+      groupAttrs['data-plot-in-group'] = 'true';
+    }
+
+    return V.cN( { c: 'pxy', a: groupAttrs, h: children } );
   }
 
   function drawGroupCheckboxes( groups ) {
@@ -301,42 +535,159 @@ const GroupComponents = ( function() {
 
     if ( entity.role !== 'Group' ) { return '' }
 
-    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
-
-    if ( !groupedEntities || groupedEntities.length <= 0 ) {
-      return CanvasComponents.card( V.cN( {
-        c: 'pxy',
-        h: V.getString( ui.noAssignedEntities ),
-      } ), V.getString( ui.plots ) );
-    }
-
-    V.getEntity( groupedEntities )
-      .then( result => {
-        const plots = V.cN( {
-          c: 'group-plots pxy',
-          h: result.data
-            .map( plot => V.cN( {
-              t: 'p',
-              c: 'pxy',
-              y: {
-                cursor: 'pointer',
-              },
-              h: plot.fullId,
-              k: handleProfileDraw,
-            } ) ),
-        } );
-
-        const container = V.getNode( '.group-plots__list' );
-        V.setNode( container, '' );
-        container.append( plots );
-      } );
-
     const node = V.cN( {
       c: 'group-plots__list',
       h: [ InteractionComponents.confirmClickSpinner( { color: 'black' } ) ],
     } );
 
     return CanvasComponents.card( node, V.getString( ui.plots ) );
+  }
+
+  function drawGroupInviteHandleWidget() {
+    const entity = V.getState( 'active' ).lastViewedEntity;
+
+    if ( entity.role !== 'Group' ) { return '' }
+
+    let copyFeedbackTimeout;
+
+    const copyIconSize = '16px';
+
+    const copyButton = V.cN( {
+      t: 'button',
+      c: 'invite-handle-copy',
+      a: {
+        type: 'button',
+        title: V.getString( ui.inviteHandleCopy ),
+        'aria-label': V.getString( ui.inviteHandleCopy ),
+      },
+      h: V.getIcon( 'copy', copyIconSize ),
+      k: ( event ) => {
+        const button = event.currentTarget;
+        copyTextToClipboard( entity.uuidE )
+          .then( () => {
+            V.setNode( button, '' );
+            V.setNode( button, V.getIcon( 'done', copyIconSize ) );
+            button.setAttribute( 'aria-label', V.getString( ui.inviteHandleCopied ) );
+            button.setAttribute( 'title', V.getString( ui.inviteHandleCopied ) );
+            clearTimeout( copyFeedbackTimeout );
+            copyFeedbackTimeout = setTimeout( () => {
+              V.setNode( button, '' );
+              V.setNode( button, V.getIcon( 'copy', copyIconSize ) );
+              button.setAttribute( 'aria-label', V.getString( ui.inviteHandleCopy ) );
+              button.setAttribute( 'title', V.getString( ui.inviteHandleCopy ) );
+            }, 2000 );
+          } );
+      },
+    } );
+
+    const inner = V.cN( {
+      c: 'pxy invite-handle-display',
+      h: [
+        V.cN( {
+          t: 'span',
+          c: 'invite-handle-code',
+          h: entity.uuidE,
+        } ),
+        copyButton,
+      ],
+    } );
+
+    return CanvasComponents.card( inner, V.getString( ui.inviteHandleTitle ) );
+  }
+
+  function savePlotMemberOfGroup( plot, trimmed, responseNode, inputEl ) {
+    const nextValue = trimmed == null ? '' : trimmed;
+    if ( nextValue === getMemberOfGroup( plot ) ) {
+      return Promise.resolve();
+    }
+
+    responseNode.textContent = '';
+    if ( inputEl ) { inputEl.disabled = true }
+
+    return V.setEntity( plot.fullId, {
+      field: `servicefields.${V.castServiceField( 'memberOfGroup' )}`,
+      data: trimmed == null ? null : trimmed,
+      activeProfile: plot.uuidP,
+    } )
+      .then( ( res ) => {
+        if ( res.success ) {
+          if ( trimmed == null ) {
+            delete plot.servicefields[V.castServiceField( 'memberOfGroup' )];
+          }
+          else {
+            plot.servicefields[V.castServiceField( 'memberOfGroup' )] = trimmed;
+          }
+          if ( inputEl ) { inputEl.value = nextValue }
+        }
+        else {
+          responseNode.textContent = res.message || V.getString( ui.inviteHandleInvalid );
+        }
+      } )
+      .catch( () => {
+        responseNode.textContent = V.getString( ui.inviteHandleInvalid );
+      } )
+      .finally( () => {
+        if ( inputEl ) { inputEl.disabled = false }
+      } );
+  }
+
+  function drawPlotInviteHandleWidget() {
+    const entity = V.getState( 'active' ).lastViewedEntity;
+
+    if ( entity.role !== 'Plot' ) { return '' }
+
+    const editable = canEditPlot( entity );
+    const responseNode = V.cN( { c: 'plot-invite-handle__response pxy txt-gray' } );
+    const uuidLength = V.getSetting( 'uuidStringLength' );
+
+    const handleInviteInput = editable
+      ? V.debounce( ( event ) => {
+        const trimmed = event.target.value.trim();
+
+        if ( trimmed.length === 0 ) {
+          if ( getMemberOfGroup( entity ) ) {
+            savePlotMemberOfGroup( entity, null, responseNode, event.target );
+          }
+          else {
+            responseNode.textContent = '';
+          }
+          return;
+        }
+
+        if ( trimmed.length !== uuidLength ) {
+          responseNode.textContent = '';
+          return;
+        }
+
+        savePlotMemberOfGroup( entity, trimmed, responseNode, event.target );
+      }, 400 )
+      : undefined;
+
+    const inputElement = V.cN( {
+      t: 'input',
+      c: 'w-full plot-invite-handle__input',
+      a: {
+        type: 'text',
+        value: getMemberOfGroup( entity ),
+        readOnly: !editable,
+      },
+      e: handleInviteInput ? { input: handleInviteInput } : undefined,
+    } );
+
+    const inner = V.cN( {
+      c: 's-calc-form-background pxy plot-invite-handle w-full',
+      y: { width: '100%' },
+      h: [
+        inputElement,
+        responseNode,
+      ],
+    } );
+
+    const card = CanvasComponents.card( inner, V.getString( ui.inviteHandleTitle ) );
+    if ( card && card.classList ) {
+      card.classList.add( 'w-full' );
+    }
+    return card;
   }
 
   document.addEventListener( 'ENTITY_CREATED', ( { detail } ) => {
@@ -377,22 +728,14 @@ const GroupComponents = ( function() {
       return;
     }
 
-    const groups = document.querySelectorAll( '[data-plot-group]' );
+    const groups = document.querySelectorAll( '[data-plot-group][data-plot-in-group="true"]' );
     for ( const groupElement of groups ) {
-      const groupId = groupElement.dataset.plotGroup;
-      V.getEntity( groupId )
-        .then( result => V.getEntity( V.castJson( result.data[0].servicefields[V.castServiceField( 'groupedEntities' )] ) ) )
-        .then( result => {
-          const avgBalance = SoilCalculator.getAccumulatedSequenceResults(
-            result.data.map(
-              plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
-                ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
-                : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
-            ),
-          );
-          groupElement.querySelector( '#s-calc-result__T_BAL_C' ).textContent = avgBalance.C.toFixed( 1 );
-          groupElement.querySelector( '#s-calc-result__T_BAL_N' ).textContent = avgBalance.N.toFixed( 1 );
-        } );
+      const plotIds = getGroupedEntitiesFromElement( groupElement );
+      if ( !plotIds.includes( activeEntity.uuidE ) ) {
+        continue;
+      }
+
+      refreshGroupBalanceWidget( groupElement, plotIds );
     }
   } );
 
@@ -401,21 +744,7 @@ const GroupComponents = ( function() {
 
     if ( entity.role != 'Group' ) { return '' }
 
-    const groupedEntities = V.castJson( entity.servicefields[V.castServiceField( 'groupedEntities' )] );
-
-    V.getEntity( groupedEntities )
-      .then( ( { data } ) => {
-        const plotAccumulatedData = SoilCalculator.getAccumulatedSequenceResults(
-          data.map(
-            plot => plot.servicefields[V.castServiceField( 'yearsAverageSequence' )]
-              ? V.castJson( plot.servicefields[V.castServiceField( 'yearsAverageSequence' )] )
-              : V.castJson( plot.servicefields[V.castServiceField( 'averageSequence' )] ),
-          ),
-        );
-
-        document.querySelector( '#s-calc-result__T_BAL_N' ).textContent = plotAccumulatedData.N.toFixed( 1 );
-        document.querySelector( '#s-calc-result__T_BAL_C' ).textContent = plotAccumulatedData.C.toFixed( 1 );
-      } );
+    loadGroupPlots( entity );
 
     return CanvasComponents.card( SoilCalculatorComponents.drawTotalBalance(), V.getString( ui.soilBalanceTitle ) );
   }
@@ -423,6 +752,8 @@ const GroupComponents = ( function() {
   return {
     drawGroupWidget: drawGroupWidget,
     drawGroupPlotWidget: drawGroupPlotWidget,
+    drawGroupInviteHandleWidget: drawGroupInviteHandleWidget,
+    drawPlotInviteHandleWidget: drawPlotInviteHandleWidget,
     drawGroupTotalBalanceWidget: drawGroupTotalBalanceWidget,
   };
 } )();

@@ -416,6 +416,40 @@ _:-ms-input-placeholder,:root .field__internal .field__input {
 
 
 /**
+ * Group invite handle (copy code row)
+ */
+
+.invite-handle-display {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.invite-handle-code {
+  font-family: monospace, monospace;
+  font-size: inherit;
+  line-height: var(--lh-tight);
+}
+
+.invite-handle-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.invite-handle-copy img {
+  display: block;
+}
+
+/**
  * Tabs
  * adjusted from https://codepen.io/alvarotrigo/pen/bGoPzMe
  */

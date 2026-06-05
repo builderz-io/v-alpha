@@ -123,7 +123,7 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
           setOrUpdateOneInCache( which, data[0] );
         }
         else {
-          cache[which].data = [].concat( cache[which].data, data );
+          cache[which].data = mergeUniqueCacheData( cache[which].data, data );
         }
       }
       else {
@@ -153,6 +153,18 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
     else {
       cache[which].data.push( entity );
     }
+  }
+
+  function mergeUniqueCacheData( currentData, incomingData ) {
+    const merged = [].concat( currentData || [], incomingData || [] );
+
+    return merged.filter( ( item, index, arr ) => {
+      const key = item && item.uuidE ? item.uuidE : JSON.stringify( item );
+      return arr.findIndex( other => {
+        const otherKey = other && other.uuidE ? other.uuidE : JSON.stringify( other );
+        return otherKey == key;
+      } ) == index;
+    } );
   }
 
   function setNewCache( which, data ) {

@@ -324,19 +324,19 @@
           "displayName": {
             "balance": {
               "title": "Humusbilanz der Fruchtfolge",
-              "help": "Help text to be added"
+              "help": "Humusbilanz der in diesem Schlag angelegten Fruchtfolge auf Grundlage einer kombinierten Modellierung der C- und N-Flüsse im System Boden-Pflanze."
             },
             "sequence": {
               "title": "Fruchtfolge",
-              "help": "Help text to be added"
+              "help": "Für die Berechnung der Humusbilanz müssen alle Haupt- und Zwischenfrüchte im Bewertungszeitraum in ihrer zeitlichen Abfolge einzeln angegeben werden (eine Fruchtart je Registerkarte). Darüber hinaus sind Angaben zur Düngung und zu ausgewählten Standortbedingungen notwendig."
             },
             "site": {
-              "title": "Schlagdaten",
-              "help": "Help text to be added"
+              "title": "Standortdaten",
+              "help": "Geben Sie hier die Daten zum Schlag an, die für die Berechnung der Humusbilanz benötigt werden."
             },
             "groups": {
               "title": "Gruppierung",
-              "help": "Help text to be added"
+              "help": "Hier können Flächen gruppiert werden, um mittlere Bilanzen für die entsprechende Gruppe anzuzeigen. Die Funktion ermöglicht so z.B. eine Auswertung auf Betriebs- oder Gemarkungsebene. Die Bezeichnung der Gruppen ist frei wählbar. Nach Anlage der Gruppe werden dieser bereits angelegte Schläge zugeordnet. Einzelne Flächen (Schläge) können dabei auch mehreren Gruppen zugeordnet werden."
             }
           }
         },

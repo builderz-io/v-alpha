@@ -109,6 +109,13 @@ const Jwt = `
   }
 `;
 
+const PlotLink = `
+  type PlotLinkedToGroup {
+    entity: Entity
+    profile: Profile
+  }
+`;
+
 const Queries = `
   type Query {
     getEntities(where: WhereEntity): [Entity]
@@ -118,6 +125,7 @@ const Queries = `
     getPoints(where: WhereGeo): [Point]
     getEmphasis(where: WhereEmphasis): [Emphasis]
     getImage(where: WhereProfile): [Image]
+    getPlotsByGroup(groupUuidE: String!): [PlotLinkedToGroup]
   }
 `;
 
@@ -133,6 +141,6 @@ const Mutations = `
   }
 `;
 
-const allDefs = gql`${ Filters + Transaction + Jwt + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
+const allDefs = gql`${ Filters + Transaction + Jwt + PlotLink + Queries + Mutations + Profile + Auth + Entity + ServerSideInputs }`;
 
 module.exports = allDefs;

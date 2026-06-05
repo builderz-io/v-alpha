@@ -168,12 +168,12 @@ function watchCss() {
 }
 
 gulp.task( 'default', gulp.parallel(
+  gulp.series( css, watchCss ),
   gulp.series( vcore, watchVCore ),
-  gulp.series( vevm, watchVEvm ),
   gulp.series( vchat, watchVChat ),
   gulp.series( vtheme, watchVTheme ),
+  gulp.series( vevm, watchVEvm ),
   gulp.series( vplugins, watchVPlugins ),
-  gulp.series( css, watchCss ),
 ) );
 
 gulp.task( 'vcore', gulp.series( vcore, watchVCore ) );

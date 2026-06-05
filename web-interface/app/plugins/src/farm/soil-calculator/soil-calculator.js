@@ -230,6 +230,8 @@ const SoilCalculator = ( () => {
      * is actually not "loss", but available N after "loss" (due to "1 - ..." )
      * - divided by 10 in order to account for cm in FCAP vs. mm in PCIP.QTY or PCIPAPI.MM
      * - 90 is cm below ground
+     *
+     * PCIPAPI (Bright Sky precipitation) is on hold — use SITE.PCIP only until re-enabled.
      */
 
     return {
@@ -237,7 +239,8 @@ const SoilCalculator = ( () => {
       litQty: _.BMASS.MP.QTY * _.CROP.RATIO.LITMP,
       stbQty: _.BMASS.MP.QTY * _.CROP.RATIO.STBMP,
       rtsQty: _.BMASS.MP.QTY * _.CROP.MP.DM * _.CROP.RATIO.RTSMP,
-      nLoss: _.PCIPAPI.MM != -1 ? pcipFromAPI( _ ) : pcipFallbackFromSITE( _ ),
+      // nLoss: _.PCIPAPI.MM != -1 ? pcipFromAPI( _ ) : pcipFallbackFromSITE( _ ), // on hold
+      nLoss: pcipFallbackFromSITE( _ ),
     };
   }
 
@@ -391,26 +394,132 @@ const SoilCalculator = ( () => {
     return schema;
   }
 
-  function yearlyTotalCandN( years, locale ) {
-    let divisor = 0, cTotal = 0, nTotal = 0;
+  /**
+   * Compute yearly average C and N balances over an arbitrary crop sequence.
+   *
+   * This follows the client specification:
+   * - Sum all SOM balances (C and N) across the entire crop sequence.
+   * - Determine the time span from the first sowing date to the last harvest
+   *   or turn (Umbruch) date.
+   * - Convert that span to years (days / 365) and round the number of years
+   *   according to the custom rule:
+   *     - up to and including 0.5 -> round down
+   *     - from 0.51 upwards       -> round up
+   * - Divide the summed balances by the rounded number of years.
+   *
+   * Fallback behaviour:
+   * - If we cannot find at least one valid balance AND both a first sowing
+   *   and a last end date, we return undefined and let the caller fall back
+   *   to the existing sequence-average behaviour.
+   */
+  function yearlyTotalCandN( sequence, locale ) {
+    let cTotal = 0;
+    let nTotal = 0;
+    let hasAtLeastOneBalance = false;
 
-    for ( const year in years ) {
-      if ( years[year].T && years[year].T.BAL ) {
-        const { C, N } = years[year].T.BAL;
+    let firstSown = null;
+    let lastEnd = null;
+
+    for ( const key in sequence ) {
+      const entry = sequence[key];
+      if ( !entry || ['undefined', 'number'].includes( typeof entry.datapoint ) ) {
+        continue;
+      }
+
+      const dp = entry.datapoint;
+      const res = entry.results;
+
+      // 1) Sum SOM balances across all crops in the sequence
+      if ( res && res.SOM && res.SOM.BAL ) {
+        const { C, N } = res.SOM.BAL;
         if ( typeof C === 'number' && typeof N === 'number' ) {
           cTotal += C;
           nTotal += N;
-          divisor++;
+          hasAtLeastOneBalance = true;
+        }
+      }
+
+      // 2) Track first sowing date
+      const sownStr = dp.DATE && dp.DATE.SOWN ? dp.DATE.SOWN : null;
+      if ( sownStr ) {
+        const sown = new Date( sownStr );
+        if ( !isNaN( sown.getTime() ) ) {
+          if ( !firstSown || sown < firstSown ) {
+            firstSown = sown;
+          }
+        }
+      }
+
+      // 3) Track last end date: harvest OR turn (whichever is later if both exist)
+      const hvstStr = dp.DATE && dp.DATE.HVST ? dp.DATE.HVST : null;
+      const turnStr = dp.DATE && dp.DATE.TURN ? dp.DATE.TURN : null;
+
+      const endCandidates = [];
+
+      if ( hvstStr ) {
+        const hvst = new Date( hvstStr );
+        if ( !isNaN( hvst.getTime() ) ) {
+          endCandidates.push( hvst );
+        }
+      }
+
+      if ( turnStr ) {
+        const turn = new Date( turnStr );
+        if ( !isNaN( turn.getTime() ) ) {
+          endCandidates.push( turn );
+        }
+      }
+
+      if ( endCandidates.length ) {
+        // latest date among harvest/turn for this crop
+        const latestEndForThisCrop = endCandidates.reduce(
+          ( latest, current ) => ( !latest || current > latest ? current : latest ),
+          null,
+        );
+
+        if ( latestEndForThisCrop && ( !lastEnd || latestEndForThisCrop > lastEnd ) ) {
+          lastEnd = latestEndForThisCrop;
         }
       }
     }
 
-    if ( !divisor ) { return }
+    // If we don’t have balances or we’re missing required dates, return nothing.
+    if ( !hasAtLeastOneBalance || !firstSown || !lastEnd ) {
+      return;
+    }
+
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const totalDays = ( lastEnd - firstSown ) / msPerDay;
+    if ( totalDays <= 0 ) {
+      return;
+    }
+
+    // Convert to years
+    const yearsFloat = totalDays / 365;
+
+    // Client rounding rule:
+    //  - up to and including 0.5 -> round down
+    //  - from 0.51 upwards       -> round up
+    const whole = Math.floor( yearsFloat );
+    const frac = yearsFloat - whole;
+    let yearsRounded;
+
+    if ( frac <= 0.5 ) {
+      yearsRounded = whole;
+    }
+    else {
+      yearsRounded = whole + 1;
+    }
+
+    // Avoid division by 0 for very short periods
+    if ( yearsRounded < 1 ) {
+      yearsRounded = 1;
+    }
 
     const schema = JSON.parse( JSON.stringify( getSchema( 'results' ) ) );
 
-    schema.T.BAL.C = cTotal / divisor;
-    schema.T.BAL.N = nTotal / divisor;
+    schema.T.BAL.C = cTotal / yearsRounded;
+    schema.T.BAL.N = nTotal / yearsRounded;
     schema.T.UNIT = getFieldString( 'TY', locale );
 
     return schema;
@@ -555,13 +664,13 @@ const SoilCalculator = ( () => {
     /* add input data to state */
     Object.assign( STATE, castInputs( cropData.datapoint, prevDatapoint ) );
 
-    /*add precip*/
-    const pcipData = await castPcip( cropData );
-    Object.assign( STATE.inputs, pcipData );
+    /*add precip — PCIPAPI / Bright Sky disabled */
+    // const pcipData = await castPcip( cropData );
+    // Object.assign( STATE.inputs, pcipData );
 
     /* run all calculations and add results to state */
     Object.assign( STATE, castResults( STATE.inputs, STATE.prev ) );
-    Object.assign( STATE.results, pcipData );
+    // Object.assign( STATE.results, pcipData );
 
     /* return state */
     // console.log(JSON.stringify(STATE));
@@ -573,12 +682,22 @@ const SoilCalculator = ( () => {
   }
 
   async function getYearsAverageResults( req, locale ) {
+    // NOTE:
+    // `req` is now expected to be the full cropSequence
+    // (i.e. V.getState('cropSequence')) and not the pre-aggregated
+    // yearly results. This allows us to use DATE.SOWN and DATE.HVST/DATE.TURN
+    // to calculate the true time span for the yearly average.
     return yearlyTotalCandN( req, locale );
   }
 
   function getAccumulatedSequenceResults( sequences ) {
     const accumulatedValue =  sequences.reduce( ( acc, curr ) => {
-      if ( !curr || !curr.BAL || !curr.BAL.C || !curr.BAL.N ) {return acc}
+      if (
+        !curr
+        || !curr.BAL
+        || typeof curr.BAL.C !== 'number'
+        || typeof curr.BAL.N !== 'number'
+      ) {return acc}
       acc.C += curr.BAL.C;
       acc.N += curr.BAL.N;
       return acc;
@@ -616,5 +735,3 @@ const SoilCalculator = ( () => {
   };
 
 } )();
-
-module.exports = SoilCalculator; // Export the module for testing with jest

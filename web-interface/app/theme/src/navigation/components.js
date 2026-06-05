@@ -183,7 +183,8 @@ const NavComponents = ( function() { // eslint-disable-line no-unused-vars
         {
           t: 'span',
           c: 'pill__initials',
-          h: useTitle ? item.title : item.initials,
+          // h: useTitle ? item.title : item.initials,
+          h: ( item.title || '' ).slice( 0, 8 ) + '...',
         },
       ],
     } );

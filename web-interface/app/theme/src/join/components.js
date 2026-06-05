@@ -39,7 +39,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
       joinAwaitKeyBottom: '',
       joinKeyImportance: 'Important: Some of your data will be encrypted. Losing the key file or its contents means losing your account permanently. Backup your keys securely.',
       joinSelectGroupsTop: 'Select plots',
-      joinSelectGroupsBottom: 'Select more than one plot to join in a single group',
+      joinSelectGroupsBottom: 'Select more than one plot to create a group',
 
       joinFormName: 'Name',
       joinFormTitle: 'Title',
@@ -738,11 +738,19 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     );
   }
 
-  function joinSelectGroups() {
+  function getHeldPlotOptions() {
     const currentActiveEntity = V.getState( 'activeEntity' );
-    const holdedPlots = currentActiveEntity.holderOf
+    const holderOf = currentActiveEntity && currentActiveEntity.holderOf
+      ? currentActiveEntity.holderOf
+      : [];
+
+    return holderOf
       .filter( entity => V.castRole( entity.c ) === 'Plot' )
       .map( entity => ( { value: entity.fullId, id: entity.a } ) );
+  }
+
+  function joinSelectGroups() {
+    const holdedPlots = getHeldPlotOptions();
 
     return [
       joinHeader( 'joinSelectGroupsTop', 'joinSelectGroupsBottom' ),
@@ -843,6 +851,7 @@ const JoinComponents = ( function() { // eslint-disable-line no-unused-vars
     joinEmail: joinEmail,
     joinOptionBox: joinOptionBox,
     joinSelectGroups: joinSelectGroups,
+    getHeldPlotOptions: getHeldPlotOptions,
     joinAwaitKey: joinAwaitKey,
 
     handleJoinOverlayClick: handleJoinOverlayClick,

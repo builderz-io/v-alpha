@@ -71,6 +71,8 @@ const User = ( function() { // eslint-disable-line no-unused-vars
 
       const entity = query.data[0];
 
+      console.log( 'opened entity', { uuidE: entity.uuidE, uuidP: entity.uuidP } );
+
       V.setState( 'active', {
         lastViewed: entity.fullId,
         lastViewedUuidE: entity.uuidE,
@@ -104,6 +106,11 @@ const User = ( function() { // eslint-disable-line no-unused-vars
         UserComponents.addOrChangeImage(),
         UserComponents.descriptionCard(),
         Farm.drawPlotWidget(),
+        GroupComponents.drawGroupTotalBalanceWidget(),
+        GroupComponents.drawGroupWidget(),
+        GroupComponents.drawPlotInviteHandleWidget(),
+        GroupComponents.drawGroupPlotWidget(),
+        GroupComponents.drawGroupInviteHandleWidget(),
         UserComponents.locationCard(),
         UserComponents.questionnaireCard(),
         UserComponents.socialCard(),
