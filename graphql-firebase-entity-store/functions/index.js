@@ -1,5 +1,5 @@
 /**
- * Firebase & GraphQL server for VI Alpha 3.7.x
+ * Firebase & GraphQL server for VI Alpha 3.8.x
  *
  */
 

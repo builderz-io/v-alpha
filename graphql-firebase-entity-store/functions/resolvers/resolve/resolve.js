@@ -22,6 +22,7 @@ module.exports = {
     getEmphasis: ( parent, args, { context } ) => require( './get-emphasis' )( context, args.where.emphasis ),
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
     getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
+    getPlotsByGroup: ( parent, args, { context } ) => require( './get-plots-by-group' )( context, args.groupUuidE ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),

@@ -375,6 +375,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function handleImageUpload( e ) {
+    const clearUploadedImages = () => {
+      V.setState( 'tinyImageUpload', 'clear' );
+      V.setState( 'thumbnailUpload', 'clear' );
+      V.setState( 'mediumImageUpload', 'clear' );
+    };
+
     V.castImageUpload( e ).then( res => {
       if ( res.success ) {
         if ( 'MongoDB' == V.getSetting( 'entityLedger' ) ) {
@@ -390,6 +396,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
                   },
                   r: res.src,
                 } ) );
+                clearUploadedImages();
               } );
             } );
           } );
@@ -415,6 +422,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
               },
               r: V.getState( 'mediumImageUpload' ).dataUrl,
             } ) );
+            clearUploadedImages();
           } );
         }
       }
@@ -1051,7 +1059,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
         // },
         {
           // x: holders.length >= 1,
-          x: entity.holders[0] != entity.fullId,
+          x: entity.holders && entity.holders[0] != entity.fullId,
           t: 'tr',
           h: [
             {
@@ -1061,7 +1069,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
             {
               t: 'td',
               c: 'txt-right cursor-pointer',
-              h: entity.holders.join( ' & ' ),
+              h: ( entity.holders || [] ).join( ' & ' ),
               k: handleProfileDraw,
             },
           ],
@@ -1110,7 +1118,7 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function holderOfCard() {
-    if ( !entity.holderOf.length ) {
+    if ( !entity.holderOf || !entity.holderOf.length ) {
       return '';
     }
 

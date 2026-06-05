@@ -251,6 +251,15 @@ const HelpComponents = ( function() { // eslint-disable-line no-unused-vars
           t: 'p',
           h: 'Sofern Gruppen angelegt wurden, denen der Schlag zugeordnet ist, werden diese hier angezeigt.',
         },
+        {
+          t: 'p',
+          c: 'font-bold',
+          h: 'Einladungscode',
+        },
+        {
+          t: 'p',
+          h: 'Fügen Sie einen Einladungscode zu einer Gruppe hier hinzu, um den Schlag mit dieser Gruppe zu verknüpfen. Der Ersteller der Gruppe kann den Einladungscode im Gruppenmenü kopieren und Ihnen per Mail schicken. Der Ersteller kann dann die Schlagdaten einsehen, aber nicht bearbeiten.',
+        },
       ],
     } );
   }

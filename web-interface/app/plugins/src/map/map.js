@@ -330,7 +330,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       crossOrigin: true
     })
     .on('tileerror', e => console.warn('Tile error', e.tile && e.tile.src))
-    .on('tileloadstart', e => console.debug('Tile start', e.tile && e.tile.src))
+    // .on('tileloadstart', e => console.debug('Tile start', e.tile && e.tile.src))
     .addTo(viMap);
 
     getPoints()

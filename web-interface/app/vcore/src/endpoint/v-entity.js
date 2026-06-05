@@ -639,6 +639,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
   V.castTag = castTag;
   V.castTarget = castTarget;
   V.getEntity = getEntity;
+  V.getPlotsByGroup = ( groupUuidE ) => V.getData(
+    { groupUuidE: groupUuidE },
+    'plots by group',
+    V.getSetting( 'entityLedger' ),
+  );
   V.setEntity = setEntity;
   V.getEntityBalance = getEntityBalance;
   V.getQuery = getQuery;
@@ -648,6 +653,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     castTag: castTag,
     castTarget: castTarget,
     getEntity: getEntity,
+    getPlotsByGroup: V.getPlotsByGroup,
     setEntity: setEntity,
     getEntityBalance: getEntityBalance,
     getQuery: getQuery,

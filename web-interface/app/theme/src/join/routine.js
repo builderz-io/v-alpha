@@ -177,6 +177,21 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
+    /* skip plot selection when creating a group with no held plots */
+    if (
+      cardIndex == 8
+      && entityData.role === 'Group'
+      && !x.getHeldPlotOptions().length
+    ) {
+      setGroupedEntitiesForGroup( [] );
+      cardIndex += 1;
+
+      if ( !cardSets[cardSet][cardIndex] ) {
+        handleNext();
+        return;
+      }
+    }
+
     /* draw new card */
     V.gN( '.join-card' ).classList.remove( 'join-card-extended' );
     V.sN( '.join-card-inner-wrapper', 'clear' );
@@ -264,6 +279,28 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
   }
 
   /* ================== private methods ================= */
+
+  function setGroupedEntitiesForGroup( plotIds ) {
+    if ( !entityData.servicefields ) {
+      entityData.servicefields = {};
+    }
+    entityData.servicefields[V.castServiceField( 'groupedEntities' )] = V.castJson( plotIds );
+  }
+
+  function collectSelectedPlotIds() {
+    const plotIds = [];
+    const checkboxes = V.getNodes( '.join-option-box__option input:checked' );
+
+    if ( checkboxes && checkboxes.length ) {
+      for ( const checkbox of checkboxes ) {
+        if ( checkbox.checked ) {
+          plotIds.push( checkbox.value );
+        }
+      }
+    }
+
+    return plotIds;
+  }
 
   function advanceCard() {
 
@@ -451,21 +488,9 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
       }
     }
 
-    /* group selection */
+    /* group selection — zero plots selected is allowed */
     else if ( cardIndex == 8 ) {
-      const checkboxes = V.getNodes( '.join-option-box__option input:checked' );
-      if ( !checkboxes ) {return false}
-
-      const plotIds = [];
-      for ( const checkbox of checkboxes.values() ) {
-        if ( checkbox.checked ) {
-          plotIds.push( checkbox.value );
-        }
-      }
-
-      if ( !entityData.servicefields ) {entityData.servicefields = {}}
-      entityData.servicefields[V.castServiceField( 'groupedEntities' )] = V.castJson( plotIds );
-
+      setGroupedEntitiesForGroup( collectSelectedPlotIds() );
       return true;
     }
 
@@ -606,6 +631,7 @@ Initialized by: ${ window.location.host }
           );
 
           if ( E.role != 'Person' ) {
+            refreshPostCreateNonPerson( E );
             V.setState( 'tmpEditable', [ E.fullId ] );
             drawSuccess();
             notifySuccess( E.fullId, E.role );
@@ -655,6 +681,76 @@ Initialized by: ${ window.location.host }
         setResponse( ( res.message || res ) + ' ' + V.getString( ui.startAgain ), 'setAsIs' );
         drawError();
       } );
+  }
+
+  async function refreshPostCreateNonPerson( entity ) {
+    try {
+      V.setCache( 'highlights', 'clear' );
+      V.setCache( 'features', 'clear' );
+
+      const activeState = V.getState( 'active' ) || {};
+      const activePath = activeState.path;
+      const serviceNav = V.getState( 'serviceNav' ) || {};
+      const activeNavItem = activePath ? serviceNav[activePath] : undefined;
+      const activeRole = activeNavItem && activeNavItem.use && activeNavItem.use.role
+        ? activeNavItem.use.role.replace( 'Mapped', '' )
+        : 'all';
+
+      const holderOf = V.aE() && V.aE().holderOf ? V.aE().holderOf : [];
+      let holderUuids = holderOf.map( item => item.a ).filter( Boolean );
+
+      if (
+        entity
+        && entity.uuidE
+        && !holderUuids.includes( entity.uuidE )
+      ) {
+        holderUuids = [entity.uuidE].concat( holderUuids );
+      }
+
+      if ( !holderUuids.length ) { return }
+
+      const fetchedEntities = await V.getEntity( holderUuids );
+      if ( !fetchedEntities.success || !fetchedEntities.data ) { return }
+
+      const filteredEntities = activeRole == 'all'
+        ? fetchedEntities.data
+        : fetchedEntities.data.filter( item => item.role == activeRole );
+
+      V.setCache( 'highlights', filteredEntities );
+
+      const $slider = CanvasComponents.slider();
+      const $list = CanvasComponents.list();
+
+      if (
+        activeNavItem
+        && !( [undefined, '/network/all'].includes( activePath ) )
+      ) {
+        V.setNode( $slider, MarketplaceComponents.entitiesAddCard() );
+      }
+
+      filteredEntities.forEach( cardData => {
+        V.setNode( $slider, MarketplaceComponents.entitiesSmallCard( cardData ) );
+      } );
+
+      if ( filteredEntities.length ) {
+        filteredEntities.slice().reverse().forEach( cardData => {
+          const $cardContent = MarketplaceComponents.cardContent( cardData );
+          const $card = CanvasComponents.card( $cardContent );
+          V.setNode( $list, $card );
+        } );
+      }
+      else {
+        V.setNode( $list, CanvasComponents.notFound( 'marketplace' ) );
+      }
+
+      Page.draw( {
+        topslider: $slider,
+        listings: $list,
+      } );
+    }
+    catch ( err ) {
+      console.log( 'refreshPostCreateNonPerson failed:', err );
+    }
   }
 
   function setDownloadKeyBtn() {
@@ -763,6 +859,9 @@ Initialized by: ${ window.location.host }
   function reset() {
     cardIndex = 0;
     entityData = {};
+    V.setState( 'tinyImageUpload', 'clear' );
+    V.setState( 'thumbnailUpload', 'clear' );
+    V.setState( 'mediumImageUpload', 'clear' );
   }
 
   function getEntityData() {

@@ -35,6 +35,11 @@ textarea, input {
   border-width: 0;
 }
 
+input {
+  height: 2rem;
+  padding: 0 0.5rem;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
