@@ -97,7 +97,7 @@ const server = new ApolloServer( {
         console.log( err );
       }
     }
-    else if ( auth.includes( 'uPhrase' ) ) {
+    else if ( auth && auth.includes( 'uPhrase' ) ) {
       const authDoc = await findByAuth( auth.replace( 'uPhrase ', '' ) );
       if ( authDoc ) {
 
@@ -115,7 +115,7 @@ const server = new ApolloServer( {
       }
       // else do not set context object
     }
-    else if ( auth.includes( 'Bearer' ) ) {
+    else if ( auth && auth.includes( 'Bearer' ) ) {
 
       /* using the same token for temp refresh and in fetch auth header */
       try {

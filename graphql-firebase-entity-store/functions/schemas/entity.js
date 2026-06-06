@@ -68,6 +68,7 @@ const types = {
       a: String      // created
       b: String      // modified // ONLY on first modification
       c: String      // expires
+      d: String      // last requested (single-entity fetch, Person only)
       m: Boolean     // active
       z: Int         // status code
     }

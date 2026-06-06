@@ -298,21 +298,26 @@ const HallComponents = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function callToActionBtns() {
+    const buttons = [
+      {
+        x: V.getSetting( 'callToActionText' ),
+        c: 'call-to-action__btn1 cursor-pointer',
+        h: V.getString( V.getSetting( 'callToActionText' ) ),
+        k: handleCallToActionClick.bind( 'btn1' ),
+      },
+    ];
+
+    if ( !V.aE() ) {
+      buttons.push( {
+        c: 'call-to-action__btn2 mt-r cursor-pointer',
+        h: V.getString( ui.signup ),
+        k: handleCallToActionClick.bind( 'btn2' ),
+      } );
+    }
+
     return V.cN( {
       c: 'call-to-action__wrapper flex items-center flex-col',
-      h: [
-        {
-          x: V.getSetting( 'callToActionText' ),
-          c: 'call-to-action__btn1 cursor-pointer',
-          h: V.getString( V.getSetting( 'callToActionText' ) ),
-          k: handleCallToActionClick.bind( 'btn1' ),
-        },
-        {
-          c: 'call-to-action__btn2 mt-r cursor-pointer',
-          h: V.getString( ui.signup ),
-          k: handleCallToActionClick.bind( 'btn2' ),
-        },
-      ],
+      h: buttons,
     } );
   }
 

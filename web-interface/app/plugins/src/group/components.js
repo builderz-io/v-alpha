@@ -475,6 +475,7 @@ const GroupComponents = ( function() {
     const entity = V.getState( 'active' ).lastViewedEntity;
 
     if ( entity.role !== 'Plot' ) {return ''}
+    if ( !canEditPlot( entity ) ) {return ''}
 
     const groupsOfUser = V.aE() ? V.aE().holderOf
       .filter( item => item.c === 'Group' )
@@ -635,33 +636,31 @@ const GroupComponents = ( function() {
     const entity = V.getState( 'active' ).lastViewedEntity;
 
     if ( entity.role !== 'Plot' ) { return '' }
+    if ( !canEditPlot( entity ) ) { return '' }
 
-    const editable = canEditPlot( entity );
     const responseNode = V.cN( { c: 'plot-invite-handle__response pxy txt-gray' } );
     const uuidLength = V.getSetting( 'uuidStringLength' );
 
-    const handleInviteInput = editable
-      ? V.debounce( ( event ) => {
-        const trimmed = event.target.value.trim();
+    const handleInviteInput = V.debounce( ( event ) => {
+      const trimmed = event.target.value.trim();
 
-        if ( trimmed.length === 0 ) {
-          if ( getMemberOfGroup( entity ) ) {
-            savePlotMemberOfGroup( entity, null, responseNode, event.target );
-          }
-          else {
-            responseNode.textContent = '';
-          }
-          return;
+      if ( trimmed.length === 0 ) {
+        if ( getMemberOfGroup( entity ) ) {
+          savePlotMemberOfGroup( entity, null, responseNode, event.target );
         }
-
-        if ( trimmed.length !== uuidLength ) {
+        else {
           responseNode.textContent = '';
-          return;
         }
+        return;
+      }
 
-        savePlotMemberOfGroup( entity, trimmed, responseNode, event.target );
-      }, 400 )
-      : undefined;
+      if ( trimmed.length !== uuidLength ) {
+        responseNode.textContent = '';
+        return;
+      }
+
+      savePlotMemberOfGroup( entity, trimmed, responseNode, event.target );
+    }, 400 );
 
     const inputElement = V.cN( {
       t: 'input',
@@ -669,9 +668,8 @@ const GroupComponents = ( function() {
       a: {
         type: 'text',
         value: getMemberOfGroup( entity ),
-        readOnly: !editable,
       },
-      e: handleInviteInput ? { input: handleInviteInput } : undefined,
+      e: { input: handleInviteInput },
     } );
 
     const inner = V.cN( {
@@ -698,7 +696,7 @@ const GroupComponents = ( function() {
     }
 
     const activeEntity = V.getState( 'active' ).lastViewedEntity;
-    if ( !activeEntity || activeEntity.role !== 'Plot' ) {
+    if ( !activeEntity || activeEntity.role !== 'Plot' || !canEditPlot( activeEntity ) ) {
       return;
     }
 

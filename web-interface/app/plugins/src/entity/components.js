@@ -621,7 +621,12 @@ const UserComponents = ( function() { // eslint-disable-line no-unused-vars
           castDescr.$description,
         ],
       } );
-      return castCard( $innerContent, editable ? entity.role + ' ' + V.getString( ui.description ) : entity.role );
+      return castCard(
+        $innerContent,
+        editable
+          ? V.getString( entity.role ) + ' ' + V.getString( ui.description )
+          : V.getString( entity.role ),
+      );
     }
     else {
       return '';

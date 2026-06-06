@@ -3,7 +3,16 @@ const collE = global.db.collE;
 const collA = global.db.collA;
 
 const { checkAuth } = require( './utils/check-auth' );
+const touchLastRequested = require( './utils/touch-last-requested' );
 const { decrypt } = require( '../../resources/crypt' );
+
+function returnEntity( entity, match ) {
+  touchLastRequested( entity );
+
+  return match.isInArray
+    ? entity
+    : [ entity ];
+}
 
 module.exports = async ( context, match ) => {
 
@@ -50,9 +59,7 @@ module.exports = async ( context, match ) => {
   }
 
   if ( match.noMixins ) {
-    return match.isInArray
-      ? entity
-      : [ entity ];
+    return returnEntity( entity, match );
   }
 
   /**
@@ -136,7 +143,5 @@ module.exports = async ( context, match ) => {
     Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
 
-  return match.isInArray
-    ? entity
-    : [ entity ];
+  return returnEntity( entity, match );
 };

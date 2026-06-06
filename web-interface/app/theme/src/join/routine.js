@@ -244,7 +244,7 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
     const fullId = matchFullId[1];
 
     const $a = document.createElement( 'a' );
-    $a.download = fullId + ' __key.txt'; // + window.location.hostname
+    $a.download = 'Key__' + fullId + '.txt'; // + window.location.hostname
     $a.href = window.URL.createObjectURL( blob );
     $a.click();
 
