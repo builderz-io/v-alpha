@@ -56,6 +56,15 @@ const VState = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function setActiveEntity( data ) {
+    const prior = getState( 'activeEntity' );
+
+    if (
+      prior && prior.uuidE && data.uuidE
+      && prior.uuidE != data.uuidE
+    ) {
+      setCache( 'held', 'clear' );
+    }
+
     if ( data.auth.uPhrase ) {
       data.auth = true;
     }

@@ -72,6 +72,7 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
       // if ( res.data.setDisconnect.success ) {
       setTempRefreshToken(); // clears temp_refresh
       V.setLocal( 'last-connected-address', 'clear' );
+      V.setLocal( 'creator-uphrase', 'clear' );
       V.setLocal( 'welcome-modal', 1 );
       // V.setState( 'activeEntity', 'clear' );
       window.location.href = '/';
@@ -93,6 +94,10 @@ const VAuth = ( function() { // eslint-disable-line no-unused-vars
 
         /** Set JWT for Authorization header */
         V.setJwt( res.data.setAuth.jwt );
+
+        if ( creatorUPhrase ) {
+          V.setLocal( 'creator-uphrase', creatorUPhrase );
+        }
 
         /** Renew JWT before expiration */
         // setTimeout( setAuth, /* ( res.data.setAuth.exp * 0.95 ) * 1000 */ 15000 );

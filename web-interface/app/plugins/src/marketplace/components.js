@@ -49,8 +49,12 @@ const MarketplaceComponents = ( function() { // eslint-disable-line no-unused-va
   }
 
   function drawPopup( path, hover ) {
-    const entity = V.getCache( 'highlights' ).data.find( item => item.path == path )
-    || V.getCache( 'features' ).data.find( item => item.path == path );
+    const heldCache = V.getCache( 'held' );
+    const highlightsCache = V.getCache( 'highlights' );
+    const featuresCache = V.getCache( 'features' );
+    const entity = heldCache && heldCache.data && heldCache.data.find( item => item.path == path )
+    || highlightsCache && highlightsCache.data && highlightsCache.data.find( item => item.path == path )
+    || featuresCache && featuresCache.data && featuresCache.data.find( item => item.path == path );
     if ( entity ) {
       V.setNode( '.leaflet-popup-pane', '' );
       V.setNode( '.popup-content', '' );

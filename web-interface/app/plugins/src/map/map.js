@@ -96,7 +96,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     className: 'map__popup',
   };
 
-  let viMap, highlightLayer, permittedLayer, deniedLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
+  let viMap, highlightLayer, heldLayer, permittedLayer, deniedLayer, searchLayer, lastViewedLayer, tempPointLayer, hoverLayer;
 
   const coordinatesCache = [];
 
@@ -158,6 +158,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       setPoints( whichRole );
     }
     setHighlights( whichRole );
+    setHeld( whichRole );
 
     // if ( !features || !features.length || features[0] == undefined ) {
     //   return;
@@ -180,11 +181,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function castLayer( whichLayer, features, options ) {
-    const sc = V.getState( 'screen' );
 
     const marker = {
       radius: 5,
-      fillColor: 'rgba(' + sc.brandPrimary + ', 1)',
+      fillColor: '#023047',
       weight: 0,
       opacity: 0.8,
       fillOpacity: 0.8,
@@ -192,13 +192,19 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
 
     switch ( whichLayer ) {
     // case 'permitted':
-    //   marker.fillColor = 'rgba(' + sc.brandPrimary + ', 1)';
+    //   marker.fillColor = '#023047';
     //   break;
     case 'denied':
-      marker.fillColor = 'rgba(' + sc.brandPrimary + ', 0.55)';
+      marker.fillColor = '#023047';
+      marker.fillOpacity = 0.55;
       break;
     case 'highlights':
-      marker.fillColor = 'rgba(' + sc.brandSecondary + ', 1)';
+      marker.fillColor = '#ffb703';
+      marker.radius = 6;
+      marker.fillOpacity = 1;
+      break;
+    case 'held':
+      marker.fillColor = '#fb8500';
       marker.radius = 6;
       marker.fillOpacity = 1;
       break;
@@ -214,10 +220,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       break;
     case 'lastViewed':
       marker.radius = 9;
-      marker.fillColor = 'blue';
+      marker.fillColor = '#219ebc';
       marker.stroke = true;
       marker.weight = 3;
-      marker.color = 'lightblue';
+      marker.color = '#219ebc';
       break;
     case 'hover':
       marker.radius = 9;
@@ -260,7 +266,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       } );
     }
 
-    if ( ['search', 'highlights', 'tempPoint', 'lastViewed'].includes( whichLayer ) ) {
+    if ( ['search', 'highlights', 'held', 'tempPoint', 'lastViewed'].includes( whichLayer ) ) {
       exec.onEachFeature = function( feature, marker ) {
         marker.bindPopup( L.popup().setContent( castPopup( feature ) ), popUpSettings );
         if ( options && options.isJoin ) {
@@ -474,6 +480,38 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     highlightLayer.addTo( viMap );
   }
 
+  function setHeld( whichRole ) {
+    if ( heldLayer ) {
+      heldLayer.remove();
+    }
+
+    const cache = V.getCache( 'held' );
+
+    if ( !cache ) { return }
+
+    let filtered = cache.data;
+
+    if ( whichRole != 'all' ) {
+      filtered = filtered.filter( item => item.role == whichRole );
+    }
+
+    filtered = filtered.filter( feature => {
+      return feature.geometry &&
+             feature.geometry.coordinates &&
+             Array.isArray( feature.geometry.coordinates ) &&
+             feature.geometry.coordinates.length >= 2 &&
+             feature.geometry.coordinates[0] != null &&
+             feature.geometry.coordinates[1] != null;
+    } );
+
+    if ( filtered.length === 0 ) {
+      return;
+    }
+
+    heldLayer = castLayer( 'held', filtered );
+    heldLayer.addTo( viMap );
+  }
+
   function setSearch( features ) {
     if ( searchLayer ) {
       searchLayer.remove();
@@ -665,6 +703,7 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
     launch: launch,
     draw: draw,
     getState: getState,
+    setHeld: setHeld,
   };
 
 } )();

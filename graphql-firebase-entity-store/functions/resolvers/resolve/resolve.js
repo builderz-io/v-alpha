@@ -23,6 +23,7 @@ module.exports = {
     getPoints: ( parent, args, { context } ) => require( './get-points' )( context, args.where ),
     getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
     getPlotsByGroup: ( parent, args, { context } ) => require( './get-plots-by-group' )( context, args.groupUuidE ),
+    getHeldEntities: ( parent, args, { context } ) => require( './get-held-entities' )( context ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),

@@ -112,37 +112,32 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
           return res;
         } );
       }
-
-      if( V.aE() && V.aE().holderOf ) {
-        let heldUuidEs = V.aE().holderOf.map( item => item.a );
-
-        if ( heldUuidEs.length ) {
-          heldUuidEs = heldUuidEs.length > 15 ? heldUuidEs.slice( 0, 15 ) : heldUuidEs;
-
-          query = await V.getEntity( heldUuidEs ).then( res => {
-            console.log( res );
-
-            if ( res.success ) {
-              V.setCache( 'highlights', res.data );
-            }
-            return res;
-          } );
-
-        }
-      }
-      else {
-        query = {
-          success: false,
-        };
-      }
     }
 
-    if ( query.success ) {
+    let held = { success: false, data: [] };
 
-      let filtered = query.data;
+    if ( V.aE() && V.aE().holderOf && V.aE().holderOf.length ) {
+      held = await HeldEntities.fetch();
+    }
+
+    const isUserOnly = V.getSetting( 'marketContent' ) == 1;
+    let cardSource, cardSuccess;
+
+    if ( isUserOnly ) {
+      cardSource = held.success && held.data ? held.data : [];
+      cardSuccess = held.success && cardSource.length > 0;
+    }
+    else {
+      cardSource = query.success && query.data ? query.data : [];
+      cardSuccess = query.success;
+    }
+
+    if ( cardSuccess ) {
+
+      let filtered = cardSource;
 
       if ( whichRole != 'all' ) {
-        filtered = query.data.filter( item => item.role == whichRole );
+        filtered = cardSource.filter( item => item.role == whichRole );
       }
 
       return {

@@ -110,7 +110,13 @@ const server = new ApolloServer( {
         }
         else {
           Object.assign( context, authDoc );
-          Object.assign( context, { cU: creatorUPhrase } );
+          if ( creatorUPhrase && creatorUPhrase != 'not set' ) {
+            const bcryptedCreatorUPhrase = await bcrypt( creatorUPhrase, getSalt() );
+            Object.assign( context, { cU: creatorUPhrase, bCU: bcryptedCreatorUPhrase } );
+          }
+          else {
+            Object.assign( context, { cU: creatorUPhrase } );
+          }
         }
       }
       // else do not set context object

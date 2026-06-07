@@ -96,6 +96,7 @@ const Canvas = ( function() { // eslint-disable-line no-unused-vars
         V.setScript( host + '/plugins/src/entity/display.js' ),
         V.setScript( host + '/plugins/src/entity/settings.js' ),
         V.setScript( host + '/plugins/src/entity/entitylist.js' ),
+        V.setScript( host + '/plugins/src/entity/held-entities.js' ),
         V.setScript( host + '/plugins/src/chat/components.js' ),
         V.setScript( host + '/plugins/src/chat/chat.js' ),
 

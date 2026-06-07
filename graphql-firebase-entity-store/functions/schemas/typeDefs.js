@@ -126,6 +126,7 @@ const Queries = `
     getEmphasis(where: WhereEmphasis): [Emphasis]
     getImage(where: WhereProfile): [Image]
     getPlotsByGroup(groupUuidE: String!): [PlotLinkedToGroup]
+    getHeldEntities: [PlotLinkedToGroup]
   }
 `;
 

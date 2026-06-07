@@ -35,8 +35,22 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   const previewE = 'a c d m n';
   const previewP = 'f m { a r } n { a c z } o { a b z } s { s27 s28 s29 s30 }';
 
+  /** Entity fields for getHeldEntities (includes decrypted geo on zz.i) */
+  const heldE = 'a c d m n y { m } zz { i m }';
+
   /** North Sea sentinel [lng, lat] when profile coordinates are unavailable */
   const PLACEHOLDER_COORDINATES = [ 3.612853, 56.301912 ];
+
+  const continentsLngLat = [
+    [ 17.05291, 2.07035 ],
+    [ 87.331111, 43.681111 ],
+    [ -56.1004, -15.6006 ],
+    [ 9.902056, 49.843 ],
+    [ 134.354806, -25.610111 ],
+    [ -100, 48.166667 ],
+    [ -5.077173, -74.254112 ],
+    [ -40, 35 ],
+  ];
 
   /* ================== private methods ================= */
 
@@ -205,15 +219,33 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     /** cast a fullId, e.g. "Peter #3454" */
     const fullId = V.castFullId( E.m, E.n );
 
+    const entityCoordinates = E.zz && E.zz.i;
     const profileCoordinates = P.n && P.n.a;
-    const coordinates = (
+    const continent = ( E.zz && E.zz.m ) || ( P.n && P.n.z );
+    let coordinates = null;
+
+    if (
+      Array.isArray( entityCoordinates )
+      && entityCoordinates.length >= 2
+      && entityCoordinates[0] != null
+      && entityCoordinates[1] != null
+    ) {
+      coordinates = entityCoordinates;
+    }
+    else if (
       Array.isArray( profileCoordinates )
       && profileCoordinates.length >= 2
       && profileCoordinates[0] != null
       && profileCoordinates[1] != null
-    )
-      ? profileCoordinates
-      : PLACEHOLDER_COORDINATES;
+    ) {
+      coordinates = profileCoordinates;
+    }
+    else if ( continent ) {
+      coordinates = V.castJson( continentsLngLat[ continent - 1 ] || continentsLngLat[7], 'clone' );
+    }
+    else {
+      coordinates = PLACEHOLDER_COORDINATES;
+    }
 
     return {
       uuidE: E.a || P.d,
@@ -251,7 +283,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
         coordinates: coordinates,
         baseLocation: P.n ? P.n.c : undefined,
         type: 'Point',
-        continent: P.n && P.n.z ? P.n.z : settings.continent, // Fallback to Atlantic Ocean
+        continent: continent || settings.continent,
       },
       type: 'Feature', // needed to create a valid GeoJSON object for leaflet.js
       status: { active: E.y ? E.y.m : undefined },
@@ -645,6 +677,17 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     return fetchEndpoint( query, variables );
   }
 
+  function getHeldEntities() {
+    const query = `query GetHeldEntities {
+      getHeldEntities {
+        entity { ${ heldE } }
+        profile { ${ singleP } }
+      }
+    }`;
+
+    return fetchEndpoint( query );
+  }
+
   function getEntityQuery( data ) {
     console.log( 888, 'by query' );
 
@@ -762,12 +805,17 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
   }
 
   function fetchEndpoint( query, variables ) {
+    const creatorUPhrase = V.getLocal( 'creator-uphrase' );
+
     return fetch( settings.namespaceEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': jwt ? 'Bearer ' + jwt : '',
+        'Creator-UPhrase': creatorUPhrase
+          ? creatorUPhrase.replace( /"/g, '' )
+          : 'not set',
       },
       body: JSON.stringify( {
         query,
@@ -911,6 +959,26 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
       }
 
       const combined = linkedPlots.map(
+        item => castReturnedEntityAndProfileData( item.entity, item.profile ),
+      );
+
+      return V.successTrue( 'got entities and profiles', combined );
+    }
+    else if ( 'entity by held' == whichEndpoint ) {
+      const held = await getHeldEntities();
+
+      if ( held.errors ) {
+        return V.successFalse( 'get held entities', held.errors[0].message );
+      }
+
+      const linkedHeld = ( held.data.getHeldEntities || [] )
+        .filter( item => item && item.entity && item.profile && item.entity.a );
+
+      if ( !linkedHeld.length ) {
+        return V.successTrue( 'got entities and profiles', [] );
+      }
+
+      const combined = linkedHeld.map(
         item => castReturnedEntityAndProfileData( item.entity, item.profile ),
       );
 
@@ -1060,12 +1128,14 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     { groupUuidE: groupUuidE },
     'plots by group',
   );
+  V.getHeldEntities = () => getNamespace( {}, 'entity by held' );
 
   return {
     getNamespace: getNamespace,
     setNamespace: setNamespace,
     setJwt: setJwt,
     getPlotsByGroup: V.getPlotsByGroup,
+    getHeldEntities: V.getHeldEntities,
   };
 
 } )();

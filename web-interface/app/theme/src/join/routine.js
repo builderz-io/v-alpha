@@ -588,6 +588,12 @@ const JoinRoutine = ( function() { // eslint-disable-line no-unused-vars
               fullId: E.fullId,
               a: E.uuidE,
               c: E.roleCode,
+              geo: E.geometry && E.geometry.coordinates
+                ? V.castJson( E.geometry.coordinates, 'clone' )
+                : undefined,
+              continent: E.geometry && E.geometry.continent
+                ? E.geometry.continent
+                : undefined,
             };
 
             if ( heldEntities ) {
@@ -685,9 +691,6 @@ Initialized by: ${ window.location.host }
 
   async function refreshPostCreateNonPerson( entity ) {
     try {
-      V.setCache( 'highlights', 'clear' );
-      V.setCache( 'features', 'clear' );
-
       const activeState = V.getState( 'active' ) || {};
       const activePath = activeState.path;
       const serviceNav = V.getState( 'serviceNav' ) || {};
@@ -696,27 +699,13 @@ Initialized by: ${ window.location.host }
         ? activeNavItem.use.role.replace( 'Mapped', '' )
         : 'all';
 
-      const holderOf = V.aE() && V.aE().holderOf ? V.aE().holderOf : [];
-      let holderUuids = holderOf.map( item => item.a ).filter( Boolean );
+      await HeldEntities.fetch( { force: true } );
 
-      if (
-        entity
-        && entity.uuidE
-        && !holderUuids.includes( entity.uuidE )
-      ) {
-        holderUuids = [entity.uuidE].concat( holderUuids );
+      const filteredEntities = HeldEntities.getFiltered( activeRole );
+
+      if ( V.getSetting( 'drawMap' ) ) {
+        VMap.draw( activeRole );
       }
-
-      if ( !holderUuids.length ) { return }
-
-      const fetchedEntities = await V.getEntity( holderUuids );
-      if ( !fetchedEntities.success || !fetchedEntities.data ) { return }
-
-      const filteredEntities = activeRole == 'all'
-        ? fetchedEntities.data
-        : fetchedEntities.data.filter( item => item.role == activeRole );
-
-      V.setCache( 'highlights', filteredEntities );
 
       const $slider = CanvasComponents.slider();
       const $list = CanvasComponents.list();
