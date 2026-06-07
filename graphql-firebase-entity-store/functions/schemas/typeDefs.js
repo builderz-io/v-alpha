@@ -114,6 +114,11 @@ const PlotLink = `
     entity: Entity
     profile: Profile
   }
+
+  type GroupName {
+    name: String
+    tag: String
+  }
 `;
 
 const Queries = `
@@ -127,6 +132,7 @@ const Queries = `
     getImage(where: WhereProfile): [Image]
     getPlotsByGroup(groupUuidE: String!): [PlotLinkedToGroup]
     getHeldEntities: [PlotLinkedToGroup]
+    getGroupName(groupUuidE: String!): GroupName
   }
 `;
 

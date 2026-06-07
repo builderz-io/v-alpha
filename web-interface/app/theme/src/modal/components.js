@@ -245,6 +245,10 @@ const ModalComponents = ( function() { // eslint-disable-line no-unused-vars
             Navigation.drawEntityNavPill( entity.data[0] );
           }
 
+          if ( V.getState( 'active' ).navItem ) {
+            Navigation.drawReset();
+          }
+
           Join.draw( 'new entity was set up' );
         }
         else {

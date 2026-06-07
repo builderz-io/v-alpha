@@ -701,41 +701,11 @@ Initialized by: ${ window.location.host }
 
       await HeldEntities.fetch( { force: true } );
 
-      const filteredEntities = HeldEntities.getFiltered( activeRole );
-
       if ( V.getSetting( 'drawMap' ) ) {
         VMap.draw( activeRole );
       }
 
-      const $slider = CanvasComponents.slider();
-      const $list = CanvasComponents.list();
-
-      if (
-        activeNavItem
-        && !( [undefined, '/network/all'].includes( activePath ) )
-      ) {
-        V.setNode( $slider, MarketplaceComponents.entitiesAddCard() );
-      }
-
-      filteredEntities.forEach( cardData => {
-        V.setNode( $slider, MarketplaceComponents.entitiesSmallCard( cardData ) );
-      } );
-
-      if ( filteredEntities.length ) {
-        filteredEntities.slice().reverse().forEach( cardData => {
-          const $cardContent = MarketplaceComponents.cardContent( cardData );
-          const $card = CanvasComponents.card( $cardContent );
-          V.setNode( $list, $card );
-        } );
-      }
-      else {
-        V.setNode( $list, CanvasComponents.notFound( 'marketplace' ) );
-      }
-
-      Page.draw( {
-        topslider: $slider,
-        listings: $list,
-      } );
+      HeldEntities.drawSlider( activeRole );
     }
     catch ( err ) {
       console.log( 'refreshPostCreateNonPerson failed:', err );

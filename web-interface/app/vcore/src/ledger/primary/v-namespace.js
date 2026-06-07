@@ -688,6 +688,21 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     return fetchEndpoint( query );
   }
 
+  function getGroupName( groupUuidE ) {
+    const query = `query GetGroupName( $groupUuidE: String! ) {
+      getGroupName( groupUuidE: $groupUuidE ) {
+        name
+        tag
+      }
+    }`;
+
+    const variables = {
+      groupUuidE: groupUuidE,
+    };
+
+    return fetchEndpoint( query, variables );
+  }
+
   function getEntityQuery( data ) {
     console.log( 888, 'by query' );
 
@@ -984,6 +999,21 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
 
       return V.successTrue( 'got entities and profiles', combined );
     }
+    else if ( 'group name' == whichEndpoint ) {
+      const result = await getGroupName( data.groupUuidE );
+
+      if ( result.errors ) {
+        return V.successFalse( 'get group name', result.errors[0].message );
+      }
+
+      const groupName = result.data.getGroupName;
+
+      if ( !groupName || !groupName.name ) {
+        return V.successFalse( 'get group name', 'does not exist' );
+      }
+
+      return V.successTrue( 'got group name', groupName );
+    }
     else {
       E = await getEntities( data, whichEndpoint );
     }
@@ -1129,6 +1159,10 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     'plots by group',
   );
   V.getHeldEntities = () => getNamespace( {}, 'entity by held' );
+  V.getGroupName = ( groupUuidE ) => getNamespace(
+    { groupUuidE: groupUuidE },
+    'group name',
+  );
 
   return {
     getNamespace: getNamespace,
@@ -1136,6 +1170,7 @@ const VNamespace = ( function() { // eslint-disable-line no-unused-vars
     setJwt: setJwt,
     getPlotsByGroup: V.getPlotsByGroup,
     getHeldEntities: V.getHeldEntities,
+    getGroupName: V.getGroupName,
   };
 
 } )();

@@ -74,8 +74,36 @@ const HeldEntities = ( function() { // eslint-disable-line no-unused-vars
     return filtered;
   }
 
+  function drawSlider( whichRole ) {
+    const filtered = getFiltered( whichRole ? whichRole : 'all' );
+
+    if ( !filtered.length ) {
+      return;
+    }
+
+    const activePath = V.getState( 'active' ) && V.getState( 'active' ).path;
+    const $slider = CanvasComponents.slider();
+
+    if ( !( [undefined, '/network/all'].includes( activePath ) ) ) {
+      V.setNode( $slider, MarketplaceComponents.entitiesAddCard() );
+    }
+
+    filtered.forEach( cardData => {
+      V.setNode( $slider, MarketplaceComponents.entitiesSmallCard( cardData ) );
+    } );
+
+    if ( V.getNode( '.is-single-entity-view' ) ) {
+      return;
+    }
+
+    Page.draw( {
+      topslider: $slider,
+    } );
+  }
+
   function draw( whichRole ) {
     VMap.setHeld( whichRole ? whichRole : 'all' );
+    drawSlider( whichRole );
   }
 
   async function fetchAndDraw( whichRole ) {
@@ -86,6 +114,7 @@ const HeldEntities = ( function() { // eslint-disable-line no-unused-vars
   return {
     fetch: fetch,
     draw: draw,
+    drawSlider: drawSlider,
     fetchAndDraw: fetchAndDraw,
     getFiltered: getFiltered,
   };

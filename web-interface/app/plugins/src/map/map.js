@@ -220,10 +220,10 @@ const VMap = ( function() { // eslint-disable-line no-unused-vars
       break;
     case 'lastViewed':
       marker.radius = 9;
-      marker.fillColor = '#219ebc';
+      marker.fillColor = '#ffb703';
       marker.stroke = true;
       marker.weight = 3;
-      marker.color = '#219ebc';
+      marker.color = '#ffb703';
       break;
     case 'hover':
       marker.radius = 9;

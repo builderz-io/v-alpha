@@ -649,6 +649,11 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     'entity by held',
     V.getSetting( 'entityLedger' ),
   );
+  V.getGroupName = ( groupUuidE ) => V.getData(
+    { groupUuidE: groupUuidE },
+    'group name',
+    V.getSetting( 'entityLedger' ),
+  );
   V.setEntity = setEntity;
   V.getEntityBalance = getEntityBalance;
   V.getQuery = getQuery;
@@ -660,6 +665,7 @@ const VEntity = ( function() { // eslint-disable-line no-unused-vars
     getEntity: getEntity,
     getPlotsByGroup: V.getPlotsByGroup,
     getHeldEntities: V.getHeldEntities,
+    getGroupName: V.getGroupName,
     setEntity: setEntity,
     getEntityBalance: getEntityBalance,
     getQuery: getQuery,

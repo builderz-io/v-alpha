@@ -235,6 +235,8 @@
   "Copied": "Kopiert",
   "Save": "Speichern",
   "Invalid invite code": "Ungültiger Einladungscode",
+  "This Group does not exist": "Diese Gruppe existiert nicht",
+  "Ensure the code has exactly 10 characters": "Der Code muss genau 10 Zeichen lang sein",
   "No group found for this code": "Keine Gruppe für diesen Code gefunden",
   "Grouping": "Gruppierung",
   "Homepage": "Startseite",

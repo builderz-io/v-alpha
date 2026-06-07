@@ -30,15 +30,23 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
 
     let query;
 
-    const inCache = V.getFromCache( 'viewed', which.uuidE || which );
+    const lookupKey = which.uuidE || which;
+    const inHeldCache = V.getFromCache( 'held', lookupKey );
 
-    if ( inCache ) {
-      query = V.successTrue( 'used cache', inCache );
+    if ( inHeldCache ) {
+      query = V.successTrue( 'used held cache', inHeldCache );
+      V.setCache( 'viewed', [inHeldCache] );
     }
     else {
-      query = await V.getEntity(
-        which,
-      ).then( res => {
+      const inCache = V.getFromCache( 'viewed', lookupKey );
+
+      if ( inCache ) {
+        query = V.successTrue( 'used cache', inCache );
+      }
+      else {
+        query = await V.getEntity(
+          which,
+        ).then( res => {
         if ( res.success ) {
 
           /* sync coordinates with cached point */
@@ -54,6 +62,7 @@ const Profile = ( function() { // eslint-disable-line no-unused-vars
           return false;
         }
       } );
+      }
     }
 
     if ( query.success ) {

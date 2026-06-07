@@ -183,62 +183,83 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
       //  // Button.draw( 'search' );
       // }
 
-      if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
+      const isUserOnly = V.getSetting( 'marketContent' ) == 1;
+
+      if ( isUserOnly ) {
+        HeldEntities.drawSlider( viewData.whichRole );
+      }
+      else if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
 
-      if ( viewData.features && viewData.features[0] ) {
-        viewData.features.forEach( cardData => {
-          setSliderContent( cardData );
-        } );
+      if ( !isUserOnly ) {
+        if ( viewData.features && viewData.features[0] ) {
+          viewData.features.forEach( cardData => {
+            setSliderContent( cardData );
+          } );
+        }
+        else {
+          shuffleArray( viewData.entities ).forEach( cardData => {
+            setSliderContent( cardData );
+          } );
+        }
       }
-      else {
-        shuffleArray( viewData.entities ).forEach( cardData => {
-          setSliderContent( cardData );
-        } );
-      }
 
-      if ( viewData.entities.length > 10 ) {
-        const last = viewData.entities.pop();
-        const secondLast = viewData.entities.pop();
-        setListContent( last );
-        setListContent( secondLast );
+      if ( !isUserOnly ) {
+        if ( viewData.entities.length > 10 ) {
+          const last = viewData.entities.pop();
+          const secondLast = viewData.entities.pop();
+          setListContent( last );
+          setListContent( secondLast );
 
-        // setSliderContent( last );
+          // setSliderContent( last );
 
-        const hasThumbnail = viewData.entities.filter( item => item.images.thumbnail != undefined );
-        const hasNoThumbnail = viewData.entities.filter( item => item.images.thumbnail === undefined );
+          const hasThumbnail = viewData.entities.filter( item => item.images.thumbnail != undefined );
+          const hasNoThumbnail = viewData.entities.filter( item => item.images.thumbnail === undefined );
 
-        hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
-          setListContent( cardData );
-        } );
+          hasThumbnail.reverse().sort( compareDesc ).forEach( cardData => {
+            setListContent( cardData );
+          } );
 
-        // shuffleArray( hasThumbnail ).forEach( cardData => {
-        //   setSliderContent( cardData );
-        // } );
+          // shuffleArray( hasThumbnail ).forEach( cardData => {
+          //   setSliderContent( cardData );
+          // } );
 
-        hasNoThumbnail.reverse().forEach( cardData => {
-          if ( hasThumbnail.length < 8 ) {
+          hasNoThumbnail.reverse().forEach( cardData => {
+            if ( hasThumbnail.length < 8 ) {
+              // setSliderContent( cardData );
+            }
+            setListContent( cardData );
+          } );
+        }
+        else {
+          viewData.entities.reverse().forEach( cardData => {
             // setSliderContent( cardData );
-          }
-          setListContent( cardData );
-        } );
-      }
-      else {
-        viewData.entities.reverse().forEach( cardData => {
-          // setSliderContent( cardData );
-          setListContent( cardData );
-        } );
+            setListContent( cardData );
+          } );
+        }
       }
 
     }
     else {
+      const isUserOnly = V.getSetting( 'marketContent' ) == 1;
+
       if ( !( [undefined, '/network/all'].includes( viewData.whichPath ) ) ) {
         const $addcard = MarketplaceComponents.entitiesAddCard();
         V.setNode( $slider, $addcard );
       }
       V.setNode( $slider, CanvasComponents.notFound( 'marketplace' ) );
+
+      if (
+        isUserOnly
+        && !V.getNode( '.is-single-entity-view' )
+      ) {
+        Page.draw( {
+          topslider: $slider,
+        } );
+        return;
+      }
     }
 
     if ( data.isSearch ) {
@@ -256,6 +277,10 @@ const Marketplace = ( function() { // eslint-disable-line no-unused-vars
        In that case highlights must not be placed into the page
 
        */
+      return;
+    }
+
+    if ( V.getSetting( 'marketContent' ) == 1 ) {
       return;
     }
 

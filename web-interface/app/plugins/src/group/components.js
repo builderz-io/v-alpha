@@ -13,6 +13,8 @@ const GroupComponents = ( function() {
       inviteHandleCopy: 'Copy',
       inviteHandleCopied: 'Copied',
       inviteHandleInvalid: 'Invalid invite code',
+      inviteHandleNotFound: 'This Group does not exist',
+      inviteHandleLength: 'Ensure the code has exactly 10 characters',
     };
 
     if ( V.getSetting( 'devMode' ) ) {
@@ -244,7 +246,9 @@ const GroupComponents = ( function() {
   }
 
   function handleProfileDraw( plot ) {
-    cachePlotEntitiesForView( [ plot ] );
+    const fromHeld = V.getFromCache( 'held', plot.uuidE )
+      || V.getFromCache( 'held', plot.path );
+    cachePlotEntitiesForView( [ fromHeld || plot ] );
     const path = V.castPathOrId( plot.fullId );
     V.setState( 'active', { navItem: path } );
     V.setBrowserHistory( path );
@@ -596,13 +600,58 @@ const GroupComponents = ( function() {
     return CanvasComponents.card( inner, V.getString( ui.inviteHandleTitle ) );
   }
 
-  function savePlotMemberOfGroup( plot, trimmed, responseNode, inputEl ) {
+  function fetchGroupInviteFeedback( inviteCode ) {
+    return V.getGroupName( inviteCode )
+      .then( ( res ) => {
+        const group = res.data && res.data[0];
+
+        if ( !res.success || !group || !group.name ) {
+          return { ok: false };
+        }
+
+        return { ok: true, name: group.name };
+      } )
+      .catch( () => ( { ok: false } ) );
+  }
+
+  function applyPlotInviteHandleFeedback( inviteCode, responseNode ) {
+    const trimmed = inviteCode == null ? '' : String( inviteCode ).trim();
+    const uuidLength = V.getSetting( 'uuidStringLength' );
+
+    if ( !trimmed || trimmed.length !== uuidLength ) {
+      if ( responseNode ) { responseNode.textContent = '' }
+      return Promise.resolve( null );
+    }
+
+    return fetchGroupInviteFeedback( trimmed )
+      .then( ( result ) => {
+        if ( !responseNode ) { return result }
+
+        responseNode.textContent = result.ok
+          ? result.name
+          : V.getString( ui.inviteHandleNotFound );
+
+        return result;
+      } );
+  }
+
+  function savePlotMemberOfGroup( plot, trimmed, responseNode, inputEl, options ) {
+    const feedbackText = options && options.feedbackText;
+    const groupVerified = options && options.groupVerified;
     const nextValue = trimmed == null ? '' : trimmed;
-    if ( nextValue === getMemberOfGroup( plot ) ) {
+
+    if ( trimmed != null && !groupVerified ) {
       return Promise.resolve();
     }
 
-    responseNode.textContent = '';
+    if ( nextValue === getMemberOfGroup( plot ) ) {
+      if ( feedbackText && responseNode ) {
+        responseNode.textContent = feedbackText;
+      }
+      if ( inputEl ) { inputEl.disabled = false }
+      return Promise.resolve();
+    }
+
     if ( inputEl ) { inputEl.disabled = true }
 
     return V.setEntity( plot.fullId, {
@@ -614,9 +663,13 @@ const GroupComponents = ( function() {
         if ( res.success ) {
           if ( trimmed == null ) {
             delete plot.servicefields[V.castServiceField( 'memberOfGroup' )];
+            if ( responseNode ) { responseNode.textContent = '' }
           }
           else {
             plot.servicefields[V.castServiceField( 'memberOfGroup' )] = trimmed;
+            if ( responseNode ) {
+              responseNode.textContent = feedbackText || '';
+            }
           }
           if ( inputEl ) { inputEl.value = nextValue }
         }
@@ -626,6 +679,30 @@ const GroupComponents = ( function() {
       } )
       .catch( () => {
         responseNode.textContent = V.getString( ui.inviteHandleInvalid );
+      } )
+      .finally( () => {
+        if ( inputEl ) { inputEl.disabled = false }
+      } );
+  }
+
+  function submitPlotInviteHandle( plot, trimmed, responseNode, inputEl ) {
+    if ( inputEl ) { inputEl.disabled = true }
+    responseNode.textContent = '';
+
+    return applyPlotInviteHandleFeedback( trimmed, responseNode )
+      .then( ( result ) => {
+        if ( !result || !result.ok ) {
+          if ( inputEl ) { inputEl.disabled = false }
+          return;
+        }
+
+        return savePlotMemberOfGroup(
+          plot,
+          trimmed,
+          responseNode,
+          inputEl,
+          { feedbackText: result.name, groupVerified: true },
+        );
       } )
       .finally( () => {
         if ( inputEl ) { inputEl.disabled = false }
@@ -655,11 +732,11 @@ const GroupComponents = ( function() {
       }
 
       if ( trimmed.length !== uuidLength ) {
-        responseNode.textContent = '';
+        responseNode.textContent = V.getString( ui.inviteHandleLength );
         return;
       }
 
-      savePlotMemberOfGroup( entity, trimmed, responseNode, event.target );
+      submitPlotInviteHandle( entity, trimmed, responseNode, event.target );
     }, 400 );
 
     const inputElement = V.cN( {
@@ -685,6 +762,12 @@ const GroupComponents = ( function() {
     if ( card && card.classList ) {
       card.classList.add( 'w-full' );
     }
+
+    const existingInvite = getMemberOfGroup( entity );
+    if ( existingInvite ) {
+      applyPlotInviteHandleFeedback( existingInvite, responseNode );
+    }
+
     return card;
   }
 

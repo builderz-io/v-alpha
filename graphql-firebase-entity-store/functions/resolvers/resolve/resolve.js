@@ -24,6 +24,7 @@ module.exports = {
     getImage: ( parent, args, { context } ) => require( './get-image' )( context, args.where.a ),
     getPlotsByGroup: ( parent, args, { context } ) => require( './get-plots-by-group' )( context, args.groupUuidE ),
     getHeldEntities: ( parent, args, { context } ) => require( './get-held-entities' )( context ),
+    getGroupName: ( parent, args ) => require( './get-group-name' )( args.groupUuidE ),
   },
   Mutation: {
     setAuth: ( parent, __, { context, res } ) => require( './set-auth' )( context, res ),

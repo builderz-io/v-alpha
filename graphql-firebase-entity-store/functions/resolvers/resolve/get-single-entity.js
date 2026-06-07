@@ -6,8 +6,10 @@ const { checkAuth } = require( './utils/check-auth' );
 const touchLastRequested = require( './utils/touch-last-requested' );
 const { decrypt } = require( '../../resources/crypt' );
 
-function returnEntity( entity, match ) {
-  touchLastRequested( entity );
+function returnEntity( entity, match, context ) {
+  if ( context.a && entity.a == context.d ) {
+    touchLastRequested( entity );
+  }
 
   return match.isInArray
     ? entity
@@ -59,7 +61,7 @@ module.exports = async ( context, match ) => {
   }
 
   if ( match.noMixins ) {
-    return returnEntity( entity, match );
+    return returnEntity( entity, match, context );
   }
 
   /**
@@ -143,5 +145,5 @@ module.exports = async ( context, match ) => {
     Object.assign( entity, { auth: { f: authDoc.f, j: authDoc.j } } );
   }
 
-  return returnEntity( entity, match );
+  return returnEntity( entity, match, context );
 };

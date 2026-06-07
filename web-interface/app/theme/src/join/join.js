@@ -78,11 +78,9 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
 
       V.setNode( '.modal', 'clear' );
 
-      const path = ( V.getState( 'active' ) && V.getState( 'active' ).path )
-      || window.location.pathname;
-    if ( path === '/' || path === '' ) {
-      Navigation.drawReset();
-    }
+      if ( V.getState( 'active' ).navItem ) {
+        Navigation.drawReset();
+      }
 
       // if ( V.getLocal( 'welcome-modal' ) == 1 ) {
       //   // Modal.draw( which );
@@ -105,6 +103,14 @@ const Join = ( function() { // eslint-disable-line no-unused-vars
       // TODO: replace setInterval with eventsubscription, when possible
       // ( Error: The current provider doesn't support subscriptions: OperaWeb3Provider" )
       setInterval( Account.drawHeaderBalance, V.getSetting( 'balanceCheckInterval' ) * 1000 );
+
+      if (
+        V.getSetting( 'marketContent' ) == 1
+        && V.aE().holderOf
+        && V.aE().holderOf.length
+      ) {
+        HeldEntities.fetchAndDraw();
+      }
 
     }
     else if ( which == 'web3 entity not found' ) {
